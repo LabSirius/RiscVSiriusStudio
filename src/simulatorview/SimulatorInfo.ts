@@ -110,7 +110,21 @@ export class SimulatorInfo {
         }
       }
 
-      computePosition(element, tooltip, {
+      computePosition(
+        {
+          getBoundingClientRect() {
+            return {
+              width: 0,
+              height: 0,
+              x: x,
+              y: y,
+              top: y,
+              left: x,
+              right: x,
+              bottom: y,
+            };
+          },
+        }, tooltip, {
         placement: place,
         // middleware: [arrow({ element: arrowElement })]
         middleware: [offset(8), flip(), shift({ padding: 5 })],
@@ -142,7 +156,7 @@ export class SimulatorInfo {
     }
 
     function hideTooltip() {
-      tooltip.style.display = "";
+      tooltip.style.display = "none";
     }
 
     const events: [keyof HTMLElementEventMap, (e: Event) => void][] = [
