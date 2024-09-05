@@ -14,11 +14,14 @@
       {
         "command": "rv-simulator.simulate",
         "title": "RISCV simulator: simulate program execution",
-        "icon": {
-          "light": "media/play-svgrepo-com.svg",
-          "dark": "media/play-svgrepo-com.svg"
-        }
+        "icon": "$(remote-explorer)"
       },
+      {
+        "command": "rv-simulator.build",
+        "title": "RISCV simulator: build program",
+        "icon": "$(run)"
+      },
+
       {
         "command": "rv-simulator.progMemExportJSON",
         "title": "RISCV simulator: export instruction memory as JSON"
@@ -112,10 +115,16 @@
       }
     },
     "menus": {
-      "view/title": [
+      "editor/title": [
+        {
+          "command": "rv-simulator.build",
+          "group": "navigation",
+          "when": "editorLangId == riscvasm"
+        },
         {
           "command": "rv-simulator.simulate",
-          "when": "view == rv-simulator.registers"
+          "group": "navigation",
+          "when": "editorLangId == riscvasm"
         }
       ]
     },

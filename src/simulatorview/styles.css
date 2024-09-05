@@ -126,12 +126,13 @@ html {
   rect {
     opacity: 0.3;
     fill: var(--component-fill-inactive);
-    pointer-events: none;
+    pointer-events: none !important;
   }
 
   path {
     opacity: 0.3;
     fill: var(--component-fill-inactive);
+    pointer-events: none !important;
   }
 
   text {
@@ -170,16 +171,16 @@ html {
     animation: blinker var(--transition-time) linear infinite;
   }
 }
-
 .connectionDisabled {
   path {
     opacity: 0.3;
     stroke-width: var(--stroke-width);
     stroke: var(--connection-stroke-disabled);
-    pointer-events: none;
+    pointer-events: none !important;
   }
   text {
     fill: var(--connection-text-color-disabled) !important;
+    pointer-events: none !important;
   }
 }
 

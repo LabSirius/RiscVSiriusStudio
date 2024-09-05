@@ -5,10 +5,10 @@ import {
   offset,
   inline,
   autoPlacement,
-  Placement
-} from '@floating-ui/dom';
-import * as bootstrap from 'bootstrap';
-import { InstructionView } from './InstructionView';
+  Placement,
+} from "@floating-ui/dom";
+import * as bootstrap from "bootstrap";
+import { InstructionView } from "./InstructionView";
 
 export class SimulatorInfo {
   /**
@@ -42,9 +42,9 @@ export class SimulatorInfo {
 
   public constructor(log: Function, instView: InstructionView) {
     this.logger = log;
-    this.log('info', { simulatorInfo: 'SimulatorInfo constructor' });
+    this.log("info", { simulatorInfo: "SimulatorInfo constructor" });
 
-    this.updateEvent = new Event('SimulatorUpdate');
+    this.updateEvent = new Event("SimulatorUpdate");
     this.cpuElements = new Map<string, Element>();
     this.cpuEnabled = new Map<string, boolean>();
     this.registers = new Array(32).fill(0);
@@ -56,9 +56,9 @@ export class SimulatorInfo {
     this.instruction = undefined;
     this.result = undefined;
 
-    this.tooltip = document.getElementById('tooltip') as HTMLElement;
+    this.tooltip = document.getElementById("tooltip") as HTMLElement;
 
-    this.log('info', 'SimulatorInfo constructor finished');
+    this.log("info", "SimulatorInfo constructor finished");
   }
 
   public installTooltip(
@@ -79,16 +79,16 @@ export class SimulatorInfo {
        * properly.
        */
 
-      if (element.tagName === 'g') {
+      if (element.tagName === "g") {
         // could be an svg element from draw.io
 
-        const elements = element.getElementsByTagName('rect');
+        const elements = element.getElementsByTagName("rect");
         if (elements.length > 0) {
           element = elements[0];
         } else {
           // logger('info', { m: 'inside a group without rect' });
           const elements = element.querySelectorAll(
-            '#main-svg div:not(:has(div))'
+            "#main-svg div:not(:has(div))"
           );
           if (elements.length > 0) {
             element = elements[0];
@@ -103,9 +103,9 @@ export class SimulatorInfo {
                 top: y,
                 left: x,
                 right: x,
-                bottom: y
+                bottom: y,
               };
-            }
+            },
           };
         }
       }
@@ -113,18 +113,19 @@ export class SimulatorInfo {
       computePosition(element, tooltip, {
         placement: place,
         // middleware: [arrow({ element: arrowElement })]
-        middleware: [offset(8), flip(), shift({ padding: 5 })]
+        middleware: [offset(8), flip(), shift({ padding: 5 })],
       }).then(({ x, y, placement, middlewareData }) => {
         Object.assign(tooltip.style, { left: `${x}px`, top: `${y}px` });
       });
 
-      tooltip.innerHTML = typeof text === 'string' ? text : text();
-
-      // if (typeof dependsOn !== 'undefined') {
+      tooltip.innerHTML = typeof text === "string" ? text : text();
+      // if (typeof dependsOn !== "undefined") {
       //   if (cpuData.enabled(dependsOn)) {
+      //   } else {
+
       //   }
       // } else {
-      //   tooltip.innerHTML = 'element disabled';
+      //   tooltip.innerHTML = "element disabled";
       // }
     }
 
@@ -132,23 +133,23 @@ export class SimulatorInfo {
       if (evt instanceof MouseEvent && (evt as MouseEvent).altKey) {
         return;
       }
-      if (typeof dependsOn !== 'undefined' && !cpuData.enabled(dependsOn)) {
-        logger('info', { m: 'tooltip depends on', k: dependsOn });
+      if (typeof dependsOn !== "undefined" && !cpuData.enabled(dependsOn)) {
+        logger("info", { m: "tooltip depends on", k: dependsOn });
         return;
       }
-      tooltip.style.display = 'block';
+      tooltip.style.display = "block";
       update(evt as MouseEvent);
     }
 
     function hideTooltip() {
-      tooltip.style.display = '';
+      tooltip.style.display = "";
     }
 
     const events: [keyof HTMLElementEventMap, (e: Event) => void][] = [
-      ['mouseenter', showTooltip],
-      ['mouseleave', hideTooltip],
-      ['focus', showTooltip],
-      ['blur', hideTooltip]
+      ["mouseenter", showTooltip],
+      ["mouseleave", hideTooltip],
+      ["focus", showTooltip],
+      ["blur", hideTooltip],
     ];
     events.forEach(([event, listener]) => {
       element.addEventListener(event, listener);
@@ -175,7 +176,7 @@ export class SimulatorInfo {
     if (element !== undefined) {
       return element;
     } else {
-      throw Error('Missing element ' + name);
+      throw Error("Missing element " + name);
     }
   }
 
@@ -192,7 +193,7 @@ export class SimulatorInfo {
     if (state !== undefined) {
       return state;
     } else {
-      throw Error('Missing element: ' + element);
+      throw Error("Missing element: " + element);
     }
   }
 
@@ -201,29 +202,29 @@ export class SimulatorInfo {
     if (element !== undefined) {
       initializer(element, this);
     } else {
-      throw Error('Initialization of a missing element: ' + name);
+      throw Error("Initialization of a missing element: " + name);
     }
   }
 
   public initializeSVGElements(handlers: any) {
-    this.log('info', {
-      simulatorInfo: 'initialization of SVG elements started'
+    this.log("info", {
+      simulatorInfo: "initialization of SVG elements started",
     });
 
     const elements = document.querySelectorAll(
       // '#svg-simulator [data-cpuname]:not(:has([data-cpuname]))'
-      '#main-svg [data-cpuname]:not(:has([data-cpuname]))'
+      "#main-svg [data-cpuname]:not(:has([data-cpuname]))"
     );
 
     elements.forEach((e) => {
-      const name = e.getAttributeNS(null, 'data-cpuname') as string;
+      const name = e.getAttributeNS(null, "data-cpuname") as string;
       this.registerSVGElement(name, e);
       this.disable(name);
     });
 
-    this.log('info', {
-      simulatorInfo: 'Read document for data-cpuname tags',
-      found: elements.length
+    this.log("info", {
+      simulatorInfo: "Read document for data-cpuname tags",
+      found: elements.length,
     });
 
     this.cpuElements.forEach((element, name) => {
@@ -233,8 +234,8 @@ export class SimulatorInfo {
         //this.log('error', { message: 'Handler not found for ' + name });
       }
     });
-    this.log('info', {
-      simulatorInfo: 'initialization of SVG elements finished'
+    this.log("info", {
+      simulatorInfo: "initialization of SVG elements finished",
     });
   }
   /**
@@ -244,11 +245,11 @@ export class SimulatorInfo {
    */
   public updateRegister(name: string, value: string) {
     const index = parseInt(name.substring(1));
-    this.log('info', {
-      m: 'Updating value',
+    this.log("info", {
+      m: "Updating value",
       name: name,
       idx: index,
-      val: value
+      val: value,
     });
     this.registers[index] = value;
   }
@@ -260,7 +261,7 @@ export class SimulatorInfo {
   public getInfo() {
     return {
       cpuElements: Object.fromEntries(this.cpuElements),
-      cpuElemStates: Object.fromEntries(this.cpuEnabled)
+      cpuElemStates: Object.fromEntries(this.cpuEnabled),
     };
   }
 
@@ -285,7 +286,7 @@ export class SimulatorInfo {
   }
 
   public setAssemblerInstruction(html: string) {
-    const instBin = document.getElementById('instruction-asm') as HTMLElement;
+    const instBin = document.getElementById("instruction-asm") as HTMLElement;
     instBin.innerHTML = html;
   }
 

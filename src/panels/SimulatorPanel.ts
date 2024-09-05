@@ -2722,15 +2722,15 @@ export class SimulatorPanel {
                       <g data-cell-id="JjTASg2ex2UWmYMPivOh-32">
                         <g
                           id="cell-JjTASg2ex2UWmYMPivOh-32"
-                          content='&lt;object label="CMWr" cpuName="SgnDMWRPTH" cpuSignal="SgnDMWRPTH"/&gt;'
-                          data-label="CMWr"
+                          content='&lt;object label="DMWr" cpuName="SgnDMWRPTH" cpuSignal="SgnDMWRPTH"/&gt;'
+                          data-label="DMWr"
                           data-cpuName="SgnDMWRPTH"
                           data-cpuSignal="SgnDMWRPTH"
                         >
                           <g
                             id="cell-JjTASg2ex2UWmYMPivOh-32"
-                            content='&lt;object label="CMWr" cpuName="SgnDMWRPTH" cpuSignal="SgnDMWRPTH"/&gt;'
-                            data-label="CMWr"
+                            content='&lt;object label="DMWr" cpuName="SgnDMWRPTH" cpuSignal="SgnDMWRPTH"/&gt;'
+                            data-label="DMWr"
                             data-cpuName="SgnDMWRPTH"
                             data-cpuSignal="SgnDMWRPTH"
                           >
@@ -2760,7 +2760,7 @@ export class SimulatorPanel {
                                 text-anchor="middle"
                                 font-size="12px"
                               >
-                                <text x="829.5" y="185.79">CMWr</text>
+                                <text x="829.5" y="185.79">DMWr</text>
                               </g>
                             </g>
                           </g>
