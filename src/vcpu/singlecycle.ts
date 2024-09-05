@@ -162,7 +162,7 @@ export class SCCPU {
     };
 
     const ALURes = selector[ALUOp](numA, numB) as number;
-    return _.padStart(ALURes.toString(2), 32, '0');
+    return _.padStart((ALURes>>>0).toString(2), 32, '0');
   }
 
   /**
@@ -232,7 +232,7 @@ export class SCCPU {
     let aluOp = undefined;
     switch (true) {
       case isIArithmetic(instruction.type, instruction.opcode):
-        aluOp = instruction.encoding.binEncoding[1] + getFunct3(instruction);
+        aluOp = '0' + getFunct3(instruction);
         break;
       case isILoad(this.currentType(), this.currentOpcode()):
         aluOp = '0000';
