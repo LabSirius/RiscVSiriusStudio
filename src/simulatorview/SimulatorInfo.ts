@@ -13,8 +13,20 @@ import { InstructionView } from "./InstructionView";
 export class SimulatorInfo {
   /**
    * Event dispatched to update the state of the graphical elements.
+   *
+   * This event is dispatched for each instruction executed by the simulator.
+   * The graphical elements have the responsibility of updating their graphical
+   * state accordingly.
    */
   private updateEvent: Event;
+  /**
+   * Event dispatched when the simulation terminates.
+   *
+   * This event is dispatched once at the end of the simulation. When there is
+   * no other instruction to execute. The graphical elements have the
+   * responsibility of updating their graphical state accordingly.
+   */
+  private terminateEvent: Event;
   /**
    * All the elements in the SVG that are relevant to the simulator.
    */
@@ -45,6 +57,7 @@ export class SimulatorInfo {
     this.log("info", { simulatorInfo: "SimulatorInfo constructor" });
 
     this.updateEvent = new Event("SimulatorUpdate");
+    this.terminateEvent = new Event("SimulatorTermination");
     this.cpuElements = new Map<string, Element>();
     this.cpuEnabled = new Map<string, boolean>();
     this.registers = new Array(32).fill(0);
@@ -171,6 +184,11 @@ export class SimulatorInfo {
   public update() {
     document.dispatchEvent(this.updateEvent);
   }
+
+  public terminate() {
+    document.dispatchEvent(this.terminateEvent);
+  }
+
   /**
    * Registers a new element in the simulator.
    * @param name of the element to register

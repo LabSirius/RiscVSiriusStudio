@@ -109,13 +109,14 @@ function messageDispatch(
   }
 }
 
-function simulationFinished(couData: SimulatorInfo) {
+function simulationFinished(cpuData: SimulatorInfo) {
   const step = document.getElementById("step-execution") as Button;
   step.disabled = true;
   const modal = new Modal(document.getElementById("simulator-modal"), {
     backdrop: "static",
   });
   modal.show();
+  cpuData.terminate();
 }
 
 function setInstruction(

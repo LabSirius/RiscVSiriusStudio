@@ -100,6 +100,9 @@ export function CLK(element, cpuData) {
     applyClass(wave, "connection");
     cpuData.enable("CLK");
   });
+  document.addEventListener("SimulatorTermination", (e) => {
+    // does nothing on termination.
+  });
 }
 
 export function PC(element, cpuData) {
@@ -124,6 +127,12 @@ export function PC(element, cpuData) {
     });
     cpuData.enable("PC");
   });
+  document.addEventListener("SimulatorTermination", (e) => {
+    components.forEach((e) => {
+      applyClass(e, "componentDisabled");
+    });
+    cpuData.disable("PC");
+  });
 }
 
 export function ADD4(element, cpuData) {
@@ -136,6 +145,11 @@ export function ADD4(element, cpuData) {
   document.addEventListener("SimulatorUpdate", (e) => {
     applyClass(element, "component");
     cpuData.enable("ADD4");
+    applyClass(add4WBMux, "connectionDisabled");
+  });
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "componentDisabled");
+    cpuData.disable("ADD4");
     applyClass(add4WBMux, "connectionDisabled");
   });
 }
@@ -183,6 +197,13 @@ export function IM(element, cpuData) {
       applyClass(e, "inputText");
     });
     cpuData.enable("IM");
+  });
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "componentDisabled");
+    inputs.forEach((e) => {
+      applyClass(e, "inputTextDisabled");
+    });
+    cpuData.disable("IM");
   });
 }
 
@@ -317,6 +338,11 @@ export function CU(element, cpuData) {
     applyClass(arrow, "connection");
 
     cpuData.enable("CU");
+  });
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "componentDisabled");
+    applyClass(arrow, "connectionDisabled");
+    cpuData.disable("CU");
   });
 }
 
@@ -503,6 +529,22 @@ export function RU(element, cpuData) {
     });
     cpuData.enable("RU");
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    components.forEach((e) => {
+      applyClass(e, "componentDisabled");
+    });
+    inputs.forEach((e) => {
+      applyClass(e, "inputTextDisabled");
+    });
+    outputs.forEach((e) => {
+      applyClass(e, "outputTextDisabled");
+    });
+    signals.forEach((e) => {
+      applyClass(e, "signalDisabled");
+    });
+    cpuData.disable("RU");
+  });
 }
 
 function immTooltipText(type, cpuData) {
@@ -567,7 +609,6 @@ function setIMMSrc(cpuData) {
 export function IMM(element, cpuData) {
   const {
     cpuElements: { SgnIMMSrcPTH: signal, SgnIMMSRCVAL: value },
-    instruction: instruction,
   } = cpuData.getInfo();
 
   applyClass(element, "componentDisabled");
@@ -598,6 +639,14 @@ export function IMM(element, cpuData) {
       });
       cpuData.disable("IMM");
     }
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "componentDisabled");
+    signals.forEach((e) => {
+      applyClass(e, "signalDisabled");
+    });
+    cpuData.disable("IMM");
   });
 }
 
@@ -660,6 +709,15 @@ export function ALUA(element, cpuData) {
       });
     }
   });
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "componentDisabled");
+    applyClass(text, "inputTextDisabled");
+    applyClass(signal, "signalDisabled");
+    paths.forEach((x) => {
+      applyClass(x, "connectionDisabled muxPathDisabled");
+    });
+    cpuData.disable("ALUA");
+  });
 }
 
 export function ALUB(element, cpuData) {
@@ -714,6 +772,16 @@ export function ALUB(element, cpuData) {
       applyClass(path1, "connection muxPath");
       applyClass(path0, "connectionDisabled muxPathDisabled");
     }
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "componentDisabled");
+    applyClass(text, "inputTextDisabled");
+    applyClass(signal, "signalDisabled");
+    [path0, path1].forEach((x) => {
+      applyClass(x, "connectionDisabled muxPathDisabled");
+    });
+    cpuData.disable("ALUB");
   });
 }
 
@@ -826,6 +894,17 @@ export function ALU(element, cpuData) {
       applyClass(e, "signal");
     });
   });
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "componentDisabled");
+    inputs.forEach((e) => {
+      applyClass(e, "inputTextDisabled");
+    });
+    signals.forEach((e) => {
+      applyClass(e, "signalDisabled");
+    });
+    applyClass(valALURes, "outputTextDisabled");
+    cpuData.disable("ALU");
+  });
 }
 
 function setBrOp(cpuData) {
@@ -839,7 +918,6 @@ function setBrOp(cpuData) {
 export function BU(element, cpuData) {
   const {
     cpuElements: { SgnBUBROPPTH: signal, SgnBUBROPVAL: signalVal },
-    instruction: instruction,
   } = cpuData.getInfo();
   const signals = [signal, signalVal];
   applyClass(element, "componentDisabled");
@@ -859,6 +937,13 @@ export function BU(element, cpuData) {
     setBrOp(cpuData);
     signals.forEach((e) => {
       applyClass(e, "signal");
+    });
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "componentDisabled");
+    signals.forEach((e) => {
+      applyClass(e, "signalDisabled");
     });
   });
 }
@@ -1040,6 +1125,24 @@ export function DM(element, cpuData) {
       });
     }
   });
+  document.addEventListener("SimulatorTermination", (e) => {
+    signals.forEach((e) => {
+      applyClass(e, "signalDisabled");
+    });
+    components.forEach((e) => {
+      applyClass(e, "componentDisabled");
+    });
+    inputs.forEach((e) => {
+      applyClass(e, "inputTextDisabled");
+    });
+    outputs.forEach((e) => {
+      applyClass(e, "outputTextDisabled");
+    });
+    connections.forEach((e) => {
+      applyClass(e, "connectionDisabled");
+    });
+    cpuData.disable("DM");
+  });
 }
 
 export function BUMUX(element, cpuData) {
@@ -1078,6 +1181,14 @@ export function BUMUX(element, cpuData) {
       applyClass(path0, "connection muxPath");
       applyClass(path1, "connectionDisabled muxPathDisabled");
     }
+  });
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "componentDisabled");
+    applyClass(text, "inputTextDisabled");
+    connections.forEach((x) => {
+      applyClass(x, "connectionDisabled muxPathDisabled");
+    });
+    cpuData.disable("BUMUX");
   });
 }
 
@@ -1156,6 +1267,16 @@ export function WBMUX(element, cpuData) {
       });
     }
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "componentDisabled");
+    applyClass(text, "inputTextDisabled");
+    applyClass(signal, "signalDisabled");
+    [path00, path01, path10].forEach((x) => {
+      applyClass(x, "connectionDisabled muxPathDisabled");
+    });
+    cpuData.disable("WBMUX");
+  });
 }
 
 // PATHS
@@ -1169,6 +1290,10 @@ export function CLKPC(element, cpuData) {
     pathOnTop(element);
     applyClass(element, "connection");
   });
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("CLKPC");
+  });
 }
 
 export function CLKRU(element, cpuData) {
@@ -1179,12 +1304,21 @@ export function CLKRU(element, cpuData) {
     pathOnTop(element);
     applyClass(element, "connection");
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("CLKRU");
+  });
 }
 
 export function CLKDM(element, cpuData) {
   // TODO: check the behavior of this element on click
   applyClass(element, "connectionDisabled");
   focus(element);
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("CLKDM");
+  });
 }
 
 export function PCIM(element, cpuData) {
@@ -1202,6 +1336,11 @@ export function PCIM(element, cpuData) {
   document.addEventListener("SimulatorUpdate", (e) => {
     cpuData.enable("PCIM");
     applyClass(element, "connection");
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("PCIM");
   });
 }
 
@@ -1221,6 +1360,11 @@ export function PCADD4(element, cpuData) {
   document.addEventListener("SimulatorUpdate", (e) => {
     applyClass(element, "connection");
     cpuData.enable("PCADD4");
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("PCADD4");
   });
 }
 
@@ -1250,6 +1394,11 @@ export function PCALUA(element, cpuData) {
       applyClass(element, "connectionDisabled");
       cpuData.disable("PCALUA");
     }
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("PCALUA");
   });
 }
 
@@ -1326,6 +1475,11 @@ export function IMCUOPCODE(element, cpuData) {
     pathOnTop(element);
     applyClass(element, "connection");
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("IMCUOPCODE");
+  });
 }
 
 export function IMCUFUNCT3(element, cpuData) {
@@ -1356,6 +1510,11 @@ export function IMCUFUNCT3(element, cpuData) {
       applyClass(element, "connectionDisabled");
       cpuData.disable("IMCUFUNCT3");
     }
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("IMCUFUNCT3");
   });
 }
 
@@ -1390,6 +1549,11 @@ export function IMCUFUNCT7(element, cpuData) {
       applyClass(element, "connectionDisabled");
       cpuData.disable("IMCUFUNCT7");
     }
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("IMCUFUNCT7");
   });
 }
 
@@ -1449,6 +1613,11 @@ export function IMRURS1(element, cpuData) {
       cpuData.disable("IMRURS1");
     }
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("IMRURS1");
+  });
 }
 
 export function IMRURS2(element, cpuData) {
@@ -1479,6 +1648,11 @@ export function IMRURS2(element, cpuData) {
       applyClass(element, "connectionDisabled");
       cpuData.disable("IMRURS2");
     }
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("IMRURS2");
   });
 }
 
@@ -1511,6 +1685,11 @@ export function IMRURDEST(element, cpuData) {
       cpuData.disable("IMRURDEST");
     }
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("IMRURDEST");
+  });
 }
 
 export function IMIMM(element, cpuData) {
@@ -1533,6 +1712,11 @@ export function IMIMM(element, cpuData) {
       applyClass(element, "connectionDisabled");
       cpuData.disable("IMIMM");
     }
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("IMIMM");
   });
 }
 
@@ -1558,6 +1742,11 @@ export function WBMUXRU(element, cpuData) {
       applyClass(element, "connectionDisabled");
       cpuData.disable("WBMUXRU");
     }
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("WBMUXRU");
   });
 }
 
@@ -1586,6 +1775,11 @@ export function IMMALUB(element, cpuData) {
       applyClass(element, "connectionDisabled");
       cpuData.disable("IMMALUB");
     }
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("IMMALUB");
   });
 }
 
@@ -1616,6 +1810,11 @@ export function RUALUA(element, cpuData) {
       cpuData.disable("RUALUA");
     }
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("RUALUA");
+  });
 }
 
 export function RUALUB(element, cpuData) {
@@ -1644,6 +1843,11 @@ export function RUALUB(element, cpuData) {
       cpuData.disable("RUALUB");
     }
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("RUALUB");
+  });
 }
 
 export function RUDM(element, cpuData) {
@@ -1667,6 +1871,11 @@ export function RUDM(element, cpuData) {
       applyClass(element, "connectionDisabled");
       cpuData.disable("RUDM");
     }
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("RUDM");
   });
 }
 
@@ -1693,6 +1902,11 @@ export function RURS1BU(element, cpuData) {
       cpuData.disable("RURS1BU");
     }
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("RURS1BU");
+  });
 }
 
 export function RURS2BU(element, cpuData) {
@@ -1717,6 +1931,11 @@ export function RURS2BU(element, cpuData) {
       cpuData.disable("RURS2BU");
     }
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("RURS2BU");
+  });
 }
 
 export function ALUAALU(element, cpuData) {
@@ -1735,6 +1954,11 @@ export function ALUAALU(element, cpuData) {
       applyClass(element, "connectionDisabled");
     }
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("ALUAALU");
+  });
 }
 
 export function ALUBALU(element, cpuData) {
@@ -1747,6 +1971,11 @@ export function ALUBALU(element, cpuData) {
   document.addEventListener("SimulatorUpdate", (e) => {
     cpuData.enable("ALUBALU");
     applyClass(element, "connection");
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("ALUBALU");
   });
 }
 
@@ -1771,6 +2000,11 @@ export function ALUDM(element, cpuData) {
       cpuData.disable("ALUDM");
       applyClass(element, "connectionDisabled");
     }
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("ALUDM");
   });
 }
 
@@ -1798,6 +2032,11 @@ export function ALUWBMUX(element, cpuData) {
       cpuData.disable("ALUWBMUX");
     }
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("ALUWBMUX");
+  });
 }
 
 export function DMWBMUX(element, cpuData) {
@@ -1822,6 +2061,11 @@ export function DMWBMUX(element, cpuData) {
       applyClass(element, "connectionDisabled");
       cpuData.disable("DMWBMUX");
     }
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("DMWBMUX");
   });
 }
 
@@ -1848,6 +2092,11 @@ export function ADD4WBMUX(element, cpuData) {
       applyClass(element, "connectionDisabled");
     }
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("ADD4WBMUX");
+  });
 }
 
 export function BUBUMUX(element, cpuData) {
@@ -1866,6 +2115,11 @@ export function BUBUMUX(element, cpuData) {
   document.addEventListener("SimulatorUpdate", (e) => {
     applyClass(element, "connection");
     cpuData.enable("BUBUMUX");
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("BUBUMUX");
   });
 }
 
@@ -1897,6 +2151,11 @@ export function ALUBUMUX(element, cpuData) {
       cpuData.disable("ALUBUMUX");
     }
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("ALUBUMUX");
+  });
 }
 
 export function ADD4BUMUX(element, cpuData) {
@@ -1915,6 +2174,11 @@ export function ADD4BUMUX(element, cpuData) {
     applyClass(element, "connection");
     pathOnTop(element);
     cpuData.enable("ADD4BUMUX");
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("ADD4BUMUX");
   });
 }
 
@@ -1936,6 +2200,11 @@ export function BUMUXPC(element, cpuData) {
     cpuData.enable("BUMUXPC");
     applyClass(element, "connection");
   });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("BUMUXPC");
+  });
 }
 
 export function ADD4CT(element, cpuData) {
@@ -1944,6 +2213,11 @@ export function ADD4CT(element, cpuData) {
   document.addEventListener("SimulatorUpdate", (e) => {
     cpuData.enable("ADD4CT");
     applyClass(element, "connection");
+  });
+
+  document.addEventListener("SimulatorTermination", (e) => {
+    applyClass(element, "connectionDisabled");
+    cpuData.disable("ADD4CT");
   });
 }
 // !LOG
