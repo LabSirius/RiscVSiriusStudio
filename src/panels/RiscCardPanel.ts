@@ -66,14 +66,13 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
           <span class="lead fw-bold">R-type instructions</span>
           </button>
         </h2>
-        <div id="collapseR" class="accordion-collapse collapse show" data-bs-parent="#accordionInstructions">
+        <div id="collapseR" class="accordion-collapse collapse" data-bs-parent="#accordionInstructions">
           <div class="accordion-body">
             <table class="table table-hover">
               <thead class="table-light">
                 <tr>
                   <th>Inst</th>
                   <th>Name</th>
-                  <th>FMT</th>
                   <th>Opcode</th>
                   <th>funct3</th>
                   <th>funct7</th>
@@ -84,7 +83,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">add</td>
                   <td>ADD</td>
-                  <td>R</td>
                   <td>0110011</td>
                   <td>0x0</td>
                   <td>0x00</td>
@@ -93,7 +91,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">sub</td>
                   <td>SUB</td>
-                  <td>R</td>
                   <td>0110011</td>
                   <td>0x0</td>
                   <td>0x20</td>
@@ -102,7 +99,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">xor</td>
                   <td>XOR</td>
-                  <td>R</td>
                   <td>0110011</td>
                   <td>0x4</td>
                   <td>0x00</td>
@@ -111,7 +107,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">or</td>
                   <td>OR</td>
-                  <td>R</td>
                   <td>0110011</td>
                   <td>0x6</td>
                   <td>0x00</td>
@@ -120,7 +115,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">and</td>
                   <td>AND</td>
-                  <td>R</td>
                   <td>0110011</td>
                   <td>0x7</td>
                   <td>0x00</td>
@@ -129,7 +123,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">sll</td>
                   <td>Shift Left Logical</td>
-                  <td>R</td>
                   <td>0110011</td>
                   <td>0x1</td>
                   <td>0x00</td>
@@ -138,7 +131,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">srl</td>
                   <td>Shift Right Logical</td>
-                  <td>R</td>
                   <td>0110011</td>
                   <td>0x5</td>
                   <td>0x00</td>
@@ -147,7 +139,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">sra</td>
                   <td>Shift Right Arith <span class="badge text-bg-primary">msb</span></td>
-                  <td>R</td>
                   <td>0110011</td>
                   <td>0x5</td>
                   <td>0x20</td>
@@ -156,7 +147,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">slt</td>
                   <td>Set Less Than</td>
-                  <td>R</td>
                   <td>0110011</td>
                   <td>0x2</td>
                   <td>0x00</td>
@@ -165,7 +155,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">sltu</td>
                   <td>Set Less Than (U) <span class="badge text-bg-primary">zero</span></td>
-                  <td>R</td>
                   <td>0110011</td>
                   <td>0x3</td>
                   <td>0x00</td>
@@ -184,12 +173,12 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
         </h2>
         <div id="collapseI" class="accordion-collapse collapse" data-bs-parent="#accordionInstructions">
           <div class="accordion-body">
+            <span class="h5">Arithmetic and logical instructions.</span>
             <table class="table table-hover">
               <thead class="table-light">
                 <tr>
                   <th>Inst</th>
                   <th>Name</th>
-                  <th>FMT</th>
                   <th>Opcode</th>
                   <th>funct3</th>
                   <th>funct7</th>
@@ -200,7 +189,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">addi</td>
                   <td>ADD Immediate</td>
-                  <td>I</td>
                   <td>0010011</td>
                   <td>0x0</td>
                   <td></td>
@@ -209,7 +197,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">xori</td>
                   <td>XOR Immediate</td>
-                  <td>I</td>
                   <td>0010011</td>
                   <td>0x4</td>
                   <td></td>
@@ -218,7 +205,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">ori</td>
                   <td>OR Immediate</td>
-                  <td>I</td>
                   <td>0010011</td>
                   <td>0x6</td>
                   <td></td>
@@ -227,7 +213,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">andi</td>
                   <td>AND Immediate</td>
-                  <td>I</td>
                   <td>0010011</td>
                   <td>0x7</td>
                   <td></td>
@@ -236,7 +221,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">slli</td>
                   <td>Shift Left Logical Imm</td>
-                  <td>I</td>
                   <td>0010011</td>
                   <td>0x1</td>
                   <td>imm[5:11]=0x00</td>
@@ -245,7 +229,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">srli</td>
                   <td>Shift Right Logical Imm</td>
-                  <td>I</td>
                   <td>0010011</td>
                   <td>0x5</td>
                   <td>imm[5:11]=0x00</td>
@@ -254,7 +237,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">srai</td>
                   <td>Shift Right Arith Imm <span class="badge text-bg-primary">msb</span></td>
-                  <td>I</td>
                   <td>0010011</td>
                   <td>0x5</td>
                   <td>imm[5:11]=0x20</td>
@@ -263,7 +245,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">slti</td>
                   <td>Set Less Than Imm</td>
-                  <td>I</td>
                   <td>0010011</td>
                   <td>0x2</td>
                   <td></td>
@@ -272,7 +253,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">sltiu</td>
                   <td>Set Less Than Imm (U) <span class="badge text-bg-primary">zero</span></td>
-                  <td>I</td>
                   <td>0010011</td>
                   <td>0x3</td>
                   <td></td>
@@ -280,12 +260,12 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 </tr>
               </tbody>
             </table>
+            <span class="h5">Load instructions.</span>
             <table class="table table-hover">
               <thead class="table-light">
                 <tr>
                   <th>Inst</th>
                   <th>Name</th>
-                  <th>FMT</th>
                   <th>Opcode</th>
                   <th>funct3</th>
                   <th>funct7</th>
@@ -296,7 +276,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">lb</td>
                   <td>Load Byte</td>
-                  <td>I</td>
                   <td>0000011</td>
                   <td>0x0</td>
                   <td></td>
@@ -305,7 +284,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">lh</td>
                   <td>Load Half</td>
-                  <td>I</td>
                   <td>0000011</td>
                   <td>0x1</td>
                   <td></td>
@@ -314,7 +292,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">lw</td>
                   <td>Load Word</td>
-                  <td>I</td>
                   <td>0000011</td>
                   <td>0x2</td>
                   <td></td>
@@ -323,7 +300,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">lbu</td>
                   <td>Load Byte (U) <span class="badge text-bg-primary">zero</span></td>
-                  <td>I</td>
                   <td>0000011</td>
                   <td>0x4</td>
                   <td></td>
@@ -332,7 +308,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">lhu</td>
                   <td>Load Half (U) <span class="badge text-bg-primary">zero</span></td>
-                  <td>I</td>
                   <td>0000011</td>
                   <td>0x5</td>
                   <td></td>
@@ -340,12 +315,12 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 </tr>
               </tbody>
             </table>
+            <span class="h5">Jump instructions.</span>
             <table class="table table-hover">
               <thead class="table-light">
                 <tr>
                   <th>Inst</th>
                   <th>Name</th>
-                  <th>FMT</th>
                   <th>Opcode</th>
                   <th>funct3</th>
                   <th>funct7</th>
@@ -356,7 +331,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">jalr</td>
                   <td>Jump And Link Reg</td>
-                  <td>I</td>
                   <td>1100111</td>
                   <td>0x0</td>
                   <td></td>
@@ -364,12 +338,12 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 </tr>
               </tbody>
             </table>
+            <span class="h5">Control transfer instructions.</span>
             <table class="table table-hover">
               <thead class="table-light">
                 <tr>
                   <th>Inst</th>
                   <th>Name</th>
-                  <th>FMT</th>
                   <th>Opcode</th>
                   <th>funct3</th>
                   <th>funct7</th>
@@ -380,7 +354,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">ecall</td>
                   <td>Environment call</td>
-                  <td>I</td>
                   <td>1110011</td>
                   <td>0x0</td>
                   <td>imm=0x0</td>
@@ -389,7 +362,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">ebreak</td>
                   <td>Environment break</td>
-                  <td>I</td>
                   <td>1110011</td>
                   <td>0x0</td>
                   <td>imm=0x1</td>
@@ -413,7 +385,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <th>Inst</th>
                   <th>Name</th>
-                  <th>FMT</th>
                   <th>Opcode</th>
                   <th>funct3</th>
                   <th>funct7</th>
@@ -424,7 +395,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">sb</td>
                   <td>Store Byte</td>
-                  <td>S</td>
                   <td>0100011</td>
                   <td>0x0</td>
                   <td></td>
@@ -433,7 +403,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">sh</td>
                   <td>Store Half</td>
-                  <td>S</td>
                   <td>0100011</td>
                   <td>0x1</td>
                   <td></td>
@@ -442,7 +411,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">sw</td>
                   <td>Store Word</td>
-                  <td>S</td>
                   <td>0100011</td>
                   <td>0x2</td>
                   <td></td>
@@ -466,7 +434,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <th>Inst</th>
                   <th>Name</th>
-                  <th>FMT</th>
                   <th>Opcode</th>
                   <th>funct3</th>
                   <th>funct7</th>
@@ -477,7 +444,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">beq</td>
                   <td>Branch ==</td>
-                  <td>B</td>
                   <td>1100011</td>
                   <td>0x0</td>
                   <td></td>
@@ -486,7 +452,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">bne</td>
                   <td>Branch !=</td>
-                  <td>B</td>
                   <td>1100011</td>
                   <td>0x1</td>
                   <td></td>
@@ -495,7 +460,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">blt</td>
                   <td>Branch &lt;</td>
-                  <td>B</td>
                   <td>1100011</td>
                   <td>0x4</td>
                   <td></td>
@@ -504,7 +468,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">bge</td>
                   <td>Branch &gt;=</td>
-                  <td>B</td>
                   <td>1100011</td>
                   <td>0x5</td>
                   <td></td>
@@ -513,7 +476,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">bltu</td>
                   <td>Branch &lt; (U) <span class="badge text-bg-primary">zero</span></td>
-                  <td>B</td>
                   <td>1100011</td>
                   <td>0x6</td>
                   <td></td>
@@ -522,7 +484,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">bgeu</td>
                   <td>Branch &gt;= (U) <span class="badge text-bg-primary">zero</span></td>
-                  <td>B</td>
                   <td>1100011</td>
                   <td>0x7</td>
                   <td></td>
@@ -546,7 +507,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <th>Inst</th>
                   <th>Name</th>
-                  <th>FMT</th>
                   <th>Opcode</th>
                   <th>funct3</th>
                   <th>funct7</th>
@@ -557,7 +517,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">jal</td>
                   <td>Jump And Link</td>
-                  <td>J</td>
                   <td>1101111</td>
                   <td></td>
                   <td></td>
@@ -581,7 +540,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <th>Inst</th>
                   <th>Name</th>
-                  <th>FMT</th>
                   <th>Opcode</th>
                   <th>funct3</th>
                   <th>funct7</th>
@@ -592,7 +550,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">lui</td>
                   <td>Load Upper Imm</td>
-                  <td>U</td>
                   <td>0110111</td>
                   <td></td>
                   <td></td>
@@ -601,7 +558,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 <tr>
                   <td class="font-monospace fs-6">auipc</td>
                   <td>Add Upper Imm to PC</td>
-                  <td>U</td>
                   <td>0010111</td>
                   <td></td>
                   <td></td>
