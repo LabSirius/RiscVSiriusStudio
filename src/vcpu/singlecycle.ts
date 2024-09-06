@@ -200,30 +200,30 @@ export class SCCPU {
     this.registers.writeRegister(getRd(instruction), aluRes);
 
     return {
-      RURS1Val: rs1Val,
-      RURS2Val: rs2Val,
-      ALUASrc: "0",
-      ALUBSrc: "0",
-      ALUARes: rs1Val,
-      ALUBRes: rs2Val,
       A: rs1Val,
-      B: rs2Val,
+      ADD4Res: add4Res,
+      ALUARes: rs1Val,
+      ALUASrc: "0",
+      ALUBRes: rs2Val,
+      ALUBSrc: "0",
       ALUOp: aluOp,
       ALURes: aluRes,
+      B: rs2Val,
       BrOp: "00XXX",
-      ADD4Res: add4Res,
-      BURes: "0",
       BUMUXRes: add4Res16,
-      WBMUXRes: aluRes,
+      BURes: "0",
       RUDataWrSrc: "00",
+      RURS1Val: rs1Val,
+      RURS2Val: rs2Val,
       RUWr: "1",
+      WBMUXRes: aluRes,
     };
   }
 
   private executeIInstruction() {
-    // debugger;
     const instruction = this.currentInstruction();
     const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
+    const rdVal = this.registers.readRegisterFromName(getRd(instruction));
     const imm12Val = this.currentInstruction().encoding.imm12;
     const imm32Val = imm12Val.padStart(32, imm12Val.at(0));
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
@@ -301,10 +301,10 @@ export class SCCPU {
       BrOp: brOp,
       BUMUXRes: buMUXRes,
       BURes: buRes,
-      DMWr: dmWr,
-      DMCtrl: dmCtrl,
       DMAddress: dmAddress,
+      DMCtrl: dmCtrl,
       DMDataRd: dmDataRd,
+      DMWr: dmWr,
       IMMALUBVal: imm32Val,
       IMMSrc: "000",
       RUDataWrSrc: ruDataWrSrc,
@@ -385,9 +385,9 @@ export class SCCPU {
       BUMUXRes: "0",
       BURes: "0",
       DMAddress: aluRes,
+      DMCtrl: getFunct3(instruction),
       DMDataWr: value,
       DMWr: "1",
-      DMCtrl: getFunct3(instruction),
       IMMALUBVal: offset32Val,
       IMMSrc: "001",
       RUDataWrSrc: "XX",
@@ -458,8 +458,8 @@ export class SCCPU {
       BrOp: "01" + funct3,
       BUMUXRes: condition ? parseInt(aluRes, 2).toString(16) : add4Res16,
       BURes: condition ? "1" : "0",
-      DMWr: "0",
       DMCtrl: "XXX",
+      DMWr: "0",
       IMMALUBVal: imm32Val,
       IMMSrc: "101",
       RURS1Val: rs1,
