@@ -124,23 +124,18 @@ export class SimulatorInfo {
               bottom: y,
             };
           },
-        }, tooltip, {
-        placement: place,
-        // middleware: [arrow({ element: arrowElement })]
-        middleware: [offset(8), flip(), shift({ padding: 5 })],
-      }).then(({ x, y, placement, middlewareData }) => {
+        },
+        tooltip,
+        {
+          placement: place,
+          // middleware: [arrow({ element: arrowElement })]
+          middleware: [offset(8), flip(), shift({ padding: 5 })],
+        }
+      ).then(({ x, y, placement, middlewareData }) => {
         Object.assign(tooltip.style, { left: `${x}px`, top: `${y}px` });
       });
 
       tooltip.innerHTML = typeof text === "string" ? text : text();
-      // if (typeof dependsOn !== "undefined") {
-      //   if (cpuData.enabled(dependsOn)) {
-      //   } else {
-
-      //   }
-      // } else {
-      //   tooltip.innerHTML = "element disabled";
-      // }
     }
 
     function showTooltip(evt: Event) {

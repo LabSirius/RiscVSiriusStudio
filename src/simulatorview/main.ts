@@ -100,7 +100,7 @@ function messageDispatch(
       cpuData.updateRegister(message.name, message.value);
       break;
     case "simulationFinished":
-      simulationFinished();
+      simulationFinished(cpuData);
 
       break;
     default:
@@ -109,7 +109,7 @@ function messageDispatch(
   }
 }
 
-function simulationFinished() {
+function simulationFinished(couData: SimulatorInfo) {
   const step = document.getElementById("step-execution") as Button;
   step.disabled = true;
   const modal = new Modal(document.getElementById("simulator-modal"), {
@@ -182,7 +182,7 @@ function setTooltip(
   }
   function hideTooltip() {
     tooltip.style.display = "";
-    element.style.border = "none";
+    (element as HTMLElement).style.border = "none";
   }
 
   const events: [keyof HTMLElementEventMap, () => void][] = [
