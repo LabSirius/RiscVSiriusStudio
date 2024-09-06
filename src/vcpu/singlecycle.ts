@@ -308,6 +308,7 @@ export class SCCPU {
       IMMALUBVal: imm32Val,
       IMMSrc: "000",
       RUDataWrSrc: ruDataWrSrc,
+      RURDVal: rdVal,
       RURS1Val: rs1Val,
       RUWr: "1",
       WBMUXRes: wbMUXRes,
