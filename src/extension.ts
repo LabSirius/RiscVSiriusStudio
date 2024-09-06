@@ -265,10 +265,7 @@ function simulateProgram(
   }
 }
 
-function exportProgMemJSON(
-  extensionUri: string,
-  rvContext: RVExtensionContext
-) {
+function exportProgMemJSON(extensionUri: Uri, rvContext: RVExtensionContext) {
   const program = rvContext.exportJSON();
   workspace
     .openTextDocument({ language: "json", content: program })
