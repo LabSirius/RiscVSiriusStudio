@@ -5588,25 +5588,12 @@ export class SimulatorPanel {
     webview.onDidReceiveMessage(
       (message: any) => {
         const command = message.command;
-        const text = message.text;
-
         switch (command) {
-          case "log-info":
-            logger().info("info", message.obj);
-            // console.log("log-info ", message.obj);
-            //log("trace", "simulator view " + text, message.meta);
+          case "info":
+            console.log("info ", message.obj);
             break;
-          case "log-error":
-            logger().error("error", message.obj);
-            // console.log("log-info ", message.obj);
-            //log("trace", "simulator view " + text, message.meta);
-            break;
-          case "hello":
-            // Code that should run in response to the hello message command
-            window.showInformationMessage(text);
-            break;
-          // Add more switch case statements here as more webview message commands
-          // are created within the webview context (i.e. inside src/webview/main.ts)
+          // default:
+          // console.error("Message not recognized", message);
         }
       },
       undefined,

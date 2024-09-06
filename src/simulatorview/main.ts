@@ -40,13 +40,10 @@ function sendMessageToExtension(messageObject: any) {
  * @param object the object to be logged/
  */
 function log(kind: string, object: any = {}) {
-  vscode.postMessage({ command: "log-" + kind, obj: { object } });
+  vscode.postMessage({ command: kind, object: object });
 }
 
 function main() {
-  log("info", { simulatorView: "Initializing simulator events" });
-  // document.body.classList.add('p-3 m-0 border-0');
-  log("info", { simulatorView: "Initializing Simulator information" });
   const instView = new InstructionView();
   const cpuData = new SimulatorInfo(log, instView);
   cpuData.initializeSVGElements(Handlers);

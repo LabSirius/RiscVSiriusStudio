@@ -43,89 +43,8 @@ function shortBinary(bin) {
   }
 }
 
-function undefinedFunc0() {}
-
-const showTooltip = (evt, element, text, extendedText) => {
-  // If alt key is pressed then don't show up.
-  if (evt.altKey) {
-    return;
-  }
-  let tooltip = document.getElementById("tooltip");
-  computePosition(element, tooltip, {
-    placement: "right",
-    // middleware: [offset(6), flip(), shift({ padding: 5 })],
-  }).then(({ x, y }) => {
-    Object.assign(tooltip.style, { left: `${x}px`, top: `${y}px` });
-  });
-
-  tooltip.innerHTML = evt.shiftKey && extendedText ? extendedText : text;
-  // tooltip.style.display = "inline-block";
-  // tooltip.style.left = evt.pageX + 10 + "px";
-  // tooltip.style.top = evt.pageY + 10 + "px";
-};
-
-const hideTooltip = () => {
-  // var tooltip = document.getElementById("tooltip");
-  // tooltip.style.display = "none";
-};
-
 function applyClass(comp, cls) {
   comp.setAttributeNS(null, "class", cls);
-}
-
-function binFormattedDisplay(cpuData, selection) {
-  const formatLists = { R: [1, 1, 5, 5, 5, 3, 5, 7] };
-  const selectors = {
-    opcode: [7],
-    rd: [6],
-    funct3: [5],
-    rs1: [4],
-    rs2: [3],
-  };
-  const type = cpuData.instructionType();
-  let s = [];
-  if (selection === "funct7" && type === "R") {
-    s.push(1);
-  } else {
-    s = selectors[selection];
-  }
-  return formatInstruction(cpuData.getInstruction(), formatLists[type], s);
-}
-
-function splitInstruction(binInst, specL) {
-  let pieces = [];
-  let inst = binInst;
-  for (let i = 0; i < specL.length; i += 1) {
-    pieces.push(_.take(inst, specL.at(i)));
-    inst = _.drop(inst, specL.at(i));
-  }
-  return pieces;
-}
-
-function formatInstruction(instruction, type, selected) {
-  const pieces = splitInstruction(instruction.encoding.binEncoding, type);
-  // console.log("pieces ", pieces);
-  const selectedStag = `<span class="instructionHighlighted">`;
-  const selectedEetag = "</span>";
-  const disabledStag = `<span class="instructionDisabled">`;
-  const disabledEetag = "</span>";
-  let html = "";
-  // const selected = 7;
-  for (let i = 0; i < pieces.length; i += 1) {
-    if (selected.includes(i)) {
-      html = html + `${selectedStag}${pieces[i].join("")}${selectedEetag}`;
-    } else {
-      html = html + `${disabledStag}${pieces[i].join("")}${disabledEetag}`;
-    }
-  }
-  return html;
-}
-
-function currentBinInst(cpuData) {
-  const {
-    encoding: { binEncoding: bin },
-  } = cpuData.getInstruction();
-  return `<span class="instruction">${bin}</span>`;
 }
 
 /**
@@ -1752,7 +1671,7 @@ export function RUDM(element, cpuData) {
 }
 
 export function RURS1BU(element, cpuData) {
-  cpuData.log("error", "RURS1BU handler");
+  cpuData.log("error", { m: "RURS1BU handler" });
   applyClass(element, "connectionDisabled");
   focus(element);
   cpuData.installTooltip(element, "right", () => {
