@@ -19,7 +19,7 @@ import { RegisterPanelView } from "./panels/RegisterPanel";
 import { ProgMemPanelView } from "./panels/ProgMemPanel";
 import { DataMemPanelView } from "./panels/DataMemPanel";
 import { InstructionPanelView } from "./panels/InstructionPanel";
-import { RiscCardPanel } from './panels/RiscCardPanel';
+import { RiscCardPanel } from "./panels/RiscCardPanel";
 import { logger } from "./utilities/logger";
 import { RVExtensionContext } from "./support/context";
 import { setTimeout } from "timers/promises";
@@ -104,10 +104,10 @@ export function activate(context: ExtensionContext) {
       irForCurrentLine(rvContext);
     })
   );
-  
+
   context.subscriptions.push(
-    commands.registerCommand('rv-simulator.ShowCard', () => {
-      RiscCardPanel.riscCard();
+    commands.registerCommand("rv-simulator.ShowCard", () => {
+      RiscCardPanel.riscCard(context.extensionUri);
     })
   );
 
