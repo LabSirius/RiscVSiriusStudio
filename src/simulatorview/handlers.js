@@ -77,6 +77,40 @@ function mouseHover(element, mmove, mout) {
 
 /**
  *
+ * @param {*} recipe defines which objects and  which styles to apply. It is an
+ * array of arrays.
+ *
+ * If The first element of each sub array is another array, it has to contain
+ * html elements. All the other elements must be strings representing styles.
+ *
+ * Example: [ [e1, s1, s2], [e2, s1, s3] ] Applies styles s1 and s2 to e1 and
+ * styles s1 and s3 to e2.
+ *
+ * If the first element is not an array it must be an html element. As before,
+ * the rest of the elements must be strings representing styles.
+ *
+ * Example: [ [[e1 e3], s1, s2], [e2, s1, s3] ] Applies styles s1 and s2 to e1
+ * and e3. Applies styles s1 and s3 to e2.
+ */
+function styleComponents(recipe) {
+  const applyToOne = (elem, styles) => {
+    styles.forEach((style) => {
+      applyClass(elem, style);
+    });
+  };
+
+  recipe.forEach(([element, ...styles]) => {
+    if (Array.isArray(element)) {
+      element.forEach((e) => {
+        applyToOne(e, styles);
+      });
+    } else {
+      applyToOne(element, styles);
+    }
+  });
+}
+/**
+ *
  * There is a function per every component in the CPU diagram.
  *
  * Every exported function will be executed automatically. It is the
@@ -92,14 +126,19 @@ export function CLK(element, cpuData) {
     cpuElements: { CLKCLK: wave },
   } = cpuData.getInfo();
 
-  applyClass(element, "component");
-  applyClass(wave, "connection");
+  const activeStyle = [
+    [element, "component"],
+    [wave, "connection"],
+  ];
+
+  styleComponents(activeStyle);
   cpuData.installTooltip(element, "bottom", paragraph({ text: "Clock" }));
+
   document.addEventListener("SimulatorUpdate", (e) => {
-    applyClass(element, "component");
-    applyClass(wave, "connection");
+    // styleComponents(activeStyle);
     cpuData.enable("CLK");
   });
+
   document.addEventListener("SimulatorTermination", (e) => {
     // does nothing on termination.
   });
@@ -110,27 +149,22 @@ export function PC(element, cpuData) {
     cpuElements: { PCCLOCK: clock },
   } = cpuData.getInfo();
 
-  const components = [element, clock];
-  components.forEach((e) => {
-    applyClass(e, "componentDisabled");
-  });
+  const disabledStyle = [[[element, clock], "componentDisabled"]];
+  const enabledStyle = [[[element, clock], "component"]];
 
-  const text = () => {
+  styleComponents(disabledStyle);
+
+  cpuData.installTooltip(element, "bottom", () => {
     const inst = cpuData.getInstruction().inst;
     return paragraph({ text: inst });
-  };
-  cpuData.installTooltip(element, "bottom", text);
+  });
 
   document.addEventListener("SimulatorUpdate", (e) => {
-    components.forEach((e) => {
-      applyClass(e, "component");
-    });
+    styleComponents(enabledStyle);
     cpuData.enable("PC");
   });
   document.addEventListener("SimulatorTermination", (e) => {
-    components.forEach((e) => {
-      applyClass(e, "componentDisabled");
-    });
+    styleComponents(disabledStyle);
     cpuData.disable("PC");
   });
 }
@@ -139,18 +173,24 @@ export function ADD4(element, cpuData) {
   const {
     cpuElements: { ADD4WBMUX: add4WBMux },
   } = cpuData.getInfo();
-  applyClass(element, "componentDisabled");
-  applyClass(add4WBMux, "connectionDisabled");
+
+  const disabledStyle = [
+    [element, "componentDisabled"],
+    [add4WBMux, "connectionDisabled"],
+  ];
+
+  styleComponents(disabledStyle);
 
   document.addEventListener("SimulatorUpdate", (e) => {
-    applyClass(element, "component");
+    styleComponents([
+      [element, "component"],
+      [add4WBMux, "connectionDisabled"],
+    ]);
     cpuData.enable("ADD4");
-    applyClass(add4WBMux, "connectionDisabled");
   });
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "componentDisabled");
+    styleComponents(disabledStyle);
     cpuData.disable("ADD4");
-    applyClass(add4WBMux, "connectionDisabled");
   });
 }
 
@@ -159,11 +199,16 @@ export function IM(element, cpuData) {
     cpuElements: { IMADDRESSTEXT: addressText, IMINSTRUCTIONTEXT: instText },
   } = cpuData.getInfo();
 
-  const inputs = [addressText, instText];
-  applyClass(element, "componentDisabled");
-  inputs.forEach((e) => {
-    applyClass(e, "inputTextDisabled");
-  });
+  const disabledStyle = [
+    [element, "componentDisabled"],
+    [[addressText, instText], "inputTextDisabled"],
+  ];
+  const enabledStyle = [
+    [element, "component"],
+    [[addressText, instText], "inputText"],
+  ];
+
+  styleComponents(disabledStyle);
 
   cpuData.installTooltip(
     addressText,
@@ -192,17 +237,11 @@ export function IM(element, cpuData) {
   );
 
   document.addEventListener("SimulatorUpdate", (e) => {
-    applyClass(element, "component");
-    inputs.forEach((e) => {
-      applyClass(e, "inputText");
-    });
+    styleComponents(enabledStyle);
     cpuData.enable("IM");
   });
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "componentDisabled");
-    inputs.forEach((e) => {
-      applyClass(e, "inputTextDisabled");
-    });
+    styleComponents(disabledStyle);
     cpuData.disable("IM");
   });
 }
@@ -312,8 +351,17 @@ export function CU(element, cpuData) {
     cpuElements: { CUArrow: arrow },
   } = cpuData.getInfo();
 
-  applyClass(element, "componentDisabled");
-  applyClass(arrow, "connectionDisabled");
+  const disabledStyle = [
+    [element, "componentDisabled"],
+    [arrow, "connectionDisabled"],
+  ];
+  const enabledStyle = [
+    [element, "component"],
+    [arrow, "connection"],
+  ];
+
+  styleComponents(disabledStyle);
+
   cpuData.installTooltip(
     arrow,
     "left-start",
@@ -334,14 +382,12 @@ export function CU(element, cpuData) {
   );
 
   document.addEventListener("SimulatorUpdate", (e) => {
-    applyClass(element, "component");
-    applyClass(arrow, "connection");
-
+    styleComponents(enabledStyle);
     cpuData.enable("CU");
   });
+
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "componentDisabled");
-    applyClass(arrow, "connectionDisabled");
+    styleComponents(disabledStyle);
     cpuData.disable("CU");
   });
 }
@@ -401,23 +447,14 @@ export function RU(element, cpuData) {
     },
   } = cpuData.getInfo();
 
-  const components = [element, clock];
-  const inputs = [rs1Text, rs2Text, rdText, datawrText, ruwrText];
-  const outputs = [val1Text, val2Text];
-  const signals = [ruwrSignal, ruwrSignalVal];
+  const disabledStyle = [
+    [[element, clock], "componentDisabled"],
+    [[rs1Text, rs2Text, rdText, datawrText, ruwrText], "inputTextDisabled"],
+    [[val1Text, val2Text], "outputTextDisabled"],
+    [[ruwrSignal, ruwrSignalVal], "signalDisabled"],
+  ];
 
-  components.forEach((e) => {
-    applyClass(e, "componentDisabled");
-  });
-  inputs.forEach((e) => {
-    applyClass(e, "inputTextDisabled");
-  });
-  outputs.forEach((e) => {
-    applyClass(e, "outputTextDisabled");
-  });
-  signals.forEach((e) => {
-    applyClass(e, "signalDisabled");
-  });
+  styleComponents(disabledStyle);
 
   cpuData.installTooltip(
     rs1Text,
@@ -504,45 +541,33 @@ export function RU(element, cpuData) {
   document.addEventListener("SimulatorUpdate", (e) => {
     const instType = cpuData.instructionType();
     setRUWr(cpuData);
-    components.forEach((e) => {
-      applyClass(e, "component");
-    });
-    inputs.forEach((e) => {
-      applyClass(e, "inputText");
-    });
-    outputs.forEach((e) => {
-      applyClass(e, "outputText");
-    });
+    styleComponents([
+      [[element, clock], "component"],
+      [[rs1Text, rs2Text, rdText, datawrText, ruwrText], "inputText"],
+      [[val1Text, val2Text], "outputText"],
+      [[ruwrSignal, ruwrSignalVal], "signal"],
+    ]);
+
     if (!usesRegister("rs1", instType)) {
-      applyClass(rs1Text, "inputTextDisabled");
-      applyClass(val1Text, "outputTextDisabled");
+      styleComponents([
+        [rs1Text, "inputTextDisabled"],
+        [val1Text, "outputTextDisabled"],
+      ]);
     }
     if (!usesRegister("rs2", instType)) {
-      applyClass(rs2Text, "inputTextDisabled");
-      applyClass(val2Text, "outputTextDisabled");
+      styleComponents([
+        [rs2Text, "inputTextDisabled"],
+        [val2Text, "outputTextDisabled"],
+      ]);
     }
     if (!usesRegister("rd", instType)) {
-      applyClass(rdText, "inputTextDisabled");
+      styleComponents([[rdText, "inputTextDisabled"]]);
     }
-    signals.forEach((e) => {
-      applyClass(e, "signal");
-    });
     cpuData.enable("RU");
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    components.forEach((e) => {
-      applyClass(e, "componentDisabled");
-    });
-    inputs.forEach((e) => {
-      applyClass(e, "inputTextDisabled");
-    });
-    outputs.forEach((e) => {
-      applyClass(e, "outputTextDisabled");
-    });
-    signals.forEach((e) => {
-      applyClass(e, "signalDisabled");
-    });
+    styleComponents(disabledStyle);
     cpuData.disable("RU");
   });
 }
@@ -611,11 +636,17 @@ export function IMM(element, cpuData) {
     cpuElements: { SgnIMMSrcPTH: signal, SgnIMMSRCVAL: value },
   } = cpuData.getInfo();
 
-  applyClass(element, "componentDisabled");
-  const signals = [signal, value];
-  signals.forEach((e) => {
-    applyClass(e, "signalDisabled");
-  });
+  const disabledStyle = [
+    [element, "componentDisabled"],
+    [[signal, value], "signalDisabled"],
+  ];
+  const enabledStyle = [
+    [element, "component"],
+    [[signal, value], "signal"],
+  ];
+
+  styleComponents(disabledStyle);
+
   cpuData.installTooltip(
     element,
     "top",
@@ -624,28 +655,19 @@ export function IMM(element, cpuData) {
     },
     "IMM"
   );
+
   document.addEventListener("SimulatorUpdate", (e) => {
     if (usesIMM(cpuData.instructionType())) {
-      applyClass(element, "component");
-      setIMMSrc(cpuData);
-      signals.forEach((e) => {
-        applyClass(e, "signal");
-      });
+      styleComponents(enabledStyle);
       cpuData.enable("IMM");
     } else {
-      applyClass(element, "componentDisabled");
-      signals.forEach((e) => {
-        applyClass(e, "signalDisabled");
-      });
+      styleComponents(disabledStyle);
       cpuData.disable("IMM");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "componentDisabled");
-    signals.forEach((e) => {
-      applyClass(e, "signalDisabled");
-    });
+    styleComponents(disabledStyle);
     cpuData.disable("IMM");
   });
 }
@@ -660,13 +682,15 @@ export function ALUA(element, cpuData) {
     },
   } = cpuData.getInfo();
 
-  const paths = [path0, path1];
-  applyClass(element, "componentDisabled");
-  applyClass(text, "inputTextDisabled");
-  paths.forEach((x) => {
-    applyClass(x, "connectionDisabled muxPathDisabled");
-  });
-  applyClass(signal, "signalDisabled");
+  const disabledStyle = [
+    [element, "componentDisabled"],
+    [text, "inputTextDisabled"],
+    [[path0, path1], "connectionDisabled muxPathDisabled"],
+    [signal, "signalDisabled"],
+  ];
+
+  styleComponents(disabledStyle);
+
   const path0Visible = (inst) => {
     return inst === "R" || inst === "I" || inst === "S";
   };
@@ -690,32 +714,28 @@ export function ALUA(element, cpuData) {
       cpuData.enable("ALUA");
     }
     if (cpuData.enabled("ALUA")) {
-      applyClass(element, "component");
-      applyClass(text, "inputText");
-      applyClass(signal, "signal");
+      styleComponents([
+        [element, "component"],
+        [text, "inputText"],
+        [signal, "signal"],
+      ]);
       if (path0Visible(instType)) {
-        applyClass(path0, "connection muxPath");
-        applyClass(path1, "connectionDisabled muxPathDisabled");
+        styleComponents([
+          [path0, "connection muxPath"],
+          [path1, "connectionDisabled muxPathDisabled"],
+        ]);
       } else {
-        applyClass(path1, "connection muxPath");
-        applyClass(path0, "connectionDisabled muxPathDisabled");
+        styleComponents([
+          [path1, "connection muxPath"],
+          [path0, "connectionDisabled muxPathDisabled"],
+        ]);
       }
     } else {
-      applyClass(element, "componentDisabled");
-      applyClass(text, "inputTextDisabled");
-      applyClass(signal, "signalDisabled");
-      paths.forEach((x) => {
-        applyClass(x, "connectionDisabled muxPathDisabled");
-      });
+      styleComponents(disabledStyle);
     }
   });
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "componentDisabled");
-    applyClass(text, "inputTextDisabled");
-    applyClass(signal, "signalDisabled");
-    paths.forEach((x) => {
-      applyClass(x, "connectionDisabled muxPathDisabled");
-    });
+    styleComponents(disabledStyle);
     cpuData.disable("ALUA");
   });
 }
@@ -729,13 +749,15 @@ export function ALUB(element, cpuData) {
       ALUBMUXTEXT: text,
     },
   } = cpuData.getInfo();
+  const disabledStyle = [
+    [element, "componentDisabled"],
+    [text, "inputTextDisabled"],
+    [[path1, path0], "connectionDisabled muxPathDisabled"],
+    [signal, "signalDisabled"],
+  ];
 
-  applyClass(element, "componentDisabled");
-  applyClass(text, "inputTextDisabled");
-  [path1, path0].forEach((x) => {
-    applyClass(x, "connectionDisabled muxPathDisabled");
-  });
-  applyClass(signal, "signalDisabled");
+  styleComponents(disabledStyle);
+
   const path0Visible = (inst) => {
     return usesRegister("rs2", inst) && inst !== "S" && inst !== "B";
     // return inst === "R" || inst === "B" || inst === "J";
@@ -761,26 +783,27 @@ export function ALUB(element, cpuData) {
   document.addEventListener("SimulatorUpdate", (e) => {
     // Always enabled for all instructions
     cpuData.enable("ALUB");
-    applyClass(element, "component");
-    applyClass(text, "inputText");
-    applyClass(signal, "signal");
+    styleComponents([
+      [element, "component"],
+      [text, "inputText"],
+      [signal, "signal"],
+    ]);
     const instType = cpuData.instructionType();
     if (path0Visible(instType)) {
-      applyClass(path0, "connection muxPath");
-      applyClass(path1, "connectionDisabled muxPathDisabled");
+      styleComponents([
+        [path0, "connection muxPath"],
+        [path1, "connectionDisabled muxPathDisabled"],
+      ]);
     } else {
-      applyClass(path1, "connection muxPath");
-      applyClass(path0, "connectionDisabled muxPathDisabled");
+      styleComponents([
+        [path1, "connection muxPath"],
+        [path0, "connectionDisabled muxPathDisabled"],
+      ]);
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "componentDisabled");
-    applyClass(text, "inputTextDisabled");
-    applyClass(signal, "signalDisabled");
-    [path0, path1].forEach((x) => {
-      applyClass(x, "connectionDisabled muxPathDisabled");
-    });
+    styleComponents(disabledStyle);
     cpuData.disable("ALUB");
   });
 }
@@ -841,17 +864,14 @@ export function ALU(element, cpuData) {
     },
   } = cpuData.getInfo();
 
-  const inputs = [textA, textB];
-  const signals = [aluSignal, aluSignalValue];
+  const disabledStyle = [
+    [element, "componentDisabled"],
+    [[textA, textB], "inputTextDisabled"],
+    [valALURes, "outputTextDisabled"],
+    [[aluSignal, aluSignalValue], "signalDisabled"],
+  ];
 
-  applyClass(element, "componentDisabled");
-  inputs.forEach((e) => {
-    applyClass(e, "inputTextDisabled");
-  });
-  signals.forEach((e) => {
-    applyClass(e, "signalDisabled");
-  });
-  applyClass(valALURes, "outputTextDisabled");
+  styleComponents(disabledStyle);
 
   cpuData.installTooltip(
     textA,
@@ -881,28 +901,17 @@ export function ALU(element, cpuData) {
   );
 
   document.addEventListener("SimulatorUpdate", (e) => {
-    // cpuData.log("info", { m: "At ALU", v: cpuData.result });
-    // !TODO: Enabled for all components?
+    styleComponents([
+      [element, "component"],
+      [[textA, textB], "inputText"],
+      [valALURes, "outputText"],
+      [[aluSignal, aluSignalValue], "signal"],
+    ]);
     cpuData.enable("ALU");
-    applyClass(element, "component");
-    inputs.forEach((e) => {
-      applyClass(e, "inputText");
-    });
-    applyClass(valALURes, "outputText");
-    setALUOp(cpuData);
-    signals.forEach((e) => {
-      applyClass(e, "signal");
-    });
   });
+
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "componentDisabled");
-    inputs.forEach((e) => {
-      applyClass(e, "inputTextDisabled");
-    });
-    signals.forEach((e) => {
-      applyClass(e, "signalDisabled");
-    });
-    applyClass(valALURes, "outputTextDisabled");
+    styleComponents(disabledStyle);
     cpuData.disable("ALU");
   });
 }
@@ -919,32 +928,33 @@ export function BU(element, cpuData) {
   const {
     cpuElements: { SgnBUBROPPTH: signal, SgnBUBROPVAL: signalVal },
   } = cpuData.getInfo();
-  const signals = [signal, signalVal];
-  applyClass(element, "componentDisabled");
-  signals.forEach((e) => {
-    applyClass(e, "signalDisabled");
-  });
+
+  const disabledStyle = [
+    [element, "componentDisabled"],
+    [[signal, signalVal], "signalDisabled"],
+  ];
+
+  styleComponents(disabledStyle);
+
   cpuData.installTooltip(element, "top", () => {
     return paragraph({
       text: "Not in a branch operation. Next instruction in the program memory will be executed.",
     });
   });
+
   document.addEventListener("SimulatorUpdate", (e) => {
     // Branch unit is always enabled as it controls NextPCSrc. When in a branch
     // instruction its inputs coming from the registers will be enabled.
-    cpuData.enable("BU");
-    applyClass(element, "component");
     setBrOp(cpuData);
-    signals.forEach((e) => {
-      applyClass(e, "signal");
-    });
+    styleComponents([
+      [element, "component"],
+      [[signal, signalVal], "signal"],
+    ]);
+    cpuData.enable("BU");
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "componentDisabled");
-    signals.forEach((e) => {
-      applyClass(e, "signalDisabled");
-    });
+    styleComponents(disabledStyle);
   });
 }
 
@@ -1029,27 +1039,16 @@ export function DM(element, cpuData) {
     },
   } = cpuData.getInfo();
 
-  const components = [element, clock];
-  const connections = [clkConnection];
-  const signals = [ctrlSignal, wrSignal, ctrlSignalVal, wrSignalVal];
-  const inputs = [addressText, datawrText];
-  const outputs = [dataRdText];
+  const disabledStyle = [
+    [[element, clock], "componentDisabled"],
+    [[ctrlSignal, wrSignal, ctrlSignalVal, wrSignalVal], "signalDisabled"],
+    [clkConnection, "connectionDisabled"],
+    [[addressText, datawrText], "inputTextDisabled"],
+    [dataRdText, "outputTextDisabled"],
+  ];
 
-  signals.forEach((e) => {
-    applyClass(e, "signalDisabled");
-  });
-  components.forEach((e) => {
-    applyClass(e, "componentDisabled");
-  });
-  inputs.forEach((e) => {
-    applyClass(e, "inputTextDisabled");
-  });
-  outputs.forEach((e) => {
-    applyClass(e, "outputTextDisabled");
-  });
-  connections.forEach((e) => {
-    applyClass(e, "connectionDisabled");
-  });
+  styleComponents(disabledStyle);
+
   cpuData.installTooltip(
     addressText,
     "top",
@@ -1080,67 +1079,34 @@ export function DM(element, cpuData) {
     const instOpcode = cpuData.instructionOpcode();
     if (writesDM(instType, instOpcode) || storesMemRead(instType, instOpcode)) {
       cpuData.enable("DM");
-      signals.forEach((e) => {
-        applyClass(e, "signal");
-      });
-      components.forEach((e) => {
-        applyClass(e, "component");
-      });
-      connections.forEach((e) => {
-        applyClass(e, "connection");
-      });
+      styleComponents([
+        [[element, clock], "component"],
+        [[ctrlSignal, wrSignal, ctrlSignalVal, wrSignalVal], "signal"],
+        [clkConnection, "connection"],
+      ]);
       setDMWr(cpuData);
       setDMCtrl(cpuData);
-      signals.forEach((e) => {
-        applyClass(e, "signal");
-      });
       if (writesDM(instType, instOpcode)) {
-        inputs.forEach((e) => {
-          applyClass(e, "inputText");
-        });
-        outputs.forEach((e) => {
-          applyClass(e, "outputTextDisabled");
-        });
+        styleComponents([
+          [[addressText, datawrText], "inputText"],
+          [dataRdText, "outputTextDisabled"],
+        ]);
       } else {
         // reads from memory
-        applyClass(addressText, "inputText");
-        applyClass(datawrText, "inputTextDisabled");
-        applyClass(dataRdText, "outputText");
+        styleComponents([
+          [addressText, "inputText"],
+          [datawrText, "inputTextDisabled"],
+          [dataRdText, "outputText"],
+        ]);
       }
     } else {
-      signals.forEach((e) => {
-        applyClass(e, "signalDisabled");
-      });
-      components.forEach((e) => {
-        applyClass(e, "componentDisabled");
-      });
-      inputs.forEach((e) => {
-        applyClass(e, "inputTextDisabled");
-      });
-      outputs.forEach((e) => {
-        applyClass(e, "outputTextDisabled");
-      });
-      connections.forEach((e) => {
-        applyClass(e, "connectionDisabled");
-      });
+      cpuData.disable("DM");
+      styleComponents(disabledStyle);
     }
   });
+
   document.addEventListener("SimulatorTermination", (e) => {
-    signals.forEach((e) => {
-      applyClass(e, "signalDisabled");
-    });
-    components.forEach((e) => {
-      applyClass(e, "componentDisabled");
-    });
-    inputs.forEach((e) => {
-      applyClass(e, "inputTextDisabled");
-    });
-    outputs.forEach((e) => {
-      applyClass(e, "outputTextDisabled");
-    });
-    connections.forEach((e) => {
-      applyClass(e, "connectionDisabled");
-    });
+    styleComponents(disabledStyle);
     cpuData.disable("DM");
   });
 }
@@ -1150,15 +1116,18 @@ export function BUMUX(element, cpuData) {
     cpuElements: { BUMUXIC1: path1, BUMUXIC0: path0, BUMUXTEXT: text },
   } = cpuData.getInfo();
 
-  const connections = [path1, path0];
-  applyClass(element, "componentDisabled");
-  applyClass(text, "inputTextDisabled");
-  connections.forEach((x) => {
-    applyClass(x, "connectionDisabled muxPathDisabled");
-  });
+  const disabledStyle = [
+    [element, "componentDisabled"],
+    [text, "inputTextDisabled"],
+    [[path1, path0], "connectionDisabled muxPathDisabled"],
+  ];
+
+  styleComponents(disabledStyle);
+
   const path1Visible = (instType, instOpcode, branchResult) => {
     return branchesOrJumps(instType, instOpcode) && branchResult;
   };
+
   cpuData.installTooltip(path0, "top", () => {
     const value = cpuData.instructionResult().ADD4Res;
     return paragraph({ text: value });
@@ -1169,25 +1138,28 @@ export function BUMUX(element, cpuData) {
   });
   document.addEventListener("SimulatorUpdate", (e) => {
     cpuData.enable("BUMUX");
-    applyClass(element, "component");
-    applyClass(text, "inputText");
+    styleComponents([
+      [element, "component"],
+      [text, "inputText"],
+    ]);
+
     const instType = cpuData.instructionType();
     const instOpcode = cpuData.instructionOpcode();
     const branchResult = cpuData.instructionResult().BURes;
     if (path1Visible(instType, instOpcode, parseInt(branchResult))) {
-      applyClass(path1, "connection muxPath");
-      applyClass(path0, "connectionDisabled muxPathDisabled");
+      styleComponents([
+        [path1, "connection muxPath"],
+        [path0, "connectionDisabled muxPathDisabled"],
+      ]);
     } else {
-      applyClass(path0, "connection muxPath");
-      applyClass(path1, "connectionDisabled muxPathDisabled");
+      styleComponents([
+        [path0, "connection muxPath"],
+        [path1, "connectionDisabled muxPathDisabled"],
+      ]);
     }
   });
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "componentDisabled");
-    applyClass(text, "inputTextDisabled");
-    connections.forEach((x) => {
-      applyClass(x, "connectionDisabled muxPathDisabled");
-    });
+    styleComponents(disabledStyle);
     cpuData.disable("BUMUX");
   });
 }
@@ -1203,12 +1175,13 @@ export function WBMUX(element, cpuData) {
     },
   } = cpuData.getInfo();
 
-  applyClass(element, "componentDisabled");
-  applyClass(text, "inputTextDisabled");
-  applyClass(signal, "signalDisabled");
-  [path00, path01, path10].forEach((x) => {
-    applyClass(x, "connectionDisabled muxPathDisabled");
-  });
+  const disabledStyle = [
+    [element, "componentDisabled"],
+    [text, "inputTextDisabled"],
+    [signal, "signalDisabled"],
+    [[path00, path01, path10], "connectionDisabled muxPathDisabled"],
+  ];
+  styleComponents(disabledStyle);
   const path00Visible = (inst, opcode) => {
     return storesALU(inst, opcode);
   };
@@ -1218,10 +1191,12 @@ export function WBMUX(element, cpuData) {
   const path10Visible = (inst, opcode) => {
     return storesNextPC(inst, opcode);
   };
+
   cpuData.installTooltip(path00, "bottom", () => {
     const value = shortBinary(cpuData.instructionResult().ALURes);
     return paragraph({ text: value });
   });
+
   document.addEventListener("SimulatorUpdate", (e) => {
     const instType = cpuData.instructionType();
     const instOpcode = cpuData.instructionOpcode();
@@ -1232,49 +1207,35 @@ export function WBMUX(element, cpuData) {
     }
 
     if (cpuData.enabled("WBMUX")) {
-      applyClass(element, "component");
-      applyClass(text, "inputText");
-      applyClass(signal, "signal");
+      styleComponents([
+        [element, "component"],
+        [text, "inputText"],
+        [signal, "signal"],
+      ]);
       const instOC = cpuData.instructionOpcode();
       if (path00Visible(instType, instOC)) {
-        [path00].forEach((x) => {
-          applyClass(x, "connection muxPath");
-        });
-        [path01, path10].forEach((x) => {
-          applyClass(x, "connectionDisabled muxPathDisabled");
-        });
+        styleComponents([
+          [path00, "connection muxPath"],
+          [[path01, path10], "connectionDisabled muxPathDisabled"],
+        ]);
       } else if (path01Visible(instType, instOC)) {
-        [path01].forEach((x) => {
-          applyClass(x, "connection muxPath");
-        });
-        [path00, path10].forEach((x) => {
-          applyClass(x, "connectionDisabled muxPathDisabled");
-        });
+        styleComponents([
+          [path01, "connection muxPath"],
+          [[path00, path10], "connectionDisabled muxPathDisabled"],
+        ]);
       } else if (path10Visible(instType, instOC)) {
-        [path10].forEach((x) => {
-          applyClass(x, "connection muxPath");
-        });
-        [path00, path01].forEach((x) => {
-          applyClass(x, "connectionDisabled muxPathDisabled");
-        });
+        styleComponents([
+          [path10, "connection muxPath"],
+          [[path00, path01], "connectionDisabled muxPathDisabled"],
+        ]);
       }
     } else {
-      applyClass(element, "componentDisabled");
-      applyClass(text, "inputTextDisabled");
-      applyClass(signal, "signalDisabled");
-      [path00, path01, path10].forEach((x) => {
-        applyClass(x, "connectionDisabled muxPathDisabled");
-      });
+      styleComponents(disabledStyle);
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "componentDisabled");
-    applyClass(text, "inputTextDisabled");
-    applyClass(signal, "signalDisabled");
-    [path00, path01, path10].forEach((x) => {
-      applyClass(x, "connectionDisabled muxPathDisabled");
-    });
+    styleComponents(disabledStyle);
     cpuData.disable("WBMUX");
   });
 }
@@ -1282,47 +1243,47 @@ export function WBMUX(element, cpuData) {
 // PATHS
 
 export function CLKPC(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "right", paragraph({ text: "Clock ⇔ PC" }));
   document.addEventListener("SimulatorUpdate", (e) => {
     cpuData.enable("CLKPC");
     pathOnTop(element);
-    applyClass(element, "connection");
+    styleComponents([[element, "connection"]]);
   });
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("CLKPC");
   });
 }
 
 export function CLKRU(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   document.addEventListener("SimulatorUpdate", (e) => {
     cpuData.enable("CLKRU");
     pathOnTop(element);
-    applyClass(element, "connection");
+    styleComponents([[element, "connection"]]);
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("CLKRU");
   });
 }
 
 export function CLKDM(element, cpuData) {
   // TODO: check the behavior of this element on click
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("CLKDM");
   });
 }
 
 export function PCIM(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
     const inst = cpuData.getInstruction().inst;
@@ -1334,18 +1295,18 @@ export function PCIM(element, cpuData) {
     });
   });
   document.addEventListener("SimulatorUpdate", (e) => {
+    styleComponents([[element, "connection"]]);
     cpuData.enable("PCIM");
-    applyClass(element, "connection");
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("PCIM");
   });
 }
 
 export function PCADD4(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   // focus(element);
   cpuData.installTooltip(element, "left", () => {
     const inst = cpuData.getInstruction().inst;
@@ -1358,18 +1319,18 @@ export function PCADD4(element, cpuData) {
   });
 
   document.addEventListener("SimulatorUpdate", (e) => {
-    applyClass(element, "connection");
+    styleComponents([[element, "connection"]]);
     cpuData.enable("PCADD4");
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("PCADD4");
   });
 }
 
 export function PCALUA(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
     const inst = cpuData.getInstruction().inst;
@@ -1388,16 +1349,16 @@ export function PCALUA(element, cpuData) {
       isAUIPC(instType, instOpcode)
     ) {
       // if (instType === "U" && !isLUI(instType, instOpcode)) {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       cpuData.enable("PCALUA");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("PCALUA");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("PCALUA");
   });
 }
@@ -1452,7 +1413,7 @@ function imCUTooltipText(connection, cpuData) {
 }
 
 export function IMCUOPCODE(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "left", () => {
     return imCUTooltipText("opcode", cpuData);
@@ -1473,17 +1434,17 @@ export function IMCUOPCODE(element, cpuData) {
   document.addEventListener("SimulatorUpdate", (e) => {
     cpuData.enable("IMCUOPCODE");
     pathOnTop(element);
-    applyClass(element, "connection");
+    styleComponents([[element, "connection"]]);
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("IMCUOPCODE");
   });
 }
 
 export function IMCUFUNCT3(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "left", () => {
     return imCUTooltipText("funct3", cpuData);
@@ -1503,23 +1464,23 @@ export function IMCUFUNCT3(element, cpuData) {
   );
   document.addEventListener("SimulatorUpdate", (e) => {
     if (usesFunct3(cpuData.instructionType())) {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       pathOnTop(element);
       cpuData.enable("IMCUFUNCT3");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("IMCUFUNCT3");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("IMCUFUNCT3");
   });
 }
 
 export function IMCUFUNCT7(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "left", () => {
     return imCUTooltipText("funct7", cpuData);
@@ -1542,17 +1503,17 @@ export function IMCUFUNCT7(element, cpuData) {
   document.addEventListener("SimulatorUpdate", (e) => {
     const instType = cpuData.instructionType();
     if (usesFunct7(instType)) {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       pathOnTop(element);
       cpuData.enable("IMCUFUNCT7");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("IMCUFUNCT7");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("IMCUFUNCT7");
   });
 }
@@ -1585,7 +1546,7 @@ function imRUTooltipText(connection, cpuData) {
 }
 
 export function IMRURS1(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
     return imRUTooltipText("rs1", cpuData);
@@ -1605,23 +1566,23 @@ export function IMRURS1(element, cpuData) {
   );
   document.addEventListener("SimulatorUpdate", (e) => {
     if (usesRegister("rs1", cpuData.instructionType())) {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       pathOnTop(element);
       cpuData.enable("IMRURS1");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("IMRURS1");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("IMRURS1");
   });
 }
 
 export function IMRURS2(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
     return imRUTooltipText("rs2", cpuData);
@@ -1641,23 +1602,23 @@ export function IMRURS2(element, cpuData) {
   );
   document.addEventListener("SimulatorUpdate", (e) => {
     if (usesRegister("rs2", cpuData.instructionType())) {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       pathOnTop(element);
       cpuData.enable("IMRURS2");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("IMRURS2");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("IMRURS2");
   });
 }
 
 export function IMRURDEST(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
     return imRUTooltipText("rd", cpuData);
@@ -1677,23 +1638,23 @@ export function IMRURDEST(element, cpuData) {
   );
   document.addEventListener("SimulatorUpdate", (e) => {
     if (usesRegister("rd", cpuData.instructionType())) {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       pathOnTop(element);
       cpuData.enable("IMRURDEST");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("IMRURDEST");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("IMRURDEST");
   });
 }
 
 export function IMIMM(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   mouseHover(
     element,
@@ -1706,22 +1667,22 @@ export function IMIMM(element, cpuData) {
   );
   document.addEventListener("SimulatorUpdate", (e) => {
     if (usesIMM(cpuData.instructionType())) {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       cpuData.enable("IMIMM");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("IMIMM");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("IMIMM");
   });
 }
 
 export function WBMUXRU(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
     const value = shortBinary(cpuData.instructionResult().WBMUXRes);
@@ -1736,22 +1697,22 @@ export function WBMUXRU(element, cpuData) {
   });
   document.addEventListener("SimulatorUpdate", (e) => {
     if (writesRU(cpuData.instructionType(), cpuData.instructionOpcode())) {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       cpuData.enable("WBMUXRU");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("WBMUXRU");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("WBMUXRU");
   });
 }
 
 export function IMMALUB(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "right", () => {
     const imm32 = cpuData.instructionResult().IMMALUBVal;
@@ -1769,22 +1730,22 @@ export function IMMALUB(element, cpuData) {
   });
   document.addEventListener("SimulatorUpdate", (e) => {
     if (usesIMM(cpuData.instructionType())) {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       cpuData.enable("IMMALUB");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("IMMALUB");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("IMMALUB");
   });
 }
 
 export function RUALUA(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
     const value = shortBinary(cpuData.instructionResult().RURS1Val);
@@ -1804,21 +1765,21 @@ export function RUALUA(element, cpuData) {
     if (usesRegister("rs1", instType) && instType !== "B") {
       cpuData.enable("RUALUA");
       pathOnTop(element);
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("RUALUA");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("RUALUA");
   });
 }
 
 export function RUALUB(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
     const value = shortBinary(cpuData.instructionResult().RURS2Val);
@@ -1837,21 +1798,21 @@ export function RUALUB(element, cpuData) {
     if (usesRegister("rs2", instType) && !usesIMM(instType)) {
       cpuData.enable("RUALUB");
       pathOnTop(element);
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("RUALUB");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("RUALUB");
   });
 }
 
 export function RUDM(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
     const value = shortBinary(cpuData.instructionResult().RURS2Val);
@@ -1865,23 +1826,23 @@ export function RUDM(element, cpuData) {
   document.addEventListener("SimulatorUpdate", (e) => {
     const instType = cpuData.instructionType();
     if (instType === "S") {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       cpuData.enable("RUDM");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("RUDM");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("RUDM");
   });
 }
 
 export function RURS1BU(element, cpuData) {
   cpuData.log("error", { m: "RURS1BU handler" });
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "right", () => {
     const value = shortBinary(cpuData.instructionResult().RURS1Val);
@@ -1896,21 +1857,21 @@ export function RURS1BU(element, cpuData) {
     const instType = cpuData.instructionType();
     if (instType === "B") {
       cpuData.enable("RURS1BU");
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("RURS1BU");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("RURS1BU");
   });
 }
 
 export function RURS2BU(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "right", () => {
     const value = shortBinary(cpuData.instructionResult().RURS2Val);
@@ -1925,21 +1886,21 @@ export function RURS2BU(element, cpuData) {
     const instType = cpuData.instructionType();
     if (instType === "B") {
       cpuData.enable("RURS2BU");
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("RURS2BU");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("RURS2BU");
   });
 }
 
 export function ALUAALU(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
     const value = shortBinary(cpuData.instructionResult().ALUARes);
@@ -1948,21 +1909,21 @@ export function ALUAALU(element, cpuData) {
   document.addEventListener("SimulatorUpdate", (e) => {
     if (cpuData.enabled("ALUA")) {
       cpuData.enable("ALUAALU");
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
     } else {
       cpuData.disable("ALUAALU");
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("ALUAALU");
   });
 }
 
 export function ALUBALU(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
     const value = shortBinary(cpuData.instructionResult().ALUBRes);
@@ -1970,17 +1931,17 @@ export function ALUBALU(element, cpuData) {
   });
   document.addEventListener("SimulatorUpdate", (e) => {
     cpuData.enable("ALUBALU");
-    applyClass(element, "connection");
+    styleComponents([[element, "connection"]]);
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("ALUBALU");
   });
 }
 
 export function ALUDM(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
     const value = shortBinary(cpuData.instructionResult().ALURes);
@@ -1995,21 +1956,21 @@ export function ALUDM(element, cpuData) {
     const instType = cpuData.instructionType();
     if (instType === "S" || cpuData.instructionOpcode() === "0000011") {
       cpuData.enable("ALUDM");
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
     } else {
       cpuData.disable("ALUDM");
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("ALUDM");
   });
 }
 
 export function ALUWBMUX(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
     const value = shortBinary(cpuData.instructionResult().ALURes);
@@ -2025,22 +1986,22 @@ export function ALUWBMUX(element, cpuData) {
   });
   document.addEventListener("SimulatorUpdate", (e) => {
     if (storesALU(cpuData.instructionType(), cpuData.instructionOpcode())) {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       cpuData.enable("ALUWBMUX");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("ALUWBMUX");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("ALUWBMUX");
   });
 }
 
 export function DMWBMUX(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
     const value = cpuData.instructionResult().DMDataRd;
@@ -2055,16 +2016,16 @@ export function DMWBMUX(element, cpuData) {
     const instType = cpuData.instructionType();
     const instOpcode = cpuData.instructionOpcode();
     if (storesMemRead(instType, instOpcode)) {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       cpuData.enable("DMWBMUX");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("DMWBMUX");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("DMWBMUX");
   });
 }
@@ -2086,21 +2047,21 @@ export function ADD4WBMUX(element, cpuData) {
     const instOpcode = cpuData.instructionOpcode();
     if (storesNextPC(instType, instOpcode)) {
       cpuData.enable("ADD4WBMUX");
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
     } else {
       cpuData.disable("ADD4WBMUX");
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("ADD4WBMUX");
   });
 }
 
 export function BUBUMUX(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
     const BURes = cpuData.instructionResult().BURes;
@@ -2113,18 +2074,18 @@ export function BUBUMUX(element, cpuData) {
     });
   });
   document.addEventListener("SimulatorUpdate", (e) => {
-    applyClass(element, "connection");
+    styleComponents([[element, "connection"]]);
     cpuData.enable("BUBUMUX");
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("BUBUMUX");
   });
 }
 
 export function ALUBUMUX(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
     const value = shortBinary(cpuData.instructionResult().ALURes);
@@ -2144,22 +2105,22 @@ export function ALUBUMUX(element, cpuData) {
     const instType = cpuData.instructionType();
     const instOpcode = cpuData.instructionOpcode();
     if (branchesOrJumps(instType, instOpcode)) {
-      applyClass(element, "connection");
+      styleComponents([[element, "connection"]]);
       cpuData.enable("ALUBUMUX");
     } else {
-      applyClass(element, "connectionDisabled");
+      styleComponents([[element, "connectionDisabled"]]);
       cpuData.disable("ALUBUMUX");
     }
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("ALUBUMUX");
   });
 }
 
 export function ADD4BUMUX(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
     const value = cpuData.instructionResult().ADD4Res;
@@ -2171,19 +2132,19 @@ export function ADD4BUMUX(element, cpuData) {
     });
   });
   document.addEventListener("SimulatorUpdate", (e) => {
-    applyClass(element, "connection");
+    styleComponents([[element, "connection"]]);
     pathOnTop(element);
     cpuData.enable("ADD4BUMUX");
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("ADD4BUMUX");
   });
 }
 
 export function BUMUXPC(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
 
   cpuData.installTooltip(element, "top", () => {
@@ -2198,78 +2159,25 @@ export function BUMUXPC(element, cpuData) {
   });
   document.addEventListener("SimulatorUpdate", (e) => {
     cpuData.enable("BUMUXPC");
-    applyClass(element, "connection");
+    styleComponents([[element, "connection"]]);
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("BUMUXPC");
   });
 }
 
 export function ADD4CT(element, cpuData) {
-  applyClass(element, "connectionDisabled");
+  styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   document.addEventListener("SimulatorUpdate", (e) => {
     cpuData.enable("ADD4CT");
-    applyClass(element, "connection");
+    styleComponents([[element, "connection"]]);
   });
 
   document.addEventListener("SimulatorTermination", (e) => {
-    applyClass(element, "connectionDisabled");
+    styleComponents([[element, "connectionDisabled"]]);
     cpuData.disable("ADD4CT");
-  });
-}
-// !LOG
-// function setBinaryInstruction(cpuData, html) {
-//   const {
-//     cpuElements: { LOGTEXTBIN: text },
-//   } = cpuData.getInfo();
-//   const binText = text.getElementsByTagName("div")[2];
-//   binText.innerHTML = html;
-// }
-
-function setImmInstruction(cpuData, html) {
-  const {
-    cpuElements: { LOGTEXTIMM: text },
-  } = cpuData.getInfo();
-  const immText = text.getElementsByTagName("text")[0];
-  immText.innerHTML = html;
-}
-
-function setHexInstruction(cpuData, html) {
-  const {
-    cpuElements: { LOGTEXTHEX: text },
-  } = cpuData.getInfo();
-
-  const hexText = text.getElementsByTagName("div")[2];
-  hexText.innerHTML = html;
-}
-
-export function LOGTEXTIMM(element, cpuData) {
-  const {
-    cpuElements: { LOGTEXTBIN: text },
-    instruction: instruction,
-  } = cpuData.getInfo();
-
-  setImmInstruction(cpuData, "--no immediate for instruction--");
-  applyClass(element, "instructionDisabled");
-  document.addEventListener("SimulatorUpdate", (e) => {
-    applyClass(element, "instruction");
-  });
-}
-
-function LOGTEXTHEX(element, cpuData) {
-  const {
-    cpuElements: { LOGTEXTBIN: text },
-    instruction: instruction,
-  } = cpuData.getInfo();
-
-  setHexInstruction(cpuData, "--no hex --");
-  applyClass(element, "instructionDisabled");
-  document.addEventListener("SimulatorUpdate", (e) => {
-    const hex = instruction.encoding.hexEncoding;
-    setHexInstruction(cpuData, hex);
-    applyClass(element, "instruction");
   });
 }
