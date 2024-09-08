@@ -76,36 +76,31 @@ function mouseHover(element, mmove, mout) {
 }
 
 /**
+ * Visual component styling.
  *
  * @param {*} recipe defines which objects and  which styles to apply. It is an
- * array of arrays.
+ * array of arrays of length 2.
  *
  * If The first element of each sub array is another array, it has to contain
- * html elements. All the other elements must be strings representing styles.
+ * html elements. The second element is a string representing the style to be
+ * applied to those elements.
  *
- * Example: [ [e1, s1, s2], [e2, s1, s3] ] Applies styles s1 and s2 to e1 and
- * styles s1 and s3 to e2.
+ * Example: [ [[e1, e2, e3], s2] ] Applies style s2 to e1, e2 and e3.
  *
  * If the first element is not an array it must be an html element. As before,
- * the rest of the elements must be strings representing styles.
+ * the second element is the style to pe applied to it.
  *
- * Example: [ [[e1 e3], s1, s2], [e2, s1, s3] ] Applies styles s1 and s2 to e1
- * and e3. Applies styles s1 and s3 to e2.
+ * Example: [ [[e1 e3], s1], [e2, s1] ] Applies style s1 to e1 and e3. The
+ * second item applies s1 to e2.
  */
 function styleComponents(recipe) {
-  const applyToOne = (elem, styles) => {
-    styles.forEach((style) => {
-      applyClass(elem, style);
-    });
-  };
-
-  recipe.forEach(([element, ...styles]) => {
+  recipe.forEach(([element, style]) => {
     if (Array.isArray(element)) {
       element.forEach((e) => {
-        applyToOne(e, styles);
+        applyClass(e, style);
       });
     } else {
-      applyToOne(element, styles);
+      applyClass(element, style);
     }
   });
 }
@@ -150,7 +145,6 @@ export function PC(element, cpuData) {
   } = cpuData.getInfo();
 
   const disabledStyle = [[[element, clock], "componentDisabled"]];
-  const enabledStyle = [[[element, clock], "component"]];
 
   styleComponents(disabledStyle);
 
@@ -160,7 +154,7 @@ export function PC(element, cpuData) {
   });
 
   document.addEventListener("SimulatorUpdate", (e) => {
-    styleComponents(enabledStyle);
+    styleComponents([[[element, clock], "component"]]);
     cpuData.enable("PC");
   });
   document.addEventListener("SimulatorTermination", (e) => {
@@ -203,10 +197,6 @@ export function IM(element, cpuData) {
     [element, "componentDisabled"],
     [[addressText, instText], "inputTextDisabled"],
   ];
-  const enabledStyle = [
-    [element, "component"],
-    [[addressText, instText], "inputText"],
-  ];
 
   styleComponents(disabledStyle);
 
@@ -237,7 +227,10 @@ export function IM(element, cpuData) {
   );
 
   document.addEventListener("SimulatorUpdate", (e) => {
-    styleComponents(enabledStyle);
+    styleComponents([
+      [element, "component"],
+      [[addressText, instText], "inputText"],
+    ]);
     cpuData.enable("IM");
   });
   document.addEventListener("SimulatorTermination", (e) => {
