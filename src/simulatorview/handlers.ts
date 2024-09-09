@@ -292,6 +292,18 @@ function cuArrowTooltipText(cpuData: SimulatorInfo) {
           ["IMMSrc", result.IMMSrc],
         ],
       });
+    case "U":
+      return tabular({
+        pairs: [
+          ["ALUBSrc", result.ALUBSrc],
+          ["ALUOp", result.ALUOp],
+          ["BrOp", result.BrOp],
+          ["RUDataWrSrc", result.RUDataWrSrc],
+          ["NextPCSrc", result.BURes],
+          ["RUWr", result.RUWr],
+          ["IMMSrc", result.IMMSrc],
+        ],
+      });
     default:
       return tabular({
         pairs: [
@@ -306,7 +318,7 @@ function cuArrowTooltipText(cpuData: SimulatorInfo) {
   }
 }
 
-function styleSignals(cpuData: SimulatorInfo, instType, style) {
+function styleSignals(cpuData: SimulatorInfo, instType: string, style: string) {
   const {
     cpuElements: {
       SgnALUBSrcPTH: ALUBSignal,
@@ -345,8 +357,34 @@ function styleSignals(cpuData: SimulatorInfo, instType, style) {
       BrOpSignal,
       ImmSrcSignal,
     ],
+    LUI: [
+      ALUBSignal,
+      RUWrSignal,
+      ALUOpSignal,
+      RUDataWrSrcSignal,
+      BrOpSignal,
+      ImmSrcSignal,
+    ],
+    AUIPC: [
+      ALUBSignal,
+      ALUASignal,
+      RUWrSignal,
+      ALUOpSignal,
+      RUDataWrSrcSignal,
+      BrOpSignal,
+      ImmSrcSignal,
+    ],
   };
-  signalList[instType].forEach((signal) => {
+  const instruction = cpuData.getInstruction();
+
+  let selector =
+    instType != "U"
+      ? instType
+      : isAUIPC(instruction.type, instruction.opcode)
+      ? "AUIPC"
+      : "LUI";
+
+  signalList[selector].forEach((signal: SVGElem) => {
     applyClass(signal, style);
   });
 }
@@ -373,7 +411,7 @@ export function CU(element: SVGElem, cpuData: SimulatorInfo) {
     "CU"
   );
   mouseHover(
-    arrow,
+    arrow as SVGElem,
     () => {
       styleSignals(cpuData, cpuData.instructionType(), "signalHover");
     },
@@ -811,7 +849,7 @@ export function ALUB(element: SVGElem, cpuData: SimulatorInfo) {
   });
 }
 
-function aluTooltipText(name, cpuData: SimulatorInfo) {
+function aluTooltipText(name: string, cpuData: SimulatorInfo) {
   const { A: valA, B: valB, ALURes: valALURes } = cpuData.instructionResult();
   const shortValALURes = shortBinary(valALURes);
   const shortValA = shortBinary(valA);
@@ -1378,7 +1416,7 @@ export function PCALUA(element: SVGElem, cpuData: SimulatorInfo) {
  * - 'funct7': for information about the funtc7 connection.
  * @param {any} cpuData simulator information.
  */
-function imCUTooltipText(connection, cpuData) {
+function imCUTooltipText(connection: string, cpuData: SimulatorInfo) {
   const instruction = cpuData.getInstruction();
   if (connection === "funct7" && !usesFunct7(instruction.type)) {
     return paragraph({ text: "Unused for this instruction" });
@@ -1427,7 +1465,7 @@ export function IMCUOPCODE(element: SVGElem, cpuData: SimulatorInfo) {
     element,
     () => {
       if (cpuData.enabled("IMCUOPCODE")) {
-        cpuData.setBinaryInstruction("opcode");
+        cpuData.setBinaryInstruction(["opcode"]);
       }
     },
     () => {
@@ -1458,7 +1496,7 @@ export function IMCUFUNCT3(element: SVGElem, cpuData: SimulatorInfo) {
     element,
     () => {
       if (cpuData.enabled("IMCUFUNCT3")) {
-        cpuData.setBinaryInstruction("funct3");
+        cpuData.setBinaryInstruction(["funct3"]);
       }
     },
     () => {
@@ -1494,14 +1532,12 @@ export function IMCUFUNCT7(element: SVGElem, cpuData: SimulatorInfo) {
     element,
     () => {
       if (cpuData.enabled("IMCUFUNCT7")) {
-        const html = binFormattedDisplay(cpuData, "funct7");
-        cpuData.setBinaryInstruction(html, "funct7");
+        cpuData.setBinaryInstruction(["funct7"]);
       }
     },
     () => {
       if (cpuData.enabled("IMCUFUNCT7")) {
-        const html = currentBinInst(cpuData);
-        cpuData.setBinaryInstruction(html);
+        cpuData.setBinaryInstruction();
       }
     }
   );
@@ -1533,7 +1569,7 @@ export function IMCUFUNCT7(element: SVGElem, cpuData: SimulatorInfo) {
  * - 'rd': for information about the rd connection.
  * @param {any} cpuData simulator information.
  */
-function imRUTooltipText(connection, cpuData) {
+function imRUTooltipText(connection: string, cpuData: SimulatorInfo) {
   const instruction = cpuData.getInstruction();
   if (!usesRegister(connection, instruction.type)) {
     return paragraph({ text: "Unused for this instruction" });
@@ -1560,7 +1596,7 @@ export function IMRURS1(element: SVGElem, cpuData: SimulatorInfo) {
     element,
     () => {
       if (cpuData.enabled("IMRURS1")) {
-        cpuData.setBinaryInstruction("rs1");
+        cpuData.setBinaryInstruction(["rs1"]);
       }
     },
     () => {
@@ -1596,7 +1632,7 @@ export function IMRURS2(element: SVGElem, cpuData: SimulatorInfo) {
     element,
     () => {
       if (cpuData.enabled("IMRURS2")) {
-        cpuData.setBinaryInstruction("rs2");
+        cpuData.setBinaryInstruction(["rs2"]);
       }
     },
     () => {
@@ -1632,7 +1668,7 @@ export function IMRURDEST(element: SVGElem, cpuData: SimulatorInfo) {
     element,
     () => {
       if (cpuData.enabled("IMRURDEST")) {
-        cpuData.setBinaryInstruction("rd");
+        cpuData.setBinaryInstruction(["rd"]);
       }
     },
     () => {
@@ -1664,7 +1700,7 @@ export function IMIMM(element: SVGElem, cpuData: SimulatorInfo) {
   mouseHover(
     element,
     () => {
-      cpuData.setBinaryInstruction("imm");
+      cpuData.setBinaryInstruction(["imm"]);
     },
     () => {
       cpuData.setBinaryInstruction();

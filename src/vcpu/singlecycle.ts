@@ -20,6 +20,7 @@ import {
   isIArithmetic,
   isILoad,
   isIJump,
+  isAUIPC,
 } from "../utilities/instructions";
 
 import _ from "lodash";
@@ -182,6 +183,8 @@ export class SCCPU {
         return this.executeSInstruction();
       case "B":
         return this.executeBInstruction();
+      case "U":
+        return this.executeUInstruction();
       default:
         throw new Error(
           "Unknown instruction " + JSON.stringify(this.currentInstruction())
@@ -396,6 +399,7 @@ export class SCCPU {
       RUWr: "0",
     };
   }
+
   private executeBInstruction() {
     const instruction = this.currentInstruction();
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
@@ -465,6 +469,48 @@ export class SCCPU {
       RURS1Val: rs1,
       RURS2Val: rs2,
       RUWr: "0",
+    };
+  }
+
+  private executeUInstruction() {
+    const instruction = this.currentInstruction();
+    const add4Res = parseInt(instruction.inst) + 4;
+    const add4Res16 = Number(add4Res).toString(16);
+
+    const rdVal = this.registers.readRegisterFromName(getRd(instruction));
+    const imm21Val = this.currentInstruction().encoding.imm21;
+    const imm32Val = imm21Val.padEnd(32, "0");
+
+    let aVal = "0".padStart(32, "0");
+    let aluASrcVal = "0";
+    let aluAResVal = "0".padStart(32, "0");
+    let aluRes = imm32Val;
+    if (isAUIPC(instruction.type, instruction.opcode)) {
+      const PC = instruction.inst as number;
+      aVal = PC.toString(2).padStart(32, "0");
+      aluASrcVal = "1";
+      aluAResVal = aVal;
+      aluRes = (PC + parseInt(imm32Val, 2)).toString(2).padStart(32, "0");
+    }
+    return {
+      A: aVal,
+      ADD4Res: add4Res16,
+      ALUARes: aluAResVal,
+      ALUASrc: aluASrcVal,
+      ALUBRes: imm32Val,
+      ALUBSrc: "1",
+      ALUOp: "0000",
+      ALURes: aluRes.toString(2),
+      B: imm32Val,
+      BrOp: "00" + "XXX",
+      BUMUXRes: add4Res16,
+      BURes: "0",
+      IMMALUBVal: imm32Val,
+      IMMSrc: "010",
+      RUDataWrSrc: "00",
+      RURDVal: rdVal,
+      RUWr: "1",
+      WBMUXRes: imm32Val,
     };
   }
 
