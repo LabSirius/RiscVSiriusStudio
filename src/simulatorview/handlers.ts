@@ -1,6 +1,6 @@
 /*eslint camelcase: "error"*/
 
-import _ from "../../node_modules/lodash-es/lodash.js";
+import _ from "lodash";
 import {
   usesRegister,
   usesALU,
@@ -18,7 +18,10 @@ import {
   isAUIPC,
 } from "../utilities/instructions.js";
 
+import { SimulatorInfo } from "./SimulatorInfo.js";
 import { computePosition, flip, shift, offset } from "@floating-ui/dom";
+
+type SVGElem = HTMLElement & SVGElement;
 
 var paragraph = _.template(
   `<span class="m-0 p-0 lh-1">
@@ -34,7 +37,7 @@ var tabular = _.template(
    %>`
 );
 
-function shortBinary(bin) {
+function shortBinary(bin: string): string {
   const firstOne = bin.indexOf("1");
   if (firstOne !== -1) {
     return "32'b" + bin.substring(firstOne);
@@ -43,7 +46,7 @@ function shortBinary(bin) {
   }
 }
 
-function applyClass(comp, cls) {
+function applyClass(comp: HTMLElement, cls: string) {
   comp.setAttributeNS(null, "class", cls);
 }
 
@@ -54,23 +57,29 @@ function applyClass(comp, cls) {
  * This is very draw.io dependant and should be checked. As element is sometimes put inside a
  * group this will only work if the group is moved.
  */
-function pathOnTop(element) {
+function pathOnTop(element: SVGElem) {
   const realElement = element.parentElement;
-  // const realElement = element;
-  realElement.parentElement.appendChild(realElement);
+  if (realElement) {
+    // const realElement = element;
+    realElement.parentElement?.appendChild(realElement);
+  }
 }
 /**
  * Installs a hover listener on element. The purpose of it is to bring the
  * element to the top when is active and hovered by the pointer.
  *
  */
-function focus(element) {
+function focus(element: SVGElem) {
   element.addEventListener("mousemove", () => {
     pathOnTop(element);
   });
 }
 
-function mouseHover(element, mmove, mout) {
+function mouseHover(
+  element: SVGElem,
+  mmove: (arg: Event) => any,
+  mout: (arg: Event) => any
+) {
   element.addEventListener("mousemove", mmove);
   element.addEventListener("mouseout", mout);
 }
@@ -93,7 +102,10 @@ function mouseHover(element, mmove, mout) {
  * Example: [ [[e1 e3], s1], [e2, s1] ] Applies style s1 to e1 and e3. The
  * second item applies s1 to e2.
  */
-function styleComponents(recipe) {
+type Styler = [HTMLElement, string] | [HTMLElement[], string];
+type Stylers = Styler[];
+
+function styleComponents(recipe: Stylers) {
   recipe.forEach(([element, style]) => {
     if (Array.isArray(element)) {
       element.forEach((e) => {
@@ -116,7 +128,7 @@ function styleComponents(recipe) {
  * the execution of that instruction.
  *
  */
-export function CLK(element, cpuData) {
+export function CLK(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: { CLKCLK: wave },
   } = cpuData.getInfo();
@@ -124,7 +136,7 @@ export function CLK(element, cpuData) {
   const activeStyle = [
     [element, "component"],
     [wave, "connection"],
-  ];
+  ] as Stylers;
 
   styleComponents(activeStyle);
   cpuData.installTooltip(element, "bottom", paragraph({ text: "Clock" }));
@@ -139,12 +151,12 @@ export function CLK(element, cpuData) {
   });
 }
 
-export function PC(element, cpuData) {
+export function PC(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: { PCCLOCK: clock },
   } = cpuData.getInfo();
 
-  const disabledStyle = [[[element, clock], "componentDisabled"]];
+  const disabledStyle = [[[element, clock], "componentDisabled"]] as Stylers;
 
   styleComponents(disabledStyle);
 
@@ -163,7 +175,7 @@ export function PC(element, cpuData) {
   });
 }
 
-export function ADD4(element, cpuData) {
+export function ADD4(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: { ADD4WBMUX: add4WBMux },
   } = cpuData.getInfo();
@@ -171,7 +183,7 @@ export function ADD4(element, cpuData) {
   const disabledStyle = [
     [element, "componentDisabled"],
     [add4WBMux, "connectionDisabled"],
-  ];
+  ] as Stylers;
 
   styleComponents(disabledStyle);
 
@@ -188,7 +200,7 @@ export function ADD4(element, cpuData) {
   });
 }
 
-export function IM(element, cpuData) {
+export function IM(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: { IMADDRESSTEXT: addressText, IMINSTRUCTIONTEXT: instText },
   } = cpuData.getInfo();
@@ -196,7 +208,7 @@ export function IM(element, cpuData) {
   const disabledStyle = [
     [element, "componentDisabled"],
     [[addressText, instText], "inputTextDisabled"],
-  ];
+  ] as Stylers;
 
   styleComponents(disabledStyle);
 
@@ -239,7 +251,7 @@ export function IM(element, cpuData) {
   });
 }
 
-function cuArrowTooltipText(cpuData) {
+function cuArrowTooltipText(cpuData: SimulatorInfo) {
   const instType = cpuData.instructionType();
   const result = cpuData.instructionResult();
   switch (instType) {
@@ -294,7 +306,7 @@ function cuArrowTooltipText(cpuData) {
   }
 }
 
-function styleSignals(cpuData, instType, style) {
+function styleSignals(cpuData: SimulatorInfo, instType, style) {
   const {
     cpuElements: {
       SgnALUBSrcPTH: ALUBSignal,
@@ -339,7 +351,7 @@ function styleSignals(cpuData, instType, style) {
   });
 }
 
-export function CU(element, cpuData) {
+export function CU(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: { CUArrow: arrow },
   } = cpuData.getInfo();
@@ -347,11 +359,7 @@ export function CU(element, cpuData) {
   const disabledStyle = [
     [element, "componentDisabled"],
     [arrow, "connectionDisabled"],
-  ];
-  const enabledStyle = [
-    [element, "component"],
-    [arrow, "connection"],
-  ];
+  ] as Stylers;
 
   styleComponents(disabledStyle);
 
@@ -375,7 +383,10 @@ export function CU(element, cpuData) {
   );
 
   document.addEventListener("SimulatorUpdate", (e) => {
-    styleComponents(enabledStyle);
+    styleComponents([
+      [element, "component"],
+      [arrow, "connection"],
+    ]);
     cpuData.enable("CU");
   });
 
@@ -416,7 +427,7 @@ function registerTooltipText(name, type, cpuData) {
   return data[type];
 }
 
-function setRUWr(cpuData) {
+function setRUWr(cpuData: SimulatorInfo) {
   const {
     cpuElements: { SgnRUWRVAL: ruwrSignalValue },
   } = cpuData.getInfo();
@@ -424,7 +435,7 @@ function setRUWr(cpuData) {
     cpuData.instructionResult().RUWr;
 }
 
-export function RU(element, cpuData) {
+export function RU(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: {
       RUTEXTINRS1: rs1Text,
@@ -445,7 +456,7 @@ export function RU(element, cpuData) {
     [[rs1Text, rs2Text, rdText, datawrText, ruwrText], "inputTextDisabled"],
     [[val1Text, val2Text], "outputTextDisabled"],
     [[ruwrSignal, ruwrSignalVal], "signalDisabled"],
-  ];
+  ] as Stylers;
 
   styleComponents(disabledStyle);
 
@@ -565,7 +576,7 @@ export function RU(element, cpuData) {
   });
 }
 
-function immTooltipText(type, cpuData) {
+function immTooltipText(type, cpuData: SimulatorInfo) {
   const instruction = cpuData.getInstruction();
   const instType = cpuData.instructionType();
   const selectImmBits = {
@@ -615,7 +626,7 @@ function immTooltipText(type, cpuData) {
   });
 }
 
-function setIMMSrc(cpuData) {
+function setIMMSrc(cpuData: SimulatorInfo) {
   const {
     cpuElements: { SgnIMMSRCVAL: immSignalValue },
   } = cpuData.getInfo();
@@ -624,7 +635,7 @@ function setIMMSrc(cpuData) {
     cpuData.instructionResult().IMMSrc;
 }
 
-export function IMM(element, cpuData) {
+export function IMM(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: { SgnIMMSrcPTH: signal, SgnIMMSRCVAL: value },
   } = cpuData.getInfo();
@@ -632,11 +643,7 @@ export function IMM(element, cpuData) {
   const disabledStyle = [
     [element, "componentDisabled"],
     [[signal, value], "signalDisabled"],
-  ];
-  const enabledStyle = [
-    [element, "component"],
-    [[signal, value], "signal"],
-  ];
+  ] as Stylers;
 
   styleComponents(disabledStyle);
 
@@ -651,7 +658,10 @@ export function IMM(element, cpuData) {
 
   document.addEventListener("SimulatorUpdate", (e) => {
     if (usesIMM(cpuData.instructionType())) {
-      styleComponents(enabledStyle);
+      styleComponents([
+        [element, "component"],
+        [[signal, value], "signal"],
+      ]);
       cpuData.enable("IMM");
     } else {
       styleComponents(disabledStyle);
@@ -665,7 +675,7 @@ export function IMM(element, cpuData) {
   });
 }
 
-export function ALUA(element, cpuData) {
+export function ALUA(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: {
       ALUAMUXIC1: path1,
@@ -680,11 +690,11 @@ export function ALUA(element, cpuData) {
     [text, "inputTextDisabled"],
     [[path0, path1], "connectionDisabled muxPathDisabled"],
     [signal, "signalDisabled"],
-  ];
+  ] as Stylers;
 
   styleComponents(disabledStyle);
 
-  const path0Visible = (inst) => {
+  const path0Visible = (inst: string) => {
     return inst === "R" || inst === "I" || inst === "S";
   };
   // TODO: the value is presented in decimal.
@@ -733,7 +743,7 @@ export function ALUA(element, cpuData) {
   });
 }
 
-export function ALUB(element, cpuData) {
+export function ALUB(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: {
       ALUBMUXIC1: path1,
@@ -747,7 +757,7 @@ export function ALUB(element, cpuData) {
     [text, "inputTextDisabled"],
     [[path1, path0], "connectionDisabled muxPathDisabled"],
     [signal, "signalDisabled"],
-  ];
+  ] as Stylers;
 
   styleComponents(disabledStyle);
 
@@ -801,7 +811,7 @@ export function ALUB(element, cpuData) {
   });
 }
 
-function aluTooltipText(name, cpuData) {
+function aluTooltipText(name, cpuData: SimulatorInfo) {
   const { A: valA, B: valB, ALURes: valALURes } = cpuData.instructionResult();
   const shortValALURes = shortBinary(valALURes);
   const shortValA = shortBinary(valA);
@@ -837,7 +847,7 @@ function aluTooltipText(name, cpuData) {
   return data[name];
 }
 
-function setALUOp(cpuData) {
+function setALUOp(cpuData: SimulatorInfo) {
   const {
     cpuElements: { SgnALUOPVAL: aluSignalValue },
   } = cpuData.getInfo();
@@ -846,7 +856,7 @@ function setALUOp(cpuData) {
     cpuData.instructionResult().ALUOp;
 }
 
-export function ALU(element, cpuData) {
+export function ALU(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: {
       ALUTEXTINA: textA,
@@ -862,7 +872,7 @@ export function ALU(element, cpuData) {
     [[textA, textB], "inputTextDisabled"],
     [valALURes, "outputTextDisabled"],
     [[aluSignal, aluSignalValue], "signalDisabled"],
-  ];
+  ] as Stylers;
 
   styleComponents(disabledStyle);
 
@@ -909,7 +919,7 @@ export function ALU(element, cpuData) {
   });
 }
 
-function setBrOp(cpuData) {
+function setBrOp(cpuData: SimulatorInfo) {
   const {
     cpuElements: { SgnBUBROPVAL: bropSignalValue },
   } = cpuData.getInfo();
@@ -917,7 +927,7 @@ function setBrOp(cpuData) {
     cpuData.instructionResult().BrOp;
 }
 
-export function BU(element, cpuData) {
+export function BU(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: { SgnBUBROPPTH: signal, SgnBUBROPVAL: signalVal },
   } = cpuData.getInfo();
@@ -925,7 +935,7 @@ export function BU(element, cpuData) {
   const disabledStyle = [
     [element, "componentDisabled"],
     [[signal, signalVal], "signalDisabled"],
-  ];
+  ] as Stylers;
 
   styleComponents(disabledStyle);
 
@@ -951,7 +961,7 @@ export function BU(element, cpuData) {
   });
 }
 
-function dmTooltipText(name, cpuData) {
+function dmTooltipText(name: string, cpuData: SimulatorInfo) {
   const instType = cpuData.instructionType();
   const instOpcode = cpuData.instructionOpcode();
   if (name === "DataRd" && writesDM(instType, instOpcode)) {
@@ -999,7 +1009,7 @@ function dmTooltipText(name, cpuData) {
   }
 }
 
-function setDMWr(cpuData) {
+function setDMWr(cpuData: SimulatorInfo) {
   const {
     cpuElements: { SgnDMWRVAL: wrSignalValue },
   } = cpuData.getInfo();
@@ -1008,7 +1018,7 @@ function setDMWr(cpuData) {
     cpuData.instructionResult().DMWr;
 }
 
-function setDMCtrl(cpuData) {
+function setDMCtrl(cpuData: SimulatorInfo) {
   const {
     cpuElements: { SgnDMCTRLVAL: ctrlSignalValue },
   } = cpuData.getInfo();
@@ -1017,7 +1027,7 @@ function setDMCtrl(cpuData) {
     cpuData.instructionResult().DMCtrl;
 }
 
-export function DM(element, cpuData) {
+export function DM(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: {
       DMTEXTINADDRESS: addressText,
@@ -1038,7 +1048,7 @@ export function DM(element, cpuData) {
     [clkConnection, "connectionDisabled"],
     [[addressText, datawrText], "inputTextDisabled"],
     [dataRdText, "outputTextDisabled"],
-  ];
+  ] as Stylers;
 
   styleComponents(disabledStyle);
 
@@ -1104,7 +1114,7 @@ export function DM(element, cpuData) {
   });
 }
 
-export function BUMUX(element, cpuData) {
+export function BUMUX(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: { BUMUXIC1: path1, BUMUXIC0: path0, BUMUXTEXT: text },
   } = cpuData.getInfo();
@@ -1113,7 +1123,7 @@ export function BUMUX(element, cpuData) {
     [element, "componentDisabled"],
     [text, "inputTextDisabled"],
     [[path1, path0], "connectionDisabled muxPathDisabled"],
-  ];
+  ] as Stylers;
 
   styleComponents(disabledStyle);
 
@@ -1157,7 +1167,7 @@ export function BUMUX(element, cpuData) {
   });
 }
 
-export function WBMUX(element, cpuData) {
+export function WBMUX(element: SVGElem, cpuData: SimulatorInfo) {
   const {
     cpuElements: {
       WBMUXIC00: path00,
@@ -1173,8 +1183,10 @@ export function WBMUX(element, cpuData) {
     [text, "inputTextDisabled"],
     [signal, "signalDisabled"],
     [[path00, path01, path10], "connectionDisabled muxPathDisabled"],
-  ];
+  ] as Stylers;
+
   styleComponents(disabledStyle);
+
   const path00Visible = (inst, opcode) => {
     return storesALU(inst, opcode);
   };
@@ -1235,7 +1247,7 @@ export function WBMUX(element, cpuData) {
 
 // PATHS
 
-export function CLKPC(element, cpuData) {
+export function CLKPC(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "right", paragraph({ text: "Clock ⇔ PC" }));
@@ -1250,7 +1262,7 @@ export function CLKPC(element, cpuData) {
   });
 }
 
-export function CLKRU(element, cpuData) {
+export function CLKRU(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   document.addEventListener("SimulatorUpdate", (e) => {
@@ -1265,7 +1277,7 @@ export function CLKRU(element, cpuData) {
   });
 }
 
-export function CLKDM(element, cpuData) {
+export function CLKDM(element: SVGElem, cpuData: SimulatorInfo) {
   // TODO: check the behavior of this element on click
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
@@ -1275,7 +1287,7 @@ export function CLKDM(element, cpuData) {
   });
 }
 
-export function PCIM(element, cpuData) {
+export function PCIM(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
@@ -1298,7 +1310,7 @@ export function PCIM(element, cpuData) {
   });
 }
 
-export function PCADD4(element, cpuData) {
+export function PCADD4(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   // focus(element);
   cpuData.installTooltip(element, "left", () => {
@@ -1322,7 +1334,7 @@ export function PCADD4(element, cpuData) {
   });
 }
 
-export function PCALUA(element, cpuData) {
+export function PCALUA(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
@@ -1405,7 +1417,7 @@ function imCUTooltipText(connection, cpuData) {
   return detail[connection];
 }
 
-export function IMCUOPCODE(element, cpuData) {
+export function IMCUOPCODE(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "left", () => {
@@ -1436,7 +1448,7 @@ export function IMCUOPCODE(element, cpuData) {
   });
 }
 
-export function IMCUFUNCT3(element, cpuData) {
+export function IMCUFUNCT3(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "left", () => {
@@ -1472,7 +1484,7 @@ export function IMCUFUNCT3(element, cpuData) {
   });
 }
 
-export function IMCUFUNCT7(element, cpuData) {
+export function IMCUFUNCT7(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "left", () => {
@@ -1538,7 +1550,7 @@ function imRUTooltipText(connection, cpuData) {
   });
 }
 
-export function IMRURS1(element, cpuData) {
+export function IMRURS1(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
@@ -1574,7 +1586,7 @@ export function IMRURS1(element, cpuData) {
   });
 }
 
-export function IMRURS2(element, cpuData) {
+export function IMRURS2(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
@@ -1610,7 +1622,7 @@ export function IMRURS2(element, cpuData) {
   });
 }
 
-export function IMRURDEST(element, cpuData) {
+export function IMRURDEST(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
@@ -1646,7 +1658,7 @@ export function IMRURDEST(element, cpuData) {
   });
 }
 
-export function IMIMM(element, cpuData) {
+export function IMIMM(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   mouseHover(
@@ -1674,7 +1686,7 @@ export function IMIMM(element, cpuData) {
   });
 }
 
-export function WBMUXRU(element, cpuData) {
+export function WBMUXRU(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
@@ -1704,7 +1716,7 @@ export function WBMUXRU(element, cpuData) {
   });
 }
 
-export function IMMALUB(element, cpuData) {
+export function IMMALUB(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "right", () => {
@@ -1737,7 +1749,7 @@ export function IMMALUB(element, cpuData) {
   });
 }
 
-export function RUALUA(element, cpuData) {
+export function RUALUA(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
@@ -1771,7 +1783,7 @@ export function RUALUA(element, cpuData) {
   });
 }
 
-export function RUALUB(element, cpuData) {
+export function RUALUB(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
@@ -1804,7 +1816,7 @@ export function RUALUB(element, cpuData) {
   });
 }
 
-export function RUDM(element, cpuData) {
+export function RUDM(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
@@ -1833,7 +1845,7 @@ export function RUDM(element, cpuData) {
   });
 }
 
-export function RURS1BU(element, cpuData) {
+export function RURS1BU(element: SVGElem, cpuData: SimulatorInfo) {
   cpuData.log("error", { m: "RURS1BU handler" });
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
@@ -1863,7 +1875,7 @@ export function RURS1BU(element, cpuData) {
   });
 }
 
-export function RURS2BU(element, cpuData) {
+export function RURS2BU(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "right", () => {
@@ -1892,7 +1904,7 @@ export function RURS2BU(element, cpuData) {
   });
 }
 
-export function ALUAALU(element, cpuData) {
+export function ALUAALU(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
@@ -1915,7 +1927,7 @@ export function ALUAALU(element, cpuData) {
   });
 }
 
-export function ALUBALU(element, cpuData) {
+export function ALUBALU(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
@@ -1933,7 +1945,7 @@ export function ALUBALU(element, cpuData) {
   });
 }
 
-export function ALUDM(element, cpuData) {
+export function ALUDM(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
@@ -1962,7 +1974,7 @@ export function ALUDM(element, cpuData) {
   });
 }
 
-export function ALUWBMUX(element, cpuData) {
+export function ALUWBMUX(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
@@ -1993,7 +2005,7 @@ export function ALUWBMUX(element, cpuData) {
   });
 }
 
-export function DMWBMUX(element, cpuData) {
+export function DMWBMUX(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
@@ -2023,7 +2035,7 @@ export function DMWBMUX(element, cpuData) {
   });
 }
 
-export function ADD4WBMUX(element, cpuData) {
+export function ADD4WBMUX(element: SVGElem, cpuData: SimulatorInfo) {
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
     const value = cpuData.instructionResult().ADD4Res;
@@ -2053,7 +2065,7 @@ export function ADD4WBMUX(element, cpuData) {
   });
 }
 
-export function BUBUMUX(element, cpuData) {
+export function BUBUMUX(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
@@ -2077,7 +2089,7 @@ export function BUBUMUX(element, cpuData) {
   });
 }
 
-export function ALUBUMUX(element, cpuData) {
+export function ALUBUMUX(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "bottom", () => {
@@ -2112,7 +2124,7 @@ export function ALUBUMUX(element, cpuData) {
   });
 }
 
-export function ADD4BUMUX(element, cpuData) {
+export function ADD4BUMUX(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   cpuData.installTooltip(element, "top", () => {
@@ -2136,7 +2148,7 @@ export function ADD4BUMUX(element, cpuData) {
   });
 }
 
-export function BUMUXPC(element, cpuData) {
+export function BUMUXPC(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
 
@@ -2161,7 +2173,7 @@ export function BUMUXPC(element, cpuData) {
   });
 }
 
-export function ADD4CT(element, cpuData) {
+export function ADD4CT(element: SVGElem, cpuData: SimulatorInfo) {
   styleComponents([[element, "connectionDisabled"]]);
   focus(element);
   document.addEventListener("SimulatorUpdate", (e) => {

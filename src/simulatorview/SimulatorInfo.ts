@@ -30,7 +30,7 @@ export class SimulatorInfo {
   /**
    * All the elements in the SVG that are relevant to the simulator.
    */
-  private cpuElements: Map<string, Element>;
+  private cpuElements: Map<string, HTMLElement>;
   /**
    * Track which elements are enabled or disabled
    */
@@ -58,7 +58,7 @@ export class SimulatorInfo {
 
     this.updateEvent = new Event("SimulatorUpdate");
     this.terminateEvent = new Event("SimulatorTermination");
-    this.cpuElements = new Map<string, Element>();
+    this.cpuElements = new Map<string, HTMLElement>();
     this.cpuEnabled = new Map<string, boolean>();
     this.registers = new Array(32).fill(0);
     this.instView = instView;
@@ -194,7 +194,7 @@ export class SimulatorInfo {
    * @param name of the element to register
    * @param element the actual element
    */
-  public registerSVGElement(name: string, element: Element) {
+  public registerSVGElement(name: string, element: HTMLElement) {
     this.cpuElements.set(name, element);
   }
 
