@@ -17,7 +17,7 @@ import { elementToSVG, inlineResources } from "dom-to-svg";
 import { jsPDF } from "jspdf";
 import "svg2pdf.js";
 
-import * as Handlers from "./handlers.js";
+import * as Handlers from "./handlers";
 import { SimulatorInfo } from "./SimulatorInfo.js";
 import { InstructionView } from "./InstructionView.js";
 import { usedRegisters } from "../utilities/instructions.js";
