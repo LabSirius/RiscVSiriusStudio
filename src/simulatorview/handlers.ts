@@ -772,7 +772,7 @@ export function ALUB(element: SVGElem, cpuData: SimulatorInfo) {
       const value = shortBinary(cpuData.instructionResult().RURS2Val);
       return paragraph({ text: value });
     },
-    "ALUA"
+    "ALUB"
   );
   cpuData.installTooltip(
     path1,
@@ -781,7 +781,7 @@ export function ALUB(element: SVGElem, cpuData: SimulatorInfo) {
       const value = shortBinary(cpuData.instructionResult().IMMALUBVal);
       return paragraph({ text: value });
     },
-    "ALUA"
+    "ALUB"
   );
   document.addEventListener("SimulatorUpdate", (e) => {
     // Always enabled for all instructions
