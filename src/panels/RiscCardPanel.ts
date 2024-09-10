@@ -568,6 +568,240 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
           </div>
         </div>
       </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePseudo" aria-expanded="false" aria-controls="collapsePseudo">
+          <span class="lead fw-bold">Pseudo instructions</span>
+          </button>
+        </h2>
+        <div id="collapsePseudo" class="accordion-collapse collapse" data-bs-parent="#accordionInstructions">
+          <div class="accordion-body">
+            <table class="table table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>Pseudoinstruction</th>
+                  <th> Base Instruction(s)</th>
+                  <th>Meaning</th>
+                </tr>
+              </thead>
+              <tbody class="table-group-divider">
+                <tr>
+                    <td class="font-monospace fs-6">la rd, symbol</td>
+                    <td>auipc rd, symbol[31:12] <br> addi rd, rd, symbol[11:0]</td>
+                    <td>Load address</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">l{b|h|w|d} rd, symbol</td>
+                    <td>auipc rd, symbol[31:12] <br> l{b|h|w|d} rd, symbol[11:0](rd)</td>
+                    <td>Load global</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">s{b|h|w|d} rd, symbol, rt</td>
+                    <td>auipc rt, symbol[31:12] <br> s{b|h|w|d} rd, symbol[11:0](rt)</td>
+                    <td>Store global</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">fl{w|d} rd, symbol, rt</td>
+                    <td>auipc rt, symbol[31:12] <br> fl{w|d} rd, symbol[11:0](rt)</td>
+                    <td>Floating-point load global</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">fs{w|d} rd, symbol, rt</td>
+                    <td>auipc rt, symbol[31:12] <br> fs{w|d} rd, symbol[11:0](rt)</td>
+                    <td>Floating-point store global</td>
+                </tr>
+              </tbody>
+              <tbody class="table-group-divider">
+                <tr>
+                    <td class="font-monospace fs-6">nop</td>
+                    <td>addi x0, x0, 0</td>
+                    <td>No operation</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">li rd, immediate</td>
+                    <td>Myriad sequences</td>
+                    <td>Load immediate</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">mv rd, rs</td>
+                    <td>addi rd, rs, 0</td>
+                    <td>Copy register</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">not rd, rs</td>
+                    <td>xori rd, rs, -1</td>
+                    <td>One's complement</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">neg rd, rs</td>
+                    <td>sub rd, x0, rs</td>
+                    <td>Two's complement</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">negw rd, rs</td>
+                    <td>subw rd, x0, rs</td>
+                    <td>Two's complement word</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">sext.w rd, rs</td>
+                    <td>addiw rd, rs, 0</td>
+                    <td>Sign extend word</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">seqz rd, rs</td>
+                    <td>sltiu rd, rs, 1</td>
+                    <td>Set if = zero</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">snez rd, rs</td>
+                    <td>sltu rd, x0, rs</td>
+                    <td>Set if ≠ zero</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">sltz rd, rs</td>
+                    <td>slt rd, rs, x0</td>
+                    <td>Set if &lt; zero</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">sgtz rd, rs</td>
+                    <td>slt rd, x0, rs</td>
+                    <td>Set if &gt; zero</td>
+                </tr>
+              <tbody>
+              <tbody class="table-group-divider">
+                <tr>
+                    <td class="font-monospace fs-6">fmv.s rd, rs</td>
+                    <td>fsgnj.s rd, rs, rs</td>
+                    <td>Copy single-precision register</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">fabs.s rd, rs</td>
+                    <td>fsgnjx.s rd, rs, rs</td>
+                    <td>Single-precision absolute value</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">fneg.s rd, rs</td>
+                    <td>fsgnjn.s rd, rs, rs</td>
+                    <td>Single-precision negate</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">fmv.d rd, rs</td>
+                    <td>fsgnj.d rd, rs, rs</td>
+                    <td>Copy double-precision register</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">fabs.d rd, rs</td>
+                    <td>fsgnjx.d rd, rs, rs</td>
+                    <td>Double-precision absolute value</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">fneg.d rd, rs</td>
+                    <td>fsgnjn.d rd, rs, rs</td>
+                    <td>Double-precision negate</td>
+                </tr>
+              <tbody>
+              <tbody class="table-group-divider">
+                <tr>
+                    <td class="font-monospace fs-6">beqz rs, offset</td>
+                    <td>beq rs, x0, offset</td>
+                    <td>Branch if = zero</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">bnez rs, offset</td>
+                    <td>bne rs, x0, offset</td>
+                    <td>Branch if ≠ zero</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">blez rs, offset</td>
+                    <td>beg x0, rs, offset</td>
+                    <td>Branch if &lt;= zero</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">bgez rs, offset</td>
+                    <td>beg x0, rs, offset</td>
+                    <td>Branch if &gt;= zero</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">bltz rs, offset</td>
+                    <td>blt rs, x0, offset</td>
+                    <td>Branch if &lt; zero</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">bgtz rs, offset</td>
+                    <td>blt x0, rs, offset</td>
+                    <td>Branch if &gt; zero</td>
+                </tr>
+              <tbody>
+              <tbody class="table-group-divider">
+                <tr>
+                    <td class="font-monospace fs-6">bgt rs, rt, offset</td>
+                    <td>blt rt, rs, offset</td>
+                    <td>Branch if &gt;</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">ble rs, rt, offset</td>
+                    <td>bge rt, rs, offset</td>
+                    <td>Branch if &lt;=</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">bgtu rs, rt, offset</td>
+                    <td>bltu rt, rs, offset</td>
+                    <td>Branch if &gt;, unsigned</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">bleu rs, rt, offset</td>
+                    <td>bgeu rt, rs, offset</td>
+                    <td>Branch if &lt;=, unsigned</td>
+                </tr>
+              <tbody>
+              <tbody class="table-group-divider">
+                <tr>
+                    <td class="font-monospace fs-6">j offset</td>
+                    <td>jal x0, offset</td>
+                    <td>Jump</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">jal offset</td>
+                    <td>jal x1, offset</td>
+                    <td>Jump and link</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">jr rs</td>
+                    <td>jalr x0, rs, 0</td>
+                    <td>Jump register</td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fs-6">jalr rs</td>
+                    <td>jalr x1, rs, 0</td>
+                    <td>Jump and link register</td>
+                </tr>
+                <tr>
+                  <td class="font-monospace fs-6">ret</td>
+                  <td>jalr x0, x1, 0</td>
+                  <td>Return from subroutine</td>
+                </tr>
+                <tr>
+                  <td class="font-monospace fs-6">call offset</td>
+                  <td>auipc x1, offset[31:12] <br> jalr x1, x1, offset[11:0]</td>
+                  <td>Call far-away subroutine</td>
+                </tr>
+                <tr>
+                  <td class="font-monospace fs-6">tail offset</td>
+                  <td>auipc x6, offset[31:12] <br> jalr x0, x6, offset[11:0]</td>
+                  <td>Tail call far-away subroutine</td>
+                </tr>
+              <tbody>
+              <tbody class="table-group-divider">
+                <tr>
+                  <td class="font-monospace fs-6">fence</td>
+                  <td>fence iorw, iorw</td>
+                  <td>Fence on all memory and I/O</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>
