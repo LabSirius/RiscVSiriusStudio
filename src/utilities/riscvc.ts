@@ -1,5 +1,5 @@
-import { parse as preparse } from './riscv-pre.js';
-import { parse } from './riscv.js';
+import { parse } from "./riscv.js";
+import { textSync } from "figlet";
 
 export type ParserResult = {
   success: boolean;
@@ -9,44 +9,49 @@ export type ParserResult = {
 };
 
 export function compile(inputSrc: any, inputName: any): ParserResult {
-  console.log('Reading from file: ', inputName);
+  console.log(textSync("First pass!."));
   let labelTable = {};
-  console.log('Processing labels:');
   try {
-    preparse(inputSrc, {
+    parse(inputSrc, {
       grammarSource: inputName,
-      symbols: labelTable
+      symbols: labelTable,
+      firstPass: true,
     });
   } catch (obj) {
+    console.error("Assembler error: ", obj);
     return {
       success: false,
       ir: { instructions: undefined, symbols: undefined },
-      info: 'First pass failure',
-      extra: obj
+      info: "First pass failure",
+      extra: obj,
     };
   }
+  console.log(textSync("Symbols:"));
   console.table(labelTable);
-
-  let parserOutput = {};
-
+  console.log(textSync("Second pass!."));
+  let parserOutput;
   try {
     parserOutput = parse(inputSrc, {
       grammarSource: inputName,
-      symbols: labelTable
+      symbols: labelTable,
+      firstPass: false,
     });
   } catch (obj) {
+    console.error("Assembler error: ", obj);
     return {
       success: false,
       ir: { instructions: undefined, symbols: undefined },
-      info: 'Second pass failure',
-      extra: obj
+      info: "Second pass failure",
+      extra: obj,
     };
   }
-  console.log('Second pass done!');
-  return {
+  console.log(textSync("Success!."));
+  const result = {
     success: true,
     ir: { instructions: parserOutput as any[], symbols: labelTable as any[] },
-    info: 'Success',
-    extra: undefined
+    info: "Success",
+    extra: undefined,
   };
+  // console.log(JSON.stringify(result));
+  return result;
 }

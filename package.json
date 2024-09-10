@@ -21,7 +21,6 @@
         "title": "RISCV simulator: build program",
         "icon": "$(run)"
       },
-
       {
         "command": "rv-simulator.progMemExportJSON",
         "title": "RISCV simulator: export instruction memory as JSON"
@@ -167,8 +166,8 @@
     "package": "NODE_ENV=production node ./esbuild.js",
     "watch": "node ./esbuild.js --watch",
     "lint": "eslint src --ext ts",
-    "parser": "npx peggy --allowed-start-rules Start,Instruction,SourceElement -o src/utilities/riscv.js --format es src/utilities/riscv.peg",
-    "preparser": "npx peggy --allowed-start-rules Start -o src/utilities/riscv-pre.js --format es src/utilities/riscv-pre.peg"
+    "parser": "npx peggy --allowed-start-rules Start,Instruction,SourceElement -o src/utilities/riscv.js --format commonjs src/utilities/riscv.peg",
+    "assembler": "npx tsc src/utilities/cli.ts"
   },
   "devDependencies": {
     "@floating-ui/dom": "^1.6.8",
@@ -183,11 +182,13 @@
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
     "bootstrap": "^5.3.3",
+    "commander": "^12.1.0",
     "dom-to-svg": "^0.12.2",
     "esbuild": "0.16.17",
     "esbuild-plugin-clean": "^1.0.1",
     "esbuild-plugin-copy": "^2.1.1",
     "eslint": "^8.57.0",
+    "figlet": "^1.7.0",
     "glob": "^8.0.3",
     "peggy": "^4.0.2",
     "prettier": "^2.8.1",
