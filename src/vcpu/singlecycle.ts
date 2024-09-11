@@ -285,7 +285,7 @@ export class SCCPU {
       case isIJump(this.currentType(), this.currentOpcode()):
         brOp = "1XXXX";
         ruDataWrSrc = "10";
-        wbMUXRes = add4Res;
+        wbMUXRes = add4Res.toString(2);
         buRes = "1";
         buMUXRes = aluRes;
         break;

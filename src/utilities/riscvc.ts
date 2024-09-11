@@ -1,5 +1,4 @@
 import { parse } from "./riscv.js";
-import { textSync } from "figlet";
 
 export type ParserResult = {
   success: boolean;
@@ -9,7 +8,7 @@ export type ParserResult = {
 };
 
 export function compile(inputSrc: any, inputName: any): ParserResult {
-  console.log(textSync("First pass!."));
+  console.log("First pass!.");
   let labelTable = {};
   try {
     parse(inputSrc, {
@@ -26,9 +25,9 @@ export function compile(inputSrc: any, inputName: any): ParserResult {
       extra: obj,
     };
   }
-  console.log(textSync("Symbols:"));
+  console.log("Symbols:");
   console.table(labelTable);
-  console.log(textSync("Second pass!."));
+  console.log("Second pass!.");
   let parserOutput;
   try {
     parserOutput = parse(inputSrc, {
@@ -45,7 +44,7 @@ export function compile(inputSrc: any, inputName: any): ParserResult {
       extra: obj,
     };
   }
-  console.log(textSync("Success!."));
+  console.log("Success!.");
   const result = {
     success: true,
     ir: { instructions: parserOutput as any[], symbols: labelTable as any[] },

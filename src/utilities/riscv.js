@@ -2,8 +2,6 @@
 //
 // https://peggyjs.org/
 
-"use strict";
-
 
 
   var instcounter = 0;
@@ -6121,8 +6119,14 @@ function peg$parse(input, options) {
   }
 }
 
-module.exports = {
-  StartRules: ["Start", "Instruction", "SourceElement"],
-  SyntaxError: peg$SyntaxError,
-  parse: peg$parse
+const peg$allowedStartRules = [
+  "Start",
+  "Instruction",
+  "SourceElement"
+];
+
+export {
+  peg$allowedStartRules as StartRules,
+  peg$SyntaxError as SyntaxError,
+  peg$parse as parse
 };

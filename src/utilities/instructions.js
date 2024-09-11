@@ -182,7 +182,6 @@ export function storesALU(instType, instOpcode) {
   switch (true) {
     case instType === "R":
     case isIArithmetic(instType, instOpcode):
-    case isIJump(instType, instOpcode):
     case instType === "U":
       return true;
   }

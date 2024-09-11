@@ -1240,6 +1240,17 @@ export function WBMUX(element: SVGElem, cpuData: SimulatorInfo) {
     return paragraph({ text: value });
   });
 
+  cpuData.installTooltip(path01, "bottom", () => {
+    const value = shortBinary(cpuData.instructionResult().DMDataRd);
+    return paragraph({ text: value });
+  });
+
+  cpuData.installTooltip(path10, "bottom", () => {
+    const value = cpuData.instructionResult().ADD4Res;
+    const value2 = shortBinary(value.toString(2));
+    return paragraph({ text: value2 });
+  });
+
   document.addEventListener("SimulatorUpdate", (e) => {
     const instType = cpuData.instructionType();
     const instOpcode = cpuData.instructionOpcode();
@@ -1728,11 +1739,13 @@ export function WBMUXRU(element: SVGElem, cpuData: SimulatorInfo) {
   cpuData.installTooltip(element, "bottom", () => {
     const value = shortBinary(cpuData.instructionResult().WBMUXRes);
     const value10 = parseInt(cpuData.instructionResult().WBMUXRes, 2);
+    const value16 = value10.toString(16);
     return tabular({
       pairs: [
         ["WBMUX ⇔ RU", ""],
         ["Value", value],
         ["Value10", value10],
+        ["Value16", "0x" + value16],
       ],
     });
   });
@@ -2078,7 +2091,7 @@ export function ADD4WBMUX(element: SVGElem, cpuData: SimulatorInfo) {
     return tabular({
       pairs: [
         ["ADD4 ⇔ WBMux", ""],
-        ["Value", value],
+        ["Value", "0x" + value],
       ],
     });
   });
