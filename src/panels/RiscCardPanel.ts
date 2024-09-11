@@ -62,7 +62,71 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
     <div class="accordion" id="accordionInstructions">
       <div class="accordion-item">
         <h2 class="accordion-header">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseR" aria-expanded="true" aria-controls="collapseR">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCore" aria-expanded="true" aria-controls="collapseCore">
+          <span class="lead fw-bold">Core instruction formats</span>
+          </button>
+        </h2>
+        <div id="collapseCore" class="accordion-collapse collapse" data-bs-parent="#accordionInstructions">
+          <div class="accordion-body">
+            <table class="table table-hover table-bordered text-center">
+              <thead class="table-light">
+                <tr class="border-0">
+                    <th class="border-0">31</th><th class="border-0"></th><th class="border-0"></th><th class="border-0"></th><th class="border-0"></th><th class="border-0"></th><th class="border-0">25</th><th class="border-0">24</th>
+                    <th class="border-0"></th><th class="border-0"></th><th class="border-0"></th><th class="border-0">20</th><th class="border-0">19</th><th class="border-0"></th><th class="border-0"></th><th class="border-0"></th>
+                    <th class="border-0">15</th><th class="border-0">14</th><th class="border-0"></th><th class="border-0">12</th><th class="border-0">11</th><th class="border-0"></th><th class="border-0"></th><th class="border-0"></th>
+                    <th class="border-0">7</th><th class="border-0">6</th><th class="border-0"></th><th class="border-0"></th><th class="border-0"></th><th class="border-0"></th><th class="border-0"></th><th class="border-0">0</th>
+                </tr>
+              </thead>
+              <tbody class="table-group-divider">
+                <tr>
+                    <td colspan="7">funct7</td>
+                    <td colspan="5">rs2</td>
+                    <td colspan="5">rs1</td>
+                    <td colspan="3">func3</td>
+                    <td colspan="5">rd</td>
+                    <td colspan="7">opcode</td>
+                </tr>
+                <tr>
+                    <td colspan="12">imm[11:0]</td>
+                    <td colspan="5">rs1</td>
+                    <td colspan="3">funct3</td>
+                    <td colspan="5">rd</td>
+                    <td colspan="7">opcode</td>
+                </tr>
+                <tr>
+                    <td colspan="7">imm[11:5]</td>
+                    <td colspan="5">rs2</td>
+                    <td colspan="5">rs1</td>
+                    <td colspan="3">funct3</td>
+                    <td colspan="5">imm[4:0]</td>
+                    <td colspan="7">opcode</td>
+                </tr>
+                <tr>
+                    <td colspan="7">imm[12|10:5]</td>
+                    <td colspan="5">rs2</td>
+                    <td colspan="5">rs1</td>
+                    <td colspan="3">funct3</td>
+                    <td colspan="5">imm[4:1|11]</td>
+                    <td colspan="7">opcode</td>
+                </tr>
+                <tr>
+                    <td colspan="20">imm[31:12]</td>
+                    <td colspan="5">rd</td>
+                    <td colspan="7">opcode</td>
+                </tr>
+                <tr>
+                    <td colspan="20">imm[20|10:1|11|19:12]</td>
+                    <td colspan="5">rd</td>
+                    <td colspan="7">opcode</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseR" aria-expanded="false" aria-controls="collapseR">
           <span class="lead fw-bold">R-type instructions</span>
           </button>
         </h2>
