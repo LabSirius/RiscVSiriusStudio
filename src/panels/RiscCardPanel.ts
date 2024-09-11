@@ -339,7 +339,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <th>Name</th>
                   <th>Opcode</th>
                   <th>funct3</th>
-                  <th>funct7</th>
                   <th>Description (C)</th>
                 </tr>
               </thead>
@@ -349,7 +348,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Load Byte</td>
                   <td>0000011</td>
                   <td>0x0</td>
-                  <td></td>
                   <td class="font-monospace">rd = M[rs1 + imm][7:0]</td>
                 </tr>
                 <tr>
@@ -357,7 +355,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Load Half</td>
                   <td>0000011</td>
                   <td>0x1</td>
-                  <td></td>
                   <td class="font-monospace">rd = M[rs1 + imm][15:0]</td>
                 </tr>
                 <tr>
@@ -365,7 +362,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Load Word</td>
                   <td>0000011</td>
                   <td>0x2</td>
-                  <td></td>
                   <td class="font-monospace">rd = M[rs1 + imm][31:0]</td>
                 </tr>
                 <tr>
@@ -373,7 +369,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Load Byte (U) <span class="badge text-bg-primary">zero</span></td>
                   <td>0000011</td>
                   <td>0x4</td>
-                  <td></td>
                   <td class="font-monospace">rd = M[rs1 + imm][7:0]</td>
                 </tr>
                 <tr>
@@ -381,7 +376,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Load Half (U) <span class="badge text-bg-primary">zero</span></td>
                   <td>0000011</td>
                   <td>0x5</td>
-                  <td></td>
                   <td class="font-monospace">rd = M[rs1 + imm][15:0]</td>
                 </tr>
               </tbody>
@@ -394,7 +388,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <th>Name</th>
                   <th>Opcode</th>
                   <th>funct3</th>
-                  <th>funct7</th>
                   <th>Description (C)</th>
                 </tr>
               </thead>
@@ -404,7 +397,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Jump And Link Reg</td>
                   <td>1100111</td>
                   <td>0x0</td>
-                  <td></td>
                   <td class="font-monospace">rd = PC + 4; PC = rs1 + imm</td>
                 </tr>
               </tbody>
@@ -458,7 +450,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <th>Name</th>
                   <th>Opcode</th>
                   <th>funct3</th>
-                  <th>funct7</th>
                   <th>Description (C)</th>
                 </tr>
               </thead>
@@ -468,7 +459,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Store Byte</td>
                   <td>0100011</td>
                   <td>0x0</td>
-                  <td></td>
                   <td class="font-monospace">M[rs1 + imm][7:0] = rs2[7:0]</td>
                 </tr>
                 <tr>
@@ -476,7 +466,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Store Half</td>
                   <td>0100011</td>
                   <td>0x1</td>
-                  <td></td>
                   <td class="font-monospace">M[rs1 + imm][15:0] = rs2[15:0]</td>
                 </tr>
                 <tr>
@@ -484,7 +473,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Store Word</td>
                   <td>0100011</td>
                   <td>0x2</td>
-                  <td></td>
                   <td class="font-monospace">M[rs1 + imm][31:0] = rs2[31:0]</td>
                 </tr>
               </tbody>
@@ -507,7 +495,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <th>Name</th>
                   <th>Opcode</th>
                   <th>funct3</th>
-                  <th>funct7</th>
                   <th>Description (C)</th>
                 </tr>
               </thead>
@@ -517,7 +504,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Branch ==</td>
                   <td>1100011</td>
                   <td>0x0</td>
-                  <td></td>
                   <td class="font-monospace">if (rs1 == rs2) PC += imm</td>
                 </tr>
                 <tr>
@@ -525,7 +511,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Branch !=</td>
                   <td>1100011</td>
                   <td>0x1</td>
-                  <td></td>
                   <td class="font-monospace">if (rs1 != rs2) PC += imm</td>
                 </tr>
                 <tr>
@@ -533,7 +518,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Branch &lt;</td>
                   <td>1100011</td>
                   <td>0x4</td>
-                  <td></td>
                   <td class="font-monospace">if (rs1 &lt; rs2) PC += imm</td>
                 </tr>
                 <tr>
@@ -541,7 +525,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Branch &gt;=</td>
                   <td>1100011</td>
                   <td>0x5</td>
-                  <td></td>
                   <td class="font-monospace">if (rs1 &gt;= rs2) PC += imm</td>
                 </tr>
                 <tr>
@@ -549,7 +532,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Branch &lt; (U) <span class="badge text-bg-primary">zero</span></td>
                   <td>1100011</td>
                   <td>0x6</td>
-                  <td></td>
                   <td>if (rs1 &lt; rs2) PC += imm</td>
                   </tr class="font-monospace">
                 <tr>
@@ -557,7 +539,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Branch &gt;= (U) <span class="badge text-bg-primary">zero</span></td>
                   <td>1100011</td>
                   <td>0x7</td>
-                  <td></td>
                   <td class="font-monospace">if (rs1 &gt;= rs2) PC += imm</td>
                 </tr>
               </tbody>
@@ -579,8 +560,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <th>Inst</th>
                   <th>Name</th>
                   <th>Opcode</th>
-                  <th>funct3</th>
-                  <th>funct7</th>
                   <th>Description (C)</th>
                 </tr>
               </thead>
@@ -589,8 +568,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td class="font-monospace fs-6">jal</td>
                   <td>Jump And Link</td>
                   <td>1101111</td>
-                  <td></td>
-                  <td></td>
                   <td class="font-monospace">rd = PC + 4; PC += imm</td>
                 </tr>
               </tbody>
@@ -612,8 +589,6 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <th>Inst</th>
                   <th>Name</th>
                   <th>Opcode</th>
-                  <th>funct3</th>
-                  <th>funct7</th>
                   <th>Description (C)</th>
                 </tr>
               </thead>
@@ -622,16 +597,12 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td class="font-monospace fs-6">lui</td>
                   <td>Load Upper Imm</td>
                   <td>0110111</td>
-                  <td></td>
-                  <td></td>
                   <td class="font-monospace">rd = imm &lt;&lt; 12</td>
                 </tr>
                 <tr>
                   <td class="font-monospace fs-6">auipc</td>
                   <td>Add Upper Imm to PC</td>
                   <td>0010111</td>
-                  <td></td>
-                  <td></td>
                   <td class="font-monospace">rd = PC + (imm &lt;&lt; 12)</td>
                 </tr>
               </tbody>
@@ -658,34 +629,34 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
               <tbody class="table-group-divider">
                 <tr>
                     <td class="font-monospace fs-6">la rd, symbol</td>
-                    <td>auipc rd, symbol[31:12] <br> addi rd, rd, symbol[11:0]</td>
+                    <td class="font-monospace fs-6">auipc rd, symbol[31:12] <br> addi rd, rd, symbol[11:0]</td>
                     <td>Load address</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">l{b|h|w|d} rd, symbol</td>
-                    <td>auipc rd, symbol[31:12] <br> l{b|h|w|d} rd, symbol[11:0](rd)</td>
+                    <td class="font-monospace fs-6">auipc rd, symbol[31:12] <br> l{b|h|w|d} rd, symbol[11:0](rd)</td>
                     <td>Load global</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">s{b|h|w|d} rd, symbol, rt</td>
-                    <td>auipc rt, symbol[31:12] <br> s{b|h|w|d} rd, symbol[11:0](rt)</td>
+                    <td class="font-monospace fs-6">auipc rt, symbol[31:12] <br> s{b|h|w|d} rd, symbol[11:0](rt)</td>
                     <td>Store global</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">fl{w|d} rd, symbol, rt</td>
-                    <td>auipc rt, symbol[31:12] <br> fl{w|d} rd, symbol[11:0](rt)</td>
+                    <td class="font-monospace fs-6">auipc rt, symbol[31:12] <br> fl{w|d} rd, symbol[11:0](rt)</td>
                     <td>Floating-point load global</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">fs{w|d} rd, symbol, rt</td>
-                    <td>auipc rt, symbol[31:12] <br> fs{w|d} rd, symbol[11:0](rt)</td>
+                    <td class="font-monospace fs-6">auipc rt, symbol[31:12] <br> fs{w|d} rd, symbol[11:0](rt)</td>
                     <td>Floating-point store global</td>
                 </tr>
               </tbody>
               <tbody class="table-group-divider">
                 <tr>
                     <td class="font-monospace fs-6">nop</td>
-                    <td>addi x0, x0, 0</td>
+                    <td class="font-monospace fs-6">addi x0, x0, 0</td>
                     <td>No operation</td>
                 </tr>
                 <tr>
@@ -695,177 +666,177 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">mv rd, rs</td>
-                    <td>addi rd, rs, 0</td>
+                    <td class="font-monospace fs-6">addi rd, rs, 0</td>
                     <td>Copy register</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">not rd, rs</td>
-                    <td>xori rd, rs, -1</td>
+                    <td class="font-monospace fs-6">xori rd, rs, -1</td>
                     <td>One's complement</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">neg rd, rs</td>
-                    <td>sub rd, x0, rs</td>
+                    <td class="font-monospace fs-6">sub rd, x0, rs</td>
                     <td>Two's complement</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">negw rd, rs</td>
-                    <td>subw rd, x0, rs</td>
+                    <td class="font-monospace fs-6">subw rd, x0, rs</td>
                     <td>Two's complement word</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">sext.w rd, rs</td>
-                    <td>addiw rd, rs, 0</td>
+                    <td class="font-monospace fs-6">addiw rd, rs, 0</td>
                     <td>Sign extend word</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">seqz rd, rs</td>
-                    <td>sltiu rd, rs, 1</td>
+                    <td class="font-monospace fs-6">sltiu rd, rs, 1</td>
                     <td>Set if = zero</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">snez rd, rs</td>
-                    <td>sltu rd, x0, rs</td>
+                    <td class="font-monospace fs-6">sltu rd, x0, rs</td>
                     <td>Set if ≠ zero</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">sltz rd, rs</td>
-                    <td>slt rd, rs, x0</td>
+                    <td class="font-monospace fs-6">slt rd, rs, x0</td>
                     <td>Set if &lt; zero</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">sgtz rd, rs</td>
-                    <td>slt rd, x0, rs</td>
+                    <td class="font-monospace fs-6">slt rd, x0, rs</td>
                     <td>Set if &gt; zero</td>
                 </tr>
               <tbody>
               <tbody class="table-group-divider">
                 <tr>
                     <td class="font-monospace fs-6">fmv.s rd, rs</td>
-                    <td>fsgnj.s rd, rs, rs</td>
+                    <td class="font-monospace fs-6">fsgnj.s rd, rs, rs</td>
                     <td>Copy single-precision register</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">fabs.s rd, rs</td>
-                    <td>fsgnjx.s rd, rs, rs</td>
+                    <td class="font-monospace fs-6">fsgnjx.s rd, rs, rs</td>
                     <td>Single-precision absolute value</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">fneg.s rd, rs</td>
-                    <td>fsgnjn.s rd, rs, rs</td>
+                    <td class="font-monospace fs-6">fsgnjn.s rd, rs, rs</td>
                     <td>Single-precision negate</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">fmv.d rd, rs</td>
-                    <td>fsgnj.d rd, rs, rs</td>
+                    <td class="font-monospace fs-6">fsgnj.d rd, rs, rs</td>
                     <td>Copy double-precision register</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">fabs.d rd, rs</td>
-                    <td>fsgnjx.d rd, rs, rs</td>
+                    <td class="font-monospace fs-6">fsgnjx.d rd, rs, rs</td>
                     <td>Double-precision absolute value</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">fneg.d rd, rs</td>
-                    <td>fsgnjn.d rd, rs, rs</td>
+                    <td class="font-monospace fs-6">fsgnjn.d rd, rs, rs</td>
                     <td>Double-precision negate</td>
                 </tr>
               <tbody>
               <tbody class="table-group-divider">
                 <tr>
                     <td class="font-monospace fs-6">beqz rs, offset</td>
-                    <td>beq rs, x0, offset</td>
+                    <td class="font-monospace fs-6">beq rs, x0, offset</td>
                     <td>Branch if = zero</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">bnez rs, offset</td>
-                    <td>bne rs, x0, offset</td>
+                    <td class="font-monospace fs-6">bne rs, x0, offset</td>
                     <td>Branch if ≠ zero</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">blez rs, offset</td>
-                    <td>beg x0, rs, offset</td>
+                    <td class="font-monospace fs-6">beg x0, rs, offset</td>
                     <td>Branch if &lt;= zero</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">bgez rs, offset</td>
-                    <td>beg x0, rs, offset</td>
+                    <td class="font-monospace fs-6">beg x0, rs, offset</td>
                     <td>Branch if &gt;= zero</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">bltz rs, offset</td>
-                    <td>blt rs, x0, offset</td>
+                    <td class="font-monospace fs-6">blt rs, x0, offset</td>
                     <td>Branch if &lt; zero</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">bgtz rs, offset</td>
-                    <td>blt x0, rs, offset</td>
+                    <td class="font-monospace fs-6">blt x0, rs, offset</td>
                     <td>Branch if &gt; zero</td>
                 </tr>
               <tbody>
               <tbody class="table-group-divider">
                 <tr>
                     <td class="font-monospace fs-6">bgt rs, rt, offset</td>
-                    <td>blt rt, rs, offset</td>
+                    <td class="font-monospace fs-6">blt rt, rs, offset</td>
                     <td>Branch if &gt;</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">ble rs, rt, offset</td>
-                    <td>bge rt, rs, offset</td>
+                    <td class="font-monospace fs-6">bge rt, rs, offset</td>
                     <td>Branch if &lt;=</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">bgtu rs, rt, offset</td>
-                    <td>bltu rt, rs, offset</td>
+                    <td class="font-monospace fs-6">bltu rt, rs, offset</td>
                     <td>Branch if &gt;, unsigned</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">bleu rs, rt, offset</td>
-                    <td>bgeu rt, rs, offset</td>
+                    <td class="font-monospace fs-6">bgeu rt, rs, offset</td>
                     <td>Branch if &lt;=, unsigned</td>
                 </tr>
               <tbody>
               <tbody class="table-group-divider">
                 <tr>
                     <td class="font-monospace fs-6">j offset</td>
-                    <td>jal x0, offset</td>
+                    <td class="font-monospace fs-6">jal x0, offset</td>
                     <td>Jump</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">jal offset</td>
-                    <td>jal x1, offset</td>
+                    <td class="font-monospace fs-6">jal x1, offset</td>
                     <td>Jump and link</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">jr rs</td>
-                    <td>jalr x0, rs, 0</td>
+                    <td class="font-monospace fs-6">jalr x0, rs, 0</td>
                     <td>Jump register</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">jalr rs</td>
-                    <td>jalr x1, rs, 0</td>
+                    <td class="font-monospace fs-6">jalr x1, rs, 0</td>
                     <td>Jump and link register</td>
                 </tr>
                 <tr>
                   <td class="font-monospace fs-6">ret</td>
-                  <td>jalr x0, x1, 0</td>
+                  <td class="font-monospace fs-6">jalr x0, x1, 0</td>
                   <td>Return from subroutine</td>
                 </tr>
                 <tr>
                   <td class="font-monospace fs-6">call offset</td>
-                  <td>auipc x1, offset[31:12] <br> jalr x1, x1, offset[11:0]</td>
+                  <td class="font-monospace fs-6">auipc x1, offset[31:12] <br> jalr x1, x1, offset[11:0]</td>
                   <td>Call far-away subroutine</td>
                 </tr>
                 <tr>
                   <td class="font-monospace fs-6">tail offset</td>
-                  <td>auipc x6, offset[31:12] <br> jalr x0, x6, offset[11:0]</td>
+                  <td class="font-monospace fs-6">auipc x6, offset[31:12] <br> jalr x0, x6, offset[11:0]</td>
                   <td>Tail call far-away subroutine</td>
                 </tr>
               <tbody>
               <tbody class="table-group-divider">
                 <tr>
                   <td class="font-monospace fs-6">fence</td>
-                  <td>fence iorw, iorw</td>
+                  <td class="font-monospace fs-6">fence iorw, iorw</td>
                   <td>Fence on all memory and I/O</td>
                 </tr>
               </tbody>
