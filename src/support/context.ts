@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import { TextDocument } from "vscode";
 import { SCCPU } from "../vcpu/singlecycle";
 import { SimulatorPanel } from "../panels/SimulatorPanel";
@@ -274,11 +276,11 @@ export class RVSimulationContext {
                 const result = this.cpu.executeInstruction();
                 // Send messages to update the registers view.
                 if (writesRU(instruction.type, instruction.opcode)) {
-                  console.log("Writing result to RU ", result.WBMUXRes);
+                  console.log("Writing result to RU ", result.wb.result);
                   this.sendToRegisters({
                     operation: "setRegister",
                     register: instruction.rd.regeq,
-                    value: result.WBMUXRes,
+                    value: result.wb.result,
                   });
                 }
                 if (writesDM(instruction.type, instruction.opcode)) {
@@ -291,22 +293,22 @@ export class RVSimulationContext {
 
                   console.log(
                     "Writing result to DM address: ",
-                    result.DMAddress,
+                    result.dm.address,
                     " value to write ",
-                    result.DMDataWr,
+                    result.dm.dataWr,
                     " section to write ",
                     bytesToWrite
                   );
                   this.sendToDataMemory({
                     operation: "write",
-                    address: result.DMAddress,
-                    value: result.DMDataWr,
+                    address: result.dm.address,
+                    value: result.dm.dataWr,
                     bytes: bytesToWrite,
                   });
-                  const chunks = result.DMDataWr.match(
+                  const chunks = result.dm.dataWr.match(
                     /.{1,8}/g
                   ) as Array<string>;
-                  const address = parseInt(result.DMAddress, 2);
+                  const address = parseInt(result.dm.address, 2);
                   this.cpu.getDataMemory().write(chunks.reverse(), address);
                 }
                 // Send message to update the simulator components.
@@ -317,7 +319,7 @@ export class RVSimulationContext {
                 });
 
                 if (branchesOrJumps(instruction.type, instruction.opcode)) {
-                  this.cpu.jumpToInstruction(result.BUMUXRes as string);
+                  this.cpu.jumpToInstruction(result.buMux.result);
                 } else {
                   this.cpu.nextInstruction();
                 }

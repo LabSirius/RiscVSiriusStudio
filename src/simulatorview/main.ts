@@ -21,6 +21,7 @@ import * as Handlers from "./handlers";
 import { SimulatorInfo } from "./SimulatorInfo.js";
 import { InstructionView } from "./InstructionView.js";
 import { usedRegisters } from "../utilities/instructions.js";
+import { SCCPUResult } from "../vcpu/singlecycle";
 
 provideVSCodeDesignSystem().register(allComponents);
 
@@ -121,7 +122,7 @@ function simulationFinished(cpuData: SimulatorInfo) {
 
 function setInstruction(
   instruction: any,
-  result: any,
+  result: SCCPUResult,
   cpuData: SimulatorInfo,
   instView: InstructionView
 ) {

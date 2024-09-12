@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 /**
  * A CPU instance consists of:
  * - A program memory
@@ -87,6 +89,125 @@ class DataMemory {
     return data.reverse();
   }
 }
+
+/**
+ * The result of a instruction execution is a set of values for each input
+ * output and signal of the emulator. Each component then has its own type that
+ * describes the computed value it needs to present to the user.
+ */
+
+type ALUResult = {
+  a: string; // A input to the ALU
+  b: string; // B input to the ALU
+  operation: string; // Operation performed
+  result: string; // Computed result
+};
+
+const defaultALUResult = {
+  a: "".padStart(32, "0"),
+  b: "".padStart(32, "0"),
+  result: "".padStart(32, "0"),
+  operation: "".padStart(4, "0"),
+};
+
+type ADD4Result = {
+  result: string; // Computed result
+};
+
+const defaultADD4Result = {
+  result: "".padStart(32, "0"),
+};
+
+type MuxResult = {
+  signal: string; // MUX signal
+  result: string; // result
+};
+
+const defaultMuxResult = {
+  signal: "X",
+  result: "".padStart(32, "0"),
+};
+
+type BUResult = {
+  a: string; // Upper value
+  b: string; // Lower value
+  operation: string; // Operation signal
+  result: string; // Computed result
+};
+
+const defaultBUResult = {
+  a: "".padStart(32, "0"),
+  b: "".padStart(32, "0"),
+  operation: "".padStart(5, "X"),
+  result: "X",
+};
+
+type IMMResult = {
+  signal: string; // Immediate control signal
+  output: string; // Immediate output
+};
+
+const defaultIMMResult = {
+  signal: "".padStart(3, "X"),
+  output: "".padStart(32, "0"),
+};
+
+type DMResult = {
+  address: string; // read or write address
+  dataWr: string; // write data
+  dataRd: string; // read data
+  writeSignal: string;
+  controlSignal: string;
+};
+
+const defaultDMResult = {
+  address: "".padStart(32, "0"),
+  dataWr: "".padStart(32, "0"),
+  dataRd: "".padStart(32, "0"),
+  writeSignal: "X",
+  controlSignal: "".padStart(3, "XXX"),
+};
+
+type RUResult = {
+  rs1: string;
+  rs2: string;
+  dataWrite: string;
+  writeSignal: string;
+};
+
+const defaultRUResult = {
+  rs1: "".padStart(32, "0"),
+  rs2: "".padStart(32, "0"),
+  dataWrite: "".padStart(32, "0"),
+  writeSignal: "X",
+};
+
+export type SCCPUResult = {
+  add4: ADD4Result;
+  ru: RUResult;
+  imm: IMMResult;
+  alua: MuxResult;
+  alub: MuxResult;
+  alu: ALUResult;
+  bu: BUResult;
+  dm: DMResult;
+  buMux: MuxResult;
+  wb: MuxResult;
+};
+
+const defaultSCCPUResult = {
+  add4: defaultADD4Result,
+  ru: defaultRUResult,
+  imm: defaultIMMResult,
+  alua: defaultMuxResult,
+  alub: defaultMuxResult,
+  alu: defaultALUResult,
+  bu: defaultBUResult,
+  dm: defaultDMResult,
+  buMux: defaultMuxResult,
+  wb: defaultMuxResult,
+};
+
 export class SCCPU {
   // TODO: We need a proper type for a program representation.
   private readonly program: any[];
@@ -172,7 +293,7 @@ export class SCCPU {
    * At this point, the result consists of an object with the following fields:
    * !TODO: document when ready
    */
-  public executeInstruction() {
+  public executeInstruction(): SCCPUResult {
     console.log("execute instruction", this.currentInstruction());
     switch (this.currentType()) {
       case "R":
@@ -185,54 +306,64 @@ export class SCCPU {
         return this.executeBInstruction();
       case "U":
         return this.executeUInstruction();
+      case "J":
+        return this.executeJInstruction();
       default:
         throw new Error(
           "Unknown instruction " + JSON.stringify(this.currentInstruction())
         );
     }
   }
+  private executeSInstruction() {
+    return defaultSCCPUResult;
+  }
+  private executeBInstruction() {
+    return defaultSCCPUResult;
+  }
+  private executeUInstruction() {
+    return defaultSCCPUResult;
+  }
+  private executeJInstruction() {
+    return defaultSCCPUResult;
+  }
 
   private executeRInstruction() {
+    const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
+
     const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
     const rs2Val = this.registers.readRegisterFromName(getRs2(instruction));
     const aluOp = getFunct7(instruction)[1] + getFunct3(instruction);
     const aluRes = this.computeALURes(rs1Val, rs2Val, aluOp);
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
-    const add4Res16 = Number(add4Res).toString(16);
     this.registers.writeRegister(getRd(instruction), aluRes);
 
-    return {
-      A: rs1Val,
-      ADD4Res: add4Res,
-      ALUARes: rs1Val,
-      ALUASrc: "0",
-      ALUBRes: rs2Val,
-      ALUBSrc: "0",
-      ALUOp: aluOp,
-      ALURes: aluRes,
-      B: rs2Val,
-      BrOp: "00XXX",
-      BUMUXRes: add4Res16,
-      BURes: "0",
-      RUDataWrSrc: "00",
-      RURS1Val: rs1Val,
-      RURS2Val: rs2Val,
-      RUWr: "1",
-      WBMUXRes: aluRes,
+    result.add4.result = add4Res.toString(2);
+    result.ru = {
+      rs1: rs1Val,
+      rs2: rs2Val,
+      dataWrite: aluRes,
+      writeSignal: "1",
     };
+    result.alua = { result: rs1Val, signal: "0" };
+    result.alub = { result: rs2Val, signal: "0" };
+    result.alu = { a: rs1Val, b: rs2Val, operation: aluOp, result: aluRes };
+    result.bu = { ...defaultBUResult, operation: "00XXX", result: "0" };
+    result.buMux = { signal: "0", result: add4Res.toString(2) };
+    result.wb = { result: aluRes, signal: "00" };
+    return result;
   }
 
-  private executeIInstruction() {
+  private executeIInstruction(): SCCPUResult {
+    const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
+
     const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
-    const rdVal = this.registers.readRegisterFromName(getRd(instruction));
     const imm12Val = this.currentInstruction().encoding.imm12;
     const imm32Val = imm12Val.padStart(32, imm12Val.at(0));
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
-    const add4Res16 = Number(add4Res).toString(16);
 
-    let aluOp = undefined;
+    let aluOp = "";
     switch (true) {
       case isIArithmetic(instruction.type, instruction.opcode):
         aluOp = "0" + getFunct3(instruction);
@@ -247,75 +378,50 @@ export class SCCPU {
 
     const aluRes = this.computeALURes(rs1Val, imm32Val, aluOp);
     this.registers.writeRegister(getRd(instruction), aluRes);
-
-    let brOp = "00XXX";
-    let ruDataWrSrc = undefined;
-    let wbMUXRes = undefined;
-    let buRes = undefined;
-    let buMUXRes = undefined;
-
-    let dmAddress = undefined;
-    let dmDataRd = undefined;
-    let dmWr = "X";
-    let dmCtrl: "XXX";
+    result.add4.result = add4Res.toString(2);
+    result.ru = {
+      ...defaultRUResult,
+      rs1: rs1Val,
+      writeSignal: "1",
+    };
+    result.alu = { a: rs1Val, b: imm32Val, operation: aluOp, result: aluRes };
+    result.imm = { signal: "000", output: imm32Val };
+    result.alua = { result: rs1Val, signal: "0" };
+    result.alub = { result: imm32Val, signal: "1" };
 
     switch (true) {
       case isIArithmetic(instruction.type, instruction.opcode):
         // TODO: I have to update the parser to look for shift operations that use shamt and funct7
-        ruDataWrSrc = "00";
-        wbMUXRes = aluRes;
-        buRes = "0";
-        buMUXRes = add4Res16;
+        result.wb = { signal: "00", result: aluRes };
+        result.bu = { ...defaultBUResult, result: "0", operation: "00XXX" };
+        result.buMux = { signal: "0", result: add4Res.toString(2) };
+        result.ru.dataWrite = aluRes;
         break;
       case isILoad(this.currentType(), this.currentOpcode()):
-        ruDataWrSrc = "01";
-        // TODO: read from memory
-        dmAddress = aluRes;
-        buRes = "0";
-        buMUXRes = add4Res16;
-        dmWr = "0";
-        dmCtrl = getFunct3(instruction);
+        const dmCtrl = getFunct3(instruction);
         let value = this.readFromMemory(
           parseInt(aluRes, 2),
           parseInt(dmCtrl, 2)
         );
-        dmDataRd = value;
-        wbMUXRes = value;
+        result.bu = { ...defaultBUResult, result: "0", operation: "00XXX" };
+        result.buMux = { signal: "0", result: add4Res.toString(2) };
+        result.dm = {
+          ...defaultDMResult,
+          address: aluRes,
+          writeSignal: "0",
+          controlSignal: dmCtrl,
+          dataRd: value,
+        };
+        result.wb = { signal: "01", result: value };
+        result.ru.dataWrite = value;
         break;
       case isIJump(this.currentType(), this.currentOpcode()):
-        brOp = "1XXXX";
-        ruDataWrSrc = "10";
-        wbMUXRes = add4Res.toString(2);
-        buRes = "1";
-        buMUXRes = aluRes;
+        result.bu = { ...defaultBUResult, result: "1", operation: "1XXXX" };
+        result.buMux = { signal: "1", result: aluRes };
+        result.wb = { signal: "10", result: add4Res.toString(2) };
         break;
     }
-
-    return {
-      A: rs1Val,
-      ADD4Res: add4Res,
-      ALUARes: rs1Val,
-      ALUASrc: "0",
-      ALUBRes: imm32Val,
-      ALUBSrc: "1",
-      ALUOp: aluOp,
-      ALURes: aluRes,
-      B: imm32Val,
-      BrOp: brOp,
-      BUMUXRes: buMUXRes,
-      BURes: buRes,
-      DMAddress: dmAddress,
-      DMCtrl: dmCtrl,
-      DMDataRd: dmDataRd,
-      DMWr: dmWr,
-      IMMALUBVal: imm32Val,
-      IMMSrc: "000",
-      RUDataWrSrc: ruDataWrSrc,
-      RURDVal: rdVal,
-      RURS1Val: rs1Val,
-      RUWr: "1",
-      WBMUXRes: wbMUXRes,
-    };
+    return result;
   }
 
   private readFromMemory(address: number, control: number): string {
@@ -360,7 +466,7 @@ export class SCCPU {
     return value;
   }
 
-  private executeSInstruction() {
+  private executeSInstruction1() {
     const instruction = this.currentInstruction();
     const baseAddressVal = this.registers.readRegisterFromName(
       getRs1(instruction)
@@ -400,7 +506,7 @@ export class SCCPU {
     };
   }
 
-  private executeBInstruction() {
+  private executeBInstruction1() {
     const instruction = this.currentInstruction();
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
     const add4Res16 = Number(add4Res).toString(16);
@@ -472,7 +578,7 @@ export class SCCPU {
     };
   }
 
-  private executeUInstruction() {
+  private executeUInstruction1() {
     const instruction = this.currentInstruction();
     const add4Res = parseInt(instruction.inst) + 4;
     const add4Res16 = Number(add4Res).toString(16);
@@ -511,6 +617,48 @@ export class SCCPU {
       RURDVal: rdVal,
       RUWr: "1",
       WBMUXRes: imm32Val,
+    };
+  }
+
+  private executeJInstruction1() {
+    const instruction = this.currentInstruction();
+    const pc = parseInt(instruction.inst);
+    const add4Res = pc + 4;
+    const add4Res2 = add4Res.toString(2).padStart(32, "0");
+    const add4Res16 = add4Res.toString(16);
+    const rdVal = this.registers.readRegisterFromName(getRd(instruction));
+    // const imm21Val = this.currentInstruction().encoding.imm21;
+    // const imm32Val = imm21Val.padEnd(32, "0");
+    // let aVal = "0".padStart(32, "0");
+    // let aluASrcVal = "0";
+    // let aluAResVal = "0".padStart(32, "0");
+    // let aluRes = imm32Val;
+    // if (isAUIPC(instruction.type, instruction.opcode)) {
+    //   const PC = instruction.inst as number;
+    //   aVal = PC.toString(2).padStart(32, "0");
+    //   aluASrcVal = "1";
+    //   aluAResVal = aVal;
+    //   aluRes = (PC + parseInt(imm32Val, 2)).toString(2).padStart(32, "0");
+    // }
+    return {
+      A: pc,
+      ADD4Res: add4Res2,
+      //   ALUARes: aluAResVal,
+      ALUASrc: "1",
+      //   ALUBRes: imm32Val,
+      ALUBSrc: "1",
+      ALUOp: "0000",
+      //   ALURes: aluRes.toString(2),
+      //   B: imm32Val,
+      BrOp: "1" + "XXXX",
+      BUMUXRes: add4Res16,
+      //   BURes: "0",
+      //   IMMALUBVal: imm32Val,
+      IMMSrc: "110",
+      RUDataWrSrc: "10",
+      RURDVal: rdVal,
+      RUWr: "1",
+      WBMUXRes: add4Res.toString(2),
     };
   }
 

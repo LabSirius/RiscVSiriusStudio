@@ -9,6 +9,7 @@ import {
 } from "@floating-ui/dom";
 import * as bootstrap from "bootstrap";
 import { InstructionView } from "./InstructionView";
+import { SCCPUResult } from "../vcpu/singlecycle";
 
 export class SimulatorInfo {
   /**
@@ -46,7 +47,7 @@ export class SimulatorInfo {
   /**
    * Result of the execution of the current instruction.
    */
-  private result: any | undefined;
+  private result: SCCPUResult | undefined;
 
   private tooltip: HTMLElement;
   private logger: Function;
@@ -177,7 +178,7 @@ export class SimulatorInfo {
       element.addEventListener(event, listener);
     });
   }
-  public setInstruction(instruction: any, result: any) {
+  public setInstruction(instruction: any, result: SCCPUResult) {
     this.instruction = instruction;
     this.result = result;
   }
@@ -304,7 +305,10 @@ export class SimulatorInfo {
     return this.instruction.opcode;
   }
 
-  public instructionResult() {
+  public instructionResult(): SCCPUResult {
+    if (!this.result) {
+      throw new Error("Execution result has not been computed");
+    }
     return this.result;
   }
 
