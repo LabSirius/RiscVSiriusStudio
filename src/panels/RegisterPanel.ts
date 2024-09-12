@@ -4,11 +4,11 @@ import {
   Webview,
   Uri,
   EventEmitter,
-  window
-} from 'vscode';
-import { getUri } from '../utilities/getUri';
-import { getNonce } from '../utilities/getNonce';
-import { logger } from '../utilities/logger';
+  window,
+} from "vscode";
+import { getUri } from "../utilities/getUri";
+import { getNonce } from "../utilities/getNonce";
+import { logger } from "../utilities/logger";
 
 export class RegisterPanelView implements WebviewViewProvider {
   public static currentview: RegisterPanelView | undefined;
@@ -46,7 +46,7 @@ export class RegisterPanelView implements WebviewViewProvider {
   resolveWebviewView(webviewView: WebviewView): void | Thenable<void> {
     webviewView.webview.options = {
       enableScripts: true,
-      localResourceRoots: [this.extensionUri]
+      localResourceRoots: [this.extensionUri],
     };
     webviewView.webview.html = this._getHtmlForWebview(
       webviewView.webview,
@@ -59,11 +59,11 @@ export class RegisterPanelView implements WebviewViewProvider {
   private activateMessageListener() {
     this._view.webview.onDidReceiveMessage((message: any) => {
       switch (message.command) {
-        case 'log-info':
-          logger().info('info', message.obj);
+        case "log-info":
+          logger().info("info", message.obj);
           break;
 
-        case 'SHOW_WARNING_LOG':
+        case "SHOW_WARNING_LOG":
           window.showWarningMessage(message.data.message);
           break;
         default:
@@ -74,24 +74,24 @@ export class RegisterPanelView implements WebviewViewProvider {
 
   private _getHtmlForWebview(webview: Webview, extensionUri: Uri) {
     const registerswUri = getUri(webview, extensionUri, [
-      'out',
-      'registersview.js'
+      "out",
+      "registersview.js",
     ]);
     const nonce = getNonce();
     const tabulatorCSS = getUri(webview, extensionUri, [
-      'out',
-      'tabulator.min.css'
+      "out",
+      "tabulator.min.css",
     ]);
-    const panelsCSS = getUri(webview, extensionUri, ['out', 'panels.css']);
+    const panelsCSS = getUri(webview, extensionUri, ["out", "panels.css"]);
 
     const bootstrapCSS = webview.asWebviewUri(
       Uri.joinPath(
         extensionUri,
-        'node_modules',
-        'bootstrap',
-        'dist',
-        'css',
-        'bootstrap.min.css'
+        "node_modules",
+        "bootstrap",
+        "dist",
+        "css",
+        "bootstrap.min.css"
       )
     );
 
