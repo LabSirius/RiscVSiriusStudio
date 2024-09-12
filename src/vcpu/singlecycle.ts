@@ -314,9 +314,7 @@ export class SCCPU {
         );
     }
   }
-  private executeSInstruction() {
-    return defaultSCCPUResult;
-  }
+
   private executeBInstruction() {
     return defaultSCCPUResult;
   }
@@ -466,44 +464,47 @@ export class SCCPU {
     return value;
   }
 
-  private executeSInstruction1() {
+  private executeSInstruction(): SCCPUResult {
+    const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
+
     const baseAddressVal = this.registers.readRegisterFromName(
       getRs1(instruction)
     );
+
     const value = this.registers.readRegisterFromName(getRs2(instruction));
 
     const offset12Val = this.currentInstruction().encoding.imm12;
     const offset32Val = offset12Val.padStart(32, offset12Val.at(0));
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
-    const add4Res16 = Number(add4Res).toString(16);
-
     const aluRes = this.computeALURes(baseAddressVal, offset32Val, "0000");
 
-    return {
-      A: baseAddressVal,
-      ADD4Res: add4Res,
-      ALUARes: baseAddressVal,
-      ALUASrc: "0",
-      ALUBRes: offset32Val,
-      ALUBSrc: "1",
-      ALUOp: "0000",
-      ALURes: aluRes,
-      B: offset32Val,
-      BrOp: "00XXX",
-      BUMUXRes: "0",
-      BURes: "0",
-      DMAddress: aluRes,
-      DMCtrl: getFunct3(instruction),
-      DMDataWr: value,
-      DMWr: "1",
-      IMMALUBVal: offset32Val,
-      IMMSrc: "001",
-      RUDataWrSrc: "XX",
-      RURS1Val: baseAddressVal,
-      RURS2Val: value,
-      RUWr: "0",
+    result.add4.result = add4Res.toString(2);
+    result.ru = {
+      ...defaultRUResult,
+      rs1: baseAddressVal,
+      rs2: value,
+      writeSignal: "0",
     };
+    result.alu = {
+      a: baseAddressVal,
+      b: offset32Val,
+      operation: "0000",
+      result: aluRes,
+    };
+    result.alua = { result: baseAddressVal, signal: "0" };
+    result.alub = { result: offset32Val, signal: "1" };
+    result.bu = { ...defaultBUResult, operation: "00XXX", result: "0" };
+    result.buMux = { signal: "0", result: add4Res.toString(2) };
+    result.dm = {
+      ...defaultDMResult,
+      address: aluRes,
+      controlSignal: getFunct3(instruction),
+      dataWr: value,
+      writeSignal: "1",
+    };
+    result.imm = { signal: "001", output: offset32Val };
+    return result;
   }
 
   private executeBInstruction1() {
