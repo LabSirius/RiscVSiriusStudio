@@ -626,6 +626,10 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <th>Meaning</th>
                 </tr>
               </thead>
+
+
+              <!-- not used in this version
+
               <tbody class="table-group-divider">
                 <tr>
                     <td class="font-monospace fs-6">la rd, symbol</td>
@@ -653,6 +657,10 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                     <td>Floating-point store global</td>
                 </tr>
               </tbody>
+
+              -->
+
+
               <tbody class="table-group-divider">
                 <tr>
                     <td class="font-monospace fs-6">nop</td>
@@ -679,6 +687,10 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                     <td class="font-monospace fs-6">sub rd, x0, rs</td>
                     <td>Two's complement</td>
                 </tr>
+
+
+                <!-- not used in this version
+
                 <tr>
                     <td class="font-monospace fs-6">negw rd, rs</td>
                     <td class="font-monospace fs-6">subw rd, x0, rs</td>
@@ -689,6 +701,10 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                     <td class="font-monospace fs-6">addiw rd, rs, 0</td>
                     <td>Sign extend word</td>
                 </tr>
+
+                -->
+
+
                 <tr>
                     <td class="font-monospace fs-6">seqz rd, rs</td>
                     <td class="font-monospace fs-6">sltiu rd, rs, 1</td>
@@ -710,6 +726,10 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                     <td>Set if &gt; zero</td>
                 </tr>
               <tbody>
+
+
+              <!-- not used in this version
+
               <tbody class="table-group-divider">
                 <tr>
                     <td class="font-monospace fs-6">fmv.s rd, rs</td>
@@ -742,6 +762,10 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                     <td>Double-precision negate</td>
                 </tr>
               <tbody>
+
+              -->
+
+
               <tbody class="table-group-divider">
                 <tr>
                     <td class="font-monospace fs-6">beqz rs, offset</td>
@@ -755,12 +779,12 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">blez rs, offset</td>
-                    <td class="font-monospace fs-6">beg x0, rs, offset</td>
+                    <td class="font-monospace fs-6">bge x0, rs, offset</td>
                     <td>Branch if &lt;= zero</td>
                 </tr>
                 <tr>
                     <td class="font-monospace fs-6">bgez rs, offset</td>
-                    <td class="font-monospace fs-6">beg x0, rs, offset</td>
+                    <td class="font-monospace fs-6">bge x0, rs, offset</td>
                     <td>Branch if &gt;= zero</td>
                 </tr>
                 <tr>
@@ -822,6 +846,10 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td class="font-monospace fs-6">jalr x0, x1, 0</td>
                   <td>Return from subroutine</td>
                 </tr>
+
+
+                <!-- not used in this version
+
                 <tr>
                   <td class="font-monospace fs-6">call offset</td>
                   <td class="font-monospace fs-6">auipc x1, offset[31:12] <br> jalr x1, x1, offset[11:0]</td>
@@ -832,7 +860,14 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td class="font-monospace fs-6">auipc x6, offset[31:12] <br> jalr x0, x6, offset[11:0]</td>
                   <td>Tail call far-away subroutine</td>
                 </tr>
+
+                -->
+
               <tbody>
+
+
+              <!-- not used in this version
+
               <tbody class="table-group-divider">
                 <tr>
                   <td class="font-monospace fs-6">fence</td>
@@ -840,6 +875,10 @@ function getCardContent(webview: Webview, extensionUri: Uri) {
                   <td>Fence on all memory and I/O</td>
                 </tr>
               </tbody>
+
+              -->
+
+              
             </table>
           </div>
         </div>
