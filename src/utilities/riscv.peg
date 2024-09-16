@@ -274,14 +274,14 @@
     const binEncoding = `${imm20}${imm10_1}${imm11}${imm19_12}${rdBin}1101111`;
 
     const encoding = {
-      "imm21":immVal, "rd":rdBin,  "binEncoding": binEncoding, "imm[20]": imm20,
+      "imm21":immValBin, "rd":rdBin,  "binEncoding": binEncoding, "imm[20]": imm20,
       "imm[11]": imm11, "imm[19:12]":imm19_12, "imm[10:1]":imm10_1, 
       "tgtVal": tgtVal
     };
 
     return {
       "inst":instMem, "type":"J", "instruction": name, rd:rd,
-      "imm21": target, "opcode": "1101111", "encoding":encoding,
+      "imm21": immVal, "opcode": "1101111", "encoding":encoding,
       "location":location, "pseudo":pseudo
     };
   }

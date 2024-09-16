@@ -2,6 +2,8 @@
 //
 // https://peggyjs.org/
 
+"use strict";
+
 
 
   var instcounter = 0;
@@ -279,14 +281,14 @@
     const binEncoding = `${imm20}${imm10_1}${imm11}${imm19_12}${rdBin}1101111`;
 
     const encoding = {
-      "imm21":immVal, "rd":rdBin,  "binEncoding": binEncoding, "imm[20]": imm20,
+      "imm21":immValBin, "rd":rdBin,  "binEncoding": binEncoding, "imm[20]": imm20,
       "imm[11]": imm11, "imm[19:12]":imm19_12, "imm[10:1]":imm10_1, 
       "tgtVal": tgtVal
     };
 
     return {
       "inst":instMem, "type":"J", "instruction": name, rd:rd,
-      "imm21": target, "opcode": "1101111", "encoding":encoding,
+      "imm21": immVal, "opcode": "1101111", "encoding":encoding,
       "location":location, "pseudo":pseudo
     };
   }
@@ -6119,14 +6121,8 @@ function peg$parse(input, options) {
   }
 }
 
-const peg$allowedStartRules = [
-  "Start",
-  "Instruction",
-  "SourceElement"
-];
-
-export {
-  peg$allowedStartRules as StartRules,
-  peg$SyntaxError as SyntaxError,
-  peg$parse as parse
+module.exports = {
+  StartRules: ["Start", "Instruction", "SourceElement"],
+  SyntaxError: peg$SyntaxError,
+  parse: peg$parse
 };
