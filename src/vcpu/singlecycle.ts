@@ -11,6 +11,7 @@
  * every component in the simulation.
  */
 
+// esto si concuerda
 import {
   getRs1,
   getRs2,
@@ -315,16 +316,6 @@ export class SCCPU {
     }
   }
 
-  private executeBInstruction() {
-    return defaultSCCPUResult;
-  }
-  private executeUInstruction() {
-    return defaultSCCPUResult;
-  }
-  private executeJInstruction() {
-    return defaultSCCPUResult;
-  }
-
   private executeRInstruction() {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
@@ -507,19 +498,22 @@ export class SCCPU {
     return result;
   }
 
-  private executeBInstruction1() {
+  private executeBInstruction() {
+    const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
-    const add4Res = parseInt(this.currentInstruction().inst) + 4;
-    const add4Res16 = Number(add4Res).toString(16);
+
+    const add4Res = parseInt(instruction.inst) + 4;
+    result.add4.result = add4Res.toString(2);
+
     const funct3 = getFunct3(instruction);
     const rs1 = this.registers.readRegisterFromName(getRs1(instruction));
     const rs2 = this.registers.readRegisterFromName(getRs2(instruction));
+
     const rs1Int = parseInt(rs1, 2);
     const rs2Int = parseInt(rs2, 2);
+
     const imm13 = this.currentInstruction().encoding.imm13;
     const imm32Val = imm13.padStart(32, imm13.at(0));
-
-    // const imm13Val = parseInt(imm13, 2);
 
     let condition = false;
     switch (parseInt(funct3, 2)) {
@@ -552,39 +546,36 @@ export class SCCPU {
         break;
       }
     }
-    const aluaRes = (this.currentInstruction().inst as number).toString(2);
+
+    const aluaRes = (instruction.inst as number).toString(2);
     const aluaRes32 = aluaRes.padStart(32, "0");
     const aluRes = this.computeALURes(aluaRes32, imm32Val, "0000");
 
-    return {
-      A: aluaRes,
-      ADD4Res: add4Res16,
-      ALUARes: aluaRes32,
-      ALUASrc: "1",
-      ALUBRes: imm32Val,
-      ALUBSrc: "1",
-      ALUOp: "0000",
-      ALURes: aluRes,
-      B: imm32Val,
-      BrOp: "01" + funct3,
-      BUMUXRes: condition ? parseInt(aluRes, 2).toString(16) : add4Res16,
-      BURes: condition ? "1" : "0",
-      DMCtrl: "XXX",
-      DMWr: "0",
-      IMMALUBVal: imm32Val,
-      IMMSrc: "101",
-      RURS1Val: rs1,
-      RURS2Val: rs2,
-      RUWr: "0",
+    result.ru = { ...defaultRUResult, writeSignal: "0", rs1: rs1, rs2: rs2 };
+    result.alua = { signal: "1", result: aluaRes32 };
+    result.alub = { signal: "1", result: imm32Val };
+    result.bu = {
+      operation: "01" + funct3,
+      result: condition ? "1" : "0",
+      a: rs1,
+      b: rs2,
     };
+    result.buMux = {
+      result: condition ? parseInt(aluRes, 2).toString(2) : add4Res.toString(2),
+      signal: condition ? "1" : "0",
+    };
+    result.alu = { a: aluaRes, b: imm32Val, operation: "0000", result: aluRes };
+    result.imm = { signal: "101", output: imm32Val };
+    return result;
   }
 
-  private executeUInstruction1() {
+  private executeUInstruction() {
+    const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
-    const add4Res = parseInt(instruction.inst) + 4;
-    const add4Res16 = Number(add4Res).toString(16);
 
-    const rdVal = this.registers.readRegisterFromName(getRd(instruction));
+    const add4Res = (parseInt(instruction.inst) + 4).toString(2);
+    result.add4.result = add4Res;
+
     const imm21Val = this.currentInstruction().encoding.imm21;
     const imm32Val = imm21Val.padEnd(32, "0");
 
@@ -599,68 +590,45 @@ export class SCCPU {
       aluAResVal = aVal;
       aluRes = (PC + parseInt(imm32Val, 2)).toString(2).padStart(32, "0");
     }
-    return {
-      A: aVal,
-      ADD4Res: add4Res16,
-      ALUARes: aluAResVal,
-      ALUASrc: aluASrcVal,
-      ALUBRes: imm32Val,
-      ALUBSrc: "1",
-      ALUOp: "0000",
-      ALURes: aluRes.toString(2),
-      B: imm32Val,
-      BrOp: "00" + "XXX",
-      BUMUXRes: add4Res16,
-      BURes: "0",
-      IMMALUBVal: imm32Val,
-      IMMSrc: "010",
-      RUDataWrSrc: "00",
-      RURDVal: rdVal,
-      RUWr: "1",
-      WBMUXRes: imm32Val,
-    };
+
+    result.ru = { ...defaultRUResult, writeSignal: "1", dataWrite: aluRes };
+    result.imm = { signal: "010", output: imm32Val };
+    result.alub = { result: imm32Val, signal: "1" };
+    result.alua = { result: aluAResVal, signal: aluASrcVal };
+    result.bu = { ...defaultBUResult, result: "0", operation: "00XXX" };
+    result.alu = { operation: "0000", result: aluRes, a: aVal, b: imm32Val };
+    result.buMux = { result: add4Res, signal: "0" };
+    result.wb = { result: imm32Val, signal: "00" };
+    return result;
   }
 
-  private executeJInstruction1() {
+  private executeJInstruction() {
+    const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
+
     const pc = parseInt(instruction.inst);
-    const add4Res = pc + 4;
-    const add4Res2 = add4Res.toString(2).padStart(32, "0");
-    const add4Res16 = add4Res.toString(16);
-    const rdVal = this.registers.readRegisterFromName(getRd(instruction));
-    // const imm21Val = this.currentInstruction().encoding.imm21;
-    // const imm32Val = imm21Val.padEnd(32, "0");
-    // let aVal = "0".padStart(32, "0");
-    // let aluASrcVal = "0";
-    // let aluAResVal = "0".padStart(32, "0");
-    // let aluRes = imm32Val;
-    // if (isAUIPC(instruction.type, instruction.opcode)) {
-    //   const PC = instruction.inst as number;
-    //   aVal = PC.toString(2).padStart(32, "0");
-    //   aluASrcVal = "1";
-    //   aluAResVal = aVal;
-    //   aluRes = (PC + parseInt(imm32Val, 2)).toString(2).padStart(32, "0");
-    // }
-    return {
-      A: pc,
-      ADD4Res: add4Res2,
-      //   ALUARes: aluAResVal,
-      ALUASrc: "1",
-      //   ALUBRes: imm32Val,
-      ALUBSrc: "1",
-      ALUOp: "0000",
-      //   ALURes: aluRes.toString(2),
-      //   B: imm32Val,
-      BrOp: "1" + "XXXX",
-      BUMUXRes: add4Res16,
-      //   BURes: "0",
-      //   IMMALUBVal: imm32Val,
-      IMMSrc: "110",
-      RUDataWrSrc: "10",
-      RURDVal: rdVal,
-      RUWr: "1",
-      WBMUXRes: add4Res.toString(2),
+    const pcVal = pc.toString(2).padStart(32, "0");
+    const add4Res = (pc + 4).toString(2).padStart(32, "0");
+    result.add4.result = add4Res;
+    const imm21Val = this.currentInstruction().encoding.imm21 as string;
+    const imm32Val = imm21Val.padStart(32, "0");
+
+    const aluRes = this.computeALURes(pcVal, imm32Val, "0000");
+
+    result.alua = { result: pcVal, signal: "1" };
+    result.alub = { result: imm32Val, signal: "1" };
+    result.imm = { output: imm32Val, signal: "110" };
+    result.alu = {
+      a: pc.toString(2),
+      b: imm32Val,
+      operation: "0000",
+      result: aluRes,
     };
+    result.buMux = { result: aluRes, signal: "1" };
+    result.bu = { ...defaultBUResult, operation: "1XXXX", result: "1" };
+    result.ru = { ...defaultRUResult, writeSignal: "1", dataWrite: add4Res };
+    result.wb = { result: add4Res, signal: "10" };
+    return result;
   }
 
   public getRegisterFile(): RegistersFile {
