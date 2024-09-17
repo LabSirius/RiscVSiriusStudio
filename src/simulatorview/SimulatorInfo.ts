@@ -5,11 +5,11 @@ import {
   offset,
   inline,
   autoPlacement,
-  Placement,
-} from "@floating-ui/dom";
-import * as bootstrap from "bootstrap";
-import { InstructionView } from "./InstructionView";
-import { SCCPUResult } from "../vcpu/singlecycle";
+  Placement
+} from '@floating-ui/dom';
+import * as bootstrap from 'bootstrap';
+import { InstructionView } from './InstructionView';
+import { SCCPUResult } from '../vcpu/singlecycle';
 
 export class SimulatorInfo {
   /**
@@ -55,10 +55,10 @@ export class SimulatorInfo {
 
   public constructor(log: Function, instView: InstructionView) {
     this.logger = log;
-    this.log("info", { simulatorInfo: "SimulatorInfo constructor" });
+    this.log('info', { simulatorInfo: 'SimulatorInfo constructor' });
 
-    this.updateEvent = new Event("SimulatorUpdate");
-    this.terminateEvent = new Event("SimulatorTermination");
+    this.updateEvent = new Event('SimulatorUpdate');
+    this.terminateEvent = new Event('SimulatorTermination');
     this.cpuElements = new Map<string, HTMLElement>();
     this.cpuEnabled = new Map<string, boolean>();
     this.registers = new Array(32).fill(0);
@@ -70,9 +70,9 @@ export class SimulatorInfo {
     this.instruction = undefined;
     this.result = undefined;
 
-    this.tooltip = document.getElementById("tooltip") as HTMLElement;
+    this.tooltip = document.getElementById('tooltip') as HTMLElement;
 
-    this.log("info", "SimulatorInfo constructor finished");
+    this.log('info', 'SimulatorInfo constructor finished');
   }
 
   public installTooltip(
@@ -85,7 +85,7 @@ export class SimulatorInfo {
     const logger = this.logger;
     const cpuData = this;
 
-    function update({ clientX: x, clientY: y }) {
+    function update(event: MouseEvent) {
       // logger('info', { m: 'Update function called', x: x, y: y });
       /**
        * If the element has a g tag then it is probably an svg element from
@@ -93,16 +93,16 @@ export class SimulatorInfo {
        * properly.
        */
 
-      if (element.tagName === "g") {
+      if (element.tagName === 'g') {
         // could be an svg element from draw.io
 
-        const elements = element.getElementsByTagName("rect");
+        const elements = element.getElementsByTagName('rect');
         if (elements.length > 0) {
           element = elements[0];
         } else {
           // logger('info', { m: 'inside a group without rect' });
           const elements = element.querySelectorAll(
-            "#main-svg div:not(:has(div))"
+            '#main-svg div:not(:has(div))'
           );
           if (elements.length > 0) {
             element = elements[0];
@@ -112,14 +112,14 @@ export class SimulatorInfo {
               return {
                 width: 0,
                 height: 0,
-                x: x,
-                y: y,
-                top: y,
-                left: x,
-                right: x,
-                bottom: y,
+                x: event.clientX,
+                y: event.clientY,
+                top: event.clientY,
+                left: event.clientX,
+                right: event.clientX,
+                bottom: event.clientY
               };
-            },
+            }
           };
         }
       }
@@ -130,49 +130,49 @@ export class SimulatorInfo {
             return {
               width: 0,
               height: 0,
-              x: x,
-              y: y,
-              top: y,
-              left: x,
-              right: x,
-              bottom: y,
+              x: event.clientX,
+              y: event.clientY,
+              top: event.clientY,
+              left: event.clientX,
+              right: event.clientX,
+              bottom: event.clientY
             };
-          },
+          }
         },
         tooltip,
         {
           placement: place,
           // middleware: [arrow({ element: arrowElement })]
-          middleware: [offset(8), flip(), shift({ padding: 5 })],
+          middleware: [offset(8), flip(), shift({ padding: 5 })]
         }
       ).then(({ x, y, placement, middlewareData }) => {
         Object.assign(tooltip.style, { left: `${x}px`, top: `${y}px` });
       });
 
-      tooltip.innerHTML = typeof text === "string" ? text : text();
+      tooltip.innerHTML = typeof text === 'string' ? text : text();
     }
 
     function showTooltip(evt: Event) {
       if (evt instanceof MouseEvent && (evt as MouseEvent).altKey) {
         return;
       }
-      if (typeof dependsOn !== "undefined" && !cpuData.enabled(dependsOn)) {
-        logger("info", { m: "tooltip depends on", k: dependsOn });
+      if (typeof dependsOn !== 'undefined' && !cpuData.enabled(dependsOn)) {
+        logger('info', { m: 'tooltip depends on', k: dependsOn });
         return;
       }
-      tooltip.style.display = "block";
+      tooltip.style.display = 'block';
       update(evt as MouseEvent);
     }
 
     function hideTooltip() {
-      tooltip.style.display = "none";
+      tooltip.style.display = 'none';
     }
 
     const events: [keyof HTMLElementEventMap, (e: Event) => void][] = [
-      ["mouseenter", showTooltip],
-      ["mouseleave", hideTooltip],
-      ["focus", showTooltip],
-      ["blur", hideTooltip],
+      ['mouseenter', showTooltip],
+      ['mouseleave', hideTooltip],
+      ['focus', showTooltip],
+      ['blur', hideTooltip]
     ];
     events.forEach(([event, listener]) => {
       element.addEventListener(event, listener);
@@ -204,7 +204,7 @@ export class SimulatorInfo {
     if (element !== undefined) {
       return element;
     } else {
-      throw Error("Missing element " + name);
+      throw Error('Missing element ' + name);
     }
   }
 
@@ -221,7 +221,7 @@ export class SimulatorInfo {
     if (state !== undefined) {
       return state;
     } else {
-      throw Error("Missing element: " + element);
+      throw Error('Missing element: ' + element);
     }
   }
 
@@ -230,29 +230,32 @@ export class SimulatorInfo {
     if (element !== undefined) {
       initializer(element, this);
     } else {
-      throw Error("Initialization of a missing element: " + name);
+      throw Error('Initialization of a missing element: ' + name);
     }
   }
 
   public initializeSVGElements(handlers: any) {
-    this.log("info", {
-      simulatorInfo: "initialization of SVG elements started",
+    this.log('info', {
+      simulatorInfo: 'initialization of SVG elements started'
     });
 
     const elements = document.querySelectorAll(
       // '#svg-simulator [data-cpuname]:not(:has([data-cpuname]))'
-      "#main-svg [data-cpuname]:not(:has([data-cpuname]))"
+      '#main-svg [data-cpuname]:not(:has([data-cpuname]))'
     );
 
     elements.forEach((e) => {
-      const name = e.getAttributeNS(null, "data-cpuname") as string;
-      this.registerSVGElement(name, e);
+      const name = e.getAttributeNS(null, 'data-cpuname');
+      if (!name) {
+        throw new Error('data-cpuname attribute not foun in element.');
+      }
+      this.registerSVGElement(name, e as HTMLElement);
       this.disable(name);
     });
 
-    this.log("info", {
-      simulatorInfo: "Read document for data-cpuname tags",
-      found: elements.length,
+    this.log('info', {
+      simulatorInfo: 'Read document for data-cpuname tags',
+      found: elements.length
     });
 
     this.cpuElements.forEach((element, name) => {
@@ -262,8 +265,8 @@ export class SimulatorInfo {
         //this.log('error', { message: 'Handler not found for ' + name });
       }
     });
-    this.log("info", {
-      simulatorInfo: "initialization of SVG elements finished",
+    this.log('info', {
+      simulatorInfo: 'initialization of SVG elements finished'
     });
   }
   /**
@@ -273,11 +276,11 @@ export class SimulatorInfo {
    */
   public updateRegister(name: string, value: string) {
     const index = parseInt(name.substring(1));
-    this.log("info", {
-      m: "Updating value",
+    this.log('info', {
+      m: 'Updating value',
       name: name,
       idx: index,
-      val: value,
+      val: value
     });
     this.registers[index] = value;
   }
@@ -289,7 +292,7 @@ export class SimulatorInfo {
   public getInfo() {
     return {
       cpuElements: Object.fromEntries(this.cpuElements),
-      cpuElemStates: Object.fromEntries(this.cpuEnabled),
+      cpuElemStates: Object.fromEntries(this.cpuEnabled)
     };
   }
 
@@ -307,7 +310,7 @@ export class SimulatorInfo {
 
   public instructionResult(): SCCPUResult {
     if (!this.result) {
-      throw new Error("Execution result has not been computed");
+      throw new Error('Execution result has not been computed');
     }
     return this.result;
   }
@@ -317,7 +320,7 @@ export class SimulatorInfo {
   }
 
   public setAssemblerInstruction(html: string) {
-    const instBin = document.getElementById("instruction-asm") as HTMLElement;
+    const instBin = document.getElementById('instruction-asm') as HTMLElement;
     instBin.innerHTML = html;
   }
 

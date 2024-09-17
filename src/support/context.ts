@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { TextDocument } from "vscode";
-import { SCCPU } from "../vcpu/singlecycle";
-import { SimulatorPanel } from "../panels/SimulatorPanel";
-import { ProgMemPanelView } from "../panels/ProgMemPanel";
-import { InstructionPanelView } from "../panels/InstructionPanel";
-import { RegisterPanelView } from "../panels/RegisterPanel";
+import { TextDocument } from 'vscode';
+import { SCCPU } from '../vcpu/singlecycle';
+import { SimulatorPanel } from '../panels/SimulatorPanel';
+import { ProgMemPanelView } from '../panels/ProgMemPanel';
+import { InstructionPanelView } from '../panels/InstructionPanel';
+import { RegisterPanelView } from '../panels/RegisterPanel';
 import {
   branchesOrJumps,
   getFunct3,
   usesRegister,
   writesDM,
-  writesRU,
-} from "../utilities/instructions";
-import { compile } from "../utilities/riscvc";
-import { DataMemPanelView } from "../panels/DataMemPanel";
+  writesRU
+} from '../utilities/instructions';
+import { compile } from '../utilities/riscvc';
+import { DataMemPanelView } from '../panels/DataMemPanel';
 
 export class RVExtensionContext {
   private currentFile: string | undefined;
@@ -22,13 +22,13 @@ export class RVExtensionContext {
   private simulator: RVSimulationContext | undefined;
   private memorySize: number;
   public constructor() {
-    this.currentFile = "";
+    this.currentFile = '';
     this.memorySize = 128;
   }
 
   public setMemorySize(newSize: number) {
     this.memorySize = newSize;
-    console.log("New memory size--------");
+    console.log('New memory size--------');
   }
 
   public getCurrentFile() {
@@ -55,7 +55,7 @@ export class RVExtensionContext {
 
   public getIRForInstructionAt(line: number): any {
     if (this.currentIR === undefined) {
-      throw Error("There is no intermediate representation of code yet.");
+      throw Error('There is no intermediate representation of code yet.');
     }
     // handle difference between vscode line numbers and parser line numbers.
     const sourceLine = line + 1;
@@ -76,12 +76,12 @@ export class RVExtensionContext {
 
   public uploadIR(programMemory: ProgMemPanelView) {
     if (!this.validIR()) {
-      console.log("No valid IR, skipping");
+      console.log('No valid IR, skipping');
     } else {
-      console.log("updateProgram from context", this.currentIR);
+      console.log('updateProgram from context', this.currentIR);
       programMemory
         .getWebView()
-        .postMessage({ operation: "updateProgram", program: this.currentIR });
+        .postMessage({ operation: 'updateProgram', program: this.currentIR });
     }
   }
   public reflectInstruction(
@@ -90,30 +90,30 @@ export class RVExtensionContext {
     ir: any
   ) {
     if (!this.validIR()) {
-      console.log("No valid IR, skipping");
+      console.log('No valid IR, skipping');
     } else {
       // console.log('Message to reflect instruction', ir);
-      if (ir.kind === "SrcInstruction") {
+      if (ir.kind === 'SrcInstruction') {
         // Reflect on the instruction view
         instruction.getWebView().postMessage({
-          operation: "showInstructionView",
+          operation: 'showInstructionView'
         });
         instruction.getWebView().postMessage({
-          operation: "reflectInstruction",
-          instruction: ir,
+          operation: 'reflectInstruction',
+          instruction: ir
         });
         // Reflect on the instruction memory view
         program.getWebView().postMessage({
-          operation: "reflectInstruction",
-          instruction: ir,
+          operation: 'reflectInstruction',
+          instruction: ir
         });
       } else {
         // It can be a directive or a label definition.
         program.getWebView().postMessage({
-          operation: "clearSelection",
+          operation: 'clearSelection'
         });
         instruction.getWebView().postMessage({
-          operation: "hideInstructionView",
+          operation: 'hideInstructionView'
         });
       }
     }
@@ -126,7 +126,7 @@ export class RVExtensionContext {
     registers: RegisterPanelView,
     instruction: InstructionPanelView
   ) {
-    console.log("start simulation at rvContext");
+    console.log('start simulation at rvContext');
     this.uploadIR(programMemory);
     // After this call the simulator instance will intercept the messages of the
     // views and will respond to them
@@ -143,15 +143,15 @@ export class RVExtensionContext {
   public exportJSON() {
     const program = this.currentIR.instructions
       .filter((sc: any) => {
-        return sc.kind === "SrcInstruction";
+        return sc.kind === 'SrcInstruction';
       })
       .map((instruction: any) => {
         return {
           asm: instruction.asm,
           encoding: {
             binary: instruction.encoding.binEncoding,
-            hex: instruction.encoding.hexEncoding,
-          },
+            hex: instruction.encoding.hexEncoding
+          }
         };
       });
     return JSON.stringify(program);
@@ -170,7 +170,7 @@ export class RVExtensionContext {
    */
   public static isValidFile(document?: TextDocument | undefined): boolean {
     return document
-      ? document.languageId === "riscvasm" && document.uri.scheme === "file"
+      ? document.languageId === 'riscvasm' && document.uri.scheme === 'file'
       : false;
   }
 }
@@ -210,11 +210,11 @@ export class RVSimulationContext {
     });
 
     // Ensure nothing is selected in the program memory and the registers views
-    this.sendToProgramMemory({ operation: "clearSelection" });
-    this.sendToDataMemory({ operation: "showDataMemView" });
-    this.sendToDataMemory({ operation: "clearSelection" });
-    this.sendToRegisters({ operation: "clearSelection" });
-    this.sendToRegisters({ operation: "showRegistersView" });
+    this.sendToProgramMemory({ operation: 'clearSelection' });
+    this.sendToDataMemory({ operation: 'showDataMemView' });
+    this.sendToDataMemory({ operation: 'clearSelection' });
+    this.sendToRegisters({ operation: 'clearSelection' });
+    this.sendToRegisters({ operation: 'showRegistersView' });
   }
 
   private sendToSimulator(message: any) {
@@ -237,73 +237,83 @@ export class RVSimulationContext {
     const instruction = this.cpu.currentInstruction();
     if (usesRegister(registerName, instruction.type)) {
       this.sendToRegisters({
-        operation: "selectRegister",
-        register: instruction[registerName].regeq,
+        operation: 'selectRegister',
+        register: instruction[registerName].regeq
       });
     }
   }
 
   private clearRegisterSelection() {
     this.sendToRegisters({
-      operation: "clearSelection",
+      operation: 'clearSelection'
     });
   }
 
   private updateRegister(regName: string, value: string) {
     this.sendToSimulator({
-      operation: "updateRegister",
+      operation: 'updateRegister',
       name: regName,
-      value: value,
+      value: value
     });
     this.cpu.getRegisterFile().writeRegister(regName, value);
   }
 
   private dispatch(message: any) {
-    console.log("RVSimulationContext dispatch", message);
+    console.log('RVSimulationContext dispatch', message);
     switch (message.command) {
-      case "event":
+      case 'event':
         {
           const { from: sender, message: msg } = message;
-          console.log("Simulation event", sender, msg);
+          console.log('Simulation event', sender, msg);
           switch (msg) {
-            case "stepClicked":
+            case 'stepClicked':
               {
                 if (this.cpu.finished()) {
-                  this.sendToSimulator({ operation: "simulationFinished" });
+                  this.sendToSimulator({ operation: 'simulationFinished' });
                   return;
                 }
                 const instruction = this.cpu.currentInstruction();
                 const result = this.cpu.executeInstruction();
                 // Send messages to update the registers view.
                 if (writesRU(instruction.type, instruction.opcode)) {
-                  console.log("Writing result to RU ", result.wb.result);
+                  console.log('Writing result to RU ', result.wb.result);
                   this.sendToRegisters({
-                    operation: "setRegister",
+                    operation: 'setRegister',
                     register: instruction.rd.regeq,
-                    value: result.wb.result,
+                    value: result.wb.result
                   });
                 }
                 if (writesDM(instruction.type, instruction.opcode)) {
-                  const selector = {
-                    "000": 1, // byte
-                    "001": 2, // half
-                    "010": 4, // word
-                  };
-                  const bytesToWrite = selector[getFunct3(instruction)];
-
+                  let bytesToWrite;
+                  const funct3 = getFunct3(instruction);
+                  switch (funct3) {
+                    case '000':
+                      bytesToWrite = 1;
+                      break;
+                    case '001':
+                      bytesToWrite = 2;
+                      break;
+                    case '010':
+                      bytesToWrite = 4;
+                      break;
+                    default:
+                      throw new Error(
+                        'Cannot deduce bytes to write from funct3'
+                      );
+                  }
                   console.log(
-                    "Writing result to DM address: ",
+                    'Writing result to DM address: ',
                     result.dm.address,
-                    " value to write ",
+                    ' value to write ',
                     result.dm.dataWr,
-                    " section to write ",
+                    ' section to write ',
                     bytesToWrite
                   );
                   this.sendToDataMemory({
-                    operation: "write",
+                    operation: 'write',
                     address: result.dm.address,
                     value: result.dm.dataWr,
-                    bytes: bytesToWrite,
+                    bytes: bytesToWrite
                   });
                   const chunks = result.dm.dataWr.match(
                     /.{1,8}/g
@@ -313,9 +323,9 @@ export class RVSimulationContext {
                 }
                 // Send message to update the simulator components.
                 this.sendToSimulator({
-                  operation: "setInstruction",
+                  operation: 'setInstruction',
                   instruction: instruction,
-                  result: result,
+                  result: result
                 });
 
                 if (branchesOrJumps(instruction.type, instruction.opcode)) {
@@ -325,12 +335,12 @@ export class RVSimulationContext {
                 }
               }
               break;
-            case "watchRegister":
+            case 'watchRegister':
               {
-                console.log("Watch register ", message.register);
+                console.log('Watch register ', message.register);
                 this.sendToRegisters({
-                  operation: "watchRegister",
-                  register: message.register,
+                  operation: 'watchRegister',
+                  register: message.register
                 });
               }
               break;
@@ -339,7 +349,7 @@ export class RVSimulationContext {
               this.updateRegister(message.name, message.value);
               break;
             default:
-              console.log("not understood", message);
+              console.log('not understood', message);
               break;
           }
         }

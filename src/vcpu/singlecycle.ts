@@ -23,21 +23,21 @@ import {
   isIArithmetic,
   isILoad,
   isIJump,
-  isAUIPC,
-} from "../utilities/instructions";
+  isAUIPC
+} from '../utilities/instructions';
 
-import _ from "lodash";
-import { logger } from "../utilities/logger";
+import _ from 'lodash';
+import { logger } from '../utilities/logger';
 
 class RegistersFile {
   private registers: Array<string>;
   public constructor() {
-    this.registers = new Array(32).fill("00000000000000000000000000000000");
+    this.registers = new Array(32).fill('00000000000000000000000000000000');
   }
 
   public printRegisters() {
     this.registers.forEach((val, idx) => {
-      logger().info({ msg: "PrintRegister", idx: "x" + idx, val: val });
+      logger().info({ msg: 'PrintRegister', idx: 'x' + idx, val: val });
     });
   }
 
@@ -66,13 +66,13 @@ class DataMemory {
   private memory: Array<string>;
   private readonly size: number;
   public constructor(size: number) {
-    this.memory = new Array(size).fill("00000000");
+    this.memory = new Array(size).fill('00000000');
     this.size = size;
   }
   public write(data: Array<string>, address: number) {
     const lastAddress = address + data.length - 1;
     if (lastAddress > this.size - 1) {
-      throw new Error("Data memory size exceeded.");
+      throw new Error('Data memory size exceeded.');
     }
     for (let i = 0; i < data.length; i++) {
       this.memory[address + i] = data[i];
@@ -81,7 +81,7 @@ class DataMemory {
   public read(address: number, length: number): Array<string> {
     const lastAddress = address + length - 1;
     if (lastAddress > this.size - 1) {
-      throw new Error("Data memory size exceeded.");
+      throw new Error('Data memory size exceeded.');
     }
     let data = [] as Array<string>;
     for (let i = 0; i < length; i++) {
@@ -105,10 +105,10 @@ type ALUResult = {
 };
 
 const defaultALUResult = {
-  a: "".padStart(32, "0"),
-  b: "".padStart(32, "0"),
-  result: "".padStart(32, "0"),
-  operation: "".padStart(4, "0"),
+  a: ''.padStart(32, '0'),
+  b: ''.padStart(32, '0'),
+  result: ''.padStart(32, '0'),
+  operation: ''.padStart(4, '0')
 };
 
 type ADD4Result = {
@@ -116,7 +116,7 @@ type ADD4Result = {
 };
 
 const defaultADD4Result = {
-  result: "".padStart(32, "0"),
+  result: ''.padStart(32, '0')
 };
 
 type MuxResult = {
@@ -125,8 +125,8 @@ type MuxResult = {
 };
 
 const defaultMuxResult = {
-  signal: "X",
-  result: "".padStart(32, "0"),
+  signal: 'X',
+  result: ''.padStart(32, '0')
 };
 
 type BUResult = {
@@ -137,10 +137,10 @@ type BUResult = {
 };
 
 const defaultBUResult = {
-  a: "".padStart(32, "0"),
-  b: "".padStart(32, "0"),
-  operation: "".padStart(5, "X"),
-  result: "X",
+  a: ''.padStart(32, '0'),
+  b: ''.padStart(32, '0'),
+  operation: ''.padStart(5, 'X'),
+  result: 'X'
 };
 
 type IMMResult = {
@@ -149,8 +149,8 @@ type IMMResult = {
 };
 
 const defaultIMMResult = {
-  signal: "".padStart(3, "X"),
-  output: "".padStart(32, "0"),
+  signal: ''.padStart(3, 'X'),
+  output: ''.padStart(32, '0')
 };
 
 type DMResult = {
@@ -162,11 +162,11 @@ type DMResult = {
 };
 
 const defaultDMResult = {
-  address: "".padStart(32, "0"),
-  dataWr: "".padStart(32, "0"),
-  dataRd: "".padStart(32, "0"),
-  writeSignal: "X",
-  controlSignal: "".padStart(3, "XXX"),
+  address: ''.padStart(32, '0'),
+  dataWr: ''.padStart(32, '0'),
+  dataRd: ''.padStart(32, '0'),
+  writeSignal: 'X',
+  controlSignal: ''.padStart(3, 'XXX')
 };
 
 type RUResult = {
@@ -177,10 +177,10 @@ type RUResult = {
 };
 
 const defaultRUResult = {
-  rs1: "".padStart(32, "0"),
-  rs2: "".padStart(32, "0"),
-  dataWrite: "".padStart(32, "0"),
-  writeSignal: "X",
+  rs1: ''.padStart(32, '0'),
+  rs2: ''.padStart(32, '0'),
+  dataWrite: ''.padStart(32, '0'),
+  writeSignal: 'X'
 };
 
 export type SCCPUResult = {
@@ -206,7 +206,7 @@ const defaultSCCPUResult = {
   bu: defaultBUResult,
   dm: defaultDMResult,
   buMux: defaultMuxResult,
-  wb: defaultMuxResult,
+  wb: defaultMuxResult
 };
 
 export class SCCPU {
@@ -221,9 +221,9 @@ export class SCCPU {
 
   public constructor(program: any[], memSize: number) {
     this.program = program.filter((sc) => {
-      return sc.kind === "SrcInstruction";
+      return sc.kind === 'SrcInstruction';
     });
-    console.log("Program to execute: ", this.program);
+    console.log('Program to execute: ', this.program);
 
     this.registers = new RegistersFile();
     this.dataMemory = new DataMemory(memSize);
@@ -249,43 +249,43 @@ export class SCCPU {
 
   public nextInstruction() {
     this.pc++;
-    console.log("[next] new value of PC is ", this.pc);
+    console.log('[next] new value of PC is ', this.pc);
   }
 
   public jumpToInstruction(address: string) {
     this.pc = parseInt(address, 16) / 4;
-    console.log("[jump] new value of PC is ", this.pc);
+    console.log('[jump] new value of PC is ', this.pc);
   }
 
   private computeALURes(A: string, B: string, ALUOp: string): string {
     const numA = parseInt(A, 2);
     const numB = parseInt(B, 2);
-    const selector = {
-      "0000": (a: number, b: number) => {
-        return a + b;
-      },
-      "1000": (a: number, b: number) => {
-        return a - b;
-      },
-      "0100": (a: number, b: number) => {
-        return a ^ b;
-      },
-      "0110": (a: number, b: number) => {
-        return a | b;
-      },
-      "0111": (a: number, b: number) => {
-        return a & b;
-      },
-      "0001": (a: number, b: number) => {
-        return a << b;
-      },
-      "0101": (a: number, b: number) => {
-        return a >> b;
-      },
-    };
-
-    const ALURes = selector[ALUOp](numA, numB) as number;
-    return _.padStart(ALURes.toString(2), 32, "0");
+    let result: number = 0;
+    switch (ALUOp) {
+      case '0000':
+        result = numA + numB;
+        break;
+      case '1000':
+        result = numA - numB;
+        break;
+      case '0100':
+        result = numA ^ numB;
+        break;
+      case '0110':
+        result = numA | numB;
+      case '0111':
+        result = numA & numB;
+        break;
+      case '0001':
+        result = numA << numB;
+        break;
+      case '0101':
+        result = numA >> numB;
+        break;
+      default:
+        throw new Error('ALU: unknown operation');
+    }
+    return _.padStart(result.toString(2), 32, '0');
   }
 
   /**
@@ -295,23 +295,23 @@ export class SCCPU {
    * !TODO: document when ready
    */
   public executeInstruction(): SCCPUResult {
-    console.log("execute instruction", this.currentInstruction());
+    console.log('execute instruction', this.currentInstruction());
     switch (this.currentType()) {
-      case "R":
+      case 'R':
         return this.executeRInstruction();
-      case "I":
+      case 'I':
         return this.executeIInstruction();
-      case "S":
+      case 'S':
         return this.executeSInstruction();
-      case "B":
+      case 'B':
         return this.executeBInstruction();
-      case "U":
+      case 'U':
         return this.executeUInstruction();
-      case "J":
+      case 'J':
         return this.executeJInstruction();
       default:
         throw new Error(
-          "Unknown instruction " + JSON.stringify(this.currentInstruction())
+          'Unknown instruction ' + JSON.stringify(this.currentInstruction())
         );
     }
   }
@@ -332,14 +332,14 @@ export class SCCPU {
       rs1: rs1Val,
       rs2: rs2Val,
       dataWrite: aluRes,
-      writeSignal: "1",
+      writeSignal: '1'
     };
-    result.alua = { result: rs1Val, signal: "0" };
-    result.alub = { result: rs2Val, signal: "0" };
+    result.alua = { result: rs1Val, signal: '0' };
+    result.alub = { result: rs2Val, signal: '0' };
     result.alu = { a: rs1Val, b: rs2Val, operation: aluOp, result: aluRes };
-    result.bu = { ...defaultBUResult, operation: "00XXX", result: "0" };
-    result.buMux = { signal: "0", result: add4Res.toString(2) };
-    result.wb = { result: aluRes, signal: "00" };
+    result.bu = { ...defaultBUResult, operation: '00XXX', result: '0' };
+    result.buMux = { signal: '0', result: add4Res.toString(2) };
+    result.wb = { result: aluRes, signal: '00' };
     return result;
   }
 
@@ -352,16 +352,16 @@ export class SCCPU {
     const imm32Val = imm12Val.padStart(32, imm12Val.at(0));
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
 
-    let aluOp = "";
+    let aluOp = '';
     switch (true) {
       case isIArithmetic(instruction.type, instruction.opcode):
-        aluOp = "0" + getFunct3(instruction);
+        aluOp = '0' + getFunct3(instruction);
         break;
       case isILoad(this.currentType(), this.currentOpcode()):
-        aluOp = "0000";
+        aluOp = '0000';
         break;
       case isIJump(this.currentType(), this.currentOpcode()):
-        aluOp = "0000";
+        aluOp = '0000';
         break;
     }
 
@@ -371,19 +371,19 @@ export class SCCPU {
     result.ru = {
       ...defaultRUResult,
       rs1: rs1Val,
-      writeSignal: "1",
+      writeSignal: '1'
     };
     result.alu = { a: rs1Val, b: imm32Val, operation: aluOp, result: aluRes };
-    result.imm = { signal: "000", output: imm32Val };
-    result.alua = { result: rs1Val, signal: "0" };
-    result.alub = { result: imm32Val, signal: "1" };
+    result.imm = { signal: '000', output: imm32Val };
+    result.alua = { result: rs1Val, signal: '0' };
+    result.alub = { result: imm32Val, signal: '1' };
 
     switch (true) {
       case isIArithmetic(instruction.type, instruction.opcode):
         // TODO: I have to update the parser to look for shift operations that use shamt and funct7
-        result.wb = { signal: "00", result: aluRes };
-        result.bu = { ...defaultBUResult, result: "0", operation: "00XXX" };
-        result.buMux = { signal: "0", result: add4Res.toString(2) };
+        result.wb = { signal: '00', result: aluRes };
+        result.bu = { ...defaultBUResult, result: '0', operation: '00XXX' };
+        result.buMux = { signal: '0', result: add4Res.toString(2) };
         result.ru.dataWrite = aluRes;
         break;
       case isILoad(this.currentType(), this.currentOpcode()):
@@ -392,63 +392,63 @@ export class SCCPU {
           parseInt(aluRes, 2),
           parseInt(dmCtrl, 2)
         );
-        result.bu = { ...defaultBUResult, result: "0", operation: "00XXX" };
-        result.buMux = { signal: "0", result: add4Res.toString(2) };
+        result.bu = { ...defaultBUResult, result: '0', operation: '00XXX' };
+        result.buMux = { signal: '0', result: add4Res.toString(2) };
         result.dm = {
           ...defaultDMResult,
           address: aluRes,
-          writeSignal: "0",
+          writeSignal: '0',
           controlSignal: dmCtrl,
-          dataRd: value,
+          dataRd: value
         };
-        result.wb = { signal: "01", result: value };
+        result.wb = { signal: '01', result: value };
         result.ru.dataWrite = value;
         break;
       case isIJump(this.currentType(), this.currentOpcode()):
-        result.bu = { ...defaultBUResult, result: "1", operation: "1XXXX" };
-        result.buMux = { signal: "1", result: aluRes };
-        result.wb = { signal: "10", result: add4Res.toString(2) };
+        result.bu = { ...defaultBUResult, result: '1', operation: '1XXXX' };
+        result.buMux = { signal: '1', result: aluRes };
+        result.wb = { signal: '10', result: add4Res.toString(2) };
         break;
     }
     return result;
   }
 
   private readFromMemory(address: number, control: number): string {
-    let value = "";
+    let value = '';
     switch (control) {
       case 0: {
         // lb
-        console.log("reading for lb");
-        const val = this.getDataMemory().read(address, 1).join("");
+        console.log('reading for lb');
+        const val = this.getDataMemory().read(address, 1).join('');
         value = val.padStart(32, val.at(0));
         break;
       }
       case 1: {
         // lh
-        console.log("reading for lb");
-        const val = this.getDataMemory().read(address, 2).join("");
+        console.log('reading for lb');
+        const val = this.getDataMemory().read(address, 2).join('');
         value = val.padStart(32, val.at(0));
         break;
       }
       case 2: {
         //lw
-        console.log("reading for lw");
+        console.log('reading for lw');
         const val = this.getDataMemory().read(address, 4);
-        value = val.join("");
+        value = val.join('');
         break;
       }
       case 4: {
         //lbu
-        console.log("reading for lb");
-        const val = this.getDataMemory().read(address, 1).join("");
-        value = val.padStart(32, "0");
+        console.log('reading for lb');
+        const val = this.getDataMemory().read(address, 1).join('');
+        value = val.padStart(32, '0');
         break;
       }
       case 5: {
         // lhu
-        console.log("reading for lb");
-        const val = this.getDataMemory().read(address, 2).join("");
-        value = val.padStart(32, "0");
+        console.log('reading for lb');
+        const val = this.getDataMemory().read(address, 2).join('');
+        value = val.padStart(32, '0');
         break;
       }
     }
@@ -468,33 +468,33 @@ export class SCCPU {
     const offset12Val = this.currentInstruction().encoding.imm12;
     const offset32Val = offset12Val.padStart(32, offset12Val.at(0));
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
-    const aluRes = this.computeALURes(baseAddressVal, offset32Val, "0000");
+    const aluRes = this.computeALURes(baseAddressVal, offset32Val, '0000');
 
     result.add4.result = add4Res.toString(2);
     result.ru = {
       ...defaultRUResult,
       rs1: baseAddressVal,
       rs2: value,
-      writeSignal: "0",
+      writeSignal: '0'
     };
     result.alu = {
       a: baseAddressVal,
       b: offset32Val,
-      operation: "0000",
-      result: aluRes,
+      operation: '0000',
+      result: aluRes
     };
-    result.alua = { result: baseAddressVal, signal: "0" };
-    result.alub = { result: offset32Val, signal: "1" };
-    result.bu = { ...defaultBUResult, operation: "00XXX", result: "0" };
-    result.buMux = { signal: "0", result: add4Res.toString(2) };
+    result.alua = { result: baseAddressVal, signal: '0' };
+    result.alub = { result: offset32Val, signal: '1' };
+    result.bu = { ...defaultBUResult, operation: '00XXX', result: '0' };
+    result.buMux = { signal: '0', result: add4Res.toString(2) };
     result.dm = {
       ...defaultDMResult,
       address: aluRes,
       controlSignal: getFunct3(instruction),
       dataWr: value,
-      writeSignal: "1",
+      writeSignal: '1'
     };
-    result.imm = { signal: "001", output: offset32Val };
+    result.imm = { signal: '001', output: offset32Val };
     return result;
   }
 
@@ -548,24 +548,24 @@ export class SCCPU {
     }
 
     const aluaRes = (instruction.inst as number).toString(2);
-    const aluaRes32 = aluaRes.padStart(32, "0");
-    const aluRes = this.computeALURes(aluaRes32, imm32Val, "0000");
+    const aluaRes32 = aluaRes.padStart(32, '0');
+    const aluRes = this.computeALURes(aluaRes32, imm32Val, '0000');
 
-    result.ru = { ...defaultRUResult, writeSignal: "0", rs1: rs1, rs2: rs2 };
-    result.alua = { signal: "1", result: aluaRes32 };
-    result.alub = { signal: "1", result: imm32Val };
+    result.ru = { ...defaultRUResult, writeSignal: '0', rs1: rs1, rs2: rs2 };
+    result.alua = { signal: '1', result: aluaRes32 };
+    result.alub = { signal: '1', result: imm32Val };
     result.bu = {
-      operation: "01" + funct3,
-      result: condition ? "1" : "0",
+      operation: '01' + funct3,
+      result: condition ? '1' : '0',
       a: rs1,
-      b: rs2,
+      b: rs2
     };
     result.buMux = {
       result: condition ? parseInt(aluRes, 2).toString(2) : add4Res.toString(2),
-      signal: condition ? "1" : "0",
+      signal: condition ? '1' : '0'
     };
-    result.alu = { a: aluaRes, b: imm32Val, operation: "0000", result: aluRes };
-    result.imm = { signal: "101", output: imm32Val };
+    result.alu = { a: aluaRes, b: imm32Val, operation: '0000', result: aluRes };
+    result.imm = { signal: '101', output: imm32Val };
     return result;
   }
 
@@ -577,28 +577,28 @@ export class SCCPU {
     result.add4.result = add4Res;
 
     const imm21Val = this.currentInstruction().encoding.imm21;
-    const imm32Val = imm21Val.padEnd(32, "0");
+    const imm32Val = imm21Val.padEnd(32, '0');
 
-    let aVal = "0".padStart(32, "0");
-    let aluASrcVal = "0";
-    let aluAResVal = "0".padStart(32, "0");
+    let aVal = '0'.padStart(32, '0');
+    let aluASrcVal = '0';
+    let aluAResVal = '0'.padStart(32, '0');
     let aluRes = imm32Val;
     if (isAUIPC(instruction.type, instruction.opcode)) {
       const PC = instruction.inst as number;
-      aVal = PC.toString(2).padStart(32, "0");
-      aluASrcVal = "1";
+      aVal = PC.toString(2).padStart(32, '0');
+      aluASrcVal = '1';
       aluAResVal = aVal;
-      aluRes = (PC + parseInt(imm32Val, 2)).toString(2).padStart(32, "0");
+      aluRes = (PC + parseInt(imm32Val, 2)).toString(2).padStart(32, '0');
     }
 
-    result.ru = { ...defaultRUResult, writeSignal: "1", dataWrite: aluRes };
-    result.imm = { signal: "010", output: imm32Val };
-    result.alub = { result: imm32Val, signal: "1" };
+    result.ru = { ...defaultRUResult, writeSignal: '1', dataWrite: aluRes };
+    result.imm = { signal: '010', output: imm32Val };
+    result.alub = { result: imm32Val, signal: '1' };
     result.alua = { result: aluAResVal, signal: aluASrcVal };
-    result.bu = { ...defaultBUResult, result: "0", operation: "00XXX" };
-    result.alu = { operation: "0000", result: aluRes, a: aVal, b: imm32Val };
-    result.buMux = { result: add4Res, signal: "0" };
-    result.wb = { result: imm32Val, signal: "00" };
+    result.bu = { ...defaultBUResult, result: '0', operation: '00XXX' };
+    result.alu = { operation: '0000', result: aluRes, a: aVal, b: imm32Val };
+    result.buMux = { result: add4Res, signal: '0' };
+    result.wb = { result: imm32Val, signal: '00' };
     return result;
   }
 
@@ -607,27 +607,27 @@ export class SCCPU {
     const instruction = this.currentInstruction();
 
     const pc = parseInt(instruction.inst);
-    const pcVal = pc.toString(2).padStart(32, "0");
-    const add4Res = (pc + 4).toString(2).padStart(32, "0");
+    const pcVal = pc.toString(2).padStart(32, '0');
+    const add4Res = (pc + 4).toString(2).padStart(32, '0');
     result.add4.result = add4Res;
     const imm21Val = this.currentInstruction().encoding.imm21 as string;
-    const imm32Val = imm21Val.padStart(32, "0");
+    const imm32Val = imm21Val.padStart(32, '0');
 
-    const aluRes = this.computeALURes(pcVal, imm32Val, "0000");
+    const aluRes = this.computeALURes(pcVal, imm32Val, '0000');
 
-    result.alua = { result: pcVal, signal: "1" };
-    result.alub = { result: imm32Val, signal: "1" };
-    result.imm = { output: imm32Val, signal: "110" };
+    result.alua = { result: pcVal, signal: '1' };
+    result.alub = { result: imm32Val, signal: '1' };
+    result.imm = { output: imm32Val, signal: '110' };
     result.alu = {
       a: pc.toString(2),
       b: imm32Val,
-      operation: "0000",
-      result: aluRes,
+      operation: '0000',
+      result: aluRes
     };
-    result.buMux = { result: aluRes, signal: "1" };
-    result.bu = { ...defaultBUResult, operation: "1XXXX", result: "1" };
-    result.ru = { ...defaultRUResult, writeSignal: "1", dataWrite: add4Res };
-    result.wb = { result: add4Res, signal: "10" };
+    result.buMux = { result: aluRes, signal: '1' };
+    result.bu = { ...defaultBUResult, operation: '1XXXX', result: '1' };
+    result.ru = { ...defaultRUResult, writeSignal: '1', dataWrite: add4Res };
+    result.wb = { result: add4Res, signal: '10' };
     return result;
   }
 
@@ -640,8 +640,8 @@ export class SCCPU {
   }
 
   public printInfo() {
-    logger().info("CPU state");
-    logger().info("Registers");
+    logger().info('CPU state');
+    logger().info('Registers');
     this.registers.printRegisters();
   }
 }
