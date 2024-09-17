@@ -52,6 +52,8 @@ export function usesRegister(name: string, instType: string) {
       return usesRs2(instType);
     case 'rd':
       return usesRd(instType);
+    default:
+      throw new Error('Register name is not valid.');
   }
 }
 
@@ -69,6 +71,8 @@ export function usedRegisters(instType: string) {
       return ['rd'];
     case 'J':
       return ['rd'];
+    default:
+      throw new Error('Invalid instruction type');
   }
 }
 /**
@@ -219,6 +223,8 @@ export function opcodeToType(opcode: string) {
     case '0110111':
     case '0010111':
       return 'U';
+    default:
+      throw new Error('Invalid opcode value');
   }
 }
 

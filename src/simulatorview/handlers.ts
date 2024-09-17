@@ -942,7 +942,6 @@ function aluTooltipText(name: string, cpuData: SimulatorInfo) {
           ['Value16', valB16]
         ]
       });
-
     case name === 'ALURes':
       const shortValALURes = shortBinary(valALURes);
       const valALURes10 = parseInt(valALURes, 2);
@@ -954,6 +953,8 @@ function aluTooltipText(name: string, cpuData: SimulatorInfo) {
           ['Value16', '0x' + valALURes16]
         ]
       });
+    default:
+      throw new Error('Invalid ALU component');
   }
 }
 
@@ -1116,6 +1117,8 @@ function dmTooltipText(name: string, cpuData: SimulatorInfo) {
         ]
       });
     }
+    default:
+      throw new Error('Invalid DM component');
   }
 }
 
@@ -1536,6 +1539,8 @@ function imCUTooltipText(connection: string, cpuData: SimulatorInfo) {
           ['Value(2)', funct7]
         ]
       });
+    default:
+      throw new Error('Invalid connection name');
   }
 }
 

@@ -1,4 +1,4 @@
-import { parse } from "./riscv.js";
+import { parse } from './riscv';
 
 export type ParserResult = {
   success: boolean;
@@ -8,48 +8,48 @@ export type ParserResult = {
 };
 
 export function compile(inputSrc: any, inputName: any): ParserResult {
-  console.log("First pass!.");
+  console.log('First pass!.');
   let labelTable = {};
   try {
     parse(inputSrc, {
       grammarSource: inputName,
       symbols: labelTable,
-      firstPass: true,
+      firstPass: true
     });
   } catch (obj) {
-    console.error("Assembler error: ", obj);
+    console.error('Assembler error: ', obj);
     return {
       success: false,
       ir: { instructions: undefined, symbols: undefined },
-      info: "First pass failure",
-      extra: obj,
+      info: 'First pass failure',
+      extra: obj
     };
   }
-  console.log("Symbols:");
+  console.log('Symbols:');
   console.table(labelTable);
-  console.log("Second pass!.");
+  console.log('Second pass!.');
   let parserOutput;
   try {
     parserOutput = parse(inputSrc, {
       grammarSource: inputName,
       symbols: labelTable,
-      firstPass: false,
+      firstPass: false
     });
   } catch (obj) {
-    console.error("Assembler error: ", obj);
+    console.error('Assembler error: ', obj);
     return {
       success: false,
       ir: { instructions: undefined, symbols: undefined },
-      info: "Second pass failure",
-      extra: obj,
+      info: 'Second pass failure',
+      extra: obj
     };
   }
-  console.log("Success!.");
+  console.log('Success!.');
   const result = {
     success: true,
     ir: { instructions: parserOutput as any[], symbols: labelTable as any[] },
-    info: "Success",
-    extra: undefined,
+    info: 'Success',
+    extra: undefined
   };
   // console.log(JSON.stringify(result));
   return result;
