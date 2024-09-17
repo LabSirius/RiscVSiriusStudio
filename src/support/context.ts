@@ -334,40 +334,8 @@ export class RVSimulationContext {
                 });
               }
               break;
-            case "imMouseenter":
-              {
-                const instruction = this.cpu.currentInstruction();
-                this.sendToProgramMemory({
-                  operation: "selectInstructionFromAddress",
-                  address: instruction.inst,
-                });
-              }
-              break;
-            case "imMouseleave":
-              {
-                this.sendToProgramMemory({ operation: "clearSelection" });
-              }
-              break;
-            case "rs1Mouseenter":
-              this.selectRegister("rs1");
-              break;
-            case "rs2Mouseenter":
-              this.selectRegister("rs2");
-              break;
-            case "rdMouseenter":
-              this.selectRegister("rd");
-              break;
-            case "val1Mouseenter":
-              this.selectRegister("rs1");
-              break;
-            case "rs1Mouseleave":
-            case "rs2Mouseleave":
-            case "rdMouseleave":
-            case "val1Mouseleave":
-              this.clearRegisterSelection();
-              break;
-            case "registerUpdate":
-              console.log("Register update event ", message);
+            case 'registerUpdate':
+              console.log('Register update event ', message);
               this.updateRegister(message.name, message.value);
               break;
             default:
