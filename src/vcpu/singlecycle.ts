@@ -253,7 +253,7 @@ export class SCCPU {
   }
 
   public jumpToInstruction(address: string) {
-    this.pc = parseInt(address, 16) / 4;
+    this.pc = parseInt(address, 2) / 4;
     console.log('[jump] new value of PC is ', this.pc);
   }
 
