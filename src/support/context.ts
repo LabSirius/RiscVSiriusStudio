@@ -249,6 +249,11 @@ export class RVSimulationContext {
     });
   }
 
+  /**
+   * When a register value is updated in the register's view, a messaqge arrives
+   * to the dispatcher and this method is called. Here we notify the simulator
+   * about that change to proper respond.
+   */
   private updateRegister(regName: string, value: string) {
     this.sendToSimulator({
       operation: 'updateRegister',
@@ -345,6 +350,10 @@ export class RVSimulationContext {
               }
               break;
             case 'registerUpdate':
+              /**
+               * This message is received when the user updates the value of a
+               * register in the register's view.
+               */
               console.log('Register update event ', message);
               this.updateRegister(message.name, message.value);
               break;
