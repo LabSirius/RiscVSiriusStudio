@@ -166,8 +166,8 @@
     "package": "NODE_ENV=production node ./esbuild.js",
     "watch": "node ./esbuild.js --watch",
     "lint": "eslint src --ext ts",
-    "parservs": "npx peggy --allowed-start-rules Start,Instruction,SourceElement -o src/utilities/riscv.js --format es src/utilities/riscv.peg",
-    "parser": "npx peggy --allowed-start-rules Start,Instruction,SourceElement -o src/utilities/riscv.js --format commonjs src/utilities/riscv.peg",
+    "parservs": "npx peggy --allowed-start-rules Start,Instruction,SourceElement -o src/utilities/riscv.ts --format es src/utilities/riscv.peg",
+    "parser": "npx peggy --allowed-start-rules Start,Instruction,SourceElement -o src/utilities/riscv.ts --format commonjs src/utilities/riscv.peg",
     "assembler": "npx tsc src/utilities/cli.ts"
   },
   "devDependencies": {
