@@ -16,6 +16,15 @@ export function binaryToInt(binary: string): string {
   return (~~parseInt(binary, 2)).toString();
 }
 
+export function intToBinary(sgnInteger: number): string {
+  const result = (sgnInteger >>> 0).toString(2);
+  if (sgnInteger < 0) {
+    return result.padStart(32, '1');
+  } else {
+    return result.padStart(32, '0');
+  }
+}
+
 /**
  * Converts the binary representation of a number to an hexadecimal
  * representation.

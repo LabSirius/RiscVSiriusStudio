@@ -110,6 +110,11 @@
             "1024 bytes."
           ],
           "description": "Size in bytes of the data memory."
+        },
+        "rv-simulator.dataMemoryView.stackPointerInitialAddress": {
+          "type": "number",
+          "default": 124,
+          "description": "The initial address of the stack pointer. Must be 8 bytes aligned. The stack pointer grows from higher values down to lower values. This address must be lower than the last possible address to write."
         }
       }
     },

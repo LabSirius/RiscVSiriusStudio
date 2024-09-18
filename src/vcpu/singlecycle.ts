@@ -11,7 +11,6 @@
  * every component in the simulation.
  */
 
-// esto si concuerda
 import {
   getRs1,
   getRs2,
@@ -25,6 +24,9 @@ import {
   isIJump,
   isAUIPC
 } from '../utilities/instructions';
+
+import { ALU32 } from './alu32';
+import { binaryToInt, intToBinary } from '../utilities/conversions';
 
 import _ from 'lodash';
 import { logger } from '../utilities/logger';
@@ -219,13 +221,15 @@ export class SCCPU {
    */
   private pc: number;
 
-  public constructor(program: any[], memSize: number) {
+  public constructor(program: any[], memSize: number, sp: number) {
     this.program = program.filter((sc) => {
       return sc.kind === 'SrcInstruction';
     });
     console.log('Program to execute: ', this.program);
 
     this.registers = new RegistersFile();
+    // Set the initial value of the stack pointer
+    this.registers.writeRegister('x2', sp.toString(2).padStart(32, '0'));
     this.dataMemory = new DataMemory(memSize);
     this.pc = 0;
   }
@@ -257,35 +261,87 @@ export class SCCPU {
     console.log('[jump] new value of PC is ', this.pc);
   }
 
+  private toTwosComplement(n: any, len: any) {
+    // Taken from: https://stackoverflow.com/questions/73340264/how-to-convert-a-bigint-to-twos-complement-binary-in-javascript
+    // `n` must be an integer
+    // `len` must be a positive integer greater than bit-length of `n`
+
+    n = BigInt(n);
+
+    len = Number(len);
+    if (!Number.isInteger(len)) {
+      throw Error('`len` must be an integer');
+    }
+    if (len <= 0) {
+      throw Error('`len` must be greater than zero');
+    }
+
+    // If non-negative, a straight conversion works
+    if (n >= 0) {
+      n = n.toString(2);
+      if (n.length >= len) {
+        throw Error('out of range');
+      }
+      return n.padStart(len, '0');
+    }
+
+    n = (-n).toString(2); // make positive and convert to bit string
+
+    if (!(n.length < len || n === '1'.padEnd(len, '0'))) {
+      throw Error('out of range');
+    }
+
+    // Start at the LSB and work up. Copy bits up to and including the
+    // first 1 bit then invert the remaining
+    let invert = false;
+    return n
+      .split('')
+      .reverse()
+      .map((bit) => {
+        if (invert) {
+          return bit === '0' ? '1' : '0';
+        }
+        if (bit === '0') {
+          return bit;
+        }
+        invert = true;
+        return bit;
+      })
+      .reverse()
+      .join('')
+      .padStart(len, '1');
+  }
+
   private computeALURes(A: string, B: string, ALUOp: string): string {
-    const numA = parseInt(A, 2);
-    const numB = parseInt(B, 2);
-    let result: number = 0;
+    const numA = '0b' + A;
+    const numB = '0b' + B;
+    let result: BigInt = 0n;
     switch (ALUOp) {
       case '0000':
-        result = numA + numB;
+        result = ALU32.addition(numA, numB);
         break;
       case '1000':
-        result = numA - numB;
+        result = ALU32.subtraction(numA, numB);
         break;
       case '0100':
-        result = numA ^ numB;
+        result = ALU32.xor(numA, numB);
         break;
       case '0110':
-        result = numA | numB;
+        result = ALU32.or(numA, numB);
       case '0111':
-        result = numA & numB;
+        result = ALU32.and(numA, numB);
         break;
       case '0001':
-        result = numA << numB;
+        result = ALU32.shiftLeft(numA, numB);
         break;
       case '0101':
-        result = numA >> numB;
+        result = ALU32.shiftRight(numA, numB);
         break;
       default:
         throw new Error('ALU: unknown operation');
     }
-    return _.padStart(result.toString(2), 32, '0');
+    const result32 = this.toTwosComplement(result, 32);
+    return result32;
   }
 
   /**
@@ -295,9 +351,10 @@ export class SCCPU {
    * !TODO: document when ready
    */
   public executeInstruction(): SCCPUResult {
-    console.log('execute instruction', this.currentInstruction());
+    // console.log('execute instruction', this.currentInstruction());
     switch (this.currentType()) {
       case 'R':
+        // console.log('breakpoint execute r');
         return this.executeRInstruction();
       case 'I':
         return this.executeIInstruction();
@@ -462,8 +519,9 @@ export class SCCPU {
     const baseAddressVal = this.registers.readRegisterFromName(
       getRs1(instruction)
     );
-
-    const value = this.registers.readRegisterFromName(getRs2(instruction));
+    const dataToStore = this.registers.readRegisterFromName(
+      getRs2(instruction)
+    );
 
     const offset12Val = this.currentInstruction().encoding.imm12;
     const offset32Val = offset12Val.padStart(32, offset12Val.at(0));
@@ -474,7 +532,6 @@ export class SCCPU {
     result.ru = {
       ...defaultRUResult,
       rs1: baseAddressVal,
-      rs2: value,
       writeSignal: '0'
     };
     result.alu = {
@@ -491,10 +548,11 @@ export class SCCPU {
       ...defaultDMResult,
       address: aluRes,
       controlSignal: getFunct3(instruction),
-      dataWr: value,
+      dataWr: dataToStore,
       writeSignal: '1'
     };
     result.imm = { signal: '001', output: offset32Val };
+    console.log('Result of S instruction: ', result);
     return result;
   }
 

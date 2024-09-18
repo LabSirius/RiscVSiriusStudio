@@ -21,14 +21,25 @@ export class RVExtensionContext {
   private currentIR: any | undefined;
   private simulator: RVSimulationContext | undefined;
   private memorySize: number;
+  private stackPointerInitialAddress: number;
   public constructor() {
     this.currentFile = '';
     this.memorySize = 128;
+    this.stackPointerInitialAddress = 124;
   }
 
   public setMemorySize(newSize: number) {
     this.memorySize = newSize;
     console.log('New memory size--------');
+  }
+
+  public setSpAddress(address: number) {
+    if (address > this.memorySize) {
+      throw new Error(
+        'Stack pointer address needs to be lower than memory size'
+      );
+    }
+    this.stackPointerInitialAddress = address;
   }
 
   public getCurrentFile() {
@@ -124,7 +135,8 @@ export class RVExtensionContext {
     programMemory: ProgMemPanelView,
     dataMemory: DataMemPanelView,
     registers: RegisterPanelView,
-    instruction: InstructionPanelView
+    instruction: InstructionPanelView,
+    settings: any = {}
   ) {
     console.log('start simulation at rvContext');
     this.uploadIR(programMemory);
@@ -133,10 +145,12 @@ export class RVExtensionContext {
     this.simulator = new RVSimulationContext(
       this.currentIR.instructions,
       this.memorySize,
+      this.stackPointerInitialAddress,
       simulator,
       programMemory,
       dataMemory,
-      registers
+      registers,
+      settings
     );
   }
 
@@ -185,12 +199,14 @@ export class RVSimulationContext {
   constructor(
     program: any[],
     memSize: number,
+    spAddress: number,
     simulator: SimulatorPanel,
     progmem: ProgMemPanelView,
     datamem: DataMemPanelView,
-    registers: RegisterPanelView
+    registers: RegisterPanelView,
+    settings: any = {}
   ) {
-    this.cpu = new SCCPU(program, memSize);
+    this.cpu = new SCCPU(program, memSize, spAddress);
     this.simPanel = simulator;
     this.progMemPanel = progmem;
     this.dataMemPanel = datamem;
@@ -215,6 +231,7 @@ export class RVSimulationContext {
     this.sendToDataMemory({ operation: 'clearSelection' });
     this.sendToRegisters({ operation: 'clearSelection' });
     this.sendToRegisters({ operation: 'showRegistersView' });
+    this.sendToRegisters({ operation: 'settingsChanged', settings: settings });
   }
 
   private sendToSimulator(message: any) {
@@ -287,6 +304,9 @@ export class RVSimulationContext {
                     register: instruction.rd.regeq,
                     value: result.wb.result
                   });
+                  this.cpu
+                    .getRegisterFile()
+                    .writeRegister(instruction.rd.regeq, result.wb.result);
                 }
                 if (writesDM(instruction.type, instruction.opcode)) {
                   let bytesToWrite;
