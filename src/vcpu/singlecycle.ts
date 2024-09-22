@@ -337,6 +337,15 @@ export class SCCPU {
       case '0101':
         result = ALU32.shiftRight(numA, numB);
         break;
+      case '1101':
+        result = ALU32.shiftRightA(numA, numB);
+        break;
+      case '0010':
+        result = ALU32.lessThan(numA, numB);
+        break;
+      case '0011':
+        result = ALU32.lessThanU(numA, numB);
+        break;
       default:
         throw new Error('ALU: unknown operation');
     }
