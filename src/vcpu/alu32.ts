@@ -31,25 +31,36 @@ export class ALU32 {
     if (bb < 0 || bb > 31) {
       throw new Error('Incorrect shift value ' + bb);
     }
-    // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Left_shift
+    // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Right_shift
     // << produces a 32 bits integer.
     const br = ba >> bb;
     return BigInt(br);
   }
 
-  public static shiftRightA(a: string, b: string): boolean {
-    throw new Error('Operation is not implemented');
+  public static shiftRightA(a: string, b: string): BigInt {
+    const ba = Number(a);
+    const bb = Number(b);
+    if (bb < 0 || bb > 31) {
+      throw new Error('Incorrect shift value ' + bb);
+    }
+    // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Right_shift
+    // << produces a 32 bits integer.
+    const br = ba >> bb;
+    return BigInt(br);
   }
 
-  public static lessThan(a: string, b: string): boolean {
+  public static lessThan(a: string, b: string): BigInt {
     const ba = BigInt(a);
     const bb = BigInt(b);
-    const result = BigInt.asIntN(32, ba) < BigInt.asIntN(32, bb);
+    const result = BigInt(BigInt.asIntN(32, ba) < BigInt.asIntN(32, bb));
     return result;
   }
 
-  public static lessThanU(a: string, b: string): boolean {
-    throw new Error('Operation is not implemented');
+  public static lessThanU(a: string, b: string): BigInt {
+    const ba = BigInt(a);
+    const bb = BigInt(b);
+    const result = BigInt(ba < bb);
+    return result;
   }
 
   public static xor(a: string, b: string): BigInt {
