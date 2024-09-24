@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>fileTypes</key>
+    <array>
+      <string>rvbin</string>
+    </array>
+    <!-- <key>keyEquivalent</key>
+    <string>^~M</string> -->
+    <key>name</key>
+    <string>RISCV Binary</string>
+    <key>patterns</key>
+    <array>
+      <dict>
+        <key>Comment</key>
+        <string>Matches all riscv instructions in binary</string>
+        <key>match</key>
+        <string>\b([0-1]{32})\b</string>
+        <key>name</key>
+        <string>instruction.binEncoding</string>
+      </dict>
+    
+      <dict>
+        <key>Comment</key>
+        <string>Matches column titles</string>
+        <key>match</key>
+        <string>\b(Addr|Binary encoding|Hex encoding)\b</string>
+        <key>name</key>
+        <string>instruction.title</string>
+      </dict>
+      <dict>
+        <key>Comment</key>
+        <string>Matches an address</string>
+        <key>match</key>
+        <string>^[A-Fa-e0-9]+\b</string>
+        <key>name</key>
+        <string>instruction.address</string>
+      </dict>
+      <dict>
+        <key>Comment</key>
+        <string>Matches all riscv instructions in hexadecimal</string>
+        <key>match</key>
+        <string>([A-Fa-e0-9]{2}-?){4}</string>
+        <key>name</key>
+        <string>instruction.hexEncoding</string>
+      </dict>
+      <!-- <dict>
+        <key>Comment</key>
+        <string>Matches riscv primitive operations</string>
+        <key>match</key>
+        <string>\b(add|sub|xor|or|and|sll|srl|sra|slt|sltu|addi|xori|ori|andi|slli|srli|srai|slti|sltiu|lb|lh|lw|lbu|lhu|sb|sh|sw|beq|bne|blt|bge|bltu|bgeu|jalr|jal|lui|auipc|ecall|ebreak)\b</string>
+        <key>name</key>
+        <string>keyword.32i.primitive</string>
+      </dict>
+      <dict>
+        <key>Comment</key>
+        <string>Matches numbers</string>
+        <key>match</key>
+        <string>[+-]?[0-9]+</string>
+        <key>name</key>
+        <string>statement.instruction.integer</string>
+      </dict>
+      <dict>
+        <key>Comment</key>
+        <string>Matches targets</string>
+        <key>match</key>
+        <string>\.?[A-Za-z0-9_]+</string>
+        <key>name</key>
+        <string>statement.instruction.target</string>
+      </dict> -->
+
+    </array>
+    <key>scopeName</key>
+    <string>binary.riscv</string>
+    <key>uuid</key>
+    <string>e2ad0874-ca66-44cb-9ebd-94c7d500baa8</string>
+  </dict>
+</plist>

@@ -138,6 +138,11 @@
         "extensions": [".asm"],
         "aliases": ["RiscVAsm", "riscvasm"],
         "configuration": "./riscv-configuration.json"
+      },
+      {
+        "id": "riscvbin",
+        "extensions": [".rvbin"],
+        "aliases": ["RiscVBin", "riscvbin"]
       }
     ],
     "grammars": [
@@ -145,6 +150,11 @@
         "language": "riscvasm",
         "scopeName": "source.riscv",
         "path": "./syntaxes/riscv.tmLanguage"
+      },
+      {
+        "language": "riscvbin",
+        "scopeName": "binary.riscv",
+        "path": "./syntaxes/riscvbin.tmLanguage"
       }
     ],
     "themes": [

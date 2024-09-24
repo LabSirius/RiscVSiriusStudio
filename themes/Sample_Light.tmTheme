@@ -86,7 +86,52 @@
         <string>#5191B5</string>
 			</dict>
 		</dict>
-
+		<dict>
+			<key>name</key>
+			<string>BinaryEncoding</string>
+			<key>scope</key>
+			<string>instruction.binEncoding</string>
+			<key>settings</key>
+			<dict>
+				<!-- <key>fontStyle</key>
+				<string>bold</string> -->
+        <key>foreground</key>
+        <string>#5191B5</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>HexadecimalEncoding</string>
+			<key>scope</key>
+			<string>instruction.hexEncoding</string>
+			<key>settings</key>
+			<dict>
+				<key>fontStyle</key>
+				<string>italic</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Address</string>
+			<key>scope</key>
+			<string>instruction.address</string>
+			<key>settings</key>
+			<dict>
+				<key>fontStyle</key>
+				<string>bold</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>ColumnTitle</string>
+			<key>scope</key>
+			<string>instruction.title</string>
+			<key>settings</key>
+			<dict>
+				<key>fontStyle</key>
+				<string>bold</string>
+			</dict>
+		</dict>
   </array>
 	<key>uuid</key>
 	<string>db5a12dd-e26c-465f-8514-2fed194896a7</string>
