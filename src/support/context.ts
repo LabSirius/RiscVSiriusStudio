@@ -3,7 +3,6 @@
 import { TextDocument } from 'vscode';
 import { SCCPU } from '../vcpu/singlecycle';
 import { SimulatorPanel } from '../panels/SimulatorPanel';
-import { ProgMemPanelView } from '../panels/ProgMemPanel';
 import { InstructionPanelView } from '../panels/InstructionPanel';
 import { RegisterPanelView } from '../panels/RegisterPanel';
 import {
@@ -89,27 +88,14 @@ export class RVExtensionContext {
     }
   }
 
-  public uploadIR(programMemory: ProgMemPanelView) {
-    if (!this.validIR()) {
-      console.log('No valid IR, skipping');
-    } else {
-      console.log('updateProgram from context', this.currentIR);
-      programMemory
-        .getWebView()
-        .postMessage({ operation: 'updateProgram', program: this.currentIR });
-    }
-  }
-
   public startSimulation(
     simulator: SimulatorPanel,
-    programMemory: ProgMemPanelView,
     dataMemory: DataMemPanelView,
     registers: RegisterPanelView,
     instruction: InstructionPanelView,
     settings: any = {}
   ) {
     console.log('start simulation at rvContext');
-    this.uploadIR(programMemory);
     // After this call the simulator instance will intercept the messages of the
     // views and will respond to them
     this.simulator = new RVSimulationContext(
@@ -117,7 +103,6 @@ export class RVExtensionContext {
       this.memorySize,
       this.stackPointerInitialAddress,
       simulator,
-      programMemory,
       dataMemory,
       registers,
       settings
@@ -140,6 +125,7 @@ export class RVExtensionContext {
       });
     return JSON.stringify(program);
   }
+
   public isCurrentFile(name: string) {
     return this.currentFile ? name === this.currentFile : false;
   }
@@ -162,7 +148,6 @@ export class RVExtensionContext {
 export class RVSimulationContext {
   private cpu: SCCPU;
   private simPanel: SimulatorPanel;
-  private progMemPanel: ProgMemPanelView;
   private dataMemPanel: DataMemPanelView;
   private regPanel: RegisterPanelView;
 
@@ -171,20 +156,15 @@ export class RVSimulationContext {
     memSize: number,
     spAddress: number,
     simulator: SimulatorPanel,
-    progmem: ProgMemPanelView,
     datamem: DataMemPanelView,
     registers: RegisterPanelView,
     settings: any = {}
   ) {
     this.cpu = new SCCPU(program, memSize, spAddress);
     this.simPanel = simulator;
-    this.progMemPanel = progmem;
     this.dataMemPanel = datamem;
     this.regPanel = registers;
 
-    this.progMemPanel.getWebView().onDidReceiveMessage((message: any) => {
-      this.dispatch(message);
-    });
     this.dataMemPanel.getWebView().onDidReceiveMessage((message: any) => {
       this.dispatch(message);
     });
@@ -196,7 +176,6 @@ export class RVSimulationContext {
     });
 
     // Ensure nothing is selected in the program memory and the registers views
-    this.sendToProgramMemory({ operation: 'clearSelection' });
     this.sendToDataMemory({ operation: 'showDataMemView' });
     this.sendToDataMemory({ operation: 'clearSelection' });
     this.sendToRegisters({ operation: 'clearSelection' });
@@ -210,10 +189,6 @@ export class RVSimulationContext {
 
   private sendToRegisters(message: any) {
     this.regPanel.getWebView().postMessage(message);
-  }
-
-  private sendToProgramMemory(message: any) {
-    this.progMemPanel.getWebView().postMessage(message);
   }
 
   private sendToDataMemory(message: any) {

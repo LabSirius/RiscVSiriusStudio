@@ -51,18 +51,8 @@
       "riscv": [
         {
           "type": "webview",
-          "id": "rv-simulator.instruction",
-          "name": "Instruction"
-        },
-        {
-          "type": "webview",
           "id": "rv-simulator.registers",
           "name": "Registers"
-        },
-        {
-          "type": "webview",
-          "id": "rv-simulator.progmem",
-          "name": "Program memory"
         },
         {
           "type": "webview",

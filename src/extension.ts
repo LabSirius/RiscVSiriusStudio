@@ -16,14 +16,13 @@ import {
 
 import { SimulatorPanel } from './panels/SimulatorPanel';
 import { RegisterPanelView } from './panels/RegisterPanel';
-import { ProgMemPanelView } from './panels/ProgMemPanel';
 import { DataMemPanelView } from './panels/DataMemPanel';
 import { InstructionPanelView } from './panels/InstructionPanel';
 import { RiscCardPanel } from './panels/RiscCardPanel';
 import { logger } from './utilities/logger';
 import { RVExtensionContext } from './support/context';
 import { setTimeout } from 'timers/promises';
-import { encodeIR, ProgramMemoryProvider } from './progmemprovider';
+import { encodeIR, ProgramMemoryProvider } from './progmemview/progmemprovider';
 import { applyDecoration } from './utilities/editor-utils';
 
 export function activate(context: ExtensionContext) {
@@ -45,15 +44,6 @@ export function activate(context: ExtensionContext) {
     workspace.registerTextDocumentContentProvider(
       ProgramMemoryProvider.scheme,
       programMemoryProvider
-    )
-  );
-
-  // Program memory view
-  context.subscriptions.push(
-    window.registerWebviewViewProvider(
-      'rv-simulator.progmem',
-      ProgMemPanelView.render(context.extensionUri, {}),
-      { webviewOptions: { retainContextWhenHidden: true } }
     )
   );
 
@@ -134,10 +124,6 @@ export function activate(context: ExtensionContext) {
     const instFormat = workspace
       .getConfiguration()
       .get('rv-simulator.programMemoryView.instructionFormat');
-    sendMessageToProgMemView({
-      operation: 'settingsChanged',
-      settings: { codeSync: codeSync, instFormat: instFormat }
-    });
     const stackPointerAddress = workspace
       .getConfiguration()
       .get('rv-simulator.dataMemoryView.stackPointerInitialAddress') as number;
@@ -263,7 +249,6 @@ function updateContext(
     rvContext.setAndBuildCurrentFile(fileName, document.getText());
     if (rvContext.validIR()) {
       reportBuildStatus(statusBarItem, 'Passed');
-      rvContext.uploadIR(ProgMemPanelView.render(uri, {}));
     } else {
       reportBuildStatus(statusBarItem, 'Failure');
     }
@@ -312,7 +297,6 @@ function simulateProgram(
       window.showInformationMessage('Starting simulation');
       rvContext.startSimulation(
         simulator,
-        ProgMemPanelView.render(extensionUri, {}),
         DataMemPanelView.render(extensionUri, {}),
         RegisterPanelView.render(extensionUri, {}),
         InstructionPanelView.render(extensionUri, {}),
@@ -340,14 +324,6 @@ function exportProgMemJSON(extensionUri: Uri, rvContext: RVExtensionContext) {
         commands.executeCommand('editor.action.formatDocument');
       });
     });
-}
-
-function sendMessageToProgMemView(msg: any) {
-  console.log('sending message to progmemview', msg);
-  const progmem = ProgMemPanelView.currentview?.getWebView();
-  if (progmem) {
-    progmem.postMessage(msg);
-  }
 }
 
 function sendMessageToRegistersView(msg: any) {
