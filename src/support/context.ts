@@ -64,6 +64,10 @@ export class RVExtensionContext {
     this.build(name, sourceCode);
   }
 
+  public getIR(): any {
+    return this.currentIR;
+  }
+
   public getIRForInstructionAt(line: number): any {
     if (this.currentIR === undefined) {
       throw Error('There is no intermediate representation of code yet.');
@@ -93,40 +97,6 @@ export class RVExtensionContext {
       programMemory
         .getWebView()
         .postMessage({ operation: 'updateProgram', program: this.currentIR });
-    }
-  }
-  public reflectInstruction(
-    instruction: InstructionPanelView,
-    program: ProgMemPanelView,
-    ir: any
-  ) {
-    if (!this.validIR()) {
-      console.log('No valid IR, skipping');
-    } else {
-      // console.log('Message to reflect instruction', ir);
-      if (ir.kind === 'SrcInstruction') {
-        // Reflect on the instruction view
-        instruction.getWebView().postMessage({
-          operation: 'showInstructionView'
-        });
-        instruction.getWebView().postMessage({
-          operation: 'reflectInstruction',
-          instruction: ir
-        });
-        // Reflect on the instruction memory view
-        program.getWebView().postMessage({
-          operation: 'reflectInstruction',
-          instruction: ir
-        });
-      } else {
-        // It can be a directive or a label definition.
-        program.getWebView().postMessage({
-          operation: 'clearSelection'
-        });
-        instruction.getWebView().postMessage({
-          operation: 'hideInstructionView'
-        });
-      }
     }
   }
 

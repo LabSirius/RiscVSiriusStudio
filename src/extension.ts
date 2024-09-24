@@ -23,6 +23,8 @@ import { RiscCardPanel } from './panels/RiscCardPanel';
 import { logger } from './utilities/logger';
 import { RVExtensionContext } from './support/context';
 import { setTimeout } from 'timers/promises';
+import { encodeIR, ProgramMemoryProvider } from './progmemprovider';
+import { applyDecoration } from './utilities/editor-utils';
 
 export function activate(context: ExtensionContext) {
   console.log('Activating extension');
@@ -35,6 +37,14 @@ export function activate(context: ExtensionContext) {
       'rv-simulator.registers',
       RegisterPanelView.render(context.extensionUri, {}),
       { webviewOptions: { retainContextWhenHidden: true } }
+    )
+  );
+
+  const programMemoryProvider = new ProgramMemoryProvider();
+  context.subscriptions.push(
+    workspace.registerTextDocumentContentProvider(
+      ProgramMemoryProvider.scheme,
+      programMemoryProvider
     )
   );
 
@@ -154,37 +164,68 @@ export function activate(context: ExtensionContext) {
    * This will build the program every time the document changes
    */
   workspace.onDidChangeTextDocument((event: TextDocumentChangeEvent) => {
-    // console.log('Change text document event');
     const document = event.document;
     updateContext(context.extensionUri, document, rvContext, statusBarItem);
   });
 
+  /**
+   * Update the program memory editor with the user interaction on the source
+   * code editor.
+   */
   window.onDidChangeTextEditorSelection(
     (event: TextEditorSelectionChangeEvent) => {
       const editor = event.textEditor;
       const document = editor.document;
       // This event will trigger for any workspace file.
       if (RVExtensionContext.isValidFile(document)) {
+        updateContext(context.extensionUri, document, rvContext, statusBarItem);
         if (!rvContext.validIR()) {
-          updateContext(
-            context.extensionUri,
-            document,
-            rvContext,
-            statusBarItem
-          );
+          return;
         }
-        const ir = irForCurrentLine(rvContext);
-        if (typeof ir !== 'undefined') {
-          rvContext.reflectInstruction(
-            InstructionPanelView.render(context.extensionUri, {}),
-            ProgMemPanelView.render(context.extensionUri, {}),
-            ir
-          );
-          // console.log('Editor selection ', ir);
-        }
+        // open or refresh the associated program memory file
+        const jsonIR = JSON.stringify(rvContext.getIR());
+        const uri = encodeIR(document.uri, jsonIR);
+        workspace.openTextDocument(uri).then((programMemoryDocument) => {
+          window
+            .showTextDocument(programMemoryDocument, {
+              viewColumn: editor.viewColumn! + 1,
+              preview: true,
+              preserveFocus: true
+            })
+            .then((programMemoryEditor) => {
+              const currentSourceLine = editor.selection.active.line;
+              const encodingForCurrentLine = encodingForSourceLine(
+                rvContext,
+                currentSourceLine,
+                programMemoryDocument
+              );
+              applyDecoration(encodingForCurrentLine, programMemoryEditor);
+            });
+        });
       }
     }
   );
+}
+
+/**
+ * Returns the line number in the program memory with the encoding of the
+ * instruction at sourceLine
+ */
+function encodingForSourceLine(
+  rvContext: RVExtensionContext,
+  sourceLine: number,
+  programMemoryDocument: TextDocument
+) {
+  const lineIr = rvContext.getIRForInstructionAt(sourceLine);
+  const instAddress = parseInt(lineIr.inst).toString(16);
+  for (let l = 0; l < programMemoryDocument.lineCount; l++) {
+    const line = programMemoryDocument.lineAt(l);
+    const address = line.text.substring(0, line.text.indexOf('\t'));
+    if (address.endsWith(instAddress)) {
+      return l;
+    }
+  }
+  throw new Error('Corresponding address not found');
 }
 
 /**
@@ -221,23 +262,38 @@ function updateContext(
   if (RVExtensionContext.isValidFile(document)) {
     rvContext.setAndBuildCurrentFile(fileName, document.getText());
     if (rvContext.validIR()) {
-      statusBarItem.text = 'RISCV: success build';
-      statusBarItem.backgroundColor = new ThemeColor('statusBar.background');
-      statusBarItem.show();
+      reportBuildStatus(statusBarItem, 'Passed');
       rvContext.uploadIR(ProgMemPanelView.render(uri, {}));
     } else {
-      statusBarItem.text = 'RISCV: error';
-      statusBarItem.backgroundColor = new ThemeColor(
-        'statusBarItem.errorBackground'
-      );
-      statusBarItem.show();
+      reportBuildStatus(statusBarItem, 'Failure');
     }
   } else {
     // Skip as the document is not a riscv file.
-    // console.log('Called on invalid document');
   }
 }
 
+/**
+ * Report the result of the program's parsing.
+ * @param statusBarItem where the error is reported
+ * @param status whether the parsing was successful ("Passed") or it resulted in
+ * an error ("Failure")
+ */
+function reportBuildStatus(
+  statusBarItem: StatusBarItem,
+  status: 'Passed' | 'Failure'
+) {
+  if (status === 'Passed') {
+    statusBarItem.text = 'RISCV: success build';
+    statusBarItem.backgroundColor = new ThemeColor('statusBar.background');
+    statusBarItem.show();
+  } else {
+    statusBarItem.text = 'RISCV: error';
+    statusBarItem.backgroundColor = new ThemeColor(
+      'statusBarItem.errorBackground'
+    );
+    statusBarItem.show();
+  }
+}
 function simulateProgram(
   editor: TextEditor | undefined,
   extensionUri: Uri,
