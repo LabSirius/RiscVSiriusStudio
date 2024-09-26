@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { TextDocument } from 'vscode';
+import { TextDocument, TextEditor } from 'vscode';
 import { SCCPU } from '../vcpu/singlecycle';
 import { SimulatorPanel } from '../panels/SimulatorPanel';
-import { InstructionPanelView } from '../panels/InstructionPanel';
 import { RegisterPanelView } from '../panels/RegisterPanel';
 import {
   branchesOrJumps,
@@ -16,12 +15,30 @@ import { compile } from '../utilities/riscvc';
 import { DataMemPanelView } from '../panels/DataMemPanel';
 
 export class RVExtensionContext {
+  /**
+   * Regerence to the document with the source code.
+   */
+  private sourceDocument: TextDocument | undefined;
+  /**
+   * Reference to the document with the encoding of the program memory.
+   */
+  private programMemoryDocument: TextDocument | undefined;
+
+  /**
+   * Associates lines in the program memory document with their respective instruction indexes.
+   */
+  private programMemoryMap: Map<number, number>;
+  private sourceCodeMap: Map<number, number>;
+
   private currentFile: string | undefined;
   private currentIR: any | undefined;
   private simulator: RVSimulationContext | undefined;
   private memorySize: number;
   private stackPointerInitialAddress: number;
   public constructor() {
+    this.programMemoryMap = new Map<number, number>();
+    this.sourceCodeMap = new Map<number, number>();
+
     this.currentFile = '';
     this.memorySize = 128;
     this.stackPointerInitialAddress = 124;
@@ -58,10 +75,52 @@ export class RVExtensionContext {
     return this.currentIR !== undefined;
   }
 
-  public setAndBuildCurrentFile(name: string, sourceCode: string) {
-    this.currentFile = name;
-    this.build(name, sourceCode);
+  public setSourceDocument(document: TextDocument) {
+    this.sourceDocument = document;
+    this.build(document.fileName, document.getText());
   }
+  public setProgramMemoryForSourceCodeLine(
+    sourceLine: number,
+    memLine: number
+  ) {
+    this.sourceCodeMap.set(sourceLine, memLine);
+  }
+
+  public clearFileAssociations() {
+    this.programMemoryMap.clear();
+    this.sourceCodeMap.clear();
+  }
+
+  public setProgramMemoryDocument(document: TextDocument) {
+    if (!this.validIR()) {
+      throw new Error(
+        'Setting program memory document for invalid representation'
+      );
+    }
+    this.programMemoryDocument = document;
+  }
+
+  public getProgramMemoryDocument() {
+    if (!this.validIR()) {
+      throw new Error(
+        'Getting program memory document for invalid representation'
+      );
+    }
+    return this.programMemoryDocument;
+  }
+
+  public getProgramMemoryMap() {
+    return this.programMemoryMap;
+  }
+
+  public getSourceCodeMap() {
+    return this.sourceCodeMap;
+  }
+
+  // public setAndBuildCurrentFile(name: string, sourceCode: string) {
+  //   this.currentFile = name;
+  //   this.build(name, sourceCode);
+  // }
 
   public getIR(): any {
     return this.currentIR;
@@ -141,6 +200,13 @@ export class RVExtensionContext {
     return document
       ? document.languageId === 'riscvasm' && document.uri.scheme === 'file'
       : false;
+  }
+
+  public static isValidBinFile(document?: TextDocument | undefined): boolean {
+    if (document) {
+      return document.languageId === 'riscvbin';
+    }
+    return false;
   }
 }
 

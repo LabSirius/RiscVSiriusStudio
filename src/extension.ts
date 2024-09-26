@@ -9,7 +9,6 @@ import {
   Uri,
   window,
   workspace,
-  ProgressLocation,
   ThemeColor,
   StatusBarItem
 } from 'vscode';
@@ -20,11 +19,12 @@ import { DataMemPanelView } from './panels/DataMemPanel';
 import { RiscCardPanel } from './panels/RiscCardPanel';
 import { logger } from './utilities/logger';
 import { RVExtensionContext } from './support/context';
-import { setTimeout } from 'timers/promises';
 import { encodeIR, ProgramMemoryProvider } from './progmemview/progmemprovider';
-import { applyDecoration } from './utilities/editor-utils';
+import { applyDecoration, removeDecoration } from './utilities/editor-utils';
+import { BinaryEncodingProvider } from './support/hoverProvider';
+// import { CodelensProvider } from './support/codeLensProvider';
 
-export function activate(context: ExtensionContext) {
+export async function activate(context: ExtensionContext) {
   console.log('Activating extension');
   logger().info('Activating extension');
   const rvContext = new RVExtensionContext();
@@ -38,13 +38,16 @@ export function activate(context: ExtensionContext) {
     )
   );
 
-  const programMemoryProvider = new ProgramMemoryProvider();
+  const programMemoryProvider = new ProgramMemoryProvider(rvContext);
   context.subscriptions.push(
     workspace.registerTextDocumentContentProvider(
       ProgramMemoryProvider.scheme,
       programMemoryProvider
     )
   );
+
+  const binaryEncodingProvider = new BinaryEncodingProvider(rvContext);
+  binaryEncodingProvider.registerHoverProviders();
 
   // Data memory view
   context.subscriptions.push(
@@ -75,9 +78,10 @@ export function activate(context: ExtensionContext) {
       if (editor) {
         updateContext(
           context.extensionUri,
-          editor.document,
+          editor,
           rvContext,
-          statusBarItem
+          statusBarItem,
+          binaryEncodingProvider
         );
       }
     })
@@ -132,16 +136,44 @@ export function activate(context: ExtensionContext) {
    * This will build the program every time the file is saved.
    */
   workspace.onDidSaveTextDocument((document) => {
-    // console.log('Save editor event');
-    updateContext(context.extensionUri, document, rvContext, statusBarItem);
+    if (!window.activeTextEditor) {
+      console.error('Saving a document without an active text editor');
+      return;
+    }
+    updateContext(
+      context.extensionUri,
+      window.activeTextEditor,
+      rvContext,
+      statusBarItem,
+      binaryEncodingProvider
+    );
   });
 
-  /**
-   * This will build the program every time the document changes
-   */
   workspace.onDidChangeTextDocument((event: TextDocumentChangeEvent) => {
-    const document = event.document;
-    updateContext(context.extensionUri, document, rvContext, statusBarItem);
+    if (!window.activeTextEditor) {
+      console.error('Changing a document without an active text editor');
+      return;
+    }
+    updateContext(
+      context.extensionUri,
+      window.activeTextEditor,
+      rvContext,
+      statusBarItem,
+      binaryEncodingProvider
+    );
+  });
+
+  window.onDidChangeActiveTextEditor((editor: TextEditor | undefined) => {
+    if (!editor) {
+      return;
+    }
+    updateContext(
+      context.extensionUri,
+      editor,
+      rvContext,
+      statusBarItem,
+      binaryEncodingProvider
+    );
   });
 
   /**
@@ -154,30 +186,29 @@ export function activate(context: ExtensionContext) {
       const document = editor.document;
       // This event will trigger for any workspace file.
       if (RVExtensionContext.isValidFile(document)) {
-        updateContext(context.extensionUri, document, rvContext, statusBarItem);
-        if (!rvContext.validIR()) {
+        const programMemoryDocument = rvContext.getProgramMemoryDocument();
+        if (programMemoryDocument === undefined) {
           return;
         }
-        // open or refresh the associated program memory file
-        const jsonIR = JSON.stringify(rvContext.getIR());
-        const uri = encodeIR(document.uri, jsonIR);
-        workspace.openTextDocument(uri).then((programMemoryDocument) => {
-          window
-            .showTextDocument(programMemoryDocument, {
-              viewColumn: editor.viewColumn! + 1,
-              preview: true,
-              preserveFocus: true
-            })
-            .then((programMemoryEditor) => {
-              const currentSourceLine = editor.selection.active.line;
-              const encodingForCurrentLine = encodingForSourceLine(
-                rvContext,
-                currentSourceLine,
-                programMemoryDocument
-              );
-              applyDecoration(encodingForCurrentLine, programMemoryEditor);
-            });
-        });
+
+        window
+          .showTextDocument(programMemoryDocument, {
+            viewColumn: editor.viewColumn! + 1,
+            preview: true,
+            preserveFocus: true
+          })
+          .then((programMemoryEditor) => {
+            const currentSourceLine = editor.selection.active.line;
+            const memoryEditorLine = rvContext
+              .getSourceCodeMap()
+              .get(currentSourceLine);
+            if (memoryEditorLine === undefined) {
+              // remove decorations
+              removeDecoration(programMemoryEditor);
+              return;
+            }
+            applyDecoration(memoryEditorLine, programMemoryEditor);
+          });
       }
     }
   );
@@ -230,18 +261,29 @@ function irForCurrentLine(rvContext: RVExtensionContext) {
 
 function updateContext(
   uri: Uri,
-  document: TextDocument,
+  editor: TextEditor,
   rvContext: RVExtensionContext,
-  statusBarItem: StatusBarItem
+  statusBarItem: StatusBarItem,
+  binaryEncodingProvider: BinaryEncodingProvider
 ) {
-  const fileName = document.fileName;
-  if (RVExtensionContext.isValidFile(document)) {
-    rvContext.setAndBuildCurrentFile(fileName, document.getText());
+  if (RVExtensionContext.isValidFile(editor.document)) {
+    rvContext.setSourceDocument(editor.document);
+    let uri: Uri;
     if (rvContext.validIR()) {
+      uri = encodeIR(editor.document.uri, true);
       reportBuildStatus(statusBarItem, 'Passed');
     } else {
+      uri = encodeIR(editor.document.uri, false);
       reportBuildStatus(statusBarItem, 'Failure');
     }
+    workspace.openTextDocument(uri).then((programMemoryDocument) => {
+      window.showTextDocument(programMemoryDocument, {
+        viewColumn: editor.viewColumn! + 1,
+        preview: true,
+        preserveFocus: true
+      });
+      rvContext.setProgramMemoryDocument(programMemoryDocument);
+    });
   } else {
     // Skip as the document is not a riscv file.
   }
@@ -269,6 +311,7 @@ function reportBuildStatus(
     statusBarItem.show();
   }
 }
+
 function simulateProgram(
   editor: TextEditor | undefined,
   extensionUri: Uri,
@@ -276,8 +319,7 @@ function simulateProgram(
 ) {
   if (editor) {
     const document = editor.document;
-    const fileName = document.fileName;
-    rvContext.setAndBuildCurrentFile(fileName, document.getText());
+    rvContext.setSourceDocument(document);
     if (!rvContext.validIR()) {
       window.showErrorMessage('Build process failed. Cannot simulate program');
       return;
@@ -313,12 +355,4 @@ function exportProgMemJSON(extensionUri: Uri, rvContext: RVExtensionContext) {
         commands.executeCommand('editor.action.formatDocument');
       });
     });
-}
-
-function sendMessageToRegistersView(msg: any) {
-  console.log('sending message to registersview', msg);
-  const registers = RegisterPanelView.currentview?.getWebView();
-  if (registers) {
-    registers.postMessage(msg);
-  }
 }

@@ -6,23 +6,23 @@ import {
   OverviewRulerLane,
   TextEditorDecorationType,
   ThemeColor
-} from "vscode";
+} from 'vscode';
 
-import { logger } from "../utilities/logger";
+import { logger } from '../utilities/logger';
 
 const memoryHighlightDecorationType = window.createTextEditorDecorationType({
-  backgroundColor: new ThemeColor("editor.selectionHighlightBackground"),
+  backgroundColor: new ThemeColor('editor.selectionHighlightBackground'),
   isWholeLine: true,
-  borderWidth: "2px",
-  borderRadius: "10px",
-  borderStyle: "solid",
-  overviewRulerColor: new ThemeColor("statusBar.background"),
+  borderWidth: '2px',
+  borderRadius: '10px',
+  borderStyle: 'solid',
+  overviewRulerColor: new ThemeColor('statusBar.background'),
   overviewRulerLane: OverviewRulerLane.Full,
   light: {
-    borderColor: new ThemeColor("statusBar.background")
+    borderColor: new ThemeColor('statusBar.background')
   },
   dark: {
-    borderColor: new ThemeColor("statusBar.background")
+    borderColor: new ThemeColor('statusBar.background')
   }
 });
 
@@ -32,4 +32,8 @@ export function applyDecoration(line: number, editor: TextEditor) {
   const decorationRange = new Range(start, end);
   editor.setDecorations(memoryHighlightDecorationType, [decorationRange]);
   editor.revealRange(decorationRange);
+}
+
+export function removeDecoration(editor: TextEditor) {
+  editor.setDecorations(memoryHighlightDecorationType, []);
 }
