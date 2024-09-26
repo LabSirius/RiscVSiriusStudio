@@ -17,7 +17,6 @@ import {
 import { SimulatorPanel } from './panels/SimulatorPanel';
 import { RegisterPanelView } from './panels/RegisterPanel';
 import { DataMemPanelView } from './panels/DataMemPanel';
-import { InstructionPanelView } from './panels/InstructionPanel';
 import { RiscCardPanel } from './panels/RiscCardPanel';
 import { logger } from './utilities/logger';
 import { RVExtensionContext } from './support/context';
@@ -52,15 +51,6 @@ export function activate(context: ExtensionContext) {
     window.registerWebviewViewProvider(
       'rv-simulator.datamem',
       DataMemPanelView.render(context.extensionUri, {}),
-      { webviewOptions: { retainContextWhenHidden: true } }
-    )
-  );
-
-  // Instruction view
-  context.subscriptions.push(
-    window.registerWebviewViewProvider(
-      'rv-simulator.instruction',
-      InstructionPanelView.render(context.extensionUri, {}),
       { webviewOptions: { retainContextWhenHidden: true } }
     )
   );
@@ -299,7 +289,6 @@ function simulateProgram(
         simulator,
         DataMemPanelView.render(extensionUri, {}),
         RegisterPanelView.render(extensionUri, {}),
-        InstructionPanelView.render(extensionUri, {}),
         {
           sort: workspace
             .getConfiguration()

@@ -92,7 +92,6 @@ export class RVExtensionContext {
     simulator: SimulatorPanel,
     dataMemory: DataMemPanelView,
     registers: RegisterPanelView,
-    instruction: InstructionPanelView,
     settings: any = {}
   ) {
     console.log('start simulation at rvContext');
