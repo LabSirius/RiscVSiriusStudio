@@ -82,28 +82,12 @@ const registersviewConfig = {
   ],
 };
 
-const progmemviewConfig = {
-  ...baseConfig,
-  target: "es2020",
-  format: "esm",
-  entryPoints: ["./src/progmemview/progmemview.ts"],
-  outfile: "./out/progmemview.js",
-};
-
 const datamemviewConfig = {
   ...baseConfig,
   target: "es2020",
   format: "esm",
   entryPoints: ["./src/datamemview/datamemview.ts"],
   outfile: "./out/datamemview.js",
-};
-
-const instructionviewConfig = {
-  ...baseConfig,
-  target: "es2020",
-  format: "esm",
-  entryPoints: ["./src/instructionview/instructionview.ts"],
-  outfile: "./out/instructionview.js",
 };
 
 // This watch config adheres to the conventions of the esbuild-problem-matchers
@@ -146,15 +130,7 @@ const watchConfig = {
         ...watchConfig,
       });
       await build({
-        ...progmemviewConfig,
-        ...watchConfig,
-      });
-      await build({
         ...datamemviewConfig,
-        ...watchConfig,
-      });
-      await build({
-        ...instructionviewConfig,
         ...watchConfig,
       });
       console.log("[watch] build finished");
@@ -163,9 +139,7 @@ const watchConfig = {
       await build(extensionConfig);
       await build(simulatorviewConfig);
       await build(registersviewConfig);
-      await build(progmemviewConfig);
       await build(datamemviewConfig);
-      await build(instructionviewConfig);
       console.log("build complete");
     }
   } catch (err) {

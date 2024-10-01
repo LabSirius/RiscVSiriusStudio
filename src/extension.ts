@@ -57,9 +57,6 @@ export async function activate(context: ExtensionContext) {
   );
 
   const statusBarItem = window.createStatusBarItem('RVSiriusStudioBarItem', 1);
-  // statusBarItem.backgroundColor = new ThemeColor(
-  //   "statusBarItem.errorBackground"
-  // );
   statusBarItem.text = 'RiscVSiriusStudio';
   statusBarItem.show();
 
@@ -107,24 +104,14 @@ export async function activate(context: ExtensionContext) {
    * Reflect changes of vscode files to the extension context.
    *
    */
-
   workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
     console.log('Configuration change occurred.');
-    const codeSync = workspace
-      .getConfiguration()
-      .get('rv-simulator.programMemoryView.codeSynchronization');
-    const instFormat = workspace
-      .getConfiguration()
-      .get('rv-simulator.programMemoryView.instructionFormat');
     const stackPointerAddress = workspace
       .getConfiguration()
       .get('rv-simulator.dataMemoryView.stackPointerInitialAddress') as number;
     const memSize = workspace
       .getConfiguration()
       .get('rv-simulator.dataMemoryView.memorySize') as number;
-    const sort = workspace
-      .getConfiguration()
-      .get('rv-simulator.registersView.sort');
     // TODO: Check that the stack pointer address is less than the las address of the DM
     rvContext.setMemorySize(memSize);
     rvContext.setSpAddress(stackPointerAddress);
