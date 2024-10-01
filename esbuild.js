@@ -29,7 +29,7 @@ const extensionConfig = {
       // verbose:true,
       assets: [
         {
-          from: ["./src/simulatorview/styles.css", "./src/simulatorview/cpu0Events.js"],
+          from: ["./src/simulatorview/styles.css"],
           to: ["./out"],
         },
         {
