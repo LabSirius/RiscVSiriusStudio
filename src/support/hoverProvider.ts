@@ -62,8 +62,11 @@ async function detailsInstruction(
   instruction: any
 ): Promise<MarkdownString | undefined> {
   const markdown = new MarkdownString(
-    'Hola mundo ' + instruction.encoding.hexEncoding,
+    `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}
+    `,
     true
   );
+  markdown.isTrusted = true;
+  markdown.supportHtml = true;
   return markdown;
 }

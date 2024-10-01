@@ -2,7 +2,6 @@ import {
   commands,
   ConfigurationChangeEvent,
   ExtensionContext,
-  TextDocument,
   TextDocumentChangeEvent,
   TextEditor,
   TextEditorSelectionChangeEvent,
@@ -22,7 +21,6 @@ import { RVExtensionContext } from './support/context';
 import { encodeIR, ProgramMemoryProvider } from './progmemview/progmemprovider';
 import { applyDecoration, removeDecoration } from './utilities/editor-utils';
 import { BinaryEncodingProvider } from './support/hoverProvider';
-// import { CodelensProvider } from './support/codeLensProvider';
 
 export async function activate(context: ExtensionContext) {
   console.log('Activating extension');
@@ -212,27 +210,6 @@ export async function activate(context: ExtensionContext) {
       }
     }
   );
-}
-
-/**
- * Returns the line number in the program memory with the encoding of the
- * instruction at sourceLine
- */
-function encodingForSourceLine(
-  rvContext: RVExtensionContext,
-  sourceLine: number,
-  programMemoryDocument: TextDocument
-) {
-  const lineIr = rvContext.getIRForInstructionAt(sourceLine);
-  const instAddress = parseInt(lineIr.inst).toString(16);
-  for (let l = 0; l < programMemoryDocument.lineCount; l++) {
-    const line = programMemoryDocument.lineAt(l);
-    const address = line.text.substring(0, line.text.indexOf('\t'));
-    if (address.endsWith(instAddress)) {
-      return l;
-    }
-  }
-  throw new Error('Corresponding address not found');
 }
 
 /**
