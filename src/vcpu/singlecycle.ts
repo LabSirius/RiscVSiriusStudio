@@ -71,9 +71,19 @@ class DataMemory {
     this.memory = new Array(size).fill('00000000');
     this.size = size;
   }
+
+  public lastAddress() {
+    return this.size - 1;
+  }
+
+  public canWrite(numBytes: number, address: number) {
+    const lastAddress = address + numBytes - 1;
+    return lastAddress <= this.lastAddress();
+  }
+
   public write(data: Array<string>, address: number) {
     const lastAddress = address + data.length - 1;
-    if (lastAddress > this.size - 1) {
+    if (lastAddress > this.lastAddress()) {
       throw new Error('Data memory size exceeded.');
     }
     for (let i = 0; i < data.length; i++) {
@@ -82,7 +92,7 @@ class DataMemory {
   }
   public read(address: number, length: number): Array<string> {
     const lastAddress = address + length - 1;
-    if (lastAddress > this.size - 1) {
+    if (lastAddress > this.lastAddress()) {
       throw new Error('Data memory size exceeded.');
     }
     let data = [] as Array<string>;
@@ -297,7 +307,7 @@ export class SCCPU {
     return n
       .split('')
       .reverse()
-      .map((bit) => {
+      .map((bit: any) => {
         if (invert) {
           return bit === '0' ? '1' : '0';
         }

@@ -1,32 +1,32 @@
 import {
   provideVSCodeDesignSystem,
   Button,
-  allComponents,
-} from "@vscode/webview-ui-toolkit";
+  allComponents
+} from '@vscode/webview-ui-toolkit';
 import {
   computePosition,
   flip,
   shift,
   offset,
   arrow,
-  Placement,
-} from "@floating-ui/dom";
-import { Modal } from "bootstrap";
-import { elementToSVG, inlineResources } from "dom-to-svg";
+  Placement
+} from '@floating-ui/dom';
+import { Modal } from 'bootstrap';
+import { elementToSVG, inlineResources } from 'dom-to-svg';
 
-import { jsPDF } from "jspdf";
-import "svg2pdf.js";
+import { jsPDF } from 'jspdf';
+import 'svg2pdf.js';
 
-import * as Handlers from "./handlers";
-import { SimulatorInfo } from "./SimulatorInfo.js";
-import { InstructionView } from "./InstructionView.js";
-import { usedRegisters } from "../utilities/instructions.js";
-import { SCCPUResult } from "../vcpu/singlecycle";
+import * as Handlers from './handlers';
+import { SimulatorInfo } from './SimulatorInfo.js';
+import { InstructionView } from './InstructionView.js';
+import { usedRegisters } from '../utilities/instructions.js';
+import { SCCPUResult } from '../vcpu/singlecycle';
 
 provideVSCodeDesignSystem().register(allComponents);
 
 const vscode = acquireVsCodeApi();
-window.addEventListener("load", main);
+window.addEventListener('load', main);
 
 function sendMessageToExtension(messageObject: any) {
   vscode.postMessage(messageObject);
@@ -49,41 +49,41 @@ function main() {
   const cpuData = new SimulatorInfo(log, instView);
   cpuData.initializeSVGElements(Handlers);
 
-  const step = document.getElementById("step-execution") as Button;
-  step.addEventListener("click", (e) => {
+  const step = document.getElementById('step-execution') as Button;
+  step.addEventListener('click', (e) => {
     sendMessageToExtension({
-      command: "event",
-      from: "simulator",
-      message: "stepClicked",
+      command: 'event',
+      from: 'simulator',
+      message: 'stepClicked'
     });
   });
 
-  const inspect = document.getElementById("inspect-registers") as Button;
-  inspect.addEventListener("click", (e) => {
+  const inspect = document.getElementById('inspect-registers') as Button;
+  inspect.addEventListener('click', (e) => {
     const registers = usedRegisters(cpuData.instructionType()) as string[];
     registers.forEach((reg) => {
       const register = cpuData.getInstruction()[reg].regeq;
       sendMessageToExtension({
-        command: "event",
-        from: "simulator",
-        message: "watchRegister",
-        register: register,
+        command: 'event',
+        from: 'simulator',
+        message: 'watchRegister',
+        register: register
       });
     });
   });
 
-  const exportSVG = document.getElementById("export-svg") as Button;
-  exportSVG.addEventListener("click", (e) => {
+  const exportSVG = document.getElementById('export-svg') as Button;
+  exportSVG.addEventListener('click', (e) => {
     exportToSVG();
   });
 
   // Install message dispatcher
-  window.addEventListener("message", (event) => {
+  window.addEventListener('message', (event) => {
     messageDispatch(event, cpuData, instView);
   });
 
   installListeners(cpuData);
-  log("info", { simulatorView: "Initialization finished" });
+  log('info', { simulatorView: 'Initialization finished' });
 }
 
 function messageDispatch(
@@ -93,28 +93,46 @@ function messageDispatch(
 ) {
   const message = event.data;
   switch (message.operation) {
-    case "setInstruction":
+    case 'setInstruction':
       setInstruction(message.instruction, message.result, cpuData, instView);
       break;
-    case "updateRegister":
-      log("info", "set register data");
+    case 'updateRegister':
+      log('info', 'set register data');
       cpuData.updateRegister(message.name, message.value);
       break;
-    case "simulationFinished":
-      simulationFinished(cpuData);
+    case 'simulationFinished':
+      simulationFinished(cpuData, message.title, message.body);
 
       break;
     default:
-      log("info", { message: "Message not recognized by webview" });
-      throw Error("Message not recognized by webview" + message.operation);
+      log('info', { message: 'Message not recognized by webview' });
+      throw Error('Message not recognized by webview' + message.operation);
   }
 }
 
-function simulationFinished(cpuData: SimulatorInfo) {
-  const step = document.getElementById("step-execution") as Button;
+function simulationFinished(
+  cpuData: SimulatorInfo,
+  title: string,
+  body: string
+) {
+  const step = document.getElementById('step-execution') as Button;
   step.disabled = true;
-  const modal = new Modal(document.getElementById("simulator-modal"), {
-    backdrop: "static",
+  const modalTitle = document.getElementById(
+    'simulator-modal-title'
+  ) as HTMLElement;
+  const modalBody = document.getElementById(
+    'simulator-modal-body'
+  ) as HTMLElement;
+
+  const modalElement = document.getElementById(
+    'simulator-modal'
+  ) as HTMLElement;
+
+  modalTitle.innerHTML = title;
+  modalBody.innerHTML = body;
+
+  const modal = new Modal(modalElement, {
+    backdrop: 'static'
   });
   modal.show();
   cpuData.terminate();
@@ -132,7 +150,7 @@ function setInstruction(
     `<span class="instruction">${instruction.asm}</span>`
   );
 
-  const inspect = document.getElementById("inspect-registers") as Button;
+  const inspect = document.getElementById('inspect-registers') as Button;
   inspect.disabled = false;
 
   instView.newInstruction(cpuData.getInstruction());
@@ -151,7 +169,7 @@ function setTooltip(
   place: Placement,
   text: string | Function
 ) {
-  const tooltip = document.getElementById("tooltip") as HTMLElement;
+  const tooltip = document.getElementById('tooltip') as HTMLElement;
   function update() {
     // const arrowElement = document.getElementById('arrow') as HTMLElement;
     // element.style.border = '2pt dashed red';
@@ -161,9 +179,9 @@ function setTooltip(
      * draw.io. In that case we go deep in the hierarchy to position the tooltip
      * properly.
      */
-    if (element.tagName === "g") {
+    if (element.tagName === 'g') {
       // could be an svg element from draw.io
-      const elems = element.getElementsByTagName("rect");
+      const elems = element.getElementsByTagName('rect');
       if (elems.length > 0) {
         element = elems[0];
       }
@@ -171,27 +189,27 @@ function setTooltip(
     computePosition(element, tooltip, {
       placement: place,
       // middleware: [arrow({ element: arrowElement })]
-      middleware: [flip(), shift({ padding: 5 })],
+      middleware: [flip(), shift({ padding: 5 })]
     }).then(({ x, y, placement, middlewareData }) => {
       Object.assign(tooltip.style, { left: `${x}px`, top: `${y}px` });
     });
-    tooltip.innerHTML = typeof text === "string" ? text : text();
+    tooltip.innerHTML = typeof text === 'string' ? text : text();
   }
 
   function showTooltip() {
-    tooltip.style.display = "block";
+    tooltip.style.display = 'block';
     update();
   }
   function hideTooltip() {
-    tooltip.style.display = "";
-    (element as HTMLElement).style.border = "none";
+    tooltip.style.display = '';
+    (element as HTMLElement).style.border = 'none';
   }
 
   const events: [keyof HTMLElementEventMap, () => void][] = [
-    ["mouseenter", showTooltip],
-    ["mouseleave", hideTooltip],
-    ["focus", showTooltip],
-    ["blur", hideTooltip],
+    ['mouseenter', showTooltip],
+    ['mouseleave', hideTooltip],
+    ['focus', showTooltip],
+    ['blur', hideTooltip]
   ];
   events.forEach(([event, listener]) => {
     element.addEventListener(event, listener);
@@ -236,95 +254,95 @@ function installListeners(cpuData: SimulatorInfo) {
    * When the mouse is over the instruction memory then the instruction is
    * selected in the proram memory view.
    */
-  cpuData.getSVGElement("IM").addEventListener("mouseenter", () => {
+  cpuData.getSVGElement('IM').addEventListener('mouseenter', () => {
     sendMessageToExtension({
-      command: "event",
-      from: "simulator",
-      message: "imMouseenter",
+      command: 'event',
+      from: 'simulator',
+      message: 'imMouseenter'
     });
   });
 
-  cpuData.getSVGElement("IM").addEventListener("mouseleave", () => {
+  cpuData.getSVGElement('IM').addEventListener('mouseleave', () => {
     sendMessageToExtension({
-      command: "event",
-      from: "simulator",
-      message: "imMouseleave",
+      command: 'event',
+      from: 'simulator',
+      message: 'imMouseleave'
     });
   });
   /**
    * When the mouse is over the rs1 label in the registers unit then the
    * register is selected in the register view.
    */
-  cpuData.getSVGElement("RUTEXTINRS1").addEventListener("mouseenter", () => {
+  cpuData.getSVGElement('RUTEXTINRS1').addEventListener('mouseenter', () => {
     sendMessageToExtension({
-      command: "event",
-      from: "simulator",
-      message: "rs1Mouseenter",
+      command: 'event',
+      from: 'simulator',
+      message: 'rs1Mouseenter'
     });
   });
-  cpuData.getSVGElement("RUTEXTINRS1").addEventListener("mouseleave", () => {
+  cpuData.getSVGElement('RUTEXTINRS1').addEventListener('mouseleave', () => {
     sendMessageToExtension({
-      command: "event",
-      from: "simulator",
-      message: "rs1Mouseleave",
+      command: 'event',
+      from: 'simulator',
+      message: 'rs1Mouseleave'
     });
   });
-  cpuData.getSVGElement("RUTEXTINRS2").addEventListener("mouseenter", () => {
+  cpuData.getSVGElement('RUTEXTINRS2').addEventListener('mouseenter', () => {
     sendMessageToExtension({
-      command: "event",
-      from: "simulator",
-      message: "rs2Mouseenter",
+      command: 'event',
+      from: 'simulator',
+      message: 'rs2Mouseenter'
     });
   });
-  cpuData.getSVGElement("RUTEXTINRS2").addEventListener("mouseleave", () => {
+  cpuData.getSVGElement('RUTEXTINRS2').addEventListener('mouseleave', () => {
     sendMessageToExtension({
-      command: "event",
-      from: "simulator",
-      message: "rs2Mouseleave",
+      command: 'event',
+      from: 'simulator',
+      message: 'rs2Mouseleave'
     });
   });
-  cpuData.getSVGElement("RUTEXTINRD").addEventListener("mouseenter", () => {
+  cpuData.getSVGElement('RUTEXTINRD').addEventListener('mouseenter', () => {
     sendMessageToExtension({
-      command: "event",
-      from: "simulator",
-      message: "rdMouseenter",
+      command: 'event',
+      from: 'simulator',
+      message: 'rdMouseenter'
     });
   });
-  cpuData.getSVGElement("RUTEXTINRD").addEventListener("mouseleave", () => {
+  cpuData.getSVGElement('RUTEXTINRD').addEventListener('mouseleave', () => {
     sendMessageToExtension({
-      command: "event",
-      from: "simulator",
-      message: "rdMouseleave",
+      command: 'event',
+      from: 'simulator',
+      message: 'rdMouseleave'
     });
   });
 
-  cpuData.getSVGElement("RUTEXTOUTRD1").addEventListener("mouseenter", () => {
+  cpuData.getSVGElement('RUTEXTOUTRD1').addEventListener('mouseenter', () => {
     sendMessageToExtension({
-      command: "event",
-      from: "simulator",
-      message: "val1Mouseenter",
+      command: 'event',
+      from: 'simulator',
+      message: 'val1Mouseenter'
     });
   });
-  cpuData.getSVGElement("RUTEXTOUTRD1").addEventListener("mouseleave", () => {
+  cpuData.getSVGElement('RUTEXTOUTRD1').addEventListener('mouseleave', () => {
     sendMessageToExtension({
-      command: "event",
-      from: "simulator",
-      message: "val1Mouseleave",
+      command: 'event',
+      from: 'simulator',
+      message: 'val1Mouseleave'
     });
   });
 }
 
 function exportToSVG() {
-  log("info", "downloading svg");
-  const svgDOM = document.getElementById("main-svg") as HTMLElement;
+  log('info', 'downloading svg');
+  const svgDOM = document.getElementById('main-svg') as HTMLElement;
   const svgDocument = elementToSVG(svgDOM);
   inlineResources(svgDocument.documentElement);
   const svgString = new XMLSerializer().serializeToString(svgDocument);
-  const blob = new Blob([svgString], { type: "text/obj" });
-  const a = document.createElement("a");
+  const blob = new Blob([svgString], { type: 'text/obj' });
+  const a = document.createElement('a');
 
-  a.download = "cpu.svg";
+  a.download = 'cpu.svg';
   a.href = window.URL.createObjectURL(blob);
-  a.dataset.downloadurl = ["text/obj", a.download, a.href].join(":");
+  a.dataset.downloadurl = ['text/obj', a.download, a.href].join(':');
   a.click();
 }

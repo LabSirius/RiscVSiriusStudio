@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { TextDocument, TextEditor } from 'vscode';
-import { SCCPU } from '../vcpu/singlecycle';
+import { TextDocument, TextEditor, window } from 'vscode';
+import { SCCPU, SCCPUResult } from '../vcpu/singlecycle';
 import { SimulatorPanel } from '../panels/SimulatorPanel';
 import { RegisterPanelView } from '../panels/RegisterPanel';
 import {
@@ -35,6 +35,7 @@ export class RVExtensionContext {
   private simulator: RVSimulationContext | undefined;
   private memorySize: number;
   private stackPointerInitialAddress: number;
+
   public constructor() {
     this.programMemoryMap = new Map<number, number>();
     this.sourceCodeMap = new Map<number, number>();
@@ -46,7 +47,7 @@ export class RVExtensionContext {
 
   public setMemorySize(newSize: number) {
     this.memorySize = newSize;
-    console.log('New memory size--------');
+    console.log('New memory size--------', newSize);
   }
 
   public setSpAddress(address: number) {
@@ -290,6 +291,58 @@ export class RVSimulationContext {
     this.cpu.getRegisterFile().writeRegister(regName, value);
   }
 
+  private writeResult(result: SCCPUResult) {
+    const instruction = this.cpu.currentInstruction();
+    let bytesToWrite;
+    const funct3 = getFunct3(instruction);
+    switch (funct3) {
+      case '000':
+        bytesToWrite = 1;
+        break;
+      case '001':
+        bytesToWrite = 2;
+        break;
+      case '010':
+        bytesToWrite = 4;
+        break;
+      default:
+        throw new Error('Cannot deduce bytes to write from funct3');
+    }
+    const addressNum = parseInt(result.dm.address, 2);
+    if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) {
+      this.sendToSimulator({
+        operation: 'simulationFinished',
+        title: 'Simulation error',
+        body: `Cannot write ${
+          result.dm.dataWr
+        } (${bytesToWrite} bytes) to memory address ${addressNum.toString(
+          16
+        )} last address is ${this.cpu
+          .getDataMemory()
+          .lastAddress()
+          .toString(16)} `
+      });
+    }
+    // console.log(
+    //   'Writing result to DM address: ',
+    //   result.dm.address,
+    //   ' value to write ',
+    //   result.dm.dataWr,
+    //   ' section to write ',
+    //   bytesToWrite,
+    //   ' can Write ',
+    //   this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)
+    // );
+    this.sendToDataMemory({
+      operation: 'write',
+      address: result.dm.address,
+      value: result.dm.dataWr,
+      bytes: bytesToWrite
+    });
+    const chunks = result.dm.dataWr.match(/.{1,8}/g) as Array<string>;
+    this.cpu.getDataMemory().write(chunks.reverse(), addressNum);
+  }
+
   private dispatch(message: any) {
     console.log('RVSimulationContext dispatch', message);
     switch (message.command) {
@@ -301,7 +354,11 @@ export class RVSimulationContext {
             case 'stepClicked':
               {
                 if (this.cpu.finished()) {
-                  this.sendToSimulator({ operation: 'simulationFinished' });
+                  this.sendToSimulator({
+                    operation: 'simulationFinished',
+                    title: 'Simulation finished',
+                    body: '..... Something ....'
+                  });
                   return;
                 }
                 const instruction = this.cpu.currentInstruction();
@@ -319,42 +376,7 @@ export class RVSimulationContext {
                     .writeRegister(instruction.rd.regeq, result.wb.result);
                 }
                 if (writesDM(instruction.type, instruction.opcode)) {
-                  let bytesToWrite;
-                  const funct3 = getFunct3(instruction);
-                  switch (funct3) {
-                    case '000':
-                      bytesToWrite = 1;
-                      break;
-                    case '001':
-                      bytesToWrite = 2;
-                      break;
-                    case '010':
-                      bytesToWrite = 4;
-                      break;
-                    default:
-                      throw new Error(
-                        'Cannot deduce bytes to write from funct3'
-                      );
-                  }
-                  console.log(
-                    'Writing result to DM address: ',
-                    result.dm.address,
-                    ' value to write ',
-                    result.dm.dataWr,
-                    ' section to write ',
-                    bytesToWrite
-                  );
-                  this.sendToDataMemory({
-                    operation: 'write',
-                    address: result.dm.address,
-                    value: result.dm.dataWr,
-                    bytes: bytesToWrite
-                  });
-                  const chunks = result.dm.dataWr.match(
-                    /.{1,8}/g
-                  ) as Array<string>;
-                  const address = parseInt(result.dm.address, 2);
-                  this.cpu.getDataMemory().write(chunks.reverse(), address);
+                  this.writeResult(result);
                 }
                 // Send message to update the simulator components.
                 this.sendToSimulator({

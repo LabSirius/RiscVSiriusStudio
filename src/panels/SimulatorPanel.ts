@@ -4,11 +4,11 @@ import {
   WebviewPanel,
   window,
   Uri,
-  ViewColumn,
-} from "vscode";
-import { getUri } from "../utilities/getUri";
-import { getNonce } from "../utilities/getNonce";
-import { logger } from "../utilities/logger";
+  ViewColumn
+} from 'vscode';
+import { getUri } from '../utilities/getUri';
+import { getNonce } from '../utilities/getNonce';
+import { logger } from '../utilities/logger';
 
 /**
  * This class manages the state and behavior of HelloWorld webview panels.
@@ -73,18 +73,18 @@ export class SimulatorPanel {
       // If a webview panel does not already exist create and show a new one
       const panel = window.createWebviewPanel(
         // Panel view type
-        "showHelloWorld",
+        'showHelloWorld',
         // Panel title
-        "RISCV simulator",
+        'RISCV simulator',
         // The editor column the panel should be displayed in
         { viewColumn: ViewColumn.One, preserveFocus: true },
         {
           enableScripts: true,
           localResourceRoots: [
-            Uri.joinPath(extensionUri, "out"),
-            Uri.joinPath(extensionUri, "node_modules"), // Required for codicon
+            Uri.joinPath(extensionUri, 'out'),
+            Uri.joinPath(extensionUri, 'node_modules') // Required for codicon
           ],
-          retainContextWhenHidden: true,
+          retainContextWhenHidden: true
         }
       );
 
@@ -123,30 +123,30 @@ export class SimulatorPanel {
    */
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
     const webviewUri = getUri(webview, extensionUri, [
-      "out",
-      "simulatorview.js",
+      'out',
+      'simulatorview.js'
     ]);
     const nonce = getNonce();
-    const cssFile = getUri(webview, extensionUri, ["out", "styles.css"]);
+    const cssFile = getUri(webview, extensionUri, ['out', 'styles.css']);
 
     const codiconsUri = webview.asWebviewUri(
       Uri.joinPath(
         extensionUri,
-        "node_modules",
-        "@vscode/codicons",
-        "dist",
-        "codicon.css"
+        'node_modules',
+        '@vscode/codicons',
+        'dist',
+        'codicon.css'
       )
     );
 
     const bootstrapCSS = webview.asWebviewUri(
       Uri.joinPath(
         extensionUri,
-        "node_modules",
-        "bootstrap",
-        "dist",
-        "css",
-        "bootstrap.min.css"
+        'node_modules',
+        'bootstrap',
+        'dist',
+        'css',
+        'bootstrap.min.css'
       )
     );
 
@@ -180,7 +180,7 @@ export class SimulatorPanel {
               <div class="modal-content">
                 <!-- Modal Header -->
                 <div class="modal-header">
-                  <h4 class="modal-title">Simulation finished</h4>
+                  <h4 class="modal-title" id="simulator-modal-title">Simulation finished</h4>
                   <button
                     type="button"
                     class="btn-close"
@@ -189,7 +189,7 @@ export class SimulatorPanel {
                 </div>
 
                 <!-- Modal body -->
-                <div class="modal-body">
+                <div class="modal-body" id="simulator-modal-body">
                   
                   The simulation has finished. You can save the current status of the memory and registers before performing a new simulation.
 
@@ -5589,8 +5589,8 @@ export class SimulatorPanel {
       (message: any) => {
         const command = message.command;
         switch (command) {
-          case "info":
-            console.log("info ", message.obj);
+          case 'info':
+            console.log('info ', message.obj);
             break;
           // default:
           // console.error("Message not recognized", message);
