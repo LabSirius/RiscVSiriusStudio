@@ -58,14 +58,36 @@ export class BinaryEncodingProvider {
   }
 }
 
-async function detailsInstruction(
-  instruction: any
-): Promise<MarkdownString | undefined> {
+async function detailsInstruction(instruction: any): Promise<MarkdownString | undefined> {
+  console.log('Instruction', instruction);
+  let strMarkdown = '';
+  switch (instruction.type) {
+    case 'R':
+      strMarkdown = `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}\n- Funct3: ${instruction.encoding.funct3}\n- Funct7: ${instruction.encoding.funct7} \n- Rd: ${instruction.encoding.rd}\n- Rs1: ${instruction.encoding.rs1}\n- Rs2: ${instruction.encoding.rs2}`;
+      break;
+    case 'I':
+      strMarkdown = `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}\n- Funct3: ${instruction.encoding.funct3}\n- Rd: ${instruction.encoding.rd}\n- Rs1: ${instruction.encoding.rs1}\n- Imm: ${instruction.encoding.imm12}`;
+      break;
+    case 'S':
+      strMarkdown = `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}\n- Funct3: ${instruction.encoding.funct3}\n- Rs1: ${instruction.encoding.rs1}\n- Rs2: ${instruction.encoding.rs2}\n- Imm: ${instruction.encoding.imm12}`;
+      break;
+    case 'B':
+      strMarkdown = `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}\n- Funct3: ${instruction.encoding.funct3}\n- Rs1: ${instruction.encoding.binEncoding.substring(12,17)}\n- Rs2: ${instruction.encoding.binEncoding.substring(7,12)}\n- Imm: ${instruction.encoding.imm13}`;
+      break;
+    case 'U':
+      strMarkdown = `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}\n- Rd: ${instruction.encoding.rd}\n- Imm: ${instruction.encoding.imm21}`;
+      break;
+    case 'J':
+      strMarkdown = `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}\n - Rd: ${instruction.encoding.rd}\n- Imm: ${instruction.encoding.imm21}`;
+      break;
+    default:
+      return undefined;
+  }
   const markdown = new MarkdownString(
-    `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}
-    `,
+    strMarkdown,
     true
   );
+  console.log('Instruction', instruction);
   markdown.isTrusted = true;
   markdown.supportHtml = true;
   return markdown;
