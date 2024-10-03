@@ -35,7 +35,9 @@
       },
       {
         "command": "rv-simulator.ShowCard",
-        "title": "RISCV simulator: show card"
+        "title": "RISCV simulator: show card",
+          "icon": "media/library-svgrepo-com.svg"
+
       }
     ],
     "viewsContainers": {
@@ -119,7 +121,12 @@
           "command": "rv-simulator.simulate",
           "group": "navigation",
           "when": "editorLangId == riscvasm"
+        },
+        {"command":"rv-simulator.ShowCard",
+          "group": "navigation",
+          "when": "editorLangId == riscvasm"
         }
+
       ]
     },
     "keybindings": [
