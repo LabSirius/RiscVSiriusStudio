@@ -199,7 +199,7 @@ export class RVExtensionContext {
    */
   public static isValidFile(document?: TextDocument | undefined): boolean {
     return document
-      ? document.languageId === 'riscvasm' && document.uri.scheme === 'file'
+      ? document.languageId === 'riscvasm'
       : false;
   }
 
