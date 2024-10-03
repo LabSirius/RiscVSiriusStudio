@@ -1,7 +1,6 @@
 import {
   provideVSCodeDesignSystem,
   allComponents,
-  Checkbox
 } from '@vscode/webview-ui-toolkit';
 
 import {
@@ -196,7 +195,6 @@ function tableSetup(): Tabulator {
   ];
   let tableData = [] as Array<RegisterValue>;
   let table = new Tabulator('#registers-table', {
-    // maxHeight: '100%',
     data: tableData,
     layout: 'fitColumns',
     layoutColumnsOnNewData: true,
@@ -208,6 +206,8 @@ function tableSetup(): Tabulator {
     groupUpdateOnCellEdit: true,
     movableRows: true,
     validationMode: 'blocking',
+    maxHeight: "300px",
+    height: "300px",
     columns: [
       {
         title: 'Name',

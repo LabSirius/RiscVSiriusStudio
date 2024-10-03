@@ -109,7 +109,7 @@ export class DataMemPanelView implements WebviewViewProvider {
         <h4>Data memory</h4>
         <p> This will be available only during simulation.</p>
         </div>
-        <div id="datamem-table" style="margin-top:1rem;"></div>
+        <div class="overflow-hidden" id="datamem-table" style="margin-top:1rem;"></div>
         <script type="module" nonce="${nonce}" src="${dataMemoryUri}"></script>
         </body>
       </html>`;

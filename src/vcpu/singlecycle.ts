@@ -28,7 +28,6 @@ import {
 import { ALU32 } from './alu32';
 import { binaryToInt, intToBinary } from '../utilities/conversions';
 
-import _ from 'lodash';
 import { logger } from '../utilities/logger';
 
 class RegistersFile {

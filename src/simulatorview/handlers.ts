@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import _ from 'lodash';
+import {template, capitalize} from 'lodash';
 import {
   usesRegister,
   usesALU,
@@ -23,13 +23,13 @@ import { computePosition, flip, shift, offset } from '@floating-ui/dom';
 
 type SVGElem = HTMLElement & SVGElement;
 
-var paragraph = _.template(
+var paragraph = template(
   `<span class="m-0 p-0 lh-1">
     <p class="m-0 p-0 lh-1"><%- text %></p>
     </span>`
 );
 
-var tabular = _.template(
+var tabular = template(
   `<% print('<span class="container bg-primary m-0 p-0 border-primary lh-1">'); 
       print('<table class="table table-sm table-borderless p-0 m-0 lh-1"><tbody>');
       _.forEach(pairs, function([label, value]) {  %> <tr><th scope="row"><%- label %></th><td><%- value %></td></tr> <%});
@@ -1514,7 +1514,7 @@ function imCUTooltipText(connection: string, cpuData: SimulatorInfo) {
     encoding: { funct3: funct3Bin }
   } = instruction;
 
-  const title = _.capitalize(connection);
+  const title = capitalize(connection);
 
   switch (connection) {
     case 'opcode':

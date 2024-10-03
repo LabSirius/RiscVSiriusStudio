@@ -5,7 +5,7 @@ import {
 
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 
-import _ from 'lodash';
+import {fromPairs, range} from 'lodash';
 
 provideVSCodeDesignSystem().register(allComponents);
 
@@ -104,14 +104,13 @@ function write(
   for (let i = 0; i < bytes; i++) {
     const row = Math.floor((address10 + i) / 4);
     const col = Math.floor((address10 + i) % 4);
-    const updateObject = _.fromPairs([
+    const updateObject = fromPairs([
       [
         'value' + col,
         `<span class="text-primary fw-bold">${chunks[3 - i]}</span>`
       ]
     ]);
     table.getRows()[row].update(updateObject);
-    // table.getRows()[row].getCell('value'+col)
   }
 }
 function settingsChanged(newSettings: any, table: Tabulator) {
@@ -133,6 +132,8 @@ function tableSetup(): Tabulator {
     index: 'address',
     reactiveData: true,
     validationMode: 'blocking',
+    maxHeight: "300px",
+    height: "300px",
     columns: [
       {
         title: 'Address',
@@ -184,7 +185,7 @@ function tableSetup(): Tabulator {
     ]
   });
 
-  _.range(0, settings.memorySize / 4).forEach((address) => {
+  range(0, settings.memorySize / 4).forEach((address) => {
     const zeros8 = '00000000';
     tableData.push({
       address: (address * 4).toString(16),
