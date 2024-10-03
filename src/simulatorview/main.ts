@@ -7,14 +7,11 @@ import {
   computePosition,
   flip,
   shift,
-  offset,
-  arrow,
   Placement
 } from '@floating-ui/dom';
 import { Modal } from 'bootstrap';
 import { elementToSVG, inlineResources } from 'dom-to-svg';
 
-import { jsPDF } from 'jspdf';
 import 'svg2pdf.js';
 
 import * as Handlers from './handlers';

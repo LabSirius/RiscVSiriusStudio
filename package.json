@@ -41,7 +41,7 @@
       }
     ],
     "viewsContainers": {
-      "activitybar": [
+      "panel": [
         {
           "id": "riscv",
           "title": "RISCV",
