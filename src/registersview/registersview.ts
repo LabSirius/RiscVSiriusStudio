@@ -1,6 +1,6 @@
 import {
   provideVSCodeDesignSystem,
-  allComponents,
+  allComponents
 } from '@vscode/webview-ui-toolkit';
 
 import {
@@ -77,11 +77,13 @@ function main() {
   table.on('cellEdited', () => {
     sortTable(table);
   });
-  // Message dispatcher
-  window.addEventListener('message', (event) => {
-    dispatch(event, table);
+  // Install message dispatcher when the table has been built
+  table.on('tableBuilt', () => {
+    window.addEventListener('message', (event) => {
+      dispatch(event, table);
+    });
+    hideRegistersView();
   });
-  hideRegistersView();
 }
 
 function dispatch(event: MessageEvent, table: Tabulator) {
@@ -195,7 +197,7 @@ function tableSetup(): Tabulator {
   ];
   let tableData = [] as Array<RegisterValue>;
   let table = new Tabulator('#registers-table', {
-    data: tableData,
+    // data: tableData,
     layout: 'fitColumns',
     layoutColumnsOnNewData: true,
     index: 'rawName',
@@ -206,8 +208,8 @@ function tableSetup(): Tabulator {
     groupUpdateOnCellEdit: true,
     movableRows: true,
     validationMode: 'blocking',
-    maxHeight: "300px",
-    height: "300px",
+    maxHeight: '300px',
+    height: '300px',
     columns: [
       {
         title: 'Name',
@@ -262,6 +264,10 @@ function tableSetup(): Tabulator {
       watched: false,
       modified: 0,
       id: idx
+    });
+
+    table.on('tableBuilt', () => {
+      table.setData(tableData);
     });
   });
 

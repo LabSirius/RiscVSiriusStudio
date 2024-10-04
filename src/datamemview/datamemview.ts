@@ -5,7 +5,7 @@ import {
 
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 
-import {fromPairs, range} from 'lodash';
+import { fromPairs, range } from 'lodash';
 
 provideVSCodeDesignSystem().register(allComponents);
 
@@ -44,50 +44,51 @@ type MemWord = {
   hex: string;
 };
 
-
 class BadgeManager {
-  private address : string;
-  private visible : boolean;
+  private address: string;
+  private visible: boolean;
   private table: Tabulator;
-  
-  constructor(table: Tabulator){
-    this.address = "";
+
+  constructor(table: Tabulator) {
+    this.address = '';
     this.visible = false;
     this.table = table;
   }
 
-  public markRow(address:string) {
-    debugger;
-    log("info",{m:"foooo"});
+  public markRow(address: string) {
     const row = this.table.getRow(address);
-    this.table.updateRow(row,{info:"hola"} );
-    this.address=address;
-    this.visible=true;
+    this.table.updateRow(row, {
+      info: '<span class="badge text-bg-secondary">New</span>'
+    });
+    this.address = address;
+    this.visible = true;
   }
 
   public clear() {
     const row = this.table.getRow(this.address);
-    this.table.updateRow(row,{info:"hola"} );
-    this.address="";
-    this.visible=false;
-
+    this.table.updateRow(row, { info: 'hola' });
+    this.address = '';
+    this.visible = false;
   }
 }
 
 function main() {
   let table = tableSetup();
   const lastWrite = new BadgeManager(table);
-  // Message dispatcher
-  window.addEventListener('message', (event) => {
-    dispatch(event, table, lastWrite);
-  });
-  hideDataMemView();
-  table.on("tableBuilt",()=>{
-    lastWrite.markRow("0");
+  // Install message dispatcher when the table has been built
+  table.on('tableBuilt', () => {
+    window.addEventListener('message', (event) => {
+      dispatch(event, table, lastWrite);
+    });
+    hideDataMemView();
   });
 }
 
-function dispatch(event: MessageEvent, table: Tabulator, lastWrite:BadgeManager) {
+function dispatch(
+  event: MessageEvent,
+  table: Tabulator,
+  lastWrite: BadgeManager
+) {
   const data = event.data;
   switch (data.operation) {
     case 'hideDataMemView':
@@ -158,20 +159,19 @@ function settingsChanged(newSettings: any, table: Tabulator) {
 function tableSetup(): Tabulator {
   let tableData = [] as Array<MemWord>;
   let table = new Tabulator('#datamem-table', {
-    data: tableData,
     layout: 'fitColumns',
     layoutColumnsOnNewData: true,
     index: 'address',
     reactiveData: true,
     validationMode: 'blocking',
-    maxHeight: "300px",
-    height: "300px",
+    maxHeight: '300px',
+    height: '300px',
     columns: [
       {
         title: '',
         field: 'info',
         visible: true,
-        formatter:"html",
+        formatter: 'html',
         headerSort: false,
         frozen: true,
         width: 15
@@ -239,6 +239,9 @@ function tableSetup(): Tabulator {
     });
   });
 
+  table.on('tableBuilt', () => {
+    table.setData(tableData);
+  });
   return table;
 }
 
