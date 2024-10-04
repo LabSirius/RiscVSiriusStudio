@@ -7,6 +7,7 @@ import { RegisterPanelView } from '../panels/RegisterPanel';
 import {
   branchesOrJumps,
   getFunct3,
+  readsDM,
   usesRegister,
   writesDM,
   writesRU
@@ -198,9 +199,7 @@ export class RVExtensionContext {
    * depend on the package.json file.
    */
   public static isValidFile(document?: TextDocument | undefined): boolean {
-    return document
-      ? document.languageId === 'riscvasm'
-      : false;
+    return document ? document.languageId === 'riscvasm' : false;
   }
 
   public static isValidBinFile(document?: TextDocument | undefined): boolean {
@@ -291,23 +290,28 @@ export class RVSimulationContext {
     this.cpu.getRegisterFile().writeRegister(regName, value);
   }
 
-  private writeResult(result: SCCPUResult) {
+  private bytesToReadOrWrite() {
     const instruction = this.cpu.currentInstruction();
-    let bytesToWrite;
     const funct3 = getFunct3(instruction);
+    let bytes;
     switch (funct3) {
       case '000':
-        bytesToWrite = 1;
+        bytes = 1;
         break;
       case '001':
-        bytesToWrite = 2;
+        bytes = 2;
         break;
       case '010':
-        bytesToWrite = 4;
+        bytes = 4;
         break;
       default:
         throw new Error('Cannot deduce bytes to write from funct3');
     }
+    return bytes;
+  }
+  private writeResult(result: SCCPUResult) {
+    const instruction = this.cpu.currentInstruction();
+    let bytesToWrite = this.bytesToReadOrWrite();
     const addressNum = parseInt(result.dm.address, 2);
     if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) {
       this.sendToSimulator({
@@ -374,6 +378,13 @@ export class RVSimulationContext {
                   this.cpu
                     .getRegisterFile()
                     .writeRegister(instruction.rd.regeq, result.wb.result);
+                }
+                if (readsDM(instruction.type, instruction.opcode)) {
+                  this.sendToDataMemory({
+                    operation: 'read',
+                    address: result.dm.address,
+                    bytes: this.bytesToReadOrWrite()
+                  });
                 }
                 if (writesDM(instruction.type, instruction.opcode)) {
                   this.writeResult(result);

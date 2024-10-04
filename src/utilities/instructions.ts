@@ -152,7 +152,14 @@ export function storesNextPC(instType: string, instOpcode: string) {
 export function usesIMM(instType: string) {
   return instType !== 'R';
 }
-
+/**
+ * Tests if an instruction reads from the data memory
+ * @param {*} instType the instruction type
+ * @param {*} instOpcode the instruction opcode
+ */
+export function readsDM(instType: string, instOpcode: string) {
+  return isILoad(instType, instOpcode);
+}
 /**
  * Tests if an instruction writes to the data memory
  * @param {*} instType the instruction type
