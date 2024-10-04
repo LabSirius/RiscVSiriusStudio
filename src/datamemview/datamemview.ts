@@ -60,13 +60,14 @@ class BadgeManager {
     this.table.updateRow(row, {
       info: '<span class="badge text-bg-secondary">New</span>'
     });
+    this.table.scrollToRow(row);
     this.address = address;
     this.visible = true;
   }
 
   public clear() {
     const row = this.table.getRow(this.address);
-    this.table.updateRow(row, { info: 'hola' });
+    this.table.updateRow(row, { info: '' });
     this.address = '';
     this.visible = false;
   }
@@ -101,7 +102,7 @@ function dispatch(
     //   select(data.address, data.length, table);
     //   break;
     case 'write':
-      write(data.address, data.value, data.bytes, table);
+      write(data.address, data.value, data.bytes, table, lastWrite);
       break;
     case 'clearSelection':
       table.deselectRow();
@@ -132,9 +133,11 @@ function write(
   address: string,
   value: string,
   bytes: number,
-  table: Tabulator
+  table: Tabulator,
+  lastWrite: BadgeManager
 ) {
   let address10 = parseInt(address, 2);
+  let address16 = parseInt(address, 2).toString(16);
   const chunks = value.match(/.{1,8}/g);
   for (let i = 0; i < bytes; i++) {
     const row = Math.floor((address10 + i) / 4);
@@ -147,6 +150,8 @@ function write(
     ]);
     table.getRows()[row].update(updateObject);
   }
+  lastWrite.clear();
+  lastWrite.markRow(address16);
 }
 function settingsChanged(newSettings: any, table: Tabulator) {
   const { memorySize } = newSettings;
