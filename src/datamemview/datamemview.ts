@@ -44,16 +44,50 @@ type MemWord = {
   hex: string;
 };
 
-function main() {
-  let table = tableSetup();
-  // Message dispatcher
-  window.addEventListener('message', (event) => {
-    dispatch(event, table);
-  });
-  hideDataMemView();
+
+class BadgeManager {
+  private address : string;
+  private visible : boolean;
+  private table: Tabulator;
+  
+  constructor(table: Tabulator){
+    this.address = "";
+    this.visible = false;
+    this.table = table;
+  }
+
+  public markRow(address:string) {
+    debugger;
+    log("info",{m:"foooo"});
+    const row = this.table.getRow(address);
+    this.table.updateRow(row,{info:"hola"} );
+    this.address=address;
+    this.visible=true;
+  }
+
+  public clear() {
+    const row = this.table.getRow(this.address);
+    this.table.updateRow(row,{info:"hola"} );
+    this.address="";
+    this.visible=false;
+
+  }
 }
 
-function dispatch(event: MessageEvent, table: Tabulator) {
+function main() {
+  let table = tableSetup();
+  const lastWrite = new BadgeManager(table);
+  // Message dispatcher
+  window.addEventListener('message', (event) => {
+    dispatch(event, table, lastWrite);
+  });
+  hideDataMemView();
+  table.on("tableBuilt",()=>{
+    lastWrite.markRow("0");
+  });
+}
+
+function dispatch(event: MessageEvent, table: Tabulator, lastWrite:BadgeManager) {
   const data = event.data;
   switch (data.operation) {
     case 'hideDataMemView':
@@ -118,8 +152,6 @@ function settingsChanged(newSettings: any, table: Tabulator) {
   if (memorySize !== settings.memorySize) {
     log('info', { m: 'Memory size changed', newValue: memorySize });
     settings.memorySize = memorySize;
-    // change the table size
-    // table.redraw();
   }
 }
 
@@ -136,12 +168,21 @@ function tableSetup(): Tabulator {
     height: "300px",
     columns: [
       {
-        title: 'Address',
+        title: '',
+        field: 'info',
+        visible: true,
+        formatter:"html",
+        headerSort: false,
+        frozen: true,
+        width: 15
+      },
+      {
+        title: 'Addr.',
         field: 'address',
         visible: true,
         headerSort: false,
         frozen: true,
-        minWidth: 20
+        width: 30
       },
       {
         title: '0x3',
@@ -176,10 +217,10 @@ function tableSetup(): Tabulator {
         headerSort: false
       },
       {
-        title: '',
+        title: 'HEX',
         field: 'hex',
         headerHozAlign: 'center',
-        visible: false,
+        visible: true,
         headerSort: false
       }
     ]
