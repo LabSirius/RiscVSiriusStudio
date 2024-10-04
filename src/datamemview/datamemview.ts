@@ -47,10 +47,12 @@ type MemWord = {
 class BadgeManager {
   private address: string;
   private visible: boolean;
+  private name: string;
   private table: Tabulator;
 
-  constructor(table: Tabulator) {
+  constructor(name: string, table: Tabulator) {
     this.address = '';
+    this.name = name;
     this.visible = false;
     this.table = table;
   }
@@ -58,7 +60,7 @@ class BadgeManager {
   public markRow(address: string) {
     const row = this.table.getRow(address);
     this.table.updateRow(row, {
-      info: '<span class="badge text-bg-secondary">New</span>'
+      info: `<span class="badge text-bg-secondary">${this.name}</span>`
     });
     this.table.scrollToRow(row);
     this.address = address;
@@ -73,13 +75,21 @@ class BadgeManager {
   }
 }
 
+type Badges = {
+  lastWrite: BadgeManager;
+  lastRead: BadgeManager;
+};
+
 function main() {
   let table = tableSetup();
-  const lastWrite = new BadgeManager(table);
+  const badges = {
+    lastWrite: new BadgeManager('write', table),
+    lastRead: new BadgeManager('read', table)
+  };
   // Install message dispatcher when the table has been built
   table.on('tableBuilt', () => {
     window.addEventListener('message', (event) => {
-      dispatch(event, table, lastWrite);
+      dispatch(event, table, badges);
     });
     hideDataMemView();
   });
@@ -88,7 +98,7 @@ function main() {
 function dispatch(
   event: MessageEvent,
   table: Tabulator,
-  lastWrite: BadgeManager
+  { lastWrite, lastRead }: Badges
 ) {
   const data = event.data;
   switch (data.operation) {
@@ -103,6 +113,9 @@ function dispatch(
     //   break;
     case 'write':
       write(data.address, data.value, data.bytes, table, lastWrite);
+      break;
+    case 'read':
+      read(data.address, data.bytes, table, lastRead);
       break;
     case 'clearSelection':
       table.deselectRow();
@@ -153,6 +166,20 @@ function write(
   lastWrite.clear();
   lastWrite.markRow(address16);
 }
+
+function read(
+  address: string,
+  bytes: number,
+  table: Tabulator,
+  lastRead: BadgeManager
+) {
+  let address10 = parseInt(address, 2);
+  let address16 = parseInt(address, 2).toString(16);
+
+  lastRead.clear();
+  lastRead.markRow(address16);
+}
+
 function settingsChanged(newSettings: any, table: Tabulator) {
   const { memorySize } = newSettings;
   if (memorySize !== settings.memorySize) {
@@ -179,7 +206,7 @@ function tableSetup(): Tabulator {
         formatter: 'html',
         headerSort: false,
         frozen: true,
-        width: 15
+        width: 20
       },
       {
         title: 'Addr.',
