@@ -5526,11 +5526,12 @@ export class SimulatorPanel {
           <link rel="stylesheet" , href="${codiconsUri}" />
         </head>
         <body>
-          ${tooltipString} ${modalString}
+          ${modalString}
           <div id="simulator-view">
             <div>${toolBarString}</div>
             <div class="svg-div">${svgString}</div>
           </div>
+          ${tooltipString}
           <script
             type="module"
             nonce="${nonce}"
