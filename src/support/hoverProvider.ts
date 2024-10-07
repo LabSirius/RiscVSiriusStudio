@@ -63,22 +63,112 @@ async function detailsInstruction(instruction: any): Promise<MarkdownString | un
   let strMarkdown = '';
   switch (instruction.type) {
     case 'R':
-      strMarkdown = `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}\n- Funct3: ${instruction.encoding.funct3}\n- Funct7: ${instruction.encoding.funct7} \n- Rd: ${instruction.encoding.rd}\n- Rs1: ${instruction.encoding.rs1}\n- Rs2: ${instruction.encoding.rs2}`;
+      strMarkdown = 
+      `<html>
+      <body>
+        <div>
+          <h4>R-Type Instruction</h4>
+          <table class="table">
+            <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
+            <tr><td><b>Rs1:</b></td><td>${instruction.encoding.rs1}</td></tr>
+            <tr><td><b>Rs2:</b></td><td>${instruction.encoding.rs2}</td></tr>
+            <tr><td><b>Rd:</b></td><td>${instruction.encoding.rd}</td></tr>
+            <tr><td><b>Funct3:</b></td><td>${instruction.encoding.funct3}</td></tr>
+            <tr><td><b>Funct7:</b></td><td>${instruction.encoding.funct7}</td></tr>
+          </table>
+        </div>
+      </body>
+      </html>`;
       break;
     case 'I':
-      strMarkdown = `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}\n- Funct3: ${instruction.encoding.funct3}\n- Rd: ${instruction.encoding.rd}\n- Rs1: ${instruction.encoding.rs1}\n- Imm: ${instruction.encoding.imm12}`;
+      strMarkdown = 
+      `<html>
+      <body>
+        <div>
+          <h4>I-Type Instruction</h4>
+          <table class="table">
+            <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
+            <tr><td><b>Rs1:</b></td><td>${instruction.encoding.rs1}</td></tr>
+            <tr><td><b>Rd:</b></td><td>${instruction.encoding.rd}</td></tr>
+            <tr><td><b>Funct3:</b></td><td>${instruction.encoding.funct3}</td></tr>
+            <tr><td><b>Imm:</b></td><td>${instruction.imm12}</td></tr>
+          </table>
+        </div>
+      </body>
+      </html>`;
       break;
     case 'S':
-      strMarkdown = `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}\n- Funct3: ${instruction.encoding.funct3}\n- Rs1: ${instruction.encoding.rs1}\n- Rs2: ${instruction.encoding.rs2}\n- Imm: ${instruction.encoding.imm12}`;
+      strMarkdown = 
+      `<html>
+        <head>
+          ${bootstrapCSS}
+        </head>
+        <body>
+          <div>
+            <h4>S-Type Instruction</h4>
+            <table class="table">
+            <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
+            <tr><td><b>Rs1:</b></td><td>${instruction.encoding.rs1}</td></tr>
+            <tr><td><b>Rs2:</b></td><td>${instruction.encoding.rs2}</td></tr>
+            <tr><td><b>Funct3:</b></td><td>${instruction.encoding.funct3}</td></tr>
+            <tr><td><b>Imm:</b></td><td>${instruction.imm12}</td></tr>
+            </table>
+          </div>
+        </body>
+      </html>`;
       break;
     case 'B':
-      strMarkdown = `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}\n- Funct3: ${instruction.encoding.funct3}\n- Rs1: ${instruction.encoding.binEncoding.substring(12,17)}\n- Rs2: ${instruction.encoding.binEncoding.substring(7,12)}\n- Imm: ${instruction.encoding.imm13}`;
+      strMarkdown = 
+      `<html>
+        <head>
+          ${bootstrapCSS}
+        </head>
+        <body>
+          <div>
+            <h4>B-Type Instruction</h4>
+            <table class="table">
+            <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
+            <tr><td><b>Rs1:</b></td><td>${instruction.encoding.binEncoding.substring(12,17)}</td></tr>
+            <tr><td><b>Rs2:</b></td><td>${instruction.encoding.binEncoding.substring(7,12)}</td></tr>
+            <tr><td><b>Funct3:</b></td><td>${instruction.encoding.funct3}</td></tr>
+            <tr><td><b>Imm:</b></td><td>${instruction.imm13}</td></tr>
+            </table>
+          </div>
+        </body>
+      </html>`;
       break;
     case 'U':
-      strMarkdown = `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}\n- Rd: ${instruction.encoding.rd}\n- Imm: ${instruction.encoding.imm21}`;
+      strMarkdown = 
+      `<html>
+      <body>
+      <div>
+        <h4>U-Type Instruction</h4>
+        <table class="table">
+        <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
+        <tr><td><b>Rd:</b></td><td>${instruction.encoding.rd}</td></tr>
+        <tr><td><b>Imm:</b></td><td>${instruction.imm21}</td></tr>
+        </table>
+      </div>
+      </body>
+      </html>`;
       break;
     case 'J':
-      strMarkdown = `- Type: ${instruction.type}\n- Opcode: ${instruction.opcode}\n - Rd: ${instruction.encoding.rd}\n- Imm: ${instruction.encoding.imm21}`;
+      strMarkdown = 
+      `<html>
+        <head>
+        ${bootstrapCSS}
+        </head>
+          <body>
+            <div>
+              <h4>J-Type Instruction</h4>
+              <table class="table">
+              <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
+              <tr><td><b>Rd:</b></td><td>${instruction.encoding.rd}</td></tr>
+              <tr><td><b>Imm:</b></td><td>${instruction.imm21}</td></tr>
+              </table>
+            </div>
+          </body>
+      </html>`;
       break;
     default:
       return undefined;
