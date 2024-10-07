@@ -379,42 +379,6 @@ html {
   transform: rotate(45deg);
 }
 
-.grid-container {
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-  display: grid;
-  grid-template-columns: minmax(0,1fr);
-  grid-template-rows: auto auto auto;
-  row-gap: 0.5em;
-}
-
-.grid-item-1 {
-  grid-row: 1;
-}
-
-.grid-item-2 {
-  grid-row: 2;
-  vscode-divider {
-    margin-top: 0px;
-    margin-bottom: 0px;
-    padding: 0px;
-  }
-  #main-svg {
-    padding: 0px !important;
-    height: auto !important; 
-    /* width: 95vw !important;  */
-    width: auto !important; 
-  }
-  border-top-width: 0px;
-  border-bottom-width: 0px;
-}
-
-.grid-item-3 {
-  grid-row: 3;
-  border-top-width: 0px;
-  border-bottom-width: 0px;
-}
-
 .toolbar-container {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
