@@ -61,13 +61,13 @@ export class BinaryEncodingProvider {
 async function detailsInstruction(instruction: any): Promise<MarkdownString | undefined> {
   console.log('Instruction', instruction);
   let strMarkdown = '';
-  switch (instruction.type) {
-    case 'R':
+  switch (instruction.opcode) {
+    case '0110011': // R-Type
       strMarkdown = 
       `<html>
       <body>
         <div>
-          <h4>R-Type Instruction</h4>
+          <h4>R Instruction</h4>
           <table class="table">
             <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
             <tr><td><b>Rs1:</b></td><td>${instruction.encoding.rs1}</td></tr>
@@ -80,12 +80,12 @@ async function detailsInstruction(instruction: any): Promise<MarkdownString | un
       </body>
       </html>`;
       break;
-    case 'I':
+    case '0010011': // I-Arith-Type
       strMarkdown = 
       `<html>
       <body>
         <div>
-          <h4>I-Type Instruction</h4>
+          <h4>I-Arith Instruction</h4>
           <table class="table">
             <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
             <tr><td><b>Rs1:</b></td><td>${instruction.encoding.rs1}</td></tr>
@@ -97,15 +97,47 @@ async function detailsInstruction(instruction: any): Promise<MarkdownString | un
       </body>
       </html>`;
       break;
-    case 'S':
+    case '0000011': // I-Load-Type
       strMarkdown = 
       `<html>
-        <head>
-          ${bootstrapCSS}
-        </head>
+      <body>
+        <div>
+          <h4>I-Load Instruction</h4>
+          <table class="table">
+            <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
+            <tr><td><b>Rs1:</b></td><td>${instruction.encoding.rs1}</td></tr>
+            <tr><td><b>Rd:</b></td><td>${instruction.encoding.rd}</td></tr>
+            <tr><td><b>Funct3:</b></td><td>${instruction.encoding.funct3}</td></tr>
+            <tr><td><b>Imm:</b></td><td>${instruction.imm12}</td></tr>
+          </table>
+        </div>
+      </body>
+      </html>`;
+      break;
+    case '1100111': // I-Jump-Type
+      strMarkdown = 
+      `<html>
+      <body>
+        <div>
+          <h4>I-Jump Instruction</h4>
+          <table class="table">
+            <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
+            <tr><td><b>Rs1:</b></td><td>${instruction.encoding.rs1}</td></tr>
+            <tr><td><b>Rd:</b></td><td>${instruction.encoding.rd}</td></tr>
+            <tr><td><b>Funct3:</b></td><td>${instruction.encoding.funct3}</td></tr>
+            <tr><td><b>Imm:</b></td><td>${instruction.imm12}</td></tr>
+            <tr><td><b>Jump to:</b></td><td>0x${(Number(instruction.inst)+Number(instruction.imm12)).toString(16)}</td></tr>
+          </table>
+        </div>
+      </body>
+      </html>`;
+      break;
+    case '0100011': // S-Type
+      strMarkdown = 
+      `<html>
         <body>
           <div>
-            <h4>S-Type Instruction</h4>
+            <h4>S Instruction</h4>
             <table class="table">
             <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
             <tr><td><b>Rs1:</b></td><td>${instruction.encoding.rs1}</td></tr>
@@ -117,32 +149,31 @@ async function detailsInstruction(instruction: any): Promise<MarkdownString | un
         </body>
       </html>`;
       break;
-    case 'B':
+    case '1100011': // B-Type
       strMarkdown = 
       `<html>
-        <head>
-          ${bootstrapCSS}
-        </head>
         <body>
           <div>
-            <h4>B-Type Instruction</h4>
+            <h4>B Instruction</h4>
             <table class="table">
             <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
             <tr><td><b>Rs1:</b></td><td>${instruction.encoding.binEncoding.substring(12,17)}</td></tr>
             <tr><td><b>Rs2:</b></td><td>${instruction.encoding.binEncoding.substring(7,12)}</td></tr>
             <tr><td><b>Funct3:</b></td><td>${instruction.encoding.funct3}</td></tr>
             <tr><td><b>Imm:</b></td><td>${instruction.imm13}</td></tr>
+            <tr><td><b>Jump to:</b></td><td>0x${(Number(instruction.inst)+Number(instruction.imm13)).toString(16)}</td></tr>
             </table>
           </div>
         </body>
       </html>`;
       break;
-    case 'U':
+    case '0010111': // U-Type
+    case '0110111': 
       strMarkdown = 
       `<html>
       <body>
       <div>
-        <h4>U-Type Instruction</h4>
+        <h4>U Instruction</h4>
         <table class="table">
         <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
         <tr><td><b>Rd:</b></td><td>${instruction.encoding.rd}</td></tr>
@@ -152,19 +183,17 @@ async function detailsInstruction(instruction: any): Promise<MarkdownString | un
       </body>
       </html>`;
       break;
-    case 'J':
+    case '1101111': // J-Type
       strMarkdown = 
       `<html>
-        <head>
-        ${bootstrapCSS}
-        </head>
           <body>
             <div>
-              <h4>J-Type Instruction</h4>
+              <h4>J Instruction</h4>
               <table class="table">
               <tr><td><b>Opcode:</b></td><td>${instruction.opcode}</td></tr>
               <tr><td><b>Rd:</b></td><td>${instruction.encoding.rd}</td></tr>
               <tr><td><b>Imm:</b></td><td>${instruction.imm21}</td></tr>
+            <tr><td><b>Jump to:</b></td><td>0x${(Number(instruction.inst)+Number(instruction.imm21)).toString(16)}</td></tr>
               </table>
             </div>
           </body>

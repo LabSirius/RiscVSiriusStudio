@@ -288,7 +288,7 @@
 
     return {
       "inst":instMem, "type":"J", "instruction": name, rd:rd,
-      "imm21": immVal, "opcode": "1101111", "encoding":encoding,
+      "imm21": target, "opcode": "1101111", "encoding":encoding,
       "location":location, "pseudo":pseudo
     };
   }
