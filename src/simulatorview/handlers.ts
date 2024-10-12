@@ -497,8 +497,8 @@ function ruOutputTooltipText(name: string, cpuData: SimulatorInfo) {
   const instResult = cpuData.instructionResult();
   const result = name === 'rs1' ? instResult.ru.rs1 : instResult.ru.rs2;
   // const { regname, regeq, regenc } = instruction[name];
-  const result10 = parseInt(result, 2);
-  const result16 = result10.toString(16);
+  const result10 = parseInt(result, 2) >> 0;
+  const result16 = parseInt(result, 2).toString(16);
   // const binEnc = instruction.encoding[name];
 
   return tabular({
@@ -610,8 +610,8 @@ export function RU(element: SVGElem, cpuData: SimulatorInfo) {
     () => {
       if (writesRU(cpuData.instructionType(), cpuData.instructionOpcode())) {
         const value2 = cpuData.instructionResult().ru.dataWrite;
-        const value10 = parseInt(value2, 2);
-        const value16 = value10.toString(16);
+        const value10 = parseInt(value2, 2) >> 0;
+        const value16 = parseInt(value2, 2).toString(16);
 
         return tabular({
           pairs: [
@@ -922,8 +922,8 @@ function aluTooltipText(name: string, cpuData: SimulatorInfo) {
   switch (true) {
     case name === 'A':
       const shortValA = shortBinary(valA);
-      const valA10 = parseInt(valA, 2);
-      const valA16 = valA10.toString(16);
+      const valA10 = parseInt(valA, 2) >> 0;
+      const valA16 = parseInt(valA, 2).toString(16);
       return tabular({
         pairs: [
           ['Value', shortValA],
@@ -933,8 +933,8 @@ function aluTooltipText(name: string, cpuData: SimulatorInfo) {
       });
     case name === 'B':
       const shortValB = shortBinary(valB);
-      const valB10 = parseInt(valB, 2);
-      const valB16 = valB10.toString(16);
+      const valB10 = parseInt(valB, 2) >> 0;
+      const valB16 = parseInt(valB, 2).toString(16);
       return tabular({
         pairs: [
           ['Value', shortValB],
@@ -944,8 +944,8 @@ function aluTooltipText(name: string, cpuData: SimulatorInfo) {
       });
     case name === 'ALURes':
       const shortValALURes = shortBinary(valALURes);
-      const valALURes10 = parseInt(valALURes, 2);
-      const valALURes16 = valALURes10.toString(16);
+      const valALURes10 = parseInt(valALURes, 2) >> 0;
+      const valALURes16 = parseInt(valALURes, 2).toString(16);
       return tabular({
         pairs: [
           ['Value', shortValALURes],
@@ -1095,7 +1095,7 @@ function dmTooltipText(name: string, cpuData: SimulatorInfo) {
       });
     case 'DataWr': {
       const data = cpuData.instructionResult().dm.dataWr;
-      const data10 = parseInt(data, 2).toString(10);
+      const data10 = parseInt(data, 2) >> 0;
       const data16 = parseInt(data, 2).toString(16);
       return tabular({
         pairs: [
@@ -1107,7 +1107,7 @@ function dmTooltipText(name: string, cpuData: SimulatorInfo) {
     }
     case 'DataRd': {
       const data = cpuData.instructionResult().dm.dataRd;
-      const data10 = parseInt(data, 2).toString(10);
+      const data10 = parseInt(data, 2) >> 0;
       const data16 = parseInt(data, 2).toString(16);
       return tabular({
         pairs: [
@@ -1816,8 +1816,8 @@ export function WBMUXRU(element: SVGElem, cpuData: SimulatorInfo) {
   focus(element);
   cpuData.installTooltip(element, 'bottom', () => {
     const value2 = cpuData.instructionResult().wb.result;
-    const value10 = parseInt(value2, 2);
-    const value16 = value10.toString(16);
+    const value10 = parseInt(value2, 2) >> 0;
+    const value16 = parseInt(value2, 2).toString(16);
     return tabular({
       pairs: [
         ['WBMUX ⇔ RU', ''],
@@ -1849,7 +1849,7 @@ export function IMMALUB(element: SVGElem, cpuData: SimulatorInfo) {
   cpuData.installTooltip(element, 'right', () => {
     const imm32 = cpuData.instructionResult().imm.output;
     const value2 = shortBinary(imm32);
-    const value10 = parseInt(imm32, 2).toString(10);
+    const value10 = (parseInt(imm32, 2) >> 0).toString(10);
     const value16 = parseInt(imm32, 2).toString(16);
     return tabular({
       pairs: [
@@ -1881,7 +1881,7 @@ export function RUALUA(element: SVGElem, cpuData: SimulatorInfo) {
   focus(element);
   cpuData.installTooltip(element, 'bottom', () => {
     const value2 = cpuData.instructionResult().ru.rs1;
-    const value10 = parseInt(value2, 2).toString();
+    const value10 = (parseInt(value2, 2) >> 0).toString();
 
     return tabular({
       pairs: [
@@ -1915,7 +1915,7 @@ export function RUALUB(element: SVGElem, cpuData: SimulatorInfo) {
   focus(element);
   cpuData.installTooltip(element, 'bottom', () => {
     const value2 = cpuData.instructionResult().ru.rs2;
-    const value10 = parseInt(value2, 2).toString();
+    const value10 = (parseInt(value2, 2) >> 0).toString();
 
     return tabular({
       pairs: [
@@ -1948,8 +1948,8 @@ export function RUDM(element: SVGElem, cpuData: SimulatorInfo) {
   focus(element);
   cpuData.installTooltip(element, 'bottom', () => {
     const value2 = cpuData.instructionResult().ru.rs2;
-    const value10 = parseInt(value2, 2);
-    const value16 = value10.toString(16);
+    const value10 = parseInt(value2, 2) >> 0;
+    const value16 = parseInt(value2, 2).toString(16);
 
     return tabular({
       pairs: [
@@ -1983,8 +1983,8 @@ export function RURS1BU(element: SVGElem, cpuData: SimulatorInfo) {
   focus(element);
   cpuData.installTooltip(element, 'right', () => {
     const value2 = cpuData.instructionResult().ru.rs1;
-    const value10 = parseInt(value2, 2);
-    const value16 = value10.toString(16);
+    const value10 = parseInt(value2, 2) >> 0;
+    const value16 = parseInt(value2, 2).toString(16);
     return tabular({
       pairs: [
         ['RU ⇔ BU', ''],
@@ -2016,8 +2016,8 @@ export function RURS2BU(element: SVGElem, cpuData: SimulatorInfo) {
   focus(element);
   cpuData.installTooltip(element, 'right', () => {
     const value2 = cpuData.instructionResult().ru.rs2;
-    const value10 = parseInt(value2, 2);
-    const value16 = value10.toString(16);
+    const value10 = parseInt(value2, 2) >> 0;
+    const value16 = parseInt(value2, 2).toString(16);
     return tabular({
       pairs: [
         ['RU ⇔ BU', ''],
@@ -2090,8 +2090,8 @@ export function ALUDM(element: SVGElem, cpuData: SimulatorInfo) {
   focus(element);
   cpuData.installTooltip(element, 'bottom', () => {
     const value2 = cpuData.instructionResult().alu.result;
-    const value10 = parseInt(value2, 2);
-    const value16 = value10.toString(16);
+    const value10 = parseInt(value2, 2) >> 0;
+    const value16 = parseInt(value2, 2).toString(16);
 
     return tabular({
       pairs: [
@@ -2124,7 +2124,7 @@ export function ALUWBMUX(element: SVGElem, cpuData: SimulatorInfo) {
   focus(element);
   cpuData.installTooltip(element, 'bottom', () => {
     const value2 = cpuData.instructionResult().alu.result;
-    const value10 = parseInt(value2, 2);
+    const value10 = parseInt(value2, 2) >> 0;
 
     return tabular({
       pairs: [
@@ -2155,8 +2155,8 @@ export function DMWBMUX(element: SVGElem, cpuData: SimulatorInfo) {
   focus(element);
   cpuData.installTooltip(element, 'bottom', () => {
     const value2 = cpuData.instructionResult().dm.dataRd;
-    const value10 = parseInt(value2, 2);
-    const value16 = value10.toString(16);
+    const value10 = parseInt(value2, 2) >> 0;
+    const value16 = parseInt(value2, 2).toString(16);
     return tabular({
       pairs: [
         ['DM ⇔ WBMux', ''],
@@ -2244,8 +2244,8 @@ export function ALUBUMUX(element: SVGElem, cpuData: SimulatorInfo) {
   focus(element);
   cpuData.installTooltip(element, 'bottom', () => {
     const value2 = cpuData.instructionResult().alu.result;
-    const value10 = parseInt(value2, 2);
-    const value16 = value10.toString(16);
+    const value10 = parseInt(value2, 2) >> 0;
+    const value16 = parseInt(value2, 2).toString(16);
 
     return tabular({
       pairs: [
