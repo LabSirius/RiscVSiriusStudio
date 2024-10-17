@@ -76,7 +76,7 @@ export async function activate(context: ExtensionContext) {
           editor,
           rvContext,
           statusBarItem,
-          binaryEncodingProvider
+          programMemoryProvider
         );
       }
     })
@@ -136,7 +136,7 @@ export async function activate(context: ExtensionContext) {
       window.activeTextEditor,
       rvContext,
       statusBarItem,
-      binaryEncodingProvider
+      programMemoryProvider
     );
   });
 
@@ -150,7 +150,8 @@ export async function activate(context: ExtensionContext) {
       window.activeTextEditor,
       rvContext,
       statusBarItem,
-      binaryEncodingProvider
+      programMemoryProvider
+
     );
   });
 
@@ -163,7 +164,7 @@ export async function activate(context: ExtensionContext) {
       editor,
       rvContext,
       statusBarItem,
-      binaryEncodingProvider
+      programMemoryProvider
     );
   });
 
@@ -234,7 +235,7 @@ function updateContext(
   editor: TextEditor,
   rvContext: RVExtensionContext,
   statusBarItem: StatusBarItem,
-  binaryEncodingProvider: BinaryEncodingProvider
+  programMemoryProvider: ProgramMemoryProvider
 ) {
   if (RVExtensionContext.isValidFile(editor.document)) {
     rvContext.setSourceDocument(editor.document);
@@ -246,6 +247,7 @@ function updateContext(
       uri = encodeIR(editor.document.uri, false);
       reportBuildStatus(statusBarItem, 'Failure');
     }
+    programMemoryProvider.onDidChangeEmitter.fire(uri);
     workspace.openTextDocument(uri).then((programMemoryDocument) => {
       window.showTextDocument(programMemoryDocument, {
         viewColumn: editor.viewColumn! + 1,

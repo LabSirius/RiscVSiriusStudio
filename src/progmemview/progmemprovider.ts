@@ -8,7 +8,7 @@ import {
 import { RVExtensionContext } from '../support/context';
 
 export class ProgramMemoryProvider implements TextDocumentContentProvider {
-  private onDidChangeEmitter = new EventEmitter<Uri>();
+  onDidChangeEmitter = new EventEmitter<Uri>();
   onDidChange = this.onDidChangeEmitter.event;
 
   static scheme = 'progmem';
