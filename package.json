@@ -7,7 +7,9 @@
   "engines": {
     "vscode": "^1.75.0"
   },
-  "categories": ["Programming Languages"],
+  "categories": [
+    "Programming Languages"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -26,6 +28,10 @@
         "title": "RISCV simulator: export instruction memory as JSON"
       },
       {
+        "command": "rv-simulator.irExportJSON",
+        "title": "RISCV simulator: export intermediate representation as JSON"
+      },
+      {
         "command": "rv-simulator.irForCurrentLine",
         "title": "RISCV simulator: compute internal representation for current line"
       },
@@ -36,8 +42,7 @@
       {
         "command": "rv-simulator.ShowCard",
         "title": "RISCV simulator: show card",
-          "icon": "media/library-svgrepo-com.svg"
-
+        "icon": "media/library-svgrepo-com.svg"
       }
     ],
     "viewsContainers": {
@@ -69,7 +74,10 @@
         "rv-simulator.registersView.sort": {
           "type": "string",
           "default": "name",
-          "enum": ["name", "last modified"],
+          "enum": [
+            "name",
+            "last modified"
+          ],
           "enumDescriptions": [
             "Sort registers by its name (x0, x1, ...)",
             "Sort registers by modification (last modified comes first"
@@ -79,7 +87,10 @@
         "rv-simulator.programMemoryView.instructionFormat": {
           "type": "string",
           "default": "binary",
-          "enum": ["binary", "hexadecimal"],
+          "enum": [
+            "binary",
+            "hexadecimal"
+          ],
           "enumDescriptions": [
             "Displays instructions as as  binary in four words.",
             "Displays instructions as an 8 places hexadecimal."
@@ -94,7 +105,12 @@
         "rv-simulator.dataMemoryView.memorySize": {
           "type": "number",
           "default": 128,
-          "enum": [128, 256, 512, 1024],
+          "enum": [
+            128,
+            256,
+            512,
+            1024
+          ],
           "enumDescriptions": [
             "128 bytes.",
             "256 bytes.",
@@ -122,11 +138,11 @@
           "group": "navigation",
           "when": "editorLangId == riscvasm"
         },
-        {"command":"rv-simulator.ShowCard",
+        {
+          "command": "rv-simulator.ShowCard",
           "group": "navigation",
           "when": "editorLangId == riscvasm"
         }
-
       ]
     },
     "keybindings": [
@@ -142,14 +158,24 @@
     "languages": [
       {
         "id": "riscvasm",
-        "extensions": [".asm"],
-        "aliases": ["RiscVAsm", "riscvasm"],
+        "extensions": [
+          ".asm"
+        ],
+        "aliases": [
+          "RiscVAsm",
+          "riscvasm"
+        ],
         "configuration": "./riscv-configuration.json"
       },
       {
         "id": "riscvbin",
-        "extensions": [".rvbin"],
-        "aliases": ["RiscVBin", "riscvbin"]
+        "extensions": [
+          ".rvbin"
+        ],
+        "aliases": [
+          "RiscVBin",
+          "riscvbin"
+        ]
       }
     ],
     "grammars": [
@@ -213,7 +239,7 @@
     "@vscode/webview-ui-toolkit": "^1.2.2",
     "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
-    "lodash-cli": "^3.10.1",
+    "lodash-cli": "^3.0.1",
     "lodash-es": "^4.17.21",
     "svg2pdf.js": "^2.2.4",
     "winston": "^3.13.1",
