@@ -10,10 +10,12 @@ import {
   workspace,
   ThemeColor,
   StatusBarItem,
+  Webview,
+  WebviewView,
 } from 'vscode';
 
 import { SimulatorPanel } from './panels/SimulatorPanel';
-import { RegisterPanelView } from './panels/RegisterPanel';
+import { activateMessageListener, activateMessageListenerForRegistersView, getHtmlForRegistersWebview, RegisterPanelView } from './panels/RegisterPanel';
 import { DataMemPanelView } from './panels/DataMemPanel';
 import { RiscCardPanel } from './panels/RiscCardPanel';
 import { logger } from './utilities/logger';
@@ -23,18 +25,44 @@ import { applyDecoration, removeDecoration } from './utilities/editor-utils';
 import { BinaryEncodingProvider } from './support/hoverProvider';
 
 export async function activate(context: ExtensionContext) {
-  console.log('Activating extension');
-  logger().info('Activating extension');
-  const rvContext = new RVExtensionContext();
+  console.log('%cActivating extension RiscV', 'color: blue');
+  const startTime = Date.now();
 
-  // Registers view
+
+  const rvContext = new RVExtensionContext();
+  const extensionUri = context.extensionUri;
   context.subscriptions.push(
     window.registerWebviewViewProvider(
       'rv-simulator.registers',
-      RegisterPanelView.render(context.extensionUri, {}),
-      { webviewOptions: { retainContextWhenHidden: true } }
+      {
+        resolveWebviewView: async (webviewView, context, token) => {
+          console.log("Por aqui");
+          webviewView.webview.options = {
+            enableScripts: true,
+            localResourceRoots: [extensionUri],
+            // Other possibilities:
+            // enableCommandsUris
+          };
+
+          webviewView.title = "Some title";
+          webviewView.webview.html = await getHtmlForRegistersWebview(webviewView.webview, extensionUri);
+          await activateMessageListenerForRegistersView(webviewView.webview);
+        },
+      },
+      {
+        webviewOptions: { retainContextWhenHidden: true }
+      }
     )
   );
+
+  // // Registers view
+  // context.subscriptions.push(
+  //   window.registerWebviewViewProvider(
+  //     'rv-simulator.registers',
+  //     RegisterPanelView.render(context.extensionUri, {}),
+  //     { webviewOptions: { retainContextWhenHidden: true } }
+  //   )
+  // );
 
   const programMemoryProvider = new ProgramMemoryProvider(rvContext);
   context.subscriptions.push(
@@ -48,13 +76,13 @@ export async function activate(context: ExtensionContext) {
   binaryEncodingProvider.registerHoverProviders();
 
   // Data memory view
-  context.subscriptions.push(
-    window.registerWebviewViewProvider(
-      'rv-simulator.datamem',
-      DataMemPanelView.render(context.extensionUri, {}),
-      { webviewOptions: { retainContextWhenHidden: true } }
-    )
-  );
+  // context.subscriptions.push(
+  //   window.registerWebviewViewProvider(
+  //     'rv-simulator.datamem',
+  //     DataMemPanelView.render(context.extensionUri, {}),
+  //     { webviewOptions: { retainContextWhenHidden: true } }
+  //   )
+  // );
 
   const statusBarItem = window.createStatusBarItem('RVSiriusStudioBarItem', 1);
   statusBarItem.text = 'RiscVSiriusStudio';
@@ -204,6 +232,8 @@ export async function activate(context: ExtensionContext) {
       }
     }
   );
+  const activationTime = Date.now() - startTime;
+  console.log(`%cExtension initialization finished. Took ${activationTime / 1000} secs.`, "color: blue;");
 }
 
 /**

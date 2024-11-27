@@ -10,6 +10,65 @@ import { getUri } from "../utilities/getUri";
 import { getNonce } from "../utilities/getNonce";
 import { logger } from "../utilities/logger";
 
+export async function getHtmlForRegistersWebview(webview: Webview, extensionUri: Uri) {
+  const registerswUri = getUri(webview, extensionUri, [
+    "out",
+    "registersview.js",
+  ]);
+  const nonce = getNonce();
+  const tabulatorCSS = getUri(webview, extensionUri, [
+    "out",
+    "tabulator.min.css",
+  ]);
+  const panelsCSS = getUri(webview, extensionUri, ["out", "panels.css"]);
+
+  const bootstrapCSS = webview.asWebviewUri(
+    Uri.joinPath(
+      extensionUri,
+      "node_modules",
+      "bootstrap",
+      "dist",
+      "css",
+      "bootstrap.min.css"
+    )
+  );
+
+  return `
+      <html>
+        <head>
+          <link rel="stylesheet", href="${bootstrapCSS}">
+          <link rel="stylesheet", href="${tabulatorCSS}">
+          <link rel="stylesheet", href="${panelsCSS}">
+          <meta charSet="utf-8"/>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body>
+        <div class="alert alert-secondary mt-2" id="registers-cover">
+        <h4>Registers Unit</h4>
+        <p> This will be available only during simulation.</p>
+        </div>
+        <script type="module" nonce="${nonce}" src="${registerswUri}"></script>
+        <div id="registers-table" style="margin-top:1rem;"></div>
+        </body>
+      </html>`;
+}
+
+export async function activateMessageListenerForRegistersView(webview: Webview) {
+  console.log("Activating listener on registers view");
+  webview.onDidReceiveMessage((message: any) => {
+    switch (message.command) {
+      case "log-info":
+        console.log(`%c[RegistersView]\n\t${message.obj}`, 'color:orange');
+        logger().info("info", message.obj);
+        break;
+      default:
+        console.log(`%c[RegistersView-unrecognized]\n\t${message.obj}`, 'color:red');
+        logger().info("info", message.obj);
+        break;
+    }
+  });
+}
+
 export class RegisterPanelView implements WebviewViewProvider {
   public static currentview: RegisterPanelView | undefined;
 
