@@ -10,6 +10,8 @@ import {
   TabulatorFull as Tabulator
 } from 'tabulator-tables';
 
+import { fromPairs, range } from 'lodash';
+
 import {
   binaryToUInt,
   binaryToInt,
@@ -27,7 +29,7 @@ import {
 provideVSCodeDesignSystem().register(allComponents);
 
 const vscode = acquireVsCodeApi();
-window.addEventListener('load', main);
+window.addEventListener('load', main, { passive: true });
 
 /**
  * Global and ugly way to store the relevant settings for this view. I have to
@@ -46,8 +48,8 @@ const settings = {
  * @param kind the logger type. Can be info, error, etc.
  * @param object the object to be logged/
  */
-function log(kind: string, object: any = {}) {
-  sendMessageToExtension({ command: 'log-' + kind, obj: { object } });
+function log(object: any = {}, level: string = 'info') {
+  sendMessageToExtension({ level: level, command: 'log', object: object });
 }
 
 /**
@@ -73,6 +75,232 @@ type RegisterValue = {
 };
 
 function main() {
+  log({ str: "this is from the new main" });
+  // let startTime = Date.now();
+  let registersTable = registersSetup();
+  let memoryTable = memorySetup();
+
+  // registersTable.on('tableBuilt', () => {
+  //   const registersTableTime = Date.now() - startTime;
+  //   log({ str: "Registers table construction", time: (registersTableTime / 1000) });
+  // });
+
+
+
+}
+
+function registersSetup(): Tabulator {
+
+  const registers = [
+    'x0 zero',
+    'x1 ra',
+    'x2 sp',
+    'x3 gp',
+    'x4 tp',
+    'x5 t0',
+    'x6 t1',
+    'x7 t2',
+    'x8 s0',
+    'x9 s1',
+    'x10 a0',
+    'x11 a1',
+    'x12 a2',
+    'x13 a3',
+    'x14 a4',
+    'x15 a5',
+    'x16 a6',
+    'x17 a7',
+    'x18 s2',
+    'x19 s3',
+    'x20 s4',
+    'x21 s5',
+    'x22 s6',
+    'x23 s7',
+    'x24 s8',
+    'x25 s9',
+    'x26 s10',
+    'x27 s11',
+    'x28 t3',
+    'x29 t4',
+    'x30 t5',
+    'x31 t6'
+  ];
+  let tableData = [] as Array<RegisterValue>;
+  let table = new Tabulator('#tabs-registers', {
+    layout: 'fitColumns',
+    layoutColumnsOnNewData: true,
+    index: 'rawName',
+    reactiveData: true,
+    groupBy: 'watched',
+    groupValues: [[true, false]],
+    groupHeader: hederGrouping,
+    groupUpdateOnCellEdit: true,
+    movableRows: true,
+    validationMode: 'blocking',
+    columns: [
+      {
+        title: 'Name',
+        field: 'name',
+        visible: true,
+        headerSort: false,
+        cssClass: 'register-name',
+        frozen: true,
+        width: 90,
+        formatter: registerNamesFormatter
+      },
+      {
+        title: 'Value',
+        field: 'value',
+        visible: true,
+        width: 160,
+        headerSort: false,
+        cssClass: 'register-value',
+        formatter: valueFormatter,
+        editor: valueEditor,
+        editable: editableValue
+      },
+      {
+        title: '',
+        field: 'viewType',
+        visible: true,
+        width: 60,
+        headerSort: false,
+        editor: 'list',
+        cellEdited: viewTypeEdited,
+        editorParams: {
+          values: possibleViews,
+          allowEmpty: false,
+          freetext: false
+        },
+        formatter: viewTypeFormatter
+      },
+      { title: 'Watched', field: 'watched', visible: false },
+      { title: 'Modified', field: 'modified', visible: false },
+      { title: 'id', field: 'id', visible: false },
+      { title: 'rawName', field: 'rawName', visible: false }
+    ]
+  });
+
+  registers.forEach((e, idx) => {
+    const [xname, abi] = e.split(' ');
+    const zeros32 = '0';
+    tableData.push({
+      name: `${xname} ${abi}`,
+      rawName: `${xname}`,
+      value: zeros32,
+      viewType: 2,
+      watched: false,
+      modified: 0,
+      id: idx
+    });
+
+    table.on('tableBuilt', () => {
+      table.setData(tableData);
+    });
+  });
+
+  // table.on('rowDblClick', toggleWatched);
+  // table.on('cellEdited', modifiedCell);
+  // table.on('cellEdited', notifyExtension);
+  return table;
+}
+
+function memorySetup(): Tabulator {
+  const memorySize = 1024;
+  let tableData: any[] = []; //as Array<MemWord>;
+  let table = new Tabulator('#tabs-memory', {
+    layout: 'fitColumns',
+    layoutColumnsOnNewData: true,
+    index: 'address',
+    reactiveData: true,
+    validationMode: 'blocking',
+    // maxHeight: '300px',
+    // height: '300px',
+    columns: [
+      {
+        title: '',
+        field: 'info',
+        visible: true,
+        formatter: 'html',
+        headerSort: false,
+        frozen: true,
+        width: 20
+      },
+      {
+        title: 'Addr.',
+        field: 'address',
+        visible: true,
+        headerSort: false,
+        frozen: true,
+        width: 50
+      },
+      {
+        title: '0x3',
+        field: 'value3',
+        formatter: 'html',
+        headerHozAlign: 'center',
+        visible: true,
+        headerSort: false,
+        width: 80
+      },
+      {
+        title: '0x2',
+        field: 'value2',
+        formatter: 'html',
+        headerHozAlign: 'center',
+        visible: true,
+        headerSort: false,
+        width: 80
+      },
+      {
+        title: '0x1',
+        field: 'value1',
+        formatter: 'html',
+        headerHozAlign: 'center',
+        visible: true,
+        headerSort: false,
+        width: 80
+      },
+      {
+        title: '0x0',
+        field: 'value0',
+        formatter: 'html',
+        headerHozAlign: 'center',
+        visible: true,
+        headerSort: false,
+        width: 80
+      },
+      {
+        title: 'HEX',
+        field: 'hex',
+        headerHozAlign: 'center',
+        visible: true,
+        headerSort: false,
+        width: 90
+      }
+    ]
+  });
+
+  range(0, memorySize / 4).forEach((address) => {
+    const zeros8 = '00000000';
+    tableData.push({
+      address: (address * 4).toString(16),
+      value0: zeros8,
+      value1: zeros8,
+      value2: zeros8,
+      value3: zeros8,
+      info: '',
+      hex: '00-00-00-00'
+    });
+  });
+
+  table.on('tableBuilt', () => {
+    table.setData(tableData);
+  });
+  return table;
+}
+
+function main2() {
   let table = tableSetup();
   table.on('cellEdited', () => {
     sortTable(table);
@@ -196,7 +424,7 @@ function tableSetup(): Tabulator {
     'x31 t6'
   ];
   let tableData = [] as Array<RegisterValue>;
-  let table = new Tabulator('#registers-table', {
+  let table = new Tabulator('#tabs-registers', {
     // data: tableData,
     layout: 'fitColumns',
     layoutColumnsOnNewData: true,
