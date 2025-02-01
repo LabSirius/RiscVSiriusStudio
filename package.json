@@ -217,6 +217,7 @@
     "@typescript-eslint/parser": "^5.42.0",
     "bootstrap": "^5.3.3",
     "commander": "^12.1.0",
+    "daisyui": "^4.12.14",
     "dom-to-svg": "^0.12.2",
     "esbuild": "0.16.17",
     "esbuild-plugin-clean": "^1.0.1",
@@ -233,6 +234,7 @@
   "dependencies": {
     "@vscode/codicons": "^0.0.36",
     "@vscode/webview-ui-toolkit": "^1.2.2",
+    "flowbite": "^2.5.2",
     "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
     "lodash-cli": "^3.0.1",

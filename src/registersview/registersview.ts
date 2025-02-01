@@ -32,21 +32,12 @@ const vscode = acquireVsCodeApi();
 window.addEventListener('load', main, { passive: true });
 
 /**
- * Global and ugly way to store the relevant settings for this view. I have to
- * find the way of passing the object to the view.
- */
-const settings = {
-  sort: 'name',
-  initialSp: 0
-};
-
-/**
  * Log functionality. The logger that is actually used is in the extension. This
  * function sends the message to the extension with all the information required
  * to log it.
  *
- * @param kind the logger type. Can be info, error, etc.
- * @param object the object to be logged/
+ * @param level logging level.
+ * @param object the object to be logged
  */
 function log(object: any = {}, level: string = 'info') {
   sendMessageToExtension({ level: level, command: 'log', object: object });
@@ -75,22 +66,16 @@ type RegisterValue = {
 };
 
 function main() {
-  log({ str: "this is from the new main" });
-  // let startTime = Date.now();
+
   let registersTable = registersSetup();
   let memoryTable = memorySetup();
-
-  // registersTable.on('tableBuilt', () => {
-  //   const registersTableTime = Date.now() - startTime;
-  //   log({ str: "Registers table construction", time: (registersTableTime / 1000) });
-  // });
 
 
 
 }
 
 function registersSetup(): Tabulator {
-
+  const startTime = Date.now();
   const registers = [
     'x0 zero',
     'x1 ra',
@@ -193,19 +178,21 @@ function registersSetup(): Tabulator {
       modified: 0,
       id: idx
     });
+  });
 
-    table.on('tableBuilt', () => {
-      table.setData(tableData);
-    });
+  table.on('tableBuilt', () => {
+    table.setData(tableData);
   });
 
   // table.on('rowDblClick', toggleWatched);
   // table.on('cellEdited', modifiedCell);
   // table.on('cellEdited', notifyExtension);
+  table.on('tableBuilt', () => { log({ buildingTime: (Date.now() - startTime) / 1000, table: "Registers" }); });
   return table;
 }
 
 function memorySetup(): Tabulator {
+  const startTime = Date.now();
   const memorySize = 1024;
   let tableData: any[] = []; //as Array<MemWord>;
   let table = new Tabulator('#tabs-memory', {
@@ -214,8 +201,6 @@ function memorySetup(): Tabulator {
     index: 'address',
     reactiveData: true,
     validationMode: 'blocking',
-    // maxHeight: '300px',
-    // height: '300px',
     columns: [
       {
         title: '',
@@ -296,6 +281,7 @@ function memorySetup(): Tabulator {
 
   table.on('tableBuilt', () => {
     table.setData(tableData);
+    log({ buildingTime: (Date.now() - startTime) / 1000, table: "Memory" });
   });
   return table;
 }

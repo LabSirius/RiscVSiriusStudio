@@ -49,60 +49,46 @@ export async function getHtmlForRegistersWebview(webview: Webview, extensionUri:
 
   // TODO: Change data-theme to take into account current vscode theme.
   return /*html*/`
-      <html>
+      <html data-theme="light">
         <head>
           <meta charSet="utf-8"/>
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <link rel="stylesheet", href="${tailwindCSS}">
           <link rel="stylesheet", href="${tabulatorCSS}">
           <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-          <link href="${pagedoneCSS}" rel="stylesheet"/>
+          <!-- <link href="${pagedoneCSS}" rel="stylesheet"/> -->
         </head>
         <body>
-          <div class="w-full flex justify-center w-xl mx-auto gap-2 ">
-            <div class="flex w-2/5 max-h-dvh rounded-lg bg-indigo-600 transition-all duration-700 hover:flex-grow">
-              <div id="tabs-registers" class="w-fit"></div>
-              <!--
-              <img alt="daisy" src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a.webp" />
-              -->
+          <div class="w-full flex flex-row gap-3">
+            <div id="tabs-registers" class="w-fit max-h-dvh min-h-dvh"></div>
+            <div id="tabs-memory" class="w-fit max-h-dvh min-h-dvh "></div>
+            <div class="flex flex-col">
+
+              <div class="flex items-center justify-between">
+                <input type="text" placeholder="Search" class="block border" />
+                <div class="flex items-center">
+                  <input type="checkbox" id="scales" name="scales" checked/>
+                  <label class="select-none">Registers</label> 
+                </div>
+                <div class="flex items-center">
+                  <input type="checkbox" id="" name="scales" checked/>
+                  <label class="select-none">Memory</label> 
+                </div>
+              </div>
+
+              <div>
+                <select class="block p-2">
+                  <option value=""></option>
+                  <option value="">Bin.</option>
+                  <option value="">Hex.</option>
+                  <option value="">Dec.</option>
+                  <option value="">ASCII-7</option>
+                </select>
+              </div>
+              <!-- <div>Hola</div> -->
             </div>
-            <div class="flex min-w-60 w-3/5 max-h-dvh gap-2 rounded-lg">
-              <div id="tabs-memory" class="w-11/12"></div>
-              <div class="flex flex-col w-1/12 px-1 border border-solid border-gray-200 divide-y">
-                  <!-- Address lookup -->
-                  <div>
-                    <div class="flex flex-row gap-8 h-7" style="align-items: baseline;">
-                        <label class="flex w-fit text-gray-600 text-xs">Address lookup</label>
-                        <select 
-                        class="flex flex-1 h-full rounded-lg text-xs font-semibold text-gray-900">
-                        <option selected>Options.</option>
-                        <option value="bin">Binary</option>
-                        <option value="hex">Hex.</option>
-                        <option value="dec">Decimal</option>
-                        <option value="ascii-7">Ascii-7</option>
-                      </select>
-                    </div>
-                  <div class="flex flex-row justify-between w-full h-7 gap-3">
-                    <input type="text" id="default-search"
-                      class="flex border pl-2 text-sm font-normal shadow-xs font-semibold text-gray-900 bg-transparent placeholder-gray-400"
-                      placeholder="0xFF" required="">
-                    
-                    <button
-                      class="h-full px-2 border shadow-xs text-xs font-semibold text-gray-900 transition-all duration-500 hover:bg-gray-300">Find</button>
-                  </div>
-                  </div>
-                  <!-- Data display -->
-                  <div class="mt-2">
-                    <label class="flex mt-2 text-gray-600 text-xs font-medium">Selection</label>
-                    <label class="flex mt-2 text-gray-600 text-xs font-medium"> nothing</label>
-                  </div>
-              </div>
-              <!--
-              <img alt="daisy" src="https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a.webp" />
-              -->
-              </div>
           </div>
-          <script src="${pagedoneUri}"></script>
+          <!-- <script src="${pagedoneUri}"></script> -->
           <script type="module" nonce="${nonce}" src="${registersviewUri}"></script>
         </body>
       </html>`;
