@@ -62,33 +62,24 @@ export async function getHtmlForRegistersWebview(webview: Webview, extensionUri:
           <div class="w-full flex flex-row gap-3">
             <div id="tabs-registers" class="w-fit max-h-dvh min-h-dvh"></div>
             <div id="tabs-memory" class="w-fit max-h-dvh min-h-dvh "></div>
-            <div class="flex flex-col">
-
-              <div class="flex items-center justify-between">
-                <input type="text" placeholder="Search" class="block border" />
-                <div class="flex items-center">
-                  <input type="checkbox" id="scales" name="scales" checked/>
-                  <label class="select-none">Registers</label> 
+            <div class="flex flex-col flex-grow">
+                <div class="flex flex-col space-y-4 flex-grow">
+                  <div class="flex items-center space-x-6 w-full">
+                    <input type="text" placeholder="Search" class="px-3 py-2 border rounded-md flex-grow"/>
+                    <div class="flex flex-col">
+                      <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="form-checkbox" checked/>
+                        <span class="select-none">Registers</span>
+                      </label>
+                      <label class="flex items-center space-x-2">
+                        <input type="checkbox" class="form-checkbox" checked/>
+                        <span class="select-none">Memory</span>
+                      </label>
+                    </div>
+                  </div>
                 </div>
-                <div class="flex items-center">
-                  <input type="checkbox" id="" name="scales" checked/>
-                  <label class="select-none">Memory</label> 
-                </div>
-              </div>
-
-              <div>
-                <select class="block p-2">
-                  <option value=""></option>
-                  <option value="">Bin.</option>
-                  <option value="">Hex.</option>
-                  <option value="">Dec.</option>
-                  <option value="">ASCII-7</option>
-                </select>
-              </div>
-              <!-- <div>Hola</div> -->
             </div>
-          </div>
-          <!-- <script src="${pagedoneUri}"></script> -->
+          </div>          <!-- <script src="${pagedoneUri}"></script> -->
           <script type="module" nonce="${nonce}" src="${registersviewUri}"></script>
         </body>
       </html>`;
