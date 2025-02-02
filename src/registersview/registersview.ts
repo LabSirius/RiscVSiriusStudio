@@ -66,12 +66,9 @@ type RegisterValue = {
 };
 
 function main() {
-
   let registersTable = registersSetup();
   let memoryTable = memorySetup();
-
-
-
+  setupTabs();
 }
 
 function registersSetup(): Tabulator {
@@ -284,6 +281,41 @@ function memorySetup(): Tabulator {
     log({ buildingTime: (Date.now() - startTime) / 1000, table: "Memory" });
   });
   return table;
+}
+
+function setupTabs() {
+  log({ msg: "Setting up tabs tab", func: "setupTabs" });
+
+  const tabs = document.querySelectorAll('div button');
+  const contents = document.querySelectorAll('[id$="-content"]');
+
+  // Make contents of all but the first tab invisible for the initial load
+  contents.forEach((c, index) => {
+    if (index !== 0) {
+      c.classList.add('invisible');
+    }
+  });
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => {
+      log({ msg: "Adding listener to tab", func: "setupTabs" });
+      // Remove active state from all tabs
+      tabs.forEach(t => {
+        // t.classList.remove('text-blue-600');
+        // t.classList.add('text-gray-500');
+      });
+
+      // Hide all content panels
+      contents.forEach(c => c.classList.add('invisible'));
+
+      // Activate clicked tab
+      // tab.classList.remove('text-gray-500');
+      // tab.classList.add('text-blue-600', 'bg-white');
+
+      // Show corresponding content
+      contents[index].classList.remove('invisible');
+    });
+  });
 }
 
 function main2() {
@@ -760,7 +792,7 @@ function hederGrouping(
 }
 
 /**
- * Sest the sorting of the table view to either last modification or "register
+ * Sets the sorting of the table view to either last modification or "register
  * name" criteria.
  * @param table view to sort
  */
