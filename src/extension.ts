@@ -10,129 +10,39 @@ import {
   workspace,
   ThemeColor,
   StatusBarItem,
-  Webview,
-  WebviewView,
 } from 'vscode';
 
 import { SimulatorPanel } from './panels/SimulatorPanel';
-import { activateMessageListener, activateMessageListenerForRegistersView, getHtmlForRegistersWebview, RegisterPanelView } from './panels/RegisterPanel';
 import { DataMemPanelView } from './panels/DataMemPanel';
-import { RiscCardPanel } from './panels/RiscCardPanel';
-import { logger } from './utilities/logger';
-import { RVExtensionContext } from './support/context';
+import { RVContext, RVExtensionContext } from './support/context';
 import { encodeIR, ProgramMemoryProvider } from './progmemview/progmemprovider';
-import { applyDecoration, removeDecoration } from './utilities/editor-utils';
-import { BinaryEncodingProvider } from './support/hoverProvider';
 
 export async function activate(context: ExtensionContext) {
-  console.log('%cActivating extension RiscV', 'color: blue');
+  console.log('Activating extension RiscV');
   const startTime = Date.now();
 
-
-  const rvContext = new RVExtensionContext();
-  const extensionUri = context.extensionUri;
-  context.subscriptions.push(
-    window.registerWebviewViewProvider(
-      'rv-simulator.registers',
-      {
-        resolveWebviewView: async (webviewView, context, token) => {
-          console.log("Por aqui");
-          webviewView.webview.options = {
-            enableScripts: true,
-            localResourceRoots: [extensionUri],
-            // Other possibilities:
-            // enableCommandsUris
-          };
-
-          webviewView.title = "Some title";
-          webviewView.webview.html = await getHtmlForRegistersWebview(webviewView.webview, extensionUri);
-          await activateMessageListenerForRegistersView(webviewView.webview);
-        },
-      },
-      {
-        webviewOptions: { retainContextWhenHidden: true }
+  const rvContext = RVContext.create(context);
+  /*
+    rvContext.lineTracker.onDidChangeActiveLines(async () => {
+      console.log('LineTracker: line changed ', rvContext.lineTracker.currentLine);
+      if (window.activeTextEditor) {
+        annotateSourceLines(window.activeTextEditor);
       }
-    )
-  );
+    });
+  */
 
-  // // Registers view
+  // const programMemoryProvider = new ProgramMemoryProvider(rvContext);
   // context.subscriptions.push(
-  //   window.registerWebviewViewProvider(
-  //     'rv-simulator.registers',
-  //     RegisterPanelView.render(context.extensionUri, {}),
-  //     { webviewOptions: { retainContextWhenHidden: true } }
+  //   workspace.registerTextDocumentContentProvider(
+  //     ProgramMemoryProvider.scheme,
+  //     programMemoryProvider
   //   )
   // );
 
-  const programMemoryProvider = new ProgramMemoryProvider(rvContext);
-  context.subscriptions.push(
-    workspace.registerTextDocumentContentProvider(
-      ProgramMemoryProvider.scheme,
-      programMemoryProvider
-    )
-  );
+  // const binaryEncodingProvider = new BinaryEncodingProvider(rvContext);
+  // binaryEncodingProvider.registerHoverProviders();
 
-  const binaryEncodingProvider = new BinaryEncodingProvider(rvContext);
-  binaryEncodingProvider.registerHoverProviders();
 
-  // Data memory view
-  // context.subscriptions.push(
-  //   window.registerWebviewViewProvider(
-  //     'rv-simulator.datamem',
-  //     DataMemPanelView.render(context.extensionUri, {}),
-  //     { webviewOptions: { retainContextWhenHidden: true } }
-  //   )
-  // );
-
-  const statusBarItem = window.createStatusBarItem('RVSiriusStudioBarItem', 1);
-  statusBarItem.text = 'RiscVSiriusStudio';
-  statusBarItem.show();
-
-  context.subscriptions.push(
-    commands.registerCommand('rv-simulator.simulate', () => {
-      const editor = window.activeTextEditor;
-      simulateProgram(editor, context.extensionUri, rvContext);
-    })
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand('rv-simulator.build', () => {
-      const editor = window.activeTextEditor;
-      if (editor) {
-        updateContext(
-          context.extensionUri,
-          editor,
-          rvContext,
-          statusBarItem,
-          programMemoryProvider
-        );
-      }
-    })
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand('rv-simulator.progMemExportJSON', () => {
-      exportProgMemJSON(context.extensionUri, rvContext);
-    })
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand('rv-simulator.irExportJSON', () => {
-      exportIRJSON(context.extensionUri, rvContext);
-    })
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand('rv-simulator.irForCurrentLine', () => {
-      irForCurrentLine(rvContext);
-    })
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand('rv-simulator.ShowCard', () => {
-      RiscCardPanel.riscCard(context.extensionUri);
-    })
-  );
 
   /**
    * Reflect changes of vscode files to the extension context.
@@ -140,15 +50,15 @@ export async function activate(context: ExtensionContext) {
    */
   workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
     console.log('Configuration change occurred.');
-    const stackPointerAddress = workspace
-      .getConfiguration()
-      .get('rv-simulator.dataMemoryView.stackPointerInitialAddress') as number;
-    const memSize = workspace
-      .getConfiguration()
-      .get('rv-simulator.dataMemoryView.memorySize') as number;
-    // TODO: Check that the stack pointer address is less than the las address of the DM
-    rvContext.setMemorySize(memSize);
-    rvContext.setSpAddress(stackPointerAddress);
+    // const stackPointerAddress = workspace
+    //   .getConfiguration()
+    //   .get('rv-simulator.dataMemoryView.stackPointerInitialAddress') as number;
+    // const memSize = workspace
+    //   .getConfiguration()
+    //   .get('rv-simulator.dataMemoryView.memorySize') as number;
+    // // TODO: Check that the stack pointer address is less than the las address of the DM
+    // rvContext.setMemorySize(memSize);
+    // rvContext.setSpAddress(stackPointerAddress);
   });
 
   /**
@@ -159,13 +69,13 @@ export async function activate(context: ExtensionContext) {
       console.error('Saving a document without an active text editor');
       return;
     }
-    updateContext(
-      context.extensionUri,
-      window.activeTextEditor,
-      rvContext,
-      statusBarItem,
-      programMemoryProvider
-    );
+    // updateContext(
+    //   context.extensionUri,
+    //   window.activeTextEditor,
+    //   rvContext,
+    //   statusBarItem,
+    //   programMemoryProvider
+    // );
   });
 
   workspace.onDidChangeTextDocument((event: TextDocumentChangeEvent) => {
@@ -173,27 +83,27 @@ export async function activate(context: ExtensionContext) {
       console.error('Changing a document without an active text editor');
       return;
     }
-    updateContext(
-      context.extensionUri,
-      window.activeTextEditor,
-      rvContext,
-      statusBarItem,
-      programMemoryProvider
+    // updateContext(
+    //   context.extensionUri,
+    //   window.activeTextEditor,
+    //   rvContext,
+    //   statusBarItem,
+    //   programMemoryProvider
 
-    );
+    // );
   });
 
   window.onDidChangeActiveTextEditor((editor: TextEditor | undefined) => {
     if (!editor) {
       return;
     }
-    updateContext(
-      context.extensionUri,
-      editor,
-      rvContext,
-      statusBarItem,
-      programMemoryProvider
-    );
+    // updateContext(
+    //   context.extensionUri,
+    //   editor,
+    //   rvContext,
+    //   statusBarItem,
+    //   programMemoryProvider
+    // );
   });
 
   /**
@@ -202,38 +112,42 @@ export async function activate(context: ExtensionContext) {
    */
   window.onDidChangeTextEditorSelection(
     (event: TextEditorSelectionChangeEvent) => {
-      const editor = event.textEditor;
-      const document = editor.document;
-      // This event will trigger for any workspace file.
-      if (RVExtensionContext.isValidFile(document)) {
-        const programMemoryDocument = rvContext.getProgramMemoryDocument();
-        if (programMemoryDocument === undefined) {
-          return;
-        }
+      // const editor = event.textEditor;
+      // const document = editor.document;
+      // // This event will trigger for any workspace file.
+      // if (RVExtensionContext.isValidFile(document)) {
+      //   const programMemoryDocument = rvContext.getProgramMemoryDocument();
+      //   if (programMemoryDocument === undefined) {
+      //     return;
+      //   }
 
-        window
-          .showTextDocument(programMemoryDocument, {
-            viewColumn: editor.viewColumn! + 1,
-            preview: true,
-            preserveFocus: true
-          })
-          .then((programMemoryEditor) => {
-            const currentSourceLine = editor.selection.active.line;
-            const memoryEditorLine = rvContext
-              .getSourceCodeMap()
-              .get(currentSourceLine);
-            if (memoryEditorLine === undefined) {
-              // remove decorations
-              removeDecoration(programMemoryEditor);
-              return;
-            }
-            applyDecoration(memoryEditorLine, programMemoryEditor);
-          });
-      }
+      //   window
+      //     .showTextDocument(programMemoryDocument, {
+      //       viewColumn: editor.viewColumn! + 1,
+      //       preview: true,
+      //       preserveFocus: true
+      //     })
+      //     .then((programMemoryEditor) => {
+      //       const currentSourceLine = editor.selection.active.line;
+      //       const memoryEditorLine = rvContext
+      //         .getSourceCodeMap()
+      //         .get(currentSourceLine);
+      //       if (memoryEditorLine === undefined) {
+      //         // remove decorations
+      //         removeDecoration(programMemoryEditor);
+      //         return;
+      //       }
+      //       applyDecoration(memoryEditorLine, programMemoryEditor);
+      //     });
+      // }
     }
   );
   const activationTime = Date.now() - startTime;
   console.log(`%cExtension initialization finished. Took ${activationTime / 1000} secs.`, "color: blue;");
+}
+
+export function deactivate() {
+  console.log('Deactivating extension');
 }
 
 /**

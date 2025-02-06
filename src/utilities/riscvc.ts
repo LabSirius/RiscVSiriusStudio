@@ -1,13 +1,18 @@
 import { parse } from './riscv';
 
+export type InternalRepresentation = {
+  instructions: Array<any>;
+  symbols: Array<any>;
+};
+
 export type ParserResult = {
   success: boolean;
-  ir: { instructions: Array<any> | undefined; symbols: Array<any> | undefined };
+  ir: InternalRepresentation | undefined;
   info: string;
   extra: any | undefined;
 };
 
-export function compile(inputSrc: any, inputName: any): ParserResult {
+export function compile(inputSrc: string, inputName: string): ParserResult {
   console.log('First pass!.');
   let labelTable = {};
   try {
@@ -17,16 +22,14 @@ export function compile(inputSrc: any, inputName: any): ParserResult {
       firstPass: true
     });
   } catch (obj) {
-    console.error('Assembler error: ', obj);
+    console.error('First pass: assembler error: ', obj);
     return {
       success: false,
-      ir: { instructions: undefined, symbols: undefined },
+      ir: undefined,
       info: 'First pass failure',
       extra: obj
     };
   }
-  console.log('Symbols:');
-  console.table(labelTable);
   console.log('Second pass!.');
   let parserOutput;
   try {
@@ -39,7 +42,7 @@ export function compile(inputSrc: any, inputName: any): ParserResult {
     console.error('Assembler error: ', obj);
     return {
       success: false,
-      ir: { instructions: undefined, symbols: undefined },
+      ir: undefined,
       info: 'Second pass failure',
       extra: obj
     };
@@ -51,6 +54,5 @@ export function compile(inputSrc: any, inputName: any): ParserResult {
     info: 'Success',
     extra: undefined
   };
-  // console.log(JSON.stringify(result));
   return result;
 }
