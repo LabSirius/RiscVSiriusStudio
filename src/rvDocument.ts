@@ -1,5 +1,6 @@
-import { Disposable, TextDocument, workspace } from "vscode";
+import { Disposable, TextDocument, TextEditor, workspace, window } from "vscode";
 import { compile, InternalRepresentation, ParserResult } from "./utilities/riscvc";
+import { RVContext } from "./support/context";
 
 /**
  * A RVDocument is reference to a vscode document that contans a RISC-V assembly
@@ -10,12 +11,9 @@ export class RVDocument {
 
   private _document: TextDocument;
   private _ir: InternalRepresentation | undefined;
-
   get ir() {
     return this._ir;
   }
-
-  private _disposables: Disposable[] = [];
 
   get document(): TextDocument {
     return this._document;
@@ -25,19 +23,13 @@ export class RVDocument {
     if (!RVDocument.isValid(document)) {
       throw new Error('Document must be a RISC-V assembly file');
     }
+    // this._encoderDecorator = new EncoderDecorator();
     this._document = document;
     console.log("Creating new riscv document from ", this.getFileName());
-
-    workspace.onDidChangeTextDocument(e => {
-      if (e.document === this._document) {
-        this.build();
-      }
-    }, null, this._disposables);
-    this.build();
   }
 
-
   public build(): ParserResult {
+    console.log("Building IR for ", this.getFileName());
     const result = compile(this.getText(), this.getFileName());
     if (result.success) {
       this._ir = result.ir;

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { commands, Disposable, ExtensionContext, StatusBarItem, TextDocument, TextEditor, window } from 'vscode';
+import { commands, Disposable, ExtensionContext, StatusBarItem, TextDocument, TextEditor, window, workspace } from 'vscode';
 import { SCCPU, SCCPUResult } from '../vcpu/singlecycle';
 import { SimulatorPanel } from '../panels/SimulatorPanel';
 import { activateMessageListenerForRegistersView, getHtmlForRegistersWebview, RegisterPanelView } from '../panels/RegisterPanel';
@@ -18,6 +18,7 @@ import { compile } from '../utilities/riscvc';
 import { DataMemPanelView } from '../panels/DataMemPanel';
 import { RiscCardPanel } from '../panels/RiscCardPanel';
 import { RVDocument } from '../rvDocument';
+import { EncoderDecorator } from '../encoderDecorator';
 
 
 export class RVContext {
@@ -27,17 +28,23 @@ export class RVContext {
   private extensionContext: ExtensionContext;
   // Disposable objects
   private disposables: Disposable[];
-
   // Reference to the line tracker
   private _lineTracker: LineTracker;
   get lineTracker(): LineTracker {
     return this._lineTracker;
   }
-  // Reference to the document tracker
-  private _documentTracker: DocumentTracker;
-  get documentTracker(): DocumentTracker {
-    return this._documentTracker;
+  // Reference to the decorator
+  private _encoderDecorator: EncoderDecorator;
+  get encoderDecorator(): EncoderDecorator {
+    return this._encoderDecorator;
   }
+  // Reference to the simulator panel
+  // Reference to the document tracker
+  // private _documentTracker: DocumentTracker;
+  // get documentTracker(): DocumentTracker {
+  // return this._documentTracker;
+  // }
+
   // Reference to the status bar
   private _statusBarItem: StatusBarItem;
   get statusBarItem(): StatusBarItem {
@@ -61,7 +68,7 @@ export class RVContext {
 
     this.extensionContext = context;
     this._lineTracker = new LineTracker();
-    this._documentTracker = new DocumentTracker();
+    // this._documentTracker = new DocumentTracker();
 
 
     this._statusBarItem = window.createStatusBarItem('RVSiriusStudioBarItem', 1);
@@ -69,6 +76,7 @@ export class RVContext {
     this._statusBarItem.show();
 
     this._documents = [];
+    this._encoderDecorator = new EncoderDecorator();
 
     // Webviews
 
@@ -111,14 +119,8 @@ export class RVContext {
         console.log("New build implementation");
         const editor = window.activeTextEditor;
         if (editor) {
-          let rvDoc = this.getDocument(editor);
-          if (rvDoc) {
-            rvDoc.build();
-          } else {
-            console.log("No document found for the active editor");
-            rvDoc = new RVDocument(editor.document);
-            this._documents.push(rvDoc);
-          }
+          const rvDoc = this.getOrAddDocument(editor);
+          rvDoc.build();
         }
       })
     );
@@ -150,12 +152,32 @@ export class RVContext {
     );
 
 
-    this.disposables.push(
-      this.documentTracker.onActiveDocumentChanged(({ document, type }) => {
-        console.log(`Switched to document: ${document.uri}`);
-      })
-    );
+    // this.disposables.push(
+    //   this.documentTracker.onActiveDocumentChanged(({ document, type }) => {
+    //     console.log(`Switched to document: ${document.uri}`);
+    //   })
+    // );
 
+
+    /**
+     * When the active text editor changes, build the new current document if
+     * applicable.
+     */
+    this.disposables.push(
+      window.onDidChangeActiveTextEditor(editor => {
+        if (editor) {
+          this.buildCurrentDocument();
+        }
+      }));
+
+    /**
+     * Build the current document if applicable.
+     * TODO: Can i make this asynchroonous?
+     */
+
+    this.buildCurrentDocument();
+
+    console.log("Registering subscriptions");
     this.extensionContext.subscriptions.push(
       {
         dispose: () => {
@@ -167,18 +189,20 @@ export class RVContext {
       }
     );
 
-    // Can i made this asynchroonous?
-    this.buildCurrenttDocument();
     console.log("Context constructor done");
   }
 
-  private buildCurrenttDocument() {
+  private buildCurrentDocument() {
     const editor = window.activeTextEditor;
     if (editor) {
       const document = editor.document;
       if (document.languageId === 'riscvasm') {
         const rvDoc = new RVDocument(document);
         this._documents.push(rvDoc);
+        rvDoc.build();
+        if (rvDoc.validIR()) {
+          this.encoderDecorator.decorate(editor, rvDoc);
+        }
       }
     }
   }
@@ -186,13 +210,23 @@ export class RVContext {
   /**
    * Returns the RVDocument associated to a text editor.
    */
-  private getDocument(editor: TextEditor): RVDocument | undefined {
-    const document = editor.document;
+  private getRVDocument(document: TextDocument): RVDocument | undefined {
     const rvDoc = this._documents.find(d => d.document.uri.toString() === document.uri.toString());
     if (rvDoc) {
       return rvDoc;
     }
     return undefined;
+  }
+
+  private getOrAddDocument(editor: TextEditor): RVDocument {
+    const rvDoc = this.getRVDocument(editor.document);
+    if (rvDoc) {
+      return rvDoc;
+    }
+    const newDoc = new RVDocument(editor.document);
+    this._documents.push(newDoc);
+    this.encoderDecorator.decorate(editor, newDoc);
+    return newDoc;
   }
 }
 
@@ -208,6 +242,7 @@ export class RVExtensionContext {
   private _lineTracker: LineTracker;
   // Reference to the document tracker
   private _documentTracker: DocumentTracker;
+
   /**
    * Reference to the document with the source code.
    */
