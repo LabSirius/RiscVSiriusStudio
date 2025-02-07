@@ -197,7 +197,7 @@ export class RVContext {
     if (editor) {
       const document = editor.document;
       if (document.languageId === 'riscvasm') {
-        const rvDoc = new RVDocument(document);
+        const rvDoc = new RVDocument(document, this);
         this._documents.push(rvDoc);
         rvDoc.build();
         if (rvDoc.validIR()) {
@@ -223,7 +223,7 @@ export class RVContext {
     if (rvDoc) {
       return rvDoc;
     }
-    const newDoc = new RVDocument(editor.document);
+    const newDoc = new RVDocument(editor.document, this);
     this._documents.push(newDoc);
     this.encoderDecorator.decorate(editor, newDoc);
     return newDoc;

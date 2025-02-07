@@ -26,13 +26,17 @@ export class EncoderDecorator {
 
     for (let i = 0; i < editor.document.lineCount; i++) {
       const line = editor.document.lineAt(i);
+      const ir = rvDoc.getIRForLine(i);
+      const decorationText = ir ? ir.encoding.binEncoding : '';
+      console.log(line.text, ir);
       decorations.push({
         range: line.range,
         hoverMessage: line.text,
         renderOptions: {
           isWholeLine: true,
           after: {
-            contentText: line.text.trim(),
+            // contentText: line.text.trim(),
+            contentText: decorationText,
             margin: `0 0 0 ${(ml - line.text.length + 4) * 10}px`,
             fontWeight: 'bold',
             textAlign: 'left',

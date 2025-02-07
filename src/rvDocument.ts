@@ -9,23 +9,60 @@ import { RVContext } from "./support/context";
  */
 export class RVDocument {
 
+  /**
+   * VSCode document that contains the RISC-V assembly program.
+   */
   private _document: TextDocument;
+  /**
+   * Internal representation of the RISC-V assembly program built from the
+   * document.
+   *
+   */
   private _ir: InternalRepresentation | undefined;
   get ir() {
     return this._ir;
   }
 
+  private _lineIR: Map<number, any>;
+
   get document(): TextDocument {
     return this._document;
   }
 
-  constructor(document: TextDocument) {
+  constructor(document: TextDocument, rvContext: RVContext) {
     if (!RVDocument.isValid(document)) {
       throw new Error('Document must be a RISC-V assembly file');
     }
-    // this._encoderDecorator = new EncoderDecorator();
+    this._lineIR = new Map();
     this._document = document;
+
+    workspace.onDidChangeTextDocument(e => {
+      if (e.document === this._document) {
+        this.build();
+        if (this.validIR()) {
+          const editor = RVDocument.getEditorForDocument(this._document);
+          if (editor) {
+            rvContext.encoderDecorator.decorate(editor, this);
+          }
+        }
+      }
+    });
     console.log("Creating new riscv document from ", this.getFileName());
+  }
+
+  private static getEditorForDocument(document: TextDocument): TextEditor | undefined {
+    return window.visibleTextEditors.find(editor => editor.document === document);
+  }
+
+  private syncIR() {
+    if (!this.validIR) {
+      throw new Error("Cannot sync IR for invalid IR");
+    }
+    this._lineIR.clear();
+    this.ir?.instructions.forEach((instruction, index) => {
+      const line = instruction.location.start.line - 1;
+      this._lineIR.set(line, instruction);
+    });
   }
 
   public build(): ParserResult {
@@ -34,11 +71,25 @@ export class RVDocument {
     if (result.success) {
       this._ir = result.ir;
     }
+    console.log(this.ir);
+    this.syncIR();
     return result;
   }
 
   public validIR(): boolean {
     return this.ir !== undefined;
+  }
+
+  public getIRForLine(line: number): any | undefined {
+    if (!this.validIR()) {
+      return undefined;
+    }
+    const ir = this._lineIR.get(line);
+    if (ir) {
+      return ir;
+    } else {
+      return undefined;
+    }
   }
 
   public getText(): string {
