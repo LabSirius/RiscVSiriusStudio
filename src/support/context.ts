@@ -174,7 +174,6 @@ export class RVContext {
      * Build the current document if applicable.
      * TODO: Can i make this asynchroonous?
      */
-
     this.buildCurrentDocument();
 
     console.log("Registering subscriptions");
@@ -182,7 +181,6 @@ export class RVContext {
       {
         dispose: () => {
           this.disposables.reverse().forEach(d => {
-            console.log("Disposing ", d);
             d.dispose();
           });
         }

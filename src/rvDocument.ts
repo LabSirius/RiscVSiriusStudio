@@ -38,11 +38,17 @@ export class RVDocument {
 
     workspace.onDidChangeTextDocument(e => {
       if (e.document === this._document) {
+        // TODO: this event is triggered twice, this can affect performance. I
+        // need to investigate further.
+        console.log("Document changed, rebuilding IR");
         this.build();
-        if (this.validIR()) {
-          const editor = RVDocument.getEditorForDocument(this._document);
-          if (editor) {
+        const editor = RVDocument.getEditorForDocument(this._document);
+        if (editor) {
+          if (this.validIR()) {
             rvContext.encoderDecorator.decorate(editor, this);
+          } else {
+            console.log("Invalid IR, should write another decorator to report the compiler error");
+            rvContext.encoderDecorator.clearDecorations(editor);
           }
         }
       }
@@ -65,15 +71,15 @@ export class RVDocument {
     });
   }
 
-  public build(): ParserResult {
+  public build(): void {
     console.log("Building IR for ", this.getFileName());
     const result = compile(this.getText(), this.getFileName());
     if (result.success) {
       this._ir = result.ir;
+      this.syncIR();
+    } else {
+      this._ir = undefined;
     }
-    console.log(this.ir);
-    this.syncIR();
-    return result;
   }
 
   public validIR(): boolean {
