@@ -19,6 +19,7 @@ import { DataMemPanelView } from '../panels/DataMemPanel';
 import { RiscCardPanel } from '../panels/RiscCardPanel';
 import { RVDocument } from '../rvDocument';
 import { EncoderDecorator } from '../encoderDecorator';
+import { ConfigurationManager } from './configurationManager';
 
 
 export class RVContext {
@@ -28,6 +29,11 @@ export class RVContext {
   private extensionContext: ExtensionContext;
   // Disposable objects
   private disposables: Disposable[];
+  // Configuration manager
+  private _configurationManager: ConfigurationManager;
+  get configurationManager(): ConfigurationManager {
+    return this._configurationManager;
+  }
   // Reference to the line tracker
   private _lineTracker: LineTracker;
   get lineTracker(): LineTracker {
@@ -65,8 +71,11 @@ export class RVContext {
   private constructor(context: ExtensionContext) {
     // Place to store all the disposables elements created by the extension.
     this.disposables = [];
-
+    // vscode extension context
     this.extensionContext = context;
+    // Configuration manager
+    this._configurationManager = new ConfigurationManager();
+
     this._lineTracker = new LineTracker();
     // this._documentTracker = new DocumentTracker();
 
@@ -163,12 +172,12 @@ export class RVContext {
      * When the active text editor changes, build the new current document if
      * applicable.
      */
-    this.disposables.push(
-      window.onDidChangeActiveTextEditor(editor => {
-        if (editor) {
-          this.buildCurrentDocument();
-        }
-      }));
+    // this.disposables.push(
+    //   window.onDidChangeActiveTextEditor(editor => {
+    //     if (editor) {
+    //       this.buildCurrentDocument();
+    //     }
+    //   }));
 
     /**
      * Build the current document if applicable.
@@ -196,11 +205,7 @@ export class RVContext {
       const document = editor.document;
       if (document.languageId === 'riscvasm') {
         const rvDoc = new RVDocument(document, this);
-        this._documents.push(rvDoc);
-        rvDoc.build();
-        if (rvDoc.validIR()) {
-          this.encoderDecorator.decorate(editor, rvDoc);
-        }
+        rvDoc.buildAndDecorate(this);
       }
     }
   }

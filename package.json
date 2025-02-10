@@ -66,6 +66,21 @@
     "configuration": {
       "title": "RISCV Simulator",
       "properties": {
+        "rv-simulator.editor.encoderUpdatePolicy": {
+          "type": "string",
+          "default": "On save",
+          "enum": [
+            "On save",
+            "On change",
+            "Manual"
+          ],
+          "enumDescriptions": [
+            "every time the file is saved.",
+            "every time the file changes (this might affect performance).",
+            "on user request."
+          ],
+          "description": "Defines when the encoder output will be updated. This requires parsing the code."
+        },
         "rv-simulator.registersView.sort": {
           "type": "string",
           "default": "name",
