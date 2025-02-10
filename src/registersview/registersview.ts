@@ -69,6 +69,10 @@ function main() {
   let registersTable = registersSetup();
   let memoryTable = memorySetup();
   setupTabs();
+  window.addEventListener('message', (event) => {
+    dispatch(event, registersTable, memoryTable);
+  });
+
 }
 
 function registersSetup(): Tabulator {
@@ -318,6 +322,37 @@ function setupTabs() {
   });
 }
 
+function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: Tabulator) {
+  log({ msg: "Dispatching message", data: event.data });
+
+  // const data = event.data;
+  // switch (data.operation) {
+  //   case 'hideRegistersView':
+  //     hideRegistersView();
+  //     break;
+  //   case 'showRegistersView':
+  //     showRegistersView();
+  //     break;
+  //   case 'selectRegister':
+  //     selectRegister(data.register, table);
+  //     break;
+  //   case 'setRegister':
+  //     setRegister(data.register, data.value, table);
+  //     break;
+  //   case 'clearSelection':
+  //     table.deselectRow();
+  //     break;
+  //   case 'watchRegister':
+  //     watchRegister(data.register, table);
+  //     break;
+  //   case 'settingsChanged':
+  //     settingsChanged(data.settings, table);
+  //     break;
+  //   default:
+  //     throw new Error('Unknown operation ' + data.operation);
+  // }
+}
+
 function main2() {
   let table = tableSetup();
   table.on('cellEdited', () => {
@@ -332,7 +367,7 @@ function main2() {
   });
 }
 
-function dispatch(event: MessageEvent, table: Tabulator) {
+function dispatch2(event: MessageEvent, table: Tabulator) {
   const data = event.data;
   switch (data.operation) {
     case 'hideRegistersView':

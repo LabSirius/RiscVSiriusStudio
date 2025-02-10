@@ -3,15 +3,12 @@ import { workspace } from "vscode";
 export type EncoderUpdatePolicy = 'On change' | 'On save' | 'Manual';
 
 export class ConfigurationManager {
-  public constructor() {
-    console.log("ConfigurationManager constructor");
-  }
+  public constructor() { }
 
   public getEncoderUpdatePolicy(): EncoderUpdatePolicy {
     const editorCfg = workspace.getConfiguration('rv-simulator').editor;
     return editorCfg.encoderUpdatePolicy;
   }
-
 
   // private getMemorySettings() {
   //   return workspace.getConfiguration('rv-simulator.dataMemoryView');
