@@ -77,7 +77,7 @@
           "enumDescriptions": [
             "every time the file is saved.",
             "every time the file changes (this might affect performance).",
-            "on user request."
+            "on user build request."
           ],
           "description": "Defines when the encoder output will be updated. This requires parsing the code."
         },

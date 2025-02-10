@@ -129,7 +129,7 @@ export class RVContext {
         const editor = window.activeTextEditor;
         if (editor) {
           const rvDoc = this.getOrAddDocument(editor);
-          rvDoc.build();
+          rvDoc.buildAndDecorate(this);
         }
       })
     );
@@ -172,12 +172,12 @@ export class RVContext {
      * When the active text editor changes, build the new current document if
      * applicable.
      */
-    // this.disposables.push(
-    //   window.onDidChangeActiveTextEditor(editor => {
-    //     if (editor) {
-    //       this.buildCurrentDocument();
-    //     }
-    //   }));
+    this.disposables.push(
+      window.onDidChangeActiveTextEditor(editor => {
+        if (editor) {
+          this.buildCurrentDocument();
+        }
+      }));
 
     /**
      * Build the current document if applicable.
