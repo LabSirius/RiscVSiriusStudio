@@ -8,11 +8,11 @@ import { RVContext } from "./support/context";
  * representation.
  */
 export class RVDocument {
-
   /**
    * VSCode document that contains the RISC-V assembly program.
    */
   private _document: TextDocument;
+
   /**
    * Internal representation of the RISC-V assembly program built from the
    * document.
@@ -37,23 +37,42 @@ export class RVDocument {
     this._document = document;
 
     workspace.onDidChangeTextDocument(e => {
-      if (e.document === this._document) {
+      if (
+        e.document === this._document &&
+        rvContext.configurationManager.getEncoderUpdatePolicy() === 'On change'
+      ) {
+        console.log("build and decorate trigger by document change");
         // TODO: this event is triggered twice, this can affect performance. I
         // need to investigate further.
-        console.log("Document changed, rebuilding IR");
-        this.build();
-        const editor = RVDocument.getEditorForDocument(this._document);
-        if (editor) {
-          if (this.validIR()) {
-            rvContext.encoderDecorator.decorate(editor, this);
-          } else {
-            console.log("Invalid IR, should write another decorator to report the compiler error");
-            rvContext.encoderDecorator.clearDecorations(editor);
-          }
-        }
+        this.buildAndDecorate(rvContext);
       }
     });
+
+    workspace.onDidSaveTextDocument(e => {
+      if (
+        e === this._document &&
+        rvContext.configurationManager.getEncoderUpdatePolicy() === 'On save'
+      ) {
+        console.log("build and decorate trigger by document save");
+        this.buildAndDecorate(rvContext);
+      }
+    });
+
     console.log("Creating new riscv document from ", this.getFileName());
+  }
+
+  public buildAndDecorate(rvContext: RVContext) {
+    console.log("Document changed, rebuilding IR");
+    this.build();
+    const editor = RVDocument.getEditorForDocument(this._document);
+    if (editor) {
+      if (this.validIR()) {
+        rvContext.encoderDecorator.decorate(editor, this);
+      } else {
+        console.log("Invalid IR, should write another decorator to report the compiler error");
+        rvContext.encoderDecorator.clearDecorations(editor);
+      }
+    }
   }
 
   private static getEditorForDocument(document: TextDocument): TextEditor | undefined {
