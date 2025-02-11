@@ -88,10 +88,9 @@ export class RVContext {
     this._encoderDecorator = new EncoderDecorator();
 
     // Webviews
-
     this.disposables.push(
       window.registerWebviewViewProvider(
-        'rv-simulator.registers',
+        'rv-simulator.riscv',
         {
           resolveWebviewView: async (webviewView, context, token) => {
             webviewView.webview.options = {
@@ -232,6 +231,7 @@ export class RVContext {
     return newDoc;
   }
 }
+
 
 
 export class RVExtensionContext {
