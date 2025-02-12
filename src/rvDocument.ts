@@ -61,7 +61,7 @@ export class RVDocument {
     console.log("Creating new riscv document from ", this.getFileName());
   }
 
-  public buildAndDecorate(rvContext: RVContext) {
+  public async buildAndDecorate(rvContext: RVContext) {
     console.log("Document changed, rebuilding IR");
     this.build();
     const editor = RVDocument.getEditorForDocument(this._document);

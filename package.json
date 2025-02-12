@@ -59,8 +59,8 @@
       "riscv": [
         {
           "type": "webview",
-          "id": "rv-simulator.registers",
-          "name": "Registers"
+          "id": "rv-simulator.riscv",
+          "name": "RiscV simulator"
         }
       ]
     },
