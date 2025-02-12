@@ -10,7 +10,7 @@ import {
   TabulatorFull as Tabulator
 } from 'tabulator-tables';
 
-import { fromPairs, range } from 'lodash';
+import { fromPairs, range, set } from 'lodash';
 
 import {
   binaryToUInt,
@@ -73,6 +73,12 @@ function main() {
     dispatch(event, registersTable, memoryTable);
   });
 
+  setupButtons();
+  setupSearch(registersTable, memoryTable);
+  setupImportRegisters(registersTable);
+  setupImportMemory(memoryTable);
+  setUpConvert();
+  
 }
 
 function registersSetup(): Tabulator {
@@ -352,6 +358,381 @@ function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: T
   //     throw new Error('Unknown operation ' + data.operation);
   // }
 }
+
+function setupButtons(): void {
+  const sections: string[] = ["thirdMainColumn", "openImport", "openConvert", "openHelp"];
+
+  function showOnly(targetId: string): void {
+    sections.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.className = id === targetId ? "flex flex-1 flex-col" : "hidden";
+      }
+    });
+  }
+
+  document.getElementById("openSearchButton")?.addEventListener("click", () => showOnly("thirdMainColumn"));
+  document.getElementById("openImportButton")?.addEventListener("click", () => showOnly("openImport"));
+  document.getElementById("openConvertButton")?.addEventListener("click", () => showOnly("openConvert"));
+  document.getElementById("openHelpButton")?.addEventListener("click", () => showOnly("openHelp"));
+
+  document.getElementById("closeHelpButton")?.addEventListener("click", () => showOnly("thirdMainColumn"));
+}
+
+
+function setupSearch(registersTable: Tabulator, memoryTable: Tabulator) {
+  const searchRegisterInput = document.getElementById(
+    "searchRegisterInput"
+  ) as HTMLInputElement | null;
+
+  const searchMemoryInput = document.getElementById(
+    "searchMemoryInput"
+  ) as HTMLInputElement | null;
+
+  if (!searchRegisterInput || !searchMemoryInput) {
+    console.error("Search input for registers not found");
+    return;
+  }
+
+  searchRegisterInput.addEventListener("input", () => {
+    let searchValue = searchRegisterInput.value.trim();
+
+    console.log(registersTable.getData());
+    console.log(memoryTable.getData());
+    console.log(searchValue);
+
+    if (searchValue === "") {
+      registersTable.clearFilter(true);
+      return;
+    }
+
+    searchValue = convertToBinary(searchValue);
+    filterTableData(registersTable, searchValue);
+  });
+
+  searchRegisterInput.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      searchRegisterInput.value = "";
+      registersTable.clearFilter(true);
+    }
+  });
+}
+
+function convertToBinary(value: string): string {
+  value = value.trim().toLowerCase();
+
+  if (value.startsWith("b")) {
+    return value.slice(1); // Mantiene el binario tal cual
+  }
+
+  if (value.startsWith("d")) {
+    let num = parseInt(value.slice(1), 10); // Convertimos a número entero
+
+    if (num < 0) {
+      let bits = 8;
+      num = (1 << bits) + num;
+      return num.toString(2).padStart(bits, "0");
+    } else {
+      return num.toString(2);
+    }
+  }
+
+  if (value.startsWith("h")) {
+    return parseInt(value.slice(1), 16).toString(2); // Convierte hexadecimal a binario
+  }
+
+  if (value.startsWith("u") || value.startsWith("s")) {
+    let num = value.slice(1);
+    return num;
+  }
+
+  return value; // Si no cumple ningún caso, se devuelve tal cual
+}
+
+function filterTableData(table: Tabulator, searchValue: string) {
+  table.setFilter((data: any) => {
+    return Object.values(data).some((value) => {
+      const valueStr = value?.toString().toLowerCase();
+      return valueStr && valueStr.includes(searchValue);
+    });
+  });
+}
+
+function setupImportRegisters(registersTable: Tabulator) {
+  document
+    .getElementById("importRegisterBtn")
+    ?.addEventListener("click", () => {
+      document.getElementById("fileInputImportRegister")?.click(); // Open file dialog
+    });
+
+  document
+    .getElementById("fileInputImportRegister")
+    ?.addEventListener("change", (event) => {
+      const input = event.target as HTMLInputElement;
+      const file = input.files?.[0];
+
+      if (!file) {
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        if (!e.target?.result) {
+          return;
+        }
+
+        const lines = (e.target.result as string)
+          .split("\n")
+          .map((line) => line.trim()) // delete leading and trailing spaces
+          .filter((line) => line !== ""); // delete empty lines
+
+        if (lines.length !== 32) {
+          console.error("Invalid number of lines");
+          return;
+        }
+
+        for (let i = 0; i < lines.length; i++) {
+          if (lines[i].length !== 32) {
+            console.error(`Invalid length in line ${i}`);
+            return;
+          }
+        }
+
+        const registers = [
+          "x0 zero",
+          "x1 ra",
+          "x2 sp",
+          "x3 gp",
+          "x4 tp",
+          "x5 t0",
+          "x6 t1",
+          "x7 t2",
+          "x8 s0",
+          "x9 s1",
+          "x10 a0",
+          "x11 a1",
+          "x12 a2",
+          "x13 a3",
+          "x14 a4",
+          "x15 a5",
+          "x16 a6",
+          "x17 a7",
+          "x18 s2",
+          "x19 s3",
+          "x20 s4",
+          "x21 s5",
+          "x22 s6",
+          "x23 s7",
+          "x24 s8",
+          "x25 s9",
+          "x26 s10",
+          "x27 s11",
+          "x28 t3",
+          "x29 t4",
+          "x30 t5",
+          "x31 t6",
+        ];
+
+        const newData = registers.map((reg, index) => ({
+          name: reg,
+          rawName: reg.split(" ")[0],
+          value: index === 0 ? "00000000000000000000000000000000" : lines[index],
+          viewType: 2,
+          watched: false, // Todos los registros entran como "watched: true"
+          modified: 0,
+          id: index,
+        }));
+
+        registersTable.setData(newData);
+      };
+      reader.readAsText(file);
+    });
+}
+
+function setupImportMemory(memoryTable: Tabulator) {
+  document.getElementById("importMemoryBtn")?.addEventListener("click", () => {
+    document.getElementById("fileInputImportMemory")?.click(); // Abrir el diálogo de archivo
+  });
+
+  document
+    .getElementById("fileInputImportMemory")
+    ?.addEventListener("change", (event) => {
+      const input = event.target as HTMLInputElement;
+      const file = input.files?.[0];
+
+      if (!file) {
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        if (!e.target?.result) {
+          return;
+        }
+
+        const lines = (e.target.result as string)
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line !== "");
+
+        const newData: any[] = [];
+
+        for (const line of lines) {
+          const parts = line.split(":");
+          if (parts.length !== 2) {
+            console.error(`Formato inválido en la línea: ${line}`);
+            return;
+          }
+
+          const address = parseInt(parts[0].trim(), 16); // Ahora se convierte desde hexadecimal
+          const binaryValue = parts[1].trim();
+
+          if (binaryValue.length !== 32 || !/^[01]+$/.test(binaryValue)) {
+            console.error(`Valor inválido en la línea: ${line}`);
+            return;
+          }
+
+          const value0 = binaryValue.slice(24, 32);
+          const value1 = binaryValue.slice(16, 24);
+          const value2 = binaryValue.slice(8, 16);
+          const value3 = binaryValue.slice(0, 8);
+
+          const hex0 = parseInt(value0, 2).toString(16).padStart(2, "0");
+          const hex1 = parseInt(value1, 2).toString(16).padStart(2, "0");
+          const hex2 = parseInt(value2, 2).toString(16).padStart(2, "0");
+          const hex3 = parseInt(value3, 2).toString(16).padStart(2, "0");
+
+          newData.push({
+            address: address.toString(16).toLowerCase(), // Mantiene la dirección en HEXA
+            value0,
+            value1,
+            value2,
+            value3,
+            hex: `${hex3}-${hex2}-${hex1}-${hex0}`.toUpperCase(), // Binario convertido a hex
+          });
+        }
+
+        memoryTable.updateOrAddData(newData);
+      };
+      reader.readAsText(file);
+    });
+}
+
+
+function setUpConvert() {
+  function setupDropdown(inputId: string, optionsId: string): void {
+    const inputElement = document.getElementById(inputId) as HTMLInputElement | null;
+    const optionsElement = document.getElementById(optionsId) as HTMLDivElement | null;
+
+    if (!inputElement || !optionsElement) {return;};
+
+    inputElement.addEventListener("click", () => {
+      optionsElement.classList.toggle("hidden");
+    });
+
+    // Manejar la selección de una opción
+    optionsElement.querySelectorAll<HTMLParagraphElement>(".optionConvert").forEach((option) => {
+      option.addEventListener("click", (event) => {
+        const target = event.target as HTMLParagraphElement;
+        inputElement.value = target.innerText; // Asigna el texto seleccionado al input
+        inputElement.dataset.value = target.dataset.value || ""; // Guarda el valor en dataset
+        optionsElement.classList.add("hidden"); // Oculta las opciones
+      });
+    });
+
+   
+    document.addEventListener("click", (event) => {
+      if (!inputElement.contains(event.target as Node) && !optionsElement.contains(event.target as Node)) {
+        optionsElement.classList.add("hidden");
+      }
+    });
+  }
+
+  // Configurar los dropdowns para "From" y "To"
+  setupDropdown("fromConvertInput", "fromOptions");
+  setupDropdown("toConvertInput", "toOptions");
+
+  // Lógica botón Convert
+  const convertBtn = document.getElementById("ConvertBtn") as HTMLButtonElement;
+  convertBtn.addEventListener("click", () => {
+    const fromInput = document.getElementById("fromConvertInput") as HTMLInputElement;
+    const toInput = document.getElementById("toConvertInput") as HTMLInputElement;
+    const numberInput = document.getElementById("numberToconvertInput") as HTMLInputElement;
+    const resultInput = document.getElementById("resultConvertInput") as HTMLInputElement;
+
+    const fromBase = fromInput.dataset.value; 
+    const toBase = toInput.dataset.value; 
+    const numberValue = numberInput.value.trim(); 
+
+    if (!fromBase || !toBase || !numberValue) {
+      console.log("Por favor, selecciona las bases y escribe un número válido.");
+      return;
+    }
+
+    let decimalValue: number;
+
+    
+    try {
+      if (fromBase === "bin") {
+        decimalValue = parseInt(numberValue, 2);
+      } else if (fromBase === "hex") {
+        decimalValue = parseInt(numberValue, 16);
+      } else if (fromBase === "dec") {
+        decimalValue = parseInt(numberValue, 10);
+      } else {
+        throw new Error("Base de origen no válida.");
+      }
+
+      if (isNaN(decimalValue)) {
+        throw new Error("Número inválido.");
+      }
+    } catch (error) {
+      console.log("Error al convertir el número: ");
+      resultInput.value = "Error, check the fields"; 
+      return;
+    }
+
+    let result: string;
+    if (toBase === "bin") {
+      result = decimalValue.toString(2);
+    } else if (toBase === "hex") {
+      result = decimalValue.toString(16).toUpperCase();
+    } else if (toBase === "dec") {
+      result = decimalValue.toString(10);
+    } else {
+      console.log("Base de destino no válida.");
+      return;
+    }
+
+
+    resultInput.value = result;
+  
+  });
+
+  //SWAP BUTTON
+  const swapBtn = document.getElementById("SwapConvertBtn") as HTMLButtonElement;
+  swapBtn.addEventListener("click", () => {
+    const fromInput = document.getElementById("fromConvertInput") as HTMLInputElement;
+    const toInput = document.getElementById("toConvertInput") as HTMLInputElement;
+    const numberInput = document.getElementById("numberToconvertInput") as HTMLInputElement;
+    const resultInput = document.getElementById("resultConvertInput") as HTMLInputElement;
+
+    const tempValue = fromInput.value;
+    fromInput.value = toInput.value;
+    toInput.value = tempValue;
+
+    const tempDataValue = fromInput.dataset.value;
+    fromInput.dataset.value = toInput.dataset.value || "";
+    toInput.dataset.value = tempDataValue || "";
+
+    numberInput.value = "";
+    resultInput.value = "";
+  });
+}
+
+
 
 function main2() {
   let table = tableSetup();
