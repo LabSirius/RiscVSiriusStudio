@@ -37,5 +37,5 @@ if (options.outBinary) {
       };
     }
   );
-  console.log(JSON.stringify(binary, null, 2));
+  // console.log(JSON.stringify(binary, null, 2));
 }

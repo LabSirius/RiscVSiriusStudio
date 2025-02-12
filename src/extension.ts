@@ -13,197 +13,43 @@ import {
 } from 'vscode';
 
 import { SimulatorPanel } from './panels/SimulatorPanel';
-import { RegisterPanelView } from './panels/RegisterPanel';
 import { DataMemPanelView } from './panels/DataMemPanel';
-import { RiscCardPanel } from './panels/RiscCardPanel';
-import { logger } from './utilities/logger';
-import { RVExtensionContext } from './support/context';
+import { RVContext, RVExtensionContext } from './support/context';
 import { encodeIR, ProgramMemoryProvider } from './progmemview/progmemprovider';
-import { applyDecoration, removeDecoration } from './utilities/editor-utils';
-import { BinaryEncodingProvider } from './support/hoverProvider';
 
 export async function activate(context: ExtensionContext) {
-  console.log('Activating extension');
-  logger().info('Activating extension');
-  const rvContext = new RVExtensionContext();
+  console.log('Activating extension RiscV');
+  const startTime = Date.now();
 
-  // Registers view
-  context.subscriptions.push(
-    window.registerWebviewViewProvider(
-      'rv-simulator.registers',
-      RegisterPanelView.render(context.extensionUri, {}),
-      { webviewOptions: { retainContextWhenHidden: true } }
-    )
-  );
-
-  const programMemoryProvider = new ProgramMemoryProvider(rvContext);
-  context.subscriptions.push(
-    workspace.registerTextDocumentContentProvider(
-      ProgramMemoryProvider.scheme,
-      programMemoryProvider
-    )
-  );
-
-  const binaryEncodingProvider = new BinaryEncodingProvider(rvContext);
-  binaryEncodingProvider.registerHoverProviders();
-
-  // Data memory view
-  context.subscriptions.push(
-    window.registerWebviewViewProvider(
-      'rv-simulator.datamem',
-      DataMemPanelView.render(context.extensionUri, {}),
-      { webviewOptions: { retainContextWhenHidden: true } }
-    )
-  );
-
-  const statusBarItem = window.createStatusBarItem('RVSiriusStudioBarItem', 1);
-  statusBarItem.text = 'RiscVSiriusStudio';
-  statusBarItem.show();
-
-  context.subscriptions.push(
-    commands.registerCommand('rv-simulator.simulate', () => {
-      const editor = window.activeTextEditor;
-      simulateProgram(editor, context.extensionUri, rvContext);
-    })
-  );
-
-  context.subscriptions.push(
-    commands.registerCommand('rv-simulator.build', () => {
-      const editor = window.activeTextEditor;
-      if (editor) {
-        updateContext(
-          context.extensionUri,
-          editor,
-          rvContext,
-          statusBarItem,
-          programMemoryProvider
-        );
+  const rvContext = RVContext.create(context);
+  /*
+    rvContext.lineTracker.onDidChangeActiveLines(async () => {
+      console.log('LineTracker: line changed ', rvContext.lineTracker.currentLine);
+      if (window.activeTextEditor) {
+        annotateSourceLines(window.activeTextEditor);
       }
-    })
-  );
+    });
+  */
 
-  context.subscriptions.push(
-    commands.registerCommand('rv-simulator.progMemExportJSON', () => {
-      exportProgMemJSON(context.extensionUri, rvContext);
-    })
-  );
+  // const programMemoryProvider = new ProgramMemoryProvider(rvContext);
+  // context.subscriptions.push(
+  //   workspace.registerTextDocumentContentProvider(
+  //     ProgramMemoryProvider.scheme,
+  //     programMemoryProvider
+  //   )
+  // );
 
-  context.subscriptions.push(
-    commands.registerCommand('rv-simulator.irExportJSON', () => {
-      exportIRJSON(context.extensionUri, rvContext);
-    })
-  );
+  // const binaryEncodingProvider = new BinaryEncodingProvider(rvContext);
+  // binaryEncodingProvider.registerHoverProviders();
 
-  context.subscriptions.push(
-    commands.registerCommand('rv-simulator.irForCurrentLine', () => {
-      irForCurrentLine(rvContext);
-    })
-  );
 
-  context.subscriptions.push(
-    commands.registerCommand('rv-simulator.ShowCard', () => {
-      RiscCardPanel.riscCard(context.extensionUri);
-    })
-  );
 
-  /**
-   * Reflect changes of vscode files to the extension context.
-   *
-   */
-  workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
-    console.log('Configuration change occurred.');
-    const stackPointerAddress = workspace
-      .getConfiguration()
-      .get('rv-simulator.dataMemoryView.stackPointerInitialAddress') as number;
-    const memSize = workspace
-      .getConfiguration()
-      .get('rv-simulator.dataMemoryView.memorySize') as number;
-    // TODO: Check that the stack pointer address is less than the las address of the DM
-    rvContext.setMemorySize(memSize);
-    rvContext.setSpAddress(stackPointerAddress);
-  });
+  const activationTime = Date.now() - startTime;
+  console.log(`%cExtension initialization finished. Took ${activationTime / 1000} secs.`, "color: blue;");
+}
 
-  /**
-   * This will build the program every time the file is saved.
-   */
-  workspace.onDidSaveTextDocument((document) => {
-    if (!window.activeTextEditor) {
-      console.error('Saving a document without an active text editor');
-      return;
-    }
-    updateContext(
-      context.extensionUri,
-      window.activeTextEditor,
-      rvContext,
-      statusBarItem,
-      programMemoryProvider
-    );
-  });
-
-  workspace.onDidChangeTextDocument((event: TextDocumentChangeEvent) => {
-    if (!window.activeTextEditor) {
-      console.error('Changing a document without an active text editor');
-      return;
-    }
-    updateContext(
-      context.extensionUri,
-      window.activeTextEditor,
-      rvContext,
-      statusBarItem,
-      programMemoryProvider
-
-    );
-  });
-
-  window.onDidChangeActiveTextEditor((editor: TextEditor | undefined) => {
-    if (!editor) {
-      return;
-    }
-    updateContext(
-      context.extensionUri,
-      editor,
-      rvContext,
-      statusBarItem,
-      programMemoryProvider
-    );
-  });
-
-  /**
-   * Update the program memory editor with the user interaction on the source
-   * code editor.
-   */
-  window.onDidChangeTextEditorSelection(
-    (event: TextEditorSelectionChangeEvent) => {
-      const editor = event.textEditor;
-      const document = editor.document;
-      // This event will trigger for any workspace file.
-      if (RVExtensionContext.isValidFile(document)) {
-        const programMemoryDocument = rvContext.getProgramMemoryDocument();
-        if (programMemoryDocument === undefined) {
-          return;
-        }
-
-        window
-          .showTextDocument(programMemoryDocument, {
-            viewColumn: editor.viewColumn! + 1,
-            preview: true,
-            preserveFocus: true
-          })
-          .then((programMemoryEditor) => {
-            const currentSourceLine = editor.selection.active.line;
-            const memoryEditorLine = rvContext
-              .getSourceCodeMap()
-              .get(currentSourceLine);
-            if (memoryEditorLine === undefined) {
-              // remove decorations
-              removeDecoration(programMemoryEditor);
-              return;
-            }
-            applyDecoration(memoryEditorLine, programMemoryEditor);
-          });
-      }
-    }
-  );
+export function deactivate() {
+  console.log('Deactivating extension');
 }
 
 /**

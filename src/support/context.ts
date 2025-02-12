@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { TextDocument, TextEditor, window } from 'vscode';
+import { commands, Disposable, ExtensionContext, StatusBarItem, TextDocument, TextEditor, window, workspace } from 'vscode';
 import { SCCPU, SCCPUResult } from '../vcpu/singlecycle';
 import { SimulatorPanel } from '../panels/SimulatorPanel';
-import { RegisterPanelView } from '../panels/RegisterPanel';
+import { activateMessageListenerForRegistersView, getHtmlForRegistersWebview, RegisterPanelView } from '../panels/RegisterPanel';
+import { LineTracker } from '../lineTracker';
+import { DocumentTracker } from '../docummentTracker';
 import {
   branchesOrJumps,
   getFunct3,
@@ -14,10 +16,238 @@ import {
 } from '../utilities/instructions';
 import { compile } from '../utilities/riscvc';
 import { DataMemPanelView } from '../panels/DataMemPanel';
+import { RiscCardPanel } from '../panels/RiscCardPanel';
+import { RVDocument } from '../rvDocument';
+import { EncoderDecorator } from '../encoderDecorator';
+import { ConfigurationManager } from './configurationManager';
+
+
+export class RVContext {
+  // For the singleton pattern
+  static #instance: RVContext | null;
+  // vscode context
+  private extensionContext: ExtensionContext;
+  // Disposable objects
+  private disposables: Disposable[];
+  // Configuration manager
+  private _configurationManager: ConfigurationManager;
+  get configurationManager(): ConfigurationManager {
+    return this._configurationManager;
+  }
+  // Reference to the line tracker
+  private _lineTracker: LineTracker;
+  get lineTracker(): LineTracker {
+    return this._lineTracker;
+  }
+  // Reference to the decorator
+  private _encoderDecorator: EncoderDecorator;
+  get encoderDecorator(): EncoderDecorator {
+    return this._encoderDecorator;
+  }
+  // Reference to the simulator panel
+  // Reference to the document tracker
+  // private _documentTracker: DocumentTracker;
+  // get documentTracker(): DocumentTracker {
+  // return this._documentTracker;
+  // }
+
+  // Reference to the status bar
+  private _statusBarItem: StatusBarItem;
+  get statusBarItem(): StatusBarItem {
+    return this._statusBarItem;
+  }
+
+  private _documents: RVDocument[];
+
+  static create(context: ExtensionContext): RVContext {
+    if (!RVContext.#instance) {
+      RVContext.#instance = new RVContext(context);
+    } else {
+      throw new Error("RV extension context is already created");
+    }
+    return RVContext.#instance;
+  }
+
+  private constructor(context: ExtensionContext) {
+    // Place to store all the disposables elements created by the extension.
+    this.disposables = [];
+    // vscode extension context
+    this.extensionContext = context;
+    // Configuration manager
+    this._configurationManager = new ConfigurationManager();
+
+    this._lineTracker = new LineTracker();
+    // this._documentTracker = new DocumentTracker();
+
+
+    this._statusBarItem = window.createStatusBarItem('RVSiriusStudioBarItem', 1);
+    this._statusBarItem.text = 'RiscVSiriusStudio';
+    this._statusBarItem.show();
+
+    this._documents = [];
+    this._encoderDecorator = new EncoderDecorator();
+
+    // Webviews
+    this.disposables.push(
+      window.registerWebviewViewProvider(
+        'rv-simulator.riscv',
+        {
+          resolveWebviewView: async (webviewView, context, token) => {
+            webviewView.webview.options = {
+              enableScripts: true,
+              localResourceRoots: [this.extensionContext.extensionUri],
+              // Other possibilities:
+              // enableCommandsUris
+            };
+
+            webviewView.title = "Registers and memory view";
+            webviewView.webview.html = await getHtmlForRegistersWebview(webviewView.webview, this.extensionContext.extensionUri);
+            await activateMessageListenerForRegistersView(webviewView.webview);
+          },
+        },
+        {
+          webviewOptions: { retainContextWhenHidden: true }
+        }
+      )
+    );
+
+    // Commands
+    //  Simulator 
+    this.disposables.push(
+      commands.registerCommand('rv-simulator.simulate', () => {
+        const editor = window.activeTextEditor;
+        console.log("This should call the simulator but is not yet implemented");
+        // simulateProgram(editor, context.extensionUri, rvContext);
+      })
+    );
+
+    //  Build
+    this.disposables.push(
+      commands.registerCommand('rv-simulator.build', () => {
+        console.log("New build implementation");
+        const editor = window.activeTextEditor;
+        if (editor) {
+          const rvDoc = this.getOrAddDocument(editor);
+          rvDoc.buildAndDecorate(this);
+        }
+      })
+    );
+
+    this.disposables.push(
+      commands.registerCommand('rv-simulator.progMemExportJSON', () => {
+        console.log("This should call progmem export to json");
+        // exportProgMemJSON(context.extensionUri, rvContext);
+      })
+    );
+
+    this.disposables.push(
+      commands.registerCommand('rv-simulator.irExportJSON', () => {
+        // exportIRJSON(context.extensionUri, rvContext);
+      })
+    );
+
+    this.disposables.push(
+      commands.registerCommand('rv-simulator.irForCurrentLine', () => {
+        console.log("This should call ir for current line");
+        // irForCurrentLine(rvContext);
+      })
+    );
+
+    this.disposables.push(
+      commands.registerCommand('rv-simulator.ShowCard', () => {
+        RiscCardPanel.riscCard(context.extensionUri);
+      })
+    );
+
+
+    // this.disposables.push(
+    //   this.documentTracker.onActiveDocumentChanged(({ document, type }) => {
+    //     console.log(`Switched to document: ${document.uri}`);
+    //   })
+    // );
+
+
+    /**
+     * When the active text editor changes, build the new current document if
+     * applicable.
+     */
+    this.disposables.push(
+      window.onDidChangeActiveTextEditor(editor => {
+        if (editor) {
+          this.buildCurrentDocument();
+        }
+      }));
+
+    /**
+     * Build the current document if applicable.
+     * TODO: Can i make this asynchroonous?
+     */
+    this.buildCurrentDocument();
+
+    console.log("Registering subscriptions");
+    this.extensionContext.subscriptions.push(
+      {
+        dispose: () => {
+          this.disposables.reverse().forEach(d => {
+            d.dispose();
+          });
+        }
+      }
+    );
+
+    console.log("Context constructor done");
+  }
+
+  private buildCurrentDocument() {
+    const editor = window.activeTextEditor;
+    if (editor) {
+      const document = editor.document;
+      if (document.languageId === 'riscvasm') {
+        const rvDoc = new RVDocument(document, this);
+        rvDoc.buildAndDecorate(this);
+      }
+    }
+  }
+
+  /**
+   * Returns the RVDocument associated to a text editor.
+   */
+  private getRVDocument(document: TextDocument): RVDocument | undefined {
+    const rvDoc = this._documents.find(d => d.document.uri.toString() === document.uri.toString());
+    if (rvDoc) {
+      return rvDoc;
+    }
+    return undefined;
+  }
+
+  private getOrAddDocument(editor: TextEditor): RVDocument {
+    const rvDoc = this.getRVDocument(editor.document);
+    if (rvDoc) {
+      return rvDoc;
+    }
+    const newDoc = new RVDocument(editor.document, this);
+    this._documents.push(newDoc);
+    this.encoderDecorator.decorate(editor, newDoc);
+    return newDoc;
+  }
+}
+
+
 
 export class RVExtensionContext {
+  // For the singleton pattern
+  static #instance: RVExtensionContext | null;
+  // vscode context
+  private extensionContext: ExtensionContext;
+  // Disposable objects
+  private disposables: Disposable[];
+  // Reference to the line tracker
+  private _lineTracker: LineTracker;
+  // Reference to the document tracker
+  private _documentTracker: DocumentTracker;
+
   /**
-   * Regerence to the document with the source code.
+   * Reference to the document with the source code.
    */
   private sourceDocument: TextDocument | undefined;
   /**
@@ -37,13 +267,77 @@ export class RVExtensionContext {
   private memorySize: number;
   private stackPointerInitialAddress: number;
 
-  public constructor() {
+  static create(context: ExtensionContext): RVExtensionContext {
+    if (!RVExtensionContext.#instance) {
+      RVExtensionContext.#instance = new RVExtensionContext(context);
+    } else {
+      throw new Error("RV extension context is already created");
+    }
+    return RVExtensionContext.#instance;
+  }
+
+  private constructor(context: ExtensionContext) {
+    // Place to store all the disposables elements created by the extension.
+    this.disposables = [];
+
+    this.extensionContext = context;
+    this._lineTracker = new LineTracker();
+    this._documentTracker = new DocumentTracker();
+
+    this.disposables.push(
+      window.registerWebviewViewProvider(
+        'rv-simulator.registers',
+        {
+          resolveWebviewView: async (webviewView, context, token) => {
+            webviewView.webview.options = {
+              enableScripts: true,
+              localResourceRoots: [this.extensionContext.extensionUri],
+              // Other possibilities:
+              // enableCommandsUris
+            };
+
+            webviewView.title = "Registers and memory view";
+            webviewView.webview.html = await getHtmlForRegistersWebview(webviewView.webview, this.extensionContext.extensionUri);
+            await activateMessageListenerForRegistersView(webviewView.webview);
+          },
+        },
+        {
+          webviewOptions: { retainContextWhenHidden: true }
+        }
+      )
+    );
+
+    this.disposables.push(
+      this.documentTracker.onActiveDocumentChanged(({ document, type }) => {
+        console.log(`Switched to document: ${document.uri}`);
+      })
+    );
+
+    this.extensionContext.subscriptions.push(
+      {
+        dispose: () => {
+          this.disposables.reverse().forEach(d => {
+            console.log("Disposing ", d);
+            d.dispose();
+          });
+        }
+      }
+    );
+
     this.programMemoryMap = new Map<number, number>();
     this.sourceCodeMap = new Map<number, number>();
 
     this.currentFile = '';
     this.memorySize = 128;
     this.stackPointerInitialAddress = 124;
+  }
+
+  get lineTracker() {
+    return this._lineTracker;
+  }
+
+  get documentTracker() {
+    return this._documentTracker;
   }
 
   public setMemorySize(newSize: number) {
@@ -317,14 +611,13 @@ export class RVSimulationContext {
       this.sendToSimulator({
         operation: 'simulationFinished',
         title: 'Simulation error',
-        body: `Cannot write ${
-          result.dm.dataWr
-        } (${bytesToWrite} bytes) to memory address ${addressNum.toString(
-          16
-        )} last address is ${this.cpu
-          .getDataMemory()
-          .lastAddress()
-          .toString(16)} `
+        body: `Cannot write ${result.dm.dataWr
+          } (${bytesToWrite} bytes) to memory address ${addressNum.toString(
+            16
+          )} last address is ${this.cpu
+            .getDataMemory()
+            .lastAddress()
+            .toString(16)} `
       });
     }
     // console.log(
