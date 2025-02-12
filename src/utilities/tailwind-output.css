@@ -302,8 +302,16 @@ table {
 3. Remove default padding in all browsers.
 */
 
+input {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  padding: 5px 14px;
+}
+
 button,
-input,
 optgroup,
 select,
 textarea {
@@ -333,7 +341,7 @@ textarea {
 Remove the inheritance of text transform in Edge and Firefox.
 */
 
-button,
+,
 select {
   text-transform: none;
 }
@@ -885,8 +893,8 @@ html {
 
 .btn {
   display: inline-flex;
-  height: 3rem;
-  min-height: 3rem;
+  height: 2rem;
+  min-height: 2rem;
   flex-shrink: 0;
   cursor: pointer;
   -webkit-user-select: none;
@@ -920,6 +928,12 @@ html {
   --tw-bg-opacity: 1;
   --tw-border-opacity: 1;
 }
+
+
+.bg-green{
+  background-color: #90EE90;
+}
+
 
 .btn-disabled,
   .btn[disabled],
@@ -1113,7 +1127,7 @@ html {
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
-  height: 3rem;
+  height: 2rem;
   padding-left: 1rem;
   padding-right: 1rem;
   font-size: 1rem;
@@ -2391,9 +2405,17 @@ details.collapse summary::-webkit-details-marker {
   position: relative;
 }
 
+.hidden{
+  display: none;
+}
+
 .m-0 {
   margin: 0px;
 }
+
+
+
+
 
 .mx-auto {
   margin-left: auto;
@@ -2408,8 +2430,32 @@ details.collapse summary::-webkit-details-marker {
   margin-inline-start: 1rem;
 }
 
+
+.ml-4{
+  margin-left: 1rem;
+}
+
+.mx-2{
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  
+}
+
+
 .mt-2 {
   margin-top: 0.5rem;
+}
+
+.mt-3 {
+  margin-top: 1.3rem;
+}
+
+.text-lg{
+  font-size: 1.125rem;
+}
+
+.text-md{
+  font-size: 1rem;
 }
 
 .block {
@@ -2493,8 +2539,32 @@ details.collapse summary::-webkit-details-marker {
   justify-content: center;
 }
 
+.font-bold {
+  font-weight: 800;
+}
+
+.blue{
+  color: blue;
+}
+
+.items-start{
+  align-items: start;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
 .justify-between {
   justify-content: space-between;
+}
+
+.gap-1{
+  gap: 0.25rem;
 }
 
 .gap-2 {
@@ -2503,6 +2573,10 @@ details.collapse summary::-webkit-details-marker {
 
 .gap-3 {
   gap: 0.75rem;
+}
+
+.gap-4{
+  gap: 1.1rem;
 }
 
 .gap-8 {
@@ -2568,12 +2642,25 @@ details.collapse summary::-webkit-details-marker {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
 
+.bg-gray-100{
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
+}
+
 .p-0 {
   padding: 0px;
 }
 
 .p-1 {
   padding: 0.25rem;
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.p-4{
+  padding: 1rem;
 }
 
 .px-1 {
@@ -2698,4 +2785,22 @@ details.collapse summary::-webkit-details-marker {
 .hover\:bg-gray-300:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(209 213 219 / var(--tw-bg-opacity, 1));
+}
+
+.cursor-pointer{
+  cursor: pointer;
+}
+
+.w-min{
+  width: min-content;
+}
+
+.optionConvert{
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.optionConvert:hover{
+  background-color: #f1f1f1;
+  cursor: pointer;
 }
