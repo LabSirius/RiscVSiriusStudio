@@ -19,6 +19,12 @@
         "icon": "$(remote-explorer)"
       },
       {
+        "command": "rv-simulator.simulateStart",
+        "title": "RISCV simulator: start program simulation",
+        "icon": "$(chip)"
+      },
+
+      {
         "command": "rv-simulator.build",
         "title": "RISCV simulator: build program",
         "icon": "$(run)"

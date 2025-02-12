@@ -52,60 +52,6 @@ export function deactivate() {
   console.log('Deactivating extension');
 }
 
-/**
- *
- * Computes the internal representation for the current line under the cursor.
- *
- * @param rvContext extension context.
- */
-function irForCurrentLine(rvContext: RVExtensionContext) {
-  const editor = window.activeTextEditor;
-  if (editor) {
-    if (!rvContext.validIR()) {
-      console.log(
-        'Cannot be done as parser has not succeeded to produce a valid ir'
-      );
-      return undefined;
-    }
-    // Assume there is a valid internal representation of the source code.
-    const currentLine = editor.selection.active.line;
-    const ir = rvContext.getIRForInstructionAt(currentLine);
-    return ir;
-  } else {
-    throw Error('No editor open.');
-  }
-}
-
-function updateContext(
-  uri: Uri,
-  editor: TextEditor,
-  rvContext: RVExtensionContext,
-  statusBarItem: StatusBarItem,
-  programMemoryProvider: ProgramMemoryProvider
-) {
-  if (RVExtensionContext.isValidFile(editor.document)) {
-    rvContext.setSourceDocument(editor.document);
-    let uri: Uri;
-    if (rvContext.validIR()) {
-      uri = encodeIR(editor.document.uri, true);
-      reportBuildStatus(statusBarItem, 'Passed');
-    } else {
-      uri = encodeIR(editor.document.uri, false);
-      reportBuildStatus(statusBarItem, 'Failure');
-    }
-    programMemoryProvider.onDidChangeEmitter.fire(uri);
-    workspace.openTextDocument(uri).then((programMemoryDocument) => {
-      window.showTextDocument(programMemoryDocument, {
-        viewColumn: editor.viewColumn! + 1,
-        preview: true,
-        preserveFocus: true
-      });
-      rvContext.setProgramMemoryDocument(programMemoryDocument);
-    });
-  } else {
-    // Skip as the document is not a riscv file.
-  }
-}
 
 /**
  * Report the result of the program's parsing.

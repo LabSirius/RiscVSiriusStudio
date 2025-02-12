@@ -19,8 +19,12 @@ async function detailsMessage(ir: any | undefined): Promise<MarkdownString | und
   if (!ir) {
     markdown.appendMarkdown(`<h4>Undefined</h4>\n`);
   } else {
-    markdown.appendMarkdown(`<h4>Encoding for ${ir["asm"]}</h4>\n`);
+    markdown.appendMarkdown(`<h4 style="color: red;">Encoding for ${ir["asm"]}</h4>\n`);
     markdown.appendMarkdown(`<h5>${ir["asm"]}</h5>\n`);
+    markdown.appendMarkdown(`
+      <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="40" fill="red"/>
+      </svg>`);
   }
   return markdown;
 }
