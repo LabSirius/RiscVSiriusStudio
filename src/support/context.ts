@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { commands, Disposable, ExtensionContext, StatusBarItem, TextDocument, TextEditor, window, workspace } from 'vscode';
+import { commands, Disposable, ExtensionContext, StatusBarItem, TextDocument, TextEditor, Webview, WebviewView, window, workspace } from 'vscode';
 import { SCCPU, SCCPUResult } from '../vcpu/singlecycle';
 import { SimulatorPanel } from '../panels/SimulatorPanel';
 import { activateMessageListenerForRegistersView, getHtmlForRegistersWebview, RegisterPanelView } from '../panels/RegisterPanel';
@@ -20,6 +20,8 @@ import { RiscCardPanel } from '../panels/RiscCardPanel';
 import { RVDocument } from '../rvDocument';
 import { EncoderDecorator } from '../encoderDecorator';
 import { ConfigurationManager } from './configurationManager';
+import { BasicSimulator } from '../basicSimulator';
+import { Simulator } from '../Simulator';
 
 
 export class RVContext {
@@ -44,12 +46,10 @@ export class RVContext {
   get encoderDecorator(): EncoderDecorator {
     return this._encoderDecorator;
   }
-  // Reference to the simulator panel
-  // Reference to the document tracker
-  // private _documentTracker: DocumentTracker;
-  // get documentTracker(): DocumentTracker {
-  // return this._documentTracker;
-  // }
+  private _mainWebviewView: Webview | undefined;
+  get mainWebviewView(): Webview | undefined {
+    return this._mainWebviewView;
+  }
 
   // Reference to the status bar
   private _statusBarItem: StatusBarItem;
@@ -57,7 +57,12 @@ export class RVContext {
     return this._statusBarItem;
   }
 
+  // TODO: unused for now
   private _documents: RVDocument[];
+
+  // Simulation attributes
+  private _isSimulating: boolean;
+  private _simulator: Simulator | undefined;
 
   static create(context: ExtensionContext): RVContext {
     if (!RVContext.#instance) {
@@ -87,6 +92,9 @@ export class RVContext {
     this._documents = [];
     this._encoderDecorator = new EncoderDecorator();
 
+    this._isSimulating = false;
+    this._simulator = undefined;
+
     // Webviews
     this.disposables.push(
       window.registerWebviewViewProvider(
@@ -103,6 +111,7 @@ export class RVContext {
             webviewView.title = "Registers and memory view";
             webviewView.webview.html = await getHtmlForRegistersWebview(webviewView.webview, this.extensionContext.extensionUri);
             await activateMessageListenerForRegistersView(webviewView.webview);
+            this._mainWebviewView = webviewView.webview;
           },
         },
         {
@@ -116,8 +125,11 @@ export class RVContext {
     this.disposables.push(
       commands.registerCommand('rv-simulator.simulate', () => {
         const editor = window.activeTextEditor;
-        console.log("This should call the simulator but is not yet implemented");
-        // simulateProgram(editor, context.extensionUri, rvContext);
+        if (editor && RVDocument.isValid(editor.document)) {
+          const rvDoc = this.getOrAddDocument(editor);
+          rvDoc.buildAndDecorate(this);
+          this.simulateProgram(rvDoc);
+        }
       })
     );
 
@@ -170,6 +182,8 @@ export class RVContext {
     /**
      * When the active text editor changes, build the new current document if
      * applicable.
+     * TODO: not sure if editor and activeTextEditor are the same thing.
+     * This is because buildCurrentDocument() uses the active text editor.
      */
     this.disposables.push(
       window.onDidChangeActiveTextEditor(editor => {
@@ -194,6 +208,10 @@ export class RVContext {
         }
       }
     );
+
+    // This tells vscode that the extension is not simulating and in turns some
+    // commands get disabled.
+    commands.executeCommand('setContext', 'ext.isSimulating', false);
 
     console.log("Context constructor done");
   }
@@ -229,6 +247,24 @@ export class RVContext {
     this._documents.push(newDoc);
     this.encoderDecorator.decorate(editor, newDoc);
     return newDoc;
+  }
+
+  private simulateProgram(rvDoc: RVDocument) {
+    console.log("Simulating program");
+    // TODO: Select the cpu parameters
+    if (!rvDoc.ir) {
+      throw new Error("No valid IR found");
+    }
+    const program: any[] = rvDoc.ir?.instructions;
+    const memSize: number = 128;
+    const spAddress: number = memSize - 4;
+
+    const simulator: Simulator = new Simulator(program, memSize, spAddress, rvDoc, this);
+
+    commands.executeCommand('setContext', 'ext.isSimulating', true);
+    this._isSimulating = true;
+    this._simulator = simulator;
+    simulator.start();
   }
 }
 

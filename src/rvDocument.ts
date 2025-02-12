@@ -75,6 +75,10 @@ export class RVDocument {
     }
   }
 
+  public getEditor(): TextEditor | undefined {
+    return RVDocument.getEditorForDocument(this._document);
+  }
+
   private static getEditorForDocument(document: TextDocument): TextEditor | undefined {
     return window.visibleTextEditors.find(editor => editor.document === document);
   }

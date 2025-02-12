@@ -231,6 +231,7 @@ export class SCCPU {
   private pc: number;
 
   public constructor(program: any[], memSize: number, sp: number) {
+    console.log('Program to execute: ', program);
     this.program = program.filter((sc) => {
       return sc.kind === 'SrcInstruction';
     });
