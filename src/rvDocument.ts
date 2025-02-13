@@ -22,8 +22,15 @@ export class RVDocument {
   get ir() {
     return this._ir;
   }
-
+  /**
+   * Maps line numbers in the document to the IR for that line.
+   */
   private _lineIR: Map<number, any>;
+  /**
+   * Maps instructions in the IR to the line number in the document. The key is
+   * the instruction address (inst field in the IR)
+   */
+  private _instructionLine: Map<number, number>;
 
   get document(): TextDocument {
     return this._document;
@@ -34,6 +41,7 @@ export class RVDocument {
       throw new Error('Document must be a RISC-V assembly file');
     }
     this._lineIR = new Map();
+    this._instructionLine = new Map();
     this._document = document;
 
     workspace.onDidChangeTextDocument(e => {
@@ -91,6 +99,7 @@ export class RVDocument {
     this.ir?.instructions.forEach((instruction, index) => {
       const line = instruction.location.start.line - 1;
       this._lineIR.set(line, instruction);
+      this._instructionLine.set(instruction.inst, line);
     });
   }
 
@@ -116,6 +125,18 @@ export class RVDocument {
     const ir = this._lineIR.get(line);
     if (ir) {
       return ir;
+    } else {
+      return undefined;
+    }
+  }
+
+  public getLineForIR(instruction: any): number | undefined {
+    if (!this.validIR()) {
+      return undefined;
+    }
+    const lineNumber = this._instructionLine.get(instruction.inst);
+    if (lineNumber) {
+      return lineNumber;
     } else {
       return undefined;
     }

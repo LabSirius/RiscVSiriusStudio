@@ -21,7 +21,7 @@ import { RVDocument } from '../rvDocument';
 import { EncoderDecorator } from '../encoderDecorator';
 import { ConfigurationManager } from './configurationManager';
 import { BasicSimulator } from '../basicSimulator';
-import { Simulator } from '../Simulator';
+import { Simulator, TextSimulator } from '../Simulator';
 
 
 export class RVContext {
@@ -145,6 +145,7 @@ export class RVContext {
     //  Simulate-stop
     this.disposables.push(
       commands.registerCommand('rv-simulator.simulateStop', () => {
+        debugger;
         if (!this._simulator) {
           throw new Error("No simulator is running");
         } else {
@@ -152,6 +153,10 @@ export class RVContext {
           this._isSimulating = false;
           this._simulator = undefined;
         }
+        // TODO: The buttons remain visible after the simulation stops.
+        // commands.executeCommand('setContext', 'ext.isSimulating', false);
+        // commands.executeCommand('setContext', 'rv-simulator.simulateStep', false);
+
       })
     );
 
@@ -281,7 +286,7 @@ export class RVContext {
     const memSize: number = 128;
     const spAddress: number = memSize - 4;
 
-    const simulator: Simulator = new Simulator(program, memSize, spAddress, rvDoc, this);
+    const simulator: Simulator = new TextSimulator(program, memSize, spAddress, rvDoc, this);
 
     // This tells vscode that the extension is simulating and in turn some
     // commands get enabled.
