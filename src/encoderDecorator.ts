@@ -29,6 +29,27 @@ async function detailsMessage(ir: any | undefined): Promise<MarkdownString | und
   return markdown;
 }
 
+/**
+ * Returns a decoration for a given line.
+ * @param line Source code line to decorate
+ * @param ir Parser result for the line
+ */
+function getDecorationForLine(line: string, lineNumber: number, rvDoc: RVDocument): string {
+  if (!rvDoc.validIR()) {
+    throw new Error("Cannot get decoration for invalid IR");
+  }
+  const ir = rvDoc.getIRForLine(lineNumber);
+  if (!ir) {
+    return ' ';
+  }
+  const binEncoding = ir.encoding.binEncoding;
+  // const memAddress: number = ir ? ir.inst : 0;
+  // const memAddressHex: string = "0x" + memAddress.toString(16);
+  // const decorationText = `${memAddressHex.padStart(5, " ")} ${binEncoding}`;
+  // return decorationText;
+  return binEncoding;
+}
+
 export class EncoderDecorator {
 
 
@@ -41,19 +62,6 @@ export class EncoderDecorator {
     return max;
   }
 
-  /**
-   * Returns a decoration for a given line.
-   * @param line Source code line to decorate
-   * @param ir Parser result for the line
-   */
-  private getDecorationForLine(line: string, lineNumber: number, lineIR: any,
-    rvDoc: RVDocument): string {
-    if (!rvDoc.validIR()) {
-      throw new Error("Cannot get decoration for invalid IR");
-    }
-    const decorationText = lineIR ? lineIR.encoding.binEncoding as string : '';
-    return decorationText;
-  }
 
   public async decorate(editor: TextEditor, rvDoc: RVDocument) {
     console.log("####################");
@@ -67,7 +75,13 @@ export class EncoderDecorator {
       for (let i = 0; i < editor.document.lineCount; i++) {
         const line = editor.document.lineAt(i);
         const ir = rvDoc.getIRForLine(i);
-        const irText = ir ? ir.encoding.binEncoding : '';
+        let irText = ir ? ir.encoding.binEncoding : '';
+        if (irText.length > 0) {
+          const memAddress: number = ir ? ir.inst : 0;
+          const memAddressHex: string = "0x" + memAddress.toString(16);
+          irText = `${memAddressHex.padEnd(5, " ")}  ${irText}`;
+        }
+
         decorations.push({
           range: line.range,
           hoverMessage: await detailsMessage(ir),
@@ -75,7 +89,7 @@ export class EncoderDecorator {
             // isWholeLine: true,
             after: {
               contentText: irText,
-              margin: `0 0 0 ${(ml - line.text.length + 4) * 10}px`,
+              margin: `0 0 0 ${(ml - line.text.length + 5) * 10}px`,
               // fontWeight: 'bold',
               textAlign: 'right',
               opacity: 0.5
