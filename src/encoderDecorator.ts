@@ -29,27 +29,6 @@ async function detailsMessage(ir: any | undefined): Promise<MarkdownString | und
   return markdown;
 }
 
-/**
- * Returns a decoration for a given line.
- * @param line Source code line to decorate
- * @param ir Parser result for the line
- */
-function getDecorationForLine(line: string, lineNumber: number, rvDoc: RVDocument): string {
-  if (!rvDoc.validIR()) {
-    throw new Error("Cannot get decoration for invalid IR");
-  }
-  const ir = rvDoc.getIRForLine(lineNumber);
-  if (!ir) {
-    return ' ';
-  }
-  const binEncoding = ir.encoding.binEncoding;
-  // const memAddress: number = ir ? ir.inst : 0;
-  // const memAddressHex: string = "0x" + memAddress.toString(16);
-  // const decorationText = `${memAddressHex.padStart(5, " ")} ${binEncoding}`;
-  // return decorationText;
-  return binEncoding;
-}
-
 export class EncoderDecorator {
 
 

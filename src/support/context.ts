@@ -121,7 +121,7 @@ export class RVContext {
     );
 
     // Commands
-    //  Simulator 
+    //  Simulator (start)
     this.disposables.push(
       commands.registerCommand('rv-simulator.simulate', () => {
         const editor = window.activeTextEditor;
@@ -129,6 +129,28 @@ export class RVContext {
           const rvDoc = this.getOrAddDocument(editor);
           rvDoc.buildAndDecorate(this);
           this.simulateProgram(rvDoc);
+        }
+      })
+    );
+    //  Simulate-step
+    this.disposables.push(
+      commands.registerCommand('rv-simulator.simulateStep', () => {
+        if (!this._simulator) {
+          throw new Error("No simulator is running");
+        } else {
+          this._simulator.step();
+        }
+      })
+    );
+    //  Simulate-stop
+    this.disposables.push(
+      commands.registerCommand('rv-simulator.simulateStop', () => {
+        if (!this._simulator) {
+          throw new Error("No simulator is running");
+        } else {
+          this._simulator.stop();
+          this._isSimulating = false;
+          this._simulator = undefined;
         }
       })
     );
@@ -209,7 +231,7 @@ export class RVContext {
       }
     );
 
-    // This tells vscode that the extension is not simulating and in turns some
+    // This tells vscode that the extension is not simulating and in turn some
     // commands get disabled.
     commands.executeCommand('setContext', 'ext.isSimulating', false);
 
@@ -261,7 +283,9 @@ export class RVContext {
 
     const simulator: Simulator = new Simulator(program, memSize, spAddress, rvDoc, this);
 
-    commands.executeCommand('setContext', 'ext.isSimulating', true);
+    // This tells vscode that the extension is simulating and in turn some
+    // commands get enabled.
+    commands.executeCommand('setContext', 'riscv.isSimulating', true);
     this._isSimulating = true;
     this._simulator = simulator;
     simulator.start();

@@ -17,14 +17,20 @@
       {
         "command": "rv-simulator.simulate",
         "title": "RISCV simulator: simulate program execution",
-        "icon": "$(remote-explorer)"
-      },
-      {
-        "command": "rv-simulator.simulateStart",
-        "title": "RISCV simulator: start program simulation",
         "icon": "$(chip)"
       },
+      {
+        "command": "rv-simulator.simulateStep",
+        "title": "RISCV simulator: step simulation",
+        "icon": "$(debug-step-over)"
 
+      },
+      {
+        "command": "rv-simulator.simulateStop",
+        "title": "RISCV simulator: step simulation",
+        "icon": "$(debug-stop)"
+
+      },
       {
         "command": "rv-simulator.build",
         "title": "RISCV simulator: build program",
@@ -154,6 +160,16 @@
           "command": "rv-simulator.simulate",
           "group": "navigation",
           "when": "editorLangId == riscvasm"
+        },
+        {
+          "command": "rv-simulator.simulateStep",
+          "group": "navigation",
+          "when": "editorLangId == riscvasm && riscv.isSimulating"
+        },
+        {
+          "command": "rv-simulator.simulateStop",
+          "group": "navigation",
+          "when": "editorLangId == riscvasm && riscv.isSimulating"
         },
         {
           "command": "rv-simulator.ShowCard",

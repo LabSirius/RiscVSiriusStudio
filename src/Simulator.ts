@@ -9,9 +9,11 @@ export class Simulator {
   protected editor: TextEditor;
   protected cpu: SCCPU;
 
-  private onDidStep: EventEmitter<void> = new EventEmitter<void>();
-  public readonly didStep: Event<void> = this.onDidStep.event;
+  private didStep: EventEmitter<void> = new EventEmitter<void>();
+  public readonly onDidStep: Event<void> = this.didStep.event;
 
+  private didStop: EventEmitter<void> = new EventEmitter<void>();
+  public readonly onDidStop: Event<void> = this.didStop.event;
 
   constructor(
     program: any[],
@@ -38,10 +40,12 @@ export class Simulator {
 
   step(): void {
     console.log("Simulator step");
-    this.onDidStep.fire();
+    this.didStep.fire();
   }
-  reset(): void {
-    console.log("Simulator reset");
+
+  stop(): void {
+    console.log("Simulator stop");
+    this.didStop.fire();
   }
 
   protected sendToMainView(message: any) {
