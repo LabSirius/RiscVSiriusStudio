@@ -396,16 +396,13 @@ function setupSearch(registersTable: Tabulator, memoryTable: Tabulator) {
 
   searchRegisterInput.addEventListener("input", () => {
     let searchValue = searchRegisterInput.value.trim();
-
-    console.log(registersTable.getData());
-    console.log(memoryTable.getData());
-    console.log(searchValue);
-
+  
     if (searchValue === "") {
       registersTable.clearFilter(true);
+      resetCellColors(registersTable); // Restablecer colores aquí
       return;
     }
-
+  
     searchValue = convertToBinary(searchValue);
     filterTableData(registersTable, searchValue);
   });
@@ -414,6 +411,7 @@ function setupSearch(registersTable: Tabulator, memoryTable: Tabulator) {
     if (event.key === "Escape") {
       searchRegisterInput.value = "";
       registersTable.clearFilter(true);
+      resetCellColors(registersTable); // <- Añade esta línea
     }
   });
 }
@@ -422,41 +420,82 @@ function convertToBinary(value: string): string {
   value = value.trim().toLowerCase();
 
   if (value.startsWith("b")) {
-    return value.slice(1); // Mantiene el binario tal cual
+    return `isnumber${value.slice(1)}`; 
   }
 
   if (value.startsWith("d")) {
-    let num = parseInt(value.slice(1), 10); // Convertimos a número entero
+    let num = parseInt(value.slice(1), 10); 
 
     if (num < 0) {
       let bits = 8;
       num = (1 << bits) + num;
-      return num.toString(2).padStart(bits, "0");
+      return `isnumber${num.toString(2).padStart(bits, "0")}`;
     } else {
-      return num.toString(2);
+      return `isnumber${num.toString(2)}`;
     }
   }
 
   if (value.startsWith("h")) {
-    return parseInt(value.slice(1), 16).toString(2); // Convierte hexadecimal a binario
+    return `isnumber${parseInt(value.slice(1), 16).toString(2)}`; 
   }
 
   if (value.startsWith("u") || value.startsWith("s")) {
     let num = value.slice(1);
-    return num;
+    return `isnumber${num}`;
   }
 
-  return value; // Si no cumple ningún caso, se devuelve tal cual
+  
+  return value; 
 }
 
+
 function filterTableData(table: Tabulator, searchValue: string) {
+  resetCellColors(table);
+  
+
+  const isNumberSearch = searchValue.startsWith("isnumber");
+  const cleanSearchValue = isNumberSearch ? searchValue.replace("isnumber", "") : searchValue;
+
   table.setFilter((data: any) => {
-    return Object.values(data).some((value) => {
-      const valueStr = value?.toString().toLowerCase();
-      return valueStr && valueStr.includes(searchValue);
+    if (isNumberSearch) {
+      // Buscar SOLO en value
+      const valueStr = data.value?.toString().toLowerCase() || '';
+      return valueStr.includes(cleanSearchValue);
+    } else {
+      // Buscar SOLO en name
+      const nameStr = data.name?.toLowerCase() || '';
+      return nameStr.includes(cleanSearchValue);
+    }
+  });
+
+  if (cleanSearchValue) {
+    table.getRows().forEach((row) => {
+      row.getCells().forEach((cell) => {
+        const field = cell.getField();
+        const cellValue = cell.getValue()?.toString().toLowerCase() || '';
+        
+        // Resaltar solo el campo correspondiente
+        if (isNumberSearch && field === "value" && cellValue.includes(cleanSearchValue)) {
+          cell.getElement().style.backgroundColor = '#D1E3E7';
+        } 
+        else if (!isNumberSearch && (field === "name" || field === "value") && cellValue.includes(cleanSearchValue)) {
+          cell.getElement().style.backgroundColor = '#D1E3E7';
+        }
+      });
+    });
+  }
+}
+
+
+function resetCellColors(table: Tabulator) {
+  table.getRows().forEach((row) => {
+    row.getCells().forEach((cell) => {
+      cell.getElement().style.backgroundColor = '';
     });
   });
 }
+
+
 
 function setupImportRegisters(registersTable: Tabulator) {
   document
@@ -622,58 +661,57 @@ function setupImportMemory(memoryTable: Tabulator) {
 
 
 function setUpConvert() {
-  function setupDropdown(inputId: string, optionsId: string): void {
+  function setupDropdown(inputId: string, optionsId: string, defaultValue: string, defaultText: string): void {
     const inputElement = document.getElementById(inputId) as HTMLInputElement | null;
     const optionsElement = document.getElementById(optionsId) as HTMLDivElement | null;
-
-    if (!inputElement || !optionsElement) {return;};
+    if (!inputElement || !optionsElement) {
+      return;
+    }
+    
+    inputElement.value = defaultText;
+    inputElement.dataset.value = defaultValue;
 
     inputElement.addEventListener("click", () => {
       optionsElement.classList.toggle("hidden");
     });
 
-    // Manejar la selección de una opción
-    optionsElement.querySelectorAll<HTMLParagraphElement>(".optionConvert").forEach((option) => {
+    optionsElement.querySelectorAll<HTMLParagraphElement>(".option-convert").forEach((option) => {
       option.addEventListener("click", (event) => {
         const target = event.target as HTMLParagraphElement;
-        inputElement.value = target.innerText; // Asigna el texto seleccionado al input
-        inputElement.dataset.value = target.dataset.value || ""; // Guarda el valor en dataset
-        optionsElement.classList.add("hidden"); // Oculta las opciones
+        inputElement.value = target.innerText;
+        inputElement.dataset.value = target.dataset.value || "";
+        optionsElement.classList.add("hidden");
+        convertNumber();
       });
     });
 
-   
     document.addEventListener("click", (event) => {
-      if (!inputElement.contains(event.target as Node) && !optionsElement.contains(event.target as Node)) {
+      if (!inputElement?.contains(event.target as Node) && !optionsElement?.contains(event.target as Node)) {
         optionsElement.classList.add("hidden");
       }
     });
   }
 
-  // Configurar los dropdowns para "From" y "To"
-  setupDropdown("fromConvertInput", "fromOptions");
-  setupDropdown("toConvertInput", "toOptions");
-
-  // Lógica botón Convert
-  const convertBtn = document.getElementById("ConvertBtn") as HTMLButtonElement;
-  convertBtn.addEventListener("click", () => {
+  function convertNumber(): void {
     const fromInput = document.getElementById("fromConvertInput") as HTMLInputElement;
     const toInput = document.getElementById("toConvertInput") as HTMLInputElement;
     const numberInput = document.getElementById("numberToconvertInput") as HTMLInputElement;
     const resultInput = document.getElementById("resultConvertInput") as HTMLInputElement;
 
-    const fromBase = fromInput.dataset.value; 
-    const toBase = toInput.dataset.value; 
-    const numberValue = numberInput.value.trim(); 
+    if (!fromInput || !toInput || !numberInput || !resultInput) {
+      return;
+    }
+
+    const fromBase = fromInput.dataset.value as string;
+    const toBase = toInput.dataset.value as string;
+    const numberValue = numberInput.value.trim();
 
     if (!fromBase || !toBase || !numberValue) {
-      console.log("Por favor, selecciona las bases y escribe un número válido.");
+      resultInput.value = "";
       return;
     }
 
     let decimalValue: number;
-
-    
     try {
       if (fromBase === "bin") {
         decimalValue = parseInt(numberValue, 2);
@@ -681,16 +719,22 @@ function setUpConvert() {
         decimalValue = parseInt(numberValue, 16);
       } else if (fromBase === "dec") {
         decimalValue = parseInt(numberValue, 10);
+      } else if (fromBase === "twoCompl") {
+        const bitLength = numberValue.length;
+        if (numberValue[0] === "1") {
+          decimalValue = parseInt(numberValue, 2) - (1 << bitLength);
+        } else {
+          decimalValue = parseInt(numberValue, 2);
+        }
       } else {
-        throw new Error("Base de origen no válida.");
+        throw new Error("Base inválida");
       }
-
+      
       if (isNaN(decimalValue)) {
-        throw new Error("Número inválido.");
+        throw new Error("Número inválido");
       }
-    } catch (error) {
-      console.log("Error al convertir el número: ");
-      resultInput.value = "Error, check the fields"; 
+    } catch {
+      resultInput.value = "Error";
       return;
     }
 
@@ -701,36 +745,50 @@ function setUpConvert() {
       result = decimalValue.toString(16).toUpperCase();
     } else if (toBase === "dec") {
       result = decimalValue.toString(10);
+    } else if (toBase === "twoCompl") {
+      let bitLength = 32;
+      if (decimalValue < 0) {
+        result = (decimalValue >>> 0).toString(2);
+        result = result.slice(-bitLength);
+      } else {
+        result = decimalValue.toString(2).padStart(bitLength, "0");
+      }
     } else {
-      console.log("Base de destino no válida.");
+      resultInput.value = "Error";
       return;
     }
-
-
     resultInput.value = result;
-  
+  }
+
+  setupDropdown("fromConvertInput", "fromOptions", "dec", "Decimal");
+  setupDropdown("toConvertInput", "toOptions", "bin", "Binary");
+
+  document.getElementById("numberToconvertInput")?.addEventListener("input", convertNumber);
+
+  document.getElementById("numberToconvertInput")?.addEventListener("keydown", (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      const target = event.target as HTMLInputElement;
+      target.value = "";
+      const resultInput = document.getElementById("resultConvertInput") as HTMLInputElement;
+      if (resultInput) {
+        resultInput.value = "";
+      }
+    }
   });
 
-  //SWAP BUTTON
-  const swapBtn = document.getElementById("SwapConvertBtn") as HTMLButtonElement;
-  swapBtn.addEventListener("click", () => {
+  document.getElementById("SwapConvertBtn")?.addEventListener("click", () => {
     const fromInput = document.getElementById("fromConvertInput") as HTMLInputElement;
     const toInput = document.getElementById("toConvertInput") as HTMLInputElement;
-    const numberInput = document.getElementById("numberToconvertInput") as HTMLInputElement;
-    const resultInput = document.getElementById("resultConvertInput") as HTMLInputElement;
-
-    const tempValue = fromInput.value;
-    fromInput.value = toInput.value;
-    toInput.value = tempValue;
-
-    const tempDataValue = fromInput.dataset.value;
-    fromInput.dataset.value = toInput.dataset.value || "";
-    toInput.dataset.value = tempDataValue || "";
-
-    numberInput.value = "";
-    resultInput.value = "";
+    if (!fromInput || !toInput) {
+      return;
+    }
+    [fromInput.value, toInput.value] = [toInput.value, fromInput.value];
+    [fromInput.dataset.value, toInput.dataset.value] = [toInput.dataset.value || "", fromInput.dataset.value || ""];
+    convertNumber();
   });
 }
+
+
 
 
 
