@@ -366,7 +366,7 @@ function setupButtons(): void {
     sections.forEach((id) => {
       const element = document.getElementById(id);
       if (element) {
-        element.className = id === targetId ? "flex flex-1 flex-col" : "hidden";
+        element.className = id === targetId ? "flex flex-1 flex-col max-h-dvh min-h-dvh overflow-y-scroll" : "hidden";
       }
     });
   }
@@ -375,8 +375,6 @@ function setupButtons(): void {
   document.getElementById("openImportButton")?.addEventListener("click", () => showOnly("openImport"));
   document.getElementById("openConvertButton")?.addEventListener("click", () => showOnly("openConvert"));
   document.getElementById("openHelpButton")?.addEventListener("click", () => showOnly("openHelp"));
-
-  document.getElementById("closeHelpButton")?.addEventListener("click", () => showOnly("thirdMainColumn"));
 }
 
 

@@ -31,13 +31,13 @@ export async function getHtmlForRegistersWebview(webview: Webview, extensionUri:
           <link rel="stylesheet", href="${tabulatorCSS}">
         </head>
         <body>
-          <div class="w-full flex flex-row gap-3">
+          <div class="w-full flex flex-row gap-3 overflow-hidden">
             <div id="tabs-registers" class="w-fit max-h-dvh min-h-dvh"></div>
             <div id="tabs-memory" class="w-fit max-h-dvh min-h-dvh"></div>
             <!-- This is the third column -->
-            <div class=" flex flex-col gap-2 flex-1">
 
-              <div class="flex justify-between items-center gap-2">
+            <div class=" flex flex-col gap-2 flex-1 max-h-dvh min-h-dvh overflow-y-scroll">
+              <div class="flex justify-between items-center gap-2  ">
                 <div class="flex gap-2">
                   <div id="openSearchButton" class="icon-tab">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
