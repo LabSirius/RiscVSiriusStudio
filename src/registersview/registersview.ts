@@ -268,7 +268,7 @@ function memorySetup(): Tabulator {
         headerHozAlign: 'center',
         visible: true,
         headerSort: false,
-        width: 90
+        width: 100
       }
     ]
   });
