@@ -24,6 +24,7 @@ body {
 .register-name {
   font-weight: bold;
 }
+
 /* Style applied to the registers value column in the register view */
 /* .register-value {
   font-style: italic;
@@ -33,11 +34,8 @@ body {
  */
 .view-type {
   /* border: none; */
-  border-width: 1px;
-  border-radius: 5px;
   display: inline-block;
   text-align: left;
-  background-color: var(--vscode-tab-activeBackground) !important;
   width: 100%;
 }
 /**
@@ -84,3 +82,4 @@ body {
   /* font-weight: bold; */
   background-color: var(--vscode-statusBar-debuggingBackground) !important;
 }
+

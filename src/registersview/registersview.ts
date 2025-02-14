@@ -438,10 +438,17 @@ function convertToBinary(value: string): string {
     return `isnumber${parseInt(value.slice(1), 16).toString(2)}`;
   }
 
-  if (value.startsWith("u") || value.startsWith("s")) {
+  if (value.startsWith("u") ) {
     let num = value.slice(1);
     return `isnumber${num}`;
   }
+
+  if (value.startsWith("s") ) {
+    let num = value.slice(1);
+    return `both${num}`;
+  }
+
+  
 
 
   return value;
@@ -451,18 +458,29 @@ function convertToBinary(value: string): string {
 function filterTableData(table: Tabulator, searchValue: string) {
   resetCellColors(table);
 
-
   const isNumberSearch = searchValue.startsWith("isnumber");
-  const cleanSearchValue = isNumberSearch ? searchValue.replace("isnumber", "") : searchValue;
+  const isBothSearch = searchValue.startsWith("both");
+
+  console.log("isNumberSearch", isNumberSearch);
+  console.log("isBothSearch", isBothSearch);
+
+  const cleanSearchValue = searchValue.replace(/^(isnumber|both)\s*/, "").trim();
+  const searchTerms = cleanSearchValue.split(/\s+/);
 
   table.setFilter((data: any) => {
+    const nameStr = data.name?.toLowerCase() || '';
+    const valueStr = data.value?.toString().toLowerCase() || '';
+
     if (isNumberSearch) {
-      // Buscar SOLO en value
-      const valueStr = data.value?.toString().toLowerCase() || '';
       return valueStr.includes(cleanSearchValue);
+    } else if (isBothSearch) {
+      if (searchTerms.length === 1) {
+        const modifiedSearch = "s" + searchTerms[0] ;
+        return nameStr.includes(modifiedSearch) || valueStr.includes(searchTerms[0]);
+      } else {
+        return searchTerms.every(term => valueStr.includes(term));
+      }
     } else {
-      // Buscar SOLO en name
-      const nameStr = data.name?.toLowerCase() || '';
       return nameStr.includes(cleanSearchValue);
     }
   });
@@ -473,17 +491,31 @@ function filterTableData(table: Tabulator, searchValue: string) {
         const field = cell.getField();
         const cellValue = cell.getValue()?.toString().toLowerCase() || '';
 
-        // Resaltar solo el campo correspondiente
         if (isNumberSearch && field === "value" && cellValue.includes(cleanSearchValue)) {
           cell.getElement().style.backgroundColor = '#D1E3E7';
-        }
-        else if (!isNumberSearch && (field === "name" || field === "value") && cellValue.includes(cleanSearchValue)) {
+        } 
+        else if (isBothSearch) {
+          if (searchTerms.length === 1) {
+            const modifiedSearch = "s"+searchTerms[0];
+            if ((field === "name" && cellValue.includes(modifiedSearch)) || 
+                (field === "value" && cellValue.includes(searchTerms[0]))) {
+              cell.getElement().style.backgroundColor = '#D1E3E7';
+            }
+          } else {
+            if (field === "value" && searchTerms.every(term => cellValue.includes(term))) {
+              cell.getElement().style.backgroundColor = '#D1E3E7';
+            }
+          }
+        } 
+        else if (!isBothSearch && field === "name" && cellValue.includes(cleanSearchValue)) {
           cell.getElement().style.backgroundColor = '#D1E3E7';
         }
       });
     });
   }
 }
+
+
 
 
 function resetCellColors(table: Tabulator) {
@@ -1209,7 +1241,7 @@ function viewTypeFormatter(
       tag = viewType;
       break;
   }
-  return `<button class="view-type">${tag}</button>`;
+  return `<div >${tag}</div>`;
   // return `<vscode-tag class="view-type">${tag}</vscode-tag>`;
   // return '<vscode-tag><img src="binary-svgrepo-com.svg"></img></vscode-tag>';
 }
