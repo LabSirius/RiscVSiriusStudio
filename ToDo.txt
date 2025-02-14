@@ -1,5 +1,4 @@
 1. En tabla de memoria hay una columna vacia, en esa columna deben ir los labels
-2. En la seccion de convertir implementar el ascii 
+2. En la seccion de convertir implementar el ascii y el complemento en  binario
 3. Al momento de importar tabla de memoria se pueda importar en formato de verilog
-4. Filtar valor en la memoria
-5. Añadir configuracion de memoria
+4. Cuando se esta filtrando en las tablas que aparezca resaltado lo que se busca
