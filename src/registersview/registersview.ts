@@ -78,7 +78,7 @@ function main() {
   setupImportRegisters(registersTable);
   setupImportMemory(memoryTable);
   setUpConvert();
-  
+
 }
 
 function registersSetup(): Tabulator {
@@ -360,7 +360,7 @@ function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: T
 }
 
 function setupButtons(): void {
-  const sections: string[] = ["thirdMainColumn", "openImport", "openConvert", "openHelp"];
+  const sections: string[] = ["thirdMainColumn", "openSettings", "openImport", "openConvert", "openHelp"];
 
   function showOnly(targetId: string): void {
     sections.forEach((id) => {
@@ -372,6 +372,7 @@ function setupButtons(): void {
   }
 
   document.getElementById("openSearchButton")?.addEventListener("click", () => showOnly("thirdMainColumn"));
+  document.getElementById("openSettingsButton")?.addEventListener("click", () => showOnly("openSettings"));
   document.getElementById("openImportButton")?.addEventListener("click", () => showOnly("openImport"));
   document.getElementById("openConvertButton")?.addEventListener("click", () => showOnly("openConvert"));
   document.getElementById("openHelpButton")?.addEventListener("click", () => showOnly("openHelp"));
@@ -394,13 +395,13 @@ function setupSearch(registersTable: Tabulator, memoryTable: Tabulator) {
 
   searchRegisterInput.addEventListener("input", () => {
     let searchValue = searchRegisterInput.value.trim();
-  
+
     if (searchValue === "") {
       registersTable.clearFilter(true);
       resetCellColors(registersTable); // Restablecer colores aquí
       return;
     }
-  
+
     searchValue = convertToBinary(searchValue);
     filterTableData(registersTable, searchValue);
   });
@@ -418,11 +419,11 @@ function convertToBinary(value: string): string {
   value = value.trim().toLowerCase();
 
   if (value.startsWith("b")) {
-    return `isnumber${value.slice(1)}`; 
+    return `isnumber${value.slice(1)}`;
   }
 
   if (value.startsWith("d")) {
-    let num = parseInt(value.slice(1), 10); 
+    let num = parseInt(value.slice(1), 10);
 
     if (num < 0) {
       let bits = 8;
@@ -434,7 +435,7 @@ function convertToBinary(value: string): string {
   }
 
   if (value.startsWith("h")) {
-    return `isnumber${parseInt(value.slice(1), 16).toString(2)}`; 
+    return `isnumber${parseInt(value.slice(1), 16).toString(2)}`;
   }
 
   if (value.startsWith("u") || value.startsWith("s")) {
@@ -442,14 +443,14 @@ function convertToBinary(value: string): string {
     return `isnumber${num}`;
   }
 
-  
-  return value; 
+
+  return value;
 }
 
 
 function filterTableData(table: Tabulator, searchValue: string) {
   resetCellColors(table);
-  
+
 
   const isNumberSearch = searchValue.startsWith("isnumber");
   const cleanSearchValue = isNumberSearch ? searchValue.replace("isnumber", "") : searchValue;
@@ -471,11 +472,11 @@ function filterTableData(table: Tabulator, searchValue: string) {
       row.getCells().forEach((cell) => {
         const field = cell.getField();
         const cellValue = cell.getValue()?.toString().toLowerCase() || '';
-        
+
         // Resaltar solo el campo correspondiente
         if (isNumberSearch && field === "value" && cellValue.includes(cleanSearchValue)) {
           cell.getElement().style.backgroundColor = '#D1E3E7';
-        } 
+        }
         else if (!isNumberSearch && (field === "name" || field === "value") && cellValue.includes(cleanSearchValue)) {
           cell.getElement().style.backgroundColor = '#D1E3E7';
         }
@@ -665,7 +666,7 @@ function setUpConvert() {
     if (!inputElement || !optionsElement) {
       return;
     }
-    
+
     inputElement.value = defaultText;
     inputElement.dataset.value = defaultValue;
 
@@ -727,7 +728,7 @@ function setUpConvert() {
       } else {
         throw new Error("Base inválida");
       }
-      
+
       if (isNaN(decimalValue)) {
         throw new Error("Número inválido");
       }
