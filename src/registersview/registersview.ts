@@ -331,6 +331,23 @@ function setupTabs() {
 function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: Tabulator) {
   log({ msg: "Dispatching message", data: event.data });
 
+  const data = event.data;
+  if (data.command === 'buildClicked') {
+    console.log("Mensaje 'buildClicked' recibido en el webview");
+    const registersTab = document.getElementById('tabs-registers');
+    const memoryTab = document.getElementById('tabs-memory');
+    const controlImport = document.getElementById('control-see-import');
+    const controlSearch = document.getElementById('control-see-search');
+    if (registersTab && memoryTab && controlImport && controlSearch) {
+      registersTab.classList.remove('hidden');
+      memoryTab.classList.remove('hidden');
+      controlImport.classList.remove('hidden');
+      controlSearch.classList.remove('hidden');
+    }
+    
+    
+  }
+
   // const data = event.data;
   // switch (data.operation) {
   //   case 'hideRegistersView':
@@ -716,6 +733,12 @@ function setUpConvert() {
       });
     });
 
+    const checkbox32 = document.querySelector("#checkbox32bits input[type='checkbox']") as HTMLInputElement | null;
+    if (checkbox32) {
+      checkbox32.addEventListener("change", convertNumber);
+    }
+
+
     document.addEventListener("click", (event) => {
       if (!inputElement?.contains(event.target as Node) && !optionsElement?.contains(event.target as Node)) {
         optionsElement.classList.add("hidden");
@@ -740,6 +763,22 @@ function setUpConvert() {
     if (!fromBase || !toBase || !numberValue) {
       resultInput.value = "";
       return;
+    }
+
+    const checkboxSwapContainer = document.getElementById("checkbox-swapContainer" ) as HTMLDivElement;
+    const checkbox32bits = document.getElementById("checkbox32bits");
+    if (checkbox32bits) {
+      if (toBase === "bin") {
+        checkboxSwapContainer.classList.remove("justify-end");
+        checkboxSwapContainer.classList.add("justify-between");
+        checkbox32bits.classList.add("flex");
+        checkbox32bits.classList.remove("hidden");
+      } else {
+        checkboxSwapContainer.classList.remove("justify-between");
+        checkboxSwapContainer.classList.add("justify-end");
+        checkbox32bits.classList.add("hidden");
+        checkbox32bits.classList.remove("flex");
+      }
     }
 
     let decimalValue: number;
@@ -771,7 +810,18 @@ function setUpConvert() {
 
     let result: string;
     if (toBase === "bin") {
-      result = decimalValue.toString(2);
+      let use32bits = false;
+      if (checkbox32bits) {
+        const checkboxInput = checkbox32bits.querySelector("input[type='checkbox']") as HTMLInputElement | null;
+        if (checkboxInput && checkboxInput.checked) {
+          use32bits = true;
+        }
+      }
+      if (use32bits) {
+        result = decimalValue.toString(2).padStart(32, "0");
+      } else {
+        result = decimalValue.toString(2);
+      }
     } else if (toBase === "hex") {
       result = decimalValue.toString(16).toUpperCase();
     } else if (toBase === "dec") {

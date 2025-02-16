@@ -7,15 +7,17 @@
         </head>
         <body>
           <div class="w-full flex flex-row gap-3 overflow-hidden">
-            <div id="tabs-registers" class="w-fit max-h-dvh min-h-dvh"></div>
-            <div id="tabs-memory" class="w-fit max-h-dvh min-h-dvh"></div>
+            <div id="tabs-registers" class="hidden w-fit max-h-dvh min-h-dvh"></div>
+            <div id="tabs-memory" class="hidden w-fit max-h-dvh min-h-dvh"></div>
             <!-- This is the third column -->
 
             <div class=" flex flex-col gap-2 flex-1 max-h-dvh min-h-dvh overflow-y-scroll">
               <div class="flex justify-between items-center gap-2  ">
                 <div class="flex gap-2">
-                  <div id="openSearchButton" class="icon-tab">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <div id="control-see-search" class="hidden">
+                    <div id="openSearchButton" class="icon-tab">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </div>
                   </div>
                   <div id="openSettingsButton" class="icon-tab">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>                  
@@ -26,10 +28,12 @@
                       <p>Convert</p>
                     </div>
                   </div>
-                  <div id="openImportButton" class="icon-tab">
-                    <div class="flex gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-down"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-up"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 12v6"/><path d="m15 15-3-3-3 3"/></svg>
+                  <div id="control-see-import" class="hidden">
+                    <div id="openImportButton" class="icon-tab">
+                      <div class="flex gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-down"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-up"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 12v6"/><path d="m15 15-3-3-3 3"/></svg>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -38,7 +42,7 @@
                  </div>
               </div>
 
-               <div id="thirdMainColumn" class="flex flex-1 ">
+               <div id="thirdMainColumn" class="hidden">
                   <div class="flex flex-col p-4">
                     <p class="title">Search values</p>
                     <div class="flex flex-col gap-4 mt-2"> 
@@ -70,9 +74,11 @@
                 <div id="openSettings" class="hidden">
                   <p>Hola mundo</p>
                 </div>
+
+              
                 <div id="openImport" class="hidden">
                   <div class="flex flex-col gap-2  p-4">
-                     <p class="title">Import / Export data</p>
+                    <p class="title">Import / Export data</p>
 
                     <div class="flex flex-col gap-2">
                       <p class="text-lg font-semibold text-primary">Import data</p>
@@ -120,7 +126,7 @@
                   </div>
                 </div>
 
-                <div id="openConvert" class="hidden">
+                <div id="openConvert" class="flex flex-1">
                   <div class="flex flex-col gap-4  w-min p-4">
                     <p class="title">Convert values</p>
                     <div class="flex gap-2">
@@ -138,7 +144,7 @@
                             <p class="option-convert" data-value="bin">Binary</p>
                             <p class="option-convert" data-value="hex">Hexadecimal</p>
                             <p class="option-convert" data-value="dec">Decimal</p>
-                             <p class="option-convert" data-value="twoCompl">Two's complement</p>
+                            <p class="option-convert" data-value="twoCompl">Two's complement</p>
                           </div>
                         </div>
 
@@ -172,7 +178,11 @@
                       </div>
                     </div>
 
-                    <div class="flex gap-2 justify-end ">
+                    <div id="checkbox-swapContainer" class="flex gap-2 justify-between items-center">
+                      <label id="checkbox32bits" class="flex items-center space-x-2 ">
+                        <input type="checkbox" name="bitOption" value="32">
+                        <span class=""label>In 32 bits</span>
+                      </label>
                       <button class="swapButton" id="SwapConvertBtn">Swap</button>
                     </div>
 
@@ -182,6 +192,7 @@
                     </div>
                   </div>
                 </div>
+           
 
 
                 <div id="openHelp" class="hidden">
@@ -199,6 +210,24 @@
                           <strong>32 lines</strong>, where each line has <strong>32 bits</strong>.
                         </p>
                       </div> 
+
+                      <div class="help-section">
+                        <div class="help-header">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>
+                          <p class="help-title">Import Data in Memory Table</p>
+                        </div>
+                        <p class="help-description">
+                          To import a file, it must be <strong>.txt</strong>. You can place in it the memory addresses that you want to import <strong>(every 4 bytes and in hexadecimal format)</strong>, in front of them after the ":" you will place the corresponding 32 bits
+                        </p>
+                        
+                        <ul class="help-filter-list mt-1">
+                          <li><span class="help-filter-key">4 :</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
+                          <li><span class="help-filter-key">8 :</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
+                          <li><span class="help-filter-key">1c:</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
+                          <li><span class="help-filter-key">20:</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
+                          <li><span class="help-filter-key">2c:</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
+                        </ul>
+                      </div>
 
                       <div class="help-section">
                         <div class="help-header">

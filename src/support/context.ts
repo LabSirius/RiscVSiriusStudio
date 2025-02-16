@@ -130,6 +130,13 @@ export class RVContext {
           rvDoc.buildAndDecorate(this);
           this.simulateProgram(rvDoc);
         }
+        if (this._mainWebviewView) {
+          this._mainWebviewView.postMessage({
+            command: 'buildClicked',
+          });
+        } else {
+          console.warn("No se encontró la vista web (mainWebviewView) para enviar el mensaje");
+        }
       })
     );
     //  Simulate-step
