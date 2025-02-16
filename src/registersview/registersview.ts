@@ -334,19 +334,43 @@ function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: T
   const data = event.data;
   if (data.command === 'buildClicked') {
     console.log("Mensaje 'buildClicked' recibido en el webview");
-    const registersTab = document.getElementById('tabs-registers');
     const memoryTab = document.getElementById('tabs-memory');
-    const controlImport = document.getElementById('control-see-import');
+    const iconImport = document.getElementById('icon-import');
+    const iconExport = document.getElementById('icon-export');
+    const controlInternImport = document.getElementById('control-see-intern-import');
+    const controlInternExport = document.getElementById('control-see-intern-export');
+
     const controlSearch = document.getElementById('control-see-search');
-    if (registersTab && memoryTab && controlImport && controlSearch) {
-      registersTab.classList.remove('hidden');
+    if ( memoryTab && controlInternImport && iconImport && iconExport && controlInternExport && controlSearch) {
       memoryTab.classList.remove('hidden');
-      controlImport.classList.remove('hidden');
+      controlInternImport.classList.add('hidden');
+      controlInternExport.classList.remove('hidden');
       controlSearch.classList.remove('hidden');
+      iconImport.classList.add('hidden');
+      iconExport.classList.remove('hidden');
+    }
+
+    // Obtén la columna "value" de la tabla
+      const valueCol = registersTable.getColumn("value");
+
+      if (valueCol) {
+        valueCol.updateDefinition(Object.assign(
+            {}, 
+            valueCol.getDefinition(), 
+            {
+                editor: undefined,
+                editable: () => false
+            }
+        ));
+    }
+      
+    
+
+      
     }
     
     
-  }
+
 
   // const data = event.data;
   // switch (data.operation) {
