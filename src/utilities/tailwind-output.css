@@ -1117,8 +1117,12 @@ html {
   width: 100%;
 }
 
-.min-w-60 {
-  min-width: 15rem;
+.w-min-28{
+  min-width: 28rem;
+}
+
+.w-min-content {
+  min-width: min-content;
 }
 
 .flex-1 {
@@ -1199,8 +1203,16 @@ html {
   overflow: hidden;
 }
 
+.overflow-y-hidden {
+  overflow-y: hidden;
+}
+
 .overflow-y-scroll{
   overflow-y: scroll;
+}
+
+.overflow-x-scroll{
+  overflow-x: scroll;
 }
 
 .rounded {

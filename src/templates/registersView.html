@@ -6,12 +6,12 @@
           <link rel="stylesheet", href="${tabulatorCSS}">
         </head>
         <body>
-          <div class="w-full flex flex-row gap-3 overflow-hidden">
-            <div id="tabs-registers" class=" w-fit max-h-dvh min-h-dvh"></div>
-            <div id="tabs-memory" class="hidden w-fit max-h-dvh min-h-dvh"></div>
+          <div class="w-full flex flex-row gap-3 overflow-y-hidden overflow-x-scroll">
+            <div id="tabs-registers" class=" w-fit max-h-dvh min-h-dvh w-min-content"></div>
+            <div id="tabs-memory" class="hidden w-fit max-h-dvh min-h-dvh w-min-content"></div>
             <!-- This is the third column -->
 
-            <div class=" flex flex-col gap-2 flex-1 max-h-dvh min-h-dvh overflow-y-scroll">
+            <div class=" flex flex-col gap-2 flex-1 max-h-dvh min-h-dvh w-min-28 overflow-y-scroll ">
 
               <div class="flex justify-between items-center gap-2">
                 <div class="flex gap-2">
