@@ -843,8 +843,10 @@ function setUpConvert() {
       }
       if (use32bits) {
         result = decimalValue.toString(2).padStart(32, "0");
+        result = result.match(/.{4}/g)?.join(" ") || result;
       } else {
         result = decimalValue.toString(2);
+        result = groupBinary(result);
       }
     } else if (toBase === "hex") {
       result = decimalValue.toString(16).toUpperCase();
@@ -858,6 +860,7 @@ function setUpConvert() {
       } else {
         result = decimalValue.toString(2).padStart(bitLength, "0");
       }
+      result = result.match(/.{4}/g)?.join(" ") || result;
     } else {
       resultInput.value = "Error";
       return;
@@ -893,7 +896,17 @@ function setUpConvert() {
   });
 }
 
-
+// Función para agrupar la cadena binaria en bloques de 4 desde la derecha
+function groupBinary(numStr: string): string {
+  let groups: string[] = [];
+  let i = numStr.length;
+  while (i > 0) {
+    const start = Math.max(0, i - 4);
+    groups.unshift(numStr.substring(start, i));
+    i -= 4;
+  }
+  return groups.join(" ");
+}
 
 
 
