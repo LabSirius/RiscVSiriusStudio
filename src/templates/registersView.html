@@ -7,20 +7,20 @@
         </head>
         <body>
           <div class="w-full flex flex-row gap-3 overflow-y-hidden overflow-x-scroll">
-            <div id="tabs-registers" class=" w-fit max-h-dvh min-h-dvh w-min-content"></div>
+            <div id="tabs-registers" class="hidden w-fit max-h-dvh min-h-dvh w-min-content"></div>
             <div id="tabs-memory" class="hidden w-fit max-h-dvh min-h-dvh w-min-content"></div>
             <!-- This is the third column -->
 
-            <div class=" flex flex-col gap-2 flex-1 max-h-dvh min-h-dvh w-min-28 overflow-y-scroll ">
+            <div id="thirdColumn" class=" flex flex-col gap-2 flex-1 max-h-dvh min-h-dvh w-30 overflow-y-scroll mt-1">
 
               <div class="flex justify-between items-center gap-2">
                 <div class="flex gap-2">
-                  <div id="control-see-search" class="hidden">
-                    <div id="openSearchButton" class="icon-tab">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    </div>
+      
+                  <div id="openSearchButton" class="hidden icon-tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                   </div>
-                  <div id="openSettingsButton" class="icon-tab">
+                
+                  <div id="openSettingsButton" class="hidden icon-tab">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>                  
                   </div>
                   <div id="openConvertButton" class="icon-tab">
@@ -29,15 +29,6 @@
                       <p>Convert</p>
                     </div>
                   </div>
-                  
-                    <div id="openImportButton" class="icon-tab">
-                      <div id="icon-import" class="">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-down"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
-                      </div>
-                      <div id="icon-export" class="hidden">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-up"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 12v6"/><path d="m15 15-3-3-3 3"/></svg>
-                      </div>
-                    </div>
                
                 </div>
                  <div id="openHelpButton" class="icon-tab">
@@ -45,7 +36,7 @@
                  </div>
               </div>
 
-               <div id="thirdMainColumn" class="hidden">
+               <div id="openSearch" class="hidden">
                   <div class="flex flex-col p-4">
                     <p class="title">Search values</p>
                     <div class="flex flex-col gap-4 mt-2"> 
@@ -71,29 +62,75 @@
                       <p class="text-gray mt-3">If you have any. question, click on the information icon.</p>
                     </div>
                   </div>
-
-          
                 </div>
+
+
                 <div id="openSettings" class="hidden">
-                  <p>Hola mundo</p>
-                </div>
 
-              
-                <div id="openImport" class="hidden">
-                  <div class="flex flex-col gap-2  p-4">
+                  <div id="manualConfig" class="">
+                    <div class="flex flex-col gap-4  p-4 mt-1">
+                      <div class="flex flex-col gap-2">
 
-                    <div class="flex flex-col gap-2">
-                      <div id="control-see-intern-import" class="">
-                        <p class="title">Import data</p>
-                        <div class="flex flex-col gap-2 mt-2">
+                        <div class="flex flex-col gap-2">
+                          <div class=" flex flex-row gap-2 items-center">
+                            <p class="label">To track the simulation, press </p>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-redo-dot"><circle cx="12" cy="17" r="1"/><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
+                            <p class="label"> icon </p>
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff2600" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                            <p class="label-red">Once the simulation continues, you will not be able to change any values</p>
+                          </div>
+                        </div>
+                        <div class="flex flex-col gap-2 mt-2 ">
+                          <p class="title">Settings</p>
+                            <p class="label">At this time you can configure the memory size, register table (manually or importing it) and memory table.</p>
+                        </div>
+                        <div class="flex flex-col gap-3 mt-3 ">
+                          <p class="subtitle">Memory size (In bytes)</p>
+                          <div class="relative">
+                            <div class="icon-input">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid-2x2-plus"><path d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3"/><path d="M16 19h6"/><path d="M19 22v-6"/></svg>
+                            </div>
+                            <input 
+                            type="number" 
+                            id="memorySizeInput" 
+                            class="input-filter" 
+                            value="1024" 
+                            min="4" 
+                            step="4" 
+                            placeholder="e.g. 200, 1024..." />
+                          </div>
+                        </div>
+
+                        <div class="flex flex-col gap-3 mt-3 ">
+                          <p class="subtitle">Start pointer adress (In bytes)</p>
+                          <div class="relative">
+                            <div class="icon-input">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid-2x2-plus"><path d="M12 3v17a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1H3"/><path d="M16 19h6"/><path d="M19 22v-6"/></svg>
+                            </div>
+                            <input 
+                            type="number" 
+                            id="startPointerInput"
+                            class="input-filter" 
+                            value="0" 
+                            min="0" 
+                            step="4" 
+                            placeholder="e.g. 0, 4, 44..." />
+                          </div>
+                        </div>
+                        
+                      </div>
+                      <div class="flex flex-col gap-2 mt-3">
+                        <p class="subtitle">Import data</p>
+                        <div class="flex flex-col gap-1 mt-2">
                           <input type="file" id="fileInputImportRegister" accept=".txt" class="hidden"/>
                           <div class="flex gap-2 items-center">
                             <div class="icon-tab"  id="importRegisterBtn">
                               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-down"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
                             </div>
                             <p class="text-gray">Register data</p>
-                          </div>
-                          
+                          </div> 
                           <input type="file" id="fileInputImportMemory" accept=".txt" class="hidden"/>
                           <div class="flex gap-2 items-center">
                             <div class="icon-tab" id="importMemoryBtn">
@@ -104,35 +141,22 @@
                         </div>
                       </div>
                     </div>
-
-                    <div class="flex flex-col gap-2">
-                      <div id="control-see-intern-export" class="hidden">
-                        <p class="title">Export data</p>
-                        <div class="flex flex-col gap-2 mt-2">
-                          <input type="file" id="fileInputExportRegister" accept=".txt" class="hidden"/>
-                          <div class="flex gap-2 items-center">
-                            <div class="icon-tab"  id="exportRegisterBtn">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-up"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 12v6"/><path d="m15 15-3-3-3 3"/></svg>
-                            </div>
-                            <p class="text-gray">Register data</p>
-                          </div>
-                          
-                          <input type="file" id="fileInputExportMemory" accept=".txt" class="hidden"/>
-                          <div class="flex gap-2 items-center">
-                            <div class="icon-tab" id="exportMemoryBtn">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>
-                            </div>
-                            <p class="text-gray">Memory data</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    
                   </div>
+
+                  <div id="readOnlyConfig" class="hidden">
+                    <div class="flex flex-col gap-4  p-4 mt-1">
+                      <p>AQUI VA LA VA LA VISUALIZACION DE LA CONFIGURACION</p>
+                    </div>
+                  </div>
+
+
+
                 </div>
 
-                <div id="openConvert" class="flex flex-1">
+              
+               
+
+                <div id="openConvert1" class="flex flex-1">
                   <div class="flex flex-col gap-4  w-min p-4">
                     <p class="title">Convert values</p>
                     <div class="flex gap-2">
@@ -204,38 +228,70 @@
                 <div id="openHelp" class="hidden">
                   <div class=" p-4">
                    <p class="title">Help</p>
-                    <div class="help-container">
-                      <!-- Import Section -->
-                      <div class="help-section mt-3">
-                        <div class="help-header">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-down"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
-                          <p class="help-title">Import Registers Table</p>
-                        </div>
-                        <p class="help-description">
-                          To import a file, it must be <strong>.txt</strong>. The records should be in binary, meaning the file must contain 
-                          <strong>32 lines</strong>, where each line has <strong>32 bits</strong>.
-                        </p>
-                      </div> 
 
-                      <div class="help-section">
-                        <div class="help-header">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>
-                          <p class="help-title">Import Data in Memory Table</p>
-                        </div>
-                        <p class="help-description">
-                          To import a file, it must be <strong>.txt</strong>. You can place in it the memory addresses that you want to import <strong>(every 4 bytes and in hexadecimal format)</strong>, in front of them after the ":" you will place the corresponding 32 bits
-                        </p>
-                        
-                        <ul class="help-filter-list mt-1">
-                          <li><span class="help-filter-key">4 :</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
-                          <li><span class="help-filter-key">8 :</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
-                          <li><span class="help-filter-key">1c:</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
-                          <li><span class="help-filter-key">20:</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
-                          <li><span class="help-filter-key">2c:</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
-                        </ul>
+                   <div id="stageOneHelp" class="help-container">
+
+                    <div class="help-section flex flex-col mt-3">
+                      <div class=" flex flex-row gap-2 items-center">
+                        <p>1. To start the simulation, click on the </p>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cpu"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
+                        <p> icon located at the top right of the screen.</p>
                       </div>
 
-                      <div class="help-section">
+                      <div class="mt-3 flex flex-row gap-2 items-center">
+                        <p>2. Then you can configure the memory size, import register table and memory table.</p>
+                      </div>
+
+                      <div class="mt-3 flex flex-row gap-2 items-center">
+                        <p>3. Immediately click on the </p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-redo-dot"><circle cx="12" cy="17" r="1"/><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
+                        <p> icon, the simulation will start and you will be able to track it by pressing this same icon.</p>
+                      </div>
+                    </div>
+
+                   </div>
+
+                   <div  id="stageTwoHelp" class="hidden">
+                      <div class="help-container">
+                        <!-- Import Section -->
+                        <div class="help-section mt-3">
+                          <div class="help-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-down"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+                            <p class="help-title">Import Registers Table</p>
+                          </div>
+                          <p class="help-description">
+                            To import a file, it must be <strong>.txt</strong>. The records should be in binary, meaning the file must contain 
+                            <strong>32 lines</strong>, where each line has <strong>32 bits</strong>.
+                          </p>
+                        </div> 
+
+                        <div class="help-section">
+                          <div class="help-header">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>
+                            <p class="help-title">Import Data in Memory Table</p>
+                          </div>
+                          <p class="help-description">
+                            To import a file, it must be <strong>.txt</strong>. You can place in it ONLY the memory addresses that you want to import <strong>(every 4 bytes and in hexadecimal format)</strong>, in front of them after the ":" you will place the corresponding 32 bits
+                          </p>
+                          
+                          <ul class="help-filter-list mt-1">
+                            <li><span class="help-filter-key">4 :</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
+                            <li><span class="help-filter-key">8 :</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
+                            <li><span class="help-filter-key">1c:</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
+                            <li><span class="help-filter-key">20:</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
+                            <li><span class="help-filter-key">2c:</span>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
+                          </ul>
+                        </div>
+
+                  
+
+
+                      </div>
+
+                    </div>
+
+                    <div  id="stageThreeHelp" class="hidden">
+                      <div class="help-section mt-3">
                         <div class="help-header">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>  
                           <p class="help-title">Filter Data in Register Table</p>
@@ -263,3 +319,8 @@
           <script type="module" nonce="${nonce}" src="${registersviewUri}"></script>
         </body>
       </html>
+
+
+
+  
+

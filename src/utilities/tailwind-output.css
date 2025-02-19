@@ -798,11 +798,22 @@ html {
   color: #3A6973;
 }
 
+.subtitle{
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #3A6973;
+}
 
 .label{
   font-size: .9rem;
   font-weight: normal;
   color: #9CA3AF;
+}
+
+.label-red{
+  font-size: .9rem;
+  font-weight: normal;
+  color: #FF6F70;
 }
 
 .input-filter{
@@ -1117,9 +1128,11 @@ html {
   width: 100%;
 }
 
-.w-min-28{
-  min-width: 28rem;
+
+.w-30{
+  min-width: 30rem;
 }
+
 
 .w-min-content {
   min-width: min-content;

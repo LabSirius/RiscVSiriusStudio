@@ -25,6 +25,7 @@ import {
   validAscii,
   toBinary
 } from '../utilities/conversions';
+import { start } from 'repl';
 
 provideVSCodeDesignSystem().register(allComponents);
 
@@ -75,6 +76,7 @@ function main() {
 
   setupButtons();
   setupSearch(registersTable, memoryTable);
+  setUpMemoryConfig();
   setupImportRegisters(registersTable);
   setupImportMemory(memoryTable);
   setUpConvert();
@@ -332,25 +334,64 @@ function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: T
   log({ msg: "Dispatching message", data: event.data });
 
   const data = event.data;
-  if (data.command === 'buildClicked') {
-    console.log("Mensaje 'buildClicked' recibido en el webview");
+  if (data.command === 'simulateClicked') {
+    const registerTab = document.getElementById('tabs-registers');
     const memoryTab = document.getElementById('tabs-memory');
-    const iconImport = document.getElementById('icon-import');
-    const iconExport = document.getElementById('icon-export');
-    const controlInternImport = document.getElementById('control-see-intern-import');
-    const controlInternExport = document.getElementById('control-see-intern-export');
 
-    const controlSearch = document.getElementById('control-see-search');
-    if ( memoryTab && controlInternImport && iconImport && iconExport && controlInternExport && controlSearch) {
+    const settingsIcon = document.getElementById('openSettingsButton');
+
+    const convertButton = document.getElementById('openConvertButton');
+    const openConvert = document.getElementById('openConvert1');
+
+    const openHelp = document.getElementById('openHelp');
+    const stageOneHelp = document.getElementById('stageOneHelp');
+    const stageTwoHelp = document.getElementById('stageTwoHelp');
+
+    const openSettings = document.getElementById('openSettings');
+  
+    if (registerTab && memoryTab  && settingsIcon && convertButton && openConvert && openHelp && stageOneHelp && stageTwoHelp  && openSettings ) {
+      registerTab.classList.remove('hidden');
       memoryTab.classList.remove('hidden');
-      controlInternImport.classList.add('hidden');
-      controlInternExport.classList.remove('hidden');
-      controlSearch.classList.remove('hidden');
-      iconImport.classList.add('hidden');
-      iconExport.classList.remove('hidden');
-    }
 
-    // Obtén la columna "value" de la tabla
+      settingsIcon.classList.remove('hidden');
+
+      convertButton.classList.add('hidden');
+      openConvert.className = 'hidden';
+
+      openHelp.className = 'hidden';
+      stageOneHelp.className = 'hidden';
+      stageTwoHelp.classList.remove('hidden');
+
+      openSettings.classList.remove('hidden');
+
+    }
+      
+  }else if (data.command === 'nextStepClicked') {
+
+    const thirdColumn = document.getElementById('thirdColumn');
+
+    const openSettings = document.getElementById('openSettings');
+    const openSearchButton = document.getElementById('openSearchButton');
+    const convertButton = document.getElementById('openConvertButton');
+    const openSearch  = document.getElementById('openSearch');
+    const stageTwoHelp = document.getElementById('stageTwoHelp');
+    const stageThreeHelp = document.getElementById('stageThreeHelp');
+    const manualConfig = document.getElementById('manualConfig');
+    const readOnlyConfig = document.getElementById('readOnlyConfig');
+
+    if( thirdColumn && !thirdColumn.classList.contains('isSimulating')){
+
+      if(openSettings && openSearchButton && convertButton && openSearch && stageTwoHelp && stageThreeHelp && manualConfig && readOnlyConfig) {
+        openSettings.className = 'hidden';
+        openSearchButton.classList.remove('hidden');
+        convertButton.classList.remove('hidden');
+        openSearch.classList.remove('hidden');
+        stageTwoHelp.className = 'hidden';
+        stageThreeHelp.classList.remove('hidden');
+        manualConfig.classList.add('hidden');
+        readOnlyConfig.classList.remove('hidden');
+      }
+
       const valueCol = registersTable.getColumn("value");
 
       if (valueCol) {
@@ -362,15 +403,14 @@ function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: T
                 editable: () => false
             }
         ));
-    }
-      
-    
+      }
 
+      thirdColumn.classList.add('isSimulating');
       
     }
-    
-    
 
+  }
+    
 
   // const data = event.data;
   // switch (data.operation) {
@@ -401,7 +441,7 @@ function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: T
 }
 
 function setupButtons(): void {
-  const sections: string[] = ["thirdMainColumn", "openSettings", "openImport", "openConvert", "openHelp"];
+  const sections: string[] = ["openSearch", "openSettings", "openConvert1", "openHelp"];
 
   function showOnly(targetId: string): void {
     sections.forEach((id) => {
@@ -412,10 +452,9 @@ function setupButtons(): void {
     });
   }
 
-  document.getElementById("openSearchButton")?.addEventListener("click", () => showOnly("thirdMainColumn"));
+  document.getElementById("openSearchButton")?.addEventListener("click", () => showOnly("openSearch"));
   document.getElementById("openSettingsButton")?.addEventListener("click", () => showOnly("openSettings"));
-  document.getElementById("openImportButton")?.addEventListener("click", () => showOnly("openImport"));
-  document.getElementById("openConvertButton")?.addEventListener("click", () => showOnly("openConvert"));
+  document.getElementById("openConvertButton")?.addEventListener("click", () => showOnly("openConvert1"));
   document.getElementById("openHelpButton")?.addEventListener("click", () => showOnly("openHelp"));
 }
 
@@ -729,6 +768,30 @@ function setupImportMemory(memoryTable: Tabulator) {
       };
       reader.readAsText(file);
     });
+}
+
+
+function setUpMemoryConfig(){
+  const memorySizeInput = document.getElementById("memorySizeInput") as HTMLInputElement | null;
+  const startPointerInput = document.getElementById("startPointerInput") as HTMLInputElement | null;
+
+  if (memorySizeInput && startPointerInput ) {
+    memorySizeInput.addEventListener("blur", () => {
+      const value = parseInt(memorySizeInput.value, 10);
+      if (!isNaN(value)) {
+        const rounded = Math.round(value / 4) * 4;
+        memorySizeInput.value = rounded.toString();
+      }
+    });
+
+    startPointerInput.addEventListener("blur", () => {
+      const value = parseInt(startPointerInput.value, 10);
+      if (!isNaN(value)) {
+        const rounded = Math.round(value / 4) * 4;
+        startPointerInput.value = rounded.toString();
+      }
+    });
+    }
 }
 
 

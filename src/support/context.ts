@@ -24,6 +24,8 @@ import { BasicSimulator } from '../basicSimulator';
 import { Simulator, TextSimulator } from '../Simulator';
 
 
+
+
 export class RVContext {
   // For the singleton pattern
   static #instance: RVContext | null;
@@ -104,14 +106,17 @@ export class RVContext {
             webviewView.webview.options = {
               enableScripts: true,
               localResourceRoots: [this.extensionContext.extensionUri],
+              
               // Other possibilities:
               // enableCommandsUris
             };
 
             webviewView.title = "Registers and memory view";
+            console.log("CREANDO VISTA");
             webviewView.webview.html = await getHtmlForRegistersWebview(webviewView.webview, this.extensionContext.extensionUri);
             await activateMessageListenerForRegistersView(webviewView.webview);
             this._mainWebviewView = webviewView.webview;
+            console.log("VISTA CREADA", this._mainWebviewView);
           },
         },
         {
@@ -130,12 +135,14 @@ export class RVContext {
           rvDoc.buildAndDecorate(this);
           this.simulateProgram(rvDoc);
         }
+        commands.executeCommand(`rv-simulator.riscv.focus`);
         if (this._mainWebviewView) {
           this._mainWebviewView.postMessage({
-            command: 'buildClicked',
+            command: 'simulateClicked',
           });
         } else {
-          console.warn("No se encontró la vista web (mainWebviewView) para enviar el mensaje");
+  
+          throw new Error("No se encontró la vista web (mainWebviewView) para enviar el mensaje");
         }
       })
     );
@@ -147,6 +154,14 @@ export class RVContext {
         } else {
           this._simulator.step();
         }
+
+        if (this._mainWebviewView) {
+          this._mainWebviewView.postMessage({
+            command: 'nextStepClicked',
+          });
+        } else {
+          console.warn("No se encontró la vista web (mainWebviewView) para enviar el mensaje");
+        }
       })
     );
     //  Simulate-stop
@@ -156,6 +171,7 @@ export class RVContext {
         if (!this._simulator) {
           throw new Error("No simulator is running");
         } else {
+          
           this._simulator.stop();
           this._isSimulating = false;
           this._simulator = undefined;
