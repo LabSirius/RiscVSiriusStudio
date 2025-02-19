@@ -11,6 +11,7 @@ import { getNonce } from "../utilities/getNonce";
 import { logger } from "../utilities/logger";
 import { readFileSync } from "fs";
 import { join } from "path";
+import { RVContext } from "../support/context";
 
 export async function getHtmlForRegistersWebview(webview: Webview, extensionUri: Uri) {
   const registersviewUri = getUri(webview, extensionUri, [
@@ -37,12 +38,16 @@ export async function getHtmlForRegistersWebview(webview: Webview, extensionUri:
 
 }
 
-export async function activateMessageListenerForRegistersView(webview: Webview) {
+export async function activateMessageListenerForRegistersView(webview: Webview, context: RVContext) {
   console.log("Activating listener on registers view");
   webview.onDidReceiveMessage((message: any) => {
     switch (message.command) {
       case "log":
         console.log(`%c[RegistersView-${message.level}]\n`, 'color:orange', message.object);
+        break;
+      case "event":
+        console.log(`%c[RegistersView-event]\n`, 'color:green', message.object);
+        context.dispatchMainViewEvent(message.object);
         break;
       default:
         console.log(`%c[RegistersView-unrecognized]\n\t${message.obj}`, 'color:red');

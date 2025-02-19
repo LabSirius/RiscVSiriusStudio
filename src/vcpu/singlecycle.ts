@@ -222,7 +222,9 @@ const defaultSCCPUResult = {
 
 export class SCCPU {
   // TODO: We need a proper type for a program representation.
-  private readonly program: any[];
+  private readonly _program: any[];
+  public get program() { return this._program; }
+
   private registers: RegistersFile;
   private dataMemory: DataMemory;
   /**
@@ -232,7 +234,7 @@ export class SCCPU {
 
   public constructor(program: any[], memSize: number, sp: number) {
     console.log('Program to execute: ', program);
-    this.program = program.filter((sc) => {
+    this._program = program.filter((sc) => {
       return sc.kind === 'SrcInstruction';
     });
     console.log('Program to execute: ', this.program);

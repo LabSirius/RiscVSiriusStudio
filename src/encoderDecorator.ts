@@ -136,9 +136,10 @@ export class EncoderDecorator {
   }
 
 
-  public async decorate(editor: TextEditor, rvDoc: RVDocument) {
+  public async decorate(rvDoc: RVDocument) {
+    const editor = rvDoc.editor;
     console.log("####################");
-    console.log("Decorating ", rvDoc.document.uri.toString());
+    console.log("Decorating ", editor.document.uri.toString());
     console.log("####################");
 
     const ml = EncoderDecorator.maxLength(editor.document);

@@ -1,4 +1,4 @@
-import { window, EventEmitter, Event, TextEditor, workspace, TextEditorDecorationType } from "vscode";
+import { window, EventEmitter, Event, TextEditor, workspace, TextEditorDecorationType, commands } from "vscode";
 import { RVDocument } from "./rvDocument";
 import { RVContext } from "./support/context";
 import { SCCPU, SCCPUResult } from "./vcpu/singlecycle";
@@ -11,10 +11,25 @@ import {
   writesRU
 } from "./utilities/instructions";
 
+
+export type SimulationParameters = {
+  program: any[];
+  memorySize: number;
+  stackPointerAddress: number;
+};
+
 export class Simulator {
-  protected context: RVContext;
+  protected _context: RVContext;
+
   protected rvDoc: RVDocument;
-  protected editor: TextEditor;
+
+  protected get editor(): TextEditor {
+    return this.rvDoc.editor;
+  }
+
+  protected get context(): RVContext {
+    return this._context;
+  }
   protected cpu: SCCPU;
 
   private didStep: EventEmitter<void> = new EventEmitter<void>();
@@ -24,25 +39,17 @@ export class Simulator {
   public readonly onDidStop: Event<void> = this.didStop.event;
 
   constructor(
-    program: any[],
-    readonly memSize: number,
-    spAddress: number,
+    settings: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext
   ) {
-    this.context = context;
+    this._context = context;
     this.rvDoc = rvDoc;
-    const editor = rvDoc.getEditor();
-    if (!editor) {
-      throw new Error('Editor not found for document, should make one?');
-    }
-    this.editor = editor;
-    this.cpu = new SCCPU(program, memSize, spAddress);
+    this.cpu = new SCCPU(settings.program, settings.memorySize, settings.stackPointerAddress);
   }
 
   start(): void {
-    console.log("Simulator start ", this.cpu.currentInstruction());
-
+    console.log("Simulator start");
   }
 
   step(): void {
@@ -100,6 +107,7 @@ export class Simulator {
     console.log("Simulator stop");
     this.didStop.fire();
   }
+
   private bytesToReadOrWrite() {
     const instruction = this.cpu.currentInstruction();
     const funct3 = getFunct3(instruction);
@@ -169,22 +177,45 @@ export class TextSimulator extends Simulator {
   private currentHighlight: TextEditorDecorationType | undefined;
 
   constructor(
-    program: any[],
-    readonly memSize: number,
-    spAddress: number,
+    settings: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext
   ) {
-    super(program, memSize, spAddress, rvDoc, context);
+    super(settings, rvDoc, context);
+  }
+
+  private makeEditorReadOnly() {
+    commands.executeCommand('workbench.action.files.toggleActiveEditorReadonlyInSession');
+  }
+
+  private makeEditorWritable() {
+    commands.executeCommand('workbench.action.files.toggleActiveEditorReadonlyInSession');
   }
 
   public start(): void {
-    super.start();
-    const currentInst = this.cpu.currentInstruction();
-    const lineNumber = this.rvDoc.getLineForIR(currentInst);
+    const mainView = this.context.mainWebviewView;
+    if (!mainView) {
+      // If the view is not available this will trigger its construction. The
+      // first time the view is created the view becomes available and the flag
+      // isSimulating is set to true, the context will call this method again.
+      // The second time the view will be defined and thes case is not executed.
+      commands.executeCommand(`rv-simulator.riscv.focus`);
+      return;
+    } else {
+      mainView.postMessage(
+        {
+          operation: 'uploadProgram',
+          program: this.cpu.program
+        });
+      console.log("Simulator start ", this.cpu.currentInstruction());
+      this.makeEditorReadOnly();
+      super.start();
+      const currentInst = this.cpu.currentInstruction();
+      const lineNumber = this.rvDoc.getLineForIR(currentInst);
 
-    if (lineNumber !== undefined) {
-      this.highlightLine(lineNumber);
+      if (lineNumber !== undefined) {
+        this.highlightLine(lineNumber);
+      }
     }
   }
 
@@ -204,10 +235,11 @@ export class TextSimulator extends Simulator {
     if (this.currentHighlight) {
       this.currentHighlight.dispose();
     }
+    this.makeEditorWritable();
   }
 
   private highlightLine(lineNumber: number): void {
-    const editor = this.rvDoc.getEditor();
+    const editor = this.rvDoc.editor;
     if (editor) {
       // Clear previous highlight if it exists
       if (this.currentHighlight) {

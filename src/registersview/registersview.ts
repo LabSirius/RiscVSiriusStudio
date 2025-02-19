@@ -68,7 +68,6 @@ type RegisterValue = {
 function main() {
   let registersTable = registersSetup();
   let memoryTable = memorySetup();
-  setupTabs();
   window.addEventListener('message', (event) => {
     dispatch(event, registersTable, memoryTable);
   });
@@ -78,6 +77,7 @@ function main() {
   setupImportRegisters(registersTable);
   setupImportMemory(memoryTable);
   setUpConvert();
+  setupSettings();
 
 }
 
@@ -293,41 +293,6 @@ function memorySetup(): Tabulator {
   return table;
 }
 
-function setupTabs() {
-  log({ msg: "Setting up tabs tab", func: "setupTabs" });
-
-  const tabs = document.querySelectorAll('div button');
-  const contents = document.querySelectorAll('[id$="-content"]');
-
-  // Make contents of all but the first tab invisible for the initial load
-  contents.forEach((c, index) => {
-    if (index !== 0) {
-      c.classList.add('invisible');
-    }
-  });
-
-  tabs.forEach((tab, index) => {
-    tab.addEventListener('click', () => {
-      log({ msg: "Adding listener to tab", func: "setupTabs" });
-      // Remove active state from all tabs
-      tabs.forEach(t => {
-        // t.classList.remove('text-blue-600');
-        // t.classList.add('text-gray-500');
-      });
-
-      // Hide all content panels
-      contents.forEach(c => c.classList.add('invisible'));
-
-      // Activate clicked tab
-      // tab.classList.remove('text-gray-500');
-      // tab.classList.add('text-blue-600', 'bg-white');
-
-      // Show corresponding content
-      contents[index].classList.remove('invisible');
-    });
-  });
-}
-
 function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: Tabulator) {
   log({ msg: "Dispatching message", data: event.data });
 
@@ -414,6 +379,25 @@ function setupSearch(registersTable: Tabulator, memoryTable: Tabulator) {
     }
   });
 }
+
+
+function setupSettings() {
+  const inputMemorySize = document.getElementById("memorySizeInput") as HTMLInputElement;
+  inputMemorySize.value = "128";
+  inputMemorySize.addEventListener("input", () => {
+    console.log("Memory size changed to: " + inputMemorySize.value);
+    sendMessageToExtension({
+      command: 'event',
+      object: { name: 'memorySizeChanged', value: inputMemorySize.value }
+      // from: 'registerView',
+      // message: 'registerUpdate',
+      // name: rawName,
+      // value: value
+    });
+
+  });
+}
+
 
 function convertToBinary(value: string): string {
   value = value.trim().toLowerCase();
@@ -657,7 +641,6 @@ function setupImportMemory(memoryTable: Tabulator) {
       reader.readAsText(file);
     });
 }
-
 
 function setUpConvert() {
   function setupDropdown(inputId: string, optionsId: string, defaultValue: string, defaultText: string): void {

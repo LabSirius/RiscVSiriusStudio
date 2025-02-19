@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { commands, Disposable, ExtensionContext, StatusBarItem, TextDocument, TextEditor, Webview, WebviewView, window, workspace } from 'vscode';
+import { commands, ConfigurationTarget, Disposable, ExtensionContext, StatusBarItem, TextDocument, TextEditor, Webview, WebviewView, window, workspace } from 'vscode';
 import { SCCPU, SCCPUResult } from '../vcpu/singlecycle';
 import { SimulatorPanel } from '../panels/SimulatorPanel';
 import { activateMessageListenerForRegistersView, getHtmlForRegistersWebview, RegisterPanelView } from '../panels/RegisterPanel';
@@ -20,8 +20,7 @@ import { RiscCardPanel } from '../panels/RiscCardPanel';
 import { RVDocument } from '../rvDocument';
 import { EncoderDecorator } from '../encoderDecorator';
 import { ConfigurationManager } from './configurationManager';
-import { BasicSimulator } from '../basicSimulator';
-import { Simulator, TextSimulator } from '../Simulator';
+import { SimulationParameters, Simulator, TextSimulator } from '../Simulator';
 
 
 export class RVContext {
@@ -36,29 +35,18 @@ export class RVContext {
   get configurationManager(): ConfigurationManager {
     return this._configurationManager;
   }
-  // Reference to the line tracker
-  private _lineTracker: LineTracker;
-  get lineTracker(): LineTracker {
-    return this._lineTracker;
-  }
   // Reference to the decorator
   private _encoderDecorator: EncoderDecorator;
   get encoderDecorator(): EncoderDecorator {
     return this._encoderDecorator;
   }
   private _mainWebviewView: Webview | undefined;
-  get mainWebviewView(): Webview | undefined {
-    return this._mainWebviewView;
+  get mainWebviewView(): Webview {
+    return this._mainWebviewView as Webview;
   }
-
-  // Reference to the status bar
-  private _statusBarItem: StatusBarItem;
-  get statusBarItem(): StatusBarItem {
-    return this._statusBarItem;
-  }
-
+  private _mainViewIsFirstTimeVisible = true;
   // TODO: unused for now
-  private _documents: RVDocument[];
+  private _currentDocument: RVDocument | undefined;
 
   // Simulation attributes
   private _isSimulating: boolean;
@@ -80,27 +68,21 @@ export class RVContext {
     this.extensionContext = context;
     // Configuration manager
     this._configurationManager = new ConfigurationManager();
-
-    this._lineTracker = new LineTracker();
-    // this._documentTracker = new DocumentTracker();
-
-
-    this._statusBarItem = window.createStatusBarItem('RVSiriusStudioBarItem', 1);
-    this._statusBarItem.text = 'RiscVSiriusStudio';
-    this._statusBarItem.show();
-
-    this._documents = [];
     this._encoderDecorator = new EncoderDecorator();
 
+    this._currentDocument = undefined;
     this._isSimulating = false;
     this._simulator = undefined;
 
-    // Webviews
+    /**
+     * Main webview initialization
+     */
     this.disposables.push(
       window.registerWebviewViewProvider(
         'rv-simulator.riscv',
         {
           resolveWebviewView: async (webviewView, context, token) => {
+            console.log("Creating main webview");
             webviewView.webview.options = {
               enableScripts: true,
               localResourceRoots: [this.extensionContext.extensionUri],
@@ -110,8 +92,19 @@ export class RVContext {
 
             webviewView.title = "Registers and memory view";
             webviewView.webview.html = await getHtmlForRegistersWebview(webviewView.webview, this.extensionContext.extensionUri);
-            await activateMessageListenerForRegistersView(webviewView.webview);
+            await activateMessageListenerForRegistersView(webviewView.webview, this);
+            console.log("Finished creation main webview ", webviewView.webview);
             this._mainWebviewView = webviewView.webview;
+            if (webviewView.visible) {
+              this.onMainViewVisible();
+            }
+
+            webviewView.onDidChangeVisibility(() => {
+              if (webviewView.visible) {
+                // The webview is now visible
+                this.onMainViewVisible();
+              }
+            });
           },
         },
         {
@@ -126,9 +119,15 @@ export class RVContext {
       commands.registerCommand('rv-simulator.simulate', () => {
         const editor = window.activeTextEditor;
         if (editor && RVDocument.isValid(editor.document)) {
-          const rvDoc = this.getOrAddDocument(editor);
-          rvDoc.buildAndDecorate(this);
-          this.simulateProgram(rvDoc);
+          // We have an editor with a valid RiscV document open
+          this.buildCurrentDocument();
+          if (!this._currentDocument) {
+            throw new Error("There is no valid program to simulate");
+          }
+          this.simulateProgram(this._currentDocument);
+        } else {
+          // In case the command is invoked via the command palette
+          window.showErrorMessage("There is no a valid RiscV document open");
         }
       })
     );
@@ -163,34 +162,10 @@ export class RVContext {
     //  Build
     this.disposables.push(
       commands.registerCommand('rv-simulator.build', () => {
-        console.log("New build implementation");
-        const editor = window.activeTextEditor;
-        if (editor) {
-          const rvDoc = this.getOrAddDocument(editor);
-          rvDoc.buildAndDecorate(this);
-        }
+        this.buildCurrentDocument();
       })
     );
 
-    this.disposables.push(
-      commands.registerCommand('rv-simulator.progMemExportJSON', () => {
-        console.log("This should call progmem export to json");
-        // exportProgMemJSON(context.extensionUri, rvContext);
-      })
-    );
-
-    this.disposables.push(
-      commands.registerCommand('rv-simulator.irExportJSON', () => {
-        // exportIRJSON(context.extensionUri, rvContext);
-      })
-    );
-
-    this.disposables.push(
-      commands.registerCommand('rv-simulator.irForCurrentLine', () => {
-        console.log("This should call ir for current line");
-        // irForCurrentLine(rvContext);
-      })
-    );
 
     this.disposables.push(
       commands.registerCommand('rv-simulator.ShowCard', () => {
@@ -219,11 +194,6 @@ export class RVContext {
         }
       }));
 
-    /**
-     * Build the current document if applicable.
-     * TODO: Can i make this asynchroonous?
-     */
-    this.buildCurrentDocument();
 
     console.log("Registering subscriptions");
     this.extensionContext.subscriptions.push(
@@ -243,37 +213,27 @@ export class RVContext {
     console.log("Context constructor done");
   }
 
+  private onMainViewVisible() {
+    if (this._mainViewIsFirstTimeVisible) {
+      console.log("Main view is visible for the first time", this.mainWebviewView);
+      if (this._isSimulating) {
+        this._simulator?.start();
+      }
+      this._mainViewIsFirstTimeVisible = false;
+    } else {
+      console.log("Main view is visible again");
+    }
+  }
+
   private buildCurrentDocument() {
     const editor = window.activeTextEditor;
     if (editor) {
       const document = editor.document;
       if (document.languageId === 'riscvasm') {
-        const rvDoc = new RVDocument(document, this);
-        rvDoc.buildAndDecorate(this);
+        this._currentDocument = new RVDocument(editor, this);
+        this._currentDocument.buildAndDecorate(this);
       }
     }
-  }
-
-  /**
-   * Returns the RVDocument associated to a text editor.
-   */
-  private getRVDocument(document: TextDocument): RVDocument | undefined {
-    const rvDoc = this._documents.find(d => d.document.uri.toString() === document.uri.toString());
-    if (rvDoc) {
-      return rvDoc;
-    }
-    return undefined;
-  }
-
-  private getOrAddDocument(editor: TextEditor): RVDocument {
-    const rvDoc = this.getRVDocument(editor.document);
-    if (rvDoc) {
-      return rvDoc;
-    }
-    const newDoc = new RVDocument(editor.document, this);
-    this._documents.push(newDoc);
-    this.encoderDecorator.decorate(editor, newDoc);
-    return newDoc;
   }
 
   private simulateProgram(rvDoc: RVDocument) {
@@ -282,11 +242,13 @@ export class RVContext {
     if (!rvDoc.ir) {
       throw new Error("No valid IR found");
     }
-    const program: any[] = rvDoc.ir?.instructions;
-    const memSize: number = 128;
-    const spAddress: number = memSize - 4;
-
-    const simulator: Simulator = new TextSimulator(program, memSize, spAddress, rvDoc, this);
+    const settings: SimulationParameters = {
+      program: rvDoc.ir.instructions,
+      memorySize: 128,
+      stackPointerAddress: 124
+    };
+    // From now on the editor must be read only
+    const simulator: Simulator = new TextSimulator(settings, rvDoc, this);
 
     // This tells vscode that the extension is simulating and in turn some
     // commands get enabled.
@@ -294,6 +256,17 @@ export class RVContext {
     this._isSimulating = true;
     this._simulator = simulator;
     simulator.start();
+  }
+
+  /**
+   * This method is in charge of dispatching events sent by the main view.
+   */
+  public dispatchMainViewEvent(message: any) {
+    console.log("Inside context: Dispatching main view event");
+    switch (message.name) {
+      case "memorySizeChanged":
+        break;
+    }
   }
 }
 

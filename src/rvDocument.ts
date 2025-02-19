@@ -11,8 +11,11 @@ export class RVDocument {
   /**
    * VSCode document that contains the RISC-V assembly program.
    */
-  private _document: TextDocument;
-
+  // private _document: TextDocument;
+  private _editor: TextEditor;
+  get editor(): TextEditor {
+    return this._editor;
+  }
   /**
    * Internal representation of the RISC-V assembly program built from the
    * document.
@@ -32,21 +35,21 @@ export class RVDocument {
    */
   private _instructionLine: Map<number, number>;
 
-  get document(): TextDocument {
-    return this._document;
-  }
+  // get document(): TextDocument {
+  //   return this._document;
+  // }
 
-  constructor(document: TextDocument, rvContext: RVContext) {
-    if (!RVDocument.isValid(document)) {
+  constructor(ed: TextEditor, rvContext: RVContext) {
+    if (!RVDocument.isValid(ed.document)) {
       throw new Error('Document must be a RISC-V assembly file');
     }
     this._lineIR = new Map();
     this._instructionLine = new Map();
-    this._document = document;
+    this._editor = ed;
 
     workspace.onDidChangeTextDocument(e => {
       if (
-        e.document === this._document &&
+        e.document === this.editor.document &&
         rvContext.configurationManager.getEncoderUpdatePolicy() === 'On change'
       ) {
         console.log("build and decorate trigger by document change");
@@ -58,7 +61,7 @@ export class RVDocument {
 
     workspace.onDidSaveTextDocument(e => {
       if (
-        e === this._document &&
+        e === this.editor.document &&
         rvContext.configurationManager.getEncoderUpdatePolicy() === 'On save'
       ) {
         console.log("build and decorate trigger by document save");
@@ -72,23 +75,16 @@ export class RVDocument {
   public async buildAndDecorate(rvContext: RVContext) {
     console.log("Document changed, rebuilding IR");
     this.build();
-    const editor = RVDocument.getEditorForDocument(this._document);
-    if (editor) {
-      if (this.validIR()) {
-        rvContext.encoderDecorator.decorate(editor, this);
-      } else {
-        console.log("Invalid IR, should write another decorator to report the compiler error");
-        rvContext.encoderDecorator.clearDecorations(editor);
-      }
+    if (!this.editor) {
+      throw new Error("No editor found for this document");
     }
-  }
 
-  public getEditor(): TextEditor | undefined {
-    return RVDocument.getEditorForDocument(this._document);
-  }
-
-  private static getEditorForDocument(document: TextDocument): TextEditor | undefined {
-    return window.visibleTextEditors.find(editor => editor.document === document);
+    if (this.validIR()) {
+      rvContext.encoderDecorator.decorate(this);
+    } else {
+      console.log("Invalid IR, should write another decorator to report the compiler error");
+      rvContext.encoderDecorator.clearDecorations(this.editor);
+    }
   }
 
   private syncIR() {
@@ -143,11 +139,11 @@ export class RVDocument {
   }
 
   public getText(): string {
-    return this.document.getText();
+    return this.editor.document.getText();
   }
 
   public getFileName(): string {
-    return this.document.fileName;
+    return this.editor.document.fileName;
   }
 
   public static isValid(document: TextDocument): boolean {
