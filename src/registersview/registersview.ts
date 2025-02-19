@@ -25,6 +25,7 @@ import {
   validAscii,
   toBinary
 } from '../utilities/conversions';
+import { start } from 'repl';
 
 provideVSCodeDesignSystem().register(allComponents);
 
@@ -74,6 +75,7 @@ function main() {
 
   setupButtons();
   setupSearch(registersTable, memoryTable);
+  setUpMemoryConfig();
   setupImportRegisters(registersTable);
   setupImportMemory(memoryTable);
   setUpConvert();
@@ -296,6 +298,85 @@ function memorySetup(): Tabulator {
 function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: Tabulator) {
   log({ msg: "Dispatching message", data: event.data });
 
+  const data = event.data;
+  if (data.command === 'simulateClicked') {
+    const registerTab = document.getElementById('tabs-registers');
+    const memoryTab = document.getElementById('tabs-memory');
+
+    const settingsIcon = document.getElementById('openSettingsButton');
+
+    const convertButton = document.getElementById('openConvertButton');
+    const openConvert = document.getElementById('openConvert1');
+
+    const openHelp = document.getElementById('openHelp');
+    const stageOneHelp = document.getElementById('stageOneHelp');
+    const stageTwoHelp = document.getElementById('stageTwoHelp');
+
+    const openSettings = document.getElementById('openSettings');
+
+    if (registerTab && memoryTab && settingsIcon && convertButton && openConvert && openHelp && stageOneHelp && stageTwoHelp && openSettings) {
+      registerTab.classList.remove('hidden');
+      memoryTab.classList.remove('hidden');
+
+      settingsIcon.classList.remove('hidden');
+
+      convertButton.classList.add('hidden');
+      openConvert.className = 'hidden';
+
+      openHelp.className = 'hidden';
+      stageOneHelp.className = 'hidden';
+      stageTwoHelp.classList.remove('hidden');
+
+      openSettings.classList.remove('hidden');
+
+    }
+
+  } else if (data.command === 'nextStepClicked') {
+
+    const thirdColumn = document.getElementById('thirdColumn');
+
+    const openSettings = document.getElementById('openSettings');
+    const openSearchButton = document.getElementById('openSearchButton');
+    const convertButton = document.getElementById('openConvertButton');
+    const openSearch = document.getElementById('openSearch');
+    const stageTwoHelp = document.getElementById('stageTwoHelp');
+    const stageThreeHelp = document.getElementById('stageThreeHelp');
+    const manualConfig = document.getElementById('manualConfig');
+    const readOnlyConfig = document.getElementById('readOnlyConfig');
+
+    if (thirdColumn && !thirdColumn.classList.contains('isSimulating')) {
+
+      if (openSettings && openSearchButton && convertButton && openSearch && stageTwoHelp && stageThreeHelp && manualConfig && readOnlyConfig) {
+        openSettings.className = 'hidden';
+        openSearchButton.classList.remove('hidden');
+        convertButton.classList.remove('hidden');
+        openSearch.classList.remove('hidden');
+        stageTwoHelp.className = 'hidden';
+        stageThreeHelp.classList.remove('hidden');
+        manualConfig.classList.add('hidden');
+        readOnlyConfig.classList.remove('hidden');
+      }
+
+      const valueCol = registersTable.getColumn("value");
+
+      if (valueCol) {
+        valueCol.updateDefinition(Object.assign(
+          {},
+          valueCol.getDefinition(),
+          {
+            editor: undefined,
+            editable: () => false
+          }
+        ));
+      }
+
+      thirdColumn.classList.add('isSimulating');
+
+    }
+
+  }
+
+
   // const data = event.data;
   // switch (data.operation) {
   //   case 'hideRegistersView':
@@ -325,7 +406,7 @@ function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: T
 }
 
 function setupButtons(): void {
-  const sections: string[] = ["thirdMainColumn", "openSettings", "openImport", "openConvert", "openHelp"];
+  const sections: string[] = ["openSearch", "openSettings", "openConvert1", "openHelp"];
 
   function showOnly(targetId: string): void {
     sections.forEach((id) => {
@@ -336,10 +417,9 @@ function setupButtons(): void {
     });
   }
 
-  document.getElementById("openSearchButton")?.addEventListener("click", () => showOnly("thirdMainColumn"));
+  document.getElementById("openSearchButton")?.addEventListener("click", () => showOnly("openSearch"));
   document.getElementById("openSettingsButton")?.addEventListener("click", () => showOnly("openSettings"));
-  document.getElementById("openImportButton")?.addEventListener("click", () => showOnly("openImport"));
-  document.getElementById("openConvertButton")?.addEventListener("click", () => showOnly("openConvert"));
+  document.getElementById("openConvertButton")?.addEventListener("click", () => showOnly("openConvert1"));
   document.getElementById("openHelpButton")?.addEventListener("click", () => showOnly("openHelp"));
 }
 
@@ -422,10 +502,17 @@ function convertToBinary(value: string): string {
     return `isnumber${parseInt(value.slice(1), 16).toString(2)}`;
   }
 
-  if (value.startsWith("u") || value.startsWith("s")) {
+  if (value.startsWith("u")) {
     let num = value.slice(1);
     return `isnumber${num}`;
   }
+
+  if (value.startsWith("s")) {
+    let num = value.slice(1);
+    return `both${num}`;
+  }
+
+
 
 
   return value;
@@ -435,18 +522,29 @@ function convertToBinary(value: string): string {
 function filterTableData(table: Tabulator, searchValue: string) {
   resetCellColors(table);
 
-
   const isNumberSearch = searchValue.startsWith("isnumber");
-  const cleanSearchValue = isNumberSearch ? searchValue.replace("isnumber", "") : searchValue;
+  const isBothSearch = searchValue.startsWith("both");
+
+  console.log("isNumberSearch", isNumberSearch);
+  console.log("isBothSearch", isBothSearch);
+
+  const cleanSearchValue = searchValue.replace(/^(isnumber|both)\s*/, "").trim();
+  const searchTerms = cleanSearchValue.split(/\s+/);
 
   table.setFilter((data: any) => {
+    const nameStr = data.name?.toLowerCase() || '';
+    const valueStr = data.value?.toString().toLowerCase() || '';
+
     if (isNumberSearch) {
-      // Buscar SOLO en value
-      const valueStr = data.value?.toString().toLowerCase() || '';
       return valueStr.includes(cleanSearchValue);
+    } else if (isBothSearch) {
+      if (searchTerms.length === 1) {
+        const modifiedSearch = "s" + searchTerms[0];
+        return nameStr.includes(modifiedSearch) || valueStr.includes(searchTerms[0]);
+      } else {
+        return searchTerms.every(term => valueStr.includes(term));
+      }
     } else {
-      // Buscar SOLO en name
-      const nameStr = data.name?.toLowerCase() || '';
       return nameStr.includes(cleanSearchValue);
     }
   });
@@ -457,17 +555,31 @@ function filterTableData(table: Tabulator, searchValue: string) {
         const field = cell.getField();
         const cellValue = cell.getValue()?.toString().toLowerCase() || '';
 
-        // Resaltar solo el campo correspondiente
         if (isNumberSearch && field === "value" && cellValue.includes(cleanSearchValue)) {
           cell.getElement().style.backgroundColor = '#D1E3E7';
         }
-        else if (!isNumberSearch && (field === "name" || field === "value") && cellValue.includes(cleanSearchValue)) {
+        else if (isBothSearch) {
+          if (searchTerms.length === 1) {
+            const modifiedSearch = "s" + searchTerms[0];
+            if ((field === "name" && cellValue.includes(modifiedSearch)) ||
+              (field === "value" && cellValue.includes(searchTerms[0]))) {
+              cell.getElement().style.backgroundColor = '#D1E3E7';
+            }
+          } else {
+            if (field === "value" && searchTerms.every(term => cellValue.includes(term))) {
+              cell.getElement().style.backgroundColor = '#D1E3E7';
+            }
+          }
+        }
+        else if (!isBothSearch && field === "name" && cellValue.includes(cleanSearchValue)) {
           cell.getElement().style.backgroundColor = '#D1E3E7';
         }
       });
     });
   }
 }
+
+
 
 
 function resetCellColors(table: Tabulator) {
@@ -642,6 +754,31 @@ function setupImportMemory(memoryTable: Tabulator) {
     });
 }
 
+
+function setUpMemoryConfig() {
+  const memorySizeInput = document.getElementById("memorySizeInput") as HTMLInputElement | null;
+  const startPointerInput = document.getElementById("startPointerInput") as HTMLInputElement | null;
+
+  if (memorySizeInput && startPointerInput) {
+    memorySizeInput.addEventListener("blur", () => {
+      const value = parseInt(memorySizeInput.value, 10);
+      if (!isNaN(value)) {
+        const rounded = Math.round(value / 4) * 4;
+        memorySizeInput.value = rounded.toString();
+      }
+    });
+
+    startPointerInput.addEventListener("blur", () => {
+      const value = parseInt(startPointerInput.value, 10);
+      if (!isNaN(value)) {
+        const rounded = Math.round(value / 4) * 4;
+        startPointerInput.value = rounded.toString();
+      }
+    });
+  }
+}
+
+
 function setUpConvert() {
   function setupDropdown(inputId: string, optionsId: string, defaultValue: string, defaultText: string): void {
     const inputElement = document.getElementById(inputId) as HTMLInputElement | null;
@@ -667,6 +804,12 @@ function setUpConvert() {
       });
     });
 
+    const checkbox32 = document.querySelector("#checkbox32bits input[type='checkbox']") as HTMLInputElement | null;
+    if (checkbox32) {
+      checkbox32.addEventListener("change", convertNumber);
+    }
+
+
     document.addEventListener("click", (event) => {
       if (!inputElement?.contains(event.target as Node) && !optionsElement?.contains(event.target as Node)) {
         optionsElement.classList.add("hidden");
@@ -691,6 +834,22 @@ function setUpConvert() {
     if (!fromBase || !toBase || !numberValue) {
       resultInput.value = "";
       return;
+    }
+
+    const checkboxSwapContainer = document.getElementById("checkbox-swapContainer") as HTMLDivElement;
+    const checkbox32bits = document.getElementById("checkbox32bits");
+    if (checkbox32bits) {
+      if (toBase === "bin") {
+        checkboxSwapContainer.classList.remove("justify-end");
+        checkboxSwapContainer.classList.add("justify-between");
+        checkbox32bits.classList.add("flex");
+        checkbox32bits.classList.remove("hidden");
+      } else {
+        checkboxSwapContainer.classList.remove("justify-between");
+        checkboxSwapContainer.classList.add("justify-end");
+        checkbox32bits.classList.add("hidden");
+        checkbox32bits.classList.remove("flex");
+      }
     }
 
     let decimalValue: number;
@@ -722,7 +881,20 @@ function setUpConvert() {
 
     let result: string;
     if (toBase === "bin") {
-      result = decimalValue.toString(2);
+      let use32bits = false;
+      if (checkbox32bits) {
+        const checkboxInput = checkbox32bits.querySelector("input[type='checkbox']") as HTMLInputElement | null;
+        if (checkboxInput && checkboxInput.checked) {
+          use32bits = true;
+        }
+      }
+      if (use32bits) {
+        result = decimalValue.toString(2).padStart(32, "0");
+        result = result.match(/.{4}/g)?.join(" ") || result;
+      } else {
+        result = decimalValue.toString(2);
+        result = groupBinary(result);
+      }
     } else if (toBase === "hex") {
       result = decimalValue.toString(16).toUpperCase();
     } else if (toBase === "dec") {
@@ -735,6 +907,7 @@ function setUpConvert() {
       } else {
         result = decimalValue.toString(2).padStart(bitLength, "0");
       }
+      result = result.match(/.{4}/g)?.join(" ") || result;
     } else {
       resultInput.value = "Error";
       return;
@@ -770,7 +943,17 @@ function setUpConvert() {
   });
 }
 
-
+// Función para agrupar la cadena binaria en bloques de 4 desde la derecha
+function groupBinary(numStr: string): string {
+  let groups: string[] = [];
+  let i = numStr.length;
+  while (i > 0) {
+    const start = Math.max(0, i - 4);
+    groups.unshift(numStr.substring(start, i));
+    i -= 4;
+  }
+  return groups.join(" ");
+}
 
 
 
@@ -1192,7 +1375,7 @@ function viewTypeFormatter(
       tag = viewType;
       break;
   }
-  return `<button class="view-type">${tag}</button>`;
+  return `<div >${tag}</div>`;
   // return `<vscode-tag class="view-type">${tag}</vscode-tag>`;
   // return '<vscode-tag><img src="binary-svgrepo-com.svg"></img></vscode-tag>';
 }
