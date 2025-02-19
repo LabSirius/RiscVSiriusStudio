@@ -347,7 +347,9 @@ function getElementOrLog<T extends HTMLElement>(id: string): T | null {
         openSettings.classList.remove('hidden');
       }
     }
+    
     function handleNextStepClicked(): void {
+
       const thirdColumn = getElementOrLog<HTMLDivElement>('thirdColumn');
       const openSettings   = getElementOrLog<HTMLDivElement>('openSettings');
       const openSearchButton = getElementOrLog<HTMLButtonElement>('openSearchButton');
