@@ -299,82 +299,102 @@ function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: T
   log({ msg: "Dispatching message", data: event.data });
 
   const data = event.data;
+
+// Función auxiliar para obtener un elemento por su ID y avisar si no existe
+function getElementOrLog<T extends HTMLElement>(id: string): T | null {
+  const element = document.getElementById(id) as T | null;
+  if (!element) {
+    console.error(`No se encontró el elemento con id: ${id}`);
+  }
+     return element;
+  }
+
   if (data.command === 'simulateClicked') {
-    const registerTab = document.getElementById('tabs-registers');
-    const memoryTab = document.getElementById('tabs-memory');
-
-    const settingsIcon = document.getElementById('openSettingsButton');
-
-    const convertButton = document.getElementById('openConvertButton');
-    const openConvert = document.getElementById('openConvert1');
-
-    const openHelp = document.getElementById('openHelp');
-    const stageOneHelp = document.getElementById('stageOneHelp');
-    const stageTwoHelp = document.getElementById('stageTwoHelp');
-
-    const openSettings = document.getElementById('openSettings');
-
-    if (registerTab && memoryTab && settingsIcon && convertButton && openConvert && openHelp && stageOneHelp && stageTwoHelp && openSettings) {
-      registerTab.classList.remove('hidden');
-      memoryTab.classList.remove('hidden');
-
-      settingsIcon.classList.remove('hidden');
-
-      convertButton.classList.add('hidden');
-      openConvert.className = 'hidden';
-
-      openHelp.className = 'hidden';
-      stageOneHelp.className = 'hidden';
-      stageTwoHelp.classList.remove('hidden');
-
-      openSettings.classList.remove('hidden');
-
-    }
-
+    handleSimulateClicked();
   } else if (data.command === 'nextStepClicked') {
+    handleNextStepClicked();
+  }
 
-    const thirdColumn = document.getElementById('thirdColumn');
 
-    const openSettings = document.getElementById('openSettings');
-    const openSearchButton = document.getElementById('openSearchButton');
-    const convertButton = document.getElementById('openConvertButton');
-    const openSearch = document.getElementById('openSearch');
-    const stageTwoHelp = document.getElementById('stageTwoHelp');
-    const stageThreeHelp = document.getElementById('stageThreeHelp');
-    const manualConfig = document.getElementById('manualConfig');
-    const readOnlyConfig = document.getElementById('readOnlyConfig');
+    function handleSimulateClicked(): void {
 
-    if (thirdColumn && !thirdColumn.classList.contains('isSimulating')) {
+      const registerTab = getElementOrLog<HTMLDivElement>('tabs-registers');
+      const memoryTab   = getElementOrLog<HTMLDivElement>('tabs-memory');
+      const settingsButton = getElementOrLog<HTMLButtonElement>('openSettingsButton');
+      const convertButton  = getElementOrLog<HTMLButtonElement>('openConvertButton');
+      const openConvert    = getElementOrLog<HTMLDivElement>('openConvert1');
+      const openHelpButton = getElementOrLog<HTMLButtonElement>('openHelpButton');
+      const openHelp       = getElementOrLog<HTMLDivElement>('openHelp');
+      const stageOneHelp   = getElementOrLog<HTMLDivElement>('stageOneHelp');
+      const stageTwoHelp   = getElementOrLog<HTMLDivElement>('stageTwoHelp');
+      const openSettings   = getElementOrLog<HTMLDivElement>('openSettings');
 
-      if (openSettings && openSearchButton && convertButton && openSearch && stageTwoHelp && stageThreeHelp && manualConfig && readOnlyConfig) {
-        openSettings.className = 'hidden';
-        openSearchButton.classList.remove('hidden');
-        convertButton.classList.remove('hidden');
-        openSearch.classList.remove('hidden');
-        stageTwoHelp.className = 'hidden';
-        stageThreeHelp.classList.remove('hidden');
-        manualConfig.classList.add('hidden');
-        readOnlyConfig.classList.remove('hidden');
+      if (
+        registerTab && memoryTab && settingsButton && convertButton &&
+        openConvert && openHelp && stageOneHelp && stageTwoHelp && openSettings && openHelpButton
+      ) {
+        registerTab.classList.remove('hidden');
+        memoryTab.classList.remove('hidden');
+        settingsButton.classList.remove('hidden');
+        convertButton.classList.add('hidden');
+        convertButton.classList.remove('bg-active');
+        openHelpButton.classList.remove('bg-active');
+        settingsButton.classList.add('bg-active');
+        openConvert.className = 'hidden';
+        openHelp.className = 'hidden';
+        stageOneHelp.className = 'hidden';
+        stageTwoHelp.classList.remove('hidden');
+        openSettings.classList.remove('hidden');
       }
+    }
+    function handleNextStepClicked(): void {
+      const thirdColumn = getElementOrLog<HTMLDivElement>('thirdColumn');
+      const openSettings   = getElementOrLog<HTMLDivElement>('openSettings');
+      const openSearchButton = getElementOrLog<HTMLButtonElement>('openSearchButton');
+      const openHelpButton   = getElementOrLog<HTMLButtonElement>('openHelpButton');
+      const openHelp       = getElementOrLog<HTMLDivElement>('openHelp');
+      const convertButton    = getElementOrLog<HTMLButtonElement>('openConvertButton');
+      const openSearch       = getElementOrLog<HTMLDivElement>('openSearch');
+      const stageTwoHelp     = getElementOrLog<HTMLDivElement>('stageTwoHelp');
+      const stageThreeHelp   = getElementOrLog<HTMLDivElement>('stageThreeHelp');
+      const manualConfig     = getElementOrLog<HTMLDivElement>('manualConfig');
+      const readOnlyConfig   = getElementOrLog<HTMLDivElement>('readOnlyConfig');
+      const openSettingsButton = getElementOrLog<HTMLButtonElement>('openSettingsButton');
 
-      const valueCol = registersTable.getColumn("value");
+      if (thirdColumn && !thirdColumn.classList.contains('isSimulating')) {
+        if (
+          openSettings && openSearchButton && convertButton && openSearch &&
+          stageTwoHelp && stageThreeHelp && manualConfig && readOnlyConfig &&
+          openHelpButton && openHelp && openSettingsButton
+        ) {
+          openSettings.className = 'hidden';
+          openSearchButton.classList.remove('hidden');
+          openSearchButton.classList.add('bg-active');
+          openHelpButton.classList.remove('bg-active');
+          openHelp.className = 'hidden';
+          openSettingsButton.classList.remove('bg-active');
+          convertButton.classList.remove('hidden');
+          openSearch.classList.remove('hidden');
+          stageTwoHelp.className = 'hidden';
+          stageThreeHelp.classList.remove('hidden');
+          manualConfig.classList.add('hidden');
+          readOnlyConfig.classList.remove('hidden');
+        }
 
-      if (valueCol) {
-        valueCol.updateDefinition(Object.assign(
-          {},
-          valueCol.getDefinition(),
-          {
+        const valueCol = registersTable.getColumn("value");
+        if (valueCol) {
+          valueCol.updateDefinition({
+            ...valueCol.getDefinition(),
             editor: undefined,
             editable: () => false
-          }
-        ));
+          });
+        }
+
+        thirdColumn.classList.add('isSimulating');
       }
-
-      thirdColumn.classList.add('isSimulating');
-
     }
 
-  }
+
 
 
   // const data = event.data;
@@ -403,24 +423,34 @@ function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: T
   //   default:
   //     throw new Error('Unknown operation ' + data.operation);
   // }
-}
 
+
+}
 function setupButtons(): void {
   const sections: string[] = ["openSearch", "openSettings", "openConvert1", "openHelp"];
+  const buttons: string[] = ["openSearchButton", "openSettingsButton", "openConvertButton", "openHelpButton"];
 
-  function showOnly(targetId: string): void {
+  function showOnly(targetId: string, buttonId: string): void {
+    // Ocultar todas las secciones
     sections.forEach((id) => {
       const element = document.getElementById(id);
       if (element) {
         element.className = id === targetId ? "flex flex-1 flex-col max-h-dvh min-h-dvh overflow-y-scroll" : "hidden";
       }
     });
+
+    buttons.forEach((btnId) => {
+      document.getElementById(btnId)?.classList.remove("bg-active");
+    });
+
+    document.getElementById(buttonId)?.classList.add("bg-active");
   }
 
-  document.getElementById("openSearchButton")?.addEventListener("click", () => showOnly("openSearch"));
-  document.getElementById("openSettingsButton")?.addEventListener("click", () => showOnly("openSettings"));
-  document.getElementById("openConvertButton")?.addEventListener("click", () => showOnly("openConvert1"));
-  document.getElementById("openHelpButton")?.addEventListener("click", () => showOnly("openHelp"));
+  // Asignar eventos a los botones
+  document.getElementById("openSearchButton")?.addEventListener("click", () => showOnly("openSearch", "openSearchButton"));
+  document.getElementById("openSettingsButton")?.addEventListener("click", () => showOnly("openSettings", "openSettingsButton"));
+  document.getElementById("openConvertButton")?.addEventListener("click", () => showOnly("openConvert1", "openConvertButton"));
+  document.getElementById("openHelpButton")?.addEventListener("click", () => showOnly("openHelp", "openHelpButton"));
 }
 
 
