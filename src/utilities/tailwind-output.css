@@ -775,11 +775,16 @@ html {
   border: solid 1px #E5E7EB;
   cursor: pointer;
   width: min-content;
+  transition: all .3s;
 }
 
 .icon-tab:hover{
   background-color: #D1E3E7;
   border: solid 1px #D1E3E7;
+}
+
+.icon-tab:active{
+  transform: scale(0.95);
 }
 
 
@@ -975,9 +980,13 @@ html {
   color: #3A6973;
 }
 
+.sim-focus {
+  transition: all 0.3s;
+}
 
-
-
+.sim-focus:active {
+  transform: scale(0.95);
+}
 
 
 
