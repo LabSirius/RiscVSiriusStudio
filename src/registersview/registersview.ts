@@ -66,6 +66,41 @@ type RegisterValue = {
   viewType: RegisterView;
 };
 
+const registersNames = [
+  'x0 zero',
+  'x1 ra',
+  'x2 sp',
+  'x3 gp',
+  'x4 tp',
+  'x5 t0',
+  'x6 t1',
+  'x7 t2',
+  'x8 s0',
+  'x9 s1',
+  'x10 a0',
+  'x11 a1',
+  'x12 a2',
+  'x13 a3',
+  'x14 a4',
+  'x15 a5',
+  'x16 a6',
+  'x17 a7',
+  'x18 s2',
+  'x19 s3',
+  'x20 s4',
+  'x21 s5',
+  'x22 s6',
+  'x23 s7',
+  'x24 s8',
+  'x25 s9',
+  'x26 s10',
+  'x27 s11',
+  'x28 t3',
+  'x29 t4',
+  'x30 t5',
+  'x31 t6'
+];
+
 function main() {
   let registersTable = registersSetup();
   let memoryTable = memorySetup();
@@ -85,40 +120,7 @@ function main() {
 
 function registersSetup(): Tabulator {
   const startTime = Date.now();
-  const registers = [
-    'x0 zero',
-    'x1 ra',
-    'x2 sp',
-    'x3 gp',
-    'x4 tp',
-    'x5 t0',
-    'x6 t1',
-    'x7 t2',
-    'x8 s0',
-    'x9 s1',
-    'x10 a0',
-    'x11 a1',
-    'x12 a2',
-    'x13 a3',
-    'x14 a4',
-    'x15 a5',
-    'x16 a6',
-    'x17 a7',
-    'x18 s2',
-    'x19 s3',
-    'x20 s4',
-    'x21 s5',
-    'x22 s6',
-    'x23 s7',
-    'x24 s8',
-    'x25 s9',
-    'x26 s10',
-    'x27 s11',
-    'x28 t3',
-    'x29 t4',
-    'x30 t5',
-    'x31 t6'
-  ];
+
   let tableData = [] as Array<RegisterValue>;
   let table = new Tabulator('#tabs-registers', {
     layout: 'fitColumns',
@@ -127,7 +129,7 @@ function registersSetup(): Tabulator {
     reactiveData: true,
     groupBy: 'watched',
     groupValues: [[true, false]],
-    groupHeader: hederGrouping,
+    groupHeader: headerGrouping,
     groupUpdateOnCellEdit: true,
     movableRows: true,
     validationMode: 'blocking',
@@ -175,7 +177,7 @@ function registersSetup(): Tabulator {
     ]
   });
 
-  registers.forEach((e, idx) => {
+  registersNames.forEach((e, idx) => {
     const [xname, abi] = e.split(' ');
     const zeros32 = '0';
     tableData.push({
@@ -210,7 +212,7 @@ function memorySetup(): Tabulator {
     index: 'address',
     reactiveData: true,
     validationMode: 'blocking',
-    
+
     columns: [
       {
         title: '',
@@ -321,7 +323,7 @@ function binaryMemEditor(
 ): HTMLInputElement {
   const currentValue = cell.getValue();
   const editor = document.createElement('input');
-  
+
   editor.className = 'binary-editor';
   editor.value = currentValue;
   editor.maxLength = 8;
@@ -338,8 +340,8 @@ function binaryMemEditor(
   const onSuccess = () => {
     const rawValue = editor.value.replace(/[^01]/g, '');
     const formattedValue = formatValue(rawValue);
-    
-    editor.value = formattedValue; 
+
+    editor.value = formattedValue;
     success(formattedValue);
   };
 
@@ -350,8 +352,8 @@ function binaryMemEditor(
 
   editor.addEventListener('blur', onSuccess);
   editor.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {onSuccess();};
-    if (e.key === 'Escape') {cancel();};
+    if (e.key === 'Enter') { onSuccess(); };
+    if (e.key === 'Escape') { cancel(); };
   });
 
   return editor;
@@ -360,12 +362,12 @@ function binaryMemEditor(
 function updateHexValue(cell: CellComponent) {
   const row = cell.getRow();
   const data = row.getData();
-  
+
   const hexParts = ['value3', 'value2', 'value1', 'value0'].map(field => {
     const binary = data[field];
     return parseInt(binary, 2).toString(16).padStart(2, '0');
   });
-  
+
   row.update({
     hex: hexParts.join('-')
   });
@@ -379,13 +381,13 @@ function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: T
 
   const data = event.data;
 
-// Función auxiliar para obtener un elemento por su ID y avisar si no existe
-function getElementOrLog<T extends HTMLElement>(id: string): T | null {
-  const element = document.getElementById(id) as T | null;
-  if (!element) {
-    console.error(`No se encontró el elemento con id: ${id}`);
-  }
-     return element;
+  // Función auxiliar para obtener un elemento por su ID y avisar si no existe
+  function getElementOrLog<T extends HTMLElement>(id: string): T | null {
+    const element = document.getElementById(id) as T | null;
+    if (!element) {
+      console.error(`No se encontró el elemento con id: ${id}`);
+    }
+    return element;
   }
 
   if (data.command === 'simulateClicked') {
@@ -395,103 +397,103 @@ function getElementOrLog<T extends HTMLElement>(id: string): T | null {
   }
 
 
-    function handleSimulateClicked(): void {
+  function handleSimulateClicked(): void {
 
-      const registerTab = getElementOrLog<HTMLDivElement>('tabs-registers');
-      const memoryTab   = getElementOrLog<HTMLDivElement>('tabs-memory');
-      const settingsButton = getElementOrLog<HTMLButtonElement>('openSettingsButton');
-      const convertButton  = getElementOrLog<HTMLButtonElement>('openConvertButton');
-      const openConvert    = getElementOrLog<HTMLDivElement>('openConvert1');
-      const openHelpButton = getElementOrLog<HTMLButtonElement>('openHelpButton');
-      const openHelp       = getElementOrLog<HTMLDivElement>('openHelp');
-      const stageOneHelp   = getElementOrLog<HTMLDivElement>('stageOneHelp');
-      const stageTwoHelp   = getElementOrLog<HTMLDivElement>('stageTwoHelp');
-      const openSettings   = getElementOrLog<HTMLDivElement>('openSettings');
+    const registerTab = getElementOrLog<HTMLDivElement>('tabs-registers');
+    const memoryTab = getElementOrLog<HTMLDivElement>('tabs-memory');
+    const settingsButton = getElementOrLog<HTMLButtonElement>('openSettingsButton');
+    const convertButton = getElementOrLog<HTMLButtonElement>('openConvertButton');
+    const openConvert = getElementOrLog<HTMLDivElement>('openConvert1');
+    const openHelpButton = getElementOrLog<HTMLButtonElement>('openHelpButton');
+    const openHelp = getElementOrLog<HTMLDivElement>('openHelp');
+    const stageOneHelp = getElementOrLog<HTMLDivElement>('stageOneHelp');
+    const stageTwoHelp = getElementOrLog<HTMLDivElement>('stageTwoHelp');
+    const openSettings = getElementOrLog<HTMLDivElement>('openSettings');
 
-      if (
-        registerTab && memoryTab && settingsButton && convertButton &&
-        openConvert && openHelp && stageOneHelp && stageTwoHelp && openSettings && openHelpButton
-      ) {
-        registerTab.classList.remove('hidden');
-        memoryTab.classList.remove('hidden');
-        settingsButton.classList.remove('hidden');
-        convertButton.classList.add('hidden');
-        convertButton.classList.remove('bg-active');
-        openHelpButton.classList.remove('bg-active');
-        settingsButton.classList.add('bg-active');
-        openConvert.className = 'hidden';
-        openHelp.className = 'hidden';
-        stageOneHelp.className = 'hidden';
-        stageTwoHelp.classList.remove('hidden');
-        openSettings.classList.remove('hidden');
-      }
+    if (
+      registerTab && memoryTab && settingsButton && convertButton &&
+      openConvert && openHelp && stageOneHelp && stageTwoHelp && openSettings && openHelpButton
+    ) {
+      registerTab.classList.remove('hidden');
+      memoryTab.classList.remove('hidden');
+      settingsButton.classList.remove('hidden');
+      convertButton.classList.add('hidden');
+      convertButton.classList.remove('bg-active');
+      openHelpButton.classList.remove('bg-active');
+      settingsButton.classList.add('bg-active');
+      openConvert.className = 'hidden';
+      openHelp.className = 'hidden';
+      stageOneHelp.className = 'hidden';
+      stageTwoHelp.classList.remove('hidden');
+      openSettings.classList.remove('hidden');
     }
+  }
 
-    function handleNextStepClicked(): void {
+  function handleNextStepClicked(): void {
 
-      const thirdColumn = getElementOrLog<HTMLDivElement>('thirdColumn');
-      const openSettings   = getElementOrLog<HTMLDivElement>('openSettings');
-      const openSearchButton = getElementOrLog<HTMLButtonElement>('openSearchButton');
-      const openHelpButton   = getElementOrLog<HTMLButtonElement>('openHelpButton');
-      const openHelp       = getElementOrLog<HTMLDivElement>('openHelp');
-      const convertButton    = getElementOrLog<HTMLButtonElement>('openConvertButton');
-      const openSearch       = getElementOrLog<HTMLDivElement>('openSearch');
-      const stageTwoHelp     = getElementOrLog<HTMLDivElement>('stageTwoHelp');
-      const stageThreeHelp   = getElementOrLog<HTMLDivElement>('stageThreeHelp');
-      const manualConfig     = getElementOrLog<HTMLDivElement>('manualConfig');
-      const readOnlyConfig   = getElementOrLog<HTMLDivElement>('readOnlyConfig');
-      const openSettingsButton = getElementOrLog<HTMLButtonElement>('openSettingsButton');
+    const thirdColumn = getElementOrLog<HTMLDivElement>('thirdColumn');
+    const openSettings = getElementOrLog<HTMLDivElement>('openSettings');
+    const openSearchButton = getElementOrLog<HTMLButtonElement>('openSearchButton');
+    const openHelpButton = getElementOrLog<HTMLButtonElement>('openHelpButton');
+    const openHelp = getElementOrLog<HTMLDivElement>('openHelp');
+    const convertButton = getElementOrLog<HTMLButtonElement>('openConvertButton');
+    const openSearch = getElementOrLog<HTMLDivElement>('openSearch');
+    const stageTwoHelp = getElementOrLog<HTMLDivElement>('stageTwoHelp');
+    const stageThreeHelp = getElementOrLog<HTMLDivElement>('stageThreeHelp');
+    const manualConfig = getElementOrLog<HTMLDivElement>('manualConfig');
+    const readOnlyConfig = getElementOrLog<HTMLDivElement>('readOnlyConfig');
+    const openSettingsButton = getElementOrLog<HTMLButtonElement>('openSettingsButton');
 
-      if (thirdColumn && !thirdColumn.classList.contains('isSimulating')) {
-        if (
-          openSettings && openSearchButton && convertButton && openSearch &&
-          stageTwoHelp && stageThreeHelp && manualConfig && readOnlyConfig &&
-          openHelpButton && openHelp && openSettingsButton
-        ) {
-          openSettings.className = 'hidden';
-          openSearchButton.classList.remove('hidden');
-          openSearchButton.classList.add('bg-active');
-          openHelpButton.classList.remove('bg-active');
-          openHelp.className = 'hidden';
-          openSettingsButton.classList.remove('bg-active');
-          convertButton.classList.remove('hidden');
-          openSearch.classList.remove('hidden');
-          stageTwoHelp.className = 'hidden';
-          stageThreeHelp.classList.remove('hidden');
-          manualConfig.classList.add('hidden');
-          readOnlyConfig.classList.remove('hidden');
-        }
+    if (thirdColumn && !thirdColumn.classList.contains('isSimulating')) {
+      if (
+        openSettings && openSearchButton && convertButton && openSearch &&
+        stageTwoHelp && stageThreeHelp && manualConfig && readOnlyConfig &&
+        openHelpButton && openHelp && openSettingsButton
+      ) {
+        openSettings.className = 'hidden';
+        openSearchButton.classList.remove('hidden');
+        openSearchButton.classList.add('bg-active');
+        openHelpButton.classList.remove('bg-active');
+        openHelp.className = 'hidden';
+        openSettingsButton.classList.remove('bg-active');
+        convertButton.classList.remove('hidden');
+        openSearch.classList.remove('hidden');
+        stageTwoHelp.className = 'hidden';
+        stageThreeHelp.classList.remove('hidden');
+        manualConfig.classList.add('hidden');
+        readOnlyConfig.classList.remove('hidden');
+      }
 
-        thirdColumn.classList.add('isSimulating');
+      thirdColumn.classList.add('isSimulating');
 
 
 
-        const valueColReg = registersTable.getColumn("value");
-        if (valueColReg) {
-          valueColReg.updateDefinition({
-            ...valueColReg.getDefinition(),
+      const valueColReg = registersTable.getColumn("value");
+      if (valueColReg) {
+        valueColReg.updateDefinition({
+          ...valueColReg.getDefinition(),
+          editor: undefined,
+          editable: () => false
+        });
+      }
+
+      const colDefs = memoryTable.getColumnDefinitions();
+
+      const newColDefs = colDefs.map(def => {
+        if (def.field && def.field.startsWith("value")) {
+          return {
+            ...def,
             editor: undefined,
             editable: () => false
-          });
+          };
         }
+        return def;
+      });
 
-        const colDefs = memoryTable.getColumnDefinitions();
+      memoryTable.setColumns(newColDefs);
 
-        const newColDefs = colDefs.map(def => {
-          if (def.field && def.field.startsWith("value")) {
-            return {
-              ...def,
-              editor: undefined,
-              editable: () => false
-            };
-          }
-          return def;
-        });
-
-        memoryTable.setColumns(newColDefs);
-      
-      }
     }
+  }
 
 
 
@@ -761,43 +763,7 @@ function setupImportRegisters(registersTable: Tabulator) {
             return;
           }
         }
-
-        const registers = [
-          "x0 zero",
-          "x1 ra",
-          "x2 sp",
-          "x3 gp",
-          "x4 tp",
-          "x5 t0",
-          "x6 t1",
-          "x7 t2",
-          "x8 s0",
-          "x9 s1",
-          "x10 a0",
-          "x11 a1",
-          "x12 a2",
-          "x13 a3",
-          "x14 a4",
-          "x15 a5",
-          "x16 a6",
-          "x17 a7",
-          "x18 s2",
-          "x19 s3",
-          "x20 s4",
-          "x21 s5",
-          "x22 s6",
-          "x23 s7",
-          "x24 s8",
-          "x25 s9",
-          "x26 s10",
-          "x27 s11",
-          "x28 t3",
-          "x29 t4",
-          "x30 t5",
-          "x31 t6",
-        ];
-
-        const newData = registers.map((reg, index) => ({
+        const newData = registersNames.map((reg, index) => ({
           name: reg,
           rawName: reg.split(" ")[0],
           value: index === 0 ? "00000000000000000000000000000000" : lines[index],
@@ -1084,7 +1050,7 @@ function setUpConvert() {
     convertNumber();
   });
 
-  
+
 }
 
 // Función para agrupar la cadena binaria en bloques de 4 desde la derecha
@@ -1141,38 +1107,6 @@ function dispatch2(event: MessageEvent, table: Tabulator) {
       break;
     default:
       throw new Error('Unknown operation ' + data.operation);
-  }
-}
-
-function hideRegistersView() {
-  const table = document.getElementById('registers-table') as HTMLElement;
-  const cover = document.getElementById('registers-cover') as HTMLElement;
-  cover.style.display = 'block';
-  table.style.display = 'none';
-}
-
-function showRegistersView() {
-  const table = document.getElementById('registers-table') as HTMLElement;
-  const cover = document.getElementById('registers-cover') as HTMLElement;
-  cover.style.display = 'none';
-  table.style.display = 'block';
-}
-
-function settingsChanged(newSettings: any, table: Tabulator) {
-  log('info', {
-    place: 'registersview',
-    m: 'Reacting to new settings',
-    n: newSettings
-  });
-
-  const { sort, initialSp } = newSettings;
-  if (sort !== settings.sort) {
-    settings.sort = sort;
-    sortTable(table);
-  }
-  if (initialSp !== settings.initialSp) {
-    settings.initialSp = initialSp;
-    setRegister('x2', settings.initialSp.toString(2), table);
   }
 }
 
@@ -1233,7 +1167,7 @@ function tableSetup(): Tabulator {
     reactiveData: true,
     groupBy: 'watched',
     groupValues: [[true, false]],
-    groupHeader: hederGrouping,
+    groupHeader: headerGrouping,
     groupUpdateOnCellEdit: true,
     movableRows: true,
     validationMode: 'blocking',
@@ -1561,7 +1495,7 @@ function toggleWatched(event: UIEvent, row: RowComponent) {
  * @returns The name of the group according to the number of watched and
  * unwatched registers.
  */
-function hederGrouping(
+function headerGrouping(
   value: boolean,
   count: number,
   data: any,
@@ -1574,24 +1508,6 @@ function hederGrouping(
   return watchStr + '  (' + count + ' registers)';
 }
 
-/**
- * Sets the sorting of the table view to either last modification or "register
- * name" criteria.
- * @param table view to sort
- */
-function sortTable(table: Tabulator) {
-  // log('info', {
-  //   m: 'sortingTable',
-  //   sort: settings.sort,
-  //   place: 'registersview'
-  // });
-  if (settings.sort === 'name') {
-    table.setSort('id', 'asc');
-  } else {
-    // Assume last modified sort
-    table.setSort('modified', 'desc');
-  }
-}
 
 /**
  * View extension communication.
