@@ -5,7 +5,7 @@
           <link rel="stylesheet", href="${tailwindCSS}">
           <link rel="stylesheet", href="${tabulatorCSS}">
         </head>
-        <body>
+        <body class="overflow-y-hidden">
           <div class="w-full flex flex-row gap-3 overflow-y-hidden overflow-x-scroll">
             <div id="tabs-registers" class="hidden w-fit max-h-dvh min-h-dvh w-min-content"></div>
             <div id="tabs-memory" class="hidden w-fit max-h-dvh min-h-dvh w-min-content"></div>
@@ -222,6 +222,10 @@
                     <div class="flex flex-col gap-2">
                       <p class="label">Result :</p>
                       <input type="text" id="resultConvertInput" class="input-convert-result" readonly />
+                      <div id="copyResultButton" class="mt-3 flex items-center gap-2 cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                        <p class="label">Copy</p>
+                      </div>
                     </div>
                   </div>
                 </div>

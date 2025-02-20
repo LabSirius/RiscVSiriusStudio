@@ -195,10 +195,6 @@ hr {
 Add the correct text decoration in Chrome, Edge, and Safari.
 */
 
-abbr:where([title]) {
-  -webkit-text-decoration: underline dotted;
-          text-decoration: underline dotted;
-}
 
 /*
 Remove the default font size and weight for headings.
@@ -379,10 +375,7 @@ progress {
 Correct the cursor style of increment and decrement buttons in Safari.
 */
 
-::-webkit-inner-spin-button,
-::-webkit-outer-spin-button {
-  height: auto;
-}
+
 
 /*
 1. Correct the odd appearance in Chrome and Safari.
@@ -394,21 +387,14 @@ Correct the cursor style of increment and decrement buttons in Safari.
 Remove the inner padding in Chrome and Safari on macOS.
 */
 
-::-webkit-search-decoration {
-  -webkit-appearance: none;
-}
+
 
 /*
 1. Correct the inability to style clickable types in iOS and Safari.
 2. Change font properties to `inherit` in Safari.
 */
 
-::-webkit-file-upload-button {
-  -webkit-appearance: button;
-  /* 1 */
-  font: inherit;
-  /* 2 */
-}
+
 
 /*
 Add the correct display in Chrome and Safari.
@@ -1229,8 +1215,25 @@ html {
   overflow-y: scroll;
 }
 
-.overflow-x-scroll{
-  overflow-x: scroll;
+.overflow-x-scroll {
+  overflow-x: scroll !important;
+  scrollbar-width: thin !important;
+}
+
+.overflow-x-scroll::-webkit-scrollbar {
+  height: 10px !important;
+  background: var(--vscode-scrollbarSlider-background) !important;
+}
+
+.overflow-x-scroll::-webkit-scrollbar-thumb {
+  background: var(--vscode-scrollbarSlider-activeBackground) !important;
+  border-radius: 5px !important;
+  border: 2px solid transparent !important;
+  background-clip: content-box !important;
+}
+
+.overflow-x-scroll::-webkit-scrollbar-track {
+  background: transparent !important;
 }
 
 .rounded {

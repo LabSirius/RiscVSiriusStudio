@@ -150,7 +150,7 @@ function registersSetup(): Tabulator {
         headerSort: false,
         cssClass: 'register-value',
         formatter: valueFormatter,
-        editor: valueEditor,
+        editor: valueRegisterEditor,
         editable: editableValue
       },
       {
@@ -210,6 +210,7 @@ function memorySetup(): Tabulator {
     index: 'address',
     reactiveData: true,
     validationMode: 'blocking',
+    
     columns: [
       {
         title: '',
@@ -235,6 +236,8 @@ function memorySetup(): Tabulator {
         headerHozAlign: 'center',
         visible: true,
         headerSort: false,
+        editor: binaryMemEditor,
+        editable: true,
         width: 80
       },
       {
@@ -244,7 +247,9 @@ function memorySetup(): Tabulator {
         headerHozAlign: 'center',
         visible: true,
         headerSort: false,
-        width: 80
+        width: 80,
+        editor: binaryMemEditor,
+        editable: true,
       },
       {
         title: '0x1',
@@ -253,7 +258,9 @@ function memorySetup(): Tabulator {
         headerHozAlign: 'center',
         visible: true,
         headerSort: false,
-        width: 80
+        width: 80,
+        editor: binaryMemEditor,
+        editable: true,
       },
       {
         title: '0x0',
@@ -262,7 +269,9 @@ function memorySetup(): Tabulator {
         headerHozAlign: 'center',
         visible: true,
         headerSort: false,
-        width: 80
+        width: 80,
+        editor: binaryMemEditor,
+        editable: true,
       },
       {
         title: 'HEX',
@@ -270,7 +279,8 @@ function memorySetup(): Tabulator {
         headerHozAlign: 'center',
         visible: true,
         headerSort: false,
-        width: 100
+        width: 100,
+        formatter: (cell) => cell.getValue().toUpperCase()
       }
     ]
   });
@@ -288,12 +298,81 @@ function memorySetup(): Tabulator {
     });
   });
 
+  table.on("cellEdited", (cell) => {
+    if (cell.getField().startsWith('value')) {
+      updateHexValue(cell);
+    }
+  });
+
   table.on('tableBuilt', () => {
     table.setData(tableData);
     log({ buildingTime: (Date.now() - startTime) / 1000, table: "Memory" });
   });
   return table;
 }
+
+
+function binaryMemEditor(
+  cell: CellComponent,
+  onRendered: (callback: () => void) => void,
+  success: (value: string) => void,
+  cancel: (restore?: boolean) => void,
+  editorParams: any
+): HTMLInputElement {
+  const currentValue = cell.getValue();
+  const editor = document.createElement('input');
+  
+  editor.className = 'binary-editor';
+  editor.value = currentValue;
+  editor.maxLength = 8;
+
+  onRendered(() => {
+    editor.focus();
+    editor.select();
+  });
+
+  const formatValue = (value: string): string => {
+    return value.padStart(8, '0').slice(0, 8);
+  };
+
+  const onSuccess = () => {
+    const rawValue = editor.value.replace(/[^01]/g, '');
+    const formattedValue = formatValue(rawValue);
+    
+    editor.value = formattedValue; 
+    success(formattedValue);
+  };
+
+  editor.addEventListener('input', (e) => {
+    // Filtra caracteres no binarios en tiempo real
+    editor.value = editor.value.replace(/[^01]/g, '');
+  });
+
+  editor.addEventListener('blur', onSuccess);
+  editor.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {onSuccess();};
+    if (e.key === 'Escape') {cancel();};
+  });
+
+  return editor;
+}
+
+function updateHexValue(cell: CellComponent) {
+  const row = cell.getRow();
+  const data = row.getData();
+  
+  const hexParts = ['value3', 'value2', 'value1', 'value0'].map(field => {
+    const binary = data[field];
+    return parseInt(binary, 2).toString(16).padStart(2, '0');
+  });
+  
+  row.update({
+    hex: hexParts.join('-')
+  });
+}
+
+
+
 
 function dispatch(event: MessageEvent, registersTable: Tabulator, memoryTable: Tabulator) {
   log({ msg: "Dispatching message", data: event.data });
@@ -347,7 +426,7 @@ function getElementOrLog<T extends HTMLElement>(id: string): T | null {
         openSettings.classList.remove('hidden');
       }
     }
-    
+
     function handleNextStepClicked(): void {
 
       const thirdColumn = getElementOrLog<HTMLDivElement>('thirdColumn');
@@ -383,16 +462,34 @@ function getElementOrLog<T extends HTMLElement>(id: string): T | null {
           readOnlyConfig.classList.remove('hidden');
         }
 
-        const valueCol = registersTable.getColumn("value");
-        if (valueCol) {
-          valueCol.updateDefinition({
-            ...valueCol.getDefinition(),
+        thirdColumn.classList.add('isSimulating');
+
+
+
+        const valueColReg = registersTable.getColumn("value");
+        if (valueColReg) {
+          valueColReg.updateDefinition({
+            ...valueColReg.getDefinition(),
             editor: undefined,
             editable: () => false
           });
         }
 
-        thirdColumn.classList.add('isSimulating');
+        const colDefs = memoryTable.getColumnDefinitions();
+
+        const newColDefs = colDefs.map(def => {
+          if (def.field && def.field.startsWith("value")) {
+            return {
+              ...def,
+              editor: undefined,
+              editable: () => false
+            };
+          }
+          return def;
+        });
+
+        memoryTable.setColumns(newColDefs);
+      
       }
     }
 
@@ -854,6 +951,7 @@ function setUpConvert() {
     const toInput = document.getElementById("toConvertInput") as HTMLInputElement;
     const numberInput = document.getElementById("numberToconvertInput") as HTMLInputElement;
     const resultInput = document.getElementById("resultConvertInput") as HTMLInputElement;
+    const copyButton = document.getElementById("copyResultButton") as HTMLButtonElement;
 
     if (!fromInput || !toInput || !numberInput || !resultInput) {
       return;
@@ -945,6 +1043,18 @@ function setUpConvert() {
       return;
     }
     resultInput.value = result;
+
+    copyButton.addEventListener("click", () => {
+      navigator.clipboard.writeText(resultInput.value)
+        .then(() => {
+          console.log("Texto copiado al portapapeles");
+        })
+        .catch(err => {
+          console.log("Error al copiar el texto: ", err);
+        });
+    });
+
+
   }
 
   setupDropdown("fromConvertInput", "fromOptions", "dec", "Decimal");
@@ -973,6 +1083,8 @@ function setUpConvert() {
     [fromInput.dataset.value, toInput.dataset.value] = [toInput.dataset.value || "", fromInput.dataset.value || ""];
     convertNumber();
   });
+
+  
 }
 
 // Función para agrupar la cadena binaria en bloques de 4 desde la derecha
@@ -1145,7 +1257,7 @@ function tableSetup(): Tabulator {
         headerSort: false,
         cssClass: 'register-value',
         formatter: valueFormatter,
-        editor: valueEditor,
+        editor: valueRegisterEditor,
         editable: editableValue
       },
       {
@@ -1245,7 +1357,7 @@ function formatValueAsType(value: string, type: RegisterView): string {
  * @param editorParams additional parameters.
  * @returns
  */
-function valueEditor(
+function valueRegisterEditor(
   cell: CellComponent,
   onRendered: any,
   success: any,
