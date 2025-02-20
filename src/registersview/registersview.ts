@@ -392,6 +392,7 @@ function getElementOrLog<T extends HTMLElement>(id: string): T | null {
     handleSimulateClicked();
   } else if (data.command === 'nextStepClicked') {
     handleNextStepClicked();
+
   }
 
 
@@ -886,9 +887,9 @@ function setupImportMemory(memoryTable: Tabulator) {
 
 function setUpMemoryConfig() {
   const memorySizeInput = document.getElementById("memorySizeInput") as HTMLInputElement | null;
-  const startPointerInput = document.getElementById("startPointerInput") as HTMLInputElement | null;
+  
 
-  if (memorySizeInput && startPointerInput) {
+  if (memorySizeInput) {
     memorySizeInput.addEventListener("blur", () => {
       const value = parseInt(memorySizeInput.value, 10);
       if (!isNaN(value)) {
@@ -897,13 +898,7 @@ function setUpMemoryConfig() {
       }
     });
 
-    startPointerInput.addEventListener("blur", () => {
-      const value = parseInt(startPointerInput.value, 10);
-      if (!isNaN(value)) {
-        const rounded = Math.round(value / 4) * 4;
-        startPointerInput.value = rounded.toString();
-      }
-    });
+    
   }
 }
 
