@@ -214,6 +214,7 @@ function dispatch(
   //     throw new Error('Unknown operation ' + data.operation);
   // }
 }
+
 function setupButtons(): void {
   const sections: string[] = [
     'openSearch',
