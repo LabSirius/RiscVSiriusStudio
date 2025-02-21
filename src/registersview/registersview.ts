@@ -68,6 +68,7 @@ function dispatch(
     handleSimulateClicked();
   } else if (data.command === 'nextStepClicked') {
     handleNextStepClicked();
+
   }
 
   function handleSimulateClicked(): void {
