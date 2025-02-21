@@ -765,6 +765,25 @@ html {
 }
 
 
+.min-h-containt{
+  max-height: min-content;
+  background-color: white;
+}
+
+.info-column-mem-table, .info-column-mem-table-symbols{
+  font-size: .8rem;
+  color: white;
+  padding: .2rem;
+  border-radius: .4rem;
+}
+
+.info-column-mem-table{
+  background-color: #3A6973;
+}
+.info-column-mem-table-symbols{
+  background-color: #FFB74D;
+}
+
 .bg-active{
   background-color: #D1E3E7;
 }
@@ -986,6 +1005,13 @@ html {
 
 .sim-focus:active {
   transform: scale(0.95);
+}
+
+.link-web{
+  color: #3A6973;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: underline;
 }
 
 

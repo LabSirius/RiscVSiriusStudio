@@ -53,7 +53,7 @@ function binaryMemEditor(
 
 export function memorySetup(): Tabulator {
   const startTime = Date.now();
-  const memorySize = 1024;
+  const memorySize = 32;
   let tableData: any[] = []; //as Array<MemWord>;
   let table = new Tabulator('#tabs-memory', {
     layout: 'fitColumns',
@@ -61,16 +61,16 @@ export function memorySetup(): Tabulator {
     index: 'address',
     reactiveData: true,
     validationMode: 'blocking',
-
+    
     columns: [
       {
-        title: '',
+        title: 'Info',
         field: 'info',
         visible: true,
         formatter: 'html',
         headerSort: false,
         frozen: true,
-        width: 20
+        width:50,
       },
       {
         title: 'Addr.',
@@ -138,7 +138,7 @@ export function memorySetup(): Tabulator {
 
   range(0, memorySize / 4).forEach((address) => {
     const zeros8 = '00000000';
-    tableData.push({
+    tableData.unshift({
       address: (address * 4).toString(16),
       value0: zeros8,
       value1: zeros8,
@@ -157,7 +157,6 @@ export function memorySetup(): Tabulator {
 
   table.on('tableBuilt', () => {
     table.setData(tableData);
-    // log({ buildingTime: (Date.now() - startTime) / 1000, table: "Memory" });
   });
   return table;
 }
@@ -247,29 +246,174 @@ export function setupImportMemory(memoryTable: Tabulator) {
     });
 }
 
-export function setUpMemoryConfig() {
-  const memorySizeInput = document.getElementById(
-    'memorySizeInput'
-  ) as HTMLInputElement | null;
-  const startPointerInput = document.getElementById(
-    'startPointerInput'
-  ) as HTMLInputElement | null;
 
-  if (memorySizeInput && startPointerInput) {
-    memorySizeInput.addEventListener('blur', () => {
-      const value = parseInt(memorySizeInput.value, 10);
-      if (!isNaN(value)) {
-        const rounded = Math.round(value / 4) * 4;
-        memorySizeInput.value = rounded.toString();
+export function setUpMemoryConfig(memoryTable: Tabulator): void {
+  const memorySizeInput = document.getElementById("memorySizeInput") as HTMLInputElement | null;
+  if (!memorySizeInput) {return;};
+
+  const updateMemoryBaseRows = () => {
+  
+    let value = parseInt(memorySizeInput.value, 10);
+    if (isNaN(value) || value < 12) {
+      value = 12;
+      memorySizeInput.value = "12";
+    }
+    const rounded = Math.round(value / 4) * 4;
+    memorySizeInput.value = rounded.toString();
+    
+    const totalBaseRows = rounded / 4; 
+
+    const allData = memoryTable.getData();
+  
+    let heapIndex = allData.findIndex(row => row.info && row.info.includes("Heap"));
+
+    const instructionsRowsData = heapIndex !== -1 ? allData.slice(heapIndex + 1) : allData;
+
+    const allRows = memoryTable.getRows();
+    const instructionsBackground: string[] = [];
+    if (heapIndex !== -1) {
+  
+      const instructionsRows = allRows.slice(heapIndex + 1);
+      instructionsRows.forEach(row => {
+        instructionsBackground.push(row.getElement().style.backgroundColor);
+      });
+    }
+
+    const newBaseRowsData = [];
+    const zeros8 = "00000000";
+    for (let i = 0; i < totalBaseRows; i++) {
+      newBaseRowsData.push({
+        address: "", 
+        value0: zeros8,
+        value1: zeros8,
+        value2: zeros8,
+        value3: zeros8,
+        info: "",
+        hex: "00-00-00-00"
+      });
+    }
+    if (newBaseRowsData.length > 0) {
+      newBaseRowsData[0].info = `<span class="info-column-mem-table">SP</span>`;
+      newBaseRowsData[newBaseRowsData.length - 1].info = `<span class="info-column-mem-table">Heap</span>`;
+    }
+
+   
+    const newTableData = newBaseRowsData.concat(instructionsRowsData);
+    memoryTable.setData(newTableData).then(() => {
+      const updatedRows = memoryTable.getRows();
+      const totalRows = updatedRows.length;
+      for (let i = 0; i < totalRows; i++) {
+        const newAddress = ((totalRows - 1 - i) * 4).toString(16);
+        updatedRows[i].update({ address: newAddress });
       }
+      
+      for (let i = totalBaseRows; i < totalRows; i++) {
+        const row = updatedRows[i];
+ 
+        const bg = instructionsBackground[i - totalBaseRows] || "#FFF6E5";
+        row.getElement().style.backgroundColor = bg;
+      }
+      
+      console.log(`La región base se actualizó a ${totalBaseRows} filas (incluyendo SP y Heap).`);
     });
+  };
 
-    startPointerInput.addEventListener('blur', () => {
-      const value = parseInt(startPointerInput.value, 10);
-      if (!isNaN(value)) {
-        const rounded = Math.round(value / 4) * 4;
-        startPointerInput.value = rounded.toString();
-      }
+  memorySizeInput.addEventListener("blur", updateMemoryBaseRows);
+}
+
+
+export function enterInstructionsInMemoryTable(memoryTable: Tabulator, instructions: any[], symbols: any) {
+  
+  const newRowsCount = instructions.length;
+  const zeros8 = '00000000';
+  const newRowsData: any[] = [];
+  
+  for (let i = 0; i < newRowsCount; i++) {
+    newRowsData.push({
+      address: 'temp', 
+      value0: zeros8,
+      value1: zeros8,
+      value2: zeros8,
+      value3: zeros8,
+      info: '',
+      hex: '00-00-00-00'
     });
   }
+  
+  memoryTable.addData(newRowsData, false);
+  
+  const allRows = memoryTable.getRows();
+  const totalRows = allRows.length;
+  
+  // Recalculate addresses for all rows
+  allRows.forEach((row, index) => {
+    const newAddress = ((totalRows - 1 - index) * 4).toString(16);
+    row.update({ address: newAddress });
+  });
+  
+  // Inserts the instructions in the memory table
+  instructions.forEach((instr, i) => {
+    const binaryString = instr.encoding?.binEncoding || '';
+    if (binaryString.length !== 32) {
+      console.warn(`La instrucción en el índice ${i} no tiene 32 bits: ${binaryString}`);
+      return;
+    }
+    
+    const value3 = binaryString.slice(0, 8);
+    const value2 = binaryString.slice(8, 16);
+    const value1 = binaryString.slice(16, 24);
+    const value0 = binaryString.slice(24, 32);
+    
+    const hex =
+      parseInt(value3, 2).toString(16).padStart(2, '0') + '-' +
+      parseInt(value2, 2).toString(16).padStart(2, '0') + '-' +
+      parseInt(value1, 2).toString(16).padStart(2, '0') + '-' +
+      parseInt(value0, 2).toString(16).padStart(2, '0');
+    
+    const targetRowIndex = totalRows - 1 - i;
+    if (targetRowIndex < 0 || targetRowIndex >= totalRows) {
+      console.warn(`No hay suficientes filas para la instrucción en el índice ${i}`);
+      return;
+    }
+    
+    // update the row with the instruction
+    allRows[targetRowIndex].update({
+      value3: value3,
+      value2: value2,
+      value1: value1,
+      value0: value0,
+      hex: hex.toUpperCase(),
+      info: ""  
+    });
+    
+    allRows[targetRowIndex].getElement().style.backgroundColor = "#FFF6E5";
+  });
+  
+  // heap
+  const targetHeapRowIndex = totalRows - instructions.length - 1;
+  if (targetHeapRowIndex >= 0) {
+    allRows[targetHeapRowIndex].update({
+      info: `<span class="info-column-mem-table">Heap</span>`
+    });
+  }
+  
+  // SP
+  if (allRows[0]) {
+    allRows[0].update({
+      info: `<span class="info-column-mem-table">SP</span>` 
+    });
+  }
+  
+  // Labels 
+  Object.values(symbols).forEach((symbol: any) => {
+    const memdefHex = symbol.memdef.toString(16);
+    // Find the row with the corresponding address
+    const symbolRow = allRows.find(row => row.getData().address === memdefHex);
+    if (symbolRow) {
+      // Update the row with the symbol name
+      symbolRow.update({
+        info: `<span class="info-column-mem-table-symbols">${symbol.name}</span>`
+      });
+    }
+  });
 }

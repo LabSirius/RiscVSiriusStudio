@@ -11,7 +11,7 @@ import {
 } from 'tabulator-tables';
 
 import { registersSetup, setupImportRegisters } from './registersTable';
-import { memorySetup, setupImportMemory, setUpMemoryConfig } from './memoryTable';
+import { memorySetup, setupImportMemory, setUpMemoryConfig, enterInstructionsInMemoryTable } from './memoryTable';
 import { setUpConvert } from './convertTool';
 provideVSCodeDesignSystem().register(allComponents);
 
@@ -39,7 +39,7 @@ function main() {
 
   setupButtons();
   setupSearch(registersTable, memoryTable);
-  setUpMemoryConfig();
+  setUpMemoryConfig(memoryTable);
   setupImportRegisters(registersTable);
   setupImportMemory(memoryTable);
   setUpConvert();
@@ -66,6 +66,8 @@ function dispatch(
 
   if (data.command === 'simulateClicked') {
     handleSimulateClicked();
+    const irValue = data.ir;
+    enterInstructionsInMemoryTable(memoryTable, irValue.instructions, irValue.symbols);
   } else if (data.command === 'nextStepClicked') {
     handleNextStepClicked();
 
@@ -306,7 +308,7 @@ function setupSettings() {
   const inputMemorySize = document.getElementById(
     'memorySizeInput'
   ) as HTMLInputElement;
-  inputMemorySize.value = '128';
+  inputMemorySize.value = '32';
   inputMemorySize.addEventListener('input', () => {
     console.log('Memory size changed to: ' + inputMemorySize.value);
     sendMessageToExtension({
@@ -440,17 +442,6 @@ function resetCellColors(table: Tabulator) {
 }
 
 
-// Función para agrupar la cadena binaria en bloques de 4 desde la derecha
-function groupBinary(numStr: string): string {
-  let groups: string[] = [];
-  let i = numStr.length;
-  while (i > 0) {
-    const start = Math.max(0, i - 4);
-    groups.unshift(numStr.substring(start, i));
-    i -= 4;
-  }
-  return groups.join(' ');
-}
 
 /**
  * View extension communication.
@@ -459,3 +450,6 @@ function groupBinary(numStr: string): string {
 function sendMessageToExtension(messageObject: any) {
   vscode.postMessage(messageObject);
 }
+
+
+

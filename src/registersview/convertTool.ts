@@ -215,3 +215,16 @@ export function setUpConvert() {
     convertNumber();
   });
 }
+
+
+// Función para agrupar la cadena binaria en bloques de 4 desde la derecha
+function groupBinary(numStr: string): string {
+  let groups: string[] = [];
+  let i = numStr.length;
+  while (i > 0) {
+    const start = Math.max(0, i - 4);
+    groups.unshift(numStr.substring(start, i));
+    i -= 4;
+  }
+  return groups.join(' ');
+}

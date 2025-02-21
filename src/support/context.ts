@@ -134,9 +134,10 @@ export class RVContext {
           window.showErrorMessage("There is no a valid RiscV document open");
         }
         commands.executeCommand(`rv-simulator.riscv.focus`);
-        if (this._mainWebviewView) {
+        if (this._mainWebviewView && this._currentDocument) {
           this._mainWebviewView.postMessage({
             command: 'simulateClicked',
+            ir: this._currentDocument.ir 
           });
         } else {
 
