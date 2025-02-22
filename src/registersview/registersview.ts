@@ -11,7 +11,7 @@ import {
 } from 'tabulator-tables';
 
 import { registersSetup, setupImportRegisters, setupSearchInRegisterTable } from './registersTable';
-import { memorySetup, setupImportMemory, setUpMemoryConfig, enterInstructionsInMemoryTable } from './memoryTable';
+import { MemoryTable } from './memoryTable';
 import { setUpConvert } from './convertTool';
 import { Console } from 'console';
 provideVSCodeDesignSystem().register(allComponents);
@@ -33,16 +33,16 @@ function log(object: any = {}, level: string = 'info') {
 
 function main() {
   let registersTable = registersSetup();
-  let memoryTable = memorySetup();
+  const memoryTable = new MemoryTable();
   window.addEventListener('message', (event) => {
     dispatch(event, registersTable, memoryTable);
   });
 
   setupButtons();
   setupSearchInRegisterTable(registersTable);
-  setUpMemoryConfig(memoryTable);
+  // setUpMemoryConfig(memoryTable);
   setupImportRegisters(registersTable);
-  setupImportMemory(memoryTable);
+  // setupImportMemory(memoryTable);
   setUpConvert();
   setupSettings();
   setUpHelp();
@@ -53,7 +53,7 @@ function main() {
 function dispatch(
   event: MessageEvent,
   registersTable: Tabulator,
-  memoryTable: Tabulator
+  memoryTable: MemoryTable
 ) {
   log({ msg: 'Dispatching message', data: event.data });
 
@@ -71,7 +71,7 @@ function dispatch(
   if (data.command === 'simulateClicked') {
     handleSimulateClicked();
     const irValue = data.ir;
-    enterInstructionsInMemoryTable(memoryTable, irValue.instructions, irValue.symbols);
+    memoryTable.enterInstructions(irValue.instructions, irValue.symbols);
   } else if (data.command === 'nextStepClicked') {
     handleNextStepClicked();
 
@@ -174,20 +174,20 @@ function dispatch(
         });
       }
 
-      const colDefs = memoryTable.getColumnDefinitions();
+      // const colDefs = memoryTable.getColumnDefinitions();
 
-      const newColDefs = colDefs.map((def) => {
-        if (def.field && def.field.startsWith('value')) {
-          return {
-            ...def,
-            editor: undefined,
-            editable: () => false
-          };
-        }
-        return def;
-      });
+      // const newColDefs = colDefs.map((def) => {
+      //   if (def.field && def.field.startsWith('value')) {
+      //     return {
+      //       ...def,
+      //       editor: undefined,
+      //       editable: () => false
+      //     };
+      //   }
+      //   return def;
+      // });
 
-      memoryTable.setColumns(newColDefs);
+      // memoryTable.setColumns(newColDefs);
     }
   }
 
@@ -312,7 +312,7 @@ function setUpHelp() {
       // value: value
     });
   });
-  
+
 
 }
 
