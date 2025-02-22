@@ -94,10 +94,8 @@ export class RVContext {
             };
 
             webviewView.title = "Registers and memory view";
-            console.log("CREANDO VISTA");
             webviewView.webview.html = await getHtmlForRegistersWebview(webviewView.webview, this.extensionContext.extensionUri);
             await activateMessageListenerForRegistersView(webviewView.webview, this);
-            console.log("Finished creation main webview ", webviewView.webview);
             this._mainWebviewView = webviewView.webview;
             if (webviewView.visible) {
               this.onMainViewVisible();
@@ -190,12 +188,6 @@ export class RVContext {
     );
 
 
-    this.disposables.push(
-      commands.registerCommand('rv-simulator.ShowCard', () => {
-        RiscCardPanel.riscCard(context.extensionUri);
-      })
-    );
-
 
     // this.disposables.push(
     //   this.documentTracker.onActiveDocumentChanged(({ document, type }) => {
@@ -285,10 +277,14 @@ export class RVContext {
    * This method is in charge of dispatching events sent by the main view.
    */
   public dispatchMainViewEvent(message: any) {
-    console.log("Inside context: Dispatching main view event");
     switch (message.name) {
       case "memorySizeChanged":
         break;
+      case "clickOpenRISCVCard":
+        RiscCardPanel.riscCard(this.extensionContext.extensionUri);
+        break;
+  
+
     }
   }
 }
@@ -702,8 +698,11 @@ export class RVSimulationContext {
   }
 
   private dispatch(message: any) {
-    console.log('RVSimulationContext dispatch', message);
     switch (message.command) {
+      case 'showHelpCard':
+      // Aquí llamas a tu comando para mostrar la tarjeta.
+       console.log('showHelpCard');
+      break;
       case 'event':
         {
           const { from: sender, message: msg } = message;

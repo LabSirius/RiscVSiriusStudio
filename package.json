@@ -51,11 +51,6 @@
       {
         "command": "rv-simulator.enableProgMemSync",
         "title": "RISCV simuator: synchronize code with program memory"
-      },
-      {
-        "command": "rv-simulator.ShowCard",
-        "title": "RISCV simulator: show card",
-        "icon": "$(book)"
       }
     ],
     "viewsContainers": {
@@ -170,11 +165,6 @@
           "command": "rv-simulator.simulateStop",
           "group": "navigation",
           "when": "editorLangId == riscvasm && riscv.isSimulating"
-        },
-        {
-          "command": "rv-simulator.ShowCard",
-          "group": "navigation",
-          "when": "editorLangId == riscvasm"
         }
       ]
     },
@@ -182,10 +172,6 @@
       {
         "key": "ctrl+f12",
         "command": "rv-simulator.simulate"
-      },
-      {
-        "command": "rv-simulator.ShowCard",
-        "key": "ctrl+f7"
       }
     ],
     "languages": [

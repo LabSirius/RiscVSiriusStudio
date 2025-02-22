@@ -101,6 +101,7 @@
                       id="memorySizeInput" 
                       class="input-filter" 
                       value="32" 
+                      min="12"
                       step="4" 
                       placeholder="e.g. 200, 1024..." />
                     </div>
@@ -223,10 +224,10 @@
           <div id="openHelp" class="hidden">
             <div class=" p-4">
            
-            <a class="flex gap-2 items-center" href="https://www.cs.sfu.ca/~ashriram/Courses/CS295/assets/notebooks/RISCV/RISCV_CARD.pdf">
+            <div class="flex gap-2 items-center cursor-pointer" id="openShowCard">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link-2"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
               <p class="link-web" >RISC-V intructions reference</p>
-            </a>
+            </div>
              
               
              <div id="stageOneHelp" class="help-container">

@@ -314,11 +314,16 @@ export function setUpMemoryConfig(memoryTable: Tabulator): void {
         row.getElement().style.backgroundColor = bg;
       }
       
-      console.log(`La región base se actualizó a ${totalBaseRows} filas (incluyendo SP y Heap).`);
     });
   };
 
   memorySizeInput.addEventListener("blur", updateMemoryBaseRows);
+  memorySizeInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      updateMemoryBaseRows();
+    }
+  });
+  memorySizeInput.addEventListener("change", updateMemoryBaseRows);
 }
 
 
