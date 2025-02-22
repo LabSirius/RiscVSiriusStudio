@@ -10,7 +10,7 @@ import {
   TabulatorFull as Tabulator
 } from 'tabulator-tables';
 
-import { registersSetup, setupImportRegisters } from './registersTable';
+import { registersSetup, setupImportRegisters, setupSearchInRegisterTable } from './registersTable';
 import { memorySetup, setupImportMemory, setUpMemoryConfig, enterInstructionsInMemoryTable } from './memoryTable';
 import { setUpConvert } from './convertTool';
 import { Console } from 'console';
@@ -39,7 +39,7 @@ function main() {
   });
 
   setupButtons();
-  setupSearch(registersTable, memoryTable);
+  setupSearchInRegisterTable(registersTable);
   setUpMemoryConfig(memoryTable);
   setupImportRegisters(registersTable);
   setupImportMemory(memoryTable);
@@ -47,6 +47,8 @@ function main() {
   setupSettings();
   setUpHelp();
 }
+
+
 
 function dispatch(
   event: MessageEvent,
@@ -271,41 +273,6 @@ function setupButtons(): void {
     ?.addEventListener('click', () => showOnly('openHelp', 'openHelpButton'));
 }
 
-function setupSearch(registersTable: Tabulator, memoryTable: Tabulator) {
-  const searchRegisterInput = document.getElementById(
-    'searchRegisterInput'
-  ) as HTMLInputElement | null;
-
-  const searchMemoryInput = document.getElementById(
-    'searchMemoryInput'
-  ) as HTMLInputElement | null;
-
-  if (!searchRegisterInput || !searchMemoryInput) {
-    console.error('Search input for registers not found');
-    return;
-  }
-
-  searchRegisterInput.addEventListener('input', () => {
-    let searchValue = searchRegisterInput.value.trim();
-
-    if (searchValue === '') {
-      registersTable.clearFilter(true);
-      resetCellColors(registersTable); // Restablecer colores aquí
-      return;
-    }
-
-    searchValue = convertToBinary(searchValue);
-    filterTableData(registersTable, searchValue);
-  });
-
-  searchRegisterInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      searchRegisterInput.value = '';
-      registersTable.clearFilter(true);
-      resetCellColors(registersTable); // <- Añade esta línea
-    }
-  });
-}
 
 function setupSettings() {
   const inputMemorySize = document.getElementById(
@@ -325,124 +292,6 @@ function setupSettings() {
   });
 }
 
-function convertToBinary(value: string): string {
-  value = value.trim().toLowerCase();
-
-  if (value.startsWith('b')) {
-    return `isnumber${value.slice(1)}`;
-  }
-
-  if (value.startsWith('d')) {
-    let num = parseInt(value.slice(1), 10);
-
-    if (num < 0) {
-      let bits = 8;
-      num = (1 << bits) + num;
-      return `isnumber${num.toString(2).padStart(bits, '0')}`;
-    } else {
-      return `isnumber${num.toString(2)}`;
-    }
-  }
-
-  if (value.startsWith('h')) {
-    return `isnumber${parseInt(value.slice(1), 16).toString(2)}`;
-  }
-
-  if (value.startsWith('u')) {
-    let num = value.slice(1);
-    return `isnumber${num}`;
-  }
-
-  if (value.startsWith('s')) {
-    let num = value.slice(1);
-    return `both${num}`;
-  }
-
-  return value;
-}
-
-function filterTableData(table: Tabulator, searchValue: string) {
-  resetCellColors(table);
-
-  const isNumberSearch = searchValue.startsWith('isnumber');
-  const isBothSearch = searchValue.startsWith('both');
-
-  console.log('isNumberSearch', isNumberSearch);
-  console.log('isBothSearch', isBothSearch);
-
-  const cleanSearchValue = searchValue
-    .replace(/^(isnumber|both)\s*/, '')
-    .trim();
-  const searchTerms = cleanSearchValue.split(/\s+/);
-
-  table.setFilter((data: any) => {
-    const nameStr = data.name?.toLowerCase() || '';
-    const valueStr = data.value?.toString().toLowerCase() || '';
-
-    if (isNumberSearch) {
-      return valueStr.includes(cleanSearchValue);
-    } else if (isBothSearch) {
-      if (searchTerms.length === 1) {
-        const modifiedSearch = 's' + searchTerms[0];
-        return (
-          nameStr.includes(modifiedSearch) || valueStr.includes(searchTerms[0])
-        );
-      } else {
-        return searchTerms.every((term) => valueStr.includes(term));
-      }
-    } else {
-      return nameStr.includes(cleanSearchValue);
-    }
-  });
-
-  if (cleanSearchValue) {
-    table.getRows().forEach((row) => {
-      row.getCells().forEach((cell) => {
-        const field = cell.getField();
-        const cellValue = cell.getValue()?.toString().toLowerCase() || '';
-
-        if (
-          isNumberSearch &&
-          field === 'value' &&
-          cellValue.includes(cleanSearchValue)
-        ) {
-          cell.getElement().style.backgroundColor = '#D1E3E7';
-        } else if (isBothSearch) {
-          if (searchTerms.length === 1) {
-            const modifiedSearch = 's' + searchTerms[0];
-            if (
-              (field === 'name' && cellValue.includes(modifiedSearch)) ||
-              (field === 'value' && cellValue.includes(searchTerms[0]))
-            ) {
-              cell.getElement().style.backgroundColor = '#D1E3E7';
-            }
-          } else {
-            if (
-              field === 'value' &&
-              searchTerms.every((term) => cellValue.includes(term))
-            ) {
-              cell.getElement().style.backgroundColor = '#D1E3E7';
-            }
-          }
-        } else if (
-          !isBothSearch &&
-          field === 'name' &&
-          cellValue.includes(cleanSearchValue)
-        ) {
-          cell.getElement().style.backgroundColor = '#D1E3E7';
-        }
-      });
-    });
-  }
-}
-
-function resetCellColors(table: Tabulator) {
-  table.getRows().forEach((row) => {
-    row.getCells().forEach((cell) => {
-      cell.getElement().style.backgroundColor = '';
-    });
-  });
-}
 
 
 function setUpHelp() {
