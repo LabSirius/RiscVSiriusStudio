@@ -14,6 +14,8 @@ import { registersSetup, setupImportRegisters, setupSearchInRegisterTable } from
 import { MemoryTable } from './memoryTable';
 import { setUpConvert } from './convertTool';
 import { Console } from 'console';
+import { UIManager } from './uiManager';
+import { InternalRepresentation } from '../utilities/riscvc';
 provideVSCodeDesignSystem().register(allComponents);
 
 const vscode = acquireVsCodeApi();
@@ -44,10 +46,9 @@ function main() {
   setupImportRegisters(registersTable);
   // setupImportMemory(memoryTable);
   setUpConvert();
-  setupSettings();
+  setupSettings(memoryTable);
   setUpHelp();
 }
-
 
 
 function dispatch(
@@ -56,169 +57,40 @@ function dispatch(
   memoryTable: MemoryTable
 ) {
   log({ msg: 'Dispatching message', data: event.data });
-
   const data = event.data;
-
-  // Función auxiliar para obtener un elemento por su ID y avisar si no existe
-  function getElementOrLog<T extends HTMLElement>(id: string): T | null {
-    const element = document.getElementById(id) as T | null;
-    if (!element) {
-      console.error(`No se encontró el elemento con id: ${id}`);
-    }
-    return element;
+  switch (data.operation) {
+    case 'uploadProgram':
+      uploadProgram(memoryTable, data.program);
+      break;
+    default:
+      log({ msg: 'No handler for message', data: data.command });
+      break;
   }
 
   if (data.command === 'simulateClicked') {
     handleSimulateClicked();
-    const irValue = data.ir;
-    memoryTable.enterInstructions(irValue.instructions, irValue.symbols);
+    // const irValue = data.ir;
+    // memoryTable.enterInstructions(irValue.instructions, irValue.symbols);
   } else if (data.command === 'nextStepClicked') {
     handleNextStepClicked();
-
   }
 
   function handleSimulateClicked(): void {
-    const registerTab = getElementOrLog<HTMLDivElement>('tabs-registers');
-    const memoryTab = getElementOrLog<HTMLDivElement>('tabs-memory');
-    const settingsButton =
-      getElementOrLog<HTMLButtonElement>('openSettingsButton');
-    const convertButton =
-      getElementOrLog<HTMLButtonElement>('openConvertButton');
-    const openConvert = getElementOrLog<HTMLDivElement>('openConvert1');
-    const openHelpButton = getElementOrLog<HTMLButtonElement>('openHelpButton');
-    const openHelp = getElementOrLog<HTMLDivElement>('openHelp');
-    const stageOneHelp = getElementOrLog<HTMLDivElement>('stageOneHelp');
-    const stageTwoHelp = getElementOrLog<HTMLDivElement>('stageTwoHelp');
-    const openSettings = getElementOrLog<HTMLDivElement>('openSettings');
-
-    if (
-      registerTab &&
-      memoryTab &&
-      settingsButton &&
-      convertButton &&
-      openConvert &&
-      openHelp &&
-      stageOneHelp &&
-      stageTwoHelp &&
-      openSettings &&
-      openHelpButton
-    ) {
-      registerTab.classList.remove('hidden');
-      memoryTab.classList.remove('hidden');
-      settingsButton.classList.remove('hidden');
-      convertButton.classList.add('hidden');
-      convertButton.classList.remove('bg-active');
-      openHelpButton.classList.remove('bg-active');
-      settingsButton.classList.add('bg-active');
-      openConvert.className = 'hidden';
-      openHelp.className = 'hidden';
-      stageOneHelp.className = 'hidden';
-      stageTwoHelp.classList.remove('hidden');
-      openSettings.classList.remove('hidden');
-    }
+    UIManager.getInstance().simulationStarted();
   }
 
   function handleNextStepClicked(): void {
-    const thirdColumn = getElementOrLog<HTMLDivElement>('thirdColumn');
-    const openSettings = getElementOrLog<HTMLDivElement>('openSettings');
-    const openSearchButton =
-      getElementOrLog<HTMLButtonElement>('openSearchButton');
-    const openHelpButton = getElementOrLog<HTMLButtonElement>('openHelpButton');
-    const openHelp = getElementOrLog<HTMLDivElement>('openHelp');
-    const convertButton =
-      getElementOrLog<HTMLButtonElement>('openConvertButton');
-    const openSearch = getElementOrLog<HTMLDivElement>('openSearch');
-    const stageTwoHelp = getElementOrLog<HTMLDivElement>('stageTwoHelp');
-    const stageThreeHelp = getElementOrLog<HTMLDivElement>('stageThreeHelp');
-    const manualConfig = getElementOrLog<HTMLDivElement>('manualConfig');
-    const readOnlyConfig = getElementOrLog<HTMLDivElement>('readOnlyConfig');
-    const openSettingsButton =
-      getElementOrLog<HTMLButtonElement>('openSettingsButton');
-
-    if (thirdColumn && !thirdColumn.classList.contains('isSimulating')) {
-      if (
-        openSettings &&
-        openSearchButton &&
-        convertButton &&
-        openSearch &&
-        stageTwoHelp &&
-        stageThreeHelp &&
-        manualConfig &&
-        readOnlyConfig &&
-        openHelpButton &&
-        openHelp &&
-        openSettingsButton
-      ) {
-        openSettings.className = 'hidden';
-        openSearchButton.classList.remove('hidden');
-        openSearchButton.classList.add('bg-active');
-        openHelpButton.classList.remove('bg-active');
-        openHelp.className = 'hidden';
-        openSettingsButton.classList.remove('bg-active');
-        convertButton.classList.remove('hidden');
-        openSearch.classList.remove('hidden');
-        stageTwoHelp.className = 'hidden';
-        stageThreeHelp.classList.remove('hidden');
-        manualConfig.classList.add('hidden');
-        readOnlyConfig.classList.remove('hidden');
-      }
-
-      thirdColumn.classList.add('isSimulating');
-
-      const valueColReg = registersTable.getColumn('value');
-      if (valueColReg) {
-        valueColReg.updateDefinition({
-          ...valueColReg.getDefinition(),
-          editor: undefined,
-          editable: () => false
-        });
-      }
-
-      // TODO: update this to the OO style
-      // const colDefs = memoryTable.getColumnDefinitions();
-
-      // const newColDefs = colDefs.map((def) => {
-      //   if (def.field && def.field.startsWith('value')) {
-      //     return {
-      //       ...def,
-      //       editor: undefined,
-      //       editable: () => false
-      //     };
-      //   }
-      //   return def;
-      // });
-
-      // TODO: update this to the OO style
-      // memoryTable.setColumns(newColDefs);
+    if (!UIManager.getInstance().isSimulating) {
+      UIManager.getInstance().sim();
+      memoryTable.disableEditors();
     }
   }
+}
 
-  // const data = event.data;
-  // switch (data.operation) {
-  //   case 'hideRegistersView':
-  //     hideRegistersView();
-  //     break;
-  //   case 'showRegistersView':
-  //     showRegistersView();
-  //     break;
-  //   case 'selectRegister':
-  //     selectRegister(data.register, table);
-  //     break;
-  //   case 'setRegister':
-  //     setRegister(data.register, data.value, table);
-  //     break;
-  //   case 'clearSelection':
-  //     table.deselectRow();
-  //     break;
-  //   case 'watchRegister':
-  //     watchRegister(data.register, table);
-  //     break;
-  //   case 'settingsChanged':
-  //     settingsChanged(data.settings, table);
-  //     break;
-  //   default:
-  //     throw new Error('Unknown operation ' + data.operation);
-  // }
+function uploadProgram(memoryTable: MemoryTable, ir: InternalRepresentation): void {
+  UIManager.getInstance().simulationStarted();
+  memoryTable.uploadProgram(ir);
+  memoryTable.allocateMemory();
 }
 
 function setupButtons(): void {
@@ -276,7 +148,7 @@ function setupButtons(): void {
 }
 
 
-function setupSettings() {
+function setupSettings(memoryTable: MemoryTable) {
   const inputMemorySize = document.getElementById(
     'memorySizeInput'
   ) as HTMLInputElement;
@@ -286,11 +158,9 @@ function setupSettings() {
     sendMessageToExtension({
       command: 'event',
       object: { name: 'memorySizeChanged', value: inputMemorySize.value }
-      // from: 'registerView',
-      // message: 'registerUpdate',
-      // name: rawName,
-      // value: value
     });
+    const newSize = Number.parseInt(inputMemorySize.value);
+    memoryTable.resizeMemory(newSize);
   });
 }
 

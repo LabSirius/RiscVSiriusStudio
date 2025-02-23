@@ -4,7 +4,8 @@ import {
   TabulatorFull as Tabulator
 } from 'tabulator-tables';
 
-import { range } from 'lodash';
+import { range, chunk, times } from 'lodash';
+import { InternalRepresentation } from '../utilities/riscvc';
 
 function binaryMemEditor(
   cell: CellComponent,
@@ -54,13 +55,15 @@ function binaryMemEditor(
 export class MemoryTable {
   private table: Tabulator;
   private tableData: any[] = [];
-  private readonly memorySize: number;
+  private memorySize: number;
+  private codeAreaEnd: number;
 
   constructor(memorySize: number = 32) {
     this.memorySize = memorySize;
+    this.codeAreaEnd = 0;
     this.table = this.initializeTable();
     this.setupEventListeners();
-    this.initializeData();
+    //this.initializeData();
   }
 
   private initializeTable(): Tabulator {
@@ -141,20 +144,27 @@ export class MemoryTable {
     ];
   }
 
+  public disableEditors() {
+    const colDefs = this.getColumnDefinitions();
+
+    const newColDefs = colDefs.map((def) => {
+      if (def.field && def.field.startsWith('value')) {
+        return {
+          ...def,
+          editor: undefined,
+          editable: () => false
+        };
+      }
+      return def;
+    });
+    this.table.setColumns(newColDefs);
+
+  }
+
   public importMemory(file: File) {
     const reader = new FileReader();
     reader.onload = (e) => this.handleFileImport(e.target?.result as string);
     reader.readAsText(file);
-  }
-
-  public updateMemorySize(newSize: number) {
-    const rounded = Math.round(newSize / 4) * 4;
-    this.resizeMemory(rounded);
-  }
-
-  public enterInstructions(instructions: any[], symbols: any) {
-    const instructionRows = this.prepareInstructionRows(instructions);
-    this.updateTableWithInstructions(instructionRows, symbols);
   }
 
   private updateHexValue(row: any) {
@@ -163,10 +173,6 @@ export class MemoryTable {
       return parseInt(binary, 2).toString(16).padStart(2, '0');
     });
     row.update({ hex: hexParts.join('-') });
-  }
-
-  public getTable(): Tabulator {
-    return this.table;
   }
 
   private setupEventListeners() {
@@ -178,21 +184,6 @@ export class MemoryTable {
 
     this.table.on('tableBuilt', () => {
       this.table.setData(this.tableData);
-    });
-  }
-
-  private initializeData() {
-    const zeros8 = '00000000';
-    range(0, this.memorySize / 4).forEach((address) => {
-      this.tableData.unshift({
-        address: (address * 4).toString(16),
-        value0: zeros8,
-        value1: zeros8,
-        value2: zeros8,
-        value3: zeros8,
-        info: '',
-        hex: '00-00-00-00'
-      });
     });
   }
 
@@ -242,148 +233,72 @@ export class MemoryTable {
     this.table.updateOrAddData(newData);
   }
 
-  private resizeMemory(newSize: number) {
-    const totalBaseRows = newSize / 4;
-    const allData = this.table.getData();
-    const heapIndex = allData.findIndex(row => row.info && row.info.includes("Heap"));
-
-    const instructionsRowsData = heapIndex !== -1 ? allData.slice(heapIndex + 1) : allData;
-    const allRows = this.table.getRows();
-
-    // Store instruction row backgrounds
-    const instructionsBackground: string[] = [];
-    if (heapIndex !== -1) {
-      const instructionsRows = allRows.slice(heapIndex + 1);
-      instructionsRows.forEach(row => {
-        instructionsBackground.push(row.getElement().style.backgroundColor);
-      });
+  public resizeMemory(newSize: number) {
+    if (newSize < 32) {
+      throw new Error("Memory size must be at least 32 bytes.");
     }
+    const rounded = Math.round(newSize / 4) * 4;
+    // TODO: This seems to be quite slow. Investigate further.
+    range(0, this.codeAreaEnd).forEach(() => {
+      const address = this.table.getData()[0].address;
+      this.table.deleteRow(address);
+    });
+    this.memorySize = rounded;
+    this.allocateMemory();
+  }
 
-    // Create new base rows
+  public uploadProgram(ir: InternalRepresentation) {
+    ir.instructions.reverse().forEach((instruction, index) => {
+      const inst = instruction.inst.toString(16).toUpperCase();
+      const binaryString = instruction.encoding.binEncoding;
+      const hexString = instruction.encoding.hexEncoding;
+      const words = chunk(binaryString.split(''), 8).map(group => group.join(''));
+
+      this.table.updateOrAddRow(
+        inst,
+        {
+          "address": inst,
+          "value0": words[3], "value1": words[2],
+          "value2": words[1], "value3": words[0],
+          "info": "", "hex": hexString
+        });
+      this.table.getRow(inst).getElement().style.backgroundColor = "#FFF6E5";
+      this.codeAreaEnd = inst;
+    });
+
+    Object.values(ir.symbols).forEach((symbol: any) => {
+      const memdefHex = symbol.memdef.toString(16);
+      this.table.getRow(memdefHex).update({
+        "info": `<span class="info-column-mem-table">${symbol.name}</span>`
+      });
+    });
+  }
+
+  public allocateMemory() {
     const zeros8 = "00000000";
-    const newBaseRowsData = Array(totalBaseRows).fill(null).map(() => ({
-      address: "",
+    const defaultWord = {
       value0: zeros8,
       value1: zeros8,
       value2: zeros8,
       value3: zeros8,
       info: "",
       hex: "00-00-00-00"
-    }));
+    };
 
-    // Set SP and Heap markers
-    if (newBaseRowsData.length > 0) {
-      newBaseRowsData[0].info = `<span class="info-column-mem-table">SP</span>`;
-      newBaseRowsData[newBaseRowsData.length - 1].info = `<span class="info-column-mem-table">Heap</span>`;
-    }
-
-    const newTableData = [...newBaseRowsData, ...instructionsRowsData];
-
-    // Update table and recalculate addresses
-    this.table.setData(newTableData).then(() => {
-      const updatedRows = this.table.getRows();
-      const totalRows = updatedRows.length;
-
-      // Update addresses
-      updatedRows.forEach((row, i) => {
-        const newAddress = ((totalRows - 1 - i) * 4).toString(16);
-        row.update({ address: newAddress });
-      });
-
-      // Restore instruction backgrounds
-      for (let i = totalBaseRows; i < totalRows; i++) {
-        const row = updatedRows[i];
-        const bg = instructionsBackground[i - totalBaseRows] || "#FFF6E5";
-        row.getElement().style.backgroundColor = bg;
-      }
+    const startAddress = this.table.getData().length;
+    const words = this.memorySize / 4;
+    const mem = times(words, (i) => {
+      const address = ((startAddress + i) * 4).toString(16).toUpperCase();
+      return {
+        ...defaultWord,
+        "address": address,
+      };
     });
+    this.codeAreaEnd = mem.length;
+    // Set heap and SP markers
+    mem[0].info = `<span class="info-column-mem-table">Heap</span>`;
+    mem[words - 1].info = `<span class="info-column-mem-table">SP</span>`;
+
+    mem.forEach((i) => { this.table.addRow(i, true); });
   }
-
-  private updateTableWithInstructions(instructions: any[], symbols: any) {
-    const allRows = this.table.getRows();
-    const totalRows = allRows.length;
-
-    // Insert instructions into memory table
-    instructions.forEach((instr, i) => {
-      const binaryString = instr.encoding?.binEncoding || '';
-      if (binaryString.length !== 32) {
-        console.warn(`Instruction at index ${i} is not 32 bits: ${binaryString}`);
-        return;
-      }
-
-      const value3 = binaryString.slice(0, 8);
-      const value2 = binaryString.slice(8, 16);
-      const value1 = binaryString.slice(16, 24);
-      const value0 = binaryString.slice(24, 32);
-
-      const hex =
-        parseInt(value3, 2).toString(16).padStart(2, '0') + '-' +
-        parseInt(value2, 2).toString(16).padStart(2, '0') + '-' +
-        parseInt(value1, 2).toString(16).padStart(2, '0') + '-' +
-        parseInt(value0, 2).toString(16).padStart(2, '0');
-
-      const targetRowIndex = totalRows - 1 - i;
-      if (targetRowIndex >= 0 && targetRowIndex < totalRows) {
-        allRows[targetRowIndex].update({
-          value3,
-          value2,
-          value1,
-          value0,
-          hex: hex.toUpperCase(),
-          info: ""
-        });
-        allRows[targetRowIndex].getElement().style.backgroundColor = "#FFF6E5";
-      }
-    });
-
-    // Set heap marker
-    const heapRowIndex = totalRows - instructions.length - 1;
-    if (heapRowIndex >= 0) {
-      allRows[heapRowIndex].update({
-        info: `<span class="info-column-mem-table">Heap</span>`
-      });
-    }
-
-    // Set SP marker
-    if (allRows[0]) {
-      allRows[0].update({
-        info: `<span class="info-column-mem-table">SP</span>`
-      });
-    }
-
-    // Update symbol labels
-    Object.values(symbols).forEach((symbol: any) => {
-      const memdefHex = symbol.memdef.toString(16);
-      const symbolRow = allRows.find(row => row.getData().address === memdefHex);
-      if (symbolRow) {
-        symbolRow.update({
-          info: `<span class="info-column-mem-table-symbols">${symbol.name}</span>`
-        });
-      }
-    });
-  }
-  private prepareInstructionRows(instructions: any[]): any[] {
-    const zeros8 = '00000000';
-    const newRowsData = Array(instructions.length).fill(null).map(() => ({
-      address: 'temp',
-      value0: zeros8,
-      value1: zeros8,
-      value2: zeros8,
-      value3: zeros8,
-      info: '',
-      hex: '00-00-00-00'
-    }));
-
-    const allRows = this.table.getRows();
-    const totalRows = allRows.length;
-
-    // Recalculate addresses for all rows
-    allRows.forEach((row, index) => {
-      const newAddress = ((totalRows - 1 - index) * 4).toString(16);
-      row.update({ address: newAddress });
-    });
-
-    return newRowsData;
-  }
-
 }
