@@ -237,7 +237,6 @@ export class SCCPU {
     this._program = program.filter((sc) => {
       return sc.kind === 'SrcInstruction';
     });
-    console.log('Program to execute: ', this.program);
 
     this.registers = new RegistersFile();
     // Set the initial value of the stack pointer

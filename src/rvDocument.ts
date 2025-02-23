@@ -100,7 +100,6 @@ export class RVDocument {
   }
 
   public build(): void {
-    console.log("Building IR for ", this.getFileName());
     const result = compile(this.getText(), this.getFileName());
     if (result.success) {
       this._ir = result.ir;
@@ -108,6 +107,8 @@ export class RVDocument {
     } else {
       this._ir = undefined;
     }
+    console.log("Building IR for ", this.getFileName());
+    console.log("Result ", result);
   }
 
   public validIR(): boolean {

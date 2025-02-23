@@ -13,7 +13,6 @@ import {
 
 
 export type SimulationParameters = {
-  program: any[];
   memorySize: number;
   stackPointerAddress: number;
 };
@@ -39,13 +38,14 @@ export class Simulator {
   public readonly onDidStop: Event<void> = this.didStop.event;
 
   constructor(
-    settings: SimulationParameters,
+    simParams: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext
   ) {
     this._context = context;
     this.rvDoc = rvDoc;
-    this.cpu = new SCCPU(settings.program, settings.memorySize, settings.stackPointerAddress);
+    if (!rvDoc.ir) { throw new Error("RVDocument has no IR"); }
+    this.cpu = new SCCPU(rvDoc.ir.instructions, simParams.memorySize, simParams.stackPointerAddress);
   }
 
   start(): void {
@@ -205,7 +205,7 @@ export class TextSimulator extends Simulator {
       mainView.postMessage(
         {
           operation: 'uploadProgram',
-          program: this.cpu.program
+          program: this.rvDoc.ir,
         });
       console.log("Simulator start ", this.cpu.currentInstruction());
       this.makeEditorReadOnly();
