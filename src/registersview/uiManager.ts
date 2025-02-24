@@ -96,6 +96,5 @@ export class UIManager {
     this.stageThreeHelp.classList.remove('hidden');
     this.manualConfig.classList.add('hidden');
     this.readOnlyConfig.classList.remove('hidden');
-
   }
 }

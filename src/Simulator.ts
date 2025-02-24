@@ -68,6 +68,7 @@ export class Simulator {
     // Send messages to update the registers view.
     if (writesRU(instruction.type, instruction.opcode)) {
       console.log('Writing result to RU ', result.wb.result);
+      this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
       // this.sendToRegisters({
       //   operation: 'setRegister',
       //   register: instruction.rd.regeq,
@@ -99,7 +100,6 @@ export class Simulator {
     } else {
       this.cpu.nextInstruction();
     }
-
     this.didStep.fire();
   }
 
@@ -108,6 +108,15 @@ export class Simulator {
     this.didStop.fire();
   }
 
+  // This function is called when the simulation finishes. (normally)
+  finished(): void {
+    console.log("Simulator finished");
+    this.stop();
+  }
+
+  public notifyRegisterWrite(register: string, value: string) {
+    // do nothing. Must be implemented by the subclass.
+  }
   private bytesToReadOrWrite() {
     const instruction = this.cpu.currentInstruction();
     const funct3 = getFunct3(instruction);
@@ -222,6 +231,9 @@ export class TextSimulator extends Simulator {
   public step(): void {
     super.step();
     // Handle the visualization
+    const mainView = this.context.mainWebviewView;
+    mainView.postMessage({ operation: 'step', pc: this.cpu.getPC() });
+
     const currentInst = this.cpu.currentInstruction();
     const lineNumber = this.rvDoc.getLineForIR(currentInst);
 
@@ -236,6 +248,14 @@ export class TextSimulator extends Simulator {
       this.currentHighlight.dispose();
     }
     this.makeEditorWritable();
+  }
+
+  public notifyRegisterWrite(register: string, value: string) {
+    this.sendToMainView({
+      operation: 'setRegister',
+      register: register,
+      value: value
+    });
   }
 
   private highlightLine(lineNumber: number): void {

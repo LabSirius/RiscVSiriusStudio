@@ -1,5 +1,6 @@
 import {
   CellComponent,
+  ColumnDefinition,
   GroupComponent,
   TabulatorFull as Tabulator
 } from 'tabulator-tables';
@@ -113,7 +114,6 @@ function registerNamesFormatter(
   const [xname, abiname] = name.split(' ');
   return xname + ' (' + abiname + ')';
 }
-
 
 /**
  * Name generation for the froups in the table.
@@ -368,27 +368,34 @@ function viewTypeFormatter(
       break;
   }
   return `<div >${tag}</div>`;
-  // return `<vscode-tag class="view-type">${tag}</vscode-tag>`;
-  // return '<vscode-tag><img src="binary-svgrepo-com.svg"></img></vscode-tag>';
 }
 
+export class RegistersTable {
+  private table: Tabulator;
 
-export function registersSetup(): Tabulator {
-  const startTime = Date.now();
+  public constructor() {
+    this.table = this.initializeTable();
+    this.initRegisterNames();
+  }
 
-  let tableData = [] as Array<RegisterValue>;
-  let table = new Tabulator('#tabs-registers', {
-    layout: 'fitColumns',
-    layoutColumnsOnNewData: true,
-    index: 'rawName',
-    reactiveData: true,
-    groupBy: 'watched',
-    groupValues: [[true, false]],
-    groupHeader: headerGrouping,
-    groupUpdateOnCellEdit: true,
-    movableRows: true,
-    validationMode: 'blocking',
-    columns: [
+  private initializeTable(): Tabulator {
+    return new Tabulator('#tabs-registers', {
+      layout: 'fitColumns',
+      layoutColumnsOnNewData: true,
+      index: 'rawName',
+      reactiveData: true,
+      groupBy: 'watched',
+      groupValues: [[true, false]],
+      groupHeader: headerGrouping,
+      groupUpdateOnCellEdit: true,
+      movableRows: true,
+      validationMode: 'blocking',
+      columns: this.getColumnDefinitions()
+    });
+  }
+
+  private getColumnDefinitions(): ColumnDefinition[] {
+    return [
       {
         title: 'Name',
         field: 'name',
@@ -429,34 +436,60 @@ export function registersSetup(): Tabulator {
       { title: 'Modified', field: 'modified', visible: false },
       { title: 'id', field: 'id', visible: false },
       { title: 'rawName', field: 'rawName', visible: false }
-    ]
-  });
+    ];
+  }
 
-  registersNames.forEach((e, idx) => {
-    const [xname, abi] = e.split(' ');
-    const zeros32 = '0';
-    tableData.push({
-      name: `${xname} ${abi}`,
-      rawName: `${xname}`,
-      value: zeros32,
-      viewType: 2,
-      watched: false,
-      modified: 0,
-      id: idx
+  private initRegisterNames() {
+    let tableData = [] as Array<RegisterValue>;
+    registersNames.forEach((e, idx) => {
+      const [xname, abi] = e.split(' ');
+      const zeros32 = '0';
+      tableData.push({
+        name: `${xname} ${abi}`,
+        rawName: `${xname}`,
+        value: zeros32,
+        viewType: 2,
+        watched: false,
+        modified: 0,
+        id: idx
+      });
     });
-  });
 
-  table.on('tableBuilt', () => {
-    table.setData(tableData);
-  });
+    this.table.on('tableBuilt', () => {
+      this.table.setData(tableData);
+    });
+  }
 
-  // table.on('rowDblClick', toggleWatched);
-  // table.on('cellEdited', modifiedCell);
-  // table.on('cellEdited', notifyExtension);
-  // table.on('tableBuilt', () => { log({ buildingTime: (Date.now() - startTime) / 1000, table: "Registers" }); });
-  return table;
+  private makeRegisterVissible(name: string) {
+    // TODO: This should only happens if the row is not already visible
+    this.table.scrollToRow(name, "top", true);
+  }
+
+  private animateRegister(name: string) {
+    const row = this.table.getRow(name);
+    if (row) {
+      // row.getElement().classList.add('animate-register');
+      row.getElement().style.backgroundColor = '#FF0000';
+      setTimeout(() => {
+        row.getElement().style.backgroundColor = '';
+        // row.getElement().classList.remove('animate-register');
+      }, 1000);
+    }
+  }
+
+  public setRegister(name: string, value: string) {
+    console.log('setting register', name, value);
+    const regValue = {
+      rawName: name,
+      value: value,
+    };
+    this.table.updateData([regValue]);
+    this.makeRegisterVissible(name);
+    this.animateRegister(name);
+  }
+
+
 }
-
 
 
 export function setupSearchInRegisterTable(registersTable: Tabulator) {
@@ -490,7 +523,7 @@ export function setupSearchInRegisterTable(registersTable: Tabulator) {
     if (event.key === 'Escape') {
       searchRegisterInput.value = '';
       registersTable.clearFilter(true);
-      resetCellColors(registersTable); 
+      resetCellColors(registersTable);
     }
   });
 }

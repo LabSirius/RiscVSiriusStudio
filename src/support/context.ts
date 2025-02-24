@@ -138,23 +138,23 @@ export class RVContext {
       commands.registerCommand('rv-simulator.simulateStep', () => {
         if (!this._simulator) {
           throw new Error("No simulator is running");
-        } else {
-          this._simulator.step();
         }
-
-        if (this._mainWebviewView) {
-          this._mainWebviewView.postMessage({
-            command: 'nextStepClicked',
-          });
-        } else {
-          console.warn("No se encontró la vista web (mainWebviewView) para enviar el mensaje");
+        if (!this.mainWebviewView) {
+          throw new Error("Main webview is not available");
         }
+        this._simulator.step();
+        // if (this._mainWebviewView) {
+        //   this._mainWebviewView.postMessage({
+        //     command: 'nextStepClicked',
+        //   });
+        // } else {
+        //   console.warn("No se encontró la vista web (mainWebviewView) para enviar el mensaje");
+        // }
       })
     );
     //  Simulate-stop
     this.disposables.push(
       commands.registerCommand('rv-simulator.simulateStop', () => {
-        debugger;
         if (!this._simulator) {
           throw new Error("No simulator is running");
         } else {

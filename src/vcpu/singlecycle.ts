@@ -223,7 +223,7 @@ const defaultSCCPUResult = {
 export class SCCPU {
   // TODO: We need a proper type for a program representation.
   private readonly _program: any[];
-  public get program() { return this._program; }
+  get program() { return this._program; }
 
   private registers: RegistersFile;
   private dataMemory: DataMemory;
@@ -231,6 +231,8 @@ export class SCCPU {
    * This pc indexes the program array. As so, it is not an address.
    */
   private pc: number;
+  // TODO: transform into a javascript get
+  public getPC() { return this.pc; }
 
   public constructor(program: any[], memSize: number, sp: number) {
     console.log('Program to execute: ', program);

@@ -56,14 +56,37 @@ export class MemoryTable {
   private table: Tabulator;
   private tableData: any[] = [];
   private memorySize: number;
+  /**
+   *  Index in the table when the code area ends. We assume that the code 
+   * area starts at position 0.
+   */
   private codeAreaEnd: number;
+  /** Index in the table of the program counter */
+  private pc: number;
 
   constructor(memorySize: number = 32) {
     this.memorySize = memorySize;
     this.codeAreaEnd = 0;
     this.table = this.initializeTable();
+    this.pc = 0;
     this.setupEventListeners();
-    //this.initializeData();
+  }
+  private toTableIndex(index: number): number {
+    return this.memorySize - 1 - index;
+  }
+
+  public updatePC(newPC: number) {
+    let PCRowIndex = this.toTableIndex(this.pc);
+    const pcRow = this.table.getRowFromPosition(PCRowIndex);
+    pcRow.update({
+      "info": `<span class="info-column-mem-table">NOPC</span>`
+    });
+    this.pc = newPC;
+    PCRowIndex = this.toTableIndex(this.pc);
+    const newPcRow = this.table.getRowFromPosition(PCRowIndex);
+    newPcRow.update({
+      "info": `<span class="info-column-mem-table">PC</span>`
+    });
   }
 
   private initializeTable(): Tabulator {

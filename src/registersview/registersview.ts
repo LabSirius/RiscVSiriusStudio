@@ -10,10 +10,9 @@ import {
   TabulatorFull as Tabulator
 } from 'tabulator-tables';
 
-import { registersSetup, setupImportRegisters, setupSearchInRegisterTable } from './registersTable';
+import { RegistersTable } from './registersTable';
 import { MemoryTable } from './memoryTable';
 import { setUpConvert } from './convertTool';
-import { Console } from 'console';
 import { UIManager } from './uiManager';
 import { InternalRepresentation } from '../utilities/riscvc';
 provideVSCodeDesignSystem().register(allComponents);
@@ -34,26 +33,26 @@ function log(object: any = {}, level: string = 'info') {
 }
 
 function main() {
-  let registersTable = registersSetup();
+  // let registersTable = registersSetup();
+  const registersTable = new RegistersTable();
   const memoryTable = new MemoryTable();
   window.addEventListener('message', (event) => {
     dispatch(event, registersTable, memoryTable);
   });
 
   setupButtons();
-  setupSearchInRegisterTable(registersTable);
+  // setupSearchInRegisterTable(registersTable);
   // setUpMemoryConfig(memoryTable);
-  setupImportRegisters(registersTable);
+  // setupImportRegisters(registersTable);
   // setupImportMemory(memoryTable);
   setUpConvert();
   setupSettings(memoryTable);
   setUpHelp();
 }
 
-
 function dispatch(
   event: MessageEvent,
-  registersTable: Tabulator,
+  registersTable: RegistersTable,
   memoryTable: MemoryTable
 ) {
   log({ msg: 'Dispatching message', data: event.data });
@@ -62,28 +61,18 @@ function dispatch(
     case 'uploadProgram':
       uploadProgram(memoryTable, data.program);
       break;
+    case 'step':
+      step(memoryTable, registersTable);
+      // memoryTable.updatePC(data.pc);
+      break;
+    case 'setRegister':
+      registersTable.setRegister(data.register, data.value);
+    // if (data.register === 'x2') {
+    //   // memoryTable.setSP(data.value);
+    // }
     default:
       log({ msg: 'No handler for message', data: data.command });
       break;
-  }
-
-  if (data.command === 'simulateClicked') {
-    handleSimulateClicked();
-    // const irValue = data.ir;
-    // memoryTable.enterInstructions(irValue.instructions, irValue.symbols);
-  } else if (data.command === 'nextStepClicked') {
-    handleNextStepClicked();
-  }
-
-  function handleSimulateClicked(): void {
-    UIManager.getInstance().simulationStarted();
-  }
-
-  function handleNextStepClicked(): void {
-    if (!UIManager.getInstance().isSimulating) {
-      UIManager.getInstance().sim();
-      memoryTable.disableEditors();
-    }
   }
 }
 
@@ -93,6 +82,13 @@ function uploadProgram(memoryTable: MemoryTable, ir: InternalRepresentation): vo
   memoryTable.allocateMemory();
 }
 
+function step(memoryTable: MemoryTable, registersTable: RegistersTable): void {
+  log({ msg: "Simulator reported step" });
+  if (!UIManager.getInstance().isSimulating) {
+    UIManager.getInstance().sim();
+    memoryTable.disableEditors();
+  }
+}
 function setupButtons(): void {
   const sections: string[] = [
     'openSearch',

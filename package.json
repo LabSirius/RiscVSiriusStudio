@@ -159,12 +159,12 @@
         {
           "command": "rv-simulator.simulateStep",
           "group": "navigation",
-          "when": "editorLangId == riscvasm && riscv.isSimulating"
+          "when": "editorLangId == riscvasm"
         },
         {
           "command": "rv-simulator.simulateStop",
           "group": "navigation",
-          "when": "editorLangId == riscvasm && riscv.isSimulating"
+          "when": "editorLangId == riscvasm"
         }
       ]
     },
