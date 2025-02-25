@@ -81,7 +81,6 @@ export class MemoryTable {
   }
 
   public setSP(value: string) {
-    debugger;
     this.table.getRow(this.sp).update(
       { "info": '' }
     );
