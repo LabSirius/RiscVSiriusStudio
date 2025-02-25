@@ -143,13 +143,6 @@ export class RVContext {
           throw new Error("Main webview is not available");
         }
         this._simulator.step();
-        // if (this._mainWebviewView) {
-        //   this._mainWebviewView.postMessage({
-        //     command: 'nextStepClicked',
-        //   });
-        // } else {
-        //   console.warn("No se encontró la vista web (mainWebviewView) para enviar el mensaje");
-        // }
       })
     );
     //  Simulate-stop
@@ -255,6 +248,9 @@ export class RVContext {
         break;
       case "clickOpenRISCVCard":
         RiscCardPanel.riscCard(this.extensionContext.extensionUri);
+        break;
+      default:
+        console.log("Unknown event received at context");
         break;
 
 
