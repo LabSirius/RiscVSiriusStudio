@@ -93,7 +93,6 @@ function setupSettings(memoryTable: MemoryTable) {
   const inputMemorySize = document.getElementById(
     'memorySizeInput'
   ) as HTMLInputElement;
-  inputMemorySize.value = '32';
   inputMemorySize.addEventListener('input', () => {
     console.log('Memory size changed to: ' + inputMemorySize.value);
     sendMessageToExtension({
