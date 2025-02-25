@@ -209,7 +209,7 @@ export function setUpConvert() {
 }
 
 
-// Función para agrupar la cadena binaria en bloques de 4 desde la derecha
+
 function groupBinary(numStr: string): string {
   let groups: string[] = [];
   let i = numStr.length;

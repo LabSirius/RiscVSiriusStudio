@@ -101,71 +101,77 @@ export class MemoryTable {
   }
 
   private getColumnDefinitions(): ColumnDefinition[] {
-    // Default definitions that will be overriden by the following ones
+    // Atributos comunes a todas las columnas
     const defaultColumnAttributes: ColumnDefinition = {
+      title: "",
       visible: true,
-      frozen: true,
       headerSort: false,
-      width: 80,
       headerHozAlign: 'center',
       formatter: 'html',
-    } as ColumnDefinition;
+    };
 
+    const defaultFrozenColumnAttributes: ColumnDefinition = {
+      ...defaultColumnAttributes,
+      frozen: true,
+    };
+  
+    const defaultEditableColumnAttributes: ColumnDefinition = {
+      ...defaultFrozenColumnAttributes,
+      editor: binaryMemEditor,
+      editable: true,
+    };
+  
     return [
       {
-        ...defaultColumnAttributes,
-        field: 'info',
-        frozen: true,
-        headerHozAlign: 'left',
+        ...defaultFrozenColumnAttributes,
         title: 'Info',
-        width: 50
+        field: 'info',
+        width: 50,
+        
       },
       {
-        ...defaultColumnAttributes,
-        field: 'address',
-        frozen: true,
-        headerHozAlign: 'left',
+        ...defaultFrozenColumnAttributes,
         title: 'Addr.',
-        width: 50
+        field: 'address',
+        width: 50,
+      
       },
       {
-        ...defaultColumnAttributes,
-        editable: true,
-        editor: binaryMemEditor,
-        field: 'value3',
+        ...defaultEditableColumnAttributes,
         title: '0x3',
+        field: 'value3',
+        width: 80,
       },
       {
-        ...defaultColumnAttributes,
-        editable: true,
-        editor: binaryMemEditor,
-        field: 'value2',
+        ...defaultEditableColumnAttributes,
         title: '0x2',
+        field: 'value2',
+        width: 80,
       },
       {
-        ...defaultColumnAttributes,
-        editable: true,
-        editor: binaryMemEditor,
-        field: 'value1',
-        frozen: false,
+        ...defaultEditableColumnAttributes,
         title: '0x1',
+        field: 'value1',
+        width: 80,
+        
       },
       {
-        ...defaultColumnAttributes,
-        editable: true,
-        editor: binaryMemEditor,
-        field: 'value0',
+        ...defaultEditableColumnAttributes,
         title: '0x0',
+        field: 'value0',
+        width: 80,
+       
       },
       {
-        ...defaultColumnAttributes,
-        field: 'hex',
-        formatter: (cell) => cell.getValue().toUpperCase(),
+        ...defaultFrozenColumnAttributes,
         title: 'HEX',
+        field: 'hex',
         width: 100,
+        formatter: (cell) => cell.getValue().toUpperCase()
       }
     ];
   }
+  
 
   public disableEditors() {
     const colDefs = this.getColumnDefinitions();
