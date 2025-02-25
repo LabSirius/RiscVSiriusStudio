@@ -56,6 +56,7 @@ export class MemoryTable {
   private table: Tabulator;
   private tableData: any[] = [];
   private memorySize: number;
+  private labels: string[];
   /**
    *  Index in the table when the code area ends. We assume that the code 
    * area starts at position 0.
@@ -69,24 +70,44 @@ export class MemoryTable {
     this.codeAreaEnd = 0;
     this.table = this.initializeTable();
     this.pc = 0;
+    this.labels = [];
     this.setupEventListeners();
   }
   private toTableIndex(index: number): number {
-    return this.memorySize - 1 - index;
+    return this.table.getDataCount() - index;
   }
+
 
   public updatePC(newPC: number) {
     let PCRowIndex = this.toTableIndex(this.pc);
     const pcRow = this.table.getRowFromPosition(PCRowIndex);
-    pcRow.update({
-      "info": `<span class="info-column-mem-table">NOPC</span>`
-    });
+    // Remove the old PC marker
+    let label = this.labels[PCRowIndex - this.memorySize / 4];
+    if (label === "") {
+      // there is no label for the current line, we remove the label PC
+      pcRow.update({ "info": "" });
+    } else {
+      // there is a label for the current line, we restore the label
+      pcRow.update({
+        "info": `<span class="info-column-mem-table">${label}</span>`
+      });
+    }
     this.pc = newPC;
+    // Add the new PC marker
     PCRowIndex = this.toTableIndex(this.pc);
     const newPcRow = this.table.getRowFromPosition(PCRowIndex);
-    newPcRow.update({
-      "info": `<span class="info-column-mem-table">PC</span>`
-    });
+    label = this.labels[PCRowIndex - this.memorySize / 4];
+    if (label === "") {
+      // There is no label for the current line, we add the label PC
+      newPcRow.update({
+        "info": `<span class="info-column-mem-table">PC</span>`
+      });
+    } else {
+      // There is a label for the current line, we put both labels
+      newPcRow.update({
+        "info": `<span class="info-column-mem-table">PC</span><span class="info-column-mem-table">${label}</span>`
+      });
+    }
   }
 
   private initializeTable(): Tabulator {
@@ -289,9 +310,13 @@ export class MemoryTable {
       this.codeAreaEnd = inst;
     });
 
+    this.labels = new Array(this.table.getDataCount()).fill("");
     Object.values(ir.symbols).forEach((symbol: any) => {
       const memdefHex = symbol.memdef.toString(16);
-      this.table.getRow(memdefHex).update({
+      const row = this.table.getRow(memdefHex);
+
+      this.labels[row.getPosition() as number] = symbol.name;
+      row.update({
         "info": `<span class="info-column-mem-table">${symbol.name}</span>`
       });
     });
@@ -323,5 +348,6 @@ export class MemoryTable {
     mem[words - 1].info = `<span class="info-column-mem-table">SP</span>`;
 
     mem.forEach((i) => { this.table.addRow(i, true); });
+    this.updatePC(0);
   }
 }

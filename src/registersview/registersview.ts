@@ -62,16 +62,16 @@ function dispatch(
       uploadProgram(memoryTable, data.program);
       break;
     case 'step':
-      step(memoryTable, registersTable);
-      // memoryTable.updatePC(data.pc);
+      step(memoryTable, registersTable, data.pc);
       break;
     case 'setRegister':
       registersTable.setRegister(data.register, data.value);
     // if (data.register === 'x2') {
     //   // memoryTable.setSP(data.value);
     // }
+      break;
     default:
-      log({ msg: 'No handler for message', data: data.command });
+      log({ msg: 'No handler for message', data: data.operation });
       break;
   }
 }
@@ -82,12 +82,14 @@ function uploadProgram(memoryTable: MemoryTable, ir: InternalRepresentation): vo
   memoryTable.allocateMemory();
 }
 
-function step(memoryTable: MemoryTable, registersTable: RegistersTable): void {
+function step(memoryTable: MemoryTable, registersTable: RegistersTable, pc: number): void {
   log({ msg: "Simulator reported step" });
   if (!UIManager.getInstance().isSimulating) {
     UIManager.getInstance().sim();
     memoryTable.disableEditors();
   }
+  memoryTable.updatePC(pc);
+
 }
 function setupButtons(): void {
   const sections: string[] = [
