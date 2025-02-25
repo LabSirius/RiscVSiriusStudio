@@ -35,14 +35,10 @@ function main() {
     dispatch(event, registersTable, memoryTable);
   });
 
-
-  
-  // setUpMemoryConfig(memoryTable);
   // setupImportRegisters(registersTable);
   // setupImportMemory(memoryTable);
   setUpConvert();
   setupSettings(memoryTable);
-  setUpHelp();
 }
 
 function dispatch(
@@ -72,15 +68,15 @@ function dispatch(
 }
 
 function uploadProgram(memoryTable: MemoryTable, registersTable: RegistersTable, ir: InternalRepresentation): void {
-  UIManager.getInstance(memoryTable, registersTable ).configuration();
+  UIManager.getInstance(memoryTable, registersTable, sendMessageToExtension ).configuration();
   memoryTable.uploadProgram(ir);
   memoryTable.allocateMemory();
-  }
+}
 
 function step(memoryTable: MemoryTable, registersTable: RegistersTable): void {
   log({ msg: "Simulator reported step" });
-  if (!UIManager.getInstance(memoryTable, registersTable ).isSimulating) {
-    UIManager.getInstance(memoryTable, registersTable ).simulationStarted();
+  if (!UIManager.getInstance(memoryTable, registersTable, sendMessageToExtension ).isSimulating) {
+    UIManager.getInstance(memoryTable, registersTable, sendMessageToExtension ).simulationStarted();
     memoryTable.disableEditors();
   }
 }
@@ -107,28 +103,6 @@ function setupSettings(memoryTable: MemoryTable) {
 
 
 
-function setUpHelp() {
-  const openShowCard = document.getElementById('openShowCard');
-
-  if (!openShowCard) {
-    console.error('Help button not found');
-    return;
-  }
-
-  openShowCard.addEventListener('click', () => {
-    sendMessageToExtension({
-      command: 'event',
-      object: { name: 'clickOpenRISCVCard', value: 'openHelp' }
-      // from: 'registerView',
-      // message: 'registerUpdate',
-      // name: rawName,
-      // value: value
-    });
-  });
-
-
-}
-
 
 /**
  * View extension communication.
@@ -137,6 +111,7 @@ function setUpHelp() {
 function sendMessageToExtension(messageObject: any) {
   vscode.postMessage(messageObject);
 }
+
 
 
 

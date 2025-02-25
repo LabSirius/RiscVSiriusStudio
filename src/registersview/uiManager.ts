@@ -1,6 +1,8 @@
 import { MemoryTable } from "./memoryTable";
 import { RegistersTable } from "./registersTable/registersTable";
 
+
+
 function getElement<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id) as T | null;
   if (!element) {
@@ -16,6 +18,8 @@ export class UIManager {
   private memoryTable : MemoryTable;
 
   private registersTable : RegistersTable;
+
+  private readonly sendMessagetoExtension: (msg : any) => void;
 
   readonly registerTab: HTMLDivElement;
   readonly memoryTab: HTMLDivElement;
@@ -43,18 +47,19 @@ export class UIManager {
     return this._isSimulating;
   }
 
-  public static getInstance(memoryTable: MemoryTable, registersTable: RegistersTable): UIManager {
+  public static getInstance(memoryTable: MemoryTable, registersTable: RegistersTable, sendMessagetoExtension: (msg : any) => void ): UIManager {
     if (!this.instance) {
-      this.instance = new UIManager(memoryTable, registersTable);
+      this.instance = new UIManager(memoryTable, registersTable, sendMessagetoExtension);
     }
     return this.instance;
   }
   
-  private constructor(memoryTable: MemoryTable, registersTable: RegistersTable) {
+  private constructor(memoryTable: MemoryTable, registersTable: RegistersTable, sendMessagetoExtension: (msg : any) => void) {
     this._isSimulating = false;
   
     this.memoryTable= memoryTable;
     this.registersTable = registersTable;
+    this.sendMessagetoExtension = sendMessagetoExtension;
 
 
     this.registerTab = getElement<HTMLDivElement>('tabs-registers');
@@ -80,6 +85,7 @@ export class UIManager {
 
     this.initializeTopButtons();
     this.setUpSearch();
+    this.setUpHelp();
   }
 
   private initializeTopButtons(): void {
@@ -156,20 +162,32 @@ export class UIManager {
     this.searchRegisterInput.addEventListener('input', () => {
       const input = this.searchRegisterInput.value.trim();
       if (input === '') {
-        this.registersTable?.table.clearFilter(true);
-        this.registersTable?.resetCellColors();
+        this.registersTable.table.clearFilter(true);
+        this.registersTable.resetCellColors();
         return;
       }
-      this.registersTable?.filterTableData(input);
+      this.registersTable.filterTableData(input);
     });
 
     this.searchRegisterInput.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         this.searchRegisterInput.value = '';
-        this.registersTable?.table.clearFilter(true);
-        this.registersTable?.resetCellColors();
+        this.registersTable.table.clearFilter(true);
+        this.registersTable.resetCellColors();
       }
     });
   }
+
+
+ private setUpHelp() {
+   const openShowCard = document.getElementById('openShowCard') as HTMLDivElement;
+
+   openShowCard.addEventListener('click', () => {
+      this.sendMessagetoExtension({
+       command: 'event',
+       object: { name: 'clickOpenRISCVCard', value: 'openHelp' }
+     });
+   });
+ }
 
 }
