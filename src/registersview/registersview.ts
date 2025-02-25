@@ -3,15 +3,11 @@ import {
   allComponents
 } from '@vscode/webview-ui-toolkit';
 
-import {
-  CellComponent,
-  GroupComponent,
-  RowComponent,
-  TabulatorFull as Tabulator
-} from 'tabulator-tables';
 
 import { RegistersTable } from './registersTable';
 import { MemoryTable } from './memoryTable';
+import { TopButtonManager } from './buttonManager';
+
 import { setUpConvert } from './convertTool';
 import { UIManager } from './uiManager';
 import { InternalRepresentation } from '../utilities/riscvc';
@@ -33,14 +29,15 @@ function log(object: any = {}, level: string = 'info') {
 }
 
 function main() {
-  // let registersTable = registersSetup();
   const registersTable = new RegistersTable();
   const memoryTable = new MemoryTable();
+  new TopButtonManager();
+
+
   window.addEventListener('message', (event) => {
     dispatch(event, registersTable, memoryTable);
   });
 
-  setupButtons();
   // setupSearchInRegisterTable(registersTable);
   // setUpMemoryConfig(memoryTable);
   // setupImportRegisters(registersTable);
@@ -77,7 +74,7 @@ function dispatch(
 }
 
 function uploadProgram(memoryTable: MemoryTable, ir: InternalRepresentation): void {
-  UIManager.getInstance().simulationStarted();
+  UIManager.getInstance().configuration();
   memoryTable.uploadProgram(ir);
   memoryTable.allocateMemory();
 }
@@ -85,63 +82,11 @@ function uploadProgram(memoryTable: MemoryTable, ir: InternalRepresentation): vo
 function step(memoryTable: MemoryTable, registersTable: RegistersTable): void {
   log({ msg: "Simulator reported step" });
   if (!UIManager.getInstance().isSimulating) {
-    UIManager.getInstance().sim();
+    UIManager.getInstance().simulationStarted();
     memoryTable.disableEditors();
   }
 }
-function setupButtons(): void {
-  const sections: string[] = [
-    'openSearch',
-    'openSettings',
-    'openConvert1',
-    'openHelp'
-  ];
-  const buttons: string[] = [
-    'openSearchButton',
-    'openSettingsButton',
-    'openConvertButton',
-    'openHelpButton'
-  ];
 
-  function showOnly(targetId: string, buttonId: string): void {
-    // Ocultar todas las secciones
-    sections.forEach((id) => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.className =
-          id === targetId
-            ? 'flex flex-1 flex-col max-h-dvh min-h-dvh overflow-y-scroll'
-            : 'hidden';
-      }
-    });
-
-    buttons.forEach((btnId) => {
-      document.getElementById(btnId)?.classList.remove('bg-active');
-    });
-
-    document.getElementById(buttonId)?.classList.add('bg-active');
-  }
-
-  // Asignar eventos a los botones
-  document
-    .getElementById('openSearchButton')
-    ?.addEventListener('click', () =>
-      showOnly('openSearch', 'openSearchButton')
-    );
-  document
-    .getElementById('openSettingsButton')
-    ?.addEventListener('click', () =>
-      showOnly('openSettings', 'openSettingsButton')
-    );
-  document
-    .getElementById('openConvertButton')
-    ?.addEventListener('click', () =>
-      showOnly('openConvert1', 'openConvertButton')
-    );
-  document
-    .getElementById('openHelpButton')
-    ?.addEventListener('click', () => showOnly('openHelp', 'openHelpButton'));
-}
 
 
 function setupSettings(memoryTable: MemoryTable) {

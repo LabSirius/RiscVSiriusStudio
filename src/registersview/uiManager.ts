@@ -1,4 +1,4 @@
-function getElementOrLog<T extends HTMLElement>(id: string): T {
+function getElement<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id) as T | null;
   if (!element) {
     throw new Error(`Element ${id} not found`);
@@ -44,31 +44,27 @@ export class UIManager {
   private constructor() {
     this._isSimulating = false;
 
-    this.registerTab = getElementOrLog<HTMLDivElement>('tabs-registers');
-    this.memoryTab = getElementOrLog<HTMLDivElement>('tabs-memory');
-    this.settingsButton =
-      getElementOrLog<HTMLButtonElement>('openSettingsButton');
-    this.convertButton =
-      getElementOrLog<HTMLButtonElement>('openConvertButton');
-    this.openConvert = getElementOrLog<HTMLDivElement>('openConvert1');
-    this.openHelpButton = getElementOrLog<HTMLButtonElement>('openHelpButton');
-    this.openHelp = getElementOrLog<HTMLDivElement>('openHelp');
-    this.stageOneHelp = getElementOrLog<HTMLDivElement>('stageOneHelp');
-    this.stageTwoHelp = getElementOrLog<HTMLDivElement>('stageTwoHelp');
-    this.openSettings = getElementOrLog<HTMLDivElement>('openSettings');
+    this.registerTab = getElement<HTMLDivElement>('tabs-registers');
+    this.memoryTab = getElement<HTMLDivElement>('tabs-memory');
+    this.settingsButton = getElement<HTMLButtonElement>('openSettingsButton');
+    this.convertButton = getElement<HTMLButtonElement>('openConvertButton');
+    this.openConvert = getElement<HTMLDivElement>('openConvert1');
+    this.openHelpButton = getElement<HTMLButtonElement>('openHelpButton');
+    this.openHelp = getElement<HTMLDivElement>('openHelp');
+    this.stageOneHelp = getElement<HTMLDivElement>('stageOneHelp');
+    this.stageTwoHelp = getElement<HTMLDivElement>('stageTwoHelp');
+    this.openSettings = getElement<HTMLDivElement>('openSettings');
 
-    this.thirdColumn = getElementOrLog<HTMLDivElement>('thirdColumn');
-    this.openSearchButton =
-      getElementOrLog<HTMLButtonElement>('openSearchButton');
-    this.openSearch = getElementOrLog<HTMLDivElement>('openSearch');
-    this.stageThreeHelp = getElementOrLog<HTMLDivElement>('stageThreeHelp');
-    this.manualConfig = getElementOrLog<HTMLDivElement>('manualConfig');
-    this.readOnlyConfig = getElementOrLog<HTMLDivElement>('readOnlyConfig');
-    this.openSettingsButton =
-      getElementOrLog<HTMLButtonElement>('openSettingsButton');
+    this.thirdColumn = getElement<HTMLDivElement>('thirdColumn');
+    this.openSearchButton = getElement<HTMLButtonElement>('openSearchButton');
+    this.openSearch = getElement<HTMLDivElement>('openSearch');
+    this.stageThreeHelp = getElement<HTMLDivElement>('stageThreeHelp');
+    this.manualConfig = getElement<HTMLDivElement>('manualConfig');
+    this.readOnlyConfig = getElement<HTMLDivElement>('readOnlyConfig');
+    this.openSettingsButton = getElement<HTMLButtonElement>('openSettingsButton');
   }
 
-  public simulationStarted() {
+  public configuration() {
     this.registerTab.classList.remove('hidden');
     this.memoryTab.classList.remove('hidden');
     this.settingsButton.classList.remove('hidden');
@@ -82,7 +78,7 @@ export class UIManager {
     this.stageTwoHelp.classList.remove('hidden');
     this.openSettings.classList.remove('hidden');
   }
-  public sim() {
+  public simulationStarted() {
     this._isSimulating = true;
     this.openSettings.className = 'hidden';
     this.openSearchButton.classList.remove('hidden');
@@ -97,4 +93,6 @@ export class UIManager {
     this.manualConfig.classList.add('hidden');
     this.readOnlyConfig.classList.remove('hidden');
   }
+
+
 }
