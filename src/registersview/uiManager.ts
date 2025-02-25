@@ -21,7 +21,7 @@ export class UIManager {
   readonly stageTwoHelp: HTMLDivElement;
   readonly openSettings: HTMLDivElement;
 
-  readonly thirdColumn: HTMLDivElement;
+  readonly toolsPanel: HTMLDivElement;
   readonly openSearchButton: HTMLButtonElement;
   readonly openSearch: HTMLDivElement;
   readonly stageThreeHelp: HTMLDivElement;
@@ -55,7 +55,7 @@ export class UIManager {
     this.stageTwoHelp = getElement<HTMLDivElement>('stageTwoHelp');
     this.openSettings = getElement<HTMLDivElement>('openSettings');
 
-    this.thirdColumn = getElement<HTMLDivElement>('thirdColumn');
+    this.toolsPanel = getElement<HTMLDivElement>('toolsPanel');
     this.openSearchButton = getElement<HTMLButtonElement>('openSearchButton');
     this.openSearch = getElement<HTMLDivElement>('openSearch');
     this.stageThreeHelp = getElement<HTMLDivElement>('stageThreeHelp');
