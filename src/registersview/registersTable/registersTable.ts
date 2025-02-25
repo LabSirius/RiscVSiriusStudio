@@ -564,6 +564,37 @@ private readonly viewTypeFormatter = (
     });
   }
 
+  public importRegisters(content: string): void {
+    const lines = content
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line !== "");
+
+    if (lines.length !== 32) {
+      console.error("Número inválido de líneas");
+      return;
+    }
+
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].length !== 32) {
+        console.error(`Longitud inválida en la línea ${i}`);
+        return;
+      }
+    }
+
+    const newData = this.registersNames.map((reg, index) => ({
+      name: reg,
+      rawName: reg.split(" ")[0],
+      value: index === 0 ? "00000000000000000000000000000000" : lines[index],
+      viewType: 2,
+      watched: false,
+      modified: 0,
+      id: index,
+    }));
+
+    this.table.setData(newData);
+  }
+
 
 }
 

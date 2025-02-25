@@ -41,6 +41,10 @@ export class UIManager {
   readonly openSettingsButton: HTMLButtonElement;
 
   readonly searchRegisterInput: HTMLInputElement;
+  readonly searchMemoryInput: HTMLInputElement;
+
+  readonly importRegisterBtn: HTMLButtonElement;
+  readonly fileInputImportRegister: HTMLInputElement;
 
   private _isSimulating: boolean;
   get isSimulating(): boolean {
@@ -90,9 +94,15 @@ export class UIManager {
     this.openSettingsButton = getElement<HTMLButtonElement>('openSettingsButton');
 
     this.searchRegisterInput = getElement<HTMLInputElement>('searchRegisterInput');
+    this.searchMemoryInput = getElement<HTMLInputElement>('searchMemoryInput') ;
+
+    this.importRegisterBtn = getElement<HTMLButtonElement>('importRegisterBtn');
+    this.fileInputImportRegister = getElement<HTMLInputElement>('fileInputImportRegister');
 
     this.initializeTopButtons();
-    this.setUpSearch();
+    this.setUpSearchInRegistersTable();
+    this.setupSearchInMemoryTable();
+    this.initImportRegister();
     this.setUpHelp();
   }
 
@@ -166,7 +176,7 @@ export class UIManager {
     this.readOnlyConfig.classList.remove('hidden');
   }
 
-  private setUpSearch() {
+  private setUpSearchInRegistersTable() {
     this.searchRegisterInput.addEventListener('input', () => {
       const input = this.searchRegisterInput.value.trim();
       if (input === '') {
@@ -184,6 +194,58 @@ export class UIManager {
         this.registersTable.resetCellColors();
       }
     });
+  }
+
+  private setupSearchInMemoryTable(): void {
+   
+   this.searchMemoryInput.addEventListener('input', () => {
+      const searchValue = this.searchMemoryInput.value.trim().toLowerCase();
+      if (searchValue === '') {
+        this.memoryTable.table.clearFilter(true);
+        this.memoryTable.resetMemoryCellColors();
+        return;
+      }
+      this.memoryTable.filterMemoryTableData(searchValue);
+    });
+
+    this.searchMemoryInput.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        this.searchMemoryInput.value = '';
+        this.memoryTable.table.clearFilter(true);
+        this.memoryTable.resetMemoryCellColors();
+      }
+    });
+  }
+
+  private initImportRegister(): void {
+   
+      this.importRegisterBtn
+      .addEventListener("click", () => {
+        document.getElementById("fileInputImportRegister")?.click();
+      });
+
+   
+    this.fileInputImportRegister
+      ?.addEventListener("change", (event) => {
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
+
+        if (!file) {
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          if (!e.target?.result) {
+            return;
+          }
+          const content = e.target.result as string;
+          this.registersTable.importRegisters(content);
+        };
+
+        reader.readAsText(file);
+      });
   }
 
 

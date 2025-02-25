@@ -13,7 +13,7 @@ import { InternalRepresentation } from '../utilities/riscvc';
 
 
 export class MemoryTable {
-  private table: Tabulator;
+  public table: Tabulator;
   private tableData: any[] = [];
   private memorySize: number;
   /**
@@ -327,8 +327,6 @@ export class MemoryTable {
     });
   }
   
-  
-
   public uploadProgram(ir: InternalRepresentation) {
     ir.instructions.reverse().forEach((instruction, index) => {
       const inst = instruction.inst.toString(16).toUpperCase();
@@ -387,5 +385,54 @@ export class MemoryTable {
     mem[words - 1].info = `<span class="info-column-mem-table">SP</span>`;
 
     mem.forEach((i) => { this.table.addRow(i, true); });
+  }
+
+
+
+  
+
+  
+  public filterMemoryTableData(searchValue: string): void {
+    this.resetMemoryCellColors();
+
+    const searchTerms = searchValue.split(/\s+/);
+
+    this.table.setFilter((data: any) => {
+      const addr   = data.address?.toLowerCase() || '';
+      const value3 = data.value3?.toLowerCase() || '';
+      const value2 = data.value2?.toLowerCase() || '';
+      const value1 = data.value1?.toLowerCase() || '';
+      const value0 = data.value0?.toLowerCase() || '';
+      const hex    = data.hex?.toLowerCase() || '';
+
+      return searchTerms.every(term =>
+        addr.includes(term) ||
+        value3.includes(term) ||
+        value2.includes(term) ||
+        value1.includes(term) ||
+        value0.includes(term) ||
+        hex.includes(term)
+      );
+    });
+
+    this.table.getRows().forEach(row => {
+      row.getCells().forEach(cell => {
+        const cellValue = cell.getValue()?.toString().toLowerCase() || '';
+        if (searchTerms.some(term => cellValue.includes(term))) {
+          cell.getElement().style.backgroundColor = '#D1E3E7';
+        }
+      });
+    });
+  }
+
+  /**
+   * Restaura el color de fondo original de todas las celdas de la tabla.
+   */
+  public resetMemoryCellColors(): void {
+    this.table.getRows().forEach(row => {
+      row.getCells().forEach(cell => {
+        cell.getElement().style.backgroundColor = '';
+      });
+    });
   }
 }
