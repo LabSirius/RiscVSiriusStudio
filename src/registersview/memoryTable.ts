@@ -194,11 +194,7 @@ export class MemoryTable {
 
   }
 
-  public importMemory(file: File) {
-    const reader = new FileReader();
-    reader.onload = (e) => this.handleFileImport(e.target?.result as string);
-    reader.readAsText(file);
-  }
+ 
 
   private updateHexValue(row: any) {
     const hexParts = ['value3', 'value2', 'value1', 'value0'].map(field => {
@@ -220,48 +216,54 @@ export class MemoryTable {
     });
   }
 
-  private handleFileImport(fileContent: string) {
-    const lines = fileContent
+
+  //TODO: Keep in mind that there is a limited area of ​​instructions
+  public importMemory(content: string): void {
+    const lines = content
       .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line !== '');
+      .map(line => line.trim())
+      .filter(line => line !== '');
 
     const newData: any[] = [];
 
     for (const line of lines) {
       const parts = line.split(':');
       if (parts.length !== 2) {
-        console.error(`Invalid format in line: ${line}`);
+        console.error(`Formato inválido en la línea: ${line}`);
         return;
       }
 
+     
       const address = parseInt(parts[0].trim(), 16);
       const binaryValue = parts[1].trim();
 
       if (binaryValue.length !== 32 || !/^[01]+$/.test(binaryValue)) {
-        console.error(`Invalid value in line: ${line}`);
+        console.error(`Valor inválido en la línea: ${line}`);
         return;
       }
 
+  
       const value0 = binaryValue.slice(24, 32);
       const value1 = binaryValue.slice(16, 24);
       const value2 = binaryValue.slice(8, 16);
       const value3 = binaryValue.slice(0, 8);
 
+    
       const hex0 = parseInt(value0, 2).toString(16).padStart(2, '0');
       const hex1 = parseInt(value1, 2).toString(16).padStart(2, '0');
       const hex2 = parseInt(value2, 2).toString(16).padStart(2, '0');
       const hex3 = parseInt(value3, 2).toString(16).padStart(2, '0');
 
       newData.push({
-        address: address.toString(16).toLowerCase(),
+        address: address.toString(16).toLowerCase(), 
         value0,
         value1,
         value2,
         value3,
-        hex: `${hex3}-${hex2}-${hex1}-${hex0}`.toUpperCase()
+        hex: `${hex3}-${hex2}-${hex1}-${hex0}`.toUpperCase() 
       });
     }
+
 
     this.table.updateOrAddData(newData);
   }

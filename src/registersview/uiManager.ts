@@ -46,6 +46,9 @@ export class UIManager {
   readonly importRegisterBtn: HTMLButtonElement;
   readonly fileInputImportRegister: HTMLInputElement;
 
+  readonly importMemoryBtn: HTMLButtonElement;
+  readonly fileInputImportMemory: HTMLInputElement;
+
   private _isSimulating: boolean;
   get isSimulating(): boolean {
     return this._isSimulating;
@@ -99,10 +102,15 @@ export class UIManager {
     this.importRegisterBtn = getElement<HTMLButtonElement>('importRegisterBtn');
     this.fileInputImportRegister = getElement<HTMLInputElement>('fileInputImportRegister');
 
+    this.importMemoryBtn = getElement<HTMLButtonElement>('importMemoryBtn');
+    this.fileInputImportMemory = getElement<HTMLInputElement>('fileInputImportMemory');
+
+
     this.initializeTopButtons();
     this.setUpSearchInRegistersTable();
     this.setupSearchInMemoryTable();
-    this.initImportRegister();
+    this.initRegisterImport();
+    this.initMemoryImport();
     this.setUpHelp();
   }
 
@@ -217,7 +225,7 @@ export class UIManager {
     });
   }
 
-  private initImportRegister(): void {
+  private initRegisterImport(): void {
    
       this.importRegisterBtn
       .addEventListener("click", () => {
@@ -226,7 +234,7 @@ export class UIManager {
 
    
     this.fileInputImportRegister
-      ?.addEventListener("change", (event) => {
+      .addEventListener("change", (event) => {
         const input = event.target as HTMLInputElement;
         const file = input.files?.[0];
 
@@ -242,6 +250,54 @@ export class UIManager {
           }
           const content = e.target.result as string;
           this.registersTable.importRegisters(content);
+        };
+
+        reader.readAsText(file);
+      });
+  }
+
+  private initMemoryImport(): void {
+  
+    this.importMemoryBtn
+      .addEventListener('click', () => {
+        this.fileInputImportMemory.click();
+      });
+
+
+    this.fileInputImportMemory
+      .addEventListener('change', (event) => {
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
+
+        if (!file) {
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          if (!e.target?.result) {
+            return;
+          }
+          const content = e.target.result as string;
+
+          const lines = content
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line !== '');
+
+          if (lines.length === 0) {
+            alert('El archivo está vacío.');
+            return;
+          }
+
+          const invalidLine = lines.find(line => !line.includes(':'));
+          if (invalidLine) {
+            alert(`Formato inválido en la línea: ${invalidLine}`);
+            return;
+          }
+
+          this.memoryTable.importMemory(content);
         };
 
         reader.readAsText(file);
