@@ -64,12 +64,15 @@ export class MemoryTable {
   private codeAreaEnd: number;
   /** Index in the table of the program counter */
   private pc: number;
+  /** Address in the table of the stack pointer */
+  private sp: string;
 
   constructor(memorySize: number = 32) {
     this.memorySize = memorySize;
     this.codeAreaEnd = 0;
     this.table = this.initializeTable();
     this.pc = 0;
+    this.sp = "";
     this.labels = [];
     this.setupEventListeners();
   }
@@ -77,12 +80,22 @@ export class MemoryTable {
     return this.table.getDataCount() - index;
   }
 
+  public setSP(value: string) {
+    debugger;
+    this.table.getRow(this.sp).update(
+      { "info": '' }
+    );
+    const address = Number.parseInt(value, 2).toString(16).toUpperCase();
+    this.table.getRow(address).update(
+      { "info": `<span class="info-column-mem-table">SP</span>` }
+    );
+  }
 
   public updatePC(newPC: number) {
-    let PCRowIndex = this.toTableIndex(this.pc);
-    const pcRow = this.table.getRowFromPosition(PCRowIndex);
+    let pcRowIndex = this.toTableIndex(this.pc);
+    const pcRow = this.table.getRowFromPosition(pcRowIndex);
     // Remove the old PC marker
-    let label = this.labels[PCRowIndex - this.memorySize / 4];
+    let label = this.labels[pcRowIndex - this.memorySize / 4];
     if (label === "") {
       // there is no label for the current line, we remove the label PC
       pcRow.update({ "info": "" });
@@ -94,9 +107,9 @@ export class MemoryTable {
     }
     this.pc = newPC;
     // Add the new PC marker
-    PCRowIndex = this.toTableIndex(this.pc);
-    const newPcRow = this.table.getRowFromPosition(PCRowIndex);
-    label = this.labels[PCRowIndex - this.memorySize / 4];
+    pcRowIndex = this.toTableIndex(this.pc);
+    const newPcRow = this.table.getRowFromPosition(pcRowIndex);
+    label = this.labels[pcRowIndex - this.memorySize / 4];
     if (label === "") {
       // There is no label for the current line, we add the label PC
       newPcRow.update({
@@ -346,7 +359,7 @@ export class MemoryTable {
     // Set heap and SP markers
     mem[0].info = `<span class="info-column-mem-table">Heap</span>`;
     mem[words - 1].info = `<span class="info-column-mem-table">SP</span>`;
-
+    this.sp = mem[words - 1].address;
     mem.forEach((i) => { this.table.addRow(i, true); });
     this.updatePC(0);
   }

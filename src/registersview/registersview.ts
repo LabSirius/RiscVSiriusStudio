@@ -65,10 +65,7 @@ function dispatch(
       step(memoryTable, registersTable, data.pc);
       break;
     case 'setRegister':
-      registersTable.setRegister(data.register, data.value);
-    // if (data.register === 'x2') {
-    //   // memoryTable.setSP(data.value);
-    // }
+      setRegister(registersTable, memoryTable, data.register, data.value);
       break;
     default:
       log({ msg: 'No handler for message', data: data.operation });
@@ -89,7 +86,16 @@ function step(memoryTable: MemoryTable, registersTable: RegistersTable, pc: numb
     memoryTable.disableEditors();
   }
   memoryTable.updatePC(pc);
+}
 
+function setRegister(
+  registersTable: RegistersTable, memoryTable: MemoryTable,
+  register: string, value: string
+): void {
+  registersTable.setRegister(register, value);
+  if (register === 'x2') {
+    memoryTable.setSP(value);
+  }
 }
 function setupButtons(): void {
   const sections: string[] = [
