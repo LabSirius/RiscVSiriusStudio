@@ -64,6 +64,46 @@ export class UIManager {
     this.openSettingsButton = getElement<HTMLButtonElement>('openSettingsButton');
   }
 
+  public initializeTopButtons(): void {
+    const sections: { [key: string]: HTMLElement } = {
+      openSearch: this.openSearch,
+      openSettings: this.openSettings,
+      openConvert1: this.openConvert,
+      openHelp: this.openHelp,
+    };
+
+    const buttons: { [key: string]: HTMLElement } = {
+      openSearchButton: this.openSearchButton,
+      openSettingsButton: this.openSettingsButton,
+      openConvertButton: this.convertButton,
+      openHelpButton: this.openHelpButton,
+    };
+
+    const showOnly = (targetId: keyof typeof sections, buttonId: keyof typeof buttons) => {
+      Object.entries(sections).forEach(([id, element]) => {
+        element.className =
+          id === targetId
+            ? 'flex flex-1 flex-col max-h-dvh min-h-dvh overflow-y-scroll'
+            : 'hidden';
+      });
+      Object.values(buttons).forEach((btn) => btn.classList.remove('bg-active'));
+      buttons[buttonId].classList.add('bg-active');
+    };
+
+    this.openSearchButton.addEventListener('click', () =>
+      showOnly('openSearch', 'openSearchButton')
+    );
+    this.openSettingsButton.addEventListener('click', () =>
+      showOnly('openSettings', 'openSettingsButton')
+    );
+    this.convertButton.addEventListener('click', () =>
+      showOnly('openConvert1', 'openConvertButton')
+    );
+    this.openHelpButton.addEventListener('click', () =>
+      showOnly('openHelp', 'openHelpButton')
+    );
+  }
+
   public configuration() {
     this.registerTab.classList.remove('hidden');
     this.memoryTab.classList.remove('hidden');

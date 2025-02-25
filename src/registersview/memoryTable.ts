@@ -174,7 +174,7 @@ export class MemoryTable {
       if (def.field && def.field.startsWith('value')) {
         return {
           ...def,
-          editor: undefined,
+          editor: undefined,   
           editable: () => false
         };
       }

@@ -6,7 +6,6 @@ import {
 
 import { RegistersTable } from './registersTable';
 import { MemoryTable } from './memoryTable';
-import { TopButtonManager } from './topButtonManager';
 
 import { setUpConvert } from './convertTool';
 import { UIManager } from './uiManager';
@@ -31,8 +30,7 @@ function log(object: any = {}, level: string = 'info') {
 function main() {
   const registersTable = new RegistersTable();
   const memoryTable = new MemoryTable();
-  new TopButtonManager();
-
+  UIManager.getInstance().initializeTopButtons();
 
   window.addEventListener('message', (event) => {
     dispatch(event, registersTable, memoryTable);
