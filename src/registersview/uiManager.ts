@@ -15,11 +15,11 @@ export class UIManager {
 
   public static instance: UIManager | undefined;
 
-  private memoryTable : MemoryTable;
+  private memoryTable: MemoryTable;
 
-  private registersTable : RegistersTable;
+  private registersTable: RegistersTable;
 
-  private readonly sendMessagetoExtension: (msg : any) => void;
+  private readonly sendMessagetoExtension: (msg: any) => void;
 
   readonly registerTab: HTMLDivElement;
   readonly memoryTab: HTMLDivElement;
@@ -47,17 +47,25 @@ export class UIManager {
     return this._isSimulating;
   }
 
-  public static getInstance(memoryTable: MemoryTable, registersTable: RegistersTable, sendMessagetoExtension: (msg : any) => void ): UIManager {
+  public static createInstance(memoryTable: MemoryTable, registersTable: RegistersTable, sendMessagetoExtension: (msg: any) => void): UIManager {
     if (!this.instance) {
       this.instance = new UIManager(memoryTable, registersTable, sendMessagetoExtension);
     }
     return this.instance;
   }
-  
-  private constructor(memoryTable: MemoryTable, registersTable: RegistersTable, sendMessagetoExtension: (msg : any) => void) {
+
+  public static getInstance(): UIManager {
+    if (!this.instance) {
+      throw new Error('UIManager not initialized');
+    } else {
+      return this.instance;
+    }
+  }
+
+  private constructor(memoryTable: MemoryTable, registersTable: RegistersTable, sendMessagetoExtension: (msg: any) => void) {
     this._isSimulating = false;
-  
-    this.memoryTable= memoryTable;
+
+    this.memoryTable = memoryTable;
     this.registersTable = registersTable;
     this.sendMessagetoExtension = sendMessagetoExtension;
 
@@ -179,15 +187,15 @@ export class UIManager {
   }
 
 
- private setUpHelp() {
-   const openShowCard = document.getElementById('openShowCard') as HTMLDivElement;
+  private setUpHelp() {
+    const openShowCard = document.getElementById('openShowCard') as HTMLDivElement;
 
-   openShowCard.addEventListener('click', () => {
+    openShowCard.addEventListener('click', () => {
       this.sendMessagetoExtension({
-       command: 'event',
-       object: { name: 'clickOpenRISCVCard', value: 'openHelp' }
-     });
-   });
- }
+        command: 'event',
+        object: { name: 'clickOpenRISCVCard', value: 'openHelp' }
+      });
+    });
+  }
 
 }

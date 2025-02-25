@@ -34,9 +34,7 @@ function main() {
   window.addEventListener('message', (event) => {
     dispatch(event, registersTable, memoryTable);
   });
-
-  // setupImportRegisters(registersTable);
-  // setupImportMemory(memoryTable);
+  UIManager.createInstance(memoryTable, registersTable, sendMessageToExtension);
   setUpConvert();
   setupSettings(memoryTable);
 }
@@ -68,28 +66,26 @@ function dispatch(
 }
 
 function uploadProgram(memoryTable: MemoryTable, registersTable: RegistersTable, ir: InternalRepresentation): void {
-  UIManager.getInstance(memoryTable, registersTable, sendMessageToExtension ).configuration();
+  UIManager.getInstance().configuration();
   memoryTable.uploadProgram(ir);
   memoryTable.allocateMemory();
 }
 
 function step(memoryTable: MemoryTable, registersTable: RegistersTable): void {
   log({ msg: "Simulator reported step" });
-  if (!UIManager.getInstance(memoryTable, registersTable, sendMessageToExtension ).isSimulating) {
-    UIManager.getInstance(memoryTable, registersTable, sendMessageToExtension ).simulationStarted();
+  if (!UIManager.getInstance().isSimulating) {
+    UIManager.getInstance().simulationStarted();
     memoryTable.disableEditors();
   }
 }
-
-
 
 function setupSettings(memoryTable: MemoryTable) {
   const inputMemorySize = document.getElementById(
     'memorySizeInput'
   ) as HTMLInputElement;
-  
+
   inputMemorySize.addEventListener('change', () => {
-    if( Number.parseInt(inputMemorySize.value) < 32){
+    if (Number.parseInt(inputMemorySize.value) < 32) {
       inputMemorySize.value = '32';
     }
     sendMessageToExtension({
@@ -100,9 +96,6 @@ function setupSettings(memoryTable: MemoryTable) {
     memoryTable.resizeMemory(newSize);
   });
 }
-
-
-
 
 /**
  * View extension communication.
