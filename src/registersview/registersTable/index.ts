@@ -186,6 +186,119 @@ export class RegistersTable {
     this.animateRegister(name);
   }
 
+  public setUpSearch(): void {
+    const searchRegisterInput = document.getElementById('searchRegisterInput') as HTMLInputElement;
+
+    searchRegisterInput.addEventListener('input', () => {
+      const input = searchRegisterInput.value.trim();
+      if (input === '') {
+        this.table.clearFilter(true);
+        this.resetCellColors();
+        return;
+      }
+      this.filterTableData(input);
+    });
+
+    searchRegisterInput.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        searchRegisterInput.value = '';
+        this.table.clearFilter(true);
+        this.resetCellColors();
+      }
+    });
+  }
+
+  private filterTableData(searchInput: string): void {
+    this.resetCellColors();
+
+    if (searchInput.toLowerCase().startsWith("0x")) {
+      const hexPart = searchInput.slice(2);
+      const num = parseInt(hexPart, 16);
+      const binaryHex = num.toString(2);
+
+      this.table.setFilter((data: any) => {
+        const valueStr = data.value?.toString().toLowerCase() || "";
+        return valueStr.includes(binaryHex);
+      });
+
+      this.table.getRows().forEach(row => {
+        row.getCells().forEach(cell => {
+          if (cell.getField() === "value") {
+            const cellValue = cell.getValue()?.toString().toLowerCase() || "";
+            if (cellValue.includes(binaryHex)) {
+              cell.getElement().style.backgroundColor = "#D1E3E7";
+            }
+          }
+        });
+      });
+    } else {
+      const lowerSearch = searchInput.toLowerCase();
+      let isNumeric = false;
+      let candidateFromDecimal = "";
+      let candidateFromUnsigned = "";
+
+      if (/^[01]+$/.test(searchInput)) {
+        isNumeric = true;
+        candidateFromDecimal = searchInput.replace(/^0+/, '') || "0";
+        candidateFromUnsigned = searchInput.padStart(32, '0');
+      } else if (!isNaN(parseInt(searchInput, 10))) {
+        isNumeric = true;
+        const parsed = parseInt(searchInput, 10);
+        if (parsed < 0) {
+          const bits = 8;
+          candidateFromDecimal = ((1 << bits) + parsed).toString(2).padStart(bits, '0');
+        } else {
+          candidateFromDecimal = parsed.toString(2);
+        }
+        candidateFromUnsigned = parsed.toString(2).padStart(32, '0');
+      }
+
+      this.table.setFilter((data: any) => {
+        const nameStr = data.name?.toLowerCase() || "";
+        const valueStr = data.value?.toString().toLowerCase() || "";
+        if (isNumeric) {
+          return (
+            nameStr.includes(lowerSearch) ||
+            nameStr.includes(candidateFromDecimal) ||
+            nameStr.includes(candidateFromUnsigned) ||
+            valueStr.includes(lowerSearch) ||
+            valueStr.includes(candidateFromDecimal) ||
+            valueStr.includes(candidateFromUnsigned)
+          );
+        } else {
+          return nameStr.includes(lowerSearch) || valueStr.includes(lowerSearch);
+        }
+      });
+
+      this.table.getRows().forEach(row => {
+        row.getCells().forEach(cell => {
+          const field = cell.getField();
+          const cellValue = cell.getValue()?.toString().toLowerCase() || "";
+          if (isNumeric) {
+            if ((field === "name" || field === "value") &&
+              (cellValue.includes(lowerSearch) ||
+                cellValue.includes(candidateFromDecimal) ||
+                cellValue.includes(candidateFromUnsigned))) {
+              cell.getElement().style.backgroundColor = "#D1E3E7";
+            }
+          } else {
+            if ((field === "name" || field === "value") && cellValue.includes(lowerSearch)) {
+              cell.getElement().style.backgroundColor = "#D1E3E7";
+            }
+          }
+        });
+      });
+    }
+  }
+
+  private resetCellColors(): void {
+    this.table.getRows().forEach(row => {
+      row.getCells().forEach(cell => {
+        cell.getElement().style.backgroundColor = "";
+      });
+    });
+  }
+
 
 }
 

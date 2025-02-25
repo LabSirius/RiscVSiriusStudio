@@ -36,8 +36,9 @@ function main() {
   });
 
   UIManager.getInstance().initializeTopButtons();
+  registersTable.setUpSearch();
 
-  // setupSearchInRegisterTable(registersTable);
+  
   // setUpMemoryConfig(memoryTable);
   // setupImportRegisters(registersTable);
   // setupImportMemory(memoryTable);
