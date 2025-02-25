@@ -101,7 +101,6 @@ export class MemoryTable {
   }
 
   private getColumnDefinitions(): ColumnDefinition[] {
-    // Atributos comunes a todas las columnas
     const defaultColumnAttributes: ColumnDefinition = {
       title: "",
       visible: true,

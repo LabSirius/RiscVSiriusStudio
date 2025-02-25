@@ -30,11 +30,12 @@ function log(object: any = {}, level: string = 'info') {
 function main() {
   const registersTable = new RegistersTable();
   const memoryTable = new MemoryTable();
-  UIManager.getInstance().initializeTopButtons();
 
   window.addEventListener('message', (event) => {
     dispatch(event, registersTable, memoryTable);
   });
+
+  UIManager.getInstance().initializeTopButtons();
 
   // setupSearchInRegisterTable(registersTable);
   // setUpMemoryConfig(memoryTable);
