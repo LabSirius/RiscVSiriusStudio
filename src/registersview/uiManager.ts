@@ -1,5 +1,5 @@
 import { MemoryTable } from "./memoryTable";
-import { RegistersTable } from "./registersTable";
+import { RegistersTable } from "./registersTable/registersTable";
 
 function getElement<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id) as T | null;

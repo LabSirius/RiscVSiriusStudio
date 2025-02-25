@@ -4,7 +4,7 @@ import {
 } from '@vscode/webview-ui-toolkit';
 
 
-import { RegistersTable } from './registersTable';
+import { RegistersTable } from './registersTable/registersTable';
 import { MemoryTable } from './memoryTable';
 
 import { setUpConvert } from './convertTool';
