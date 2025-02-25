@@ -35,8 +35,6 @@ function main() {
     dispatch(event, registersTable, memoryTable);
   });
 
-  UIManager.getInstance().initializeTopButtons();
-  registersTable.setUpSearch();
 
   
   // setUpMemoryConfig(memoryTable);
@@ -56,7 +54,7 @@ function dispatch(
   const data = event.data;
   switch (data.operation) {
     case 'uploadProgram':
-      uploadProgram(memoryTable, data.program);
+      uploadProgram(memoryTable, registersTable, data.program);
       break;
     case 'step':
       step(memoryTable, registersTable);
@@ -73,16 +71,16 @@ function dispatch(
   }
 }
 
-function uploadProgram(memoryTable: MemoryTable, ir: InternalRepresentation): void {
-  UIManager.getInstance().configuration();
+function uploadProgram(memoryTable: MemoryTable, registersTable: RegistersTable, ir: InternalRepresentation): void {
+  UIManager.getInstance(memoryTable, registersTable ).configuration();
   memoryTable.uploadProgram(ir);
   memoryTable.allocateMemory();
-}
+  }
 
 function step(memoryTable: MemoryTable, registersTable: RegistersTable): void {
   log({ msg: "Simulator reported step" });
-  if (!UIManager.getInstance().isSimulating) {
-    UIManager.getInstance().simulationStarted();
+  if (!UIManager.getInstance(memoryTable, registersTable ).isSimulating) {
+    UIManager.getInstance(memoryTable, registersTable ).simulationStarted();
     memoryTable.disableEditors();
   }
 }
@@ -93,8 +91,11 @@ function setupSettings(memoryTable: MemoryTable) {
   const inputMemorySize = document.getElementById(
     'memorySizeInput'
   ) as HTMLInputElement;
-  inputMemorySize.addEventListener('input', () => {
-    console.log('Memory size changed to: ' + inputMemorySize.value);
+  
+  inputMemorySize.addEventListener('change', () => {
+    if( Number.parseInt(inputMemorySize.value) < 32){
+      inputMemorySize.value = '32';
+    }
     sendMessageToExtension({
       command: 'event',
       object: { name: 'memorySizeChanged', value: inputMemorySize.value }

@@ -3,10 +3,13 @@ import {
   TabulatorFull as Tabulator
 } from 'tabulator-tables';
 
-import { binaryMemEditor } from './helpers';
+import {
+  CellComponent,
+} from 'tabulator-tables';
+
 
 import { range, chunk, times } from 'lodash';
-import { InternalRepresentation } from '../../utilities/riscvc';
+import { InternalRepresentation } from '../utilities/riscvc';
 
 
 export class MemoryTable {
@@ -21,9 +24,54 @@ export class MemoryTable {
   /** Index in the table of the program counter */
   private pc: number;
 
+    private readonly binaryMemEditor =(
+    cell: CellComponent,
+    onRendered: (callback: () => void) => void,
+    success: (value: string) => void,
+    cancel: (restore?: boolean) => void,
+    editorParams: any
+  ): HTMLInputElement => {
+    const currentValue = cell.getValue();
+    const editor = document.createElement('input');
+  
+    editor.className = 'binary-editor';
+    editor.value = currentValue;
+    editor.maxLength = 8;
+  
+    onRendered(() => {
+      editor.focus();
+      editor.select();
+    });
+  
+    const formatValue = (value: string): string => {
+      return value.padStart(8, '0').slice(0, 8);
+    };
+  
+    const onSuccess = () => {
+      const rawValue = editor.value.replace(/[^01]/g, '');
+      const formattedValue = formatValue(rawValue);
+  
+      editor.value = formattedValue;
+      success(formattedValue);
+    };
+  
+    editor.addEventListener('input', (e) => {
+      // Filtra caracteres no binarios en tiempo real
+      editor.value = editor.value.replace(/[^01]/g, '');
+    });
+  
+    editor.addEventListener('blur', onSuccess);
+    editor.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { onSuccess(); };
+      if (e.key === 'Escape') { cancel(); };
+    });
+  
+    return editor;
+  };
+
   constructor(memorySize: number = 32) {
     this.memorySize = memorySize;
-    this.codeAreaEnd = 0;
+    this.codeAreaEnd = 32;
     this.table = this.initializeTable();
     this.pc = 0;
     this.setupEventListeners();
@@ -73,7 +121,7 @@ export class MemoryTable {
   
     const defaultEditableColumnAttributes: ColumnDefinition = {
       ...defaultFrozenColumnAttributes,
-      editor: binaryMemEditor,
+      editor: this.binaryMemEditor,
       editable: true,
     };
   
@@ -219,18 +267,67 @@ export class MemoryTable {
   }
 
   public resizeMemory(newSize: number) {
-    if (newSize < 32) {
-      throw new Error("Memory size must be at least 32 bytes.");
-    }
     const rounded = Math.round(newSize / 4) * 4;
-    // TODO: This seems to be quite slow. Investigate further.
-    range(0, this.codeAreaEnd).forEach(() => {
-      const address = this.table.getData()[0].address;
-      this.table.deleteRow(address);
-    });
     this.memorySize = rounded;
-    this.allocateMemory();
+    const totalBaseRows = rounded / 4;
+  
+    const zeros8 = "00000000";
+    const defaultWord = {
+      value0: zeros8,
+      value1: zeros8,
+      value2: zeros8,
+      value3: zeros8,
+      info: "",
+      hex: "00-00-00-00"
+    };
+  
+    const allData = this.table.getData();
+  
+    const heapIndex = allData.findIndex(row => row.info && row.info.includes("Heap"));
+    const instructionsRowsData = heapIndex !== -1 ? allData.slice(heapIndex + 1) : [];
+  
+    const instructionsBackground: string[] = [];
+    if (heapIndex !== -1) {
+      const allRows = this.table.getRows();
+      const instructionsRows = allRows.slice(heapIndex + 1);
+      instructionsRows.forEach(row => {
+        instructionsBackground.push(row.getElement().style.backgroundColor);
+      });
+    }
+
+    const newBaseRowsData = [];
+    for (let i = 0; i < totalBaseRows; i++) {
+      newBaseRowsData.push({
+        ...defaultWord,
+        address: ""
+      });
+    }
+  
+    if (newBaseRowsData.length > 0) {
+      newBaseRowsData[0].info = `<span class="info-column-mem-table">SP</span>`;
+      newBaseRowsData[newBaseRowsData.length - 1].info = `<span class="info-column-mem-table">Heap</span>`;
+    }
+  
+    const newTableData = newBaseRowsData.concat(instructionsRowsData);
+  
+
+    this.table.setData(newTableData).then(() => {
+      const updatedRows = this.table.getRows();
+      const totalRows = updatedRows.length;
+      for (let i = 0; i < totalRows; i++) {
+        const newAddress = ((totalRows - 1 - i) * 4).toString(16).toUpperCase();
+        updatedRows[i].update({ address: newAddress });
+      }
+  
+      for (let i = totalBaseRows; i < totalRows; i++) {
+        const row = updatedRows[i];
+        const bg = instructionsBackground[i - totalBaseRows] || "#FFF6E5";
+        row.getElement().style.backgroundColor = bg;
+      }
+    });
   }
+  
+  
 
   public uploadProgram(ir: InternalRepresentation) {
     ir.instructions.reverse().forEach((instruction, index) => {
@@ -252,10 +349,13 @@ export class MemoryTable {
     });
 
     Object.values(ir.symbols).forEach((symbol: any) => {
-      const memdefHex = symbol.memdef.toString(16);
-      this.table.getRow(memdefHex).update({
-        "info": `<span class="info-column-mem-table">${symbol.name}</span>`
-      });
+      const memdefHex = (symbol.memdef !== undefined ? symbol.memdef : 0).toString(16).toUpperCase();
+      this.table.updateOrAddRow(
+        memdefHex,
+        {
+          "info": `<span class="info-column-mem-table">${symbol.name}</span>`
+        }
+      );
     });
   }
 
@@ -271,7 +371,9 @@ export class MemoryTable {
     };
 
     const startAddress = this.table.getData().length;
+
     const words = this.memorySize / 4;
+
     const mem = times(words, (i) => {
       const address = ((startAddress + i) * 4).toString(16).toUpperCase();
       return {

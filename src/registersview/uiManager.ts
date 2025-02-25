@@ -1,3 +1,6 @@
+import { MemoryTable } from "./memoryTable";
+import { RegistersTable } from "./registersTable";
+
 function getElement<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id) as T | null;
   if (!element) {
@@ -9,6 +12,10 @@ function getElement<T extends HTMLElement>(id: string): T {
 export class UIManager {
 
   public static instance: UIManager | undefined;
+
+  private memoryTable : MemoryTable;
+
+  private registersTable : RegistersTable;
 
   readonly registerTab: HTMLDivElement;
   readonly memoryTab: HTMLDivElement;
@@ -29,20 +36,26 @@ export class UIManager {
   readonly readOnlyConfig: HTMLDivElement;
   readonly openSettingsButton: HTMLButtonElement;
 
+  readonly searchRegisterInput: HTMLInputElement;
+
   private _isSimulating: boolean;
   get isSimulating(): boolean {
     return this._isSimulating;
   }
 
-  public static getInstance(): UIManager {
+  public static getInstance(memoryTable: MemoryTable, registersTable: RegistersTable): UIManager {
     if (!this.instance) {
-      this.instance = new UIManager();
+      this.instance = new UIManager(memoryTable, registersTable);
     }
     return this.instance;
   }
-
-  private constructor() {
+  
+  private constructor(memoryTable: MemoryTable, registersTable: RegistersTable) {
     this._isSimulating = false;
+  
+    this.memoryTable= memoryTable;
+    this.registersTable = registersTable;
+
 
     this.registerTab = getElement<HTMLDivElement>('tabs-registers');
     this.memoryTab = getElement<HTMLDivElement>('tabs-memory');
@@ -62,9 +75,14 @@ export class UIManager {
     this.manualConfig = getElement<HTMLDivElement>('manualConfig');
     this.readOnlyConfig = getElement<HTMLDivElement>('readOnlyConfig');
     this.openSettingsButton = getElement<HTMLButtonElement>('openSettingsButton');
+
+    this.searchRegisterInput = getElement<HTMLInputElement>('searchRegisterInput');
+
+    this.initializeTopButtons();
+    this.setUpSearch();
   }
 
-  public initializeTopButtons(): void {
+  private initializeTopButtons(): void {
     const sections: { [key: string]: HTMLElement } = {
       openSearch: this.openSearch,
       openSettings: this.openSettings,
@@ -134,5 +152,24 @@ export class UIManager {
     this.readOnlyConfig.classList.remove('hidden');
   }
 
+  private setUpSearch() {
+    this.searchRegisterInput.addEventListener('input', () => {
+      const input = this.searchRegisterInput.value.trim();
+      if (input === '') {
+        this.registersTable?.table.clearFilter(true);
+        this.registersTable?.resetCellColors();
+        return;
+      }
+      this.registersTable?.filterTableData(input);
+    });
+
+    this.searchRegisterInput.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        this.searchRegisterInput.value = '';
+        this.registersTable?.table.clearFilter(true);
+        this.registersTable?.resetCellColors();
+      }
+    });
+  }
 
 }
