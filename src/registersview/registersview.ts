@@ -6,7 +6,7 @@ import {
 
 import { RegistersTable } from './registersTable';
 import { MemoryTable } from './memoryTable';
-import { TopButtonManager } from './buttonManager';
+import { TopButtonManager } from './topButtonManager';
 
 import { setUpConvert } from './convertTool';
 import { UIManager } from './uiManager';
