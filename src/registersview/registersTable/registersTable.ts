@@ -445,19 +445,25 @@ private readonly viewTypeFormatter = (
   }
 
   private makeRegisterVissible(name: string) {
-    // TODO: This should only happens if the row is not already visible
-    this.table.scrollToRow(name, "top", true);
+    const index = parseInt(name.substring(1), 10);
+    
+
+    const position = (index >= 0 && index <= 12) ? "center" : "top";
+    
+    this.table.scrollToRow(name, position, true);
   }
+
 
   private animateRegister(name: string) {
     const row = this.table.getRow(name);
     if (row) {
-      // row.getElement().classList.add('animate-register');
-      row.getElement().style.backgroundColor = '#FF0000';
+      const element = row.getElement();
+      element.classList.add('animate-register');
+      
       setTimeout(() => {
-        row.getElement().style.backgroundColor = '';
-        // row.getElement().classList.remove('animate-register');
-      }, 1000);
+        element.classList.remove('animate-register');
+
+      }, 500); 
     }
   }
 
@@ -544,11 +550,15 @@ private readonly viewTypeFormatter = (
               (cellValue.includes(lowerSearch) ||
                 cellValue.includes(candidateFromDecimal) ||
                 cellValue.includes(candidateFromUnsigned))) {
-              cell.getElement().style.backgroundColor = "#D1E3E7";
+                  cell.getElement().style.backgroundColor = "#D1E3E7";
+                  cell.getElement().style.borderBottom = "0.5px solid gray";
+
             }
           } else {
             if ((field === "name" || field === "value") && cellValue.includes(lowerSearch)) {
               cell.getElement().style.backgroundColor = "#D1E3E7";
+              cell.getElement().style.borderBottom = "0.5px solid gray";
+
             }
           }
         });
@@ -560,8 +570,41 @@ private readonly viewTypeFormatter = (
     this.table.getRows().forEach(row => {
       row.getCells().forEach(cell => {
         cell.getElement().style.backgroundColor = "";
+        cell.getElement().style.borderBottom = "";
+
       });
     });
+  }
+
+  public importRegisters(content: string): void {
+    const lines = content
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line !== "");
+
+    if (lines.length !== 32) {
+      console.error("Número inválido de líneas");
+      return;
+    }
+
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].length !== 32) {
+        console.error(`Longitud inválida en la línea ${i}`);
+        return;
+      }
+    }
+
+    const newData = this.registersNames.map((reg, index) => ({
+      name: reg,
+      rawName: reg.split(" ")[0],
+      value: index === 0 ? "00000000000000000000000000000000" : lines[index],
+      viewType: 2,
+      watched: false,
+      modified: 0,
+      id: index,
+    }));
+
+    this.table.setData(newData);
   }
 
 

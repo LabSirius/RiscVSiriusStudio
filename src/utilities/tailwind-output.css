@@ -751,6 +751,10 @@ html {
 }
 
 
+mark {
+    background-color: #D1E3E7;
+}
+
 
 .text-primary{
   color: #3A6973;
@@ -768,6 +772,30 @@ html {
 .min-h-containt{
   max-height: min-content;
   background-color: white;
+}
+
+.animate-register {
+  animation: flashAnimation 0.5s ease-out forwards;
+}
+
+.animate-pc{
+  background-color: #FFE4C2 !important;
+  animation: flashAnimation 0.5s ease-out forwards;
+}
+
+@keyframes flashAnimation {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .info-column-mem-table, .info-column-mem-table-symbols{

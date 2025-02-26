@@ -13,7 +13,7 @@ import { InternalRepresentation } from '../utilities/riscvc';
 
 
 export class MemoryTable {
-  private table: Tabulator;
+  public table: Tabulator;
   private tableData: any[] = [];
   private memorySize: number;
   private labels: string[];
@@ -95,37 +95,27 @@ export class MemoryTable {
     );
   }
 
+
   public updatePC(newPC: number) {
-    let pcRowIndex = this.toTableIndex(this.pc);
-    const pcRow = this.table.getRowFromPosition(pcRowIndex);
-    // Remove the old PC marker
-    let label = this.labels[pcRowIndex - this.memorySize / 4];
-    if (label === "") {
-      // there is no label for the current line, we remove the label PC
-      pcRow.update({ "info": "" });
-    } else {
-      // there is a label for the current line, we restore the label
-      pcRow.update({
-        "info": `<span class="info-column-mem-table">${label}</span>`
-      });
-    }
-    this.pc = newPC;
-    // Add the new PC marker
-    pcRowIndex = this.toTableIndex(this.pc);
-    const newPcRow = this.table.getRowFromPosition(pcRowIndex);
-    label = this.labels[pcRowIndex - this.memorySize / 4];
-    if (label === "") {
-      // There is no label for the current line, we add the label PC
-      newPcRow.update({
-        "info": `<span class="info-column-mem-table">PC</span>`
-      });
-    } else {
-      // There is a label for the current line, we put both labels
-      newPcRow.update({
-        "info": `<span class="info-column-mem-table">PC</span><span class="info-column-mem-table">${label}</span>`
-      });
+    const targetValue = (newPC * 4).toString(16).toUpperCase();
+    const foundRows = this.table.searchRows("address", "=", targetValue);
+
+    if (foundRows.length > 0) {
+      const row = foundRows[0];
+      const cell = row.getCell("address");
+      if (cell) {
+        const cellElement = cell.getElement();
+        cellElement.classList.add('animate-pc');
+
+        setTimeout(() => {
+          cellElement.classList.remove('animate-pc');
+        }, 500);
+      }
     }
   }
+
+
+
 
   private initializeTable(): Tabulator {
     return new Tabulator('#tabs-memory', {
@@ -210,28 +200,24 @@ export class MemoryTable {
   }
 
 
-  public disableEditors() {
-    const colDefs = this.getColumnDefinitions();
-
-    const newColDefs = colDefs.map((def) => {
-      if (def.field && def.field.startsWith('value')) {
-        return {
+  public disableEditors(): void {
+    this.table.getColumns().forEach(column => {
+      const def = column.getDefinition();
+      if (def.field && def.field.startsWith("value")) {
+        const currentlyVisible = column.isVisible ? column.isVisible() : true;
+        column.updateDefinition({
           ...def,
           editor: undefined,
           editable: () => false
-        };
+        });
+        if (!currentlyVisible) {
+          column.hide();
+        }
       }
-      return def;
     });
-    this.table.setColumns(newColDefs);
-
   }
 
-  public importMemory(file: File) {
-    const reader = new FileReader();
-    reader.onload = (e) => this.handleFileImport(e.target?.result as string);
-    reader.readAsText(file);
-  }
+
 
   private updateHexValue(row: any) {
     const hexParts = ['value3', 'value2', 'value1', 'value0'].map(field => {
@@ -253,33 +239,38 @@ export class MemoryTable {
     });
   }
 
-  private handleFileImport(fileContent: string) {
-    const lines = fileContent
+
+  //TODO: Keep in mind that there is a limited area of ​​instructions
+  public importMemory(content: string): void {
+    const lines = content
       .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line !== '');
+      .map(line => line.trim())
+      .filter(line => line !== '');
 
     const newData: any[] = [];
 
     for (const line of lines) {
       const parts = line.split(':');
       if (parts.length !== 2) {
-        console.error(`Invalid format in line: ${line}`);
+        console.error(`Formato inválido en la línea: ${line}`);
         return;
       }
+
 
       const address = parseInt(parts[0].trim(), 16);
       const binaryValue = parts[1].trim();
 
       if (binaryValue.length !== 32 || !/^[01]+$/.test(binaryValue)) {
-        console.error(`Invalid value in line: ${line}`);
+        console.error(`Valor inválido en la línea: ${line}`);
         return;
       }
+
 
       const value0 = binaryValue.slice(24, 32);
       const value1 = binaryValue.slice(16, 24);
       const value2 = binaryValue.slice(8, 16);
       const value3 = binaryValue.slice(0, 8);
+
 
       const hex0 = parseInt(value0, 2).toString(16).padStart(2, '0');
       const hex1 = parseInt(value1, 2).toString(16).padStart(2, '0');
@@ -295,6 +286,7 @@ export class MemoryTable {
         hex: `${hex3}-${hex2}-${hex1}-${hex0}`.toUpperCase()
       });
     }
+
 
     this.table.updateOrAddData(newData);
   }
@@ -360,8 +352,6 @@ export class MemoryTable {
     });
   }
 
-
-
   public uploadProgram(ir: InternalRepresentation) {
     ir.instructions.reverse().forEach((instruction, index) => {
       const inst = instruction.inst.toString(16).toUpperCase();
@@ -422,5 +412,53 @@ export class MemoryTable {
     this.sp = mem[words - 1].address;
     mem.forEach((i) => { this.table.addRow(i, true); });
     this.updatePC(0);
+  }
+
+  public filterMemoryTableData(searchValue: string): void {
+    this.resetMemoryCellColors();
+    this.table.clearFilter(true);
+
+    const searchTerms = searchValue.split(/\s+/);
+
+    this.table.setFilter((data: any) => {
+      const addr = data.address?.toLowerCase() || '';
+      const value3 = data.value3?.toLowerCase() || '';
+      const value2 = data.value2?.toLowerCase() || '';
+      const value1 = data.value1?.toLowerCase() || '';
+      const value0 = data.value0?.toLowerCase() || '';
+      const hex = data.hex?.toLowerCase() || '';
+
+      return searchTerms.every(term =>
+        addr.includes(term) ||
+        value3.includes(term) ||
+        value2.includes(term) ||
+        value1.includes(term) ||
+        value0.includes(term) ||
+        hex.includes(term)
+      );
+    });
+
+    this.table.getRows().forEach(row => {
+      row.getCells().forEach(cell => {
+        let cellText = cell.getValue()?.toString() || '';
+        const lowerCellText = cellText.toLowerCase();
+        searchTerms.forEach(term => {
+          if (lowerCellText.includes(term)) {
+            const regex = new RegExp(`(${term})`, 'gi');
+            cellText = cellText.replace(regex, `<mark>$1</mark>`);
+          }
+        });
+
+        cell.getElement().innerHTML = cellText;
+      });
+    });
+  }
+
+  public resetMemoryCellColors(): void {
+    this.table.getRows().forEach(row => {
+      row.getCells().forEach(cell => {
+        cell.getElement().style.backgroundColor = '';
+      });
+    });
   }
 }
