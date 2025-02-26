@@ -80,19 +80,27 @@ export class MemoryTable {
     return this.memorySize - 1 - index;
   }
 
+  
   public updatePC(newPC: number) {
-    let PCRowIndex = this.toTableIndex(this.pc);
-    const pcRow = this.table.getRowFromPosition(PCRowIndex);
-    pcRow.update({
-      "info": `<span class="info-column-mem-table">NOPC</span>`
-    });
-    this.pc = newPC;
-    PCRowIndex = this.toTableIndex(this.pc);
-    const newPcRow = this.table.getRowFromPosition(PCRowIndex);
-    newPcRow.update({
-      "info": `<span class="info-column-mem-table">PC</span>`
-    });
+    const targetValue = (newPC * 4).toString(16).toUpperCase();
+    const foundRows = this.table.searchRows("address", "=", targetValue);
+  
+    if (foundRows.length > 0) {
+      const row = foundRows[0];
+      const cell = row.getCell("address");
+      if (cell) {
+        const cellElement = cell.getElement();
+        cellElement.classList.add('animate-pc');
+        
+        setTimeout(() => {
+          cellElement.classList.remove('animate-pc');
+        }, 500);
+      }
+    }
   }
+  
+  
+  
 
   private initializeTable(): Tabulator {
     return new Tabulator('#tabs-memory', {

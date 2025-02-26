@@ -52,7 +52,7 @@ function dispatch(
       break;
     case 'step':
       step(memoryTable, registersTable);
-      // memoryTable.updatePC(data.pc);
+      memoryTable.updatePC(data.pc);
       break;
     case 'setRegister':
       registersTable.setRegister(data.register, data.value);

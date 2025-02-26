@@ -778,6 +778,11 @@ mark {
   animation: flashAnimation 0.5s ease-out forwards;
 }
 
+.animate-pc{
+  background-color: #FFE4C2 !important;
+  animation: flashAnimation 0.5s ease-out forwards;
+}
+
 @keyframes flashAnimation {
   0% {
     transform: scale(1);
