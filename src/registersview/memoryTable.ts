@@ -399,6 +399,7 @@ export class MemoryTable {
 
   public filterMemoryTableData(searchValue: string): void {
     this.resetMemoryCellColors();
+    this.table.clearFilter(true);
 
     const searchTerms = searchValue.split(/\s+/);
 

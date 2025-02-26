@@ -213,6 +213,12 @@ export class UIManager {
    
    this.searchMemoryInput.addEventListener('input', () => {
       const searchValue = this.searchMemoryInput.value.trim().toLowerCase();
+
+
+    this.memoryTable.table.clearFilter(true);
+    this.memoryTable.resetMemoryCellColors();
+    this.memoryTable.table.redraw(true);
+
       if (searchValue === '') {
         this.memoryTable.table.clearFilter(true);
         this.memoryTable.resetMemoryCellColors();
