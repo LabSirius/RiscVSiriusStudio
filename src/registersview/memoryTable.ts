@@ -389,11 +389,6 @@ export class MemoryTable {
     mem.forEach((i) => { this.table.addRow(i, true); });
   }
 
-
-
-  
-
-  
   public filterMemoryTableData(searchValue: string): void {
     this.resetMemoryCellColors();
 
@@ -419,17 +414,20 @@ export class MemoryTable {
 
     this.table.getRows().forEach(row => {
       row.getCells().forEach(cell => {
-        const cellValue = cell.getValue()?.toString().toLowerCase() || '';
-        if (searchTerms.some(term => cellValue.includes(term))) {
-          cell.getElement().style.backgroundColor = '#D1E3E7';
-        }
+        let cellText = cell.getValue()?.toString() || '';
+        const lowerCellText = cellText.toLowerCase();
+        searchTerms.forEach(term => {
+          if (lowerCellText.includes(term)) {
+            const regex = new RegExp(`(${term})`, 'gi');
+            cellText = cellText.replace(regex, `<mark>$1</mark>`);
+          }
+        });
+    
+        cell.getElement().innerHTML = cellText;
       });
     });
   }
 
-  /**
-   * Restaura el color de fondo original de todas las celdas de la tabla.
-   */
   public resetMemoryCellColors(): void {
     this.table.getRows().forEach(row => {
       row.getCells().forEach(cell => {

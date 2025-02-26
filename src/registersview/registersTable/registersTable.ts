@@ -544,11 +544,15 @@ private readonly viewTypeFormatter = (
               (cellValue.includes(lowerSearch) ||
                 cellValue.includes(candidateFromDecimal) ||
                 cellValue.includes(candidateFromUnsigned))) {
-              cell.getElement().style.backgroundColor = "#D1E3E7";
+                  cell.getElement().style.backgroundColor = "#D1E3E7";
+                  cell.getElement().style.borderBottom = "0.5px solid gray";
+
             }
           } else {
             if ((field === "name" || field === "value") && cellValue.includes(lowerSearch)) {
               cell.getElement().style.backgroundColor = "#D1E3E7";
+              cell.getElement().style.borderBottom = "0.5px solid gray";
+
             }
           }
         });
@@ -560,6 +564,8 @@ private readonly viewTypeFormatter = (
     this.table.getRows().forEach(row => {
       row.getCells().forEach(cell => {
         cell.getElement().style.backgroundColor = "";
+        cell.getElement().style.borderBottom = "";
+
       });
     });
   }

@@ -751,6 +751,10 @@ html {
 }
 
 
+mark {
+    background-color: #D1E3E7;
+}
+
 
 .text-primary{
   color: #3A6973;
