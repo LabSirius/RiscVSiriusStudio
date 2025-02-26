@@ -177,21 +177,21 @@ export class MemoryTable {
   }
   
 
-  public disableEditors() {
-    const colDefs = this.getColumnDefinitions();
-
-    const newColDefs = colDefs.map((def) => {
-      if (def.field && def.field.startsWith('value')) {
-        return {
+  public disableEditors(): void {
+    this.table.getColumns().forEach(column => {
+      const def = column.getDefinition();
+      if (def.field && def.field.startsWith("value")) {
+        const currentlyVisible = column.isVisible ? column.isVisible() : true;
+        column.updateDefinition({
           ...def,
-          editor: undefined,   
+          editor: undefined,
           editable: () => false
-        };
+        });
+        if (!currentlyVisible) {
+          column.hide();
+        }
       }
-      return def;
     });
-    this.table.setColumns(newColDefs);
-
   }
 
  

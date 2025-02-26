@@ -49,6 +49,8 @@ export class UIManager {
   readonly importMemoryBtn: HTMLButtonElement;
   readonly fileInputImportMemory: HTMLInputElement;
 
+  readonly checkShowHexadecimal: HTMLInputElement;
+
   private _isSimulating: boolean;
   get isSimulating(): boolean {
     return this._isSimulating;
@@ -105,12 +107,15 @@ export class UIManager {
     this.importMemoryBtn = getElement<HTMLButtonElement>('importMemoryBtn');
     this.fileInputImportMemory = getElement<HTMLInputElement>('fileInputImportMemory');
 
+    this.checkShowHexadecimal = getElement<HTMLInputElement>('checkShowHexadecimal');
+
 
     this.initializeTopButtons();
-    this.setUpSearchInRegistersTable();
-    this.setupSearchInMemoryTable();
+    this.searchInRegistersTable();
+    this.searchInMemoryTable();
     this.initRegisterImport();
     this.initMemoryImport();
+    this.showHexadecimalInMemory();
     this.setUpHelp();
   }
 
@@ -184,7 +189,7 @@ export class UIManager {
     this.readOnlyConfig.classList.remove('hidden');
   }
 
-  private setUpSearchInRegistersTable() {
+  private searchInRegistersTable() {
     this.searchRegisterInput.addEventListener('input', () => {
       const input = this.searchRegisterInput.value.trim();
       if (input === '') {
@@ -204,7 +209,7 @@ export class UIManager {
     });
   }
 
-  private setupSearchInMemoryTable(): void {
+  private searchInMemoryTable(): void {
    
    this.searchMemoryInput.addEventListener('input', () => {
       const searchValue = this.searchMemoryInput.value.trim().toLowerCase();
@@ -232,7 +237,6 @@ export class UIManager {
         document.getElementById("fileInputImportRegister")?.click();
       });
 
-   
     this.fileInputImportRegister
       .addEventListener("change", (event) => {
         const input = event.target as HTMLInputElement;
@@ -263,7 +267,6 @@ export class UIManager {
         this.fileInputImportMemory.click();
       });
 
-
     this.fileInputImportMemory
       .addEventListener('change', (event) => {
         const input = event.target as HTMLInputElement;
@@ -287,13 +290,13 @@ export class UIManager {
             .filter(line => line !== '');
 
           if (lines.length === 0) {
-            alert('El archivo está vacío.');
+            console.log('Empty file');
             return;
           }
 
           const invalidLine = lines.find(line => !line.includes(':'));
           if (invalidLine) {
-            alert(`Formato inválido en la línea: ${invalidLine}`);
+            console.log(`Invalid format in line ${invalidLine}`);
             return;
           }
 
@@ -303,6 +306,22 @@ export class UIManager {
         reader.readAsText(file);
       });
   }
+
+  private showHexadecimalInMemory(): void {
+    const toggleColumn = () => {
+      const column = this.memoryTable.table.getColumn("hex");
+      if (column) {
+        this.checkShowHexadecimal.checked ? column.show() : column.hide();
+      }else{
+        console.log("LA COLUMNA NO EXISTEEE");
+      }
+    };
+  
+    this.checkShowHexadecimal.addEventListener("change", toggleColumn);
+    toggleColumn();
+  }
+
+  
 
 
   private setUpHelp() {
