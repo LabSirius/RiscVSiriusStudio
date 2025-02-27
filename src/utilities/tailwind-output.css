@@ -1125,6 +1125,11 @@ mark {
   font-size: 1rem;
 }
 
+.display-none{
+  display: none;
+
+}
+
 .block {
   display: block;
 }

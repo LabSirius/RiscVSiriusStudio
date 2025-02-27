@@ -17,8 +17,7 @@ async function detailsMessage(ir: any | undefined): Promise<MarkdownString | und
   markdown.isTrusted = true;
 
   if (!ir) {
-    markdown.appendMarkdown(`### Instrucción no definida\n`);
-    return markdown;
+    return;
   }
 
   console.log("IR: ", ir);

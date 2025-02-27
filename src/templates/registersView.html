@@ -171,10 +171,10 @@
                   
                   <div id="fromOptions" class="hidden">
                     <div  class="options-convert">
-                      <p class="option-convert" data-value="bin">Binary</p>
+                      <p class="option-convert" data-value="twoCompl">Two's complement</p>
                       <p class="option-convert" data-value="hex">Hexadecimal</p>
                       <p class="option-convert" data-value="dec">Decimal</p>
-                      <p class="option-convert" data-value="twoCompl">Two's complement</p>
+                    
                     </div>
                   </div>
 
@@ -189,10 +189,9 @@
                   </div>
                   <div id="toOptions" class="hidden">
                     <div class="options-convert">
-                      <p class="option-convert" data-value="bin">Binary</p>
+                      <p class="option-convert" data-value="twoCompl">Two's complement</p>
                       <p class="option-convert" data-value="hex">Hexadecimal</p>
                       <p class="option-convert" data-value="dec">Decimal</p>
-                      <p class="option-convert" data-value="twoCompl">Two's complement</p>
                     </div>
                   </div>
                 </div>
@@ -207,13 +206,20 @@
                   <input type="text" id="numberToconvertInput" class="input-value-convert" />
                 </div>
               </div>
+        
 
-              <div id="checkbox-swapContainer" class="flex gap-2 justify-between items-center">
-                <label id="checkbox32bits" class="flex items-center space-x-2 ">
-                  <input type="checkbox" name="bitOption" value="32">
-                  <span class=""label>In 32 bits</span>
-                </label>
-                <button class="swapButton sim-focus" id="SwapConvertBtn">Swap</button>
+              <div id="checkAndSwap" class="flex gap-4 justify-end items-center w-full">
+                <div id="checkIsNegativeContainer" class="display-none ">
+                  <div class="flex gap-2 items-start">
+                    <input type="checkbox" id="isNegative" class="cursor-pointer">
+                  <p class="label">Fill with ones (negative)</p>
+                  </div>
+                  
+                </div>
+
+                <div id="checkbox-swapContainer" class="flex gap-4 items-center">
+                  <button class="swapButton sim-focus" id="SwapConvertBtn">Swap</button>
+                </div>
               </div>
 
               <div class="flex flex-col gap-2">
