@@ -1,14 +1,15 @@
 class Converter {
-
   private checkIsNegativeContainer = document.getElementById('checkIsNegativeContainer') as HTMLDivElement;
   private isNegativeCheck = document.getElementById('isNegative') as HTMLInputElement;
   private numberInput = document.getElementById('numberToconvertInput') as HTMLInputElement;
   private fromInput = document.getElementById('fromConvertInput') as HTMLInputElement;
   private toInput = document.getElementById('toConvertInput') as HTMLInputElement;
   private resultInput = document.getElementById('resultConvertInput') as HTMLInputElement;
+  private optionsCopy = document.getElementById('options-copy') as HTMLUListElement;
+  private copyButton = document.getElementById('copyResultButton') as HTMLDivElement;
+  private closeOptionsCopy = document.getElementById('closeOptionsCopy') as HTMLDivElement;
 
   constructor() {
-
     this.setupDropdown('fromConvertInput', 'fromOptions', 'dec', 'Decimal');
     this.setupDropdown('toConvertInput', 'toOptions', 'hex', 'Hexadecimal');
 
@@ -46,7 +47,6 @@ class Converter {
         this.isNegativeCheck.checked = false;
         this.numberInput.value = '';
       }
-
     });
 
     this.isNegativeCheck.addEventListener('change', () => {
@@ -60,8 +60,7 @@ class Converter {
       }
     });
 
-    
-    this.setupCopyButton();
+    this.setupCopyButton(); 
   }
 
   private setupDropdown(
@@ -120,7 +119,7 @@ class Converter {
       });
     }
   }
-  private convertNumber(): void {
+  private convertNumber() {
     const fromBase = this.fromInput.dataset.value as string;
     const toBase = this.toInput.dataset.value as string;
     this.checkIsNegativeContainer.classList.toggle('hidden', fromBase !== 'twoCompl');
@@ -247,12 +246,72 @@ class Converter {
     }
   }
 
-  private setupCopyButton(): void {
-    const copyButton = document.getElementById('copyResultButton') as HTMLDivElement;
-    copyButton.addEventListener('click', () => {
-      navigator.clipboard.writeText(this.resultInput.value);
+  private setupCopyButton() {
+    this.copyButton.addEventListener('click', () => {
+      if (this.toInput.dataset.value === 'twoCompl') {
+        if (!this.optionsCopy.classList.contains('hidden')) {
+          this.optionsCopy.classList.add('hidden');
+          this.copyButton.classList.remove('hidden');
+          this.closeOptionsCopy.classList.add('hidden');
+        } else {
+          this.optionsCopy.classList.remove('hidden');
+          this.copyButton.classList.add('hidden');
+          this.closeOptionsCopy.classList.remove('hidden');
+        }
+      } else {
+        navigator.clipboard.writeText(this.resultInput.value);
+      }
+    });
+  
+    this.closeOptionsCopy.addEventListener('click', () => {
+      this.optionsCopy.classList.add('hidden');
+      this.copyButton.classList.remove('hidden');
+      this.closeOptionsCopy.classList.add('hidden');
+    });
+  
+    this.optionsCopy.querySelectorAll<HTMLLIElement>('.option-copy').forEach(option => {
+      option.addEventListener('click', () => {
+        const text = option.textContent?.trim();
+        let bitsToCopy: number;
+        
+        if (text === '32 bits') {
+          bitsToCopy = 32;
+        } else if (text === '16 bits') {
+          bitsToCopy = 16;
+        } else if (text === '8 bits') { 
+          bitsToCopy = 8;
+        } else {
+          return;
+        }
+  
+        const binary = this.resultInput.value.replace(/ /g, '');
+        let copyText: string;
+        
+        if (bitsToCopy === 32) {
+          copyText = binary;
+        } else {
+          copyText = binary.slice(-bitsToCopy);
+        }
+        
+        navigator.clipboard.writeText(copyText);
+        this.optionsCopy.classList.add('hidden');
+        this.copyButton.classList.remove('hidden');
+        this.closeOptionsCopy.classList.add('hidden'); 
+      });
+    });
+  
+    document.addEventListener('click', (e) => {
+      if (
+        !this.optionsCopy.contains(e.target as Node) &&
+        !this.copyButton.contains(e.target as Node)
+      ) {
+        this.optionsCopy.classList.add('hidden');
+        this.copyButton.classList.remove('hidden');
+        this.closeOptionsCopy.classList.add('hidden');
+      }
     });
   }
+
 }
 
 export function setUpConvert() {
