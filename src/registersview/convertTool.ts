@@ -1,6 +1,6 @@
 class Converter {
 
-  private checkContainer = document.getElementById('checkIsNegativeContainer') as HTMLDivElement;
+  private checkIsNegativeContainer = document.getElementById('checkIsNegativeContainer') as HTMLDivElement;
   private isNegativeCheck = document.getElementById('isNegative') as HTMLInputElement;
   private numberInput = document.getElementById('numberToconvertInput') as HTMLInputElement;
   private fromInput = document.getElementById('fromConvertInput') as HTMLInputElement;
@@ -12,7 +12,7 @@ class Converter {
     this.setupDropdown('fromConvertInput', 'fromOptions', 'dec', 'Decimal');
     this.setupDropdown('toConvertInput', 'toOptions', 'hex', 'Hexadecimal');
 
-    this.checkContainer.classList.add('hidden');
+    this.checkIsNegativeContainer.classList.add('hidden');
 
     document.addEventListener('click', this.handleInputClick);
     this.numberInput.addEventListener('input', () => {
@@ -33,25 +33,21 @@ class Converter {
     document.getElementById('SwapConvertBtn')?.addEventListener('click', () => {
       [this.fromInput.value, this.toInput.value] = [this.toInput.value, this.fromInput.value];
       [this.fromInput.dataset.value, this.toInput.dataset.value] = [this.toInput.dataset.value!, this.fromInput.dataset.value!];
-      this.checkContainer.classList.toggle('hidden', this.fromInput.dataset.value !== 'twoCompl');
+      this.checkIsNegativeContainer.classList.toggle('hidden', this.fromInput.dataset.value !== 'twoCompl');
       this.numberInput.value = '';
       this.resultInput.value = '';
 
       if (this.fromInput.dataset.value === 'twoCompl') {
-        this.checkContainer.classList.remove('display-none');
+        this.checkIsNegativeContainer.classList.remove('display-none');
         this.isNegativeCheck.checked = false;
         this.numberInput.value = '0000 0000 0000 0000 0000 0000 0000 0000';
       } else {
-        this.checkContainer.classList.add('display-none');
+        this.checkIsNegativeContainer.classList.add('display-none');
         this.isNegativeCheck.checked = false;
         this.numberInput.value = '';
       }
 
-      
-
-
-    }
-    );
+    });
 
     this.isNegativeCheck.addEventListener('change', () => {
       if (this.fromInput.dataset.value === 'twoCompl') {
@@ -63,6 +59,9 @@ class Converter {
         this.convertNumber();
       }
     });
+
+    
+    this.setupCopyButton();
   }
 
   private setupDropdown(
@@ -86,11 +85,11 @@ class Converter {
         optionsElement.classList.add('hidden');
         if (inputId === 'fromConvertInput') {
           if (target.dataset.value === 'twoCompl') {
-            this.checkContainer.classList.remove('display-none');
+            this.checkIsNegativeContainer.classList.remove('display-none');
             this.isNegativeCheck.checked = false;
             this.numberInput.value = '0000 0000 0000 0000 0000 0000 0000 0000';
           } else {
-            this.checkContainer.classList.add('display-none');
+            this.checkIsNegativeContainer.classList.add('display-none');
             this.isNegativeCheck.checked = false;
             this.numberInput.value = '';
           }
@@ -124,7 +123,7 @@ class Converter {
   private convertNumber(): void {
     const fromBase = this.fromInput.dataset.value as string;
     const toBase = this.toInput.dataset.value as string;
-    this.checkContainer.classList.toggle('hidden', fromBase !== 'twoCompl');
+    this.checkIsNegativeContainer.classList.toggle('hidden', fromBase !== 'twoCompl');
 
     if (fromBase === 'twoCompl') {
       const processed = this.processTwoComplementInput(this.numberInput.value);
@@ -246,6 +245,13 @@ class Converter {
       }
       this.resultInput.value = asciiStr;
     }
+  }
+
+  private setupCopyButton(): void {
+    const copyButton = document.getElementById('copyResultButton') as HTMLDivElement;
+    copyButton.addEventListener('click', () => {
+      navigator.clipboard.writeText(this.resultInput.value);
+    });
   }
 }
 
