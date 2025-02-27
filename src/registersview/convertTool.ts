@@ -38,15 +38,20 @@ class Converter {
       this.resultInput.value = '';
 
       if (this.fromInput.dataset.value === 'twoCompl') {
-        if (this.isNegativeCheck.checked) {
-          this.numberInput.value = '1111 1111 1111 1111 1111 1111 1111 1111';
-        } else {
-          this.numberInput.value = '0000 0000 0000 0000 0000 0000 0000 0000';
-        }
-        this.convertNumber();
+        this.checkContainer.classList.remove('display-none');
+        this.isNegativeCheck.checked = false;
+        this.numberInput.value = '0000 0000 0000 0000 0000 0000 0000 0000';
+      } else {
+        this.checkContainer.classList.add('display-none');
+        this.isNegativeCheck.checked = false;
+        this.numberInput.value = '';
       }
-      this.convertNumber();
-    });
+
+      
+
+
+    }
+    );
 
     this.isNegativeCheck.addEventListener('change', () => {
       if (this.fromInput.dataset.value === 'twoCompl') {
