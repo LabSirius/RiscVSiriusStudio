@@ -336,10 +336,6 @@ textarea {
 Remove the inheritance of text transform in Edge and Firefox.
 */
 
-,
-select {
-  text-transform: none;
-}
 
 /*
 1. Correct the inability to style clickable types in iOS and Safari.
@@ -482,19 +478,7 @@ Make sure disabled buttons don't get the pointer cursor.
    This can trigger a poorly considered lint error in some tools but is included by design.
 */
 
-img,
-svg,
-video,
-canvas,
-audio,
-iframe,
-embed,
-object {
-  display: block;
-  /* 1 */
-  vertical-align: middle;
-  /* 2 */
-}
+
 
 /*
 Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
@@ -971,13 +955,20 @@ mark {
 }
 
 .swapButton{
-
+  text-align: center;
   background-color: #3A6973;
   color: white;
   border-color: #3A6973;
   border-radius: .5rem;
-  padding: .5rem .7rem;
+  padding: .4rem;
   cursor: pointer;
+
+}
+.swap-container{
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
 
 }
 
@@ -989,6 +980,7 @@ mark {
 
 .input-convert-result{
   padding: .5rem;
+  padding-right: 2.2rem;
   border-radius: .5rem;
   width: 22rem;
   background-color: #D1E3E7;
@@ -1180,6 +1172,10 @@ mark {
 
 .h-7 {
   height: 1.75rem;
+}
+
+.h-10{
+  height: 2.5rem;
 }
 
 .h-full {

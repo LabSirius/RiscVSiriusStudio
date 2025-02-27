@@ -175,6 +175,7 @@
                       <p class="option-convert" data-value="twoCompl">Two's complement</p>
                       <p class="option-convert" data-value="hex">Hexadecimal</p>
                       <p class="option-convert" data-value="dec">Decimal</p>
+                      <p class="option-convert" data-value="ascii">ASCII</p>
                     
                     </div>
                   </div>
@@ -193,6 +194,7 @@
                       <p class="option-convert" data-value="twoCompl">Two's complement</p>
                       <p class="option-convert" data-value="hex">Hexadecimal</p>
                       <p class="option-convert" data-value="dec">Decimal</p>
+                      <p class="option-convert" data-value="ascii">ASCII</p>
                     </div>
                   </div>
                 </div>
@@ -209,7 +211,7 @@
               </div>
         
 
-              <div id="checkAndSwap" class="flex gap-4 justify-end items-center w-full">
+              <div  class="flex gap-4 justify-between items-center w-full relative h-10">
                 <div id="checkIsNegativeContainer" class="display-none ">
                   <div class="flex gap-2 items-center">
                     <input type="checkbox" id="isNegative" class="cursor-pointer">
@@ -218,8 +220,10 @@
                   
                 </div>
 
-                <div id="checkbox-swapContainer" class="flex gap-4 items-center">
-                  <button class="swapButton sim-focus" id="SwapConvertBtn">Swap</button>
+                <div id="checkbox-swapContainer" class="swap-container">
+                  <button class="swapButton sim-focus" id="SwapConvertBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>
+                  </button>
                 </div>
               </div>
 
