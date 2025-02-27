@@ -21,6 +21,7 @@ import { RVDocument } from '../rvDocument';
 import { EncoderDecorator } from '../encoderDecorator';
 import { ConfigurationManager } from './configurationManager';
 import { SimulationParameters, Simulator, TextSimulator } from '../Simulator';
+import { intToBinary } from '../utilities/conversions';
 
 
 
@@ -44,6 +45,9 @@ export class RVContext {
   }
   private _mainWebviewView: Webview | undefined;
   get mainWebviewView(): Webview {
+    if (!this._mainWebviewView) {
+      throw new Error("Main view is not initialized");
+    }
     return this._mainWebviewView as Webview;
   }
   private _mainViewIsFirstTimeVisible = true;
@@ -53,6 +57,12 @@ export class RVContext {
   // Simulation attributes
   private _isSimulating: boolean;
   private _simulator: Simulator | undefined;
+  get simulator(): Simulator {
+    if (!this._simulator) {
+      throw new Error("Simulator is not initialized");
+    }
+    return this._simulator;
+  }
 
   static create(context: ExtensionContext): RVContext {
     if (!RVContext.#instance) {
@@ -227,10 +237,10 @@ export class RVContext {
     }
     const settings: SimulationParameters = {
       memorySize: 128,
-      stackPointerAddress: 124
     };
     // From now on the editor must be read only
     const simulator: Simulator = new TextSimulator(settings, rvDoc, this);
+
 
     // This tells vscode that the extension is simulating and in turn some
     // commands get enabled.
@@ -239,18 +249,32 @@ export class RVContext {
     simulator.start();
   }
 
+  private memorySizeChanged(newSize: number) {
+    this.simulator.resizeMemory(newSize);
+    /**
+     * TODO: This should only be called when the user wants sp to actually
+     * represent the stack pointer.
+     */
+    this.mainWebviewView.postMessage({
+      operation: "setRegister",
+      register: 'x2',
+      value: intToBinary(96)
+    });
+  }
   /**
    * This method is in charge of dispatching events sent by the main view.
    */
   public dispatchMainViewEvent(message: any) {
-    switch (message.name) {
+    switch (message.event) {
       case "memorySizeChanged":
+        console.log(`%c[Mainview}]\n`, 'color:yellow', message);
+        this.memorySizeChanged(message.value);
         break;
       case "clickOpenRISCVCard":
         RiscCardPanel.riscCard(this.extensionContext.extensionUri);
         break;
       default:
-        console.log("Unknown event received at context");
+        console.log(`%c[Mainview-unknown event received at context}]\n`, 'color:green', message);
         break;
 
 

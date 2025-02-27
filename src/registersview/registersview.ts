@@ -47,8 +47,8 @@ function dispatch(
   log({ msg: 'Dispatching message', data: event.data });
   const data = event.data;
   switch (data.operation) {
-    case 'uploadProgram':
-      uploadProgram(memoryTable, registersTable, data.program);
+    case 'uploadMemory':
+      uploadMemory(memoryTable, registersTable, data.memory, data.codeSize, data.symbols);
       break;
     case 'step':
       step(memoryTable, registersTable, data.pc);
@@ -63,10 +63,12 @@ function dispatch(
   }
 }
 
-function uploadProgram(memoryTable: MemoryTable, registersTable: RegistersTable, ir: InternalRepresentation): void {
+function uploadMemory(
+  memoryTable: MemoryTable, registersTable: RegistersTable,
+  memory: string[], codeSize: number, symbols: any[]): void {
   UIManager.getInstance().configuration();
-  memoryTable.uploadProgram(ir);
-  memoryTable.allocateMemory();
+  memoryTable.uploadMemory(memory, codeSize, symbols);
+  // memoryTable.allocateMemory();
 }
 
 function step(memoryTable: MemoryTable, registersTable: RegistersTable, pc: number): void {
@@ -99,7 +101,7 @@ function setupSettings(memoryTable: MemoryTable) {
     }
     sendMessageToExtension({
       command: 'event',
-      object: { name: 'memorySizeChanged', value: inputMemorySize.value }
+      object: { event: 'memorySizeChanged', value: inputMemorySize.value }
     });
     const newSize = Number.parseInt(inputMemorySize.value);
     memoryTable.resizeMemory(newSize);

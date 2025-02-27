@@ -10,11 +10,11 @@ import {
   writesDM,
   writesRU
 } from "./utilities/instructions";
+import { binaryToInt } from "./utilities/conversions";
 
 
 export type SimulationParameters = {
   memorySize: number;
-  stackPointerAddress: number;
 };
 
 export class Simulator {
@@ -55,7 +55,7 @@ export class Simulator {
     this._context = context;
     this.rvDoc = rvDoc;
     if (!rvDoc.ir) { throw new Error("RVDocument has no IR"); }
-    this.cpu = new SCCPU(rvDoc.ir.instructions, simParams.memorySize, simParams.stackPointerAddress);
+    this.cpu = new SCCPU(rvDoc.ir.instructions, simParams.memorySize);
     this._configured = false;
   }
 
@@ -227,14 +227,20 @@ export class TextSimulator extends Simulator {
       commands.executeCommand(`rv-simulator.riscv.focus`);
       return;
     } else {
-      mainView.postMessage(
-        {
-          operation: 'uploadProgram',
-          program: this.rvDoc.ir,
-        });
+      // Upload memory to webview
+      mainView.postMessage({
+        operation: 'uploadMemory',
+        memory: this.cpu.getDataMemory().getMemory(),
+        codeSize: this.cpu.getDataMemory().codeSize,
+        symbols: this.rvDoc.ir.symbols
+      });
       console.log("Simulator start ", this.cpu.currentInstruction());
       this.makeEditorReadOnly();
       super.start();
+      // upload sp information to  webview
+      mainView.postMessage({ operation: 'setRegister', register: 'x2', value: this.cpu.getDataMemory().spInitialAddress });
+
+      // decorate the text editor
       const currentInst = this.cpu.currentInstruction();
       const lineNumber = this.rvDoc.getLineForIR(currentInst);
 
@@ -267,6 +273,21 @@ export class TextSimulator extends Simulator {
   }
 
   public notifyRegisterWrite(register: string, value: string) {
+    // Warn the user if the register has a special meaning and the new value is
+    // not valid
+    // debugger;
+    // const address = Number.parseInt(binaryToInt(value));
+    // if (register === 'x2' && !this.cpu.getDataMemory().validAddress(address)) {
+    //   const message = `Address ${address} is not valid for the current memory settings`;
+    //   window.showErrorMessage(message);
+    // }
+    // const valueAsNumber = parseInt(value, 2);
+    // if (register === 'x2' && !this.cpu.getDataMemory().validAAddress(value)) {
+    //   const message = `Invalid PC value: ${value}`;
+    //   window.showErrorMessage(message);
+    // }
+
+    //  Notify the main view that the register has been updated
     this.sendToMainView({
       operation: 'setRegister',
       register: register,

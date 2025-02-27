@@ -24,7 +24,7 @@ import {
   isIJump,
   isAUIPC
 } from '../utilities/instructions';
-
+import { chunk } from 'lodash';
 import { ALU32 } from './alu32';
 import { binaryToInt, intToBinary } from '../utilities/conversions';
 
@@ -65,21 +65,60 @@ class RegistersFile {
 
 class DataMemory {
   private memory: Array<string>;
-  private size: number;
+  public getMemory(): Array<string> { return [... this.memory]; }
+  /**
+   * Last address in memory of the code area.
+   *
+   * Code is always stored in the lowest part of the memory. For this reason,
+   * code area size is codeAreaEnd + 1.
+   */
+  private codeAreaEnd: number;
+  get codeSize() { return this.codeAreaEnd + 1; }
 
-  public constructor(size: number) {
-    this.memory = [];
+  private size: number;
+  get memSize() { return this.size; }
+  get spInitialAddress() { return this.codeSize + this.size - 1; }
+
+  public constructor(codeSize: number, size: number) {
+    this.codeAreaEnd = codeSize - 1;
     this.size = 0;
+    this.memory = [];
     this.resize(size);
   }
 
   public resize(size: number) {
-    this.memory = new Array(size).fill('00000000');
     this.size = size;
+    // Ensure there is always space for the code area
+    const totalSize = this.codeSize + this.memSize;
+    this.memory = new Array(totalSize).fill('00000000');
+  }
+
+  /**
+   * Writes the program into the memory.
+   * 
+   * Assumes memory is big enough to store the program.
+   * 
+   * @param program intermediate representation of the program
+   */
+  public uploadProgram(program: Array<any>) {
+    program.forEach((instruction, index) => {
+      const encodingString = instruction.encoding.binEncoding;
+      const words = chunk(encodingString.split(''), 8).map(group => group.join(''));
+      words.forEach((w, i) => {
+        const address = index * 4 + i;
+        this.memory[address] = w;
+      });
+    });
+    console.table(this.memory);
+    console.log(`Program uploaded. initial sp ${this.spInitialAddress} `);
   }
 
   public lastAddress() {
     return this.size - 1;
+  }
+
+  public validAddress(address: number) {
+    return this.canWrite(1, address);
   }
 
   /**
@@ -245,17 +284,19 @@ export class SCCPU {
   // TODO: transform into a javascript get
   public getPC() { return this.pc; }
 
-  public constructor(program: any[], memSize: number, sp: number) {
+  public constructor(program: any[], memSize: number) {
     console.log('Program to execute: ', program);
     this._program = program.filter((sc) => {
       return sc.kind === 'SrcInstruction';
     });
 
     this.registers = new RegistersFile();
-    // Set the initial value of the stack pointer
-    this.registers.writeRegister('x2', sp.toString(2).padStart(32, '0'));
-    this.dataMemory = new DataMemory(memSize);
+
+    this.dataMemory = new DataMemory(program.length * 4, memSize);
+    this.dataMemory.uploadProgram(this.program);
     this.pc = 0;
+    // Set the initial value of the stack pointer
+    this.registers.writeRegister('x2', intToBinary(memSize));
   }
 
   public currentInstruction() {

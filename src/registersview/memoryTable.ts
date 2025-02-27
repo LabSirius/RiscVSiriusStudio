@@ -7,7 +7,7 @@ import {
   CellComponent,
 } from 'tabulator-tables';
 
-
+import { intToHex, binaryToHex } from '../utilities/conversions';
 import { range, chunk, times } from 'lodash';
 import { InternalRepresentation } from '../utilities/riscvc';
 
@@ -352,28 +352,48 @@ export class MemoryTable {
     });
   }
 
-  public uploadProgram(ir: InternalRepresentation) {
-    ir.instructions.reverse().forEach((instruction, index) => {
-      const inst = instruction.inst.toString(16).toUpperCase();
-      const binaryString = instruction.encoding.binEncoding;
-      const hexString = instruction.encoding.hexEncoding;
-      const words = chunk(binaryString.split(''), 8).map(group => group.join(''));
-
+  public uploadMemory(memory: string[], codeSize: number, symbols: any[]) {
+    const memorySize = memory.length;
+    chunk(memory.reverse(), 4).forEach((word, index) => {
+      const address = intToHex(index * 4).toUpperCase();
+      const whex = binaryToHex(word.join(''));
       this.table.updateOrAddRow(
-        inst,
+        address,
         {
-          "address": inst,
-          "value0": words[3], "value1": words[2],
-          "value2": words[1], "value3": words[0],
-          "info": "", "hex": hexString
+          "address": address,
+          "value0": word[0], "value1": word[1],
+          "value2": word[2], "value3": word[3],
+          "info": "", "hex": whex
         });
-      this.table.getRow(inst).getElement().style.backgroundColor = "#FFF6E5";
-      this.codeAreaEnd = inst;
+      if ((memorySize - (index * 4) - 1) < codeSize) {
+        this.table.getRow(address).getElement().style.backgroundColor = "#FFF6E5";
+      }
+
     });
 
-    this.labels = new Array(this.table.getDataCount()).fill("");
-    Object.values(ir.symbols).forEach((symbol: any) => {
-      const memdefHex = (symbol.memdef !== undefined ? symbol.memdef : 0).toString(16).toUpperCase();
+    // heap label
+    const heapAddress = (memorySize - 4 - codeSize);
+    const heapAddressHex = intToHex(heapAddress).toUpperCase();
+    this.table.updateOrAddRow(
+      heapAddressHex,
+      {
+        "info": `<span class="info-column-mem-table">Heap</span>`
+      }
+    );
+    // sp label
+    const spAddressHex = intToHex(0).toUpperCase();
+    this.table.updateOrAddRow(
+      spAddressHex,
+      {
+        "info": `<span class="info-column-mem-table">sp</span>`
+      }
+    );
+
+    // this.labels = new Array(this.table.getDataCount()).fill("");
+    // code labels
+    Object.values(symbols).forEach((symbol: any) => {
+      const address = (memorySize - 4 - symbol.memdef);
+      const memdefHex = intToHex(address).toUpperCase();
       this.table.updateOrAddRow(
         memdefHex,
         {
