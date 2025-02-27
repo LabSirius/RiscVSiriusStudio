@@ -50,6 +50,7 @@ export class UIManager {
   readonly fileInputImportMemory: HTMLInputElement;
 
   readonly checkShowHexadecimal: HTMLInputElement;
+  readonly checkEndSimulation: HTMLInputElement;
 
   private _isSimulating: boolean;
   get isSimulating(): boolean {
@@ -108,6 +109,7 @@ export class UIManager {
     this.fileInputImportMemory = getElement<HTMLInputElement>('fileInputImportMemory');
 
     this.checkShowHexadecimal = getElement<HTMLInputElement>('checkShowHexadecimal');
+    this.checkEndSimulation = getElement<HTMLInputElement>('checkEndSimulation');
 
 
     this.initializeTopButtons();
@@ -319,15 +321,20 @@ export class UIManager {
       if (column) {
         this.checkShowHexadecimal.checked ? column.show() : column.hide();
       }else{
-        console.log("LA COLUMNA NO EXISTEEE");
+        throw Error("Column not found");
       }
     };
-  
     this.checkShowHexadecimal.addEventListener("change", toggleColumn);
     toggleColumn();
   }
 
-  
+  //TODO: Implement logic to terminate simulation if available memory is exceeded
+  private endSimulation(): void {
+
+  }
+
+
+    
 
 
   private setUpHelp() {
