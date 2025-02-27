@@ -321,7 +321,7 @@ export class UIManager {
       if (column) {
         this.checkShowHexadecimal.checked ? column.show() : column.hide();
       }else{
-        throw Error("Column not found");
+        console.log("Column not found");
       }
     };
     this.checkShowHexadecimal.addEventListener("change", toggleColumn);
