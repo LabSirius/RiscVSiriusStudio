@@ -716,6 +716,35 @@ html {
   --bc: 74.6477% 0.0216 264.435964;
 }
 
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: white;
+  border: 1px solid #ccc; /* Se añade un borde para que sea visible */
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border: 1px solid #F4A261;
+  border-radius: 3px;
+  position: relative;
+}
+
+
+
+/* Dibujar la marca de verificación */
+input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 6px;
+  height: 10px;
+  border: solid #3A6973;
+  border-width: 0 2px 2px 0; /* Define el grosor de la línea para formar la marca */
+  transform: rotate(45deg);
+}
+
+
 .container {
   width: 100%;
 }
@@ -779,7 +808,6 @@ mark {
 }
 
 .animate-pc{
-  background-color: #FFE4C2 !important;
   animation: flashAnimation 0.5s ease-out forwards;
 }
 
