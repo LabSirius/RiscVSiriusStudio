@@ -82,16 +82,40 @@ export class MemoryTable {
 
   
   public updatePC(newPC: number) {
+    const allIcons = document.querySelectorAll('.pc-icon');
+    allIcons.forEach(icon => icon.remove());
+  
     const targetValue = (newPC * 4).toString(16).toUpperCase();
     const foundRows = this.table.searchRows("address", "=", targetValue);
-  
+    
     if (foundRows.length > 0) {
       const row = foundRows[0];
       const cell = row.getCell("address");
       if (cell) {
         const cellElement = cell.getElement();
-        cellElement.classList.add('animate-pc');
+  
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'pc-icon';
         
+        iconSpan.style.position = 'absolute';
+        iconSpan.style.top = '50%';
+        iconSpan.style.right = '5px';
+        iconSpan.style.transform = 'translateY(-50%)';
+        
+        iconSpan.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-locate">
+                                <line x1="2" x2="5" y1="12" y2="12"></line>
+                                <line x1="19" x2="22" y1="12" y2="12"></line>
+                                <line x1="12" x2="12" y1="2" y2="5"></line>
+                                <line x1="12" x2="12" y1="19" y2="22"></line>
+                                <circle cx="12" cy="12" r="7"></circle>
+                              </svg>`;
+        
+        cellElement.appendChild(iconSpan);
+        
+        cellElement.classList.add('animate-pc');
+        void cellElement.offsetWidth;
         setTimeout(() => {
           cellElement.classList.remove('animate-pc');
         }, 500);
@@ -100,8 +124,6 @@ export class MemoryTable {
   }
   
   
-  
-
   private initializeTable(): Tabulator {
     return new Tabulator('#tabs-memory', {
       layout: 'fitColumns',
@@ -336,14 +358,13 @@ export class MemoryTable {
       }
     });
   }
-  
   public uploadProgram(ir: InternalRepresentation) {
     ir.instructions.reverse().forEach((instruction, index) => {
       const inst = instruction.inst.toString(16).toUpperCase();
       const binaryString = instruction.encoding.binEncoding;
       const hexString = instruction.encoding.hexEncoding;
       const words = chunk(binaryString.split(''), 8).map(group => group.join(''));
-
+  
       this.table.updateOrAddRow(
         inst,
         {
@@ -351,13 +372,16 @@ export class MemoryTable {
           "value0": words[3], "value1": words[2],
           "value2": words[1], "value3": words[0],
           "info": "", "hex": hexString
-        });
+        }
+      );
       this.table.getRow(inst).getElement().style.backgroundColor = "#FFF6E5";
       this.codeAreaEnd = inst;
     });
-
+  
     Object.values(ir.symbols).forEach((symbol: any) => {
-      const memdefHex = (symbol.memdef !== undefined ? symbol.memdef : 0).toString(16).toUpperCase();
+      const memdefHex = (symbol.memdef !== undefined ? symbol.memdef : 0)
+        .toString(16)
+        .toUpperCase();
       this.table.updateOrAddRow(
         memdefHex,
         {
@@ -365,6 +389,7 @@ export class MemoryTable {
         }
       );
     });
+
   }
 
   public allocateMemory() {
@@ -396,6 +421,7 @@ export class MemoryTable {
 
     mem.forEach((i) => { this.table.addRow(i, true); });
   }
+
 
   public filterMemoryTableData(searchValue: string): void {
     this.resetMemoryCellColors();
