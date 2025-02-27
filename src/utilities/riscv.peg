@@ -489,8 +489,11 @@
     }
     / inst:PseudoInstruction 
     {
-      console.error("Pseudo instructions are not yet implemented");
-      if (isFirstPass) { return undefined; }
+      // console.error("Pseudo instructions are not yet implemented");
+      if (isFirstPass) { 
+        getInstMemPosition();
+        return undefined; 
+        }
       inst["asm"] = text();
       return inst;
     }
@@ -603,6 +606,11 @@
     { 
       if (isFirstPass) { return undefined; }
       return handleBPInstruction(name, rs, null, offset, location()); 
+    }
+    / name:BPZInstName _ rs:RegisterName ___ target:BTarget
+    { 
+      if (isFirstPass) { return undefined; }
+      return handleBPInstruction(name, rs, null, target, location()); 
     }
     / name:BPInstName _ rs1:RegisterName ___ rs2:RegisterName ___ offset:Imm13 
     { 
