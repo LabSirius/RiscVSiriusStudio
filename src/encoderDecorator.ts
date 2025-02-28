@@ -73,11 +73,11 @@ async function detailsMessage(ir: any | undefined): Promise<MarkdownString | und
 
 
     case "B":
-      let imm12 = encoding["imm12"];
-      let immSub12 = imm12[0];
-      let immSub10to5 = imm12.substring(1, 7);
-      let immSub4to1 = imm12.substring(7, 11);
-      let immSub11 = imm12[11];
+      let imm13 = encoding["imm13"];
+      let immSub12 = imm13[0];
+      let immSub10to5 = imm13.substring(1, 7);
+      let immSub4to1 = imm13.substring(7, 11);
+      let immSub11 = imm13[11];
 
       markdown.appendMarkdown("```\n\n");
       markdown.appendMarkdown("imm[12]   imm[10:5]   rs2     rs1     funct3   imm[4:1]   imm[11]   opcode  \n");
@@ -145,6 +145,7 @@ export class EncoderDecorator {
     const ml = EncoderDecorator.maxLength(editor.document);
 
     async function updateDecorations() {
+      debugger;
       const decorations = [];
       for (let i = 0; i < editor.document.lineCount; i++) {
         const line = editor.document.lineAt(i);
