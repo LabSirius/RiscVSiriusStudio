@@ -88,35 +88,35 @@ export class RegistersTable {
  * unwatched registers.
  */
   private readonly headerGrouping = (
-  value: boolean,
-  count: number,
-  data: any,
-  group: GroupComponent
-) => {
-  let watchStr = 'Watched';
-  if (!value) {
-    watchStr = 'Unwatched';
-  }
-  return watchStr + '  (' + count + ' registers)';
-};
+    value: boolean,
+    count: number,
+    data: any,
+    group: GroupComponent
+  ) => {
+    let watchStr = 'Watched';
+    if (!value) {
+      watchStr = 'Unwatched';
+    }
+    return watchStr + '  (' + count + ' registers)';
+  };
 
- /**
- * Formatter for the column containing the register's name.
- *
- * This is just for the text. The style is modified using css.
- * @param cell to format
- * @param formatterParams not used
- * @param onRendered not used
- * @returns the name for the register in the view
- */
+  /**
+  * Formatter for the column containing the register's name.
+  *
+  * This is just for the text. The style is modified using css.
+  * @param cell to format
+  * @param formatterParams not used
+  * @param onRendered not used
+  * @returns the name for the register in the view
+  */
   private readonly registerNamesFormatter = (
-  cell: CellComponent,
-  formatterParams: any,
-  onRendered: any
-)  => {
-  const { name } = cell.getData();
-  const [xname, abiname] = name.split(' ');
-  return xname + ' (' + abiname + ')';
+    cell: CellComponent,
+    formatterParams: any,
+    onRendered: any
+  ) => {
+    const { name } = cell.getData();
+    const [xname, abiname] = name.split(' ');
+    return xname + ' (' + abiname + ')';
   };
 
   /**
@@ -127,7 +127,7 @@ export class RegistersTable {
    * @param onRendered not used
    * @returns the text to display in the view
    */
-    private readonly valueFormatter = (
+  private readonly valueFormatter = (
     cell: CellComponent,
     formatterParams: any,
     onRendered: any
@@ -166,157 +166,157 @@ export class RegistersTable {
  * @returns
  */
   private readonly valueRegisterEditor = (
-  cell: CellComponent,
-  onRendered: any,
-  success: any,
-  cancel: any,
-  editorParams: any
-) => {
-  const { name, value, viewType } = cell.getRow().getData();
+    cell: CellComponent,
+    onRendered: any,
+    success: any,
+    cancel: any,
+    editorParams: any
+  ) => {
+    const { name, value, viewType } = cell.getRow().getData();
 
-  // log('info', {
-  //   msg: 'valueEditor called',
-  //   rawValue: value,
-  //   currentVType: viewType,
-  //   reg: name
-  // });
-  const viewValue = this.formatValueAsType(value, viewType);
-
-  let editor = document.createElement('input');
-  editor.className = 'register-editor';
-  editor.value = viewValue;
-  editor.select();
-
-  onRendered(function () {
-    editor.focus();
-  });
-
-  const successFunc = () => {
-    const newValue = editor.value;
-    const valid = this.isValidAs(newValue, viewType);
     // log('info', {
-    //   msg: 'called success function',
-    //   check: valid,
-    //   newValue: newValue,
-    //   type: viewType
+    //   msg: 'valueEditor called',
+    //   rawValue: value,
+    //   currentVType: viewType,
+    //   reg: name
     // });
-    if (valid) {
-      const bin = toBinary(newValue, viewType);
-      success(bin);
-    } else {
+    const viewValue = this.formatValueAsType(value, viewType);
+
+    let editor = document.createElement('input');
+    editor.className = 'register-editor';
+    editor.value = viewValue;
+    editor.select();
+
+    onRendered(function () {
       editor.focus();
-      editor.className = 'register-editor-error';
-    }
+    });
+
+    const successFunc = () => {
+      const newValue = editor.value;
+      const valid = this.isValidAs(newValue, viewType);
+      // log('info', {
+      //   msg: 'called success function',
+      //   check: valid,
+      //   newValue: newValue,
+      //   type: viewType
+      // });
+      if (valid) {
+        const bin = toBinary(newValue, viewType);
+        success(bin);
+      } else {
+        editor.focus();
+        editor.className = 'register-editor-error';
+      }
+    };
+
+    editor.addEventListener('change', successFunc);
+    editor.addEventListener('blur', successFunc);
+    editor.addEventListener('keydown', (evt) => {
+      if (evt.key === 'Escape') {
+        cancel();
+      }
+    });
+    return editor;
   };
 
-  editor.addEventListener('change', successFunc);
-  editor.addEventListener('blur', successFunc);
-  editor.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape') {
-      cancel();
+  /**
+    * Tests whether the binary representation of value is a valid for the cpu.
+    * @param value value representation
+    * @param valType format in which the value is represented
+    * @returns
+    */
+  private isValidAs = (value: string, valType: RegisterView) => {
+    switch (valType) {
+      case 2:
+        return validBinary(value);
+      case 'unsigned':
+        return validUInt32(value);
+      case 'signed':
+        return validInt32(value);
+      case 16:
+        return validHex(value);
+      case 'ascii':
+        return validAscii(value);
     }
-  });
-  return editor;
-};
+    // log('info', { msg: 'none of the test matched', type: valType });
+    return false;
+  };
 
- /**
-   * Tests whether the binary representation of value is a valid for the cpu.
-   * @param value value representation
-   * @param valType format in which the value is represented
-   * @returns
+
+  /**
+     * Computes the representation of value according to view.
+     * @param value value in binary format.
+     * @param type the requested type.
+     * @returns the value represented in the requested type.
+     */
+  private readonly formatValueAsType = (value: string, type: RegisterView): string => {
+    switch (type) {
+      case 'unsigned':
+        return binaryToUInt(value);
+      case 'signed':
+        return binaryToInt(value);
+      case 16:
+        return binaryToHex(value);
+      case 'ascii':
+        return binaryToAscii(value);
+    }
+    // type must be binary
+    return value;
+  };
+
+
+  /**
+   *
+   * @param cell Function called by tabulator to decide whether a cell can be edited.
    */
-  private isValidAs = (value: string, valType: RegisterView) => { 
-  switch (valType) {
-    case 2:
-      return validBinary(value);
-    case 'unsigned':
-      return validUInt32(value);
-    case 'signed':
-      return validInt32(value);
-    case 16:
-      return validHex(value);
-    case 'ascii':
-      return validAscii(value);
-  }
-  // log('info', { msg: 'none of the test matched', type: valType });
-  return false;
-};
+  private readonly editableValue = (cell: CellComponent) => {
+    const { name } = cell.getRow().getData();
+    return name !== 'x0 zero';
+  };
 
-
-/**
-   * Computes the representation of value according to view.
-   * @param value value in binary format.
-   * @param type the requested type.
-   * @returns the value represented in the requested type.
+  /**
+   * Triggers format on the register value when a cell in the view type is
+   * detected. This will call {@function formatValueAsType} to refresh the view of
+   * the register value according to the new view type.
+   * @param cell modified view type cell
    */
-private readonly formatValueAsType = (value: string, type: RegisterView): string => {
-  switch (type) {
-    case 'unsigned':
-      return binaryToUInt(value);
-    case 'signed':
-      return binaryToInt(value);
-    case 16:
-      return binaryToHex(value);
-    case 'ascii':
-      return binaryToAscii(value);
-  }
-  // type must be binary
-  return value;
-};
+  private readonly viewTypeEdited = (cell: CellComponent) => {
+    cell.getRow().reformat();
+  };
 
-
-/**
- *
- * @param cell Function called by tabulator to decide whether a cell can be edited.
- */
- private readonly editableValue = (cell: CellComponent) => { 
-  const { name } = cell.getRow().getData();
-  return name !== 'x0 zero';
-};
-
-/**
- * Triggers format on the register value when a cell in the view type is
- * detected. This will call {@function formatValueAsType} to refresh the view of
- * the register value according to the new view type.
- * @param cell modified view type cell
- */
- private readonly viewTypeEdited = (cell: CellComponent) => { 
-  cell.getRow().reformat();
-};
-
-/**
- * Formats the elements in the type column.
- * @param cell to be rendered
- * @param formatterParams not used
- * @param onRendered not used
- * @returns html code for the rendered view
- */
-private readonly viewTypeFormatter = ( 
-  cell: CellComponent,
-  formatterParams: any,
-  onRendered: any
-) => {
-  const { viewType } = cell.getData();
-  let tag: string = '';
-  switch (viewType) {
-    case 2:
-      tag = 'bin';
-      break;
-    case 'unsigned':
-      tag = '10';
-      break;
-    case 'signed':
-      tag = '±10';
-      break;
-    case 16:
-      tag = 'hex';
-      break;
-    default:
-      tag = viewType;
-      break;
-  }
-  return `<div >${tag}</div>`;
-};
+  /**
+   * Formats the elements in the type column.
+   * @param cell to be rendered
+   * @param formatterParams not used
+   * @param onRendered not used
+   * @returns html code for the rendered view
+   */
+  private readonly viewTypeFormatter = (
+    cell: CellComponent,
+    formatterParams: any,
+    onRendered: any
+  ) => {
+    const { viewType } = cell.getData();
+    let tag: string = '';
+    switch (viewType) {
+      case 2:
+        tag = 'bin';
+        break;
+      case 'unsigned':
+        tag = '10';
+        break;
+      case 'signed':
+        tag = '±10';
+        break;
+      case 16:
+        tag = 'hex';
+        break;
+      default:
+        tag = viewType;
+        break;
+    }
+    return `<div >${tag}</div>`;
+  };
 
 
 
@@ -446,10 +446,10 @@ private readonly viewTypeFormatter = (
 
   private makeRegisterVissible(name: string) {
     const index = parseInt(name.substring(1), 10);
-    
+
 
     const position = (index >= 0 && index <= 12) ? "center" : "top";
-    
+
     this.table.scrollToRow(name, position, true);
   }
 
@@ -459,15 +459,16 @@ private readonly viewTypeFormatter = (
     if (row) {
       const element = row.getElement();
       element.classList.add('animate-register');
-      
+
       setTimeout(() => {
         element.classList.remove('animate-register');
 
-      }, 500); 
+      }, 500);
     }
   }
 
   public setRegister(name: string, value: string) {
+    debugger;
     console.log('setting register', name, value);
     const regValue = {
       rawName: name,
@@ -550,8 +551,8 @@ private readonly viewTypeFormatter = (
               (cellValue.includes(lowerSearch) ||
                 cellValue.includes(candidateFromDecimal) ||
                 cellValue.includes(candidateFromUnsigned))) {
-                  cell.getElement().style.backgroundColor = "#D1E3E7";
-                  cell.getElement().style.borderBottom = "0.5px solid gray";
+              cell.getElement().style.backgroundColor = "#D1E3E7";
+              cell.getElement().style.borderBottom = "0.5px solid gray";
 
             }
           } else {
@@ -606,8 +607,4 @@ private readonly viewTypeFormatter = (
 
     this.table.setData(newData);
   }
-
-
 }
-
-

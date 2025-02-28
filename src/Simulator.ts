@@ -10,7 +10,7 @@ import {
   writesDM,
   writesRU
 } from "./utilities/instructions";
-import { binaryToInt } from "./utilities/conversions";
+import { binaryToInt, intToBinary } from "./utilities/conversions";
 
 
 export type SimulationParameters = {
@@ -238,7 +238,8 @@ export class TextSimulator extends Simulator {
       this.makeEditorReadOnly();
       super.start();
       // upload sp information to  webview
-      mainView.postMessage({ operation: 'setRegister', register: 'x2', value: this.cpu.getDataMemory().spInitialAddress });
+      const spValue = this.cpu.getDataMemory().spInitialAddress;
+      mainView.postMessage({ operation: 'setRegister', register: 'x2', value: intToBinary(spValue) });
 
       // decorate the text editor
       const currentInst = this.cpu.currentInstruction();

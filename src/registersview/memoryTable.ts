@@ -10,6 +10,7 @@ import {
 import { intToHex, binaryToHex } from '../utilities/conversions';
 import { range, chunk, times } from 'lodash';
 import { InternalRepresentation } from '../utilities/riscvc';
+import { parse } from 'path';
 
 
 export class MemoryTable {
@@ -124,6 +125,9 @@ export class MemoryTable {
       index: 'address',
       reactiveData: true,
       validationMode: 'blocking',
+      initialSort: [
+        { column: 'address', dir: 'desc' }
+      ],
       columns: this.getColumnDefinitions()
     });
   }
@@ -161,6 +165,8 @@ export class MemoryTable {
         title: 'Addr.',
         field: 'address',
         width: 50,
+        sorter: (a, b) => { return parseInt(a, 16) - parseInt(b, 16); },
+        headerSort: true,
 
       },
       {
@@ -354,25 +360,26 @@ export class MemoryTable {
 
   public uploadMemory(memory: string[], codeSize: number, symbols: any[]) {
     const memorySize = memory.length;
-    chunk(memory.reverse(), 4).forEach((word, index) => {
+    chunk(memory, 4).forEach((word, index) => {
       const address = intToHex(index * 4).toUpperCase();
-      const whex = binaryToHex(word.join(''));
+      // debugger;
       this.table.updateOrAddRow(
         address,
         {
           "address": address,
           "value0": word[0], "value1": word[1],
           "value2": word[2], "value3": word[3],
-          "info": "", "hex": whex
+          "info": "",
+          "hex": word.map(byte => binaryToHex(byte)).join("-")
         });
-      if ((memorySize - (index * 4) - 1) < codeSize) {
+      if (index * 4 < codeSize) {
         this.table.getRow(address).getElement().style.backgroundColor = "#FFF6E5";
       }
 
     });
-
+    debugger;
     // heap label
-    const heapAddress = (memorySize - 4 - codeSize);
+    const heapAddress = codeSize;
     const heapAddressHex = intToHex(heapAddress).toUpperCase();
     this.table.updateOrAddRow(
       heapAddressHex,
@@ -381,7 +388,7 @@ export class MemoryTable {
       }
     );
     // sp label
-    const spAddressHex = intToHex(0).toUpperCase();
+    const spAddressHex = intToHex(memorySize - 4).toUpperCase();
     this.table.updateOrAddRow(
       spAddressHex,
       {
@@ -392,7 +399,7 @@ export class MemoryTable {
     // this.labels = new Array(this.table.getDataCount()).fill("");
     // code labels
     Object.values(symbols).forEach((symbol: any) => {
-      const address = (memorySize - 4 - symbol.memdef);
+      const address = symbol.memdef;
       const memdefHex = intToHex(address).toUpperCase();
       this.table.updateOrAddRow(
         memdefHex,

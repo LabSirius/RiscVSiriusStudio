@@ -68,7 +68,6 @@ function uploadMemory(
   memory: string[], codeSize: number, symbols: any[]): void {
   UIManager.getInstance().configuration();
   memoryTable.uploadMemory(memory, codeSize, symbols);
-  // memoryTable.allocateMemory();
 }
 
 function step(memoryTable: MemoryTable, registersTable: RegistersTable, pc: number): void {

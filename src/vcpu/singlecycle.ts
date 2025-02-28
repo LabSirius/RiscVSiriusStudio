@@ -77,7 +77,7 @@ class DataMemory {
 
   private size: number;
   get memSize() { return this.size; }
-  get spInitialAddress() { return this.codeSize + this.size - 1; }
+  get spInitialAddress() { return this.codeSize + this.size - 4; }
 
   public constructor(codeSize: number, size: number) {
     this.codeAreaEnd = codeSize - 1;

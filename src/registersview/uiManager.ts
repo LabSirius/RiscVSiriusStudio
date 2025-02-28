@@ -99,7 +99,7 @@ export class UIManager {
     this.openSettingsButton = getElement<HTMLButtonElement>('openSettingsButton');
 
     this.searchRegisterInput = getElement<HTMLInputElement>('searchRegisterInput');
-    this.searchMemoryInput = getElement<HTMLInputElement>('searchMemoryInput') ;
+    this.searchMemoryInput = getElement<HTMLInputElement>('searchMemoryInput');
 
     this.importRegisterBtn = getElement<HTMLButtonElement>('importRegisterBtn');
     this.fileInputImportRegister = getElement<HTMLInputElement>('fileInputImportRegister');
@@ -210,14 +210,14 @@ export class UIManager {
   }
 
   private searchInMemoryTable(): void {
-   
-   this.searchMemoryInput.addEventListener('input', () => {
+
+    this.searchMemoryInput.addEventListener('input', () => {
       const searchValue = this.searchMemoryInput.value.trim().toLowerCase();
 
 
-    this.memoryTable.table.clearFilter(true);
-    this.memoryTable.resetMemoryCellColors();
-    this.memoryTable.table.redraw(true);
+      this.memoryTable.table.clearFilter(true);
+      this.memoryTable.resetMemoryCellColors();
+      this.memoryTable.table.redraw(true);
 
       if (searchValue === '') {
         this.memoryTable.table.clearFilter(true);
@@ -237,8 +237,8 @@ export class UIManager {
   }
 
   private initRegisterImport(): void {
-   
-      this.importRegisterBtn
+
+    this.importRegisterBtn
       .addEventListener("click", () => {
         document.getElementById("fileInputImportRegister")?.click();
       });
@@ -267,7 +267,7 @@ export class UIManager {
   }
 
   private initMemoryImport(): void {
-  
+
     this.importMemoryBtn
       .addEventListener('click', () => {
         this.fileInputImportMemory.click();
@@ -318,16 +318,16 @@ export class UIManager {
       const column = this.memoryTable.table.getColumn("hex");
       if (column) {
         this.checkShowHexadecimal.checked ? column.show() : column.hide();
-      }else{
+      } else {
         console.log("LA COLUMNA NO EXISTEEE");
       }
     };
-  
+
     this.checkShowHexadecimal.addEventListener("change", toggleColumn);
     toggleColumn();
   }
 
-  
+
 
 
   private setUpHelp() {
@@ -335,7 +335,7 @@ export class UIManager {
 
     openShowCard.addEventListener('click', () => {
       this.sendMessagetoExtension({
-        command: 'event',
+        command: 'operation',
         object: { name: 'clickOpenRISCVCard', value: 'openHelp' }
       });
     });
