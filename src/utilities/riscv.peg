@@ -617,6 +617,11 @@
       if (isFirstPass) { return undefined; }
       return handleBPInstruction(name, rs1, rs2, offset, location()); 
     }
+    / name:BPInstName _ rs1:RegisterName ___ rs2:RegisterName ___ target:BTarget 
+    { 
+      if (isFirstPass) { return undefined; }
+      return handleBPInstruction(name, rs1, rs2, target, location());
+    }
   
   JPInstruction "Jump pseudo instruction"
     = jalrToken _ rs:RegisterName
