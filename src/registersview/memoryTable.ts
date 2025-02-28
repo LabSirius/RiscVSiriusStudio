@@ -153,6 +153,9 @@ export class MemoryTable {
       ...defaultFrozenColumnAttributes,
       editor: this.binaryMemEditor,
       editable: true,
+      cellMouseEnter: (e, cell) => {
+        this.attachMemoryConversionToggle(cell);
+      }
     };
   
     return [
@@ -245,6 +248,63 @@ export class MemoryTable {
       this.table.setData(this.tableData);
     });
   }
+
+  private readonly attachMemoryConversionToggle = (cell: CellComponent): void => {
+    const cellElement = cell.getElement();
+    let originalContent = cellElement.innerHTML;
+    
+    let isConverted = false;
+    let activeKey: string | null = null;
+  
+    const keyDownHandler = (evt: KeyboardEvent) => {
+      if (isConverted) {return;};
+      const cellValue = cell.getValue(); 
+      const key = evt.key.toLowerCase(); 
+      let newContent: string | null = null;
+  
+      if (key === 'd') {
+        // Convert binary to decimal.
+        newContent = parseInt(cellValue, 2).toString();
+        activeKey = 'd';
+      } else if (key === 'h') {
+        // Convert binary to hexadecimal (uppercase).
+        newContent = parseInt(cellValue, 2).toString(16).toUpperCase();
+        activeKey = 'h';
+      }
+  
+      if (newContent !== null) {
+        isConverted = true;
+        cellElement.innerHTML = newContent;
+      }
+    };
+  
+    // Keyup handler: restore original content when the key is released.
+    const keyUpHandler = (evt: KeyboardEvent) => {
+      if (activeKey && evt.key.toLowerCase() === activeKey && isConverted) {
+        isConverted = false;
+        activeKey = null;
+        cellElement.innerHTML = originalContent;
+      }
+    };
+  
+    // Add key event listeners when mouse enters the cell.
+    cellElement.addEventListener('mouseenter', () => {
+      originalContent = cellElement.innerHTML;
+      document.addEventListener('keydown', keyDownHandler);
+      document.addEventListener('keyup', keyUpHandler);
+    });
+  
+    // Remove listeners and restore original content when mouse leaves.
+    cellElement.addEventListener('mouseleave', () => {
+      document.removeEventListener('keydown', keyDownHandler);
+      document.removeEventListener('keyup', keyUpHandler);
+      if (isConverted) {
+        isConverted = false;
+        activeKey = null;
+        cellElement.innerHTML = originalContent;
+      }
+    });
+  };
 
 
   //TODO: Keep in mind that there is a limited area of ​​instructions
