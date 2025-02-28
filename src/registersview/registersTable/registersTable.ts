@@ -399,7 +399,10 @@ private readonly viewTypeFormatter = (
         cssClass: 'register-value',
         formatter: this.valueFormatter,
         editor: this.valueRegisterEditor,
-        editable: this.editableValue
+        editable: this.editableValue,
+        cellMouseEnter: (e, cell) => {
+          this.attachConvertionToggle(cell);
+        }
       },
       {
         title: '',
@@ -606,6 +609,98 @@ private readonly viewTypeFormatter = (
 
     this.table.setData(newData);
   }
+
+
+  private readonly attachConvertionToggle = (cell: CellComponent): void => {
+    
+    const cellElement = cell.getElement();
+    let originalContent = cellElement.innerHTML;
+  
+    let isConverted = false;
+    let activeKey: string | null = null;
+  
+    // Keydown handler: applies conversion based on viewType and pressed key.
+    const keyDownHandler = (evt: KeyboardEvent) => {
+      if (isConverted) {return;};
+      const data = cell.getData();
+      const viewType = data.viewType;
+      let newContent: string | null = null;
+      const key = evt.key.toLowerCase(); 
+  
+      if (viewType === 2) {
+        // Binary: 'd' shows decimal, 'h' shows hexadecimal.
+        if (key === 'd') {
+          newContent = binaryToUInt(data.value);
+          activeKey = 'd';
+        } else if (key === 'h') {
+          newContent = binaryToHex(data.value);
+          activeKey = 'h';
+        }
+      } else if (viewType === 'signed' || viewType === 'unsigned') {
+        // Decimal: 'h' shows hexadecimal, 'u' shows 32-bit binary.
+        if (key === 'h') {
+          newContent = binaryToHex(data.value);
+          activeKey = 'h';
+        } else if (key === 'u') {
+          newContent = binaryRepresentation(data.value); activeKey = 'u';
+        }
+      } else if (viewType === 16) {
+        // Hexadecimal: 'd' shows decimal, 'u' shows 32-bit binary.
+        if (key === 'd') {
+          // Calculate both unsigned and signed decimals.
+          const unsignedVal = binaryToUInt(data.value);
+          const signedVal = binaryToInt(data.value);
+          // Show both if different; otherwise, show one.
+          if (unsignedVal.toString() === signedVal.toString()) {
+            newContent = signedVal.toString();
+          } else {
+            newContent = `${signedVal} / ${unsignedVal}`;
+          }
+          activeKey = 'd';
+        } else if (key === 'u') {
+          newContent = binaryRepresentation(data.value);
+          activeKey = 'u';
+        }
+      }
+  
+      if (newContent !== null) {
+        isConverted = true;
+        cellElement.innerHTML = newContent;
+      }
+    };
+  
+    // Keyup handler: restores the original content when the conversion key is released.
+    const keyUpHandler = (evt: KeyboardEvent) => {
+      if (activeKey && evt.key.toLowerCase() === activeKey && isConverted) {
+        console.log(`KEY RELEASED: ${evt.key.toUpperCase()}`);
+        isConverted = false;
+        activeKey = null;
+        cellElement.innerHTML = originalContent;
+      }
+    };
+  
+    // On mouse enter, add the key event listeners.
+    cellElement.addEventListener('mouseenter', () => {
+      originalContent = cellElement.innerHTML;
+      document.addEventListener('keydown', keyDownHandler);
+      document.addEventListener('keyup', keyUpHandler);
+    });
+  
+    // On mouse leave, remove the listeners and restore the original content.
+    cellElement.addEventListener('mouseleave', () => {
+      document.removeEventListener('keydown', keyDownHandler);
+      document.removeEventListener('keyup', keyUpHandler);
+      if (isConverted) {
+        isConverted = false;
+        activeKey = null;
+        cellElement.innerHTML = originalContent;
+      }
+    });
+  };
+  
+  
+  
+
 
 
 }
