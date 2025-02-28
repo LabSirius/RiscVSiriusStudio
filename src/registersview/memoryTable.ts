@@ -98,7 +98,7 @@ export class MemoryTable {
         iconSpan.className = 'pc-icon';
         
         iconSpan.style.position = 'absolute';
-        iconSpan.style.top = '50%';
+        iconSpan.style.top = '51%';
         iconSpan.style.right = '5px';
         iconSpan.style.transform = 'translateY(-50%)';
         
@@ -170,8 +170,11 @@ export class MemoryTable {
         ...defaultFrozenColumnAttributes,
         title: 'Addr.',
         field: 'address',
-        width: 50,
-      
+        width: 65,
+        formatter: (cell) => `<span class="address-value">${cell.getValue().toUpperCase()}</span>`,
+        cellMouseEnter: (e, cell) => {
+          this.attachMemoryConversionToggle(cell);
+        }
       },
       {
         ...defaultEditableColumnAttributes,
@@ -203,8 +206,7 @@ export class MemoryTable {
         ...defaultFrozenColumnAttributes,
         title: 'HEX',
         field: 'hex',
-        width: 100,
-        formatter: (cell) => cell.getValue().toUpperCase()
+        width: 100
       }
     ];
   }
@@ -251,61 +253,68 @@ export class MemoryTable {
 
   private readonly attachMemoryConversionToggle = (cell: CellComponent): void => {
     const cellElement = cell.getElement();
-    let originalContent = cellElement.innerHTML;
-    
+    const isAddress = cell.getField() === 'address';
+    const valueElement = isAddress ? cellElement.querySelector('.address-value') : cellElement;
+    let originalContent = valueElement ? valueElement.innerHTML : cellElement.innerHTML;
     let isConverted = false;
     let activeKey: string | null = null;
   
     const keyDownHandler = (evt: KeyboardEvent) => {
-      if (isConverted) {return;};
-      const cellValue = cell.getValue(); 
-      const key = evt.key.toLowerCase(); 
+      if (isConverted) { return; }
+      const cellValue = cell.getValue();
+      const key = evt.key.toLowerCase();
       let newContent: string | null = null;
   
-      if (key === 'd') {
-        // Convert binary to decimal.
-        newContent = parseInt(cellValue, 2).toString();
-        activeKey = 'd';
-      } else if (key === 'h') {
-        // Convert binary to hexadecimal (uppercase).
-        newContent = parseInt(cellValue, 2).toString(16).toUpperCase();
-        activeKey = 'h';
+      if (isAddress) {
+        if (key === 'd') {
+          newContent = parseInt(cellValue, 16).toString();
+          activeKey = 'd';
+        } else if (key === 'u') {
+          newContent = parseInt(cellValue, 16).toString(2);
+          activeKey = 'u';
+        }
+      } else if (cell.getField().startsWith('value')) {
+        if (key === 'd') {
+          newContent = parseInt(cellValue, 2).toString();
+          activeKey = 'd';
+        } else if (key === 'h') {
+          newContent = parseInt(cellValue, 2).toString(16).toUpperCase();
+          activeKey = 'h';
+        }
       }
   
-      if (newContent !== null) {
+      if (newContent !== null && valueElement) {
         isConverted = true;
-        cellElement.innerHTML = newContent;
+        valueElement.innerHTML = newContent;
       }
     };
   
-    // Keyup handler: restore original content when the key is released.
     const keyUpHandler = (evt: KeyboardEvent) => {
-      if (activeKey && evt.key.toLowerCase() === activeKey && isConverted) {
+      if (activeKey && evt.key.toLowerCase() === activeKey && isConverted && valueElement) {
         isConverted = false;
         activeKey = null;
-        cellElement.innerHTML = originalContent;
+        valueElement.innerHTML = originalContent;
       }
     };
   
-    // Add key event listeners when mouse enters the cell.
     cellElement.addEventListener('mouseenter', () => {
-      originalContent = cellElement.innerHTML;
+      if (valueElement) {
+        originalContent = valueElement.innerHTML;
+      }
       document.addEventListener('keydown', keyDownHandler);
       document.addEventListener('keyup', keyUpHandler);
     });
   
-    // Remove listeners and restore original content when mouse leaves.
     cellElement.addEventListener('mouseleave', () => {
       document.removeEventListener('keydown', keyDownHandler);
       document.removeEventListener('keyup', keyUpHandler);
-      if (isConverted) {
+      if (isConverted && valueElement) {
         isConverted = false;
         activeKey = null;
-        cellElement.innerHTML = originalContent;
+        valueElement.innerHTML = originalContent;
       }
     });
   };
-
 
   //TODO: Keep in mind that there is a limited area of ​​instructions
   public importMemory(content: string): void {
