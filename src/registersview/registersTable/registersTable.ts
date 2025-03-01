@@ -20,65 +20,6 @@ import {
 } from '../../utilities/conversions';
 
 
-
-
-// export function setupImportRegisters(registersTable: Tabulator) {
-//   document
-//     .getElementById("importRegisterBtn")
-//     ?.addEventListener("click", () => {
-//       document.getElementById("fileInputImportRegister")?.click(); // Open file dialog
-//     });
-
-//   document
-//     .getElementById("fileInputImportRegister")
-//     ?.addEventListener("change", (event) => {
-//       const input = event.target as HTMLInputElement;
-//       const file = input.files?.[0];
-
-//       if (!file) {
-//         return;
-//       }
-
-//       const reader = new FileReader();
-
-//       reader.onload = function (e) {
-//         if (!e.target?.result) {
-//           return;
-//         }
-
-//         const lines = (e.target.result as string)
-//           .split("\n")
-//           .map((line) => line.trim()) // delete leading and trailing spaces
-//           .filter((line) => line !== ""); // delete empty lines
-
-//         if (lines.length !== 32) {
-//           console.error("Invalid number of lines");
-//           return;
-//         }
-
-//         for (let i = 0; i < lines.length; i++) {
-//           if (lines[i].length !== 32) {
-//             console.error(`Invalid length in line ${i}`);
-//             return;
-//           }
-//         }
-//         const newData = registersNames.map((reg, index) => ({
-//           name: reg,
-//           rawName: reg.split(" ")[0],
-//           value: index === 0 ? "00000000000000000000000000000000" : lines[index],
-//           viewType: 2,
-//           watched: false, // Todos los registros entran como "watched: true"
-//           modified: 0,
-//           id: index,
-//         }));
-
-//         registersTable.setData(newData);
-//       };
-//       reader.readAsText(file);
-//     });
-// }
-
-
 export class RegistersTable {
   public table: Tabulator;
 
@@ -291,32 +232,73 @@ private readonly formatValueAsType = (value: string, type: RegisterView): string
  * @param onRendered not used
  * @returns html code for the rendered view
  */
-private readonly viewTypeFormatter = ( 
+private readonly viewTypeFormatter = (
   cell: CellComponent,
   formatterParams: any,
   onRendered: any
-) => {
+): HTMLElement => {
   const { viewType } = cell.getData();
-  let tag: string = '';
+  let tag = "";
   switch (viewType) {
     case 2:
-      tag = 'bin';
+      tag = "bin";
       break;
-    case 'unsigned':
-      tag = '10';
+    case "unsigned":
+      tag = "10";
       break;
-    case 'signed':
-      tag = '±10';
+    case "signed":
+      tag = "±10";
       break;
     case 16:
-      tag = 'hex';
+      tag = "hex";
       break;
     default:
-      tag = viewType;
+      tag = String(viewType);
       break;
   }
-  return `<div >${tag}</div>`;
+  
+  const container = document.createElement("div");
+  container.style.display = "flex";
+  container.style.alignItems = "center";
+  container.style.justifyContent = "space-between";
+  container.style.width = "100%";
+
+  const textSpan = document.createElement("span");
+  textSpan.className = "view-type-text";
+  textSpan.textContent = tag;
+
+  const iconSpan = document.createElement("span");
+  iconSpan.className = "view-type-icon";
+  iconSpan.style.cursor = "pointer";
+  iconSpan.style.marginLeft = "4px";
+  iconSpan.innerHTML = "&#9660;";
+
+
+  let activated = false;
+
+  const openEditor = (e: PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!activated) {
+      activated = true;
+      
+      // Set the cell as editable
+      cell.getElement().dataset.allowEdit = "true";
+      cell.edit();
+      setTimeout(() => {
+        activated = false;
+      }, 300);
+    }
+  };
+
+  container.addEventListener("pointerdown", openEditor);
+
+  container.appendChild(textSpan);
+  container.appendChild(iconSpan);
+  
+  return container;
 };
+
 
 
 
@@ -405,20 +387,26 @@ private readonly viewTypeFormatter = (
         }
       },
       {
-        title: '',
-        field: 'viewType',
+        title: "",
+        field: "viewType",
         visible: true,
         width: 60,
         headerSort: false,
-        editor: 'list',
+        editor: "list", // Editor para desplegar el menú
         cellEdited: this.viewTypeEdited,
         editorParams: {
           values: this.possibleViews,
           allowEmpty: false,
           freetext: false
         },
-        formatter: this.viewTypeFormatter
-      },
+        formatter: this.viewTypeFormatter,
+        // Flag for allowing the cell to be edited
+        editable: (cell: CellComponent): boolean => {
+          const allow = cell.getElement().dataset.allowEdit === "true";
+          cell.getElement().dataset.allowEdit = "false";
+          return allow;
+        }
+      },      
       { title: 'Watched', field: 'watched', visible: false },
       { title: 'Modified', field: 'modified', visible: false },
       { title: 'id', field: 'id', visible: false },
@@ -697,11 +685,6 @@ private readonly viewTypeFormatter = (
       }
     });
   };
-  
-  
-  
-
-
 
 }
 
