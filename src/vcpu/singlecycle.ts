@@ -296,7 +296,8 @@ export class SCCPU {
     this.dataMemory.uploadProgram(this.program);
     this.pc = 0;
     // Set the initial value of the stack pointer
-    this.registers.writeRegister('x2', intToBinary(memSize));
+    const programSize = program.length * 4;
+    this.registers.writeRegister('x2', intToBinary(programSize + memSize - 4));
   }
 
   public currentInstruction() {

@@ -5,8 +5,8 @@
     <link rel="stylesheet", href="${tailwindCSS}">
     <link rel="stylesheet", href="${tabulatorCSS}">
   </head>
-  <body class="overflow-y-hidden">
-    <div class="w-full flex flex-row gap-3 overflow-y-hidden overflow-x-scroll">
+  <body class="overflow-y-hidden overflow-x-scroll">
+    <div class="w-full flex flex-row gap-3 overflow-y-hidden ">
       <div id="tabs-registers" class="hidden w-fit max-h-dvh w-min-content" style="height: min-content;"></div>
       <div id="tabs-memory" class="hidden w-fit max-h-dvh  w-min-content" style="height: min-content;"></div>
       <!-- This is the third column -->
@@ -69,21 +69,10 @@
           </div>
 
 
-          <div id="openSettings" class="hidden">
+          <div id="openSettings" class="hidden max-w-32">
 
-
-            <div class="mt-2 p-4">
-              <div class="flex items-center space-x-2 gap-2 ">
-                <input class="cursor-pointer" type="checkbox" id="checkShowHexadecimal" checked>
-                <span class="label">Show hexadecimal in memory table</span>
-              </div>
-            </div>
-              
-    
-
-
-            <div id="manualConfig" class="max-w-32">
-              <div class="flex flex-col gap-4  p-4">
+            <div id="manualConfig" class="mt-3">
+              <div class="flex flex-col gap-4  px-4">
                 <div class="flex flex-col gap-2">
 
                   <div class="flex flex-col gap-2">
@@ -146,12 +135,24 @@
 
                   </div>
                 </div>
+                <div class="mt-3 flex items-center space-x-2 gap-2 ">
+                  <input class="cursor-pointer" type="checkbox" id="checkEndSimulation" checked>
+                  <span class="label">Terminate simulation if you exceed memory.</span>
+                </div>
               </div>
+              
             </div>
 
             <div id="readOnlyConfig" class="hidden">
               <div class="flex flex-col gap-4  p-4 mt-1">
                 <p>AQUI VA LA VA LA VISUALIZACION DE LA CONFIGURACION</p>
+              </div>
+            </div>
+
+            <div class="mt-3 flex flex-col gap-3 px-4">
+              <div class="flex items-center space-x-2 gap-2 ">
+                <input class="cursor-pointer" type="checkbox" id="checkShowHexadecimal" checked>
+                <span class="label">Show hexadecimal in memory table.</span>
               </div>
             </div>
 
@@ -171,10 +172,11 @@
                   
                   <div id="fromOptions" class="hidden">
                     <div  class="options-convert">
-                      <p class="option-convert" data-value="bin">Binary</p>
+                      <p class="option-convert" data-value="twoCompl">Two's complement</p>
                       <p class="option-convert" data-value="hex">Hexadecimal</p>
                       <p class="option-convert" data-value="dec">Decimal</p>
-                      <p class="option-convert" data-value="twoCompl">Two's complement</p>
+                      <p class="option-convert" data-value="ascii">ASCII</p>
+                    
                     </div>
                   </div>
 
@@ -189,10 +191,10 @@
                   </div>
                   <div id="toOptions" class="hidden">
                     <div class="options-convert">
-                      <p class="option-convert" data-value="bin">Binary</p>
+                      <p class="option-convert" data-value="twoCompl">Two's complement</p>
                       <p class="option-convert" data-value="hex">Hexadecimal</p>
                       <p class="option-convert" data-value="dec">Decimal</p>
-                      <p class="option-convert" data-value="twoCompl">Two's complement</p>
+                      <p class="option-convert" data-value="ascii">ASCII</p>
                     </div>
                   </div>
                 </div>
@@ -207,22 +209,41 @@
                   <input type="text" id="numberToconvertInput" class="input-value-convert" />
                 </div>
               </div>
+        
 
-              <div id="checkbox-swapContainer" class="flex gap-2 justify-between items-center">
-                <label id="checkbox32bits" class="flex items-center space-x-2 ">
-                  <input type="checkbox" name="bitOption" value="32">
-                  <span class=""label>In 32 bits</span>
-                </label>
-                <button class="swapButton sim-focus" id="SwapConvertBtn">Swap</button>
+              <div  class="flex gap-4 justify-between items-center w-full relative h-10">
+                <div id="checkIsNegativeContainer" class="display-none ">
+                  <div class="flex gap-2 items-center">
+                    <input type="checkbox" id="isNegative" class="cursor-pointer">
+                  <p class="label">Fill with ones (negative)</p>
+                  </div>
+                  
+                </div>
+
+                <div id="checkbox-swapContainer" class="swap-container">
+                  <button class="swapButton sim-focus" id="SwapConvertBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>
+                  </button>
+                </div>
               </div>
 
               <div class="flex flex-col gap-2">
                 <p class="label">Result :</p>
                 <div class="relative">
                   <input type="text" id="resultConvertInput" class="input-convert-result relative" readonly />
-                  <div id="copyResultButton" class="sim-focus icon-input-right" tabindex="0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  <div id="copyResultButton" class=" sim-focus icon-input-right" tabindex="0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> 
                   </div>
+                  <div id="closeOptionsCopy" class="hidden sim-focus icon-input-right" tabindex="0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                  </div>
+     
+                    <ul id="options-copy" class="hidden options-copy">
+                      <li class="option-copy">32 bits</li>
+                      <li class="option-copy">16 bits</li>
+                      <li class="option-copy">8 bits</li>
+                    </ul>
+              
                 </div>
               </div>
             </div>

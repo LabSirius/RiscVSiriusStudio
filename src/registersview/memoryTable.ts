@@ -95,24 +95,45 @@ export class MemoryTable {
 
 
   public updatePC(newPC: number) {
+    const allIcons = document.querySelectorAll('.pc-icon');
+    allIcons.forEach(icon => icon.remove());
+
     const targetValue = (newPC * 4).toString(16).toUpperCase();
     const foundRows = this.table.searchRows("address", "=", targetValue);
-
     if (foundRows.length > 0) {
       const row = foundRows[0];
       const cell = row.getCell("address");
       if (cell) {
         const cellElement = cell.getElement();
-        cellElement.classList.add('animate-pc');
 
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'pc-icon';
+
+        iconSpan.style.position = 'absolute';
+        iconSpan.style.top = '51%';
+        iconSpan.style.right = '5px';
+        iconSpan.style.transform = 'translateY(-50%)';
+
+        iconSpan.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-locate">
+                                <line x1="2" x2="5" y1="12" y2="12"></line>
+                                <line x1="19" x2="22" y1="12" y2="12"></line>
+                                <line x1="12" x2="12" y1="2" y2="5"></line>
+                                <line x1="12" x2="12" y1="19" y2="22"></line>
+                                <circle cx="12" cy="12" r="7"></circle>
+                              </svg>`;
+
+        cellElement.appendChild(iconSpan);
+
+        cellElement.classList.add('animate-pc');
+        void cellElement.offsetWidth;
         setTimeout(() => {
           cellElement.classList.remove('animate-pc');
         }, 500);
       }
     }
   }
-
-
 
 
   private initializeTable(): Tabulator {
@@ -147,6 +168,9 @@ export class MemoryTable {
       ...defaultFrozenColumnAttributes,
       editor: this.binaryMemEditor,
       editable: true,
+      cellMouseEnter: (e, cell) => {
+        this.attachMemoryConversionToggle(cell);
+      }
     };
 
     return [
@@ -161,10 +185,14 @@ export class MemoryTable {
         ...defaultFrozenColumnAttributes,
         title: 'Addr.',
         field: 'address',
-        width: 50,
         sorter: (a, b) => { return parseInt(a, 16) - parseInt(b, 16); },
         headerSort: true,
 
+        width: 65,
+        formatter: (cell) => `<span class="address-value">${cell.getValue().toUpperCase()}</span>`,
+        cellMouseEnter: (e, cell) => {
+          this.attachMemoryConversionToggle(cell);
+        }
       },
       {
         ...defaultEditableColumnAttributes,
@@ -196,8 +224,7 @@ export class MemoryTable {
         ...defaultFrozenColumnAttributes,
         title: 'HEX',
         field: 'hex',
-        width: 100,
-        formatter: (cell) => cell.getValue().toUpperCase()
+        width: 100
       }
     ];
   }
@@ -242,6 +269,70 @@ export class MemoryTable {
     });
   }
 
+  private readonly attachMemoryConversionToggle = (cell: CellComponent): void => {
+    const cellElement = cell.getElement();
+    const isAddress = cell.getField() === 'address';
+    const valueElement = isAddress ? cellElement.querySelector('.address-value') : cellElement;
+    let originalContent = valueElement ? valueElement.innerHTML : cellElement.innerHTML;
+    let isConverted = false;
+    let activeKey: string | null = null;
+
+    const keyDownHandler = (evt: KeyboardEvent) => {
+      if (isConverted) { return; }
+      const cellValue = cell.getValue();
+      const key = evt.key.toLowerCase();
+      let newContent: string | null = null;
+
+      if (isAddress) {
+        if (key === 'd') {
+          newContent = parseInt(cellValue, 16).toString();
+          activeKey = 'd';
+        } else if (key === 'u') {
+          newContent = parseInt(cellValue, 16).toString(2);
+          activeKey = 'u';
+        }
+      } else if (cell.getField().startsWith('value')) {
+        if (key === 'd') {
+          newContent = parseInt(cellValue, 2).toString();
+          activeKey = 'd';
+        } else if (key === 'h') {
+          newContent = parseInt(cellValue, 2).toString(16).toUpperCase();
+          activeKey = 'h';
+        }
+      }
+
+      if (newContent !== null && valueElement) {
+        isConverted = true;
+        valueElement.innerHTML = newContent;
+      }
+    };
+
+    const keyUpHandler = (evt: KeyboardEvent) => {
+      if (activeKey && evt.key.toLowerCase() === activeKey && isConverted && valueElement) {
+        isConverted = false;
+        activeKey = null;
+        valueElement.innerHTML = originalContent;
+      }
+    };
+
+    cellElement.addEventListener('mouseenter', () => {
+      if (valueElement) {
+        originalContent = valueElement.innerHTML;
+      }
+      document.addEventListener('keydown', keyDownHandler);
+      document.addEventListener('keyup', keyUpHandler);
+    });
+
+    cellElement.addEventListener('mouseleave', () => {
+      document.removeEventListener('keydown', keyDownHandler);
+      document.removeEventListener('keyup', keyUpHandler);
+      if (isConverted && valueElement) {
+        isConverted = false;
+        activeKey = null;
+        valueElement.innerHTML = originalContent;
+      }
+    });
+  };
 
   //TODO: Keep in mind that there is a limited area of ​​instructions
   public importMemory(content: string): void {
@@ -405,6 +496,7 @@ export class MemoryTable {
         }
       );
     });
+
   }
 
   public allocateMemory() {
@@ -437,6 +529,7 @@ export class MemoryTable {
     mem.forEach((i) => { this.table.addRow(i, true); });
     this.updatePC(0);
   }
+
 
   public filterMemoryTableData(searchValue: string): void {
     this.resetMemoryCellColors();
