@@ -82,15 +82,12 @@ export class MemoryTable {
     this.labels = [];
     this.setupEventListeners();
   }
-  private toTableIndex(index: number): number {
-    return this.table.getDataCount() - index;
-  }
 
   public setSP(value: string) {
     this.table.getRow(this.sp).update(
       { "info": '' }
     );
-    const address = Number.parseInt(value, 2).toString(16).toUpperCase();
+    const address = binaryToHex(value).toUpperCase();
     this.table.getRow(address).update(
       { "info": `<span class="info-column-mem-table">SP</span>` }
     );
@@ -377,7 +374,6 @@ export class MemoryTable {
       }
 
     });
-    debugger;
     // heap label
     const heapAddress = codeSize;
     const heapAddressHex = intToHex(heapAddress).toUpperCase();
@@ -395,6 +391,7 @@ export class MemoryTable {
         "info": `<span class="info-column-mem-table">sp</span>`
       }
     );
+    this.sp = spAddressHex;
 
     // this.labels = new Array(this.table.getDataCount()).fill("");
     // code labels

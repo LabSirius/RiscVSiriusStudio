@@ -78,8 +78,12 @@ export class Simulator {
       // });
       return;
     }
+    console.log(`%c[Simulator] step\n`, 'color:pink');
+
     const instruction = this.cpu.currentInstruction();
     const result = this.cpu.executeInstruction();
+    console.log(`%c[Simulator] \n`, 'color:pink', instruction);
+    console.log(`%c[Simulator] \n`, 'color:pink', result);
 
     // Send messages to update the registers view.
     if (writesRU(instruction.type, instruction.opcode)) {
@@ -252,7 +256,9 @@ export class TextSimulator extends Simulator {
   }
 
   public step(): void {
+    console.log(`%c[Simulator] step\n`, 'color:pink');
     super.step();
+
     // Handle the visualization
     const mainView = this.context.mainWebviewView;
     mainView.postMessage({ operation: 'step', pc: this.cpu.getPC() });
