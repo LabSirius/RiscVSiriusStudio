@@ -208,7 +208,8 @@ export class TextSimulator extends Simulator {
   constructor(
     settings: SimulationParameters,
     rvDoc: RVDocument,
-    context: RVContext
+    context: RVContext,
+    alreadyConfigured = false
   ) {
     super(settings, rvDoc, context);
   }
@@ -322,7 +323,7 @@ export class TextSimulator extends Simulator {
 
       // Create and store new decoration type
       this.currentHighlight = window.createTextEditorDecorationType({
-        backgroundColor: 'rgba(255, 255, 0, 0.2)',
+        backgroundColor: 'rgba(209, 227, 231, 0.5)',
         isWholeLine: true
       });
 

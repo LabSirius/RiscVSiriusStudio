@@ -103,6 +103,7 @@ export class MemoryTable {
     if (foundRows.length > 0) {
       const row = foundRows[0];
       const cell = row.getCell("address");
+   
       if (cell) {
         const cellElement = cell.getElement();
 
@@ -504,6 +505,10 @@ export class MemoryTable {
       );
     });
 
+    setTimeout(() => {
+      this.updatePC(0);
+    }, 200);
+
   }
 
   public allocateMemory() {
@@ -534,7 +539,6 @@ export class MemoryTable {
     mem[words - 1].info = `<span class="info-column-mem-table">SP</span>`;
     this.sp = mem[words - 1].address;
     mem.forEach((i) => { this.table.addRow(i, true); });
-    this.updatePC(0);
   }
 
 
