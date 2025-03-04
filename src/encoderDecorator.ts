@@ -150,9 +150,8 @@ export class EncoderDecorator {
         const ir = rvDoc.getIRForLine(i);
         let irText = ir ? ir.encoding.binEncoding : '';
         if (irText.length > 0) {
-          const memAddress: number = ir ? ir.inst : 0;
-          const memAddressHex: string = "0x" + memAddress.toString(16);
-          irText = `${memAddressHex.padEnd(5, " ")}  ${irText}`;
+
+          irText = ` ${irText}`;
         }
 
         decorations.push({
