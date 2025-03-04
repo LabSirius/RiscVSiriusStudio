@@ -455,10 +455,12 @@ export class MemoryTable {
         address,
         {
           "address": address,
-          "value0": word[0], "value1": word[1],
-          "value2": word[2], "value3": word[3],
+          "value0": word[3], "value1": word[2],
+          "value2": word[1], "value3": word[0],
           "info": "",
-          "hex": word.map(byte => binaryToHex(byte)).join("-")
+          "hex": word
+          .map(byte => binaryToHex(byte).toUpperCase().padStart(2, "0"))
+          .join("-")
         });
       if (index * 4 < codeSize) {
         this.table.getRow(address).getElement().style.backgroundColor = "#FFF6E5";

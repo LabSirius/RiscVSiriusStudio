@@ -50,7 +50,7 @@ export class UIManager {
   readonly fileInputImportMemory: HTMLInputElement;
 
   readonly checkShowHexadecimal: HTMLInputElement;
-  readonly checkEndSimulation: HTMLInputElement;
+ 
 
   private _isSimulating: boolean;
   get isSimulating(): boolean {
@@ -109,7 +109,6 @@ export class UIManager {
     this.fileInputImportMemory = getElement<HTMLInputElement>('fileInputImportMemory');
 
     this.checkShowHexadecimal = getElement<HTMLInputElement>('checkShowHexadecimal');
-    this.checkEndSimulation = getElement<HTMLInputElement>('checkEndSimulation');
 
 
     this.initializeTopButtons();
