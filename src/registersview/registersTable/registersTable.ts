@@ -610,6 +610,8 @@ export class RegistersTable {
 
   private readonly attachConvertionToggle = (cell: CellComponent): void => {
 
+    
+
     const cellElement = cell.getElement();
     let originalContent = cellElement.innerHTML;
   
@@ -623,6 +625,11 @@ export class RegistersTable {
     // Keydown handler: applies conversion based on viewType and pressed key.
     const keyDownHandler = (evt: KeyboardEvent) => {
       if (isConverted) { return; }
+
+      if (document.querySelector('input.register-editor') || document.querySelector('input.binary-editor')) {
+        return; 
+      }
+    
   
       const data = cell.getData();
       const viewType = data.viewType;

@@ -279,6 +279,11 @@ export class MemoryTable {
 
     const keyDownHandler = (evt: KeyboardEvent) => {
       if (isConverted) { return; }
+
+      if (document.querySelector('input.binary-editor') || document.querySelector('input.register-editor')) {
+        return;
+      }
+
       const cellValue = cell.getValue();
       const key = evt.key.toLowerCase();
       let newContent: string | null = null;
