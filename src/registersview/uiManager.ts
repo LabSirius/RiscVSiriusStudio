@@ -32,6 +32,8 @@ export class UIManager {
   readonly stageTwoHelp: HTMLDivElement;
   readonly openSettings: HTMLDivElement;
 
+  readonly shortcutsHelp: HTMLDivElement;
+
   readonly toolsPanel: HTMLDivElement;
   readonly openSearchButton: HTMLButtonElement;
   readonly openSearch: HTMLDivElement;
@@ -90,6 +92,8 @@ export class UIManager {
     this.stageOneHelp = getElement<HTMLDivElement>('stageOneHelp');
     this.stageTwoHelp = getElement<HTMLDivElement>('stageTwoHelp');
     this.openSettings = getElement<HTMLDivElement>('openSettings');
+
+    this.shortcutsHelp = getElement<HTMLDivElement>('shortcutsHelp');
 
     this.toolsPanel = getElement<HTMLDivElement>('toolsPanel');
     this.openSearchButton = getElement<HTMLButtonElement>('openSearchButton');
@@ -165,6 +169,9 @@ export class UIManager {
     this.memoryTab.classList.remove('hidden');
     this.settingsButton.classList.remove('hidden');
     this.convertButton.classList.add('hidden');
+
+    this.shortcutsHelp.classList.remove('hidden');
+    
     this.convertButton.classList.remove('bg-active');
     this.openHelpButton.classList.remove('bg-active');
     this.settingsButton.classList.add('bg-active');

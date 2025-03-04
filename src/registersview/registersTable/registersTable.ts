@@ -634,7 +634,7 @@ export class RegistersTable {
       const data = cell.getData();
       const viewType = data.viewType;
       let newContent: string | null = null;
-      let newViewTypeLabel: string | null = null; // ADDED
+      let newViewTypeLabel: string | null = null; 
       const key = evt.key.toLowerCase();
   
       if (viewType === 2) {
@@ -646,22 +646,22 @@ export class RegistersTable {
           activeKey = 'd';
         } else if (key === 'h') {
           newContent = binaryToHex(data.value);
-          newViewTypeLabel = "hex"; // ADDED
+          newViewTypeLabel = "hex"; 
           activeKey = 'h';
         }
       } else if (viewType === 'signed' || viewType === 'unsigned') {
-        // Decimal: 'h' shows hexadecimal, 'u' shows 32-bit binary.
+        // Decimal: 'h' shows hexadecimal, 'b' shows 32-bit binary.
         if (key === 'h') {
           newContent = binaryToHex(data.value);
-          newViewTypeLabel = "hex"; // ADDED
+          newViewTypeLabel = "hex"; 
           activeKey = 'h';
-        } else if (key === 'u') {
+        } else if (key === 'b') {
           newContent = binaryRepresentation(data.value);
-          newViewTypeLabel = "bin"; // ADDED
-          activeKey = 'u';
+          newViewTypeLabel = "bin"; 
+          activeKey = 'b';
         }
       } else if (viewType === 16) {
-        // Hexadecimal: 'd' shows decimal, 'u' shows 32-bit binary.
+        // Hexadecimal: 'd' shows decimal, 'b' shows 32-bit binary.
         if (key === 'd') {
           // Calculate both unsigned and signed decimals.
           const unsignedVal = binaryToUInt(data.value);
@@ -675,10 +675,10 @@ export class RegistersTable {
           //Temporarily show "±10" for decimal
           newViewTypeLabel = "±10";
           activeKey = 'd';
-        } else if (key === 'u') {
+        } else if (key === 'b') {
           newContent = binaryRepresentation(data.value);
-          newViewTypeLabel = "bin"; // ADDED
-          activeKey = 'u';
+          newViewTypeLabel = "bin"; 
+          activeKey = 'b';
         }
       }
   

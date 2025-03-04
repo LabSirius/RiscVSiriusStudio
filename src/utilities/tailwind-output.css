@@ -1173,6 +1173,10 @@ mark {
   margin-top: 1rem;
 }
 
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
 .text-lg{
   font-size: 1.125rem;
 }

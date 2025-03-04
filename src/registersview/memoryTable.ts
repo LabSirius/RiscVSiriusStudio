@@ -292,9 +292,9 @@ export class MemoryTable {
         if (key === 'd') {
           newContent = parseInt(cellValue, 16).toString();
           activeKey = 'd';
-        } else if (key === 'u') {
+        } else if (key === 'b') {
           newContent = parseInt(cellValue, 16).toString(2);
-          activeKey = 'u';
+          activeKey = 'b';
         }
       } else if (cell.getField().startsWith('value')) {
         if (key === 'd') {
