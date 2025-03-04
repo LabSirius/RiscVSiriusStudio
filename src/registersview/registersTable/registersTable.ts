@@ -271,7 +271,12 @@ export class RegistersTable {
     iconSpan.className = "view-type-icon";
     iconSpan.style.cursor = "pointer";
     iconSpan.style.marginLeft = "4px";
-    iconSpan.innerHTML = "&#9660;";
+    iconSpan.style.transform = 'translateY(4px)';
+    iconSpan.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+    `;
 
 
     let activated = false;
@@ -392,7 +397,7 @@ export class RegistersTable {
         visible: true,
         width: 60,
         headerSort: false,
-        editor: "list", // Editor para desplegar el menú
+        editor: "list", // Editor for the cell
         cellEdited: this.viewTypeEdited,
         editorParams: {
           values: this.possibleViews,
