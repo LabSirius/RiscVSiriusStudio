@@ -188,7 +188,7 @@ export class MemoryTable {
         sorter: (a, b) => { return parseInt(a, 16) - parseInt(b, 16); },
         headerSort: true,
 
-        width: 65,
+        width: 75,
         formatter: (cell) => `<span class="address-value">${cell.getValue().toUpperCase()}</span>`,
         cellMouseEnter: (e, cell) => {
           this.attachMemoryConversionToggle(cell);
