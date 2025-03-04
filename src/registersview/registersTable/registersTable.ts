@@ -424,21 +424,25 @@ export class RegistersTable {
     this.registersNames.forEach((e, idx) => {
       const [xname, abi] = e.split(' ');
       const zeros32 = '0';
+
+      // 2 for binary, 16 for hexadecimal
+      const viewType = (xname === 'x2') ? 16 : 2;
       tableData.push({
         name: `${xname} ${abi}`,
         rawName: `${xname}`,
         value: zeros32,
-        viewType: 2,
+        viewType: viewType,
         watched: false,
         modified: 0,
         id: idx
       });
     });
-
+  
     this.table.on('tableBuilt', () => {
       this.table.setData(tableData);
     });
   }
+  
 
   private makeRegisterVissible(name: string) {
     const index = parseInt(name.substring(1), 10);

@@ -111,7 +111,7 @@ class DataMemory {
     });
     console.table(this.memory);
     console.log(`Program uploaded. initial sp ${this.spInitialAddress} `);
-  }
+  } 
 
   public lastAddress() {
     return this.size - 1;
