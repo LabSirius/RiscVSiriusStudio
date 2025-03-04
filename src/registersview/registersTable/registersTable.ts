@@ -459,7 +459,6 @@ export class RegistersTable {
   }
 
   public setRegister(name: string, value: string) {
-    debugger;
     console.log('setting register', name, value);
     const regValue = {
       rawName: name,

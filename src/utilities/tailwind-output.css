@@ -1347,25 +1347,9 @@ mark {
 }
 
 .overflow-x-scroll {
-  overflow-x: scroll !important;
-  scrollbar-width: thin !important;
+  overflow-x: scroll ;
 }
 
-.overflow-x-scroll::-webkit-scrollbar {
-  height: 10px !important;
-  background: var(--vscode-scrollbarSlider-background) !important;
-}
-
-.overflow-x-scroll::-webkit-scrollbar-thumb {
-  background: var(--vscode-scrollbarSlider-activeBackground) !important;
-  border-radius: 5px !important;
-  border: 2px solid transparent !important;
-  background-clip: content-box !important;
-}
-
-.overflow-x-scroll::-webkit-scrollbar-track {
-  background: transparent !important;
-}
 
 .rounded {
   border-radius: 0.25rem;
