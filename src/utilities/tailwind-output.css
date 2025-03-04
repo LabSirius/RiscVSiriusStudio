@@ -1138,6 +1138,12 @@ mark {
 }
 
 
+.icon-step{
+  position: relative;
+  top: .5rem;
+  margin: 0 .5rem;
+}
+
 
 
 
