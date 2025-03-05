@@ -1116,6 +1116,14 @@ mark {
   position: static;
 }
 
+.tabulator-cell.register-value {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow: visible !important; 
+  height: auto !important;
+}
+
 .fixed {
   position: fixed;
 }

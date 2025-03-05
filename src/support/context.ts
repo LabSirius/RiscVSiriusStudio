@@ -129,6 +129,7 @@ export class RVContext {
     //  Simulator (start)
     this.disposables.push(
       commands.registerCommand('rv-simulator.simulate', () => {
+        console.log("VA A PASAR POR AQUI");
         const editor = window.activeTextEditor;
         if (editor && RVDocument.isValid(editor.document)) {
           // We have an editor with a valid RiscV document open
@@ -165,7 +166,7 @@ export class RVContext {
           this._simulator.stop();
           this._isSimulating = false;
           this._simulator = undefined;
-    commands.executeCommand('setContext', 'ext.isSimulating', false);
+          commands.executeCommand('setContext', 'ext.isSimulating', false);
 
         }
       })
