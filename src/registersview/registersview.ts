@@ -36,7 +36,6 @@ function main() {
   });
   UIManager.createInstance(memoryTable, registersTable, sendMessageToExtension);
   setUpConvert();
-  setupSettings(memoryTable);
 }
 
 function dispatch(
@@ -87,24 +86,6 @@ function setRegister(
   if (register === 'x2') {
     memoryTable.setSP(value);
   }
-}
-
-function setupSettings(memoryTable: MemoryTable) {
-  const inputMemorySize = document.getElementById(
-    'memorySizeInput'
-  ) as HTMLInputElement;
-
-  inputMemorySize.addEventListener('change', () => {
-    if (Number.parseInt(inputMemorySize.value) < 32) {
-      inputMemorySize.value = '32';
-    }
-    sendMessageToExtension({
-      command: 'event',
-      object: { event: 'memorySizeChanged', value: inputMemorySize.value }
-    });
-    const newSize = Number.parseInt(inputMemorySize.value);
-    memoryTable.resizeMemory(newSize);
-  });
 }
 
 /**

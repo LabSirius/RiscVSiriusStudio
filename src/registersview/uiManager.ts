@@ -123,6 +123,7 @@ export class UIManager {
     this.initRegisterImport();
     this.initMemoryImport();
     this.showHexadecimalInMemory();
+    this.setUpSettings();
     this.setUpHelp();
   }
 
@@ -338,11 +339,19 @@ export class UIManager {
     toggleColumn();
   }
 
-  //TODO: Implement logic to terminate simulation if available memory is exceeded
-  private endSimulation(): void {
-
+  private setUpSettings(){
+    this.memorySizeInput.addEventListener('change', () => {
+      if (Number.parseInt(this.memorySizeInput.value) < 32) {
+        this.memorySizeInput .value = '32';
+      }
+      this.sendMessagetoExtension({
+        command: 'event',
+        object: { event: 'memorySizeChanged', value: this.memorySizeInput .value }
+      });
+      const newSize = Number.parseInt(this.memorySizeInput .value);
+      this.memoryTable.resizeMemory(newSize);
+    });
   }
-
 
 
 
