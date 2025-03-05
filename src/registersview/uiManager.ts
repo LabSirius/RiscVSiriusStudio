@@ -38,8 +38,9 @@ export class UIManager {
   readonly openSearchButton: HTMLButtonElement;
   readonly openSearch: HTMLDivElement;
   readonly stageThreeHelp: HTMLDivElement;
+
+  readonly memorySizeInput : HTMLInputElement;
   readonly manualConfig: HTMLDivElement;
-  readonly readOnlyConfig: HTMLDivElement;
   readonly openSettingsButton: HTMLButtonElement;
 
   readonly searchRegisterInput: HTMLInputElement;
@@ -99,8 +100,9 @@ export class UIManager {
     this.openSearchButton = getElement<HTMLButtonElement>('openSearchButton');
     this.openSearch = getElement<HTMLDivElement>('openSearch');
     this.stageThreeHelp = getElement<HTMLDivElement>('stageThreeHelp');
+    this.memorySizeInput = getElement<HTMLInputElement>('memorySizeInput');
     this.manualConfig = getElement<HTMLDivElement>('manualConfig');
-    this.readOnlyConfig = getElement<HTMLDivElement>('readOnlyConfig');
+
     this.openSettingsButton = getElement<HTMLButtonElement>('openSettingsButton');
 
     this.searchRegisterInput = getElement<HTMLInputElement>('searchRegisterInput');
@@ -184,6 +186,8 @@ export class UIManager {
   public simulationStarted() {
     this._isSimulating = true;
     this.openSettings.className = 'hidden';
+    this.memorySizeInput.readOnly = true;
+    this.memorySizeInput.classList.add('bg-disabled');
     this.openSearchButton.classList.remove('hidden');
     this.openSearchButton.classList.add('bg-active');
     this.openHelpButton.classList.remove('bg-active');
@@ -194,7 +198,7 @@ export class UIManager {
     this.stageTwoHelp.className = 'hidden';
     this.stageThreeHelp.classList.remove('hidden');
     this.manualConfig.classList.add('hidden');
-    this.readOnlyConfig.classList.remove('hidden');
+
   }
 
   private searchInRegistersTable() {
