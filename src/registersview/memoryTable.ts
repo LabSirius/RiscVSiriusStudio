@@ -11,6 +11,7 @@ import { intToHex, binaryToHex } from '../utilities/conversions';
 import { range, chunk, times } from 'lodash';
 import { InternalRepresentation } from '../utilities/riscvc';
 import { parse } from 'path';
+import { error } from 'console';
 
 
 export class MemoryTable {
@@ -340,43 +341,55 @@ export class MemoryTable {
     });
   };
 
-  //TODO: Keep in mind that there is a limited area of ​​instructions
   public importMemory(content: string): void {
+    const heapRow = this.table.getRows().find(row => {
+      const info = row.getData().info;
+      return info && info.includes("Heap");
+    });
+    if (!heapRow) {
+      return;
+    }
+   
+    const heapAddress = parseInt(heapRow.getData().address, 16);
+  
     const lines = content
-      .split('\n')
+      .split("\n")
       .map(line => line.trim())
-      .filter(line => line !== '');
-
+      .filter(line => line !== "");
+  
     const newData: any[] = [];
-
+  
     for (const line of lines) {
       const parts = line.split(':');
       if (parts.length !== 2) {
-        console.error(`Formato inválido en la línea: ${line}`);
+        console.error(`Invalid format in line: ${line}`);
         return;
       }
-
-
+  
       const address = parseInt(parts[0].trim(), 16);
-      const binaryValue = parts[1].trim();
-
-      if (binaryValue.length !== 32 || !/^[01]+$/.test(binaryValue)) {
-        console.error(`Valor inválido en la línea: ${line}`);
+      // if address is less than heap address, it is an instruction
+      if (address < heapAddress) {
+        throw new Error("Cannot import data into the instruction reserved area. Invalid address: " + parts[0].trim());
         return;
       }
-
-
+  
+      const binaryValue = parts[1].trim();
+  
+      if (binaryValue.length !== 32 || !/^[01]+$/.test(binaryValue)) {
+        console.error(`Invalid value in line ${line}`);
+        return;
+      }
+  
       const value0 = binaryValue.slice(24, 32);
       const value1 = binaryValue.slice(16, 24);
       const value2 = binaryValue.slice(8, 16);
       const value3 = binaryValue.slice(0, 8);
-
-
+  
       const hex0 = parseInt(value0, 2).toString(16).padStart(2, '0');
       const hex1 = parseInt(value1, 2).toString(16).padStart(2, '0');
       const hex2 = parseInt(value2, 2).toString(16).padStart(2, '0');
       const hex3 = parseInt(value3, 2).toString(16).padStart(2, '0');
-
+  
       newData.push({
         address: address.toString(16).toLowerCase(),
         value0,
@@ -386,10 +399,10 @@ export class MemoryTable {
         hex: `${hex3}-${hex2}-${hex1}-${hex0}`.toUpperCase()
       });
     }
-
-
+  
     this.table.updateOrAddData(newData);
   }
+  
 
   public resizeMemory(newSize: number) {
     const rounded = Math.round(newSize / 4) * 4;
