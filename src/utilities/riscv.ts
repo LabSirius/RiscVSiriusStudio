@@ -283,7 +283,8 @@
     const encoding = {
       "binEncoding": `${funct7}${rs2Bin}${rs1Bin}${funct3Bin}${rd}1100011`,
       "imm[12]": imm12, "imm[10:5]":imm10_5, "imm[4:1]":imm4_1, "imm[11]":imm11,
-      "funct3": funct3Bin, "funct7": funct7, "imm13":immValBin
+      "funct3": funct3Bin, "funct7": funct7, "imm13":immValBin, "rs1":rs1Bin,
+      "rs2":rs2Bin
     };
 
     return {
@@ -316,7 +317,7 @@
     };
 
     return {
-      "inst":instMem, "type":"J", "instruction": name, rd:rd,
+      "inst":instMem, "type":"J", "instruction": name, "rd":rd,
       "imm21": immVal, "opcode": "1101111", "encoding":encoding,
       "location":location, "pseudo":pseudo
     };
@@ -914,7 +915,6 @@ function peg$parse(input, options) {
     return dir; 
   };
   var peg$f4 = function(inst) {
-    console.log(inst)
     if (isFirstPass) { return undefined; }
   
     let ret = inst;
@@ -1022,13 +1022,10 @@ function peg$parse(input, options) {
       return error('Expecting a valid instruction, Got:"' + text() +'"');
     };
   var peg$f17 = function(name, rd, rs1, rs2) { 
-      console.log(name);
       if (isFirstPass) { return undefined; }
       return handleRInstruction(name, rd, rs1, rs2, location()); 
     };
   var peg$f18 = function(name, rd, rs1, imm) { 
-      console.log(name);
-
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, imm, location()); 
     };
@@ -1037,62 +1034,43 @@ function peg$parse(input, options) {
       return handleIInstruction('addi', rd, rs1, imm, location());
     };
   var peg$f20 = function(name, rd, offset, rs1) { 
-      console.log(name);
-
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, offset, location()); 
     };
   var peg$f21 = function(name, rd, offset, rs1) { 
-      console.log(name);
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, offset, location()); 
     };
   var peg$f22 = function(name, rs2, offset, rs1) {
-      console.log(name);
-
       if (isFirstPass) { return undefined; }
       return handleSInstruction(name, rs2, offset, rs1, location()); 
     };
   var peg$f23 = function(name, rs1, rs2, target) { 
-      console.log(name);
-
       if (isFirstPass) { return undefined; } 
       return handleBInstruction(name, rs1, rs2, target, location()); 
     };
   var peg$f24 = function(name, rd, offset, rs1) { 
-      console.log(name);
-
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, offset, location()); 
     };
   var peg$f25 = function(name, rd, rs1, offset) { 
-      console.log(name);
-
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, offset, location()); 
     };
   var peg$f26 = function(name, rd, target) {
-      console.log(name);
-
       if (isFirstPass) { return undefined; }
       return handleJInstruction(name, rd, target, location()); 
     };
   var peg$f27 = function(rd, imm) {
-      console.log(name);
-
       if (isFirstPass) { return undefined; }
       console.log("assembler identifier");
       return handleUInstruction('lui', rd, imm, location());
     };
   var peg$f28 = function(name, rd, offset) { 
-      console.log(name);
-
       if (isFirstPass) { return undefined; }
       return handleUInstruction(name, rd, offset, location()); 
     };
   var peg$f29 = function(name) {
-      console.log(name);
-
       if (isFirstPass) { return undefined; }
       const zeroReg = { regname: 'x0', regeq: 'x0', regenc: '0'};
       if (name == 'ecall') {
@@ -1102,51 +1080,38 @@ function peg$parse(input, options) {
       }
     };
   var peg$f30 = function(name, rs, offset) { 
-      console.log(name);
-      
       if (isFirstPass) { return undefined; }
       return handleBPInstruction(name, rs, null, offset, location()); 
     };
   var peg$f31 = function(name, rs, target) { 
-      console.log(name);
-      
       if (isFirstPass) { return undefined; }
       return handleBPInstruction(name, rs, null, target, location()); 
     };
   var peg$f32 = function(name, rs1, rs2, offset) { 
-      console.log(name);
-
       if (isFirstPass) { return undefined; }
       return handleBPInstruction(name, rs1, rs2, offset, location()); 
     };
   var peg$f33 = function(name, rs1, rs2, target) { 
-      console.log(name);
       if (isFirstPass) { return undefined; }
       return handleBPInstruction(name, rs1, rs2, target, location());
     };
   var peg$f34 = function(rs) {
-      console.log("jalr");
-
       if (isFirstPass) { return undefined; }
       return handleIInstruction('jalr', regEnc('1'), rs, '0', location(), true);
     };
   var peg$f35 = function(offset) {
-      console.log("jal");
       if (isFirstPass) { return undefined; }
       return handleJInstruction('jal', regEnc('1'), offset, location(), true);
     };
   var peg$f36 = function(rs) {
-      console.log("jr");
       if (isFirstPass) { return undefined; }
       return handleIInstruction('jalr', regEnc('0'), rs, '0', location(), true);
     };
   var peg$f37 = function(target) {
-      console.log("j");
       if (isFirstPass) { return undefined; }
       return handleJInstruction('jal', regEnc('0'), target, location(), true);
     };
   var peg$f38 = function() {
-      console.log("ret");
       if (isFirstPass) { return undefined; }
       return handleIInstruction(
         'jalr', regEnc('0'), regEnc('1'), '0', location(), true
@@ -1157,52 +1122,36 @@ function peg$parse(input, options) {
       return handleIInstruction('addi', rd, rs, '0', location(), true); 
     };
   var peg$f40 = function() { 
-      console.log("nop");
-
       if (isFirstPass) { return undefined; }
       return handleIInstruction(
         'addi', regEnc('0'), regEnc('0'), '0', location(), true
       ); 
     };
   var peg$f41 = function(rd, rs) {
-      console.log("not");
-
       if (isFirstPass) { return undefined; }
       return handleIInstruction('xori', rd, rs, '-1', location(), true); 
     };
   var peg$f42 = function(rd, rs) {
-      console.log("neg");
-
       if (isFirstPass) { return undefined; }
       return handleRInstruction('sub', rd, regEnc('0'), rs, location(), true); 
     };
   var peg$f43 = function(rd, rs) {
-      console.log("seqz");
-
       if (isFirstPass) { return undefined; }
       return handleIInstruction('sltiu', rd, rs, '1', location(), true); 
     };
   var peg$f44 = function(rd, rs) {
-      console.log("snez");
-
       if (isFirstPass) { return undefined; }
       return handleRInstruction('sltu', rd, regEnc('0'), rs, location(), true);
     };
   var peg$f45 = function(rd, rs) { 
-      console.log("sltz");
-
       if (isFirstPass) { return undefined; }
       return handleRInstruction('slt', rd, rs, regEnc('0'), location(), true); 
     };
   var peg$f46 = function(rd, rs) { 
-      console.log("sgtz");
-
       if (isFirstPass) { return undefined; }
       return handleRInstruction('slt', rd, regEnc('0'), rs, location(), true); 
     };
   var peg$f47 = function(rd, symbol) {
-      console.log("la");
-
     const imm = symbol["value"]
     if (verifySymbol(symbol, isFirstPass)){
       if (isFirstPass) { return undefined; }
@@ -1213,7 +1162,6 @@ function peg$parse(input, options) {
     return handleIInstruction('addi', rd, rd, imm, location(), true);
   };
   var peg$f48 = function(rd, symbol) {
-      console.log("li");
     const imm = symbol["value"]
     if (verifySymbol(symbol, isFirstPass)){
       if (isFirstPass) { return undefined; }
@@ -1225,8 +1173,6 @@ function peg$parse(input, options) {
     return handleIInstruction('addi', rd, regEnc('0'), imm, location(), true);
   };
   var peg$f49 = function(name, rd, symbol) { 
-      console.log(name);
-
     const imm = symbol["value"]
     if (verifySymbol(symbol, isFirstPass)){
       if (isFirstPass) { return undefined; }
@@ -1237,8 +1183,6 @@ function peg$parse(input, options) {
     return handleIInstruction(name, rd, rd, imm, location());
   };
   var peg$f50 = function(name, rd, symbol, rt) { 
-      console.log(name);
-
     const imm = symbol["value"]
     if (verifySymbol(symbol, isFirstPass)){
       if (isFirstPass) { return undefined; }
@@ -1249,8 +1193,6 @@ function peg$parse(input, options) {
     return handleSInstruction(name, rd, imm, rt, location(), true);
   };
   var peg$f51 = function(name, offset) {
-      console.log(name);
-
     const imm = offset["value"]
     if (verifySymbol(offset, isFirstPass)){
       if (isFirstPass) { return undefined; }
@@ -1262,8 +1204,6 @@ function peg$parse(input, options) {
     return handleIInstruction('jalr', regEnc('1'), regEnc('1'), imm, location(), true);
   };
   var peg$f52 = function(name, offset) {
-      console.log(name);
-
     const imm = offset["value"]
     if (verifySymbol(offset, isFirstPass)){
       if (isFirstPass) { return undefined; }

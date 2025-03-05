@@ -276,7 +276,8 @@
     const encoding = {
       "binEncoding": `${funct7}${rs2Bin}${rs1Bin}${funct3Bin}${rd}1100011`,
       "imm[12]": imm12, "imm[10:5]":imm10_5, "imm[4:1]":imm4_1, "imm[11]":imm11,
-      "funct3": funct3Bin, "funct7": funct7, "imm13":immValBin
+      "funct3": funct3Bin, "funct7": funct7, "imm13":immValBin, "rs1":rs1Bin,
+      "rs2":rs2Bin
     };
 
     return {
@@ -309,7 +310,7 @@
     };
 
     return {
-      "inst":instMem, "type":"J", "instruction": name, rd:rd,
+      "inst":instMem, "type":"J", "instruction": name, "rd":rd,
       "imm21": immVal, "opcode": "1101111", "encoding":encoding,
       "location":location, "pseudo":pseudo
     };
