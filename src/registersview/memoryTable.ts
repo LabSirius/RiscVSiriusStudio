@@ -523,6 +523,7 @@ export class MemoryTable {
     }, 200);
 
   }
+  
 
   public allocateMemory() {
     const zeros8 = "00000000";

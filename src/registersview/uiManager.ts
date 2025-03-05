@@ -15,9 +15,9 @@ export class UIManager {
 
   public static instance: UIManager | undefined;
 
-  private memoryTable: MemoryTable;
+  public memoryTable: MemoryTable;
 
-  private registersTable: RegistersTable;
+  public registersTable: RegistersTable;
 
   private readonly sendMessagetoExtension: (msg: any) => void;
 
@@ -60,9 +60,9 @@ export class UIManager {
     return this._isSimulating;
   }
 
-  public static createInstance(memoryTable: MemoryTable, registersTable: RegistersTable, sendMessagetoExtension: (msg: any) => void): UIManager {
+  public static createInstance(sendMessagetoExtension: (msg: any) => void): UIManager {
     if (!this.instance) {
-      this.instance = new UIManager(memoryTable, registersTable, sendMessagetoExtension);
+      this.instance = new UIManager( sendMessagetoExtension);
     }
     return this.instance;
   }
@@ -75,11 +75,13 @@ export class UIManager {
     }
   }
 
-  private constructor(memoryTable: MemoryTable, registersTable: RegistersTable, sendMessagetoExtension: (msg: any) => void) {
+  private constructor(sendMessagetoExtension: (msg: any) => void) {
     this._isSimulating = false;
 
-    this.memoryTable = memoryTable;
-    this.registersTable = registersTable;
+    this.registersTable = new RegistersTable();
+    this.memoryTable = new MemoryTable();
+
+
     this.sendMessagetoExtension = sendMessagetoExtension;
 
 

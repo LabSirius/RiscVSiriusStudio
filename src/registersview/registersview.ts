@@ -3,13 +3,9 @@ import {
   allComponents
 } from '@vscode/webview-ui-toolkit';
 
-
-import { RegistersTable } from './registersTable/registersTable';
-import { MemoryTable } from './memoryTable';
-
 import { setUpConvert } from './convertTool';
 import { UIManager } from './uiManager';
-import { InternalRepresentation } from '../utilities/riscvc';
+
 provideVSCodeDesignSystem().register(allComponents);
 
 const vscode = acquireVsCodeApi();
@@ -28,33 +24,31 @@ function log(object: any = {}, level: string = 'info') {
 }
 
 function main() {
-  const registersTable = new RegistersTable();
-  const memoryTable = new MemoryTable();
+
+  UIManager.createInstance(sendMessageToExtension);
 
   window.addEventListener('message', (event) => {
-    dispatch(event, registersTable, memoryTable);
+    dispatch(event);
   });
-  UIManager.createInstance(memoryTable, registersTable, sendMessageToExtension);
+
   setUpConvert();
 }
 
 function dispatch(
   event: MessageEvent,
-  registersTable: RegistersTable,
-  memoryTable: MemoryTable
 ) {
   log({ msg: 'Dispatching message', data: event.data });
   const data = event.data;
   switch (data.operation) {
     case 'uploadMemory':
-      uploadMemory(memoryTable, registersTable, data.memory, data.codeSize, data.symbols);
+      uploadMemory(data.memory, data.codeSize, data.symbols);
       break;
     case 'step':
-      step(memoryTable, registersTable, data.pc);
-      memoryTable.updatePC(data.pc);
+      step( data.pc);
+      UIManager.getInstance().memoryTable.updatePC(data.pc);
       break;
     case 'setRegister':
-      setRegister(registersTable, memoryTable, data.register, data.value);
+      setRegister(data.register, data.value);
       break;
     default:
       log({ msg: 'No handler for message', data: data.operation });
@@ -63,28 +57,26 @@ function dispatch(
 }
 
 function uploadMemory(
-  memoryTable: MemoryTable, registersTable: RegistersTable,
   memory: string[], codeSize: number, symbols: any[]): void {
   UIManager.getInstance().configuration();
-  memoryTable.uploadMemory(memory, codeSize, symbols);
+  UIManager.getInstance().memoryTable.uploadMemory(memory, codeSize, symbols);
 }
 
-function step(memoryTable: MemoryTable, registersTable: RegistersTable, pc: number): void {
+function step(pc: number): void {
   log({ msg: "Simulator reported step" });
   if (!UIManager.getInstance().isSimulating) {
     UIManager.getInstance().simulationStarted();
-    memoryTable.disableEditors();
+    UIManager.getInstance().memoryTable.disableEditors();
   }
-  memoryTable.updatePC(pc);
+  UIManager.getInstance().memoryTable.updatePC(pc);
 }
 
 function setRegister(
-  registersTable: RegistersTable, memoryTable: MemoryTable,
   register: string, value: string
 ): void {
-  registersTable.setRegister(register, value);
+  UIManager.getInstance().registersTable.setRegister(register, value);
   if (register === 'x2') {
-    memoryTable.setSP(value);
+    UIManager.getInstance().memoryTable.setSP(value);
   }
 }
 
@@ -95,6 +87,9 @@ function setRegister(
 function sendMessageToExtension(messageObject: any) {
   vscode.postMessage(messageObject);
 }
+
+
+
 
 
 
