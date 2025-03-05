@@ -877,6 +877,10 @@ mark {
   border: solid 1px #9CA3AF;
   width: 23rem;
 }
+.input-filter.bg-disabled{
+  background-color: #F5F5F5 !important;
+}
+
 
 
 .input-filter::placeholder {
