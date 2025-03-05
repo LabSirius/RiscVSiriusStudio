@@ -1,4 +1,4 @@
-class Converter {
+export class Converter {
   private checkIsNegativeContainer = document.getElementById('checkIsNegativeContainer') as HTMLDivElement;
   private isNegativeCheck = document.getElementById('isNegative') as HTMLInputElement;
   private numberInput = document.getElementById('numberToconvertInput') as HTMLInputElement;
@@ -312,8 +312,4 @@ class Converter {
     });
   }
 
-}
-
-export function setUpConvert() {
-  new Converter();
 }

@@ -3,7 +3,6 @@ import {
   allComponents
 } from '@vscode/webview-ui-toolkit';
 
-import { setUpConvert } from './convertTool';
 import { UIManager } from './uiManager';
 
 provideVSCodeDesignSystem().register(allComponents);
@@ -31,7 +30,6 @@ function main() {
     dispatch(event);
   });
 
-  setUpConvert();
 }
 
 function dispatch(
@@ -41,11 +39,10 @@ function dispatch(
   const data = event.data;
   switch (data.operation) {
     case 'uploadMemory':
-      uploadMemory(data.memory, data.codeSize, data.symbols);
+      UIManager.getInstance().uploadMemory(data.memory, data.codeSize, data.symbols);
       break;
     case 'step':
-      step( data.pc);
-      UIManager.getInstance().memoryTable.updatePC(data.pc);
+      UIManager.getInstance().step(data.pc, log);
       break;
     case 'setRegister':
       setRegister(data.register, data.value);
@@ -56,21 +53,8 @@ function dispatch(
   }
 }
 
-function uploadMemory(
-  memory: string[], codeSize: number, symbols: any[]): void {
-  UIManager.getInstance().configuration();
-  UIManager.getInstance().memoryTable.uploadMemory(memory, codeSize, symbols);
-}
 
-function step(pc: number): void {
-  log({ msg: "Simulator reported step" });
-  if (!UIManager.getInstance().isSimulating) {
-    UIManager.getInstance().simulationStarted();
-    UIManager.getInstance().memoryTable.disableEditors();
-  }
-  UIManager.getInstance().memoryTable.updatePC(pc);
-}
-
+//IS THIS ALSO INCLUDED IN UIMANAGER???
 function setRegister(
   register: string, value: string
 ): void {

@@ -1,5 +1,6 @@
 import { MemoryTable } from "./memoryTable";
 import { RegistersTable } from "./registersTable/registersTable";
+import { Converter } from "./convertTool";
 
 
 
@@ -80,7 +81,7 @@ export class UIManager {
 
     this.registersTable = new RegistersTable();
     this.memoryTable = new MemoryTable();
-
+    new Converter();
 
     this.sendMessagetoExtension = sendMessagetoExtension;
 
@@ -119,6 +120,7 @@ export class UIManager {
     this.checkShowHexadecimal = getElement<HTMLInputElement>('checkShowHexadecimal');
 
 
+
     this.initializeTopButtons();
     this.searchInRegistersTable();
     this.searchInMemoryTable();
@@ -127,6 +129,21 @@ export class UIManager {
     this.showHexadecimalInMemory();
     this.setUpSettings();
     this.setUpHelp();
+  }
+
+  public uploadMemory(
+    memory: string[], codeSize: number, symbols: any[]): void {
+    this.configuration();
+    this.memoryTable.uploadMemory(memory, codeSize, symbols);
+  }
+
+  public step(pc: number, log: (object: any, level?: string) => void): void {
+    log({ msg: "Simulator reported step" });
+    if (!this.isSimulating) {
+      this.simulationStarted();
+      this.memoryTable.disableEditors();
+    }
+    this.memoryTable.updatePC(pc);
   }
 
   private initializeTopButtons(): void {
@@ -169,7 +186,7 @@ export class UIManager {
     );
   }
 
-  public configuration() {
+  private configuration() {
     this.registerTab.classList.remove('hidden');
     this.memoryTab.classList.remove('hidden');
     this.settingsButton.classList.remove('hidden');
@@ -186,7 +203,7 @@ export class UIManager {
     this.stageTwoHelp.classList.remove('hidden');
     this.openSettings.classList.remove('hidden');
   }
-  public simulationStarted() {
+  private simulationStarted() {
     this._isSimulating = true;
     this.openSettings.className = 'hidden';
     this.memorySizeInput.readOnly = true;
