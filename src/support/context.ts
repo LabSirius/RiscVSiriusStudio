@@ -165,6 +165,8 @@ export class RVContext {
           this._simulator.stop();
           this._isSimulating = false;
           this._simulator = undefined;
+    commands.executeCommand('setContext', 'ext.isSimulating', false);
+
         }
       })
     );
@@ -245,6 +247,7 @@ export class RVContext {
     // This tells vscode that the extension is simulating and in turn some
     // commands get enabled.
     this._isSimulating = true;
+    commands.executeCommand('setContext', 'ext.isSimulating', true);
     this._simulator = simulator;
     simulator.start();
   }

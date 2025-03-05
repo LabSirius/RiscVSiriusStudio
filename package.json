@@ -17,18 +17,21 @@
       {
         "command": "rv-simulator.simulate",
         "title": "RISCV simulator: simulate program execution",
-        "icon": "$(chip)"
+        "icon": "$(chip)",
+        "when": "!ext.isSimulating"
       },
       {
         "command": "rv-simulator.simulateStep",
         "title": "RISCV simulator: step simulation",
-        "icon": "$(debug-step-over)"
+        "icon": "$(debug-step-over)",
+        "when": "ext.isSimulating"
 
       },
       {
         "command": "rv-simulator.simulateStop",
-        "title": "RISCV simulator: step simulation",
-        "icon": "$(debug-stop)"
+        "title": "RISCV simulator: stop simulation",
+        "icon": "$(debug-stop)",
+        "when": "ext.isSimulating"
 
       },
       {
@@ -154,17 +157,17 @@
         {
           "command": "rv-simulator.simulate",
           "group": "navigation",
-          "when": "editorLangId == riscvasm"
+          "when": "editorLangId == riscvasm && !ext.isSimulating" 
         },
         {
           "command": "rv-simulator.simulateStep",
           "group": "navigation",
-          "when": "editorLangId == riscvasm"
+          "when": "editorLangId == riscvasm && ext.isSimulating" 
         },
         {
           "command": "rv-simulator.simulateStop",
           "group": "navigation",
-          "when": "editorLangId == riscvasm"
+          "when": "editorLangId == riscvasm && ext.isSimulating"  
         }
       ]
     },
