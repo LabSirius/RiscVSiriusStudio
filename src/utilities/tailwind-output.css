@@ -865,10 +865,10 @@ mark {
   color: #9CA3AF;
 }
 
-.label-red{
+.label-primary{
   font-size: .9rem;
   font-weight: normal;
-  color: #FF6F70;
+  color: #3A6973;
 }
 
 .input-filter{
