@@ -280,8 +280,6 @@ export class RVContext {
       default:
         console.log(`%c[Mainview-unknown event received at context}]\n`, 'color:green', message);
         break;
-
-
     }
   }
 }

@@ -348,8 +348,8 @@ export class UIManager {
 
     openShowCard.addEventListener('click', () => {
       this.sendMessagetoExtension({
-        command: 'operation',
-        object: { name: 'clickOpenRISCVCard', value: 'openHelp' }
+        command: 'event',
+        object: { event: 'clickOpenRISCVCard', value: 'openHelp' }
       });
     });
   }

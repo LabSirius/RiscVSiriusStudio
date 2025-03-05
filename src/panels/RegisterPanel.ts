@@ -39,7 +39,7 @@ export async function getHtmlForRegistersWebview(webview: Webview, extensionUri:
 }
 
 export async function activateMessageListenerForRegistersView(webview: Webview, context: RVContext) {
-  console.log("Activating listener on registers view");
+
   webview.onDidReceiveMessage((message: any) => {
     switch (message.command) {
       case "log":
