@@ -145,7 +145,6 @@ export class EncoderDecorator {
     const ml = EncoderDecorator.maxLength(editor.document);
 
     async function updateDecorations() {
-      debugger;
       const decorations = [];
       for (let i = 0; i < editor.document.lineCount; i++) {
         const line = editor.document.lineAt(i);
