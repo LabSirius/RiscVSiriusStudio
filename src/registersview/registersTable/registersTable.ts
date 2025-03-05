@@ -407,9 +407,7 @@ export class RegistersTable {
         formatter: this.viewTypeFormatter,
         // Flag for allowing the cell to be edited
         editable: (cell: CellComponent): boolean => {
-          const allow = cell.getElement().dataset.allowEdit === "true";
-          cell.getElement().dataset.allowEdit = "false";
-          return allow;
+          return true;  // La celda siempre será editable
         }
       },
       { title: 'Watched', field: 'watched', visible: false },
