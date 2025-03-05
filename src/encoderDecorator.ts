@@ -72,11 +72,11 @@ async function detailsMessage(ir: any | undefined): Promise<MarkdownString | und
 
 
     case "B":
-      const imm12 = encoding["imm12"];
-      const immSub12 = imm12[0];
-      const immSub10to5 = imm12.substring(1, 7);
-      const immSub4to1 = imm12.substring(7, 11);
-      const immSub11 = imm12[11];
+      // let imm13 = encoding["imm13"];
+      let immSub12 = encoding["imm[12]"];
+      let immSub10to5 = encoding["imm[10:5]"];
+      let immSub4to1 = encoding["imm[4:1]"];
+      let immSub11 = encoding["imm[11]"];
 
       markdown.appendMarkdown("```\n\n");
       markdown.appendMarkdown("imm[12]   imm[10:5]   rs2     rs1     funct3   imm[4:1]   imm[11]   opcode  \n");
