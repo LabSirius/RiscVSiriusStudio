@@ -16,9 +16,19 @@ export class UIManager {
 
   public static instance: UIManager | undefined;
 
-  public memoryTable: MemoryTable;
+  private _memoryTable: MemoryTable | undefined;
 
-  public registersTable: RegistersTable;
+  get memoryTable(): MemoryTable {
+    if (!this._memoryTable) {
+      throw new Error('Memory table not initialized');
+    }
+    return this._memoryTable;
+  }
+
+  private _registersTable: RegistersTable;
+  get registersTable(): RegistersTable {
+    return this._registersTable;
+  }
 
   private readonly sendMessagetoExtension: (msg: any) => void;
 
@@ -40,7 +50,7 @@ export class UIManager {
   readonly openSearch: HTMLDivElement;
   readonly stageThreeHelp: HTMLDivElement;
 
-  readonly memorySizeInput : HTMLInputElement;
+  readonly memorySizeInput: HTMLInputElement;
   readonly manualConfig: HTMLDivElement;
   readonly openSettingsButton: HTMLButtonElement;
 
@@ -63,7 +73,7 @@ export class UIManager {
 
   public static createInstance(sendMessagetoExtension: (msg: any) => void): UIManager {
     if (!this.instance) {
-      this.instance = new UIManager( sendMessagetoExtension);
+      this.instance = new UIManager(sendMessagetoExtension);
     }
     return this.instance;
   }
@@ -78,9 +88,8 @@ export class UIManager {
 
   private constructor(sendMessagetoExtension: (msg: any) => void) {
     this._isSimulating = false;
-
-    this.registersTable = new RegistersTable();
-    this.memoryTable = new MemoryTable();
+    this._registersTable = new RegistersTable();
+    this._memoryTable = undefined;
     new Converter();
 
     this.sendMessagetoExtension = sendMessagetoExtension;
@@ -126,13 +135,14 @@ export class UIManager {
     this.searchInMemoryTable();
     this.initRegisterImport();
     this.initMemoryImport();
-    this.showHexadecimalInMemory();
+    //this.showHexadecimalInMemory();
     this.setUpSettings();
     this.setUpHelp();
   }
 
   public uploadMemory(
     memory: string[], codeSize: number, symbols: any[]): void {
+    this._memoryTable = new MemoryTable(memory, codeSize, symbols);
     this.configuration();
     this.memoryTable.uploadMemory(memory, codeSize, symbols);
   }
@@ -186,6 +196,7 @@ export class UIManager {
     );
   }
 
+
   private configuration() {
     this.registerTab.classList.remove('hidden');
     this.memoryTab.classList.remove('hidden');
@@ -203,6 +214,7 @@ export class UIManager {
     this.stageTwoHelp.classList.remove('hidden');
     this.openSettings.classList.remove('hidden');
   }
+
   private simulationStarted() {
     this._isSimulating = true;
     this.openSettings.className = 'hidden';
@@ -358,16 +370,16 @@ export class UIManager {
     toggleColumn();
   }
 
-  private setUpSettings(){
+  private setUpSettings() {
     this.memorySizeInput.addEventListener('change', () => {
       if (Number.parseInt(this.memorySizeInput.value) < 32) {
-        this.memorySizeInput .value = '32';
+        this.memorySizeInput.value = '32';
       }
       this.sendMessagetoExtension({
         command: 'event',
-        object: { event: 'memorySizeChanged', value: this.memorySizeInput .value }
+        object: { event: 'memorySizeChanged', value: this.memorySizeInput.value }
       });
-      const newSize = Number.parseInt(this.memorySizeInput .value);
+      const newSize = Number.parseInt(this.memorySizeInput.value);
       this.memoryTable.resizeMemory(newSize);
     });
   }

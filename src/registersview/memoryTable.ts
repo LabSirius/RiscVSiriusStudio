@@ -16,9 +16,9 @@ import { error } from 'console';
 
 export class MemoryTable {
   public table: Tabulator;
-  private tableData: any[] = [];
+  private tableData: any[];
+
   private memorySize: number;
-  private labels: string[];
   /**
    *  Index in the table when the code area ends. We assume that the code 
    * area starts at position 0.
@@ -74,17 +74,71 @@ export class MemoryTable {
     return editor;
   };
 
-  constructor(memorySize: number = 32) {
-    this.memorySize = memorySize;
-    this.codeAreaEnd = 32;
-    this.table = this.initializeTable();
-    this.pc = 0;
+  constructor(memory: string[], codeSize: number, symbols: any[]) {
+    this.memorySize = memory.length;
+    // Forward initialization to prevent warnings
     this.sp = "";
-    this.labels = [];
+    this.pc = 0;
+    this.codeAreaEnd = codeSize;
+
+    this.tableData = chunk(memory, 4).map((word, index) => {
+      const address = intToHex(index * 4).toUpperCase();
+      return {
+        "index": index,
+        "address": address,
+        "value0": word[3], "value1": word[2],
+        "value2": word[1], "value3": word[0],
+        "info": "",
+        "hex": word
+          .map(byte => binaryToHex(byte).toUpperCase().padStart(2, "0"))
+          .join("-")
+      };
+
+    });
+    this.table = this.initializeTable();
+    this.table.on("tableBuilt", () => {
+      this.table.getRows().forEach((row) => {
+        const index = row.getData().index;
+        if (index * 4 < codeSize) {
+          row.getElement().style.backgroundColor = "#FFF6E5";
+        }
+      });
+
+      const heapAddress = codeSize;
+      const heapAddressHex = intToHex(heapAddress).toUpperCase();
+      this.table.updateRow(
+        heapAddressHex,
+        {
+          "info": `<span class="info-column-mem-table">Heap</span>`
+        }
+      );
+
+      const spAddressHex = intToHex(this.memorySize - 4).toUpperCase();
+      this.table.updateOrAddRow(
+        spAddressHex,
+        {
+          "info": `<span class="info-column-mem-table">SP</span>`
+        }
+      );
+      this.sp = spAddressHex;
+
+      Object.values(symbols).forEach((symbol: any) => {
+        const address = symbol.memdef;
+        const memdefHex = intToHex(address).toUpperCase();
+        this.table.updateOrAddRow(
+          memdefHex,
+          {
+            "info": `<span class="info-column-mem-table">${symbol.name}</span>`
+          }
+        );
+      });
+      this.updatePC(0);
+    });
+
     this.setupEventListeners();
   }
 
-  public  reInitializeTable(){
+  public reInitializeTable() {
     this.table = this.initializeTable();
   }
 
@@ -147,6 +201,7 @@ export class MemoryTable {
       layout: 'fitColumns',
       layoutColumnsOnNewData: true,
       index: 'address',
+      data: this.tableData,
       reactiveData: true,
       validationMode: 'blocking',
       initialSort: [
@@ -180,6 +235,11 @@ export class MemoryTable {
     };
 
     return [
+      {
+        ...defaultColumnAttributes,
+        visible: false,
+        field: 'index',
+      },
       {
         ...defaultFrozenColumnAttributes,
         title: 'Info',
@@ -268,10 +328,6 @@ export class MemoryTable {
       if (cell.getField().startsWith('value')) {
         this.updateHexValue(cell.getRow());
       }
-    });
-
-    this.table.on('tableBuilt', () => {
-      this.table.setData(this.tableData);
     });
   }
 
