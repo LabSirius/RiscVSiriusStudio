@@ -18,7 +18,11 @@
   //   return [head].concat(extractList(tail, index));
   // }
 
-  function buildList(head, tail) {
+  function buildList(head, tail: Array) {
+    if (Array.isArray(head)){
+      tail.unshift([[], head[1]]);
+      head = head[0];
+    }
     return [head].concat(
       tail.flatMap(t => Array.isArray(t[1]) ? t[1] : [t[1]])
     );
@@ -33,7 +37,6 @@
   }
 
   function verifySymbol(symbol, isFirstPass){
-    // const imm = symbol["value"]
     if (symbol["double"]){
       if (isFirstPass) {
         getInstMemPosition();
@@ -784,7 +787,6 @@
     const imm = symbol["value"]
     if (verifySymbol(symbol, isFirstPass)){
       if (isFirstPass) { return undefined; }
-      const imm = symbol["value"]
       const firstInstruction = handleUInstruction('lui', rd, shiftLeftLogical(imm, 12), location(), true);
       const secondInstruction = handleIInstruction('addi', rd, regEnc('0'), cutNumber(imm, 0xFFF), location(), true);
       return [firstInstruction, secondInstruction];
@@ -1306,10 +1308,11 @@
   = !ReservedWord name:IdentifierName { return name; }
 
   IdentifierName "identifier"
-  = ![0-9][\._a-zA-Z0-9]+ 
-  { 
-    return {type: "IdentifierName", name:text() }; 
-  }
+  = name:LabelIdentifier _ "(" _ [^)]* ")" { return { type: "IdentifierName", name: text() }; }
+  / name:LabelIdentifier { return { type: "IdentifierName", name: text() }; }
+
+  LabelIdentifier
+    = [a-zA-Z_.][a-zA-Z0-9_]* { return text(); }
 
   QuotedString "quoted string"
   = "\"" (!"\"" SourceCharacter)* "\""
