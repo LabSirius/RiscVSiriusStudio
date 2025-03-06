@@ -25,7 +25,11 @@
   //   return [head].concat(extractList(tail, index));
   // }
 
-  function buildList(head, tail) {
+  function buildList(head, tail: Array) {
+    if (Array.isArray(head)){
+      tail.unshift([[], head[1]]);
+      head = head[0];
+    }
     return [head].concat(
       tail.flatMap(t => Array.isArray(t[1]) ? t[1] : [t[1]])
     );
@@ -40,7 +44,6 @@
   }
 
   function verifySymbol(symbol, isFirstPass){
-    // const imm = symbol["value"]
     if (symbol["double"]){
       if (isFirstPass) {
         getInstMemPosition();
