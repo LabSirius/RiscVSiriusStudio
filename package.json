@@ -151,7 +151,7 @@
         {
           "command": "rv-simulator.build",
           "group": "navigation",
-          "when": "editorLangId == riscvasm"
+          "when": "editorLangId == riscvasm && !ext.isSimulating"
         },
         {
           "command": "rv-simulator.simulate",
