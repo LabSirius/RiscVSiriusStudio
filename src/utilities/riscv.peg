@@ -1308,10 +1308,11 @@
   = !ReservedWord name:IdentifierName { return name; }
 
   IdentifierName "identifier"
-  = ![0-9][\._a-zA-Z0-9]+ 
-  { 
-    return {type: "IdentifierName", name:text() }; 
-  }
+  = name:LabelIdentifier _ "(" _ [^)]* ")" { return { type: "IdentifierName", name: text() }; }
+  / name:LabelIdentifier { return { type: "IdentifierName", name: text() }; }
+
+  LabelIdentifier
+    = [a-zA-Z_.][a-zA-Z0-9_]* { return text(); }
 
   QuotedString "quoted string"
   = "\"" (!"\"" SourceCharacter)* "\""
