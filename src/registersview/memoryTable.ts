@@ -84,6 +84,10 @@ export class MemoryTable {
     this.setupEventListeners();
   }
 
+  public  reInitializeTable(){
+    this.table = this.initializeTable();
+  }
+
   public setSP(value: string) {
     this.table.getRow(this.sp).update(
       { "info": '' }

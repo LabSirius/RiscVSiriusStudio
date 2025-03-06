@@ -47,6 +47,9 @@ function dispatch(
     case 'setRegister':
       setRegister(data.register, data.value);
       break;
+    case 'stop':
+      UIManager.getInstance().resetUI();
+      break;
     default:
       log({ msg: 'No handler for message', data: data.operation });
       break;

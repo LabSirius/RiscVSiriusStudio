@@ -278,6 +278,17 @@ export class TextSimulator extends Simulator {
       this.currentHighlight.dispose();
     }
     this.makeEditorWritable();
+    const mainView = this.context.mainWebviewView;
+    if (!mainView) {
+      commands.executeCommand(`rv-simulator.riscv.focus`);
+      return;
+    } else {
+      mainView.postMessage({
+        operation: 'stop',
+      });
+    }
+
+
   }
 
   public notifyRegisterWrite(register: string, value: string) {

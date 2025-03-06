@@ -167,6 +167,7 @@ export class RVContext {
           this._isSimulating = false;
           this._simulator = undefined;
           commands.executeCommand('setContext', 'ext.isSimulating', false);
+          
 
         }
       })

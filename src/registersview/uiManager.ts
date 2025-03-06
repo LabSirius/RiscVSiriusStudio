@@ -386,4 +386,38 @@ export class UIManager {
     });
   }
 
+
+  public resetUI(): void {
+
+    this._isSimulating = false;
+    this.registersTable.reInitializeTable();
+    this.memoryTable.reInitializeTable();
+
+    this.registerTab.classList.add('hidden');
+    this.memoryTab.classList.add('hidden');
+
+    this.convertButton.classList.remove('hidden');
+    this.openConvert.className = 'flex flex-1 flex-col max-h-dvh min-h-dvh overflow-y-scroll';
+    this.convertButton.classList.add('bg-active');
+
+
+    this.openSearchButton.classList.add('hidden');
+    this.openSearch.classList.add('hidden');
+
+    this.memorySizeInput.classList.remove('bg-disabled');
+    this.memorySizeInput.readOnly = false;
+
+    this.openSettings.className = 'hidden';
+    this.settingsButton.classList.add('hidden');
+    this.manualConfig.classList.remove('hidden');
+
+    this.openHelp.className = 'hidden';
+    this.openHelpButton.classList.remove('bg-active');
+    this.stageOneHelp.classList.remove('hidden');
+    this.stageTwoHelp.classList.add('hidden');
+    this.stageThreeHelp.classList.add('hidden');
+    this.shortcutsHelp.classList.add('hidden');
+
+  }
+  
 }

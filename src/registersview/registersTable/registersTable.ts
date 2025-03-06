@@ -365,6 +365,11 @@ export class RegistersTable {
     });
   }
 
+  public  reInitializeTable(){
+    this.table = this.initializeTable();
+    this.initRegisterNames();
+  }
+
   private getColumnDefinitions(): ColumnDefinition[] {
     return [
       {
