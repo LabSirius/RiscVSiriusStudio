@@ -770,6 +770,12 @@
       return handleRInstruction('slt', rd, regEnc('0'), rs, location(), true); 
     }
 
+    / sgtToken _ rd:RegisterName ___ rs1:RegisterName ___ rs2:RegisterName
+    {
+      if (isFirstPass) { return undefined; }
+      return handleRInstruction('slt', rd, rs2, rs1, location(), true);
+    }
+
   DoublePInstruction "Pseudo-instructions that expands into two instructions"
   = laToken _ rd:RegisterName ___ symbol:Symbol
   {
