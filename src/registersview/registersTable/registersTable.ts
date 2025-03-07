@@ -75,18 +75,22 @@ export class RegistersTable {
   ) => {
     const { value, viewType } = cell.getData();
     switch (viewType) {
-      case 2:
-        return binaryRepresentation(value);
+      case 2: {
+        const intValue = Number(binaryToInt(value));
+        const binStr = binaryRepresentation(value);
+        if (intValue < 0) {
+          return `<span style="color: #3A6973;">${binStr}</span>`;
+        }
+        return binStr;
+      }
       case 'signed': {
         return binaryToInt(value);
       }
       case 'unsigned': {
-        const rvalue = binaryToUInt(value);
-        return rvalue;
+        return binaryToUInt(value);
       }
       case 16: {
-        const rvalue = binaryToHex(value);
-        return rvalue;
+        return binaryToHex(value);
       }
       case 'ascii': {
         return binaryToAscii(value);
@@ -94,6 +98,8 @@ export class RegistersTable {
     }
     return value;
   };
+  
+  
 
   /**
  * Creates an editor for a value cell. This editor takes into account the
@@ -643,7 +649,13 @@ export class RegistersTable {
       if (viewType === 2) {
         // Binary: 'd' shows decimal, 'h' shows hexadecimal.
         if (key === 'd') {
-          newContent = binaryToUInt(data.value);
+          const unsignedVal = binaryToUInt(data.value);
+          const signedVal = binaryToInt(data.value);
+          if (unsignedVal.toString() === signedVal.toString()) {
+            newContent = signedVal.toString();
+          } else {
+            newContent = `${signedVal} / ${unsignedVal}`;
+          }
           //Temporarily show "±10" for decimal
           newViewTypeLabel = "±10";
           activeKey = 'd';
@@ -699,15 +711,12 @@ export class RegistersTable {
   
     // Keyup handler: restores the original content when the conversion key is released.
     const keyUpHandler = (evt: KeyboardEvent) => {
-      if (activeKey && evt.key.toLowerCase() === activeKey && isConverted) {
-        console.log(`KEY RELEASED: ${evt.key.toUpperCase()}`);
+      if (isConverted) {
         isConverted = false;
         activeKey = null;
-        // Restore the original cell content
         cellElement.innerHTML = originalContent;
-  
-        //Restore the original "viewType" content
         viewTypeCell.getElement().innerHTML = originalViewTypeContent;
+        cell.getRow().reformat();
       }
     };
   

@@ -230,7 +230,6 @@ export class UIManager {
     this.stageTwoHelp.className = 'hidden';
     this.stageThreeHelp.classList.remove('hidden');
     this.manualConfig.classList.add('hidden');
-
   }
 
   private searchInRegistersTable() {
