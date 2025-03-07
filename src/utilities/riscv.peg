@@ -1209,6 +1209,8 @@
   sltzToken = "sltz"
   sgtzToken = "sgtz"
 
+  sgtToken = "sgt"
+
   laToken = "la"
   
   x0Token    = "x0"
@@ -1286,10 +1288,9 @@
 
 
   Integer "Integer"
-  = _ [\+-]?[0-9]+ 
-  { 
-    return parseInt(text(), 10); 
-  }
+  = _ "0x" digits:[0-9a-fA-F]+ { return parseInt(digits.join(""), 16); }
+  / _ "0X" digits:[0-9a-fA-F]+ { return parseInt(digits.join(""), 16); }
+  / _ [\+-]?[0-9]+ { return parseInt(text(), 10); }
 
   ReservedWord 
   = RegisterName
