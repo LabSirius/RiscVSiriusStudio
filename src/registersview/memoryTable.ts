@@ -244,9 +244,28 @@ export class MemoryTable {
         ...defaultFrozenColumnAttributes,
         title: 'Info',
         field: 'info',
-        width: 50,
-
+        width: 60,
+        formatter: (cell) => {
+          const value = cell.getValue();
+          return `<span class="truncated-info">${value}</span>`;
+        },
+        
+        tooltip: (function(e: any, cell: any, onRendered: any) {
+          const value = cell.getValue();
+          const tooltip = document.createElement("div");
+          tooltip.className = "custom-tooltip";
+          tooltip.innerHTML = value;
+          
+          onRendered(() => {
+            tooltip.style.position = "absolute";
+            tooltip.style.left = `${e.clientX + 17}px`; 
+            tooltip.style.top = `${e.clientY - 22}px`;
+            document.body.appendChild(tooltip);
+          });
+          return tooltip;
+        }) as any,
       },
+    
       {
         ...defaultFrozenColumnAttributes,
         title: 'Addr.',

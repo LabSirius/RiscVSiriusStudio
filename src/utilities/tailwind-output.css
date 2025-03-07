@@ -1128,6 +1128,25 @@ mark {
   height: auto !important;
 }
 
+.truncated-info{
+  color: white;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-tooltip {
+  background-color: white !important;
+  border-radius: .3rem !important;
+  border: none !important;
+  padding: 5px 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 99999;
+  max-width: min-content !important;
+  max-height: 1.8rem !important;
+}
+
 .fixed {
   position: fixed;
 }
