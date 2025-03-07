@@ -196,40 +196,106 @@ export class UIManager {
     );
   }
 
-
-  private configuration() {
+  private showtables(){
     this.registerTab.classList.remove('hidden');
     this.memoryTab.classList.remove('hidden');
-    this.settingsButton.classList.remove('hidden');
-    this.convertButton.classList.add('hidden');
+  }
+  private ocultTables(){
+    this.registerTab.classList.add('hidden');
+    this.memoryTab.classList.add('hidden');
+  }
 
-    this.shortcutsHelp.classList.remove('hidden');
-    
+  private showConvert(){
+    this.convertButton.classList.remove('hidden');
+    this.openConvert.className = 'flex flex-1 flex-col max-h-dvh min-h-dvh overflow-y-scroll';
+    this.convertButton.classList.add('bg-active');
+  } 
+  private ocultConvert(){
+    this.convertButton.classList.add('hidden');
     this.convertButton.classList.remove('bg-active');
-    this.openHelpButton.classList.remove('bg-active');
-    this.settingsButton.classList.add('bg-active');
     this.openConvert.className = 'hidden';
+  }
+
+  private showSearch() {
+    this.openSearch.classList.remove('hidden');
+    this.openSearchButton.classList.remove('hidden');
+    this.openSearchButton.classList.add('bg-active');
+  }
+  private ocultSearch(){
+    this.openSearchButton.classList.add('hidden');
+    this.openSearch.classList.add('hidden');
+  }
+
+
+  private showSettingsBeforeSimulating(){
+    this.settingsButton.classList.add('bg-active');
+    this.settingsButton.classList.remove('hidden');
+    this.openSettings.classList.remove('hidden');
+  }
+  private settingsInSimulating() {
+    this.manualConfig.classList.add('hidden');
+    this.openSettingsButton.classList.remove('bg-active');
+    this.openSettings.className = 'hidden';
+    this.memorySizeInput.readOnly = true;
+    this.memorySizeInput.classList.add('bg-disabled');
+  }
+  private ocultSettings(){
+    this.openSettings.className = 'hidden';
+    this.settingsButton.classList.add('hidden');
+    this.manualConfig.classList.remove('hidden');
+    this.memorySizeInput.classList.remove('bg-disabled');
+    this.memorySizeInput.readOnly = false;
+  }
+
+  private  helpInConfiguration(){
+    this.openHelpButton.classList.remove('bg-active');
+    this.shortcutsHelp.classList.remove('hidden');
     this.openHelp.className = 'hidden';
     this.stageOneHelp.className = 'hidden';
     this.stageTwoHelp.classList.remove('hidden');
-    this.openSettings.classList.remove('hidden');
+  }
+  private helpInSimulating() { 
+    this.openHelpButton.classList.remove('bg-active');
+    this.openHelp.className = 'hidden';   
+    this.stageTwoHelp.className = 'hidden';
+    this.stageThreeHelp.classList.remove('hidden');
+  }
+  private ocultHelp(){
+    this.openHelp.className = 'hidden';
+    this.openHelpButton.classList.remove('bg-active');
+    this.stageOneHelp.classList.remove('hidden');
+    this.stageTwoHelp.classList.add('hidden');
+    this.stageThreeHelp.classList.add('hidden');
+    this.shortcutsHelp.classList.add('hidden');
+  }
+
+
+
+  public resetUI(): void {
+    this._isSimulating = false;
+    this.registersTable.reInitializeTable();
+    this.memoryTable.reInitializeTable();
+
+    this.ocultTables();
+    this.showConvert();
+    this.ocultSearch();
+    this.ocultSettings();
+    this.ocultHelp();
+  }
+
+  private configuration() {
+    this.showtables();
+    this.ocultConvert();
+    this.showSettingsBeforeSimulating();
+    this.helpInConfiguration(); 
   }
 
   private simulationStarted() {
     this._isSimulating = true;
-    this.openSettings.className = 'hidden';
-    this.memorySizeInput.readOnly = true;
-    this.memorySizeInput.classList.add('bg-disabled');
-    this.openSearchButton.classList.remove('hidden');
-    this.openSearchButton.classList.add('bg-active');
-    this.openHelpButton.classList.remove('bg-active');
-    this.openHelp.className = 'hidden';
-    this.openSettingsButton.classList.remove('bg-active');
+    this.showSearch();
+    this.helpInSimulating();
+    this.settingsInSimulating();
     this.convertButton.classList.remove('hidden');
-    this.openSearch.classList.remove('hidden');
-    this.stageTwoHelp.className = 'hidden';
-    this.stageThreeHelp.classList.remove('hidden');
-    this.manualConfig.classList.add('hidden');
   }
 
   private searchInRegistersTable() {
@@ -398,37 +464,6 @@ export class UIManager {
   }
 
 
-  public resetUI(): void {
-
-    this._isSimulating = false;
-    this.registersTable.reInitializeTable();
-    this.memoryTable.reInitializeTable();
-
-    this.registerTab.classList.add('hidden');
-    this.memoryTab.classList.add('hidden');
-
-    this.convertButton.classList.remove('hidden');
-    this.openConvert.className = 'flex flex-1 flex-col max-h-dvh min-h-dvh overflow-y-scroll';
-    this.convertButton.classList.add('bg-active');
-
-
-    this.openSearchButton.classList.add('hidden');
-    this.openSearch.classList.add('hidden');
-
-    this.memorySizeInput.classList.remove('bg-disabled');
-    this.memorySizeInput.readOnly = false;
-
-    this.openSettings.className = 'hidden';
-    this.settingsButton.classList.add('hidden');
-    this.manualConfig.classList.remove('hidden');
-
-    this.openHelp.className = 'hidden';
-    this.openHelpButton.classList.remove('bg-active');
-    this.stageOneHelp.classList.remove('hidden');
-    this.stageTwoHelp.classList.add('hidden');
-    this.stageThreeHelp.classList.add('hidden');
-    this.shortcutsHelp.classList.add('hidden');
-
-  }
+  
   
 }
