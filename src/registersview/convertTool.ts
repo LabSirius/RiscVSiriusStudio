@@ -7,13 +7,11 @@ export function setUpConvert() {
   ): void {
     const inputElement = document.getElementById(
       inputId
-    ) as HTMLInputElement | null;
+    ) as HTMLInputElement;
     const optionsElement = document.getElementById(
       optionsId
-    ) as HTMLDivElement | null;
-    if (!inputElement || !optionsElement) {
-      return;
-    }
+    ) as HTMLDivElement;
+ 
 
     inputElement.value = defaultText;
     inputElement.dataset.value = defaultValue;
@@ -36,15 +34,14 @@ export function setUpConvert() {
 
     const checkbox32 = document.querySelector(
       "#checkbox32bits input[type='checkbox']"
-    ) as HTMLInputElement | null;
-    if (checkbox32) {
+    ) as HTMLInputElement;
       checkbox32.addEventListener('change', convertNumber);
-    }
+    
 
     document.addEventListener('click', (event) => {
       if (
-        !inputElement?.contains(event.target as Node) &&
-        !optionsElement?.contains(event.target as Node)
+        !inputElement.contains(event.target as Node) &&
+        !optionsElement.contains(event.target as Node)
       ) {
         optionsElement.classList.add('hidden');
       }
@@ -68,9 +65,6 @@ export function setUpConvert() {
       'copyResultButton'
     ) as HTMLButtonElement;
 
-    if (!fromInput || !toInput || !numberInput || !resultInput) {
-      return;
-    }
 
     const fromBase = fromInput.dataset.value as string;
     const toBase = toInput.dataset.value as string;
@@ -132,8 +126,8 @@ export function setUpConvert() {
       if (checkbox32bits) {
         const checkboxInput = checkbox32bits.querySelector(
           "input[type='checkbox']"
-        ) as HTMLInputElement | null;
-        if (checkboxInput && checkboxInput.checked) {
+        ) as HTMLInputElement;
+        if (checkboxInput.checked) {
           use32bits = true;
         }
       }
@@ -191,9 +185,7 @@ export function setUpConvert() {
         const resultInput = document.getElementById(
           'resultConvertInput'
         ) as HTMLInputElement;
-        if (resultInput) {
           resultInput.value = '';
-        }
       }
     });
 
@@ -217,7 +209,7 @@ export function setUpConvert() {
 }
 
 
-// Función para agrupar la cadena binaria en bloques de 4 desde la derecha
+
 function groupBinary(numStr: string): string {
   let groups: string[] = [];
   let i = numStr.length;

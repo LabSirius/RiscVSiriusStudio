@@ -11,8 +11,7 @@
       <div id="tabs-memory" class="hidden w-fit max-h-dvh  w-min-content" style="height: min-content;"></div>
       <!-- This is the third column -->
 
-      <div id="thirdColumn" class=" flex flex-col gap-2 flex-1 max-h-dvh min-h-dvh w-30 overflow-y-scroll mt-1 p-2">
-
+      <div id="toolsPanel" class=" flex flex-col gap-2 flex-1 max-h-dvh min-h-dvh w-30 overflow-y-scroll mt-1 p-2">
         <div class="flex justify-between items-center gap-2">
           <div class="flex gap-2">
 
@@ -51,7 +50,7 @@
                     <div class="icon-input">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
                     </div>
-                  <input type="text" id="searchRegisterInput" placeholder="e.g x17 or b101 or d23 ..." class="input-filter"/>
+                  <input type="text" id="searchRegisterInput" placeholder="e.g x17 or 12 or 1100 or 0xC" class="input-filter"/>
                   </div>
                 </div>
 
@@ -72,8 +71,19 @@
 
           <div id="openSettings" class="hidden">
 
+
+            <div class="mt-2 p-4">
+              <div class="flex items-center space-x-2 gap-2 ">
+                <input class="cursor-pointer" type="checkbox" id="checkShowHexadecimal" checked>
+                <span class="label">Show hexadecimal in memory table</span>
+              </div>
+            </div>
+              
+    
+
+
             <div id="manualConfig" class="max-w-32">
-              <div class="flex flex-col gap-4  p-4 mt-1">
+              <div class="flex flex-col gap-4  p-4">
                 <div class="flex flex-col gap-2">
 
                   <div class="flex flex-col gap-2">
@@ -83,7 +93,6 @@
                       <p class="label"> icon </p>
                     </div>
                     <div class="flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff2600" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
                       <p class="label-red">Once the simulation continues, you will not be able to change any values</p>
                     </div>
                   </div>
@@ -101,7 +110,7 @@
                       id="memorySizeInput" 
                       class="input-filter" 
                       value="32" 
-                      min="12"
+                      min="32"
                       step="4" 
                       placeholder="e.g. 200, 1024..." />
                     </div>
@@ -284,9 +293,7 @@
                     </ul>
                   </div>
 
-            
-
-
+        
                 </div>
 
               </div>
@@ -298,16 +305,23 @@
                     <p class="help-title">Filter Data in Register Table</p>
                   </div>
                   <p class="help-description">
-                    You can search by register name, or if you need to search for a value, the following formats will be displayed:
+                    In the table you can search for record names, values ​​in decimal, binary, unsigned, and hexadecimal formats
                   </p>
                   
                   <ul class="help-filter-list mt-1">
-                    <li><span class="help-filter-key">b</span>xxxx → Binary (n bits)</li>
-                    <li><span class="help-filter-key">d</span>xxxx → Decimal (+/-)</li>
-                    <li><span class="help-filter-key">h</span>xxxx → Hexadecimal</li>
-                    <li><span class="help-filter-key">s</span>xxxx → Signed (+/- in 32 bits)</li>
-                    <li><span class="help-filter-key">u</span>xxxx → Unsigned (+)</li>
+                    <li>There is only one rule, if you are looking for hexadecimal, the number must start with <span class="help-filter-key">0x</span></li>        
                   </ul>
+                </div>
+                <div class="help-section mt-3">
+                  <div class="help-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>  
+                    <p class="help-title">Filter Data in Memory Table</p>
+                  </div>
+                  <p class="help-description">
+                    In the memory table you can search for any value in the table, such as an address or values.
+                  </p>
+                  
+                  
                 </div>
               </div>
 

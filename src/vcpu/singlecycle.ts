@@ -65,8 +65,15 @@ class RegistersFile {
 
 class DataMemory {
   private memory: Array<string>;
-  private readonly size: number;
+  private size: number;
+
   public constructor(size: number) {
+    this.memory = [];
+    this.size = 0;
+    this.resize(size);
+  }
+
+  public resize(size: number) {
     this.memory = new Array(size).fill('00000000');
     this.size = size;
   }
@@ -75,6 +82,10 @@ class DataMemory {
     return this.size - 1;
   }
 
+  /**
+   * Tests whether @argument numBytes bytes can be written at @argument address
+   * without overflowing the memory.
+   */
   public canWrite(numBytes: number, address: number) {
     const lastAddress = address + numBytes - 1;
     return lastAddress <= this.lastAddress();

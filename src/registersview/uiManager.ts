@@ -1,4 +1,9 @@
-function getElementOrLog<T extends HTMLElement>(id: string): T {
+import { MemoryTable } from "./memoryTable";
+import { RegistersTable } from "./registersTable/registersTable";
+
+
+
+function getElement<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id) as T | null;
   if (!element) {
     throw new Error(`Element ${id} not found`);
@@ -9,6 +14,12 @@ function getElementOrLog<T extends HTMLElement>(id: string): T {
 export class UIManager {
 
   public static instance: UIManager | undefined;
+
+  private memoryTable: MemoryTable;
+
+  private registersTable: RegistersTable;
+
+  private readonly sendMessagetoExtension: (msg: any) => void;
 
   readonly registerTab: HTMLDivElement;
   readonly memoryTab: HTMLDivElement;
@@ -21,7 +32,7 @@ export class UIManager {
   readonly stageTwoHelp: HTMLDivElement;
   readonly openSettings: HTMLDivElement;
 
-  readonly thirdColumn: HTMLDivElement;
+  readonly toolsPanel: HTMLDivElement;
   readonly openSearchButton: HTMLButtonElement;
   readonly openSearch: HTMLDivElement;
   readonly stageThreeHelp: HTMLDivElement;
@@ -29,46 +40,126 @@ export class UIManager {
   readonly readOnlyConfig: HTMLDivElement;
   readonly openSettingsButton: HTMLButtonElement;
 
+  readonly searchRegisterInput: HTMLInputElement;
+  readonly searchMemoryInput: HTMLInputElement;
+
+  readonly importRegisterBtn: HTMLButtonElement;
+  readonly fileInputImportRegister: HTMLInputElement;
+
+  readonly importMemoryBtn: HTMLButtonElement;
+  readonly fileInputImportMemory: HTMLInputElement;
+
+  readonly checkShowHexadecimal: HTMLInputElement;
+
   private _isSimulating: boolean;
   get isSimulating(): boolean {
     return this._isSimulating;
   }
 
-  public static getInstance(): UIManager {
+  public static createInstance(memoryTable: MemoryTable, registersTable: RegistersTable, sendMessagetoExtension: (msg: any) => void): UIManager {
     if (!this.instance) {
-      this.instance = new UIManager();
+      this.instance = new UIManager(memoryTable, registersTable, sendMessagetoExtension);
     }
     return this.instance;
   }
 
-  private constructor() {
-    this._isSimulating = false;
-
-    this.registerTab = getElementOrLog<HTMLDivElement>('tabs-registers');
-    this.memoryTab = getElementOrLog<HTMLDivElement>('tabs-memory');
-    this.settingsButton =
-      getElementOrLog<HTMLButtonElement>('openSettingsButton');
-    this.convertButton =
-      getElementOrLog<HTMLButtonElement>('openConvertButton');
-    this.openConvert = getElementOrLog<HTMLDivElement>('openConvert1');
-    this.openHelpButton = getElementOrLog<HTMLButtonElement>('openHelpButton');
-    this.openHelp = getElementOrLog<HTMLDivElement>('openHelp');
-    this.stageOneHelp = getElementOrLog<HTMLDivElement>('stageOneHelp');
-    this.stageTwoHelp = getElementOrLog<HTMLDivElement>('stageTwoHelp');
-    this.openSettings = getElementOrLog<HTMLDivElement>('openSettings');
-
-    this.thirdColumn = getElementOrLog<HTMLDivElement>('thirdColumn');
-    this.openSearchButton =
-      getElementOrLog<HTMLButtonElement>('openSearchButton');
-    this.openSearch = getElementOrLog<HTMLDivElement>('openSearch');
-    this.stageThreeHelp = getElementOrLog<HTMLDivElement>('stageThreeHelp');
-    this.manualConfig = getElementOrLog<HTMLDivElement>('manualConfig');
-    this.readOnlyConfig = getElementOrLog<HTMLDivElement>('readOnlyConfig');
-    this.openSettingsButton =
-      getElementOrLog<HTMLButtonElement>('openSettingsButton');
+  public static getInstance(): UIManager {
+    if (!this.instance) {
+      throw new Error('UIManager not initialized');
+    } else {
+      return this.instance;
+    }
   }
 
-  public simulationStarted() {
+  private constructor(memoryTable: MemoryTable, registersTable: RegistersTable, sendMessagetoExtension: (msg: any) => void) {
+    this._isSimulating = false;
+
+    this.memoryTable = memoryTable;
+    this.registersTable = registersTable;
+    this.sendMessagetoExtension = sendMessagetoExtension;
+
+
+    this.registerTab = getElement<HTMLDivElement>('tabs-registers');
+    this.memoryTab = getElement<HTMLDivElement>('tabs-memory');
+    this.settingsButton = getElement<HTMLButtonElement>('openSettingsButton');
+    this.convertButton = getElement<HTMLButtonElement>('openConvertButton');
+    this.openConvert = getElement<HTMLDivElement>('openConvert1');
+    this.openHelpButton = getElement<HTMLButtonElement>('openHelpButton');
+    this.openHelp = getElement<HTMLDivElement>('openHelp');
+    this.stageOneHelp = getElement<HTMLDivElement>('stageOneHelp');
+    this.stageTwoHelp = getElement<HTMLDivElement>('stageTwoHelp');
+    this.openSettings = getElement<HTMLDivElement>('openSettings');
+
+    this.toolsPanel = getElement<HTMLDivElement>('toolsPanel');
+    this.openSearchButton = getElement<HTMLButtonElement>('openSearchButton');
+    this.openSearch = getElement<HTMLDivElement>('openSearch');
+    this.stageThreeHelp = getElement<HTMLDivElement>('stageThreeHelp');
+    this.manualConfig = getElement<HTMLDivElement>('manualConfig');
+    this.readOnlyConfig = getElement<HTMLDivElement>('readOnlyConfig');
+    this.openSettingsButton = getElement<HTMLButtonElement>('openSettingsButton');
+
+    this.searchRegisterInput = getElement<HTMLInputElement>('searchRegisterInput');
+    this.searchMemoryInput = getElement<HTMLInputElement>('searchMemoryInput') ;
+
+    this.importRegisterBtn = getElement<HTMLButtonElement>('importRegisterBtn');
+    this.fileInputImportRegister = getElement<HTMLInputElement>('fileInputImportRegister');
+
+    this.importMemoryBtn = getElement<HTMLButtonElement>('importMemoryBtn');
+    this.fileInputImportMemory = getElement<HTMLInputElement>('fileInputImportMemory');
+
+    this.checkShowHexadecimal = getElement<HTMLInputElement>('checkShowHexadecimal');
+
+
+    this.initializeTopButtons();
+    this.searchInRegistersTable();
+    this.searchInMemoryTable();
+    this.initRegisterImport();
+    this.initMemoryImport();
+    this.showHexadecimalInMemory();
+    this.setUpHelp();
+  }
+
+  private initializeTopButtons(): void {
+    const sections: { [key: string]: HTMLElement } = {
+      openSearch: this.openSearch,
+      openSettings: this.openSettings,
+      openConvert1: this.openConvert,
+      openHelp: this.openHelp,
+    };
+
+    const buttons: { [key: string]: HTMLElement } = {
+      openSearchButton: this.openSearchButton,
+      openSettingsButton: this.openSettingsButton,
+      openConvertButton: this.convertButton,
+      openHelpButton: this.openHelpButton,
+    };
+
+    const showOnly = (targetId: keyof typeof sections, buttonId: keyof typeof buttons) => {
+      Object.entries(sections).forEach(([id, element]) => {
+        element.className =
+          id === targetId
+            ? 'flex flex-1 flex-col max-h-dvh min-h-dvh overflow-y-scroll'
+            : 'hidden';
+      });
+      Object.values(buttons).forEach((btn) => btn.classList.remove('bg-active'));
+      buttons[buttonId].classList.add('bg-active');
+    };
+
+    this.openSearchButton.addEventListener('click', () =>
+      showOnly('openSearch', 'openSearchButton')
+    );
+    this.openSettingsButton.addEventListener('click', () =>
+      showOnly('openSettings', 'openSettingsButton')
+    );
+    this.convertButton.addEventListener('click', () =>
+      showOnly('openConvert1', 'openConvertButton')
+    );
+    this.openHelpButton.addEventListener('click', () =>
+      showOnly('openHelp', 'openHelpButton')
+    );
+  }
+
+  public configuration() {
     this.registerTab.classList.remove('hidden');
     this.memoryTab.classList.remove('hidden');
     this.settingsButton.classList.remove('hidden');
@@ -82,7 +173,7 @@ export class UIManager {
     this.stageTwoHelp.classList.remove('hidden');
     this.openSettings.classList.remove('hidden');
   }
-  public sim() {
+  public simulationStarted() {
     this._isSimulating = true;
     this.openSettings.className = 'hidden';
     this.openSearchButton.classList.remove('hidden');
@@ -97,4 +188,157 @@ export class UIManager {
     this.manualConfig.classList.add('hidden');
     this.readOnlyConfig.classList.remove('hidden');
   }
+
+  private searchInRegistersTable() {
+    this.searchRegisterInput.addEventListener('input', () => {
+      const input = this.searchRegisterInput.value.trim();
+      if (input === '') {
+        this.registersTable.table.clearFilter(true);
+        this.registersTable.resetCellColors();
+        return;
+      }
+      this.registersTable.filterTableData(input);
+    });
+
+    this.searchRegisterInput.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        this.searchRegisterInput.value = '';
+        this.registersTable.table.clearFilter(true);
+        this.registersTable.resetCellColors();
+      }
+    });
+  }
+
+  private searchInMemoryTable(): void {
+   
+   this.searchMemoryInput.addEventListener('input', () => {
+      const searchValue = this.searchMemoryInput.value.trim().toLowerCase();
+
+
+    this.memoryTable.table.clearFilter(true);
+    this.memoryTable.resetMemoryCellColors();
+    this.memoryTable.table.redraw(true);
+
+      if (searchValue === '') {
+        this.memoryTable.table.clearFilter(true);
+        this.memoryTable.resetMemoryCellColors();
+        return;
+      }
+      this.memoryTable.filterMemoryTableData(searchValue);
+    });
+
+    this.searchMemoryInput.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        this.searchMemoryInput.value = '';
+        this.memoryTable.table.clearFilter(true);
+        this.memoryTable.resetMemoryCellColors();
+      }
+    });
+  }
+
+  private initRegisterImport(): void {
+   
+      this.importRegisterBtn
+      .addEventListener("click", () => {
+        document.getElementById("fileInputImportRegister")?.click();
+      });
+
+    this.fileInputImportRegister
+      .addEventListener("change", (event) => {
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
+
+        if (!file) {
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          if (!e.target?.result) {
+            return;
+          }
+          const content = e.target.result as string;
+          this.registersTable.importRegisters(content);
+        };
+
+        reader.readAsText(file);
+      });
+  }
+
+  private initMemoryImport(): void {
+  
+    this.importMemoryBtn
+      .addEventListener('click', () => {
+        this.fileInputImportMemory.click();
+      });
+
+    this.fileInputImportMemory
+      .addEventListener('change', (event) => {
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
+
+        if (!file) {
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          if (!e.target?.result) {
+            return;
+          }
+          const content = e.target.result as string;
+
+          const lines = content
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line !== '');
+
+          if (lines.length === 0) {
+            console.log('Empty file');
+            return;
+          }
+
+          const invalidLine = lines.find(line => !line.includes(':'));
+          if (invalidLine) {
+            console.log(`Invalid format in line ${invalidLine}`);
+            return;
+          }
+
+          this.memoryTable.importMemory(content);
+        };
+
+        reader.readAsText(file);
+      });
+  }
+
+  private showHexadecimalInMemory(): void {
+    const toggleColumn = () => {
+      const column = this.memoryTable.table.getColumn("hex");
+      if (column) {
+        this.checkShowHexadecimal.checked ? column.show() : column.hide();
+      }else{
+        console.log("LA COLUMNA NO EXISTEEE");
+      }
+    };
+  
+    this.checkShowHexadecimal.addEventListener("change", toggleColumn);
+    toggleColumn();
+  }
+
+  
+
+
+  private setUpHelp() {
+    const openShowCard = document.getElementById('openShowCard') as HTMLDivElement;
+
+    openShowCard.addEventListener('click', () => {
+      this.sendMessagetoExtension({
+        command: 'event',
+        object: { name: 'clickOpenRISCVCard', value: 'openHelp' }
+      });
+    });
+  }
+
 }

@@ -29,6 +29,16 @@ export class Simulator {
   protected get context(): RVContext {
     return this._context;
   }
+
+  /**
+   * After construction, the simulator can still be configured by setting the
+   * ammount of memory. After the first call to step it cannot be changed.
+   */
+  private _configured: boolean;
+  public get configured(): boolean {
+    return this._configured;
+  }
+
   protected cpu: SCCPU;
 
   private didStep: EventEmitter<void> = new EventEmitter<void>();
@@ -46,6 +56,7 @@ export class Simulator {
     this.rvDoc = rvDoc;
     if (!rvDoc.ir) { throw new Error("RVDocument has no IR"); }
     this.cpu = new SCCPU(rvDoc.ir.instructions, simParams.memorySize, simParams.stackPointerAddress);
+    this._configured = false;
   }
 
   start(): void {
@@ -53,6 +64,11 @@ export class Simulator {
   }
 
   step(): void {
+    if (!this.configured) {
+      // Prevent any further changes to configuration
+      this._configured = true;
+    }
+
     console.log("Simulator step");
     if (this.cpu.finished()) {
       // this.sendToSimulator({
@@ -68,15 +84,10 @@ export class Simulator {
     // Send messages to update the registers view.
     if (writesRU(instruction.type, instruction.opcode)) {
       console.log('Writing result to RU ', result.wb.result);
-      this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
-      // this.sendToRegisters({
-      //   operation: 'setRegister',
-      //   register: instruction.rd.regeq,
-      //   value: result.wb.result
-      // });
       this.cpu
         .getRegisterFile()
         .writeRegister(instruction.rd.regeq, result.wb.result);
+      this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
     }
     if (readsDM(instruction.type, instruction.opcode)) {
       // this.sendToDataMemory({
@@ -117,6 +128,19 @@ export class Simulator {
   public notifyRegisterWrite(register: string, value: string) {
     // do nothing. Must be implemented by the subclass.
   }
+
+  public notifyMemoryWrite(address: string, value: string, length: number) {
+    // do nothing. Must be implemented by the subclass.
+  }
+
+  public resizeMemory(newSize: number): void {
+    if (this.configured) {
+      throw new Error('Cannot resize memory after configuration');
+    } else {
+      this.cpu.getDataMemory().resize(newSize);
+    }
+  }
+
   private bytesToReadOrWrite() {
     const instruction = this.cpu.currentInstruction();
     const funct3 = getFunct3(instruction);
@@ -136,22 +160,19 @@ export class Simulator {
     }
     return bytes;
   }
+
   private writeResult(result: SCCPUResult) {
     const instruction = this.cpu.currentInstruction();
     let bytesToWrite = this.bytesToReadOrWrite();
     const addressNum = parseInt(result.dm.address, 2);
     if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) {
-      // this.sendToSimulator({
-      //   operation: 'simulationFinished',
-      //   title: 'Simulation error',
-      //   body: `Cannot write ${result.dm.dataWr
-      //     } (${bytesToWrite} bytes) to memory address ${addressNum.toString(
-      //       16
-      //     )} last address is ${this.cpu
-      //       .getDataMemory()
-      //       .lastAddress()
-      //       .toString(16)} `
-      // });
+      // TODO: notify the webview that the write failed and finish the simulation
+      throw new Error(
+        `Cannot write ${result.dm.dataWr} (${bytesToWrite} bytes)
+         to memory address ${addressNum.toString(16)} 
+         last address is ${this.cpu.getDataMemory().lastAddress().toString(16)} `
+      );
+
     }
     // console.log(
     //   'Writing result to DM address: ',
@@ -163,12 +184,7 @@ export class Simulator {
     //   ' can Write ',
     //   this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)
     // );
-    // this.sendToDataMemory({
-    //   operation: 'write',
-    //   address: result.dm.address,
-    //   value: result.dm.dataWr,
-    //   bytes: bytesToWrite
-    // });
+    this.notifyMemoryWrite(result.dm.address, result.dm.dataWr, bytesToWrite);
     const chunks = result.dm.dataWr.match(/.{1,8}/g) as Array<string>;
     this.cpu.getDataMemory().write(chunks.reverse(), addressNum);
   }
@@ -256,6 +272,16 @@ export class TextSimulator extends Simulator {
       register: register,
       value: value
     });
+  }
+
+  public notifyMemoryWrite(address: string, value: string, length: number) {
+    this.sendToMainView({
+      operation: 'memoryWrite',
+      address: address,
+      value: value,
+      bytes: length
+    });
+
   }
 
   private highlightLine(lineNumber: number): void {
