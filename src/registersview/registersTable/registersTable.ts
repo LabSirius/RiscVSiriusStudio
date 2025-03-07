@@ -719,6 +719,7 @@ export class RegistersTable {
         cell.getRow().reformat();
       }
     };
+    
   
     // On mouse enter, add the key event listeners.
     cellElement.addEventListener('mouseenter', () => {
