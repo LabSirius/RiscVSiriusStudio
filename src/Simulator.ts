@@ -245,6 +245,7 @@ export class TextSimulator extends Simulator {
       // upload sp information to  webview
       const spValue = this.cpu.getDataMemory().spInitialAddress;
       mainView.postMessage({ operation: 'setRegister', register: 'x2', value: intToBinary(spValue) });
+      
 
       // decorate the text editor
       const currentInst = this.cpu.currentInstruction();

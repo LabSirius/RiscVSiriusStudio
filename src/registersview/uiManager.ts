@@ -142,9 +142,14 @@ export class UIManager {
 
   public uploadMemory(
     memory: string[], codeSize: number, symbols: any[]): void {
-    this._memoryTable = new MemoryTable(memory, codeSize, symbols);
+    this._memoryTable = new MemoryTable(memory, codeSize, symbols); 
+    this.assignMemoryInputValue(memory.length-codeSize);
     this.configuration();
     this.memoryTable.uploadMemory(memory, codeSize, symbols);
+  }
+
+  private assignMemoryInputValue(value: number){
+    this.memorySizeInput.value = value.toString();
   }
 
   public step(pc: number, log: (object: any, level?: string) => void): void {
