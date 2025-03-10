@@ -597,9 +597,9 @@ export class MemoryTable {
       );
     });
 
-    setTimeout(() => {
+  
       this.updatePC(0);
-    }, 200);
+
 
   }
   
