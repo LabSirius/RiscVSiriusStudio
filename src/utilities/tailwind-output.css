@@ -1137,7 +1137,7 @@ mark {
 }
 
 .custom-tooltip {
-  background-color: white !important;
+  background-color: transparent !important;
   border-radius: .3rem !important;
   border: none !important;
   padding: 5px 10px;
