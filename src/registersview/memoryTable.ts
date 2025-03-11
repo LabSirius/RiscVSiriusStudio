@@ -23,7 +23,7 @@ export class MemoryTable {
    *  Index in the table when the code area ends. We assume that the code 
    * area starts at position 0.
    */
-  private codeAreaEnd: number;
+  public codeAreaEnd: number;
   /** Index in the table of the program counter */
   private pc: number;
   /** Address in the table of the stack pointer */

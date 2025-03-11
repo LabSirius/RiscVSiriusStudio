@@ -445,9 +445,11 @@ export class UIManager {
       if (Number.parseInt(this.memorySizeInput.value) < 32) {
         this.memorySizeInput.value = '32';
       }
+
+      const value = Number(this.memorySizeInput.value) + Number(this.memoryTable.codeAreaEnd-4);
       this.sendMessagetoExtension({
         command: 'event',
-        object: { event: 'memorySizeChanged', value: this.memorySizeInput.value }
+        object: { event: 'memorySizeChanged', value: value}
       });
       const newSize = Number.parseInt(this.memorySizeInput.value);
       this.memoryTable.resizeMemory(newSize);

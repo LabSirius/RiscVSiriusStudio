@@ -263,7 +263,7 @@ export class RVContext {
     this.mainWebviewView.postMessage({
       operation: "setRegister",
       register: 'x2',
-      value: intToBinary(96)
+      value: intToBinary(newSize)
     });
   }
   /**
