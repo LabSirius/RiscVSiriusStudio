@@ -161,7 +161,7 @@ export class EncoderDecorator {
             // isWholeLine: true,
             after: {
               contentText: irText,
-              margin: `0 0 0 ${(ml - line.text.length + 5) * 10}px`,
+              margin: `0 0 0 ${(ml - line.text.length + 5)}ch`,
               // fontWeight: 'bold',
               textAlign: 'right',
               opacity: 0.5
