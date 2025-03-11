@@ -134,7 +134,7 @@ class DataMemory {
 
   public write(data: Array<string>, address: number) {
     const lastAddress = address + data.length - 1;
-    if (lastAddress > this.lastAddress()) {
+    if (lastAddress < this.lastAddress()) {
       throw new Error('Data memory size exceeded.');
     }
     for (let i = 0; i < data.length; i++) {

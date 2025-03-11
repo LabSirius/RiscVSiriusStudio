@@ -8,7 +8,7 @@ import {
 } from 'tabulator-tables';
 
 import { intToHex, binaryToHex } from '../utilities/conversions';
-import { range, chunk, times } from 'lodash';
+import { range, chunk, times, set } from 'lodash';
 import { InternalRepresentation } from '../utilities/riscvc';
 import { parse } from 'path';
 import { error } from 'console';
@@ -590,6 +590,48 @@ export class MemoryTable {
     });
       this.updatePC(0);
   }
+
+public setMemoryCell(address: number, leng: number, value: string): void {
+  const rowStart = address - (address % 4);
+  const hexRowStart = rowStart.toString(16).toUpperCase();
+  
+  const row = this.table.getRow(hexRowStart);
+  if (!row) {return;};
+  
+  const rowElement = row.getElement();
+
+  if (leng === 1) {
+    const segment = value.substring(24, 32);
+    const cell0 = rowElement.querySelector('div.tabulator-cell[tabulator-field="value0"]');
+    if (cell0) {cell0.textContent = segment;};
+  } else if (leng === 2) {
+    const lower16 = value.substring(16, 32);
+    const segment1 = lower16.substring(0, 8);
+    const segment0 = lower16.substring(8, 16);
+    const cell1 = rowElement.querySelector('div.tabulator-cell[tabulator-field="value1"]');
+    const cell0 = rowElement.querySelector('div.tabulator-cell[tabulator-field="value0"]');
+    if (cell1) {cell1.textContent = segment1;};
+    if (cell0) {cell0.textContent = segment0;};
+  } else if (leng === 4) {
+    const segment3 = value.substring(0, 8);
+    const segment2 = value.substring(8, 16);
+    const segment1 = value.substring(16, 24);
+    const segment0 = value.substring(24, 32);
+    
+    const cell3 = rowElement.querySelector('div.tabulator-cell[tabulator-field="value3"]');
+    const cell2 = rowElement.querySelector('div.tabulator-cell[tabulator-field="value2"]');
+    const cell1 = rowElement.querySelector('div.tabulator-cell[tabulator-field="value1"]');
+    const cell0 = rowElement.querySelector('div.tabulator-cell[tabulator-field="value0"]');
+    
+    if (cell3) {cell3.textContent = segment3;};
+    if (cell2) {cell2.textContent = segment2;};
+    if (cell1) {cell1.textContent = segment1;};
+    if (cell0) {cell0.textContent = segment0;};
+
+
+    this.animateMemorycell(address, leng);
+  }
+}
 
 
   public animateMemorycell(address: number, leng: number): void {

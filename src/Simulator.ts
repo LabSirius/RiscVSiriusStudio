@@ -129,7 +129,7 @@ export class Simulator {
     // do nothing. Must be implemented by the subclass.
   }
 
-  public notifyMemoryWrite(address: string, value: string, length: number) {
+  public notifyMemoryWrite(address: number, value: string, length: number) {
     // do nothing. Must be implemented by the subclass.
   }
 
@@ -169,14 +169,13 @@ export class Simulator {
     const instruction = this.cpu.currentInstruction();
     let bytesToWrite = this.bytesToReadOrWrite();
     const addressNum = parseInt(result.dm.address, 2);
-    if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) {
+    if (this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) { //CHECK, FOR IT TO WORK I MUST REMOVE THE DENIAL (!) AT THE BEGINNING
       // TODO: notify the webview that the write failed and finish the simulation
       throw new Error(
         `Cannot write ${result.dm.dataWr} (${bytesToWrite} bytes)
          to memory address ${addressNum.toString(16)} 
          last address is ${this.cpu.getDataMemory().lastAddress().toString(16)} `
       );
-
     }
     // console.log(
     //   'Writing result to DM address: ',
@@ -188,7 +187,7 @@ export class Simulator {
     //   ' can Write ',
     //   this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)
     // );
-    this.notifyMemoryWrite(result.dm.address, result.dm.dataWr, bytesToWrite);
+    this.notifyMemoryWrite(parseInt(result.dm.address, 2), result.dm.dataWr, bytesToWrite);
     const chunks = result.dm.dataWr.match(/.{1,8}/g) as Array<string>;
     this.cpu.getDataMemory().write(chunks.reverse(), addressNum);
   }
@@ -323,9 +322,14 @@ export class TextSimulator extends Simulator {
     });
   }
 
-  
-
-  
+  public notifyMemoryWrite(address: number, value: string, length: number) {
+    this.sendToMainView({
+      operation: 'writeMemory',
+      address: address,
+      value: value,
+      _length: length
+    });
+  }
 
   private highlightLine(lineNumber: number): void {
     const editor = this.rvDoc.editor;
