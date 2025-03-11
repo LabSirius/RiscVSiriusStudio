@@ -482,68 +482,48 @@ export class MemoryTable {
     this.table.updateOrAddData(newData);
   }
   
+  public resizeMemory(newSize: number): void {
+  
+    const userMemStart = this.codeAreaEnd;
+    const userMemEnd = userMemStart + newSize; 
+  
+    const codeData = this.table.getData().filter(row => parseInt(row.address, 16) < userMemStart);
 
-  public resizeMemory(newSize: number) {
-    const rounded = Math.round(newSize / 4) * 4;
-    this.memorySize = rounded;
-    const totalBaseRows = rounded / 4;
-
-    const zeros8 = "00000000";
-    const defaultWord = {
-      value0: zeros8,
-      value1: zeros8,
-      value2: zeros8,
-      value3: zeros8,
-      info: "",
-      hex: "00-00-00-00"
-    };
-
-    const allData = this.table.getData();
-
-    const heapIndex = allData.findIndex(row => row.info && row.info.includes("Heap"));
-    const instructionsRowsData = heapIndex !== -1 ? allData.slice(heapIndex + 1) : [];
-
-    const instructionsBackground: string[] = [];
-    if (heapIndex !== -1) {
-      const allRows = this.table.getRows();
-      const instructionsRows = allRows.slice(heapIndex + 1);
-      instructionsRows.forEach(row => {
-        instructionsBackground.push(row.getElement().style.backgroundColor);
+    const newMemoryData: any[] = [];
+    for (let addr = userMemEnd - 4; addr >= userMemStart; addr -= 4) {
+      const addressHex = intToHex(addr).toUpperCase();
+      newMemoryData.push({
+        address: addressHex,
+        value0: "00000000",
+        value1: "00000000",
+        value2: "00000000",
+        value3: "00000000",
+        info: "",
+        hex: "00-00-00-00"
       });
     }
-
-    const newBaseRowsData = [];
-    for (let i = 0; i < totalBaseRows; i++) {
-      newBaseRowsData.push({
-        ...defaultWord,
-        address: ""
-      });
+  
+    if (newMemoryData.length) {
+      newMemoryData[newMemoryData.length - 1].info = `<span class="info-column-mem-table">Heap</span>`;
     }
 
-    if (newBaseRowsData.length > 0) {
-      newBaseRowsData[0].info = `<span class="info-column-mem-table">SP</span>`;
-      newBaseRowsData[newBaseRowsData.length - 1].info = `<span class="info-column-mem-table">Heap</span>`;
-    }
+    const newTableData = codeData.concat(newMemoryData);
 
-    const newTableData = newBaseRowsData.concat(instructionsRowsData);
+    this.table.replaceData(newTableData);
+  
+    this.table.setSort("address", "desc");
+    this.table.redraw();
 
-
-    this.table.setData(newTableData).then(() => {
-      const updatedRows = this.table.getRows();
-      const totalRows = updatedRows.length;
-      for (let i = 0; i < totalRows; i++) {
-        const newAddress = ((totalRows - 1 - i) * 4).toString(16).toUpperCase();
-        updatedRows[i].update({ address: newAddress });
-      }
-
-      for (let i = totalBaseRows; i < totalRows; i++) {
-        const row = updatedRows[i];
-        const bg = instructionsBackground[i - totalBaseRows] || "#FFF6E5";
-        row.getElement().style.backgroundColor = bg;
+    this.table.getRows().forEach(row => {
+      const rowData = row.getData();
+      if (parseInt(rowData.address, 16) < userMemStart) {
+        row.getElement().style.backgroundColor = "#FFF6E5";
       }
     });
+    this.updatePC(0);
   }
-
+  
+  
   public uploadMemory(memory: string[], codeSize: number, symbols: any[]) {
     const memorySize = memory.length;
     chunk(memory, 4).forEach((word, index) => {
@@ -603,36 +583,6 @@ export class MemoryTable {
 
   }
   
-
-  public allocateMemory() {
-    const zeros8 = "00000000";
-    const defaultWord = {
-      value0: zeros8,
-      value1: zeros8,
-      value2: zeros8,
-      value3: zeros8,
-      info: "",
-      hex: "00-00-00-00"
-    };
-
-    const startAddress = this.table.getData().length;
-
-    const words = this.memorySize / 4;
-
-    const mem = times(words, (i) => {
-      const address = ((startAddress + i) * 4).toString(16).toUpperCase();
-      return {
-        ...defaultWord,
-        "address": address,
-      };
-    });
-    this.codeAreaEnd = mem.length;
-    // Set heap and SP markers
-    mem[0].info = `<span class="info-column-mem-table">Heap</span>`;
-    mem[words - 1].info = `<span class="info-column-mem-table">SP</span>`;
-    this.sp = mem[words - 1].address;
-    mem.forEach((i) => { this.table.addRow(i, true); });
-  }
 
 
   public filterMemoryTableData(searchValue: string): void {

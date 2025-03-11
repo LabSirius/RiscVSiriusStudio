@@ -240,7 +240,7 @@ export class RVContext {
       throw new Error("No valid IR found");
     }
     const settings: SimulationParameters = {
-      memorySize: 128,
+      memorySize: 32,
     };
     // From now on the editor must be read only
     const simulator: Simulator = new TextSimulator(settings, rvDoc, this);
