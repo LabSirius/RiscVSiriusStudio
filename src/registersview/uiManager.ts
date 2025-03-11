@@ -4,6 +4,7 @@ import { Converter } from "./convertTool";
 
 
 
+
 function getElement<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id) as T | null;
   if (!element) {
@@ -64,6 +65,20 @@ export class UIManager {
   readonly fileInputImportMemory: HTMLInputElement;
 
   readonly checkShowHexadecimal: HTMLInputElement;
+
+  private getMemoryCells(rowElement: HTMLElement): {
+    cell3?: HTMLElement;
+    cell2?: HTMLElement;
+    cell1?: HTMLElement;
+    cell0?: HTMLElement;
+  } {
+    return {
+      cell3: rowElement.querySelector('div.tabulator-cell[tabulator-field="value3"]') as HTMLElement,
+      cell2: rowElement.querySelector('div.tabulator-cell[tabulator-field="value2"]') as HTMLElement,
+      cell1: rowElement.querySelector('div.tabulator-cell[tabulator-field="value1"]') as HTMLElement,
+      cell0: rowElement.querySelector('div.tabulator-cell[tabulator-field="value0"]') as HTMLElement,
+    };
+  }
  
 
   private _isSimulating: boolean;
@@ -200,6 +215,88 @@ export class UIManager {
       showOnly('openHelp', 'openHelpButton')
     );
   }
+
+  public setMemoryCell(address: number, leng: number, value: string): void {
+    const rowStart = address - (address % 4);
+    const hexRowStart = rowStart.toString(16).toUpperCase();
+    
+    const row = this.memoryTable.table.getRow(hexRowStart);
+    if (!row) { return; }
+    
+    const rowElement = row.getElement();
+    const { cell3, cell2, cell1, cell0 } = this.getMemoryCells(rowElement);
+  
+    if (leng === 1) {
+      const segment = value.substring(24, 32);
+      if (cell0) {
+        cell0.textContent = segment;
+        cell0.style.fontWeight = '550';
+      }
+    } else if (leng === 2) {
+      const lower16 = value.substring(16, 32);
+      const segment1 = lower16.substring(0, 8);
+      const segment0 = lower16.substring(8, 16);
+      if (cell1) {
+        cell1.textContent = segment1;
+        cell1.style.fontWeight = '550';
+      }
+      if (cell0) {
+        cell0.textContent = segment0;
+        cell0.style.fontWeight = '550';
+      }
+    } else if (leng === 4) {
+      const segment3 = value.substring(0, 8);
+      const segment2 = value.substring(8, 16);
+      const segment1 = value.substring(16, 24);
+      const segment0 = value.substring(24, 32);
+      if (cell3) {
+        cell3.textContent = segment3;
+        cell3.style.fontWeight = '550';
+      }
+      if (cell2) {
+        cell2.textContent = segment2;
+        cell2.style.fontWeight = '550';
+      }
+      if (cell1) {
+        cell1.textContent = segment1;
+        cell1.style.fontWeight = '550';
+      }
+      if (cell0) {
+        cell0.textContent = segment0;
+        cell0.style.fontWeight = '500';
+      }
+    }
+
+    this.animateMemorycell(address, leng);
+  }
+
+  public animateMemorycell(address: number, leng: number): void {
+    const hexAddress = address.toString(16).toUpperCase();
+    const row = this.memoryTable.table.getRow(hexAddress);
+    
+    if (row) {
+      const rowElement = row.getElement();
+      
+      const binaryCells = Array.from(
+        rowElement.querySelectorAll('div.tabulator-cell[tabulator-field^="value"]')
+      );
+      let cellsToAnimate: Element[] = [];
+      if (leng === 4) {
+        cellsToAnimate = binaryCells;
+      } else if (leng === 2) {
+        cellsToAnimate = binaryCells.slice(-2);
+      } else if (leng === 1) {
+        cellsToAnimate = binaryCells.slice(-1);
+      }
+      
+      cellsToAnimate.forEach(cell => cell.classList.add('animate-cell'));
+
+      setTimeout(() => {
+        cellsToAnimate.forEach(cell => cell.classList.remove('animate-cell'));
+      }, 500);
+    }
+  }
+  
 
   private showtables(){
     this.registerTab.classList.remove('hidden');

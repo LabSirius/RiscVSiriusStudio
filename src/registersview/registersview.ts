@@ -52,10 +52,10 @@ function dispatch(
       }
       break;
       case 'readMemory':
-        UIManager.getInstance().memoryTable.animateMemorycell( data.address, data._length);
+        UIManager.getInstance().animateMemorycell( data.address, data._length);
         break;
       case 'writeMemory':
-        UIManager.getInstance().memoryTable.setMemoryCell( data.address, data._length, data.value);
+        UIManager.getInstance().setMemoryCell( data.address, data._length, data.value);
         break;
     case 'stop':
       UIManager.getInstance().resetUI();
