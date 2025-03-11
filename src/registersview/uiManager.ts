@@ -233,7 +233,8 @@ export class UIManager {
       newData.value0 = segment;
       if (cell0) {
         cell0.textContent = segment;
-        cell0.style.fontWeight = '550';
+        cell0.style.fontWeight = '610';
+        cell0.style.color = "#3A6973";
       }
     } else if (leng === 2) {
       const lower16 = value.substring(16, 32);
@@ -243,11 +244,13 @@ export class UIManager {
       newData.value0 = segment0;
       if (cell1) {
         cell1.textContent = segment1;
-        cell1.style.fontWeight = '550';
+        cell1.style.fontWeight = '610';
+        cell1.style.color = "#3A6973";
       }
       if (cell0) {
         cell0.textContent = segment0;
-        cell0.style.fontWeight = '550';
+        cell0.style.fontWeight = '610';
+        cell0.style.color = "#3A6973";
       }
     } else if (leng === 4) {
       const segment3 = value.substring(0, 8);
@@ -260,19 +263,23 @@ export class UIManager {
       newData.value0 = segment0;
       if (cell3) {
         cell3.textContent = segment3;
-        cell3.style.fontWeight = '550';
+        cell3.style.fontWeight = '600';
+        cell3.style.color = "#3A6973";
       }
       if (cell2) {
         cell2.textContent = segment2;
-        cell2.style.fontWeight = '550';
+        cell2.style.fontWeight = '600';
+        cell2.style.color = "#3A6973";
       }
       if (cell1) {
         cell1.textContent = segment1;
-        cell1.style.fontWeight = '550';
+        cell1.style.fontWeight = '610';
+        cell1.style.color = "#3A6973";
       }
       if (cell0) {
         cell0.textContent = segment0;
-        cell0.style.fontWeight = '550';
+        cell0.style.fontWeight = '610';
+        cell0.style.color = "#3A6973";
       }
     }
     
