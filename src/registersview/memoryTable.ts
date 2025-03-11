@@ -19,6 +19,8 @@ export class MemoryTable {
   private tableData: any[];
 
   private memorySize: number;
+
+  private readonly sendMessagetoExtension: (msg: any) => void;
   /**
    *  Index in the table when the code area ends. We assume that the code 
    * area starts at position 0.
@@ -74,22 +76,26 @@ export class MemoryTable {
     return editor;
   };
 
-  constructor(memory: string[], codeSize: number, symbols: any[]) {
+  constructor(memory: string[], codeSize: number, symbols: any[], sendMessagetoExtension: (msg: any) => void) {
     this.memorySize = memory.length;
+    this.sendMessagetoExtension = sendMessagetoExtension;
     // Forward initialization to prevent warnings
     this.sp = "";
     this.pc = 0;
     this.codeAreaEnd = codeSize;
+
 
     this.tableData = chunk(memory, 4).map((word, index) => {
       const address = intToHex(index * 4).toUpperCase();
       return {
         "index": index,
         "address": address,
-        "value0": word[3], "value1": word[2],
-        "value2": word[1], "value3": word[0],
+        "value0": word[0], "value1": word[2],
+        "value2": word[1], "value3": word[3],
         "info": "",
         "hex": word
+        .slice()              
+        .reverse()
           .map(byte => binaryToHex(byte).toUpperCase().padStart(2, "0"))
           .join("-")
       };
@@ -346,6 +352,10 @@ export class MemoryTable {
     this.table.on("cellEdited", (cell) => {
       if (cell.getField().startsWith('value')) {
         this.updateHexValue(cell.getRow());
+        this.sendMessagetoExtension({
+          command: 'event',
+          object: { event: 'memoryChanged', value: this.table.getData() }
+        });
       }
     });
   }
@@ -533,10 +543,12 @@ export class MemoryTable {
         address,
         {
           "address": address,
-          "value0": word[3], "value1": word[2],
-          "value2": word[1], "value3": word[0],
+          "value0": word[0], "value1": word[2],
+          "value2": word[1], "value3": word[3],
           "info": "",
           "hex": word
+          .slice()              
+          .reverse()
           .map(byte => binaryToHex(byte).toUpperCase().padStart(2, "0"))
           .join("-")
         });

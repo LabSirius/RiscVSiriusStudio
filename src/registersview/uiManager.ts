@@ -142,7 +142,7 @@ export class UIManager {
 
   public uploadMemory(
     memory: string[], codeSize: number, symbols: any[]): void {
-    this._memoryTable = new MemoryTable(memory, codeSize, symbols); 
+    this._memoryTable = new MemoryTable(memory, codeSize, symbols, this.sendMessagetoExtension); 
     this.assignMemoryInputValue(memory.length-codeSize);
     this.configuration();
     this.memoryTable.uploadMemory(memory, codeSize, symbols);
@@ -442,7 +442,7 @@ export class UIManager {
 
   private setUpSettings() {
     this.memorySizeInput.addEventListener('change', () => {
-      if (Number.parseInt(this.memorySizeInput.value) < 32) {
+      if (Number.parseInt(this.memorySizeInput.value) < 32 || this.memorySizeInput.value === '') {
         this.memorySizeInput.value = '32';
       }
 
@@ -454,10 +454,8 @@ export class UIManager {
       const newSize = Number.parseInt(this.memorySizeInput.value);
       this.memoryTable.resizeMemory(newSize);
     });
+
   }
-
-
-
 
   private setUpHelp() {
     const openShowCard = document.getElementById('openShowCard') as HTMLDivElement;

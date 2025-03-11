@@ -129,7 +129,6 @@ export class RVContext {
     //  Simulator (start)
     this.disposables.push(
       commands.registerCommand('rv-simulator.simulate', () => {
-        console.log("VA A PASAR POR AQUI");
         const editor = window.activeTextEditor;
         if (editor && RVDocument.isValid(editor.document)) {
           // We have an editor with a valid RiscV document open
@@ -266,6 +265,11 @@ export class RVContext {
       value: intToBinary(newSize)
     });
   }
+
+  private memoryChanged(newMemory:[]){
+    this.simulator.replaceMemory(newMemory);
+  }
+
   /**
    * This method is in charge of dispatching events sent by the main view.
    */
@@ -274,6 +278,9 @@ export class RVContext {
       case "memorySizeChanged":
         console.log(`%c[Mainview}]\n`, 'color:yellow', message);
         this.memorySizeChanged(message.value);
+        break;
+      case "memoryChanged":
+        this.memoryChanged(message.value);
         break;
       case "clickOpenRISCVCard":
         RiscCardPanel.riscCard(this.extensionContext.extensionUri);

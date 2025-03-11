@@ -104,6 +104,8 @@ class DataMemory {
     program.forEach((instruction, index) => {
       const encodingString = instruction.encoding.binEncoding;
       const words = chunk(encodingString.split(''), 8).map(group => group.join(''));
+
+      words.reverse();
       words.forEach((w, i) => {
         const address = index * 4 + i;
         this.memory[address] = w;
@@ -141,7 +143,8 @@ class DataMemory {
   }
   public read(address: number, length: number): Array<string> {
     const lastAddress = address + length - 1;
-    if (lastAddress > this.lastAddress()) {
+    console.log('Reading from address ', address, ' > ', lastAddress);
+    if (lastAddress < this.lastAddress()) {
       throw new Error('Data memory size exceeded.');
     }
     let data = [] as Array<string>;
@@ -771,6 +774,20 @@ export class SCCPU {
   public getDataMemory(): DataMemory {
     return this.dataMemory;
   }
+
+  public replaceDataMemory(newMemory: any[]): void {
+
+    console.log("Memoria original:", this.dataMemory.getMemory());
+    const flatMemory: string[] = [];
+    newMemory.forEach((group) => {
+      flatMemory.push(group.value0, group.value1, group.value2, group.value3);
+    });
+    
+    (this.dataMemory as any).memory = flatMemory;
+    
+    console.log("Memoria reemplazada:", flatMemory);
+  }
+  
 
   public printInfo() {
     logger().info('CPU state');

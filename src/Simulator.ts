@@ -68,8 +68,6 @@ export class Simulator {
       // Prevent any further changes to configuration
       this._configured = true;
     }
-
-    console.log("Simulator step");
     if (this.cpu.finished()) {
       // this.sendToSimulator({
       //   operation: 'simulationFinished',
@@ -78,12 +76,9 @@ export class Simulator {
       // });
       return;
     }
-    console.log(`%c[Simulator] step\n`, 'color:pink');
 
     const instruction = this.cpu.currentInstruction();
     const result = this.cpu.executeInstruction();
-    console.log(`%c[Simulator] \n`, 'color:pink', instruction);
-    console.log(`%c[Simulator] \n`, 'color:pink', result);
 
     // Send messages to update the registers view.
     if (writesRU(instruction.type, instruction.opcode)) {
@@ -99,9 +94,11 @@ export class Simulator {
       //   address: result.dm.address,
       //   bytes: this.bytesToReadOrWrite()
       // });
+      this.notifyMemoryRead
     }
     if (writesDM(instruction.type, instruction.opcode)) {
       this.writeResult(result);
+
     }
     // Send message to update the simulator components.
     // this.sendToSimulator({
@@ -143,6 +140,10 @@ export class Simulator {
     } else {
       this.cpu.getDataMemory().resize(newSize);
     }
+  }
+
+  public replaceMemory(newMemory: string[]) : void{
+    this.cpu.replaceDataMemory(newMemory);
   }
 
   private bytesToReadOrWrite() {
