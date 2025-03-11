@@ -225,9 +225,12 @@ export class UIManager {
     
     const rowElement = row.getElement();
     const { cell3, cell2, cell1, cell0 } = this.getMemoryCells(rowElement);
-  
+    
+    let newData: Partial<{ value3: string; value2: string; value1: string; value0: string }> = {};
+    
     if (leng === 1) {
       const segment = value.substring(24, 32);
+      newData.value0 = segment;
       if (cell0) {
         cell0.textContent = segment;
         cell0.style.fontWeight = '550';
@@ -236,6 +239,8 @@ export class UIManager {
       const lower16 = value.substring(16, 32);
       const segment1 = lower16.substring(0, 8);
       const segment0 = lower16.substring(8, 16);
+      newData.value1 = segment1;
+      newData.value0 = segment0;
       if (cell1) {
         cell1.textContent = segment1;
         cell1.style.fontWeight = '550';
@@ -249,6 +254,10 @@ export class UIManager {
       const segment2 = value.substring(8, 16);
       const segment1 = value.substring(16, 24);
       const segment0 = value.substring(24, 32);
+      newData.value3 = segment3;
+      newData.value2 = segment2;
+      newData.value1 = segment1;
+      newData.value0 = segment0;
       if (cell3) {
         cell3.textContent = segment3;
         cell3.style.fontWeight = '550';
@@ -263,12 +272,22 @@ export class UIManager {
       }
       if (cell0) {
         cell0.textContent = segment0;
-        cell0.style.fontWeight = '500';
+        cell0.style.fontWeight = '550';
       }
     }
-
+    
+    row.update(newData);
+    const currentData = row.getData();
+    const hexParts = ['value3', 'value2', 'value1', 'value0'].map(field => {
+      const binary = currentData[field];
+      return parseInt(binary, 2).toString(16).padStart(2, '0');
+    });
+    const hexValue = hexParts.join('-').toUpperCase();
+    row.update({ hex: hexValue });
+    
     this.animateMemorycell(address, leng);
   }
+  
 
   public animateMemorycell(address: number, leng: number): void {
     const hexAddress = address.toString(16).toUpperCase();
