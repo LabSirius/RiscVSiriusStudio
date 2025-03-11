@@ -46,8 +46,14 @@ function dispatch(
       UIManager.getInstance().step(data.pc, log);
       break;
     case 'setRegister':
-      setRegister(data.register, data.value);
+      UIManager.getInstance().registersTable.setRegister(data.register, data.value);
+      if (data.register === 'x2') {
+        UIManager.getInstance().memoryTable.setSP(data.value);
+      }
       break;
+      case 'readMemory':
+        UIManager.getInstance().memoryTable.animateMemorycell( data.address, data._length);
+        break;
     case 'stop':
       UIManager.getInstance().resetUI();
       break;
@@ -57,16 +63,6 @@ function dispatch(
   }
 }
 
-
-//IS THIS ALSO INCLUDED IN UIMANAGER???
-function setRegister(
-  register: string, value: string
-): void {
-  UIManager.getInstance().registersTable.setRegister(register, value);
-  if (register === 'x2') {
-    UIManager.getInstance().memoryTable.setSP(value);
-  }
-}
 
 /**
  * View extension communication.

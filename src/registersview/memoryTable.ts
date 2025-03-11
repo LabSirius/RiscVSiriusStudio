@@ -588,15 +588,38 @@ export class MemoryTable {
         }
       );
     });
-
-  
       this.updatePC(0);
-
-
   }
+
+
+  public animateMemorycell(address: number, leng: number): void {
+    const hexAddress = address.toString(16).toUpperCase();
+    const row = this.table.getRow(hexAddress);
+    
+    if (row) {
+      const rowElement = row.getElement();
+      
+      const binaryCells = Array.from(
+        rowElement.querySelectorAll('div.tabulator-cell[tabulator-field^="value"]')
+      );
+      let cellsToAnimate: Element[] = [];
+      if (leng === 4) {
+        cellsToAnimate = binaryCells;
+      } else if (leng === 2) {
+        cellsToAnimate = binaryCells.slice(-2);
+      } else if (leng === 1) {
+        cellsToAnimate = binaryCells.slice(-1);
+      }
+      
+      cellsToAnimate.forEach(cell => cell.classList.add('animate-cell'));
+
+      setTimeout(() => {
+        cellsToAnimate.forEach(cell => cell.classList.remove('animate-cell'));
+      }, 500);
+    }
+  }
+
   
-
-
   public filterMemoryTableData(searchValue: string): void {
     this.resetMemoryCellColors();
     this.table.clearFilter(true);

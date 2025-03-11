@@ -787,7 +787,7 @@ mark {
   background-color: white;
 }
 
-.animate-register {
+.animate-cell {
   animation: flashAnimation 0.5s ease-out forwards;
 }
 

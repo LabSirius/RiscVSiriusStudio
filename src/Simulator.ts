@@ -89,12 +89,7 @@ export class Simulator {
       this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
     }
     if (readsDM(instruction.type, instruction.opcode)) {
-      // this.sendToDataMemory({
-      //   operation: 'read',
-      //   address: result.dm.address,
-      //   bytes: this.bytesToReadOrWrite()
-      // });
-      this.notifyMemoryRead
+      this.notifyMemoryRead(parseInt(result.dm.address, 2), this.bytesToReadOrWrite());
     }
     if (writesDM(instruction.type, instruction.opcode)) {
       this.writeResult(result);
@@ -127,6 +122,10 @@ export class Simulator {
   }
 
   public notifyRegisterWrite(register: string, value: string) {
+    // do nothing. Must be implemented by the subclass.
+  }
+
+  public notifyMemoryRead(address: number, length: number) {
     // do nothing. Must be implemented by the subclass.
   }
 
@@ -316,15 +315,17 @@ export class TextSimulator extends Simulator {
     });
   }
 
-  public notifyMemoryWrite(address: string, value: string, length: number) {
+  public notifyMemoryRead(address: number, length: number) {
     this.sendToMainView({
-      operation: 'memoryWrite',
+      operation: 'readMemory',
       address: address,
-      value: value,
-      bytes: length
+      _length: length
     });
-
   }
+
+  
+
+  
 
   private highlightLine(lineNumber: number): void {
     const editor = this.rvDoc.editor;

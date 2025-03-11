@@ -776,16 +776,13 @@ export class SCCPU {
   }
 
   public replaceDataMemory(newMemory: any[]): void {
-
-    console.log("Memoria original:", this.dataMemory.getMemory());
     const flatMemory: string[] = [];
     newMemory.forEach((group) => {
       flatMemory.push(group.value0, group.value1, group.value2, group.value3);
     });
     
     (this.dataMemory as any).memory = flatMemory;
-    
-    console.log("Memoria reemplazada:", flatMemory);
+
   }
   
 

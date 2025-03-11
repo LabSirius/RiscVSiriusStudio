@@ -467,10 +467,10 @@ export class RegistersTable {
     const row = this.table.getRow(name);
     if (row) {
       const element = row.getElement();
-      element.classList.add('animate-register');
+      element.classList.add('animate-cell');
 
       setTimeout(() => {
-        element.classList.remove('animate-register');
+        element.classList.remove('animate-cell');
 
       }, 500);
     }
