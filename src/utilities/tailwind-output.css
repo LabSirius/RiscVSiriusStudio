@@ -1135,6 +1135,7 @@ mark {
 }
 
 .tabulator-cell.register-value {
+  text-transform: uppercase !important;
   white-space: pre-wrap !important;
   word-wrap: break-word !important;
   overflow-wrap: break-word !important;
