@@ -828,21 +828,35 @@ mark {
   background-color: #D1E3E7;
 }
 
-.icon-tab{
+.icon-tab, .icon-tab-pc{
   padding: .5rem;
   border-radius: .8rem;
-  border: solid 1px #E5E7EB;
   cursor: pointer;
   width: min-content;
   transition: all .3s;
 }
+
+.icon-tab{
+  border: solid 1px #E5E7EB;
+}
+
+.icon-tab-pc{
+  border: solid 1px #FFB74D;
+}
+
+.icon-tab:hover, .icon-tab-pc:hover{
+  background-color: #FFF6E5;
+}
+
+
 
 .icon-tab:hover{
   background-color: #D1E3E7;
   border: solid 1px #D1E3E7;
 }
 
-.icon-tab:active{
+.icon-tab:active,
+.icon-tab-pc:active{
   transform: scale(0.95);
 }
 
@@ -1331,6 +1345,10 @@ mark {
 
 .items-start{
   align-items: start;
+}
+
+.items-end{
+  align-items: end;
 }
 
 .items-center {

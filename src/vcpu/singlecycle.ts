@@ -143,7 +143,6 @@ class DataMemory {
   }
   public read(address: number, length: number): Array<string> {
     const lastAddress = address + length - 1;
-    console.log('Reading from address ', address, ' > ', lastAddress);
     if (lastAddress < this.lastAddress()) {
       throw new Error('Data memory size exceeded.');
     }

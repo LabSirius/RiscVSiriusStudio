@@ -27,7 +27,7 @@ export class MemoryTable {
    */
   public codeAreaEnd: number;
   /** Index in the table of the program counter */
-  private pc: number;
+  public pc: number;
   /** Address in the table of the stack pointer */
   private sp: string;
 
@@ -160,6 +160,7 @@ export class MemoryTable {
 
 
   public updatePC(newPC: number) {
+    this.pc = newPC;
     const allIcons = document.querySelectorAll('.pc-icon');
     allIcons.forEach(icon => icon.remove());
 
@@ -289,26 +290,26 @@ export class MemoryTable {
         ...defaultEditableColumnAttributes,
         title: '0x3',
         field: 'value3',
-        width: 80,
+        width: 83,
       },
       {
         ...defaultEditableColumnAttributes,
         title: '0x2',
         field: 'value2',
-        width: 80,
+        width: 83,
       },
       {
         ...defaultEditableColumnAttributes,
         title: '0x1',
         field: 'value1',
-        width: 80,
+        width: 83,
 
       },
       {
         ...defaultEditableColumnAttributes,
         title: '0x0',
         field: 'value0',
-        width: 80,
+        width: 83,
 
       },
       {

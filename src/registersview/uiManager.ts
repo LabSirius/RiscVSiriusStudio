@@ -35,6 +35,8 @@ export class UIManager {
 
   readonly registerTab: HTMLDivElement;
   readonly memoryTab: HTMLDivElement;
+
+  readonly pcIcon: HTMLButtonElement;
   readonly settingsButton: HTMLButtonElement;
   readonly convertButton: HTMLButtonElement;
   readonly openConvert: HTMLDivElement;
@@ -112,6 +114,8 @@ export class UIManager {
 
     this.registerTab = getElement<HTMLDivElement>('tabs-registers');
     this.memoryTab = getElement<HTMLDivElement>('tabs-memory');
+
+    this.pcIcon = getElement<HTMLButtonElement>('pcIcon');
     this.settingsButton = getElement<HTMLButtonElement>('openSettingsButton');
     this.convertButton = getElement<HTMLButtonElement>('openConvertButton');
     this.openConvert = getElement<HTMLDivElement>('openConvert1');
@@ -148,6 +152,7 @@ export class UIManager {
     this.initializeTopButtons();
     this.searchInRegistersTable();
     this.searchInMemoryTable();
+    this.showPC();
     this.initRegisterImport();
     this.initMemoryImport();
     this.setUpSettings();
@@ -161,7 +166,13 @@ export class UIManager {
     this.assignMemoryInputValue(memory.length-codeSize);
     this.configuration();
     this.memoryTable.uploadMemory(memory, codeSize, symbols);
+  }
 
+  private showPC(): void {
+    this.pcIcon.addEventListener('click', () => {
+      const targetValue = (this.memoryTable.pc * 4).toString(16).toUpperCase();
+      this.memoryTable.table.scrollToRow(targetValue, "center", true);
+    });
   }
 
   private assignMemoryInputValue(value: number){
@@ -410,6 +421,8 @@ export class UIManager {
     this.ocultSearch();
     this.ocultSettings();
     this.ocultHelp();
+    this.pcIcon.classList.add('hidden');
+
   }
 
   private configuration() {
@@ -417,6 +430,7 @@ export class UIManager {
     this.ocultConvert();
     this.showSettingsBeforeSimulating();
     this.helpInConfiguration(); 
+    this.pcIcon.classList.remove('hidden');
   }
 
   private simulationStarted() {

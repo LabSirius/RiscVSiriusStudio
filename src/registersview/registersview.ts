@@ -40,7 +40,6 @@ function dispatch(
   switch (data.operation) {
     case 'uploadMemory':
       UIManager.getInstance().uploadMemory(data.memory, data.codeSize, data.symbols);
-      
       break;
     case 'step':
       UIManager.getInstance().step(data.pc, log);
