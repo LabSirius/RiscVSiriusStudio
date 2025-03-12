@@ -252,6 +252,8 @@ export class TextSimulator extends Simulator {
 
       if (lineNumber !== undefined) {
         this.highlightLine(lineNumber);
+      }else{
+        this.highlightLine(0);
       }
     }
   }
