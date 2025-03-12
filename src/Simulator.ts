@@ -173,7 +173,7 @@ export class Simulator {
     const instruction = this.cpu.currentInstruction();
     let bytesToWrite = this.bytesToReadOrWrite();
     const addressNum = parseInt(result.dm.address, 2);
-    if (this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) { //CHECK, FOR IT TO WORK I MUST REMOVE THE DENIAL (!) AT THE BEGINNING
+    if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) { //CHECK, FOR IT TO WORK I MUST REMOVE THE DENIAL (!) AT THE BEGINNING
       // TODO: notify the webview that the write failed and finish the simulation
       throw new Error(
         `Cannot write ${result.dm.dataWr} (${bytesToWrite} bytes)
