@@ -79,7 +79,7 @@ class DataMemory {
 
   private size: number;
   get memSize() { return this.size; }
-  get spInitialAddress() { return this.codeSize + this.size - 4; }
+  get spInitialAddress() { return this.size -4 ; }
 
   public constructor(codeSize: number, size: number) {
     this.codeAreaEnd = codeSize - 1;
@@ -92,6 +92,7 @@ class DataMemory {
     this.size = size;
     // Ensure there is always space for the code area
     const totalSize = this.codeSize + this.memSize;
+   this.size = totalSize;
     this.memory = new Array(totalSize).fill('00000000');
   }
 
