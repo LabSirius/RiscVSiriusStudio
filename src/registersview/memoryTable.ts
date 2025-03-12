@@ -119,14 +119,8 @@ export class MemoryTable {
         }
       );
 
-      const spAddressHex = intToHex(this.memorySize - 4).toUpperCase();
-      this.table.updateOrAddRow(
-        spAddressHex,
-        {
-          "info": `<span class="info-column-mem-table">SP</span>`
-        }
-      );
-      this.sp = spAddressHex;
+      
+      
 
       Object.values(symbols).forEach((symbol: any) => {
         const address = symbol.memdef;
@@ -149,14 +143,20 @@ export class MemoryTable {
   }
 
   public setSP(value: string) {
-    this.table.getRow(this.sp).update(
-      { "info": '' }
-    );
+
+    if (this.sp && this.table.getRow(this.sp)) {
+      this.table.getRow(this.sp).update({ info: '' });
+    }
+
     const address = binaryToHex(value).toUpperCase();
-    this.table.getRow(address).update(
-      { "info": `<span class="info-column-mem-table">SP</span>` }
-    );
+    
+    if (this.table.getRow(address)) {
+      this.table.getRow(address).update({ info: `<span class="info-column-mem-table">SP</span>` });
+    } 
+  
+    this.sp = address;
   }
+  
 
 
   public updatePC(newPC: number) {
@@ -549,14 +549,7 @@ export class MemoryTable {
       }
     );
     // sp label
-    const spAddressHex = intToHex(memorySize - 4).toUpperCase();
-    this.table.updateOrAddRow(
-      spAddressHex,
-      {
-        "info": `<span class="info-column-mem-table">sp</span>`
-      }
-    );
-    this.sp = spAddressHex;
+    
 
     // this.labels = new Array(this.table.getDataCount()).fill("");
     // code labels
