@@ -183,10 +183,39 @@ export class UIManager {
     log({ msg: "Simulator reported step" });
     if (!this.isSimulating) {
       this.simulationStarted();
-      this.memoryTable.disableEditors();
+      this.disableEditors();
     }
     this.memoryTable.updatePC(pc);
   }
+
+  public disableEditors(): void {
+    this.memoryTable.table.getColumns().forEach(column => {
+      const def = column.getDefinition();
+      if (def.field && def.field.startsWith("value")) {
+        const currentlyVisible = column.isVisible ? column.isVisible() : true;
+        column.updateDefinition({
+          ...def,
+          editor: undefined,
+          editable: () => false
+        });
+        if (!currentlyVisible) {
+          column.hide();
+        }
+      }
+    });
+
+    this.registersTable.table.getColumns().forEach(column => {
+      const def = column.getDefinition();
+      if (def.field && def.field.startsWith("value")) {
+        column.updateDefinition({
+          ...def,
+          editor: undefined,
+          editable: () => false
+        });
+      }
+    });
+  }
+
 
   private initializeTopButtons(): void {
     const sections: { [key: string]: HTMLElement } = {

@@ -322,25 +322,6 @@ export class MemoryTable {
   }
 
 
-  public disableEditors(): void {
-    this.table.getColumns().forEach(column => {
-      const def = column.getDefinition();
-      if (def.field && def.field.startsWith("value")) {
-        const currentlyVisible = column.isVisible ? column.isVisible() : true;
-        column.updateDefinition({
-          ...def,
-          editor: undefined,
-          editable: () => false
-        });
-        if (!currentlyVisible) {
-          column.hide();
-        }
-      }
-    });
-  }
-
-
-
   private updateHexValue(row: any) {
     const hexParts = ['value3', 'value2', 'value1', 'value0'].map(field => {
       const binary = row.getData()[field];
