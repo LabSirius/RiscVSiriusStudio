@@ -82,11 +82,12 @@ export class Simulator {
 
     // Send messages to update the registers view.
     if (writesRU(instruction.type, instruction.opcode)) {
-      console.log('Writing result to RU ', result.wb.result);
       this.cpu
         .getRegisterFile()
         .writeRegister(instruction.rd.regeq, result.wb.result);
+      
       this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
+  
     }
     if (readsDM(instruction.type, instruction.opcode)) {
       this.notifyMemoryRead(parseInt(result.dm.address, 2), this.bytesToReadOrWrite());
@@ -138,6 +139,9 @@ export class Simulator {
       throw new Error('Cannot resize memory after configuration');
     } else {
       this.cpu.getDataMemory().resize(newSize);
+      this.cpu
+        .getRegisterFile()
+        .writeRegister('x2', intToBinary(newSize));
     }
   }
 

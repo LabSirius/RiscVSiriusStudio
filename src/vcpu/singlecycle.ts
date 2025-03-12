@@ -55,7 +55,9 @@ class RegistersFile {
   }
 
   public writeRegister(name: string, value: string) {
+    console.log("X2 AQUII ANTES", this.registers[this.getIndexFromName(name)])
     this.registers[this.getIndexFromName(name)] = value;
+    console.log("X2 AQUII DESPUES", this.registers[this.getIndexFromName(name)])
   }
 
   public getRegisterData() {
@@ -781,7 +783,6 @@ export class SCCPU {
     });
     
     (this.dataMemory as any).memory = flatMemory;
-
   }
   
 

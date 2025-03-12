@@ -47,6 +47,7 @@ function dispatch(
     case 'setRegister':
       UIManager.getInstance().registersTable.setRegister(data.register, data.value);
       if (data.register === 'x2') {
+        
         UIManager.getInstance().memoryTable.setSP(data.value);
       }
       break;
