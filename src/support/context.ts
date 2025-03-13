@@ -39,8 +39,11 @@ export class RVContext {
     return this._configurationManager;
   }
   // Reference to the decorator
-  private _encoderDecorator: EncoderDecorator;
+  private _encoderDecorator: EncoderDecorator | undefined;
   get encoderDecorator(): EncoderDecorator {
+    if (!this._encoderDecorator) {
+      throw new Error("Encoder decorator is not initialized");
+    }
     return this._encoderDecorator;
   }
   private _mainWebviewView: Webview | undefined;
@@ -80,7 +83,7 @@ export class RVContext {
     this.extensionContext = context;
     // Configuration manager
     this._configurationManager = new ConfigurationManager();
-    this._encoderDecorator = new EncoderDecorator();
+    this._encoderDecorator = undefined ;
 
     this._currentDocument = undefined;
     this._isSimulating = false;
@@ -132,10 +135,12 @@ export class RVContext {
         const editor = window.activeTextEditor;
         if (editor && RVDocument.isValid(editor.document)) {
           // We have an editor with a valid RiscV document open
+          this._encoderDecorator = new EncoderDecorator();
           this.buildCurrentDocument();
           if (!this._currentDocument) {
             throw new Error("There is no valid program to simulate");
           }
+          
           this.simulateProgram(this._currentDocument);
         } else {
           // In case the command is invoked via the command palette
@@ -165,6 +170,11 @@ export class RVContext {
           this._simulator.stop();
           this._isSimulating = false;
           this._simulator = undefined;
+          const editor = window.activeTextEditor; 
+        if (editor) {
+          this._encoderDecorator?.clearDecorations(editor);
+          this._encoderDecorator = undefined;
+        }
           commands.executeCommand('setContext', 'ext.isSimulating', false);
           
 
@@ -175,6 +185,9 @@ export class RVContext {
     //  Build
     this.disposables.push(
       commands.registerCommand('rv-simulator.build', () => {
+        if(!this._encoderDecorator){
+          this._encoderDecorator = new EncoderDecorator();
+        }
         this.buildCurrentDocument();
       })
     );

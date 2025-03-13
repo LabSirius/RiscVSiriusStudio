@@ -20,10 +20,6 @@ async function detailsMessage(ir: any | undefined): Promise<MarkdownString | und
     return;
   }
 
-  console.log("IR: ", ir);
-
-
-
   const type = ir["type"] || "Unknown";
   const asm = ir["asm"] || "???";
   const encoding = ir["encoding"];
@@ -137,9 +133,6 @@ export class EncoderDecorator {
 
   public async decorate(rvDoc: RVDocument) {
     const editor = rvDoc.editor;
-    console.log("####################");
-    console.log("Decorating ", editor.document.uri.toString());
-    console.log("####################");
 
     const ml = EncoderDecorator.maxLength(editor.document);
 
