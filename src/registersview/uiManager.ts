@@ -258,6 +258,7 @@ export class UIManager {
   }
 
   public setMemoryCell(address: number, leng: number, value: string): void {
+    console.log("VA A ESCRIBIR EN MEMORIA", address, leng, value);
     const rowStart = address - (address % 4);
     const hexRowStart = rowStart.toString(16).toUpperCase();
     

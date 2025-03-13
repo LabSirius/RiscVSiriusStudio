@@ -173,6 +173,10 @@ export class Simulator {
     const instruction = this.cpu.currentInstruction();
     let bytesToWrite = this.bytesToReadOrWrite();
     const addressNum = parseInt(result.dm.address, 2);
+
+    if (result.dm.dataWr.length < 32) {
+      result.dm.dataWr = result.dm.dataWr.padStart(32, '0');
+    }
     if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) { 
       // TODO: notify the webview that the write failed and finish the simulation
       throw new Error(
