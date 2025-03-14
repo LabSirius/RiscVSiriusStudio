@@ -8,7 +8,14 @@
   <body class="overflow-y-hidden P-4">
     <div class="w-full flex flex-row gap-3 overflow-y-hidden overflow-x-scroll">
       <div id="tabs-registers" class="hidden w-fit max-h-dvh w-min-content" style="height: min-content;"></div>
-      <div id="tabs-memory" class="hidden max-h-dvh  w-min-content" style="height: min-content;"></div>
+      <div id="tabs-memory" class="hidden relative max-h-dvh  w-min-content" style="height: min-content;">
+      </div>
+      <div id="spinner" class="hidden relative w-min-35" >
+        <div class="spinner">
+          <div class="spinner-icon"></div>
+        </div>
+       
+      </div>
       <!-- This is the third column -->
 
       <div id="toolsPanel" class=" flex flex-col gap-2 flex-1 max-h-dvh min-h-dvh w-30 overflow-y-scroll mt-1 p-2">
@@ -159,6 +166,7 @@
                       class="input-filter" 
                       value="32" 
                       min="32"
+                      max="512"
                       step="4" 
                       placeholder="e.g. 200, 1024..." />
                     </div>
