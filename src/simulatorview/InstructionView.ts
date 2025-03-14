@@ -1,5 +1,5 @@
-import { Button } from '@vscode/webview-ui-toolkit';
-import _ from 'lodash';
+import { Button } from "@vscode/webview-ui-toolkit";
+import _ from "lodash-es";
 
 var paragraph = _.template(`<p class="m-0 p-0 h4"><%- text %></p>`);
 var highlightText = _.template(
@@ -40,7 +40,7 @@ class BinaryInstructionView {
   private fields: any;
 
   public constructor() {
-    this.output = document.getElementById('instruction-bin') as HTMLElement;
+    this.output = document.getElementById("instruction-bin") as HTMLElement;
   }
 
   public newInstruction(instruction: any) {
@@ -50,7 +50,7 @@ class BinaryInstructionView {
     if (match) {
       this.fields = match;
     } else {
-      throw new Error('Cannot match instruction');
+      throw new Error("Cannot match instruction");
     }
     this.setInstruction();
   }
@@ -62,7 +62,7 @@ class BinaryInstructionView {
       S: formatSInstructionAsHTML,
       B: formatBInstructionAsHTML,
       U: formatUInstructionAsHTML,
-      J: formatJInstructionAsHTML
+      J: formatJInstructionAsHTML,
     };
 
     if (fields) {
@@ -81,59 +81,59 @@ function format(str: string, highlight: boolean) {
 }
 
 function formatRInstructionAsHTML(instruction: any, highlight: string[]) {
-  const funct7 = format(instruction['funct7'], highlight.includes('funct7'));
-  const rs2 = format(instruction['rs2'], highlight.includes('rs2'));
-  const rs1 = format(instruction['rs1'], highlight.includes('rs1'));
-  const funct3 = format(instruction['funct3'], highlight.includes('funct3'));
-  const rd = format(instruction['rd'], highlight.includes('rd'));
-  const opcode = format(instruction['opcode'], highlight.includes('opcode'));
+  const funct7 = format(instruction["funct7"], highlight.includes("funct7"));
+  const rs2 = format(instruction["rs2"], highlight.includes("rs2"));
+  const rs1 = format(instruction["rs1"], highlight.includes("rs1"));
+  const funct3 = format(instruction["funct3"], highlight.includes("funct3"));
+  const rd = format(instruction["rd"], highlight.includes("rd"));
+  const opcode = format(instruction["opcode"], highlight.includes("opcode"));
 
   const inst = `<p class="h4">${funct7}-${rs2}-${rs1}-${funct3}-${rd}-${opcode}</p>`;
   return inst;
 }
 
 function formatIInstructionAsHTML(instruction: any, highlight: string[]) {
-  const imm = format(instruction['imm'], highlight.includes('imm'));
-  const rs1 = format(instruction['rs1'], highlight.includes('rs1'));
-  const funct3 = format(instruction['funct3'], highlight.includes('funct3'));
-  const rd = format(instruction['rd'], highlight.includes('rd'));
-  const opcode = format(instruction['opcode'], highlight.includes('opcode'));
+  const imm = format(instruction["imm"], highlight.includes("imm"));
+  const rs1 = format(instruction["rs1"], highlight.includes("rs1"));
+  const funct3 = format(instruction["funct3"], highlight.includes("funct3"));
+  const rd = format(instruction["rd"], highlight.includes("rd"));
+  const opcode = format(instruction["opcode"], highlight.includes("opcode"));
   const inst = `<p class="h4">${imm}-${rs1}-${funct3}-${rd}-${opcode}</p>`;
   return inst;
 }
 
 function formatSInstructionAsHTML(instruction: any, highlight: string[]) {
-  const imm15_5 = format(instruction['imm15_5'], highlight.includes('imm'));
-  const rs1 = format(instruction['rs1'], highlight.includes('rs1'));
-  const funct3 = format(instruction['funct3'], highlight.includes('funct3'));
-  const imm4_0 = format(instruction['imm4_0'], highlight.includes('imm'));
-  const opcode = format(instruction['opcode'], highlight.includes('opcode'));
+  const imm15_5 = format(instruction["imm15_5"], highlight.includes("imm"));
+  const rs1 = format(instruction["rs1"], highlight.includes("rs1"));
+  const funct3 = format(instruction["funct3"], highlight.includes("funct3"));
+  const imm4_0 = format(instruction["imm4_0"], highlight.includes("imm"));
+  const opcode = format(instruction["opcode"], highlight.includes("opcode"));
   const inst = `<p class="h4">${imm15_5}-${rs1}-${funct3}-${imm4_0}-${opcode}</p>`;
   return inst;
 }
 
 function formatBInstructionAsHTML(instruction: any, highlight: string[]) {
-  const immP1 = format(instruction['immP1'], highlight.includes('imm'));
-  const rs1 = format(instruction['rs1'], highlight.includes('rs1'));
-  const funct3 = format(instruction['funct3'], highlight.includes('funct3'));
-  const immP2 = format(instruction['immP2'], highlight.includes('imm'));
-  const opcode = format(instruction['opcode'], highlight.includes('opcode'));
+  const immP1 = format(instruction["immP1"], highlight.includes("imm"));
+  const rs1 = format(instruction["rs1"], highlight.includes("rs1"));
+  const funct3 = format(instruction["funct3"], highlight.includes("funct3"));
+  const immP2 = format(instruction["immP2"], highlight.includes("imm"));
+  const opcode = format(instruction["opcode"], highlight.includes("opcode"));
   const inst = `<p class="h4">${immP1}-${rs1}-${funct3}-${immP2}-${opcode}</p>`;
   return inst;
 }
 
 function formatUInstructionAsHTML(instruction: any, highlight: string[]) {
-  const imm = format(instruction['imm'], highlight.includes('imm'));
-  const rd = format(instruction['rd'], highlight.includes('rd'));
-  const opcode = format(instruction['opcode'], highlight.includes('opcode'));
+  const imm = format(instruction["imm"], highlight.includes("imm"));
+  const rd = format(instruction["rd"], highlight.includes("rd"));
+  const opcode = format(instruction["opcode"], highlight.includes("opcode"));
   const inst = `<p class="h4">${imm}-${rd}-${opcode}</p>`;
   return inst;
 }
 
 function formatJInstructionAsHTML(instruction: any, highlight: string[]) {
-  const imm = format(instruction['imm'], highlight.includes('imm'));
-  const rd = format(instruction['rd'], highlight.includes('rd'));
-  const opcode = format(instruction['opcode'], highlight.includes('opcode'));
+  const imm = format(instruction["imm"], highlight.includes("imm"));
+  const rd = format(instruction["rd"], highlight.includes("rd"));
+  const opcode = format(instruction["opcode"], highlight.includes("opcode"));
   const inst = `<p class="h4">${imm}-${rd}-${opcode}</p>`;
   return inst;
 }
@@ -159,7 +159,7 @@ function extractGroups(
     S: regexS,
     B: regexB,
     U: regexU,
-    J: regexJ
+    J: regexJ,
   };
   const match = select[instType].exec(inputString);
 
@@ -174,7 +174,7 @@ class AssemblerView {
   private instruction: any | undefined;
 
   public constructor() {
-    this.output = document.getElementById('instruction-asm') as Button;
+    this.output = document.getElementById("instruction-asm") as Button;
   }
 
   public setInstruction(instruction: any) {
@@ -189,9 +189,9 @@ class InstructionTypeView {
 
   public constructor() {
     this.components = new Map<string, Button>();
-    ['R', 'I', 'S', 'B', 'U', 'J'].forEach((instType) => {
+    ["R", "I", "S", "B", "U", "J"].forEach((instType) => {
       const element = document.getElementById(
-        'instruction-type-' + _.lowerCase(instType)
+        "instruction-type-" + _.lowerCase(instType)
       ) as Button;
       this.components.set(instType, element);
     });
