@@ -3,10 +3,7 @@ import { ColumnDefinition, TabulatorFull as Tabulator } from "tabulator-tables";
 import { CellComponent } from "tabulator-tables";
 
 import { intToHex, binaryToHex } from "../utilities/conversions";
-import { range, chunk, times, set } from "lodash-es";
-import { InternalRepresentation } from "../utilities/riscvc";
-import { parse } from "path";
-import { error } from "console";
+import { chunk } from "lodash-es";
 
 export class MemoryTable {
   public table: Tabulator;
