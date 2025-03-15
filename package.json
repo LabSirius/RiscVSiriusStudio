@@ -232,7 +232,6 @@
     "@popperjs/core": "^2.11.8",
     "@types/bootstrap": "^5.2.10",
     "@types/glob": "^8.0.0",
-    "@types/lodash": "^4.17.7",
     "@types/node": "16.x",
     "@types/tabulator-tables": "^6.2.2",
     "@types/vscode": "^1.74.0",
@@ -261,7 +260,6 @@
     "@vscode/webview-ui-toolkit": "^1.2.2",
     "jspdf": "^2.5.1",
     "lodash-es": "^4.17.21",
-    "pagedone": "^1.2.2",
     "svg2pdf.js": "^2.2.4",
     "winston": "^3.13.1",
     "winston-transport-vscode": "^0.1.0"
