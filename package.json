@@ -225,13 +225,16 @@
     "lint": "eslint src --ext ts",
     "parservs": "npx peggy --allowed-start-rules Start,Instruction,SourceElement -o src/utilities/riscv.ts --format es src/utilities/riscv.peg",
     "parser": "npx peggy --allowed-start-rules Start,Instruction,SourceElement -o src/utilities/riscv.ts --format commonjs src/utilities/riscv.peg",
-    "assembler": "npx tsc src/utilities/cli.ts"
+    "assembler": "npx tsc src/utilities/cli.ts",
+    "clean": "rimraf out node_modules package-lock.json",
+    "rebuild": "npm run clean && npm install && npm run compile"
   },
   "devDependencies": {
     "@floating-ui/dom": "^1.6.8",
     "@popperjs/core": "^2.11.8",
     "@types/bootstrap": "^5.2.10",
     "@types/glob": "^8.0.0",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "16.x",
     "@types/tabulator-tables": "^6.2.2",
     "@types/vscode": "^1.74.0",
@@ -251,6 +254,7 @@
     "glob": "^8.0.3",
     "peggy": "^4.0.2",
     "prettier": "^2.8.1",
+    "rimraf": "^6.0.1",
     "tabulator-tables": "^6.2.1",
     "tailwindcss": "^3.4.15",
     "typescript": "^4.9.5"
