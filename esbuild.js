@@ -21,7 +21,7 @@ const extensionConfig = {
   format: "cjs",
   entryPoints: ["./src/extension.ts"],
   outfile: "./out/extension.js",
-  // watch: true,
+  watch: process.argv.includes("--watch"),
   plugins: [
     copy({
       resolveFrom: "cwd",
