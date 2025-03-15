@@ -1,16 +1,16 @@
 import {
   provideVSCodeDesignSystem,
-  allComponents
-} from '@vscode/webview-ui-toolkit';
+  allComponents,
+} from "@vscode/webview-ui-toolkit";
 
-import { TabulatorFull as Tabulator } from 'tabulator-tables';
+import { TabulatorFull as Tabulator } from "tabulator-tables";
 
-import { fromPairs, range } from 'lodash';
+import { fromPairs, range } from "lodash-es";
 
 provideVSCodeDesignSystem().register(allComponents);
 
 const vscode = acquireVsCodeApi();
-window.addEventListener('load', main);
+window.addEventListener("load", main);
 
 /**
  * Global and ugly way to store the relevant settings for this view. I have to
@@ -27,7 +27,7 @@ const settings = { memorySize: 128 };
  * @param object the object to be logged/
  */
 function log(kind: string, object: any = {}) {
-  sendMessageToExtension({ command: 'log-' + kind, obj: { object } });
+  sendMessageToExtension({ command: "log-" + kind, obj: { object } });
 }
 
 /**
@@ -51,7 +51,7 @@ class BadgeManager {
   private table: Tabulator;
 
   constructor(name: string, table: Tabulator) {
-    this.address = '';
+    this.address = "";
     this.name = name;
     this.visible = false;
     this.table = table;
@@ -60,7 +60,7 @@ class BadgeManager {
   public markRow(address: string) {
     const row = this.table.getRow(address);
     this.table.updateRow(row, {
-      info: `<span class="badge text-bg-secondary">${this.name}</span>`
+      info: `<span class="badge text-bg-secondary">${this.name}</span>`,
     });
     this.table.scrollToRow(row);
     this.address = address;
@@ -69,8 +69,8 @@ class BadgeManager {
 
   public clear() {
     const row = this.table.getRow(this.address);
-    this.table.updateRow(row, { info: '' });
-    this.address = '';
+    this.table.updateRow(row, { info: "" });
+    this.address = "";
     this.visible = false;
   }
 }
@@ -83,12 +83,12 @@ type Badges = {
 function main() {
   let table = tableSetup();
   const badges = {
-    lastWrite: new BadgeManager('write', table),
-    lastRead: new BadgeManager('read', table)
+    lastWrite: new BadgeManager("write", table),
+    lastRead: new BadgeManager("read", table),
   };
   // Install message dispatcher when the table has been built
-  table.on('tableBuilt', () => {
-    window.addEventListener('message', (event) => {
+  table.on("tableBuilt", () => {
+    window.addEventListener("message", (event) => {
       dispatch(event, table, badges);
     });
     hideDataMemView();
@@ -102,44 +102,44 @@ function dispatch(
 ) {
   const data = event.data;
   switch (data.operation) {
-    case 'hideDataMemView':
+    case "hideDataMemView":
       hideDataMemView();
       break;
-    case 'showDataMemView':
+    case "showDataMemView":
       showDataMemView();
       break;
     // case 'select':
     //   select(data.address, data.length, table);
     //   break;
-    case 'write':
+    case "write":
       write(data.address, data.value, data.bytes, table, lastWrite);
       break;
-    case 'read':
+    case "read":
       read(data.address, data.bytes, table, lastRead);
       break;
-    case 'clearSelection':
+    case "clearSelection":
       table.deselectRow();
       break;
-    case 'settingsChanged':
+    case "settingsChanged":
       settingsChanged(data.settings, table);
       break;
     default:
-      throw new Error('Unknown operation ' + data.operation);
+      throw new Error("Unknown operation " + data.operation);
   }
 }
 
 function hideDataMemView() {
-  const table = document.getElementById('datamem-table') as HTMLElement;
-  const cover = document.getElementById('datamem-cover') as HTMLElement;
-  cover.style.display = 'block';
-  table.style.display = 'none';
+  const table = document.getElementById("datamem-table") as HTMLElement;
+  const cover = document.getElementById("datamem-cover") as HTMLElement;
+  cover.style.display = "block";
+  table.style.display = "none";
 }
 
 function showDataMemView() {
-  const table = document.getElementById('datamem-table') as HTMLElement;
-  const cover = document.getElementById('datamem-cover') as HTMLElement;
-  cover.style.display = 'none';
-  table.style.display = 'block';
+  const table = document.getElementById("datamem-table") as HTMLElement;
+  const cover = document.getElementById("datamem-cover") as HTMLElement;
+  cover.style.display = "none";
+  table.style.display = "block";
 }
 
 function write(
@@ -157,9 +157,9 @@ function write(
     const col = Math.floor((address10 + i) % 4);
     const updateObject = fromPairs([
       [
-        'value' + col,
-        `<span class="text-primary fw-bold">${chunks[3 - i]}</span>`
-      ]
+        "value" + col,
+        `<span class="text-primary fw-bold">${chunks[3 - i]}</span>`,
+      ],
     ]);
     table.getRows()[row].update(updateObject);
   }
@@ -183,95 +183,95 @@ function read(
 function settingsChanged(newSettings: any, table: Tabulator) {
   const { memorySize } = newSettings;
   if (memorySize !== settings.memorySize) {
-    log('info', { m: 'Memory size changed', newValue: memorySize });
+    log("info", { m: "Memory size changed", newValue: memorySize });
     settings.memorySize = memorySize;
   }
 }
 
 function tableSetup(): Tabulator {
   let tableData = [] as Array<MemWord>;
-  let table = new Tabulator('#datamem-table', {
-    layout: 'fitColumns',
+  let table = new Tabulator("#datamem-table", {
+    layout: "fitColumns",
     layoutColumnsOnNewData: true,
-    index: 'address',
+    index: "address",
     reactiveData: true,
-    validationMode: 'blocking',
-    maxHeight: '300px',
-    height: '300px',
+    validationMode: "blocking",
+    maxHeight: "300px",
+    height: "300px",
     columns: [
       {
-        title: '',
-        field: 'info',
+        title: "",
+        field: "info",
         visible: true,
-        formatter: 'html',
+        formatter: "html",
         headerSort: false,
         frozen: true,
-        width: 20
+        width: 20,
       },
       {
-        title: 'Addr.',
-        field: 'address',
+        title: "Addr.",
+        field: "address",
         visible: true,
         headerSort: false,
         frozen: true,
-        width: 30
+        width: 30,
       },
       {
-        title: '0x3',
-        field: 'value3',
-        formatter: 'html',
-        headerHozAlign: 'center',
+        title: "0x3",
+        field: "value3",
+        formatter: "html",
+        headerHozAlign: "center",
         visible: true,
-        headerSort: false
+        headerSort: false,
       },
       {
-        title: '0x2',
-        field: 'value2',
-        formatter: 'html',
-        headerHozAlign: 'center',
+        title: "0x2",
+        field: "value2",
+        formatter: "html",
+        headerHozAlign: "center",
         visible: true,
-        headerSort: false
+        headerSort: false,
       },
       {
-        title: '0x1',
-        field: 'value1',
-        formatter: 'html',
-        headerHozAlign: 'center',
+        title: "0x1",
+        field: "value1",
+        formatter: "html",
+        headerHozAlign: "center",
         visible: true,
-        headerSort: false
+        headerSort: false,
       },
       {
-        title: '0x0',
-        field: 'value0',
-        formatter: 'html',
-        headerHozAlign: 'center',
+        title: "0x0",
+        field: "value0",
+        formatter: "html",
+        headerHozAlign: "center",
         visible: true,
-        headerSort: false
+        headerSort: false,
       },
       {
-        title: 'HEX',
-        field: 'hex',
-        headerHozAlign: 'center',
+        title: "HEX",
+        field: "hex",
+        headerHozAlign: "center",
         visible: true,
-        headerSort: false
-      }
-    ]
+        headerSort: false,
+      },
+    ],
   });
 
   range(0, settings.memorySize / 4).forEach((address) => {
-    const zeros8 = '00000000';
+    const zeros8 = "00000000";
     tableData.push({
       address: (address * 4).toString(16),
       value0: zeros8,
       value1: zeros8,
       value2: zeros8,
       value3: zeros8,
-      info: '',
-      hex: '00-00-00-00'
+      info: "",
+      hex: "00-00-00-00",
     });
   });
 
-  table.on('tableBuilt', () => {
+  table.on("tableBuilt", () => {
     table.setData(tableData);
   });
   return table;

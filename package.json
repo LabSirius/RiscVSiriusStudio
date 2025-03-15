@@ -1,8 +1,8 @@
 {
   "name": "rv-simulator",
   "displayName": "RISCV simulator",
-  "description": "A RISCV simulator.",
-  "version": "0.0.1",
+  "description": "An interactive RISC-V assembly simulator with memory views, step execution, and code visualization.",
+  "version": "0.0.2",
   "repository": "https://github.com/utpgustavogutierrez/vsc-riscv.git",
   "engines": {
     "vscode": "^1.75.0"
@@ -24,14 +24,12 @@
         "title": "RISCV simulator: step simulation",
         "icon": "$(debug-step-over)",
         "when": "ext.isSimulating"
-
       },
       {
         "command": "rv-simulator.simulateStop",
         "title": "RISCV simulator: stop simulation",
         "icon": "$(debug-stop)",
         "when": "ext.isSimulating"
-
       },
       {
         "command": "rv-simulator.build",
@@ -156,17 +154,17 @@
         {
           "command": "rv-simulator.simulate",
           "group": "navigation",
-          "when": "editorLangId == riscvasm && !ext.isSimulating" 
+          "when": "editorLangId == riscvasm && !ext.isSimulating"
         },
         {
           "command": "rv-simulator.simulateStep",
           "group": "navigation",
-          "when": "editorLangId == riscvasm && ext.isSimulating" 
+          "when": "editorLangId == riscvasm && ext.isSimulating"
         },
         {
           "command": "rv-simulator.simulateStop",
           "group": "navigation",
-          "when": "editorLangId == riscvasm && ext.isSimulating"  
+          "when": "editorLangId == riscvasm && ext.isSimulating"
         }
       ]
     },
@@ -261,10 +259,7 @@
   "dependencies": {
     "@vscode/codicons": "^0.0.36",
     "@vscode/webview-ui-toolkit": "^1.2.2",
-    "flowbite": "^2.5.2",
     "jspdf": "^2.5.1",
-    "lodash": "^4.17.21",
-    "lodash-cli": "^3.0.1",
     "lodash-es": "^4.17.21",
     "pagedone": "^1.2.2",
     "svg2pdf.js": "^2.2.4",

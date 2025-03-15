@@ -1,18 +1,12 @@
-import {
-  ColumnDefinition,
-  TabulatorFull as Tabulator
-} from 'tabulator-tables';
+import { ColumnDefinition, TabulatorFull as Tabulator } from "tabulator-tables";
 
-import {
-  CellComponent,
-} from 'tabulator-tables';
+import { CellComponent } from "tabulator-tables";
 
-import { intToHex, binaryToHex } from '../utilities/conversions';
-import { range, chunk, times, set } from 'lodash';
-import { InternalRepresentation } from '../utilities/riscvc';
-import { parse } from 'path';
-import { error } from 'console';
-
+import { intToHex, binaryToHex } from "../utilities/conversions";
+import { range, chunk, times, set } from "lodash-es";
+import { InternalRepresentation } from "../utilities/riscvc";
+import { parse } from "path";
+import { error } from "console";
 
 export class MemoryTable {
   public table: Tabulator;
@@ -22,7 +16,7 @@ export class MemoryTable {
 
   private readonly sendMessagetoExtension: (msg: any) => void;
   /**
-   *  Index in the table when the code area ends. We assume that the code 
+   *  Index in the table when the code area ends. We assume that the code
    * area starts at position 0.
    */
   public codeAreaEnd: number;
@@ -39,9 +33,9 @@ export class MemoryTable {
     editorParams: any
   ): HTMLInputElement => {
     const currentValue = cell.getValue();
-    const editor = document.createElement('input');
+    const editor = document.createElement("input");
 
-    editor.className = 'binary-editor';
+    editor.className = "binary-editor";
     editor.value = currentValue;
     editor.maxLength = 8;
 
@@ -51,32 +45,41 @@ export class MemoryTable {
     });
 
     const formatValue = (value: string): string => {
-      return value.padStart(8, '0').slice(0, 8);
+      return value.padStart(8, "0").slice(0, 8);
     };
 
     const onSuccess = () => {
-      const rawValue = editor.value.replace(/[^01]/g, '');
+      const rawValue = editor.value.replace(/[^01]/g, "");
       const formattedValue = formatValue(rawValue);
 
       editor.value = formattedValue;
       success(formattedValue);
     };
 
-    editor.addEventListener('input', (e) => {
+    editor.addEventListener("input", (e) => {
       // Filtra caracteres no binarios en tiempo real
-      editor.value = editor.value.replace(/[^01]/g, '');
+      editor.value = editor.value.replace(/[^01]/g, "");
     });
 
-    editor.addEventListener('blur', onSuccess);
-    editor.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { onSuccess(); };
-      if (e.key === 'Escape') { cancel(); };
+    editor.addEventListener("blur", onSuccess);
+    editor.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        onSuccess();
+      }
+      if (e.key === "Escape") {
+        cancel();
+      }
     });
 
     return editor;
   };
 
-  constructor(memory: string[], codeSize: number, symbols: any[], sendMessagetoExtension: (msg: any) => void) {
+  constructor(
+    memory: string[],
+    codeSize: number,
+    symbols: any[],
+    sendMessagetoExtension: (msg: any) => void
+  ) {
     this.memorySize = memory.length;
     this.sendMessagetoExtension = sendMessagetoExtension;
     // Forward initialization to prevent warnings
@@ -84,22 +87,22 @@ export class MemoryTable {
     this.pc = 0;
     this.codeAreaEnd = codeSize;
 
-
     this.tableData = chunk(memory, 4).map((word, index) => {
       const address = intToHex(index * 4).toUpperCase();
       return {
-        "index": index,
-        "address": address,
-        "value0": word[0], "value1": word[2],
-        "value2": word[1], "value3": word[3],
-        "info": "",
-        "hex": word
-        .slice()              
-        .reverse()
-          .map(byte => binaryToHex(byte).toUpperCase().padStart(2, "0"))
-          .join("-")
+        index: index,
+        address: address,
+        value0: word[0],
+        value1: word[2],
+        value2: word[1],
+        value3: word[3],
+        info: "",
+        hex: word
+          .slice()
+          .reverse()
+          .map((byte) => binaryToHex(byte).toUpperCase().padStart(2, "0"))
+          .join("-"),
       };
-
     });
     this.table = this.initializeTable();
     this.table.on("tableBuilt", () => {
@@ -112,25 +115,16 @@ export class MemoryTable {
 
       const heapAddress = codeSize;
       const heapAddressHex = intToHex(heapAddress).toUpperCase();
-      this.table.updateRow(
-        heapAddressHex,
-        {
-          "info": `<span class="info-column-mem-table">Heap</span>`
-        }
-      );
-
-      
-      
+      this.table.updateRow(heapAddressHex, {
+        info: `<span class="info-column-mem-table">Heap</span>`,
+      });
 
       Object.values(symbols).forEach((symbol: any) => {
         const address = symbol.memdef;
         const memdefHex = intToHex(address).toUpperCase();
-        this.table.updateOrAddRow(
-          memdefHex,
-          {
-            "info": `<span class="info-column-mem-table">${symbol.name}</span>`
-          }
-        );
+        this.table.updateOrAddRow(memdefHex, {
+          info: `<span class="info-column-mem-table">${symbol.name}</span>`,
+        });
       });
       this.updatePC(0);
     });
@@ -143,43 +137,42 @@ export class MemoryTable {
   }
 
   public setSP(value: string) {
-
     if (this.sp && this.table.getRow(this.sp)) {
-      this.table.getRow(this.sp).update({ info: '' });
+      this.table.getRow(this.sp).update({ info: "" });
     }
 
     const address = binaryToHex(value).toUpperCase();
-    
+
     if (this.table.getRow(address)) {
-      this.table.getRow(address).update({ info: `<span class="info-column-mem-table">SP</span>` });
-    } 
-  
+      this.table
+        .getRow(address)
+        .update({ info: `<span class="info-column-mem-table">SP</span>` });
+    }
+
     this.sp = address;
   }
-  
-
 
   public updatePC(newPC: number) {
     this.pc = newPC;
-    const allIcons = document.querySelectorAll('.pc-icon');
-    allIcons.forEach(icon => icon.remove());
+    const allIcons = document.querySelectorAll(".pc-icon");
+    allIcons.forEach((icon) => icon.remove());
 
     const targetValue = (newPC * 4).toString(16).toUpperCase();
     const foundRows = this.table.searchRows("address", "=", targetValue);
     if (foundRows.length > 0) {
       const row = foundRows[0];
       const cell = row.getCell("address");
-   
+
       if (cell) {
         const cellElement = cell.getElement();
 
-        const iconSpan = document.createElement('span');
-        iconSpan.className = 'pc-icon';
+        const iconSpan = document.createElement("span");
+        iconSpan.className = "pc-icon";
 
-        iconSpan.style.position = 'absolute';
-        iconSpan.style.top = '51%';
-        iconSpan.style.right = '5px';
-        iconSpan.style.transform = 'translateY(-50%)';
+        iconSpan.style.position = "absolute";
+        iconSpan.style.top = "51%";
+        iconSpan.style.right = "5px";
+        iconSpan.style.transform = "translateY(-50%)";
 
         iconSpan.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
@@ -193,28 +186,25 @@ export class MemoryTable {
 
         cellElement.appendChild(iconSpan);
 
-        cellElement.classList.add('animate-pc');
+        cellElement.classList.add("animate-pc");
         void cellElement.offsetWidth;
         setTimeout(() => {
-          cellElement.classList.remove('animate-pc');
+          cellElement.classList.remove("animate-pc");
         }, 500);
       }
     }
   }
 
-
   private initializeTable(): Tabulator {
-    return new Tabulator('#tabs-memory', {
-      layout: 'fitColumns',
+    return new Tabulator("#tabs-memory", {
+      layout: "fitColumns",
       layoutColumnsOnNewData: true,
-      index: 'address',
+      index: "address",
       data: this.tableData,
       reactiveData: true,
-      validationMode: 'blocking',
-      initialSort: [
-        { column: 'address', dir: 'desc' }
-      ],
-      columns: this.getColumnDefinitions()
+      validationMode: "blocking",
+      initialSort: [{ column: "address", dir: "desc" }],
+      columns: this.getColumnDefinitions(),
     });
   }
 
@@ -223,8 +213,8 @@ export class MemoryTable {
       title: "",
       visible: true,
       headerSort: false,
-      headerHozAlign: 'center',
-      formatter: 'html',
+      headerHozAlign: "center",
+      formatter: "html",
     };
 
     const defaultFrozenColumnAttributes: ColumnDefinition = {
@@ -238,122 +228,133 @@ export class MemoryTable {
       editable: true,
       cellMouseEnter: (e, cell) => {
         this.attachMemoryConversionToggle(cell);
-      }
+      },
     };
 
     return [
       {
         ...defaultColumnAttributes,
         visible: false,
-        field: 'index',
+        field: "index",
       },
       {
         ...defaultFrozenColumnAttributes,
-        title: 'Info',
-        field: 'info',
+        title: "Info",
+        field: "info",
         width: 60,
         formatter: (cell) => {
           const value = cell.getValue();
           return `<span class="truncated-info">${value}</span>`;
         },
-        
-        tooltip: (function(e: any, cell: any, onRendered: any) {
+
+        tooltip: function (e: any, cell: any, onRendered: any) {
           const value = cell.getValue();
           const tooltip = document.createElement("div");
           tooltip.className = "custom-tooltip";
           tooltip.innerHTML = value;
-          
+
           onRendered(() => {
             tooltip.style.position = "absolute";
-            tooltip.style.left = `${e.clientX + 17}px`; 
+            tooltip.style.left = `${e.clientX + 17}px`;
             tooltip.style.top = `${e.clientY - 22}px`;
             document.body.appendChild(tooltip);
           });
           return tooltip;
-        }) as any,
+        } as any,
       },
-    
+
       {
         ...defaultFrozenColumnAttributes,
-        title: 'Addr.',
-        field: 'address',
-        sorter: (a, b) => { return parseInt(a, 16) - parseInt(b, 16); },
+        title: "Addr.",
+        field: "address",
+        sorter: (a, b) => {
+          return parseInt(a, 16) - parseInt(b, 16);
+        },
         headerSort: true,
 
         width: 75,
-        formatter: (cell) => `<span class="address-value">${cell.getValue().toUpperCase()}</span>`,
+        formatter: (cell) =>
+          `<span class="address-value">${cell.getValue().toUpperCase()}</span>`,
         cellMouseEnter: (e, cell) => {
           this.attachMemoryConversionToggle(cell);
-        }
+        },
       },
       {
         ...defaultEditableColumnAttributes,
-        title: '0x3',
-        field: 'value3',
+        title: "0x3",
+        field: "value3",
         width: 83,
       },
       {
         ...defaultEditableColumnAttributes,
-        title: '0x2',
-        field: 'value2',
+        title: "0x2",
+        field: "value2",
         width: 83,
       },
       {
         ...defaultEditableColumnAttributes,
-        title: '0x1',
-        field: 'value1',
+        title: "0x1",
+        field: "value1",
         width: 83,
-
       },
       {
         ...defaultEditableColumnAttributes,
-        title: '0x0',
-        field: 'value0',
+        title: "0x0",
+        field: "value0",
         width: 83,
-
       },
       {
         ...defaultFrozenColumnAttributes,
-        title: 'HEX',
-        field: 'hex',
-        width: 100
-      }
+        title: "HEX",
+        field: "hex",
+        width: 100,
+      },
     ];
   }
 
-
   private updateHexValue(row: any) {
-    const hexParts = ['value3', 'value2', 'value1', 'value0'].map(field => {
+    const hexParts = ["value3", "value2", "value1", "value0"].map((field) => {
       const binary = row.getData()[field];
-      return parseInt(binary, 2).toString(16).padStart(2, '0');
+      return parseInt(binary, 2).toString(16).padStart(2, "0");
     });
-    row.update({ hex: hexParts.join('-') });
+    row.update({ hex: hexParts.join("-") });
   }
 
   private setupEventListeners() {
     this.table.on("cellEdited", (cell) => {
-      if (cell.getField().startsWith('value')) {
+      if (cell.getField().startsWith("value")) {
         this.updateHexValue(cell.getRow());
         this.sendMessagetoExtension({
-          command: 'event',
-          object: { event: 'memoryChanged', value: this.table.getData() }
+          command: "event",
+          object: { event: "memoryChanged", value: this.table.getData() },
         });
       }
     });
   }
 
-  private readonly attachMemoryConversionToggle = (cell: CellComponent): void => {
+  private readonly attachMemoryConversionToggle = (
+    cell: CellComponent
+  ): void => {
     const cellElement = cell.getElement();
-    const isAddress = cell.getField() === 'address';
-    const valueElement = isAddress ? cellElement.querySelector('.address-value') : cellElement;
-    let originalContent = valueElement ? valueElement.innerHTML : cellElement.innerHTML;
+    const isAddress = cell.getField() === "address";
+    const valueElement = isAddress
+      ? cellElement.querySelector(".address-value")
+      : cellElement;
+    let originalContent = valueElement
+      ? valueElement.innerHTML
+      : cellElement.innerHTML;
     let isConverted = false;
     let activeKey: string | null = null;
 
     const keyDownHandler = (evt: KeyboardEvent) => {
-      if (isConverted) { return; }
+      if (isConverted) {
+        return;
+      }
 
-      if (document.querySelector('input.binary-editor') || document.querySelector('input.register-editor')) {
+      if (
+        document.querySelector("input.binary-editor") ||
+        document.querySelector("input.register-editor")
+      ) {
         return;
       }
 
@@ -362,20 +363,20 @@ export class MemoryTable {
       let newContent: string | null = null;
 
       if (isAddress) {
-        if (key === 'd') {
+        if (key === "d") {
           newContent = parseInt(cellValue, 16).toString();
-          activeKey = 'd';
-        } else if (key === 'b') {
+          activeKey = "d";
+        } else if (key === "b") {
           newContent = parseInt(cellValue, 16).toString(2);
-          activeKey = 'b';
+          activeKey = "b";
         }
-      } else if (cell.getField().startsWith('value')) {
-        if (key === 'd') {
+      } else if (cell.getField().startsWith("value")) {
+        if (key === "d") {
           newContent = parseInt(cellValue, 2).toString();
-          activeKey = 'd';
-        } else if (key === 'h') {
+          activeKey = "d";
+        } else if (key === "h") {
           newContent = parseInt(cellValue, 2).toString(16).toUpperCase();
-          activeKey = 'h';
+          activeKey = "h";
         }
       }
 
@@ -386,24 +387,29 @@ export class MemoryTable {
     };
 
     const keyUpHandler = (evt: KeyboardEvent) => {
-      if (activeKey && evt.key.toLowerCase() === activeKey && isConverted && valueElement) {
+      if (
+        activeKey &&
+        evt.key.toLowerCase() === activeKey &&
+        isConverted &&
+        valueElement
+      ) {
         isConverted = false;
         activeKey = null;
         valueElement.innerHTML = originalContent;
       }
     };
 
-    cellElement.addEventListener('mouseenter', () => {
+    cellElement.addEventListener("mouseenter", () => {
       if (valueElement) {
         originalContent = valueElement.innerHTML;
       }
-      document.addEventListener('keydown', keyDownHandler);
-      document.addEventListener('keyup', keyUpHandler);
+      document.addEventListener("keydown", keyDownHandler);
+      document.addEventListener("keyup", keyUpHandler);
     });
 
-    cellElement.addEventListener('mouseleave', () => {
-      document.removeEventListener('keydown', keyDownHandler);
-      document.removeEventListener('keyup', keyUpHandler);
+    cellElement.addEventListener("mouseleave", () => {
+      document.removeEventListener("keydown", keyDownHandler);
+      document.removeEventListener("keyup", keyUpHandler);
       if (isConverted && valueElement) {
         isConverted = false;
         activeKey = null;
@@ -413,73 +419,77 @@ export class MemoryTable {
   };
 
   public importMemory(content: string): void {
-    const heapRow = this.table.getRows().find(row => {
+    const heapRow = this.table.getRows().find((row) => {
       const info = row.getData().info;
       return info && info.includes("Heap");
     });
     if (!heapRow) {
       return;
     }
-   
+
     const heapAddress = parseInt(heapRow.getData().address, 16);
-  
+
     const lines = content
       .split("\n")
-      .map(line => line.trim())
-      .filter(line => line !== "");
-  
+      .map((line) => line.trim())
+      .filter((line) => line !== "");
+
     const newData: any[] = [];
-  
+
     for (const line of lines) {
-      const parts = line.split(':');
+      const parts = line.split(":");
       if (parts.length !== 2) {
         console.error(`Invalid format in line: ${line}`);
         return;
       }
-  
+
       const address = parseInt(parts[0].trim(), 16);
       // if address is less than heap address, it is an instruction
       if (address < heapAddress) {
-        throw new Error("Cannot import data into the instruction reserved area. Invalid address: " + parts[0].trim());
+        throw new Error(
+          "Cannot import data into the instruction reserved area. Invalid address: " +
+            parts[0].trim()
+        );
         return;
       }
-  
+
       const binaryValue = parts[1].trim();
-  
+
       if (binaryValue.length !== 32 || !/^[01]+$/.test(binaryValue)) {
         console.error(`Invalid value in line ${line}`);
         return;
       }
-  
+
       const value0 = binaryValue.slice(24, 32);
       const value1 = binaryValue.slice(16, 24);
       const value2 = binaryValue.slice(8, 16);
       const value3 = binaryValue.slice(0, 8);
-  
-      const hex0 = parseInt(value0, 2).toString(16).padStart(2, '0');
-      const hex1 = parseInt(value1, 2).toString(16).padStart(2, '0');
-      const hex2 = parseInt(value2, 2).toString(16).padStart(2, '0');
-      const hex3 = parseInt(value3, 2).toString(16).padStart(2, '0');
-  
+
+      const hex0 = parseInt(value0, 2).toString(16).padStart(2, "0");
+      const hex1 = parseInt(value1, 2).toString(16).padStart(2, "0");
+      const hex2 = parseInt(value2, 2).toString(16).padStart(2, "0");
+      const hex3 = parseInt(value3, 2).toString(16).padStart(2, "0");
+
       newData.push({
         address: address.toString(16).toLowerCase(),
         value0,
         value1,
         value2,
         value3,
-        hex: `${hex3}-${hex2}-${hex1}-${hex0}`.toUpperCase()
+        hex: `${hex3}-${hex2}-${hex1}-${hex0}`.toUpperCase(),
       });
     }
-  
+
     this.table.updateOrAddData(newData);
   }
-  
+
   public resizeMemory(newSize: number): void {
-  
     const userMemStart = this.codeAreaEnd;
-    const userMemEnd = userMemStart + newSize; 
-  
-    const codeData = this.table.getData().filter(row => parseInt(row.address, 16) < userMemStart);
+    const userMemEnd = userMemStart + newSize;
+
+    const codeData = this.table
+      .getData()
+      .filter((row) => parseInt(row.address, 16) < userMemStart);
 
     const newMemoryData: any[] = [];
     for (let addr = userMemEnd - 4; addr >= userMemStart; addr -= 4) {
@@ -491,22 +501,24 @@ export class MemoryTable {
         value2: "00000000",
         value3: "00000000",
         info: "",
-        hex: "00-00-00-00"
+        hex: "00-00-00-00",
       });
     }
-  
+
     if (newMemoryData.length) {
-      newMemoryData[newMemoryData.length - 1].info = `<span class="info-column-mem-table">Heap</span>`;
+      newMemoryData[
+        newMemoryData.length - 1
+      ].info = `<span class="info-column-mem-table">Heap</span>`;
     }
 
     const newTableData = codeData.concat(newMemoryData);
 
     this.table.replaceData(newTableData);
-  
+
     this.table.setSort("address", "desc");
     this.table.redraw();
 
-    this.table.getRows().forEach(row => {
+    this.table.getRows().forEach((row) => {
       const rowData = row.getData();
       if (parseInt(rowData.address, 16) < userMemStart) {
         row.getElement().style.backgroundColor = "#FFF6E5";
@@ -514,59 +526,50 @@ export class MemoryTable {
     });
     this.updatePC(0);
   }
-  
-  
+
   public uploadMemory(memory: string[], codeSize: number, symbols: any[]) {
     const memorySize = memory.length;
     chunk(memory, 4).forEach((word, index) => {
       const address = intToHex(index * 4).toUpperCase();
       // debugger;
-      this.table.updateOrAddRow(
-        address,
-        {
-          "address": address,
-          "value0": word[0], "value1": word[2],
-          "value2": word[1], "value3": word[3],
-          "info": "",
-          "hex": word
-          .slice()              
+      this.table.updateOrAddRow(address, {
+        address: address,
+        value0: word[0],
+        value1: word[2],
+        value2: word[1],
+        value3: word[3],
+        info: "",
+        hex: word
+          .slice()
           .reverse()
-          .map(byte => binaryToHex(byte).toUpperCase().padStart(2, "0"))
-          .join("-")
-        });
+          .map((byte) => binaryToHex(byte).toUpperCase().padStart(2, "0"))
+          .join("-"),
+      });
       if (index * 4 < codeSize) {
-        this.table.getRow(address).getElement().style.backgroundColor = "#FFF6E5";
+        this.table.getRow(address).getElement().style.backgroundColor =
+          "#FFF6E5";
       }
-
     });
     // heap label
     const heapAddress = codeSize;
     const heapAddressHex = intToHex(heapAddress).toUpperCase();
-    this.table.updateOrAddRow(
-      heapAddressHex,
-      {
-        "info": `<span class="info-column-mem-table">Heap</span>`
-      }
-    );
+    this.table.updateOrAddRow(heapAddressHex, {
+      info: `<span class="info-column-mem-table">Heap</span>`,
+    });
     // sp label
-    
 
     // this.labels = new Array(this.table.getDataCount()).fill("");
     // code labels
     Object.values(symbols).forEach((symbol: any) => {
       const address = symbol.memdef;
       const memdefHex = intToHex(address).toUpperCase();
-      this.table.updateOrAddRow(
-        memdefHex,
-        {
-          "info": `<span class="info-column-mem-table">${symbol.name}</span>`
-        }
-      );
+      this.table.updateOrAddRow(memdefHex, {
+        info: `<span class="info-column-mem-table">${symbol.name}</span>`,
+      });
     });
-      this.updatePC(0);
-  } 
+    this.updatePC(0);
+  }
 
-  
   public filterMemoryTableData(searchValue: string): void {
     this.resetMemoryCellColors();
     this.table.clearFilter(true);
@@ -574,30 +577,31 @@ export class MemoryTable {
     const searchTerms = searchValue.split(/\s+/);
 
     this.table.setFilter((data: any) => {
-      const addr = data.address?.toLowerCase() || '';
-      const value3 = data.value3?.toLowerCase() || '';
-      const value2 = data.value2?.toLowerCase() || '';
-      const value1 = data.value1?.toLowerCase() || '';
-      const value0 = data.value0?.toLowerCase() || '';
-      const hex = data.hex?.toLowerCase() || '';
+      const addr = data.address?.toLowerCase() || "";
+      const value3 = data.value3?.toLowerCase() || "";
+      const value2 = data.value2?.toLowerCase() || "";
+      const value1 = data.value1?.toLowerCase() || "";
+      const value0 = data.value0?.toLowerCase() || "";
+      const hex = data.hex?.toLowerCase() || "";
 
-      return searchTerms.every(term =>
-        addr.includes(term) ||
-        value3.includes(term) ||
-        value2.includes(term) ||
-        value1.includes(term) ||
-        value0.includes(term) ||
-        hex.includes(term)
+      return searchTerms.every(
+        (term) =>
+          addr.includes(term) ||
+          value3.includes(term) ||
+          value2.includes(term) ||
+          value1.includes(term) ||
+          value0.includes(term) ||
+          hex.includes(term)
       );
     });
 
-    this.table.getRows().forEach(row => {
-      row.getCells().forEach(cell => {
-        let cellText = cell.getValue()?.toString() || '';
+    this.table.getRows().forEach((row) => {
+      row.getCells().forEach((cell) => {
+        let cellText = cell.getValue()?.toString() || "";
         const lowerCellText = cellText.toLowerCase();
-        searchTerms.forEach(term => {
+        searchTerms.forEach((term) => {
           if (lowerCellText.includes(term)) {
-            const regex = new RegExp(`(${term})`, 'gi');
+            const regex = new RegExp(`(${term})`, "gi");
             cellText = cellText.replace(regex, `<mark>$1</mark>`);
           }
         });
@@ -608,9 +612,9 @@ export class MemoryTable {
   }
 
   public resetMemoryCellColors(): void {
-    this.table.getRows().forEach(row => {
-      row.getCells().forEach(cell => {
-        cell.getElement().style.backgroundColor = '';
+    this.table.getRows().forEach((row) => {
+      row.getCells().forEach((cell) => {
+        cell.getElement().style.backgroundColor = "";
       });
     });
   }
