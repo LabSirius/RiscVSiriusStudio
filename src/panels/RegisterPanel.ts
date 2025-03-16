@@ -12,7 +12,7 @@ export async function getHtmlForRegistersWebview(webview: Webview, extensionUri:
   const tabulatorCSS = getUri(webview, extensionUri, ["out", "tabulator.min.css"]);
   const tailwindCSS = getUri(webview, extensionUri, ["out", "tailwind-output.css"]);
 
-  const templatePath = join(extensionUri.fsPath, "src", "templates", "registersView.html");
+  const templatePath = join(extensionUri.fsPath, "src", "templates", "panelView.html");
   const template = readFileSync(templatePath, "utf-8");
   const replacements: Record<string, string> = {
     "${panelviewUri}": panelviewUri.toString(),
