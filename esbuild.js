@@ -70,7 +70,7 @@ const registersviewConfig = {
   ...baseConfig,
   target: "es2020",
   format: "esm",
-  entryPoints: ["./src/registersview/panelView.ts"],
+  entryPoints: ["./src/panelview/panelView.ts"],
   outfile: "./out/panelview.js",
   plugins: [
     copy({
