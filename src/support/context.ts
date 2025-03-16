@@ -4,7 +4,7 @@ import { commands, Disposable, ExtensionContext, Webview, window } from "vscode"
 import {
   activateMessageListenerForRegistersView,
   getHtmlForRegistersWebview,
-} from "../panels/RegisterPanel";
+} from "../panels/MainPanel";
 import { RiscCardPanel } from "../panels/RiscCardPanel";
 import { RVDocument } from "../rvDocument";
 import { EncoderDecorator } from "../encoderDecorator";
