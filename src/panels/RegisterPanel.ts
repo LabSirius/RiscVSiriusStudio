@@ -7,7 +7,7 @@ import { join } from "path";
 import { RVContext } from "../support/context";
 
 export async function getHtmlForRegistersWebview(webview: Webview, extensionUri: Uri) {
-  const registersviewUri = getUri(webview, extensionUri, ["out", "registersview.js"]);
+  const panelviewUri = getUri(webview, extensionUri, ["out", "panelview.js"]);
   const nonce = getNonce();
   const tabulatorCSS = getUri(webview, extensionUri, ["out", "tabulator.min.css"]);
   const tailwindCSS = getUri(webview, extensionUri, ["out", "tailwind-output.css"]);
@@ -15,7 +15,7 @@ export async function getHtmlForRegistersWebview(webview: Webview, extensionUri:
   const templatePath = join(extensionUri.fsPath, "src", "templates", "registersView.html");
   const template = readFileSync(templatePath, "utf-8");
   const replacements: Record<string, string> = {
-    "${registersviewUri}": registersviewUri.toString(),
+    "${panelviewUri}": panelviewUri.toString(),
     "${nonce}": nonce,
     "${tabulatorCSS}": tabulatorCSS.toString(),
     "${tailwindCSS}": tailwindCSS.toString(),
