@@ -9,6 +9,6 @@ loop:
     bgt t1, a0, end # if i > n, break
     add t0, t0, t1  # sum += i
     addi t1, t1, 1  # i++
-    j loop  # jump to loop
+    beq zero,zero, loop  # jump to loop
 end:
     # result is in t0
