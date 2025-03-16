@@ -86,14 +86,6 @@ const registersviewConfig = {
   ],
 };
 
-const datamemviewConfig = {
-  ...baseConfig,
-  target: "es2020",
-  format: "esm",
-  entryPoints: ["./src/datamemview/datamemview.ts"],
-  outfile: "./out/datamemview.js",
-};
-
 // This watch config adheres to the conventions of the esbuild-problem-matchers
 // extension (https://github.com/connor4312/esbuild-problem-matchers#esbuild-via-js)
 /** @type BuildOptions */
@@ -133,17 +125,12 @@ const watchConfig = {
         ...registersviewConfig,
         ...watchConfig,
       });
-      await build({
-        ...datamemviewConfig,
-        ...watchConfig,
-      });
       console.log("[watch] build finished");
     } else {
       // Build extension and webview code
       await build(extensionConfig);
       await build(simulatorviewConfig);
       await build(registersviewConfig);
-      await build(datamemviewConfig);
       console.log("build complete");
     }
   } catch (err) {
