@@ -214,6 +214,11 @@
         "label": "Sample Light",
         "uiTheme": "vs",
         "path": "./themes/Sample_Light.tmTheme"
+      },
+      {
+        "label": "Custom Dark",
+        "uiTheme": "vs-dark",
+        "path": "./themes/Custom_Dark.tmTheme"
       }
     ]
   },
