@@ -691,7 +691,7 @@ mark {
   border: solid 1px #FFB74D;
 }
 
-.icon-tab:hover, .icon-tab-pc:hover{
+.icon-tab-pc:hover{
   transform: scale(0.95);
 }
 
@@ -699,6 +699,7 @@ mark {
 
 .icon-tab:hover{
   background-color: #D1E3E7;
+  color: black !important;
   border: solid 1px #D1E3E7;
 }
 

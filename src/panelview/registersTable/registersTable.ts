@@ -387,6 +387,7 @@ export class RegistersTable {
         frozen: true,
         width: 90,
         formatter: this.registerNamesFormatter
+        
       },
       {
         title: 'Value',
