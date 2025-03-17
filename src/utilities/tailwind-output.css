@@ -1077,6 +1077,10 @@ mark {
   margin-top: 1.5rem;
 }
 
+.pt-3{
+  padding-top: 2rem !important;
+}
+
 .text-lg{
   font-size: 1.125rem;
 }
