@@ -82,12 +82,12 @@ export class MemoryTable {
   }
 
   private generateTableData(memory: string[]): any[] {
-    return chunk(memory, 4).map((word, index) => {
+    return chunk(memory, 4).map((word: any, index:any) => {
       const address = intToHex(index * 4).toUpperCase();
       const hex = word
         .slice()
         .reverse()
-        .map((byte) => binaryToHex(byte).toUpperCase().padStart(2, "0"))
+        .map((byte: any) => binaryToHex(byte).toUpperCase().padStart(2, "0"))
         .join("-");
       return {
         index,
@@ -449,12 +449,12 @@ export class MemoryTable {
   }
 
   public uploadMemory(memory: string[], codeSize: number, symbols: any[]): void {
-    chunk(memory, 4).forEach((word, index) => {
+    chunk(memory, 4).forEach((word : any, index : any) => {
       const address = intToHex(index * 4).toUpperCase();
       const hex = word
         .slice()
         .reverse()
-        .map((byte) => binaryToHex(byte).toUpperCase().padStart(2, "0"))
+        .map((byte : any) => binaryToHex(byte).toUpperCase().padStart(2, "0"))
         .join("-");
       this.table.updateOrAddRow(address, {
         address,

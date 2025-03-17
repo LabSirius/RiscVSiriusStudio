@@ -692,8 +692,7 @@ mark {
 }
 
 .icon-tab:hover, .icon-tab-pc:hover{
-  background-color: #FFF6E5;
-  color: black !important
+  transform: scale(0.95);
 }
 
 
