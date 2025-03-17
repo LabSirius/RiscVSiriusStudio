@@ -386,7 +386,12 @@ export class RegistersTable {
         cssClass: 'register-name',
         frozen: true,
         width: 90,
-        formatter: this.registerNamesFormatter
+        formatter: this.registerNamesFormatter,
+        cellDblClick: (e, cell) => {
+          const data = cell.getData();
+          data.watched = !data.watched; 
+          cell.getRow().update(data);  
+        }
         
       },
       {
