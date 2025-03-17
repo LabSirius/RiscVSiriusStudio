@@ -718,7 +718,7 @@ mark {
 .subtitle{
   font-size: 1.05rem;
   font-weight: 600;
-  color: #3A6973;
+  color: #B5CCD1;
 }
 
 .label{
@@ -743,15 +743,11 @@ mark {
 
 .input-filter.bg-disabled{
   background-color: transparent;
-  color: white !important;
   cursor: not-allowed !important;
 }
 
 
-.input-filter::placeholder {
-  color: gray; /* Cambia este color por el que prefieras */
-  opacity: 1; /* Asegura que el color sea visible */
-}
+
 
 
 .icon-input{
@@ -926,11 +922,11 @@ mark {
 .help-title {
   font-size: 18px;
   font-weight: bold;
-  color: #3A6973;
+  color: #B5CCD1;
 }
 
 .help-description {
-  color: #555;
+  color: #ccc;
   font-size: 14px;
 }
 
@@ -950,7 +946,7 @@ mark {
 
 .help-filter-key {
   font-weight: bold;
-  color: #3A6973;
+  color: #B5CCD1;
 }
 
 .sim-focus {
@@ -962,7 +958,7 @@ mark {
 }
 
 .link-web{
-  color: #3A6973;
+  color: #B5CCD1;
   font-size: 1rem;
   font-weight: 600;
   text-decoration: underline;
