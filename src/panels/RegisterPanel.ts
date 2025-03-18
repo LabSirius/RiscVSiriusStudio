@@ -39,7 +39,7 @@ export async function getHtmlForRegistersWebview(webview: Webview, extensionUri:
 }
 
 export async function activateMessageListenerForRegistersView(webview: Webview, context: RVContext) {
-  console.log("Activating listener on registers view");
+
   webview.onDidReceiveMessage((message: any) => {
     switch (message.command) {
       case "log":
@@ -50,7 +50,7 @@ export async function activateMessageListenerForRegistersView(webview: Webview, 
         context.dispatchMainViewEvent(message.object);
         break;
       default:
-        console.log(`%c[RegistersView-unrecognized]\n\t${message.obj}`, 'color:red');
+        console.log(`%c[RegistersView-unrecognized]\n`, 'color:red', message);
         logger().info("info", message.obj);
         break;
     }

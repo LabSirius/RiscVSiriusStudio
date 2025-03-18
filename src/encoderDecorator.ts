@@ -17,8 +17,7 @@ async function detailsMessage(ir: any | undefined): Promise<MarkdownString | und
   markdown.isTrusted = true;
 
   if (!ir) {
-    markdown.appendMarkdown(`### Instrucción no definida\n`);
-    return markdown;
+    return;
   }
 
   console.log("IR: ", ir);
@@ -59,8 +58,8 @@ async function detailsMessage(ir: any | undefined): Promise<MarkdownString | und
 
     case "S":
 
-      let immHi = encoding["imm12"].substring(0, 7);  // Bits 11:5 (los primeros 7 bits)
-      let immLo = encoding["imm12"].substring(7, 12); // Bits 4:0 (los últimos 5 bits)
+      const immHi = encoding["imm12"].substring(0, 7);  // Bits 11:5 (los primeros 7 bits)
+      const immLo = encoding["imm12"].substring(7, 12); // Bits 4:0 (los últimos 5 bits)
 
       markdown.appendMarkdown("```\n\n");
       markdown.appendMarkdown("imm[11:5]   rs2     rs1     funct3   imm[4:0]   opcode  \n");
@@ -88,7 +87,7 @@ async function detailsMessage(ir: any | undefined): Promise<MarkdownString | und
       break;
 
     case "U":
-      let imm20 = encoding["imm21"].substring(0, 20); // Bits 31:12
+      const imm20 = encoding["imm21"].substring(0, 20); // Bits 31:12
 
       markdown.appendMarkdown("```\n\n");
       markdown.appendMarkdown("imm[31:12]             rd      opcode  \n");
@@ -99,10 +98,10 @@ async function detailsMessage(ir: any | undefined): Promise<MarkdownString | und
       break;
 
     case "J":
-      let immJ20 = encoding["imm[20]"];
-      let immJ10to1 = encoding["imm[10:1]"];
-      let immJ11 = encoding["imm[11]"];
-      let immJ19to12 = encoding["imm[19:12]"];
+      const immJ20 = encoding["imm[20]"];
+      const immJ10to1 = encoding["imm[10:1]"];
+      const immJ11 = encoding["imm[11]"];
+      const immJ19to12 = encoding["imm[19:12]"];
 
       markdown.appendMarkdown("```\n\n");
       markdown.appendMarkdown("imm[20]  imm[10:1]   imm[11]   imm[19:12]   rd     opcode  \n");
@@ -151,9 +150,8 @@ export class EncoderDecorator {
         const ir = rvDoc.getIRForLine(i);
         let irText = ir ? ir.encoding.binEncoding : '';
         if (irText.length > 0) {
-          const memAddress: number = ir ? ir.inst : 0;
-          const memAddressHex: string = "0x" + memAddress.toString(16);
-          irText = `${memAddressHex.padEnd(5, " ")}  ${irText}`;
+
+          irText = ` ${irText}`;
         }
 
         decorations.push({

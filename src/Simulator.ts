@@ -10,11 +10,11 @@ import {
   writesDM,
   writesRU
 } from "./utilities/instructions";
+import { binaryToInt, intToBinary } from "./utilities/conversions";
 
 
 export type SimulationParameters = {
   memorySize: number;
-  stackPointerAddress: number;
 };
 
 export class Simulator {
@@ -55,7 +55,7 @@ export class Simulator {
     this._context = context;
     this.rvDoc = rvDoc;
     if (!rvDoc.ir) { throw new Error("RVDocument has no IR"); }
-    this.cpu = new SCCPU(rvDoc.ir.instructions, simParams.memorySize, simParams.stackPointerAddress);
+    this.cpu = new SCCPU(rvDoc.ir.instructions, simParams.memorySize);
     this._configured = false;
   }
 
@@ -78,8 +78,12 @@ export class Simulator {
       // });
       return;
     }
+    console.log(`%c[Simulator] step\n`, 'color:pink');
+
     const instruction = this.cpu.currentInstruction();
     const result = this.cpu.executeInstruction();
+    console.log(`%c[Simulator] \n`, 'color:pink', instruction);
+    console.log(`%c[Simulator] \n`, 'color:pink', result);
 
     // Send messages to update the registers view.
     if (writesRU(instruction.type, instruction.opcode)) {
@@ -204,7 +208,8 @@ export class TextSimulator extends Simulator {
   constructor(
     settings: SimulationParameters,
     rvDoc: RVDocument,
-    context: RVContext
+    context: RVContext,
+    alreadyConfigured = false
   ) {
     super(settings, rvDoc, context);
   }
@@ -227,14 +232,21 @@ export class TextSimulator extends Simulator {
       commands.executeCommand(`rv-simulator.riscv.focus`);
       return;
     } else {
-      mainView.postMessage(
-        {
-          operation: 'uploadProgram',
-          program: this.rvDoc.ir,
-        });
+      // Upload memory to webview
+      mainView.postMessage({
+        operation: 'uploadMemory',
+        memory: this.cpu.getDataMemory().getMemory(),
+        codeSize: this.cpu.getDataMemory().codeSize,
+        symbols: this.rvDoc.ir.symbols
+      });
       console.log("Simulator start ", this.cpu.currentInstruction());
       this.makeEditorReadOnly();
       super.start();
+      // upload sp information to  webview
+      const spValue = this.cpu.getDataMemory().spInitialAddress;
+      mainView.postMessage({ operation: 'setRegister', register: 'x2', value: intToBinary(spValue) });
+
+      // decorate the text editor
       const currentInst = this.cpu.currentInstruction();
       const lineNumber = this.rvDoc.getLineForIR(currentInst);
 
@@ -245,7 +257,9 @@ export class TextSimulator extends Simulator {
   }
 
   public step(): void {
+    console.log(`%c[Simulator] step\n`, 'color:pink');
     super.step();
+
     // Handle the visualization
     const mainView = this.context.mainWebviewView;
     mainView.postMessage({ operation: 'step', pc: this.cpu.getPC() });
@@ -264,9 +278,35 @@ export class TextSimulator extends Simulator {
       this.currentHighlight.dispose();
     }
     this.makeEditorWritable();
+    const mainView = this.context.mainWebviewView;
+    if (!mainView) {
+      commands.executeCommand(`rv-simulator.riscv.focus`);
+      return;
+    } else {
+      mainView.postMessage({
+        operation: 'stop',
+      });
+    }
+
+
   }
 
   public notifyRegisterWrite(register: string, value: string) {
+    // Warn the user if the register has a special meaning and the new value is
+    // not valid
+    // debugger;
+    // const address = Number.parseInt(binaryToInt(value));
+    // if (register === 'x2' && !this.cpu.getDataMemory().validAddress(address)) {
+    //   const message = `Address ${address} is not valid for the current memory settings`;
+    //   window.showErrorMessage(message);
+    // }
+    // const valueAsNumber = parseInt(value, 2);
+    // if (register === 'x2' && !this.cpu.getDataMemory().validAAddress(value)) {
+    //   const message = `Invalid PC value: ${value}`;
+    //   window.showErrorMessage(message);
+    // }
+
+    //  Notify the main view that the register has been updated
     this.sendToMainView({
       operation: 'setRegister',
       register: register,
@@ -294,7 +334,7 @@ export class TextSimulator extends Simulator {
 
       // Create and store new decoration type
       this.currentHighlight = window.createTextEditorDecorationType({
-        backgroundColor: 'rgba(255, 255, 0, 0.2)',
+        backgroundColor: 'rgba(209, 227, 231, 0.5)',
         isWholeLine: true
       });
 

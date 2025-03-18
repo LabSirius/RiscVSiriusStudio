@@ -7,16 +7,18 @@ import {
   CellComponent,
 } from 'tabulator-tables';
 
-
+import { intToHex, binaryToHex } from '../utilities/conversions';
 import { range, chunk, times } from 'lodash';
 import { InternalRepresentation } from '../utilities/riscvc';
+import { parse } from 'path';
+import { error } from 'console';
 
 
 export class MemoryTable {
   public table: Tabulator;
-  private tableData: any[] = [];
+  private tableData: any[];
+
   private memorySize: number;
-  private labels: string[];
   /**
    *  Index in the table when the code area ends. We assume that the code 
    * area starts at position 0.
@@ -72,24 +74,79 @@ export class MemoryTable {
     return editor;
   };
 
-  constructor(memorySize: number = 32) {
-    this.memorySize = memorySize;
-    this.codeAreaEnd = 32;
-    this.table = this.initializeTable();
-    this.pc = 0;
+  constructor(memory: string[], codeSize: number, symbols: any[]) {
+    this.memorySize = memory.length;
+    // Forward initialization to prevent warnings
     this.sp = "";
-    this.labels = [];
+    this.pc = 0;
+    this.codeAreaEnd = codeSize;
+
+    this.tableData = chunk(memory, 4).map((word, index) => {
+      const address = intToHex(index * 4).toUpperCase();
+      return {
+        "index": index,
+        "address": address,
+        "value0": word[3], "value1": word[2],
+        "value2": word[1], "value3": word[0],
+        "info": "",
+        "hex": word
+          .map(byte => binaryToHex(byte).toUpperCase().padStart(2, "0"))
+          .join("-")
+      };
+
+    });
+    this.table = this.initializeTable();
+    this.table.on("tableBuilt", () => {
+      this.table.getRows().forEach((row) => {
+        const index = row.getData().index;
+        if (index * 4 < codeSize) {
+          row.getElement().style.backgroundColor = "#FFF6E5";
+        }
+      });
+
+      const heapAddress = codeSize;
+      const heapAddressHex = intToHex(heapAddress).toUpperCase();
+      this.table.updateRow(
+        heapAddressHex,
+        {
+          "info": `<span class="info-column-mem-table">Heap</span>`
+        }
+      );
+
+      const spAddressHex = intToHex(this.memorySize - 4).toUpperCase();
+      this.table.updateOrAddRow(
+        spAddressHex,
+        {
+          "info": `<span class="info-column-mem-table">SP</span>`
+        }
+      );
+      this.sp = spAddressHex;
+
+      Object.values(symbols).forEach((symbol: any) => {
+        const address = symbol.memdef;
+        const memdefHex = intToHex(address).toUpperCase();
+        this.table.updateOrAddRow(
+          memdefHex,
+          {
+            "info": `<span class="info-column-mem-table">${symbol.name}</span>`
+          }
+        );
+      });
+      this.updatePC(0);
+    });
+
     this.setupEventListeners();
   }
-  private toTableIndex(index: number): number {
-    return this.table.getDataCount() - index;
+
+  public reInitializeTable() {
+    this.table = this.initializeTable();
   }
 
   public setSP(value: string) {
     this.table.getRow(this.sp).update(
       { "info": '' }
     );
-    const address = Number.parseInt(value, 2).toString(16).toUpperCase();
+    const address = binaryToHex(value).toUpperCase();
     this.table.getRow(address).update(
       { "info": `<span class="info-column-mem-table">SP</span>` }
     );
@@ -97,16 +154,40 @@ export class MemoryTable {
 
 
   public updatePC(newPC: number) {
+    const allIcons = document.querySelectorAll('.pc-icon');
+    allIcons.forEach(icon => icon.remove());
+
     const targetValue = (newPC * 4).toString(16).toUpperCase();
     const foundRows = this.table.searchRows("address", "=", targetValue);
-
     if (foundRows.length > 0) {
       const row = foundRows[0];
       const cell = row.getCell("address");
+   
       if (cell) {
         const cellElement = cell.getElement();
-        cellElement.classList.add('animate-pc');
 
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'pc-icon';
+
+        iconSpan.style.position = 'absolute';
+        iconSpan.style.top = '51%';
+        iconSpan.style.right = '5px';
+        iconSpan.style.transform = 'translateY(-50%)';
+
+        iconSpan.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-locate">
+                                <line x1="2" x2="5" y1="12" y2="12"></line>
+                                <line x1="19" x2="22" y1="12" y2="12"></line>
+                                <line x1="12" x2="12" y1="2" y2="5"></line>
+                                <line x1="12" x2="12" y1="19" y2="22"></line>
+                                <circle cx="12" cy="12" r="7"></circle>
+                              </svg>`;
+
+        cellElement.appendChild(iconSpan);
+
+        cellElement.classList.add('animate-pc');
+        void cellElement.offsetWidth;
         setTimeout(() => {
           cellElement.classList.remove('animate-pc');
         }, 500);
@@ -115,15 +196,17 @@ export class MemoryTable {
   }
 
 
-
-
   private initializeTable(): Tabulator {
     return new Tabulator('#tabs-memory', {
       layout: 'fitColumns',
       layoutColumnsOnNewData: true,
       index: 'address',
+      data: this.tableData,
       reactiveData: true,
       validationMode: 'blocking',
+      initialSort: [
+        { column: 'address', dir: 'desc' }
+      ],
       columns: this.getColumnDefinitions()
     });
   }
@@ -146,22 +229,55 @@ export class MemoryTable {
       ...defaultFrozenColumnAttributes,
       editor: this.binaryMemEditor,
       editable: true,
+      cellMouseEnter: (e, cell) => {
+        this.attachMemoryConversionToggle(cell);
+      }
     };
 
     return [
       {
+        ...defaultColumnAttributes,
+        visible: false,
+        field: 'index',
+      },
+      {
         ...defaultFrozenColumnAttributes,
         title: 'Info',
         field: 'info',
-        width: 50,
-
+        width: 60,
+        formatter: (cell) => {
+          const value = cell.getValue();
+          return `<span class="truncated-info">${value}</span>`;
+        },
+        
+        tooltip: (function(e: any, cell: any, onRendered: any) {
+          const value = cell.getValue();
+          const tooltip = document.createElement("div");
+          tooltip.className = "custom-tooltip";
+          tooltip.innerHTML = value;
+          
+          onRendered(() => {
+            tooltip.style.position = "absolute";
+            tooltip.style.left = `${e.clientX + 17}px`; 
+            tooltip.style.top = `${e.clientY - 22}px`;
+            document.body.appendChild(tooltip);
+          });
+          return tooltip;
+        }) as any,
       },
+    
       {
         ...defaultFrozenColumnAttributes,
         title: 'Addr.',
         field: 'address',
-        width: 50,
+        sorter: (a, b) => { return parseInt(a, 16) - parseInt(b, 16); },
+        headerSort: true,
 
+        width: 75,
+        formatter: (cell) => `<span class="address-value">${cell.getValue().toUpperCase()}</span>`,
+        cellMouseEnter: (e, cell) => {
+          this.attachMemoryConversionToggle(cell);
+        }
       },
       {
         ...defaultEditableColumnAttributes,
@@ -193,8 +309,7 @@ export class MemoryTable {
         ...defaultFrozenColumnAttributes,
         title: 'HEX',
         field: 'hex',
-        width: 100,
-        formatter: (cell) => cell.getValue().toUpperCase()
+        width: 100
       }
     ];
   }
@@ -233,50 +348,127 @@ export class MemoryTable {
         this.updateHexValue(cell.getRow());
       }
     });
-
-    this.table.on('tableBuilt', () => {
-      this.table.setData(this.tableData);
-    });
   }
 
+  private readonly attachMemoryConversionToggle = (cell: CellComponent): void => {
+    const cellElement = cell.getElement();
+    const isAddress = cell.getField() === 'address';
+    const valueElement = isAddress ? cellElement.querySelector('.address-value') : cellElement;
+    let originalContent = valueElement ? valueElement.innerHTML : cellElement.innerHTML;
+    let isConverted = false;
+    let activeKey: string | null = null;
 
-  //TODO: Keep in mind that there is a limited area of ​​instructions
+    const keyDownHandler = (evt: KeyboardEvent) => {
+      if (isConverted) { return; }
+
+      if (document.querySelector('input.binary-editor') || document.querySelector('input.register-editor')) {
+        return;
+      }
+
+      const cellValue = cell.getValue();
+      const key = evt.key.toLowerCase();
+      let newContent: string | null = null;
+
+      if (isAddress) {
+        if (key === 'd') {
+          newContent = parseInt(cellValue, 16).toString();
+          activeKey = 'd';
+        } else if (key === 'b') {
+          newContent = parseInt(cellValue, 16).toString(2);
+          activeKey = 'b';
+        }
+      } else if (cell.getField().startsWith('value')) {
+        if (key === 'd') {
+          newContent = parseInt(cellValue, 2).toString();
+          activeKey = 'd';
+        } else if (key === 'h') {
+          newContent = parseInt(cellValue, 2).toString(16).toUpperCase();
+          activeKey = 'h';
+        }
+      }
+
+      if (newContent !== null && valueElement) {
+        isConverted = true;
+        valueElement.innerHTML = newContent;
+      }
+    };
+
+    const keyUpHandler = (evt: KeyboardEvent) => {
+      if (activeKey && evt.key.toLowerCase() === activeKey && isConverted && valueElement) {
+        isConverted = false;
+        activeKey = null;
+        valueElement.innerHTML = originalContent;
+      }
+    };
+
+    cellElement.addEventListener('mouseenter', () => {
+      if (valueElement) {
+        originalContent = valueElement.innerHTML;
+      }
+      document.addEventListener('keydown', keyDownHandler);
+      document.addEventListener('keyup', keyUpHandler);
+    });
+
+    cellElement.addEventListener('mouseleave', () => {
+      document.removeEventListener('keydown', keyDownHandler);
+      document.removeEventListener('keyup', keyUpHandler);
+      if (isConverted && valueElement) {
+        isConverted = false;
+        activeKey = null;
+        valueElement.innerHTML = originalContent;
+      }
+    });
+  };
+
   public importMemory(content: string): void {
+    const heapRow = this.table.getRows().find(row => {
+      const info = row.getData().info;
+      return info && info.includes("Heap");
+    });
+    if (!heapRow) {
+      return;
+    }
+   
+    const heapAddress = parseInt(heapRow.getData().address, 16);
+  
     const lines = content
-      .split('\n')
+      .split("\n")
       .map(line => line.trim())
-      .filter(line => line !== '');
-
+      .filter(line => line !== "");
+  
     const newData: any[] = [];
-
+  
     for (const line of lines) {
       const parts = line.split(':');
       if (parts.length !== 2) {
-        console.error(`Formato inválido en la línea: ${line}`);
+        console.error(`Invalid format in line: ${line}`);
         return;
       }
-
-
+  
       const address = parseInt(parts[0].trim(), 16);
-      const binaryValue = parts[1].trim();
-
-      if (binaryValue.length !== 32 || !/^[01]+$/.test(binaryValue)) {
-        console.error(`Valor inválido en la línea: ${line}`);
+      // if address is less than heap address, it is an instruction
+      if (address < heapAddress) {
+        throw new Error("Cannot import data into the instruction reserved area. Invalid address: " + parts[0].trim());
         return;
       }
-
-
+  
+      const binaryValue = parts[1].trim();
+  
+      if (binaryValue.length !== 32 || !/^[01]+$/.test(binaryValue)) {
+        console.error(`Invalid value in line ${line}`);
+        return;
+      }
+  
       const value0 = binaryValue.slice(24, 32);
       const value1 = binaryValue.slice(16, 24);
       const value2 = binaryValue.slice(8, 16);
       const value3 = binaryValue.slice(0, 8);
-
-
+  
       const hex0 = parseInt(value0, 2).toString(16).padStart(2, '0');
       const hex1 = parseInt(value1, 2).toString(16).padStart(2, '0');
       const hex2 = parseInt(value2, 2).toString(16).padStart(2, '0');
       const hex3 = parseInt(value3, 2).toString(16).padStart(2, '0');
-
+  
       newData.push({
         address: address.toString(16).toLowerCase(),
         value0,
@@ -286,10 +478,10 @@ export class MemoryTable {
         hex: `${hex3}-${hex2}-${hex1}-${hex0}`.toUpperCase()
       });
     }
-
-
+  
     this.table.updateOrAddData(newData);
   }
+  
 
   public resizeMemory(newSize: number) {
     const rounded = Math.round(newSize / 4) * 4;
@@ -352,28 +544,51 @@ export class MemoryTable {
     });
   }
 
-  public uploadProgram(ir: InternalRepresentation) {
-    ir.instructions.reverse().forEach((instruction, index) => {
-      const inst = instruction.inst.toString(16).toUpperCase();
-      const binaryString = instruction.encoding.binEncoding;
-      const hexString = instruction.encoding.hexEncoding;
-      const words = chunk(binaryString.split(''), 8).map(group => group.join(''));
-
+  public uploadMemory(memory: string[], codeSize: number, symbols: any[]) {
+    const memorySize = memory.length;
+    chunk(memory, 4).forEach((word, index) => {
+      const address = intToHex(index * 4).toUpperCase();
+      // debugger;
       this.table.updateOrAddRow(
-        inst,
+        address,
         {
-          "address": inst,
-          "value0": words[3], "value1": words[2],
-          "value2": words[1], "value3": words[0],
-          "info": "", "hex": hexString
+          "address": address,
+          "value0": word[3], "value1": word[2],
+          "value2": word[1], "value3": word[0],
+          "info": "",
+          "hex": word
+          .map(byte => binaryToHex(byte).toUpperCase().padStart(2, "0"))
+          .join("-")
         });
-      this.table.getRow(inst).getElement().style.backgroundColor = "#FFF6E5";
-      this.codeAreaEnd = inst;
-    });
+      if (index * 4 < codeSize) {
+        this.table.getRow(address).getElement().style.backgroundColor = "#FFF6E5";
+      }
 
-    this.labels = new Array(this.table.getDataCount()).fill("");
-    Object.values(ir.symbols).forEach((symbol: any) => {
-      const memdefHex = (symbol.memdef !== undefined ? symbol.memdef : 0).toString(16).toUpperCase();
+    });
+    // heap label
+    const heapAddress = codeSize;
+    const heapAddressHex = intToHex(heapAddress).toUpperCase();
+    this.table.updateOrAddRow(
+      heapAddressHex,
+      {
+        "info": `<span class="info-column-mem-table">Heap</span>`
+      }
+    );
+    // sp label
+    const spAddressHex = intToHex(memorySize - 4).toUpperCase();
+    this.table.updateOrAddRow(
+      spAddressHex,
+      {
+        "info": `<span class="info-column-mem-table">sp</span>`
+      }
+    );
+    this.sp = spAddressHex;
+
+    // this.labels = new Array(this.table.getDataCount()).fill("");
+    // code labels
+    Object.values(symbols).forEach((symbol: any) => {
+      const address = symbol.memdef;
+      const memdefHex = intToHex(address).toUpperCase();
       this.table.updateOrAddRow(
         memdefHex,
         {
@@ -381,7 +596,13 @@ export class MemoryTable {
         }
       );
     });
+
+    setTimeout(() => {
+      this.updatePC(0);
+    }, 200);
+
   }
+  
 
   public allocateMemory() {
     const zeros8 = "00000000";
@@ -411,8 +632,8 @@ export class MemoryTable {
     mem[words - 1].info = `<span class="info-column-mem-table">SP</span>`;
     this.sp = mem[words - 1].address;
     mem.forEach((i) => { this.table.addRow(i, true); });
-    this.updatePC(0);
   }
+
 
   public filterMemoryTableData(searchValue: string): void {
     this.resetMemoryCellColors();

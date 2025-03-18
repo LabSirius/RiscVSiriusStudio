@@ -336,10 +336,6 @@ textarea {
 Remove the inheritance of text transform in Edge and Firefox.
 */
 
-,
-select {
-  text-transform: none;
-}
 
 /*
 1. Correct the inability to style clickable types in iOS and Safari.
@@ -482,19 +478,7 @@ Make sure disabled buttons don't get the pointer cursor.
    This can trigger a poorly considered lint error in some tools but is included by design.
 */
 
-img,
-svg,
-video,
-canvas,
-audio,
-iframe,
-embed,
-object {
-  display: block;
-  /* 1 */
-  vertical-align: middle;
-  /* 2 */
-}
+
 
 /*
 Constrain images and videos to the parent width and preserve their intrinsic aspect ratio. (https://github.com/mozdevs/cssremedy/issues/14)
@@ -716,6 +700,35 @@ html {
   --bc: 74.6477% 0.0216 264.435964;
 }
 
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: white;
+  border: 1px solid #ccc; /* Se añade un borde para que sea visible */
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border: 1px solid #F4A261;
+  border-radius: 3px;
+  position: relative;
+}
+
+
+
+/* Dibujar la marca de verificación */
+input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 6px;
+  height: 10px;
+  border: solid #3A6973;
+  border-width: 0 2px 2px 0; /* Define el grosor de la línea para formar la marca */
+  transform: rotate(45deg);
+}
+
+
 .container {
   width: 100%;
 }
@@ -779,7 +792,6 @@ mark {
 }
 
 .animate-pc{
-  background-color: #FFE4C2 !important;
   animation: flashAnimation 0.5s ease-out forwards;
 }
 
@@ -853,10 +865,10 @@ mark {
   color: #9CA3AF;
 }
 
-.label-red{
+.label-primary{
   font-size: .9rem;
   font-weight: normal;
-  color: #FF6F70;
+  color: #3A6973;
 }
 
 .input-filter{
@@ -865,6 +877,10 @@ mark {
   border: solid 1px #9CA3AF;
   width: 23rem;
 }
+.input-filter.bg-disabled{
+  background-color: #F5F5F5 !important;
+}
+
 
 
 .input-filter::placeholder {
@@ -943,13 +959,20 @@ mark {
 }
 
 .swapButton{
-
+  text-align: center;
   background-color: #3A6973;
   color: white;
   border-color: #3A6973;
   border-radius: .5rem;
-  padding: .5rem .7rem;
+  padding: .4rem;
   cursor: pointer;
+
+}
+.swap-container{
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
 
 }
 
@@ -961,6 +984,7 @@ mark {
 
 .input-convert-result{
   padding: .5rem;
+  padding-right: 2.2rem;
   border-radius: .5rem;
   width: 22rem;
   background-color: #D1E3E7;
@@ -969,6 +993,42 @@ mark {
 .input-convert-result:hover,
 .input-convert-result:focus{
   outline: none !important;
+}
+
+.options-copy{
+  position: absolute;
+  margin-top: .5rem;
+  right: 0;
+  border-radius: .5rem;
+  background-color: white;
+  padding: .5rem;
+  display: flex;
+  gap: .5rem;
+  z-index: 100;
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+  animation: fadeInTop 0.8s;
+}
+
+.option-copy{
+  padding: .3rem .6rem;
+  border-radius: .2rem;
+  cursor: pointer;
+  border-bottom: solid 1px #D1E3E7 ;
+}
+
+.option-copy:active{
+  transform: scale(0.98);
+}
+
+@keyframes fadeInTop {
+  0% {
+    opacity: 0.6;
+    transform: translateY(-2.9rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
@@ -1032,7 +1092,7 @@ mark {
 }
 
 .sim-focus:active {
-  transform: scale(0.95);
+  transform: scale(0.98);
 }
 
 .link-web{
@@ -1060,6 +1120,33 @@ mark {
   position: static;
 }
 
+.tabulator-cell.register-value {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow: visible !important; 
+  height: auto !important;
+}
+
+.truncated-info{
+  color: white;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-tooltip {
+  background-color: white !important;
+  border-radius: .3rem !important;
+  border: none !important;
+  padding: 5px 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 99999;
+  max-width: min-content !important;
+  max-height: 1.8rem !important;
+}
+
 .fixed {
   position: fixed;
 }
@@ -1081,6 +1168,12 @@ mark {
   margin: 0px;
 }
 
+
+.icon-step{
+  position: relative;
+  top: .5rem;
+  margin: 0 .5rem;
+}
 
 
 
@@ -1117,12 +1210,21 @@ mark {
   margin-top: 1rem;
 }
 
+.mt-4 {
+  margin-top: 1.5rem;
+}
+
 .text-lg{
   font-size: 1.125rem;
 }
 
 .text-md{
   font-size: 1rem;
+}
+
+.display-none{
+  display: none;
+
 }
 
 .block {
@@ -1147,6 +1249,10 @@ mark {
 
 .h-7 {
   height: 1.75rem;
+}
+
+.h-10{
+  height: 2.5rem;
 }
 
 .h-full {
@@ -1282,25 +1388,9 @@ mark {
 }
 
 .overflow-x-scroll {
-  overflow-x: scroll !important;
-  scrollbar-width: thin !important;
+  overflow-x: scroll ;
 }
 
-.overflow-x-scroll::-webkit-scrollbar {
-  height: 10px !important;
-  background: var(--vscode-scrollbarSlider-background) !important;
-}
-
-.overflow-x-scroll::-webkit-scrollbar-thumb {
-  background: var(--vscode-scrollbarSlider-activeBackground) !important;
-  border-radius: 5px !important;
-  border: 2px solid transparent !important;
-  background-clip: content-box !important;
-}
-
-.overflow-x-scroll::-webkit-scrollbar-track {
-  background: transparent !important;
-}
 
 .rounded {
   border-radius: 0.25rem;
@@ -1380,6 +1470,11 @@ mark {
 .px-2 {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+}
+
+.px-4{
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .py-1 {

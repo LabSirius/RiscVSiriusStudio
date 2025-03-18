@@ -1,222 +1,315 @@
-export function setUpConvert() {
-  function setupDropdown(
+export class Converter {
+  private checkIsNegativeContainer = document.getElementById('checkIsNegativeContainer') as HTMLDivElement;
+  private isNegativeCheck = document.getElementById('isNegative') as HTMLInputElement;
+  private numberInput = document.getElementById('numberToconvertInput') as HTMLInputElement;
+  private fromInput = document.getElementById('fromConvertInput') as HTMLInputElement;
+  private toInput = document.getElementById('toConvertInput') as HTMLInputElement;
+  private resultInput = document.getElementById('resultConvertInput') as HTMLInputElement;
+  private optionsCopy = document.getElementById('options-copy') as HTMLUListElement;
+  private copyButton = document.getElementById('copyResultButton') as HTMLDivElement;
+  private closeOptionsCopy = document.getElementById('closeOptionsCopy') as HTMLDivElement;
+
+  constructor() {
+    this.setupDropdown('fromConvertInput', 'fromOptions', 'dec', 'Decimal');
+    this.setupDropdown('toConvertInput', 'toOptions', 'hex', 'Hexadecimal');
+
+    this.checkIsNegativeContainer.classList.add('hidden');
+
+    document.addEventListener('click', this.handleInputClick);
+    this.numberInput.addEventListener('input', () => {
+      if (this.fromInput.dataset.value === 'twoCompl') {
+        const currentValue = this.numberInput.value;
+        const cleaned = currentValue.replace(/ /g, '');
+        const padChar = this.isNegativeCheck.checked ? '1' : '0';
+        const newValue = cleaned.slice(-32).padStart(32, padChar).replace(/(.{4})(?=.)/g, '$1 ');
+        if (currentValue !== newValue) {
+          this.numberInput.value = newValue;
+        }
+        this.convertNumber();
+      } else {
+        setTimeout(() => this.convertNumber(), 0);
+      }
+    });
+
+    document.getElementById('SwapConvertBtn')?.addEventListener('click', () => {
+      [this.fromInput.value, this.toInput.value] = [this.toInput.value, this.fromInput.value];
+      [this.fromInput.dataset.value, this.toInput.dataset.value] = [this.toInput.dataset.value!, this.fromInput.dataset.value!];
+      this.checkIsNegativeContainer.classList.toggle('hidden', this.fromInput.dataset.value !== 'twoCompl');
+      this.numberInput.value = '';
+      this.resultInput.value = '';
+
+      if (this.fromInput.dataset.value === 'twoCompl') {
+        this.checkIsNegativeContainer.classList.remove('display-none');
+        this.isNegativeCheck.checked = false;
+        this.numberInput.value = '0000 0000 0000 0000 0000 0000 0000 0000';
+      } else {
+        this.checkIsNegativeContainer.classList.add('display-none');
+        this.isNegativeCheck.checked = false;
+        this.numberInput.value = '';
+      }
+    });
+
+    this.isNegativeCheck.addEventListener('change', () => {
+      if (this.fromInput.dataset.value === 'twoCompl') {
+        if (this.isNegativeCheck.checked) {
+          this.numberInput.value = '1111 1111 1111 1111 1111 1111 1111 1111';
+        } else {
+          this.numberInput.value = '0000 0000 0000 0000 0000 0000 0000 0000';
+        }
+        this.convertNumber();
+      }
+    });
+
+    this.setupCopyButton(); 
+  }
+
+  private setupDropdown(
     inputId: string,
     optionsId: string,
     defaultValue: string,
     defaultText: string
   ): void {
-    const inputElement = document.getElementById(
-      inputId
-    ) as HTMLInputElement;
-    const optionsElement = document.getElementById(
-      optionsId
-    ) as HTMLDivElement;
- 
-
+    const inputElement = document.getElementById(inputId) as HTMLInputElement;
+    const optionsElement = document.getElementById(optionsId) as HTMLDivElement;
     inputElement.value = defaultText;
     inputElement.dataset.value = defaultValue;
-
     inputElement.addEventListener('click', () => {
       optionsElement.classList.toggle('hidden');
     });
-
-    optionsElement
-      .querySelectorAll<HTMLParagraphElement>('.option-convert')
-      .forEach((option) => {
-        option.addEventListener('click', (event) => {
-          const target = event.target as HTMLParagraphElement;
-          inputElement.value = target.innerText;
-          inputElement.dataset.value = target.dataset.value || '';
-          optionsElement.classList.add('hidden');
-          convertNumber();
-        });
+    optionsElement.querySelectorAll<HTMLParagraphElement>('.option-convert').forEach((option) => {
+      option.addEventListener('click', (event) => {
+        const target = event.target as HTMLParagraphElement;
+        inputElement.value = target.innerText;
+        inputElement.dataset.value = target.dataset.value || '';
+        optionsElement.classList.add('hidden');
+        if (inputId === 'fromConvertInput') {
+          if (target.dataset.value === 'twoCompl') {
+            this.checkIsNegativeContainer.classList.remove('display-none');
+            this.isNegativeCheck.checked = false;
+            this.numberInput.value = '0000 0000 0000 0000 0000 0000 0000 0000';
+          } else {
+            this.checkIsNegativeContainer.classList.add('display-none');
+            this.isNegativeCheck.checked = false;
+            this.numberInput.value = '';
+          }
+        }
+        this.convertNumber();
       });
-
-    const checkbox32 = document.querySelector(
-      "#checkbox32bits input[type='checkbox']"
-    ) as HTMLInputElement;
-      checkbox32.addEventListener('change', convertNumber);
-    
-
+    });
     document.addEventListener('click', (event) => {
-      if (
-        !inputElement.contains(event.target as Node) &&
-        !optionsElement.contains(event.target as Node)
-      ) {
+      if (!inputElement.contains(event.target as Node) && !optionsElement.contains(event.target as Node)) {
         optionsElement.classList.add('hidden');
       }
     });
   }
 
-  function convertNumber(): void {
-    const fromInput = document.getElementById(
-      'fromConvertInput'
-    ) as HTMLInputElement;
-    const toInput = document.getElementById(
-      'toConvertInput'
-    ) as HTMLInputElement;
-    const numberInput = document.getElementById(
-      'numberToconvertInput'
-    ) as HTMLInputElement;
-    const resultInput = document.getElementById(
-      'resultConvertInput'
-    ) as HTMLInputElement;
-    const copyButton = document.getElementById(
-      'copyResultButton'
-    ) as HTMLButtonElement;
+  private processTwoComplementInput(inputValue: string): string {
+    let cleanValue = inputValue.replace(/[^01]/g, '');
+    const padChar = this.isNegativeCheck.checked ? '1' : '0';
+    cleanValue = cleanValue.slice(-32);
+    cleanValue = cleanValue.padStart(32, padChar);
+    return cleanValue.replace(/(.{4})(?=.)/g, '$1 ');
+  }
 
+  private handleInputClick(event: MouseEvent) {
+    const input = event.target as HTMLInputElement;
+    if (input.id === 'numberToconvertInput') {
+      requestAnimationFrame(() => {
+        input.setSelectionRange(input.value.length, input.value.length);
+      });
+    }
+  }
+  private convertNumber() {
+    const fromBase = this.fromInput.dataset.value as string;
+    const toBase = this.toInput.dataset.value as string;
+    this.checkIsNegativeContainer.classList.toggle('hidden', fromBase !== 'twoCompl');
 
-    const fromBase = fromInput.dataset.value as string;
-    const toBase = toInput.dataset.value as string;
-    const numberValue = numberInput.value.trim();
-
-    if (!fromBase || !toBase || !numberValue) {
-      resultInput.value = '';
-      return;
+    if (fromBase === 'twoCompl') {
+      const processed = this.processTwoComplementInput(this.numberInput.value);
+      if (this.numberInput.value !== processed) {
+        this.numberInput.value = processed;
+      }
+    } else if (fromBase !== 'ascii') {
+      this.numberInput.value = this.numberInput.value.replace(/ /g, '');
     }
 
-    const checkboxSwapContainer = document.getElementById(
-      'checkbox-swapContainer'
-    ) as HTMLDivElement;
-    const checkbox32bits = document.getElementById('checkbox32bits');
-    if (checkbox32bits) {
-      if (toBase === 'bin') {
-        checkboxSwapContainer.classList.remove('justify-end');
-        checkboxSwapContainer.classList.add('justify-between');
-        checkbox32bits.classList.add('flex');
-        checkbox32bits.classList.remove('hidden');
-      } else {
-        checkboxSwapContainer.classList.remove('justify-between');
-        checkboxSwapContainer.classList.add('justify-end');
-        checkbox32bits.classList.add('hidden');
-        checkbox32bits.classList.remove('flex');
+    if (fromBase === 'ascii') {
+      if (toBase === 'dec') {
+        let res = "";
+        for (let i = 0; i < this.numberInput.value.length; i++) {
+          let code = this.numberInput.value.charCodeAt(i);
+          res += code.toString(10) + " ";
+        }
+        this.resultInput.value = res.trim();
+        return;
+      } else if (toBase === 'hex') {
+        let res = "";
+        for (let i = 0; i < this.numberInput.value.length; i++) {
+          let code = this.numberInput.value.charCodeAt(i);
+          res += code.toString(16).toUpperCase().padStart(2, "0") + " ";
+        }
+        this.resultInput.value = res.trim();
+        return;
+      } else if (toBase === 'ascii') {
+        this.resultInput.value = this.numberInput.value;
+        return;
       }
     }
 
+    const rawValue = this.numberInput.value.replace(/ /g, '');
     let decimalValue: number;
     try {
-      if (fromBase === 'bin') {
-        decimalValue = parseInt(numberValue, 2);
-      } else if (fromBase === 'hex') {
-        decimalValue = parseInt(numberValue, 16);
+      if (fromBase === 'hex') {
+        decimalValue = parseInt(rawValue, 16);
       } else if (fromBase === 'dec') {
-        decimalValue = parseInt(numberValue, 10);
+        decimalValue = parseInt(rawValue, 10);
       } else if (fromBase === 'twoCompl') {
-        const bitLength = numberValue.length;
-        if (numberValue[0] === '1') {
-          decimalValue = parseInt(numberValue, 2) - (1 << bitLength);
-        } else {
-          decimalValue = parseInt(numberValue, 2);
+        const padChar = this.isNegativeCheck.checked ? '1' : '0';
+        const bits = rawValue.padStart(32, padChar);
+        decimalValue = parseInt(bits, 2);
+        if (bits[0] === '1') {
+          decimalValue -= 0x100000000;
         }
+      } else if (fromBase === 'ascii') {
+        const inputStr = rawValue.slice(-4);
+        decimalValue = 0;
+        for (let i = 0; i < inputStr.length; i++) {
+          const charCode = inputStr.charCodeAt(i);
+          if (charCode > 255) {
+            throw new Error('Carácter no ASCII');
+          }
+          decimalValue = (decimalValue << 8) + charCode;
+        }
+        decimalValue = decimalValue >>> 0;
       } else {
-        throw new Error('Base inválida');
+        throw new Error('Formato inválido');
       }
-
       if (isNaN(decimalValue)) {
-        throw new Error('Número inválido');
+        throw new Error('Valor inválido');
       }
     } catch {
-      resultInput.value = 'Error';
+      this.resultInput.value = '';
       return;
     }
 
-    let result: string;
-    if (toBase === 'bin') {
-      let use32bits = false;
-      if (checkbox32bits) {
-        const checkboxInput = checkbox32bits.querySelector(
-          "input[type='checkbox']"
-        ) as HTMLInputElement;
-        if (checkboxInput.checked) {
-          use32bits = true;
+    if (toBase === 'hex') {
+      if (fromBase === 'dec' && decimalValue < 0) {
+        const twosComplement = ((0x10000 + (decimalValue % 0x10000)) & 0xFFFF);
+        this.resultInput.value = twosComplement.toString(16).toUpperCase().padStart(4, '0');
+      } else {
+        this.resultInput.value = decimalValue.toString(16).toUpperCase();
+      }
+    } else if (toBase === 'dec') {
+      if (fromBase === 'hex') {
+        const unsignedValue = decimalValue;
+        let signedValue = decimalValue;
+        if (rawValue.length <= 4) {
+          if (unsignedValue > 0x7FFF) {
+            signedValue = unsignedValue - 0x10000;
+          }
+        } else {
+          if (unsignedValue > 0x7FFFFFFF) {
+            signedValue = unsignedValue - 0x100000000;
+          }
+        }
+        if (signedValue.toString(10) === unsignedValue.toString(10)) {
+          this.resultInput.value = signedValue.toString(10);
+        } else {
+          this.resultInput.value = signedValue.toString(10) + " / " + unsignedValue.toString(10);
+        }
+      } else {
+        this.resultInput.value = decimalValue.toString(10);
+      }
+    } else if (toBase === 'twoCompl') {
+      let binary = (decimalValue >>> 0).toString(2).padStart(32, '0');
+      this.resultInput.value = binary.replace(/(.{4})(?=.)/g, '$1 ');
+    } else if (toBase === 'ascii') {
+      const value = decimalValue >>> 0;
+      const bytes = [
+        (value >> 24) & 0xFF,
+        (value >> 16) & 0xFF,
+        (value >> 8) & 0xFF,
+        value & 0xFF
+      ];
+      let asciiStr = '';
+      let started = false;
+      for (const byte of bytes) {
+        if (byte !== 0 || started) {
+          started = true;
+          asciiStr += String.fromCharCode(byte);
         }
       }
-      if (use32bits) {
-        result = decimalValue.toString(2).padStart(32, '0');
-        result = result.match(/.{4}/g)?.join(' ') || result;
-      } else {
-        result = decimalValue.toString(2);
-        result = groupBinary(result);
+      if (asciiStr === '' && bytes.length > 0) {
+        asciiStr = String.fromCharCode(bytes[bytes.length - 1]);
       }
-    } else if (toBase === 'hex') {
-      result = decimalValue.toString(16).toUpperCase();
-    } else if (toBase === 'dec') {
-      result = decimalValue.toString(10);
-    } else if (toBase === 'twoCompl') {
-      let bitLength = 32;
-      if (decimalValue < 0) {
-        result = (decimalValue >>> 0).toString(2);
-        result = result.slice(-bitLength);
-      } else {
-        result = decimalValue.toString(2).padStart(bitLength, '0');
-      }
-      result = result.match(/.{4}/g)?.join(' ') || result;
-    } else {
-      resultInput.value = 'Error';
-      return;
+      this.resultInput.value = asciiStr;
     }
-    resultInput.value = result;
+  }
 
-    copyButton.addEventListener('click', () => {
-      navigator.clipboard
-        .writeText(resultInput.value)
-        .then(() => {
-          console.log('Texto copiado al portapapeles');
-        })
-        .catch((err) => {
-          console.log('Error al copiar el texto: ', err);
-        });
+  private setupCopyButton() {
+    this.copyButton.addEventListener('click', () => {
+      if (this.toInput.dataset.value === 'twoCompl') {
+        if (!this.optionsCopy.classList.contains('hidden')) {
+          this.optionsCopy.classList.add('hidden');
+          this.copyButton.classList.remove('hidden');
+          this.closeOptionsCopy.classList.add('hidden');
+        } else {
+          this.optionsCopy.classList.remove('hidden');
+          this.copyButton.classList.add('hidden');
+          this.closeOptionsCopy.classList.remove('hidden');
+        }
+      } else {
+        navigator.clipboard.writeText(this.resultInput.value);
+      }
+    });
+  
+    this.closeOptionsCopy.addEventListener('click', () => {
+      this.optionsCopy.classList.add('hidden');
+      this.copyButton.classList.remove('hidden');
+      this.closeOptionsCopy.classList.add('hidden');
+    });
+  
+    this.optionsCopy.querySelectorAll<HTMLLIElement>('.option-copy').forEach(option => {
+      option.addEventListener('click', () => {
+        const text = option.textContent?.trim();
+        let bitsToCopy: number;
+        
+        if (text === '32 bits') {
+          bitsToCopy = 32;
+        } else if (text === '16 bits') {
+          bitsToCopy = 16;
+        } else if (text === '8 bits') { 
+          bitsToCopy = 8;
+        } else {
+          return;
+        }
+  
+        const binary = this.resultInput.value.replace(/ /g, '');
+        let copyText: string;
+        
+        if (bitsToCopy === 32) {
+          copyText = binary;
+        } else {
+          copyText = binary.slice(-bitsToCopy);
+        }
+        
+        navigator.clipboard.writeText(copyText);
+        this.optionsCopy.classList.add('hidden');
+        this.copyButton.classList.remove('hidden');
+        this.closeOptionsCopy.classList.add('hidden'); 
+      });
+    });
+  
+    document.addEventListener('click', (e) => {
+      if (
+        !this.optionsCopy.contains(e.target as Node) &&
+        !this.copyButton.contains(e.target as Node)
+      ) {
+        this.optionsCopy.classList.add('hidden');
+        this.copyButton.classList.remove('hidden');
+        this.closeOptionsCopy.classList.add('hidden');
+      }
     });
   }
 
-  setupDropdown('fromConvertInput', 'fromOptions', 'dec', 'Decimal');
-  setupDropdown('toConvertInput', 'toOptions', 'bin', 'Binary');
-
-  document
-    .getElementById('numberToconvertInput')
-    ?.addEventListener('input', convertNumber);
-
-  document
-    .getElementById('numberToconvertInput')
-    ?.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        const target = event.target as HTMLInputElement;
-        target.value = '';
-        const resultInput = document.getElementById(
-          'resultConvertInput'
-        ) as HTMLInputElement;
-          resultInput.value = '';
-      }
-    });
-
-  document.getElementById('SwapConvertBtn')?.addEventListener('click', () => {
-    const fromInput = document.getElementById(
-      'fromConvertInput'
-    ) as HTMLInputElement;
-    const toInput = document.getElementById(
-      'toConvertInput'
-    ) as HTMLInputElement;
-    if (!fromInput || !toInput) {
-      return;
-    }
-    [fromInput.value, toInput.value] = [toInput.value, fromInput.value];
-    [fromInput.dataset.value, toInput.dataset.value] = [
-      toInput.dataset.value || '',
-      fromInput.dataset.value || ''
-    ];
-    convertNumber();
-  });
-}
-
-
-
-function groupBinary(numStr: string): string {
-  let groups: string[] = [];
-  let i = numStr.length;
-  while (i > 0) {
-    const start = Math.max(0, i - 4);
-    groups.unshift(numStr.substring(start, i));
-    i -= 4;
-  }
-  return groups.join(' ');
 }

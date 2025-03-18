@@ -25,6 +25,10 @@ export function intToBinary(sgnInteger: number): string {
   }
 }
 
+export function intToHex(sgnInteger: number): string {
+  return binaryToHex(intToBinary(sgnInteger));
+}
+
 /**
  * Converts the binary representation of a number to an hexadecimal
  * representation.

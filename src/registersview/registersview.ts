@@ -3,13 +3,8 @@ import {
   allComponents
 } from '@vscode/webview-ui-toolkit';
 
-
-import { RegistersTable } from './registersTable/registersTable';
-import { MemoryTable } from './memoryTable';
-
-import { setUpConvert } from './convertTool';
 import { UIManager } from './uiManager';
-import { InternalRepresentation } from '../utilities/riscvc';
+
 provideVSCodeDesignSystem().register(allComponents);
 
 const vscode = acquireVsCodeApi();
@@ -28,34 +23,32 @@ function log(object: any = {}, level: string = 'info') {
 }
 
 function main() {
-  const registersTable = new RegistersTable();
-  const memoryTable = new MemoryTable();
+
+  UIManager.createInstance(sendMessageToExtension);
 
   window.addEventListener('message', (event) => {
-    dispatch(event, registersTable, memoryTable);
+    dispatch(event);
   });
-  UIManager.createInstance(memoryTable, registersTable, sendMessageToExtension);
-  setUpConvert();
-  setupSettings(memoryTable);
+
 }
 
 function dispatch(
   event: MessageEvent,
-  registersTable: RegistersTable,
-  memoryTable: MemoryTable
 ) {
   log({ msg: 'Dispatching message', data: event.data });
   const data = event.data;
   switch (data.operation) {
-    case 'uploadProgram':
-      uploadProgram(memoryTable, registersTable, data.program);
+    case 'uploadMemory':
+      UIManager.getInstance().uploadMemory(data.memory, data.codeSize, data.symbols);
       break;
     case 'step':
-      step(memoryTable, registersTable, data.pc);
-      memoryTable.updatePC(data.pc);
+      UIManager.getInstance().step(data.pc, log);
       break;
     case 'setRegister':
-      setRegister(registersTable, memoryTable, data.register, data.value);
+      setRegister(data.register, data.value);
+      break;
+    case 'stop':
+      UIManager.getInstance().resetUI();
       break;
     default:
       log({ msg: 'No handler for message', data: data.operation });
@@ -63,47 +56,15 @@ function dispatch(
   }
 }
 
-function uploadProgram(memoryTable: MemoryTable, registersTable: RegistersTable, ir: InternalRepresentation): void {
-  UIManager.getInstance().configuration();
-  memoryTable.uploadProgram(ir);
-  memoryTable.allocateMemory();
-}
 
-function step(memoryTable: MemoryTable, registersTable: RegistersTable, pc: number): void {
-  log({ msg: "Simulator reported step" });
-  if (!UIManager.getInstance().isSimulating) {
-    UIManager.getInstance().simulationStarted();
-    memoryTable.disableEditors();
-  }
-  memoryTable.updatePC(pc);
-}
-
+//IS THIS ALSO INCLUDED IN UIMANAGER???
 function setRegister(
-  registersTable: RegistersTable, memoryTable: MemoryTable,
   register: string, value: string
 ): void {
-  registersTable.setRegister(register, value);
+  UIManager.getInstance().registersTable.setRegister(register, value);
   if (register === 'x2') {
-    memoryTable.setSP(value);
+    UIManager.getInstance().memoryTable.setSP(value);
   }
-}
-
-function setupSettings(memoryTable: MemoryTable) {
-  const inputMemorySize = document.getElementById(
-    'memorySizeInput'
-  ) as HTMLInputElement;
-
-  inputMemorySize.addEventListener('change', () => {
-    if (Number.parseInt(inputMemorySize.value) < 32) {
-      inputMemorySize.value = '32';
-    }
-    sendMessageToExtension({
-      command: 'event',
-      object: { name: 'memorySizeChanged', value: inputMemorySize.value }
-    });
-    const newSize = Number.parseInt(inputMemorySize.value);
-    memoryTable.resizeMemory(newSize);
-  });
 }
 
 /**
@@ -113,6 +74,9 @@ function setupSettings(memoryTable: MemoryTable) {
 function sendMessageToExtension(messageObject: any) {
   vscode.postMessage(messageObject);
 }
+
+
+
 
 
 
