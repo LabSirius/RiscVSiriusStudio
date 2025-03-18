@@ -2,8 +2,9 @@ import  { useEffect } from "react";
 import { ThemeProvider } from "@/components/ui/theme/theme-provider";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sideBar";
-import { AppSidebar } from "@/components/ui/app-sidebar";
+import Sidebar  from "@/components/SideBar";
 import ConvertSection from "@/Sections/ConvertSection";
+import HelpSection from "./Sections/HelpSection/HelpSection";
 
 const App = () => {
 
@@ -23,13 +24,13 @@ useEffect(() => {
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="flex h-full w-full overflow-hidden ">
         <SidebarProvider>
-          <AppSidebar />
+          <Sidebar />
           <SidebarTrigger />
           
         
             <Routes>
               <Route path="/" element={<ConvertSection />} />
-              <Route path="/help" element={<div>Help</div>} />
+              <Route path="/help" element={<HelpSection />} />
             </Routes>
         </SidebarProvider>
       </div>

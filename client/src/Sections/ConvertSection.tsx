@@ -65,8 +65,7 @@ const ConvertSection: React.FC = () => {
   };
 
   return (
-    <div id="openConvert1">
-      <div className="flex h-dvh overflow-scroll flex-1 flex-col gap-4 w-min px-4 pb-[3rem]">
+      <div className="section-container">
         <div className="flex gap-2">
           {/* From format dropdown */}
           <Dropdown
@@ -103,7 +102,7 @@ const ConvertSection: React.FC = () => {
         {/* Checkbox for Two's Complement and swap button */}
         <div className="flex gap-4 justify-between items-center w-full relative h-10">
           {fromFormat.value === 'twoCompl' && (
-            <div id="checkIsNegativeContainer">
+            <div>
               <div className="flex gap-2 items-center">
                 <input
                   type="checkbox"
@@ -127,7 +126,6 @@ const ConvertSection: React.FC = () => {
           <CopyButton result={result} toFormat={toFormat.value} />
         </div>
       </div>
-    </div>
   );
 };
 

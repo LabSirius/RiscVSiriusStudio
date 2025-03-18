@@ -152,6 +152,7 @@ a{
   font-size: .8rem;
   color: var(--color-primary);
   font-weight: 500;
+  
 }
 
 a:hover{
@@ -173,3 +174,8 @@ a:hover{
 .animate-fadeInTop {
   animation: fadeInTop 0.8s;
 }
+
+.section-container{
+  @apply flex h-dvh overflow-y-scroll overflow-x-hidden flex-1 flex-col gap-4 max-w-[24rem] px-4 pb-[3rem] ;
+}
+

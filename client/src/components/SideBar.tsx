@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sideBar"
 
 
-export function AppSidebar() {
+export function SideBar() {
   const navigate = useNavigate();
   return (
     <Sidebar >
@@ -24,7 +24,7 @@ export function AppSidebar() {
           <SidebarGroupContent className="flex flex-col flex-1">
             <SidebarMenu className="flex flex-col justify-between min-h-full mt-2 pl-3">
                 <SidebarMenuItem >
-                    <a href={'#'} >
+                    <a onClick={() => navigate('/')} >
                       <Button variant="outline" size="icon">
                         <Calculator />
                       </Button>
@@ -57,3 +57,5 @@ export function AppSidebar() {
     </Sidebar>
   )
 }
+
+export default SideBar
