@@ -24,7 +24,7 @@ export function SideBar() {
           <SidebarGroupContent className="flex flex-col flex-1">
             <SidebarMenu className="flex flex-col justify-between min-h-full mt-2 pl-3">
                 <SidebarMenuItem >
-                    <a onClick={() => navigate('/')} >
+                    <a onClick={() => navigate('/')} className="curser-pointer" >
                       <Button variant="outline" size="icon">
                         <Calculator />
                       </Button>
@@ -44,7 +44,7 @@ export function SideBar() {
               </SidebarMenuItem>
 
               <SidebarMenuItem >
-                <a onClick={() => navigate('/help')} >
+                <a onClick={() => navigate('/help')}  className="curser-pointer" >
                   <Button variant="outline" size="icon">
                     <Info />
                   </Button>
