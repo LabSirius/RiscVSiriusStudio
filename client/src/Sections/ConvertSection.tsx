@@ -1,11 +1,11 @@
 // src/components/Convert/Convert.tsx
 import React, { useState, useEffect } from 'react';
-import Dropdown, { Option } from './Dropdown';
-import ValueInput from './ValueInput';
-import ResultOutput from './ResultOutput';
-import SwapButton from './SwapButton';
-import CopyButton from './CopyButton';
-import { processTwoComplementInput, convertValue } from '../../utils/convertUtils';
+import Dropdown, { Option } from "@/components/Convert/Dropdown";
+import ValueInput from "@/components/Convert/ValueInput";
+import ResultOutput from "@/components/Convert/ResultOutput";
+import SwapButton from "@/components/Convert/SwapButton";
+import CopyButton from "@/components/Convert/CopyButton";
+import { processTwoComplementInput, convertValue } from "@/utils/convertUtils";
 
 // Available format options
 const formatOptions: Option[] = [
@@ -15,7 +15,7 @@ const formatOptions: Option[] = [
   { label: "ASCII", value: 'ascii' },
 ];
 
-const Convert: React.FC = () => {
+const ConvertSection: React.FC = () => {
   // State for source format, target format, input value, conversion result and negative flag
   const [fromFormat, setFromFormat] = useState<Option>(formatOptions[0]);
   const [toFormat, setToFormat] = useState<Option>(formatOptions[1]);
@@ -131,4 +131,4 @@ const Convert: React.FC = () => {
   );
 };
 
-export default Convert;
+export default ConvertSection;

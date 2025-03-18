@@ -1,8 +1,9 @@
 import  { useEffect } from "react";
 import { ThemeProvider } from "@/components/ui/theme/theme-provider";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sideBar";
 import { AppSidebar } from "@/components/ui/app-sidebar";
-import WelcomeSection from "./Sections/WelcomeSection";
+import ConvertSection from "@/Sections/ConvertSection";
 
 const App = () => {
 
@@ -23,7 +24,12 @@ useEffect(() => {
         <SidebarProvider>
           <AppSidebar />
           <SidebarTrigger />
-          <WelcomeSection />
+          
+          <MemoryRouter>
+            <Routes>
+              <Route path="/" element={<ConvertSection />} />
+            </Routes>
+          </MemoryRouter>
         </SidebarProvider>
       </div>
     </ThemeProvider>
