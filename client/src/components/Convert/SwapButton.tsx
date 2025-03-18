@@ -9,10 +9,10 @@ interface SwapButtonProps {
 const SwapButton: React.FC<SwapButtonProps> = ({ onSwap }) => {
   return (
     <button 
-      className="text-center bg-[#D1E3E7] border border-[#D1E3E7] text-black rounded-lg p-[0.3rem] cursor-pointer transition-all duration-300 ease-in hover:scale-95 sim-focus"
+      className="text-center bg-[#D1E3E7] border border-[#D1E3E7] text-black rounded-md p-[0.2rem] cursor-pointer transition-all duration-300 ease-in hover:scale-95 sim-focus"
       onClick={onSwap}
     >
-      <ArrowLeftRight width={21} height={21} strokeWidth={1} />
+      <ArrowLeftRight width={18} height={18} strokeWidth={1} />
     </button>
   );
 };

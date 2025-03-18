@@ -27,6 +27,8 @@ function main() {
 
   console.log("IS CONNECTED");
 
+  sendMessageToReact({ operation: 'updateUI', value: 42 });
+
   //UIManager.createInstance(sendMessageToExtension);
 
   window.addEventListener('message', (event) => {
@@ -78,7 +80,9 @@ function sendMessageToExtension(messageObject: any) {
   vscode.postMessage(messageObject);
 }
 
-
+function sendMessageToReact(data: any) {
+  window.postMessage({ type: 'FROM_VSCODE', payload: data }, '*');
+}
 
 
 
