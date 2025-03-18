@@ -24,6 +24,8 @@ function log(object: any = {}, level: string = 'info') {
 
 function main() {
 
+  console.log("IS CONNECTED");
+
   UIManager.createInstance(sendMessageToExtension);
 
   window.addEventListener('message', (event) => {
