@@ -284,7 +284,14 @@ export class RegistersTable {
     </svg>
     `;
 
+    container.addEventListener('mouseenter', () => {
+      this.currentHoveredViewTypeCell = cell; 
+    });
 
+    container.addEventListener('mouseleave', () => {
+      this.currentHoveredViewTypeCell = null; 
+    });
+  
     let activated = false;
 
     const openEditor = (e: PointerEvent) => {
@@ -310,6 +317,31 @@ export class RegistersTable {
     return container;
   };
 
+  // Variable for storing the cell that is currently hovered
+  private currentHoveredViewTypeCell: CellComponent | null = null;
+
+  // Handler for the keydown event on the document
+  private readonly handleGlobalViewTypeKeyPress = (event: KeyboardEvent) => {
+    if (!this.currentHoveredViewTypeCell) {return;};
+
+    const key = event.key.toLowerCase();
+    const keyMap: { [key: string]: RegisterView } = {
+      'b': 2,
+      's': 'signed',
+      'u': 'unsigned',
+      'h': 16,
+      'a': 'ascii'
+    };
+
+    if (keyMap[key]) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const row = this.currentHoveredViewTypeCell.getRow();
+      row.update({ viewType: keyMap[key] });
+      row.reformat();
+    }
+  };
 
 
 
@@ -353,6 +385,12 @@ export class RegistersTable {
   public constructor() {
     this.table = this.initializeTable();
     this.initRegisterNames();
+
+    // Attach the permanent view type change to the cells
+    document.addEventListener('keydown', this.handleGlobalViewTypeKeyPress);
+    this.table.on("dataChanged", () => {
+      this.table.redraw(true);
+    });
   }
 
   private initializeTable(): Tabulator {
@@ -386,7 +424,13 @@ export class RegistersTable {
         cssClass: 'register-name',
         frozen: true,
         width: 90,
-        formatter: this.registerNamesFormatter
+        formatter: this.registerNamesFormatter,
+        cellDblClick: (e, cell) => {
+          const data = cell.getData();
+          data.watched = !data.watched; 
+          cell.getRow().update(data);  
+        }
+        
       },
       {
         title: 'Value',
@@ -419,7 +463,7 @@ export class RegistersTable {
         // Flag for allowing the cell to be edited
         editable: (cell: CellComponent): boolean => {
           return true;  // La celda siempre será editable
-        }
+        },
       },
       { title: 'Watched', field: 'watched', visible: false },
       { title: 'Modified', field: 'modified', visible: false },
@@ -467,10 +511,10 @@ export class RegistersTable {
     const row = this.table.getRow(name);
     if (row) {
       const element = row.getElement();
-      element.classList.add('animate-register');
+      element.classList.add('animate-cell');
 
       setTimeout(() => {
-        element.classList.remove('animate-register');
+        element.classList.remove('animate-cell');
 
       }, 500);
     }
@@ -486,6 +530,52 @@ export class RegistersTable {
     this.makeRegisterVissible(name);
     this.animateRegister(name);
   }
+
+  // Nuevo método privado para la conversión permanente en viewType
+  private readonly attachPermanentViewTypeChange = (cell: CellComponent): void => {
+  const cellElement = cell.getElement();
+  // Hacemos la celda focusable para recibir eventos de teclado
+  cellElement.setAttribute('tabindex', '0');
+
+  cellElement.addEventListener('keydown', (evt: KeyboardEvent) => {
+    const key = evt.key.toLowerCase();
+    const data = cell.getRow().getData();
+    let newType: RegisterView | null = null;
+    let newValue: string | null = null;
+    
+    switch (key) {
+      case 'b':
+        newType = 2;
+        newValue = binaryRepresentation(data.value);
+        break;
+      case 's':
+        newType = 'signed';
+        newValue = binaryToInt(data.value);
+        break;
+      case 'u':
+        newType = 'unsigned';
+        newValue = binaryToUInt(data.value);
+        break;
+      case 'h':
+        newType = 16;
+        newValue = binaryToHex(data.value);
+        break;
+      case 'a':
+        newType = 'ascii';
+        newValue = binaryToAscii(data.value);
+        break;
+      default:
+        return; // Si no es ninguna de las teclas deseadas, salir.
+    }
+    
+    if (newType !== null && newValue !== null) {
+      data.viewType = newType;
+      data.value = newValue;
+      cell.getRow().update(data);
+    }
+  });
+};
+
 
 
   public filterTableData(searchInput: string): void {

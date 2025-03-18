@@ -169,12 +169,14 @@ html,
 2. Inherit line-height from `html` so users can set them as a class directly on the `html` element.
 */
 
+
+
 body {
   margin: 0;
-  /* 1 */
   line-height: inherit;
-  /* 2 */
 }
+
+
 
 /*
 1. Add the correct height in Firefox.
@@ -505,51 +507,11 @@ video {
 @supports not (color: oklch(0% 0 0)) {
   :root {
     color-scheme: light;
-    --fallback-p: #491eff;
-    --fallback-pc: #d4dbff;
-    --fallback-s: #ff41c7;
-    --fallback-sc: #fff9fc;
-    --fallback-a: #00cfbd;
-    --fallback-ac: #00100d;
-    --fallback-n: #2b3440;
-    --fallback-nc: #d7dde4;
-    --fallback-b1: #ffffff;
-    --fallback-b2: #e5e6e6;
-    --fallback-b3: #e5e6e6;
-    --fallback-bc: #1f2937;
-    --fallback-in: #00b3f0;
-    --fallback-inc: #000000;
-    --fallback-su: #00ca92;
-    --fallback-suc: #000000;
-    --fallback-wa: #ffc22d;
-    --fallback-wac: #000000;
-    --fallback-er: #ff6f70;
-    --fallback-erc: #000000;
   }
 
   @media (prefers-color-scheme: dark) {
     :root {
       color-scheme: dark;
-      --fallback-p: #7582ff;
-      --fallback-pc: #050617;
-      --fallback-s: #ff71cf;
-      --fallback-sc: #190211;
-      --fallback-a: #00c7b5;
-      --fallback-ac: #000e0c;
-      --fallback-n: #2a323c;
-      --fallback-nc: #a6adbb;
-      --fallback-b1: #1d232a;
-      --fallback-b2: #191e24;
-      --fallback-b3: #15191e;
-      --fallback-bc: #a6adbb;
-      --fallback-in: #00b3f0;
-      --fallback-inc: #000000;
-      --fallback-su: #00ca92;
-      --fallback-suc: #000000;
-      --fallback-wa: #ffc22d;
-      --fallback-wac: #000000;
-      --fallback-er: #ff6f70;
-      --fallback-erc: #000000;
     }
   }
 }
@@ -568,147 +530,31 @@ html {
 
 :root {
   color-scheme: light;
-  --in: 72.06% 0.191 231.6;
-  --su: 64.8% 0.150 160;
-  --wa: 84.71% 0.199 83.87;
-  --er: 71.76% 0.221 22.18;
-  --pc: 89.824% 0.06192 275.75;
-  --ac: 15.352% 0.0368 183.61;
-  --inc: 0% 0 0;
-  --suc: 0% 0 0;
-  --wac: 0% 0 0;
-  --erc: 0% 0 0;
-  --rounded-box: 1rem;
-  --rounded-btn: 0.5rem;
-  --rounded-badge: 1.9rem;
-  --animation-btn: 0.25s;
-  --animation-input: .2s;
-  --btn-focus-scale: 0.95;
-  --border-btn: 1px;
-  --tab-border: 1px;
-  --tab-radius: 0.5rem;
-  --p: 49.12% 0.3096 275.75;
-  --s: 69.71% 0.329 342.55;
-  --sc: 98.71% 0.0106 342.55;
-  --a: 76.76% 0.184 183.61;
-  --n: 32.1785% 0.02476 255.701624;
-  --nc: 89.4994% 0.011585 252.096176;
-  --b1: 100% 0 0;
-  --b2: 96.1151% 0 0;
-  --b3: 92.4169% 0.00108 197.137559;
-  --bc: 27.8078% 0.029596 256.847952;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --in: 72.06% 0.191 231.6;
-    --su: 64.8% 0.150 160;
-    --wa: 84.71% 0.199 83.87;
-    --er: 71.76% 0.221 22.18;
-    --pc: 13.138% 0.0392 275.75;
-    --sc: 14.96% 0.052 342.55;
-    --ac: 14.902% 0.0334 183.61;
-    --inc: 0% 0 0;
-    --suc: 0% 0 0;
-    --wac: 0% 0 0;
-    --erc: 0% 0 0;
-    --rounded-box: 1rem;
-    --rounded-btn: 0.5rem;
-    --rounded-badge: 1.9rem;
-    --animation-btn: 0.25s;
-    --animation-input: .2s;
-    --btn-focus-scale: 0.95;
-    --border-btn: 1px;
-    --tab-border: 1px;
-    --tab-radius: 0.5rem;
-    --p: 65.69% 0.196 275.75;
-    --s: 74.8% 0.26 342.55;
-    --a: 74.51% 0.167 183.61;
-    --n: 31.3815% 0.021108 254.139175;
-    --nc: 74.6477% 0.0216 264.435964;
-    --b1: 25.3267% 0.015896 252.417568;
-    --b2: 23.2607% 0.013807 253.100675;
-    --b3: 21.1484% 0.01165 254.087939;
-    --bc: 74.6477% 0.0216 264.435964;
   }
 }
 
 [data-theme=light] {
   color-scheme: light;
-  --in: 72.06% 0.191 231.6;
-  --su: 64.8% 0.150 160;
-  --wa: 84.71% 0.199 83.87;
-  --er: 71.76% 0.221 22.18;
-  --pc: 89.824% 0.06192 275.75;
-  --ac: 15.352% 0.0368 183.61;
-  --inc: 0% 0 0;
-  --suc: 0% 0 0;
-  --wac: 0% 0 0;
-  --erc: 0% 0 0;
-  --rounded-box: 1rem;
-  --rounded-btn: 0.5rem;
-  --rounded-badge: 1.9rem;
-  --animation-btn: 0.25s;
-  --animation-input: .2s;
-  --btn-focus-scale: 0.95;
-  --border-btn: 1px;
-  --tab-border: 1px;
-  --tab-radius: 0.5rem;
-  --p: 49.12% 0.3096 275.75;
-  --s: 69.71% 0.329 342.55;
-  --sc: 98.71% 0.0106 342.55;
-  --a: 76.76% 0.184 183.61;
-  --n: 32.1785% 0.02476 255.701624;
-  --nc: 89.4994% 0.011585 252.096176;
-  --b1: 100% 0 0;
-  --b2: 96.1151% 0 0;
-  --b3: 92.4169% 0.00108 197.137559;
-  --bc: 27.8078% 0.029596 256.847952;
 }
 
 [data-theme=dark] {
   color-scheme: dark;
-  --in: 72.06% 0.191 231.6;
-  --su: 64.8% 0.150 160;
-  --wa: 84.71% 0.199 83.87;
-  --er: 71.76% 0.221 22.18;
-  --pc: 13.138% 0.0392 275.75;
-  --sc: 14.96% 0.052 342.55;
-  --ac: 14.902% 0.0334 183.61;
-  --inc: 0% 0 0;
-  --suc: 0% 0 0;
-  --wac: 0% 0 0;
-  --erc: 0% 0 0;
-  --rounded-box: 1rem;
-  --rounded-btn: 0.5rem;
-  --rounded-badge: 1.9rem;
-  --animation-btn: 0.25s;
-  --animation-input: .2s;
-  --btn-focus-scale: 0.95;
-  --border-btn: 1px;
-  --tab-border: 1px;
-  --tab-radius: 0.5rem;
-  --p: 65.69% 0.196 275.75;
-  --s: 74.8% 0.26 342.55;
-  --a: 74.51% 0.167 183.61;
-  --n: 31.3815% 0.021108 254.139175;
-  --nc: 74.6477% 0.0216 264.435964;
-  --b1: 25.3267% 0.015896 252.417568;
-  --b2: 23.2607% 0.013807 253.100675;
-  --b3: 21.1484% 0.01165 254.087939;
-  --bc: 74.6477% 0.0216 264.435964;
 }
 
 input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
-  background-color: white;
+  background-color: transparent;
   border: 1px solid #ccc; /* Se añade un borde para que sea visible */
   width: 20px;
   height: 20px;
   cursor: pointer;
-  border: 1px solid #F4A261;
+  border: 1px solid #9CA3AF;
   border-radius: 3px;
   position: relative;
 }
@@ -723,7 +569,7 @@ input[type="checkbox"]:checked::after {
   top: 2px;
   width: 6px;
   height: 10px;
-  border: solid #3A6973;
+  border: solid #9CA3AF;
   border-width: 0 2px 2px 0; /* Define el grosor de la línea para formar la marca */
   transform: rotate(45deg);
 }
@@ -787,7 +633,7 @@ mark {
   background-color: white;
 }
 
-.animate-register {
+.animate-cell {
   animation: flashAnimation 0.5s ease-out forwards;
 }
 
@@ -826,23 +672,39 @@ mark {
 
 .bg-active{
   background-color: #D1E3E7;
+  color: black !important;
 }
 
-.icon-tab{
+.icon-tab, .icon-tab-pc{
   padding: .5rem;
   border-radius: .8rem;
-  border: solid 1px #E5E7EB;
-  cursor: pointer;
+  cursor: pointer !important;
   width: min-content;
   transition: all .3s;
 }
 
+.icon-tab{
+  border: solid 1px #E5E7EB;
+}
+
+.icon-tab-pc{
+  border: solid 1px #FFB74D;
+}
+
+.icon-tab-pc:hover{
+  transform: scale(0.95);
+}
+
+
+
 .icon-tab:hover{
   background-color: #D1E3E7;
+  color: black !important;
   border: solid 1px #D1E3E7;
 }
 
-.icon-tab:active{
+.icon-tab:active,
+.icon-tab-pc:active{
   transform: scale(0.95);
 }
 
@@ -856,7 +718,7 @@ mark {
 .subtitle{
   font-size: 1.05rem;
   font-weight: 600;
-  color: #3A6973;
+  color: #B5CCD1;
 }
 
 .label{
@@ -876,18 +738,16 @@ mark {
   border-radius: .5rem;
   border: solid 1px #9CA3AF;
   width: 23rem;
+  background-color: transparent;
 }
+
 .input-filter.bg-disabled{
-  background-color: #F5F5F5 !important;
+  background-color: transparent;
+  cursor: not-allowed !important;
 }
 
 
 
-.input-filter::placeholder {
-
-  color: #9CA3AF; /* Cambia este color por el que prefieras */
-  opacity: 1; /* Asegura que el color sea visible */
-}
 
 
 .icon-input{
@@ -949,23 +809,25 @@ mark {
   border-radius: .2rem;
   cursor: pointer;
   border-bottom: solid 1px #D1E3E7 ;
+  color: black !important;
   
 }
 
 .option-convert:hover{
   background-color: #D1E3E7;
-  color: black;
+  color: black ;
 
 }
 
 .swapButton{
   text-align: center;
-  background-color: #3A6973;
-  color: white;
-  border-color: #3A6973;
+  background-color: #D1E3E7;
+  border-color: #D1E3E7;
+  color: black !important;
   border-radius: .5rem;
   padding: .4rem;
   cursor: pointer;
+  transition: all .3s ease-in;
 
 }
 .swap-container{
@@ -977,9 +839,7 @@ mark {
 }
 
 .swapButton:hover{
-  background-color: #D1E3E7 !important;
-  color: black !important;
-  border-color: #D1E3E7 !important;
+  transform: scale(0.95);
 }
 
 .input-convert-result{
@@ -987,7 +847,8 @@ mark {
   padding-right: 2.2rem;
   border-radius: .5rem;
   width: 22rem;
-  background-color: #D1E3E7;
+  border: solid 1px #3A6973;
+  background-color: transparent !important;
 }
 
 .input-convert-result:hover,
@@ -1014,6 +875,7 @@ mark {
   border-radius: .2rem;
   cursor: pointer;
   border-bottom: solid 1px #D1E3E7 ;
+  color: black !important;
 }
 
 .option-copy:active{
@@ -1040,7 +902,6 @@ mark {
 }
 
 .help-section {
-  background: #fff;
   padding: 1rem;
   border-radius: 8px;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
@@ -1061,19 +922,20 @@ mark {
 .help-title {
   font-size: 18px;
   font-weight: bold;
-  color: #3A6973;
+  color: #B5CCD1;
 }
 
 .help-description {
-  color: #555;
+  color: #ccc;
   font-size: 14px;
 }
 
 .help-filter-list {
   margin-top: 1rem;
-  background: #D1E3E7;
+  border: solid #D1E3E7;
   padding: 10px;
   border-radius: 5px;
+  color:  #9CA3AF
 }
 
 .help-filter-list li {
@@ -1084,7 +946,7 @@ mark {
 
 .help-filter-key {
   font-weight: bold;
-  color: #3A6973;
+  color: #B5CCD1;
 }
 
 .sim-focus {
@@ -1096,7 +958,7 @@ mark {
 }
 
 .link-web{
-  color: #3A6973;
+  color: #B5CCD1;
   font-size: 1rem;
   font-weight: 600;
   text-decoration: underline;
@@ -1121,6 +983,7 @@ mark {
 }
 
 .tabulator-cell.register-value {
+  text-transform: uppercase !important;
   white-space: pre-wrap !important;
   word-wrap: break-word !important;
   overflow-wrap: break-word !important;
@@ -1137,7 +1000,7 @@ mark {
 }
 
 .custom-tooltip {
-  background-color: white !important;
+  background-color: transparent !important;
   border-radius: .3rem !important;
   border: none !important;
   padding: 5px 10px;
@@ -1212,6 +1075,10 @@ mark {
 
 .mt-4 {
   margin-top: 1.5rem;
+}
+
+.pt-3{
+  padding-top: 2rem !important;
 }
 
 .text-lg{
@@ -1301,6 +1168,40 @@ mark {
   min-width: min-content;
 }
 
+.w-min-35{
+  min-width: 34.8rem;
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 3;
+}
+
+.spinner-icon {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #D1E3E7;
+  border-top-color: #3A6973;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -1331,6 +1232,10 @@ mark {
 
 .items-start{
   align-items: start;
+}
+
+.items-end{
+  align-items: end;
 }
 
 .items-center {

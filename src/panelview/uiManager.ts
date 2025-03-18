@@ -4,6 +4,7 @@ import { Converter } from "./convertTool";
 
 
 
+
 function getElement<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id) as T | null;
   if (!element) {
@@ -34,6 +35,9 @@ export class UIManager {
 
   readonly registerTab: HTMLDivElement;
   readonly memoryTab: HTMLDivElement;
+  readonly spinner: HTMLDivElement;
+
+  readonly pcIcon: HTMLButtonElement;
   readonly settingsButton: HTMLButtonElement;
   readonly convertButton: HTMLButtonElement;
   readonly openConvert: HTMLDivElement;
@@ -64,6 +68,20 @@ export class UIManager {
   readonly fileInputImportMemory: HTMLInputElement;
 
   readonly checkShowHexadecimal: HTMLInputElement;
+
+  private getMemoryCells(rowElement: HTMLElement): {
+    cell3?: HTMLElement;
+    cell2?: HTMLElement;
+    cell1?: HTMLElement;
+    cell0?: HTMLElement;
+  } {
+    return {
+      cell3: rowElement.querySelector('div.tabulator-cell[tabulator-field="value3"]') as HTMLElement,
+      cell2: rowElement.querySelector('div.tabulator-cell[tabulator-field="value2"]') as HTMLElement,
+      cell1: rowElement.querySelector('div.tabulator-cell[tabulator-field="value1"]') as HTMLElement,
+      cell0: rowElement.querySelector('div.tabulator-cell[tabulator-field="value0"]') as HTMLElement,
+    };
+  }
  
 
   private _isSimulating: boolean;
@@ -97,6 +115,9 @@ export class UIManager {
 
     this.registerTab = getElement<HTMLDivElement>('tabs-registers');
     this.memoryTab = getElement<HTMLDivElement>('tabs-memory');
+    this.spinner = getElement<HTMLDivElement>('spinner');
+
+    this.pcIcon = getElement<HTMLButtonElement>('pcIcon');
     this.settingsButton = getElement<HTMLButtonElement>('openSettingsButton');
     this.convertButton = getElement<HTMLButtonElement>('openConvertButton');
     this.openConvert = getElement<HTMLDivElement>('openConvert1');
@@ -133,28 +154,70 @@ export class UIManager {
     this.initializeTopButtons();
     this.searchInRegistersTable();
     this.searchInMemoryTable();
+    this.showPC();
     this.initRegisterImport();
     this.initMemoryImport();
-    //this.showHexadecimalInMemory();
     this.setUpSettings();
     this.setUpHelp();
   }
 
   public uploadMemory(
     memory: string[], codeSize: number, symbols: any[]): void {
-    this._memoryTable = new MemoryTable(memory, codeSize, symbols);
+    this._memoryTable = new MemoryTable(memory, codeSize, symbols, this.sendMessagetoExtension); 
+    this.showHexadecimalInMemory();
+    this.assignMemoryInputValue(memory.length-codeSize);
     this.configuration();
     this.memoryTable.uploadMemory(memory, codeSize, symbols);
+  }
+
+  private showPC(): void {
+    this.pcIcon.addEventListener('click', () => {
+      const targetValue = (this.memoryTable.pc * 4).toString(16).toUpperCase();
+      this.memoryTable.table.scrollToRow(targetValue, "center", true);
+    });
+  }
+
+  private assignMemoryInputValue(value: number){
+    this.memorySizeInput.value = value.toString();
   }
 
   public step(pc: number, log: (object: any, level?: string) => void): void {
     log({ msg: "Simulator reported step" });
     if (!this.isSimulating) {
       this.simulationStarted();
-      this.memoryTable.disableEditors();
+      this.disableEditors();
     }
     this.memoryTable.updatePC(pc);
   }
+
+  public disableEditors(): void {
+    this.memoryTable.table.getColumns().forEach(column => {
+      const def = column.getDefinition();
+      if (def.field && def.field.startsWith("value")) {
+        const currentlyVisible = column.isVisible ? column.isVisible() : true;
+        column.updateDefinition({
+          ...def,
+          editor: undefined,
+          editable: () => false
+        });
+        if (!currentlyVisible) {
+          column.hide();
+        }
+      }
+    });
+
+    this.registersTable.table.getColumns().forEach(column => {
+      const def = column.getDefinition();
+      if (def.field && def.field.startsWith("value")) {
+        column.updateDefinition({
+          ...def,
+          editor: undefined,
+          editable: () => false
+        });
+      }
+    });
+  }
+
 
   private initializeTopButtons(): void {
     const sections: { [key: string]: HTMLElement } = {
@@ -195,6 +258,118 @@ export class UIManager {
       showOnly('openHelp', 'openHelpButton')
     );
   }
+
+  public setMemoryCell(address: number, leng: number, value: string): void {
+    console.log("VA A ESCRIBIR EN MEMORIA", address, leng, value);
+    const rowStart = address - (address % 4);
+    const hexRowStart = rowStart.toString(16).toUpperCase();
+    
+    const row = this.memoryTable.table.getRow(hexRowStart);
+    if (!row) { return; }
+    
+    const rowElement = row.getElement();
+    const { cell3, cell2, cell1, cell0 } = this.getMemoryCells(rowElement);
+    
+    let newData: Partial<{ value3: string; value2: string; value1: string; value0: string }> = {};
+    
+    if (leng === 1) {
+      const segment = value.substring(24, 32);
+      newData.value0 = segment;
+      if (cell0) {
+        cell0.textContent = segment;
+        cell0.style.fontWeight = '580';
+        cell0.style.color = "#3A6973";
+      }
+    } else if (leng === 2) {
+      const lower16 = value.substring(16, 32);
+      const segment1 = lower16.substring(0, 8);
+      const segment0 = lower16.substring(8, 16);
+      newData.value1 = segment1;
+      newData.value0 = segment0;
+      if (cell1) {
+        cell1.textContent = segment1;
+        cell1.style.fontWeight = '580';
+        cell1.style.color = "#3A6973";
+      }
+      if (cell0) {
+        cell0.textContent = segment0;
+        cell0.style.fontWeight = '580';
+        cell0.style.color = "#3A6973";
+      }
+    } else if (leng === 4) {
+      const segment3 = value.substring(0, 8);
+      const segment2 = value.substring(8, 16);
+      const segment1 = value.substring(16, 24);
+      const segment0 = value.substring(24, 32);
+      newData.value3 = segment3;
+      newData.value2 = segment2;
+      newData.value1 = segment1;
+      newData.value0 = segment0;
+      if (cell3) {
+        cell3.textContent = segment3;
+        cell3.style.fontWeight = '580';
+        cell3.style.color = "#3A6973";
+      }
+      if (cell2) {
+        cell2.textContent = segment2;
+        cell2.style.fontWeight = '580';
+        cell2.style.color = "#3A6973";
+      }
+      if (cell1) {
+        cell1.textContent = segment1;
+        cell1.style.fontWeight = '580';
+        cell1.style.color = "#3A6973";
+      }
+      if (cell0) {
+        cell0.textContent = segment0;
+        cell0.style.fontWeight = '580';
+        cell0.style.color = "#3A6973";
+      }
+
+    }
+    
+    row.update(newData);
+    const currentData = row.getData();
+    const hexParts = ['value3', 'value2', 'value1', 'value0'].map(field => {
+      const binary = currentData[field];
+      return parseInt(binary, 2).toString(16).padStart(2, '0');
+    });
+    const hexValue = hexParts.join('-').toUpperCase();
+    row.update({ hex: hexValue });
+    
+    this.animateMemorycell(address, leng);
+  }
+  
+
+  public animateMemorycell(address: number, leng: number): void {
+    const hexAddress = address.toString(16).toUpperCase();
+    const row = this.memoryTable.table.getRow(hexAddress);
+    
+    if (row) {
+      const rowElement = row.getElement();
+      
+      const binaryCells = Array.from(
+        rowElement.querySelectorAll('div.tabulator-cell[tabulator-field^="value"]')
+      );
+      let cellsToAnimate: Element[] = [];
+      if (leng === 4) {
+        cellsToAnimate = binaryCells;
+      } else if (leng === 2) {
+        cellsToAnimate = binaryCells.slice(-2);
+      } else if (leng === 1) {
+        cellsToAnimate = binaryCells.slice(-1);
+      }
+      
+      cellsToAnimate.forEach(cell => cell.classList.add('animate-cell'));
+
+      setTimeout(() => {
+        cellsToAnimate.forEach(cell => cell.classList.remove('animate-cell'));
+      }, 500);
+    }
+
+    this.memoryTable.table.scrollToRow(hexAddress, "center", true);
+  }
+  
 
   private showtables(){
     this.registerTab.classList.remove('hidden');
@@ -281,6 +456,8 @@ export class UIManager {
     this.ocultSearch();
     this.ocultSettings();
     this.ocultHelp();
+    this.pcIcon.classList.add('hidden');
+
   }
 
   private configuration() {
@@ -288,6 +465,7 @@ export class UIManager {
     this.ocultConvert();
     this.showSettingsBeforeSimulating();
     this.helpInConfiguration(); 
+    this.pcIcon.classList.remove('hidden');
   }
 
   private simulationStarted() {
@@ -423,7 +601,11 @@ export class UIManager {
   }
 
   private showHexadecimalInMemory(): void {
+
+    console.log("Show hexadecimal in memory ENTROOO");
+   
     const toggleColumn = () => {
+      console.log("ENTROOO");
       const column = this.memoryTable.table.getColumn("hex");
       if (column) {
         this.checkShowHexadecimal.checked ? column.show() : column.hide();
@@ -433,24 +615,35 @@ export class UIManager {
     };
     this.checkShowHexadecimal.addEventListener("change", toggleColumn);
     toggleColumn();
+    
+    
   }
 
   private setUpSettings() {
     this.memorySizeInput.addEventListener('change', () => {
-      if (Number.parseInt(this.memorySizeInput.value) < 32) {
+      this.spinner.classList.remove('hidden');
+      this.memorySizeInput.disabled = true;
+      let intValue = Number.parseInt(this.memorySizeInput.value);
+      if (intValue < 32 || this.memorySizeInput.value === '') {
         this.memorySizeInput.value = '32';
+      }else if (intValue > 512) {
+        this.memorySizeInput.value = '512';
       }
+
+      if (intValue % 4 !== 0) {
+        intValue = Math.floor(intValue / 4) * 4;
+        this.memorySizeInput.value = intValue.toString();
+      }
+
+      const value = Number(this.memorySizeInput.value) + Number(this.memoryTable.codeAreaEnd-4);
       this.sendMessagetoExtension({
         command: 'event',
-        object: { event: 'memorySizeChanged', value: this.memorySizeInput.value }
+        object: { event: 'memorySizeChanged', value: value}
       });
       const newSize = Number.parseInt(this.memorySizeInput.value);
-      this.memoryTable.resizeMemory(newSize);
+      this.memoryTable.resizeMemory(newSize, this.spinner, this.memorySizeInput);
     });
   }
-
-
-
 
   private setUpHelp() {
     const openShowCard = document.getElementById('openShowCard') as HTMLDivElement;
