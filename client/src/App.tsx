@@ -19,20 +19,22 @@ useEffect(() => {
 }, []);
 
   return (
+      <MemoryRouter>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="flex h-full w-full overflow-hidden ">
         <SidebarProvider>
           <AppSidebar />
           <SidebarTrigger />
           
-          <MemoryRouter>
+        
             <Routes>
               <Route path="/" element={<ConvertSection />} />
+              <Route path="/help" element={<div>Help</div>} />
             </Routes>
-          </MemoryRouter>
         </SidebarProvider>
       </div>
     </ThemeProvider>
+  </MemoryRouter>
   );
 };
 

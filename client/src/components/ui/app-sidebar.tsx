@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Calculator, Info } from "lucide-react";
 import { ModeToggle } from "@/components/ui/theme/mode-toggle";
-
+import { useNavigate } from "react-router-dom";
 
 import {
   Sidebar,
@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/sideBar"
 
 
-
 export function AppSidebar() {
+  const navigate = useNavigate();
   return (
     <Sidebar >
       <SidebarContent className="relative min-h-full overflow-hidden">
@@ -44,7 +44,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
 
               <SidebarMenuItem >
-                <a href={'#'} >
+                <a onClick={() => navigate('/help')} >
                   <Button variant="outline" size="icon">
                     <Info />
                   </Button>
