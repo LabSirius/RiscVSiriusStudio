@@ -25,10 +25,6 @@ function log(object: any = {}, level: string = 'info') {
 
 function main() {
 
-  console.log("IS CONNECTED");
-
-  sendMessageToReact({ operation: 'updateUI', value: 42 });
-
   //UIManager.createInstance(sendMessageToExtension);
 
   window.addEventListener('message', (event) => {
@@ -44,7 +40,9 @@ function dispatch(
   const data = event.data;
   switch (data.operation) {
     case 'uploadMemory':
-      UIManager.getInstance().uploadMemory(data.memory, data.codeSize, data.symbols);
+      //UIManager.getInstance().uploadMemory(data.memory, data.codeSize, data.symbols);
+      sendMessageToReact({ operation: 'uploadMemory', data: 1 });
+
       break;
     case 'step':
       UIManager.getInstance().step(data.pc, log);

@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Calculator, Info } from "lucide-react";
 import { ModeToggle } from "@/components/ui/theme/mode-toggle";
 import { useNavigate } from "react-router-dom";
 
@@ -12,6 +11,8 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sideBar"
+
+import { Calculator, Info } from "lucide-react";
 
 
 export function SideBar() {

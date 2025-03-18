@@ -1,33 +1,25 @@
-import  { useEffect } from "react";
 import { ThemeProvider } from "@/components/ui/theme/theme-provider";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { RoutesProvider } from "./context/RoutesContext";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sideBar";
 import Sidebar  from "@/components/SideBar";
-import ConvertSection from "@/Sections/ConvertSection";
-import HelpSection from "./Sections/HelpSection/HelpSection";
+import ConvertSection from "@/sections/ConvertSection";
+import HelpSection from "./sections/HelpSection/HelpSection";
+import MessageListener from "./components/MessageListener";
 
 const App = () => {
 
-//Receive messages from vscode
-useEffect(() => {
-  const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === "FROM_VSCODE") {
-          console.log("Mensaje recibido en React:", event.data.payload);
-      }
-  };
-  window.addEventListener("message", handleMessage);
-  return () => window.removeEventListener("message", handleMessage);
-}, []);
+
 
   return (
-      <MemoryRouter>
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+    <MemoryRouter>
+      <RoutesProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <div className="flex h-full w-full overflow-hidden ">
         <SidebarProvider>
           <Sidebar />
           <SidebarTrigger />
-          
-        
+          <MessageListener />
             <Routes>
               <Route path="/" element={<ConvertSection />} />
               <Route path="/help" element={<HelpSection />} />
@@ -35,6 +27,7 @@ useEffect(() => {
         </SidebarProvider>
       </div>
     </ThemeProvider>
+    </RoutesProvider>
   </MemoryRouter>
   );
 };
