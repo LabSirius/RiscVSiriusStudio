@@ -108,7 +108,7 @@ export class UIManager {
     this._isSimulating = false;
     this._registersTable = new RegistersTable();
     this._memoryTable = undefined;
-    new Converter();
+   
 
     this.sendMessagetoExtension = sendMessagetoExtension;
 

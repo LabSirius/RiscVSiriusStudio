@@ -6,7 +6,7 @@ import WelcomeSection from "./Sections/WelcomeSection";
 const App = () => {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="flex h-full w-full ">
+      <div className="flex h-full w-full overflow-hidden ">
         <SidebarProvider>
           <AppSidebar />
           <SidebarTrigger />

@@ -3,6 +3,7 @@ import {
   allComponents
 } from '@vscode/webview-ui-toolkit';
 
+
 import { UIManager } from './uiManager';
 
 provideVSCodeDesignSystem().register(allComponents);
@@ -26,7 +27,7 @@ function main() {
 
   console.log("IS CONNECTED");
 
-  UIManager.createInstance(sendMessageToExtension);
+  //UIManager.createInstance(sendMessageToExtension);
 
   window.addEventListener('message', (event) => {
     dispatch(event);
