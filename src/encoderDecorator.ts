@@ -25,7 +25,6 @@ async function detailsMessage(ir: any | undefined): Promise<MarkdownString | und
   const encoding = ir["encoding"];
   const opcode = ir["opcode"];
 
-
   markdown.appendMarkdown(`###  RISC-V Instruction Breakdown\n`);
   markdown.appendMarkdown(`#### Instruction: \`${asm}\` (*${type}-Type*)\n`);
   markdown.appendMarkdown(`#### Hexadecimal:   \`${encoding["hexEncoding"]}\`  \n`);
