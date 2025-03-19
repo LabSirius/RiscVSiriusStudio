@@ -55,7 +55,11 @@ class RegistersFile {
   }
 
   public writeRegister(name: string, value: string) {
-    this.registers[this.getIndexFromName(name)] = value;
+    const idx = this.getIndexFromName(name);
+    if (idx === 0) {
+      return;
+    }
+    this.registers[idx] = value;
   }
 
   public getRegisterData() {
@@ -112,9 +116,7 @@ class DataMemory {
   public uploadProgram(program: Array<any>) {
     program.forEach((instruction, index) => {
       const encodingString = instruction.encoding.binEncoding;
-      const words = chunk(encodingString.split(""), 8).map((group) =>
-        group.join("")
-      );
+      const words = chunk(encodingString.split(""), 8).map((group) => group.join(""));
 
       words.reverse();
       words.forEach((w, i) => {
@@ -460,9 +462,7 @@ export class SCCPU {
       case "J":
         return this.executeJInstruction();
       default:
-        throw new Error(
-          "Unknown instruction " + JSON.stringify(this.currentInstruction())
-        );
+        throw new Error("Unknown instruction " + JSON.stringify(this.currentInstruction()));
     }
   }
 
@@ -538,10 +538,7 @@ export class SCCPU {
         break;
       case isILoad(this.currentType(), this.currentOpcode()):
         const dmCtrl = getFunct3(instruction);
-        let value = this.readFromMemory(
-          parseInt(aluRes, 2),
-          parseInt(dmCtrl, 2)
-        );
+        let value = this.readFromMemory(parseInt(aluRes, 2), parseInt(dmCtrl, 2));
         result.bu = { ...defaultBUResult, result: "0", operation: "00XXX" };
         result.buMux = { signal: "0", result: add4Res.toString(2) };
         result.dm = {
@@ -609,12 +606,8 @@ export class SCCPU {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
 
-    const baseAddressVal = this.registers.readRegisterFromName(
-      getRs1(instruction)
-    );
-    const dataToStore = this.registers.readRegisterFromName(
-      getRs2(instruction)
-    );
+    const baseAddressVal = this.registers.readRegisterFromName(getRs1(instruction));
+    const dataToStore = this.registers.readRegisterFromName(getRs2(instruction));
 
     const offset12Val = this.currentInstruction().encoding.imm12;
     const offset32Val = offset12Val.padStart(32, offset12Val.at(0));
