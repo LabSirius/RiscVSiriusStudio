@@ -32,7 +32,6 @@ export function SideBar() {
                       <Button variant="outline" size="icon">
                         <Calculator />
                       </Button>
-                      <span className="ml-4 0">Convert</span>
                 
                 </a>
               </SidebarMenuItem>
@@ -45,7 +44,6 @@ export function SideBar() {
                       <Button variant="outline" size="icon">
                         <Settings />
                       </Button>
-                      <span className="ml-4 0">Settings</span>
             
                 </a>
               </SidebarMenuItem>
@@ -67,7 +65,6 @@ export function SideBar() {
                 <Button variant="outline" size="icon">
                   <Info />
                 </Button>
-                <span className="ml-4 ">More info</span>
               </a>
             </SidebarMenuItem>
           </div>
