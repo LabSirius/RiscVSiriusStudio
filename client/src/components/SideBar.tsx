@@ -54,7 +54,7 @@ export function SideBar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup className="mb-[2rem]">
+        <SidebarGroup className="mb-[.5rem]">
           <SidebarGroupLabel>Others</SidebarGroupLabel>
 
           <div className="flex flex-col mt-2  pl-3 gap-5">
