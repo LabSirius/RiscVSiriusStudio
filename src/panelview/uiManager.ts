@@ -1,9 +1,5 @@
 import { MemoryTable } from "./memoryTable";
 import { RegistersTable } from "./registersTable/registersTable";
-import { Converter } from "./convertTool";
-
-
-
 
 function getElement<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id) as T | null;
@@ -18,7 +14,6 @@ export class UIManager {
   public static instance: UIManager | undefined;
 
   private _memoryTable: MemoryTable | undefined;
-
   get memoryTable(): MemoryTable {
     if (!this._memoryTable) {
       throw new Error('Memory table not initialized');
@@ -26,48 +21,30 @@ export class UIManager {
     return this._memoryTable;
   }
 
-  private _registersTable: RegistersTable;
+  private _registersTable: RegistersTable | undefined;
   get registersTable(): RegistersTable {
+    if (!this._registersTable) {
+      throw new Error('Registers table not initialized');
+    }
     return this._registersTable;
   }
 
   private readonly sendMessagetoExtension: (msg: any) => void;
 
-  readonly registerTab: HTMLDivElement;
-  readonly memoryTab: HTMLDivElement;
-  readonly spinner: HTMLDivElement;
+  // readonly pcIcon: HTMLButtonElement;
 
-  readonly pcIcon: HTMLButtonElement;
-  readonly settingsButton: HTMLButtonElement;
-  readonly convertButton: HTMLButtonElement;
-  readonly openConvert: HTMLDivElement;
-  readonly openHelpButton: HTMLButtonElement;
-  readonly openHelp: HTMLDivElement;
-  readonly stageOneHelp: HTMLDivElement;
-  readonly stageTwoHelp: HTMLDivElement;
-  readonly openSettings: HTMLDivElement;
+  // readonly memorySizeInput: HTMLInputElement;
 
-  readonly shortcutsHelp: HTMLDivElement;
+  // readonly searchRegisterInput: HTMLInputElement;
+  // readonly searchMemoryInput: HTMLInputElement;
 
-  readonly toolsPanel: HTMLDivElement;
-  readonly openSearchButton: HTMLButtonElement;
-  readonly openSearch: HTMLDivElement;
-  readonly stageThreeHelp: HTMLDivElement;
+  // readonly importRegisterBtn: HTMLButtonElement;
+  // readonly fileInputImportRegister: HTMLInputElement;
 
-  readonly memorySizeInput: HTMLInputElement;
-  readonly manualConfig: HTMLDivElement;
-  readonly openSettingsButton: HTMLButtonElement;
+  // readonly importMemoryBtn: HTMLButtonElement;
+  // readonly fileInputImportMemory: HTMLInputElement;
 
-  readonly searchRegisterInput: HTMLInputElement;
-  readonly searchMemoryInput: HTMLInputElement;
-
-  readonly importRegisterBtn: HTMLButtonElement;
-  readonly fileInputImportRegister: HTMLInputElement;
-
-  readonly importMemoryBtn: HTMLButtonElement;
-  readonly fileInputImportMemory: HTMLInputElement;
-
-  readonly checkShowHexadecimal: HTMLInputElement;
+  // readonly checkShowHexadecimal: HTMLInputElement;
 
   private getMemoryCells(rowElement: HTMLElement): {
     cell3?: HTMLElement;
@@ -106,80 +83,54 @@ export class UIManager {
 
   private constructor(sendMessagetoExtension: (msg: any) => void) {
     this._isSimulating = false;
-    this._registersTable = new RegistersTable();
+    this._registersTable = undefined;
     this._memoryTable = undefined;
    
 
     this.sendMessagetoExtension = sendMessagetoExtension;
 
+    // this.pcIcon = getElement<HTMLButtonElement>('pcIcon');
+    // this.memorySizeInput = getElement<HTMLInputElement>('memorySizeInput');
 
-    this.registerTab = getElement<HTMLDivElement>('tabs-registers');
-    this.memoryTab = getElement<HTMLDivElement>('tabs-memory');
-    this.spinner = getElement<HTMLDivElement>('spinner');
+    // this.searchRegisterInput = getElement<HTMLInputElement>('searchRegisterInput');
+    // this.searchMemoryInput = getElement<HTMLInputElement>('searchMemoryInput');
 
-    this.pcIcon = getElement<HTMLButtonElement>('pcIcon');
-    this.settingsButton = getElement<HTMLButtonElement>('openSettingsButton');
-    this.convertButton = getElement<HTMLButtonElement>('openConvertButton');
-    this.openConvert = getElement<HTMLDivElement>('openConvert1');
-    this.openHelpButton = getElement<HTMLButtonElement>('openHelpButton');
-    this.openHelp = getElement<HTMLDivElement>('openHelp');
-    this.stageOneHelp = getElement<HTMLDivElement>('stageOneHelp');
-    this.stageTwoHelp = getElement<HTMLDivElement>('stageTwoHelp');
-    this.openSettings = getElement<HTMLDivElement>('openSettings');
+    // this.importRegisterBtn = getElement<HTMLButtonElement>('importRegisterBtn');
+    // this.fileInputImportRegister = getElement<HTMLInputElement>('fileInputImportRegister');
 
-    this.shortcutsHelp = getElement<HTMLDivElement>('shortcutsHelp');
+    // this.importMemoryBtn = getElement<HTMLButtonElement>('importMemoryBtn');
+    // this.fileInputImportMemory = getElement<HTMLInputElement>('fileInputImportMemory');
 
-    this.toolsPanel = getElement<HTMLDivElement>('toolsPanel');
-    this.openSearchButton = getElement<HTMLButtonElement>('openSearchButton');
-    this.openSearch = getElement<HTMLDivElement>('openSearch');
-    this.stageThreeHelp = getElement<HTMLDivElement>('stageThreeHelp');
-    this.memorySizeInput = getElement<HTMLInputElement>('memorySizeInput');
-    this.manualConfig = getElement<HTMLDivElement>('manualConfig');
+    // this.checkShowHexadecimal = getElement<HTMLInputElement>('checkShowHexadecimal');
 
-    this.openSettingsButton = getElement<HTMLButtonElement>('openSettingsButton');
-
-    this.searchRegisterInput = getElement<HTMLInputElement>('searchRegisterInput');
-    this.searchMemoryInput = getElement<HTMLInputElement>('searchMemoryInput');
-
-    this.importRegisterBtn = getElement<HTMLButtonElement>('importRegisterBtn');
-    this.fileInputImportRegister = getElement<HTMLInputElement>('fileInputImportRegister');
-
-    this.importMemoryBtn = getElement<HTMLButtonElement>('importMemoryBtn');
-    this.fileInputImportMemory = getElement<HTMLInputElement>('fileInputImportMemory');
-
-    this.checkShowHexadecimal = getElement<HTMLInputElement>('checkShowHexadecimal');
-
-
-
-    this.initializeTopButtons();
-    this.searchInRegistersTable();
-    this.searchInMemoryTable();
-    this.showPC();
-    this.initRegisterImport();
-    this.initMemoryImport();
-    this.setUpSettings();
-    this.setUpHelp();
+    // this.searchInRegistersTable();
+    // this.searchInMemoryTable();
+    // this.showPC();
+    // this.initRegisterImport();
+    // this.initMemoryImport();
+    // this.setUpSettings();
   }
 
   public uploadMemory(
     memory: string[], codeSize: number, symbols: any[]): void {
+    this._registersTable = new RegistersTable;
     this._memoryTable = new MemoryTable(memory, codeSize, symbols, this.sendMessagetoExtension); 
-    this.showHexadecimalInMemory();
-    this.assignMemoryInputValue(memory.length-codeSize);
-    this.configuration();
+    //this.showHexadecimalInMemory();
+    //this.assignMemoryInputValue(memory.length-codeSize);
+    //this.configuration();
     this.memoryTable.uploadMemory(memory, codeSize, symbols);
   }
 
-  private showPC(): void {
-    this.pcIcon.addEventListener('click', () => {
-      const targetValue = (this.memoryTable.pc * 4).toString(16).toUpperCase();
-      this.memoryTable.table.scrollToRow(targetValue, "center", true);
-    });
-  }
+  // private showPC(): void {
+  //   this.pcIcon.addEventListener('click', () => {
+  //     const targetValue = (this.memoryTable.pc * 4).toString(16).toUpperCase();
+  //     this.memoryTable.table.scrollToRow(targetValue, "center", true);
+  //   });
+  // }
 
-  private assignMemoryInputValue(value: number){
-    this.memorySizeInput.value = value.toString();
-  }
+  // private assignMemoryInputValue(value: number){
+  //   this.memorySizeInput.value = value.toString();
+  // }
 
   public step(pc: number, log: (object: any, level?: string) => void): void {
     log({ msg: "Simulator reported step" });
@@ -219,48 +170,7 @@ export class UIManager {
   }
 
 
-  private initializeTopButtons(): void {
-    const sections: { [key: string]: HTMLElement } = {
-      openSearch: this.openSearch,
-      openSettings: this.openSettings,
-      openConvert1: this.openConvert,
-      openHelp: this.openHelp,
-    };
-
-    const buttons: { [key: string]: HTMLElement } = {
-      openSearchButton: this.openSearchButton,
-      openSettingsButton: this.openSettingsButton,
-      openConvertButton: this.convertButton,
-      openHelpButton: this.openHelpButton,
-    };
-
-    const showOnly = (targetId: keyof typeof sections, buttonId: keyof typeof buttons) => {
-      Object.entries(sections).forEach(([id, element]) => {
-        element.className =
-          id === targetId
-            ? 'flex flex-1 flex-col max-h-dvh min-h-dvh overflow-y-scroll'
-            : 'hidden';
-      });
-      Object.values(buttons).forEach((btn) => btn.classList.remove('bg-active'));
-      buttons[buttonId].classList.add('bg-active');
-    };
-
-    this.openSearchButton.addEventListener('click', () =>
-      showOnly('openSearch', 'openSearchButton')
-    );
-    this.openSettingsButton.addEventListener('click', () =>
-      showOnly('openSettings', 'openSettingsButton')
-    );
-    this.convertButton.addEventListener('click', () =>
-      showOnly('openConvert1', 'openConvertButton')
-    );
-    this.openHelpButton.addEventListener('click', () =>
-      showOnly('openHelp', 'openHelpButton')
-    );
-  }
-
   public setMemoryCell(address: number, leng: number, value: string): void {
-    console.log("VA A ESCRIBIR EN MEMORIA", address, leng, value);
     const rowStart = address - (address % 4);
     const hexRowStart = rowStart.toString(16).toUpperCase();
     
@@ -325,7 +235,6 @@ export class UIManager {
         cell0.style.fontWeight = '580';
         cell0.style.color = "#3A6973";
       }
-
     }
     
     row.update(newData);
@@ -369,294 +278,183 @@ export class UIManager {
 
     this.memoryTable.table.scrollToRow(hexAddress, "center", true);
   }
-  
-
-  private showtables(){
-    this.registerTab.classList.remove('hidden');
-    this.memoryTab.classList.remove('hidden');
-  }
-  private ocultTables(){
-    this.registerTab.classList.add('hidden');
-    this.memoryTab.classList.add('hidden');
-  }
-
-  private showConvert(){
-    this.convertButton.classList.remove('hidden');
-    this.openConvert.className = 'flex flex-1 flex-col max-h-dvh min-h-dvh overflow-y-scroll';
-    this.convertButton.classList.add('bg-active');
-  } 
-  private ocultConvert(){
-    this.convertButton.classList.add('hidden');
-    this.convertButton.classList.remove('bg-active');
-    this.openConvert.className = 'hidden';
-  }
-
-  private showSearch() {
-    this.openSearch.classList.remove('hidden');
-    this.openSearchButton.classList.remove('hidden');
-    this.openSearchButton.classList.add('bg-active');
-  }
-  private ocultSearch(){
-    this.openSearchButton.classList.add('hidden');
-    this.openSearch.classList.add('hidden');
-  }
-
-
-  private showSettingsBeforeSimulating(){
-    this.settingsButton.classList.add('bg-active');
-    this.settingsButton.classList.remove('hidden');
-    this.openSettings.classList.remove('hidden');
-  }
-  private settingsInSimulating() {
-    this.manualConfig.classList.add('hidden');
-    this.openSettingsButton.classList.remove('bg-active');
-    this.openSettings.className = 'hidden';
-    this.memorySizeInput.readOnly = true;
-    this.memorySizeInput.classList.add('bg-disabled');
-  }
-  private ocultSettings(){
-    this.openSettings.className = 'hidden';
-    this.settingsButton.classList.add('hidden');
-    this.manualConfig.classList.remove('hidden');
-    this.memorySizeInput.classList.remove('bg-disabled');
-    this.memorySizeInput.readOnly = false;
-  }
-
-  private  helpInConfiguration(){
-    this.openHelpButton.classList.remove('bg-active');
-    this.shortcutsHelp.classList.remove('hidden');
-    this.openHelp.className = 'hidden';
-    this.stageOneHelp.className = 'hidden';
-    this.stageTwoHelp.classList.remove('hidden');
-  }
-  private helpInSimulating() { 
-    this.openHelpButton.classList.remove('bg-active');
-    this.openHelp.className = 'hidden';   
-    this.stageTwoHelp.className = 'hidden';
-    this.stageThreeHelp.classList.remove('hidden');
-  }
-  private ocultHelp(){
-    this.openHelp.className = 'hidden';
-    this.openHelpButton.classList.remove('bg-active');
-    this.stageOneHelp.classList.remove('hidden');
-    this.stageTwoHelp.classList.add('hidden');
-    this.stageThreeHelp.classList.add('hidden');
-    this.shortcutsHelp.classList.add('hidden');
-  }
-
-
 
   public resetUI(): void {
     this._isSimulating = false;
-    this.registersTable.reInitializeTable();
-    this.memoryTable.reInitializeTable();
-
-    this.ocultTables();
-    this.showConvert();
-    this.ocultSearch();
-    this.ocultSettings();
-    this.ocultHelp();
-    this.pcIcon.classList.add('hidden');
 
   }
 
-  private configuration() {
-    this.showtables();
-    this.ocultConvert();
-    this.showSettingsBeforeSimulating();
-    this.helpInConfiguration(); 
-    this.pcIcon.classList.remove('hidden');
-  }
+
 
   private simulationStarted() {
     this._isSimulating = true;
-    this.showSearch();
-    this.helpInSimulating();
-    this.settingsInSimulating();
-    this.convertButton.classList.remove('hidden');
+
   }
 
-  private searchInRegistersTable() {
-    this.searchRegisterInput.addEventListener('input', () => {
-      const input = this.searchRegisterInput.value.trim();
-      if (input === '') {
-        this.registersTable.table.clearFilter(true);
-        this.registersTable.resetCellColors();
-        return;
-      }
-      this.registersTable.filterTableData(input);
-    });
+  //  searchInRegistersTable() {
+  //   this.searchRegisterInput.addEventListener('input', () => {
+  //     const input = this.searchRegisterInput.value.trim();
+  //     if (input === '') {
+  //       this.registersTable.table.clearFilter(true);
+  //       this.registersTable.resetCellColors();
+  //       return;
+  //     }
+  //     this.registersTable.filterTableData(input);
+  //   });
 
-    this.searchRegisterInput.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        this.searchRegisterInput.value = '';
-        this.registersTable.table.clearFilter(true);
-        this.registersTable.resetCellColors();
-      }
-    });
-  }
+  //   this.searchRegisterInput.addEventListener('keydown', (event: KeyboardEvent) => {
+  //     if (event.key === 'Escape') {
+  //       this.searchRegisprivateterInput.value = '';
+  //       this.registersTable.table.clearFilter(true);
+  //       this.registersTable.resetCellColors();
+  //     }
+  //   });
+  // }
 
-  private searchInMemoryTable(): void {
+  // private searchInMemoryTable(): void {
 
-    this.searchMemoryInput.addEventListener('input', () => {
-      const searchValue = this.searchMemoryInput.value.trim().toLowerCase();
+  //   this.searchMemoryInput.addEventListener('input', () => {
+  //     const searchValue = this.searchMemoryInput.value.trim().toLowerCase();
 
 
-      this.memoryTable.table.clearFilter(true);
-      this.memoryTable.resetMemoryCellColors();
-      this.memoryTable.table.redraw(true);
+  //     this.memoryTable.table.clearFilter(true);
+  //     this.memoryTable.resetMemoryCellColors();
+  //     this.memoryTable.table.redraw(true);
 
-      if (searchValue === '') {
-        this.memoryTable.table.clearFilter(true);
-        this.memoryTable.resetMemoryCellColors();
-        return;
-      }
-      this.memoryTable.filterMemoryTableData(searchValue);
-    });
+  //     if (searchValue === '') {
+  //       this.memoryTable.table.clearFilter(true);
+  //       this.memoryTable.resetMemoryCellColors();
+  //       return;
+  //     }
+  //     this.memoryTable.filterMemoryTableData(searchValue);
+  //   });
 
-    this.searchMemoryInput.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        this.searchMemoryInput.value = '';
-        this.memoryTable.table.clearFilter(true);
-        this.memoryTable.resetMemoryCellColors();
-      }
-    });
-  }
+  //   this.searchMemoryInput.addEventListener('keydown', (event: KeyboardEvent) => {
+  //     if (event.key === 'Escape') {
+  //       this.searchMemoryInput.value = '';
+  //       this.memoryTable.table.clearFilter(true);
+  //       this.memoryTable.resetMemoryCellColors();
+  //     }
+  //   });
+  // }
 
-  private initRegisterImport(): void {
+  // private initRegisterImport(): void {
 
-    this.importRegisterBtn
-      .addEventListener("click", () => {
-        document.getElementById("fileInputImportRegister")?.click();
-      });
+  //   this.importRegisterBtn
+  //     .addEventListener("click", () => {
+  //       document.getElementById("fileInputImportRegister")?.click();
+  //     });
 
-    this.fileInputImportRegister
-      .addEventListener("change", (event) => {
-        const input = event.target as HTMLInputElement;
-        const file = input.files?.[0];
+  //   this.fileInputImportRegister
+  //     .addEventListener("change", (event) => {
+  //       const input = event.target as HTMLInputElement;
+  //       const file = input.files?.[0];
 
-        if (!file) {
-          return;
-        }
+  //       if (!file) {
+  //         return;
+  //       }
 
-        const reader = new FileReader();
+  //       const reader = new FileReader();
 
-        reader.onload = (e) => {
-          if (!e.target?.result) {
-            return;
-          }
-          const content = e.target.result as string;
-          this.registersTable.importRegisters(content);
-        };
+  //       reader.onload = (e) => {
+  //         if (!e.target?.result) {
+  //           return;
+  //         }
+  //         const content = e.target.result as string;
+  //         this.registersTable.importRegisters(content);
+  //       };
 
-        reader.readAsText(file);
-      });
-  }
+  //       reader.readAsText(file);
+  //     });
+  // }
 
-  private initMemoryImport(): void {
+  // private initMemoryImport(): void {
 
-    this.importMemoryBtn
-      .addEventListener('click', () => {
-        this.fileInputImportMemory.click();
-      });
+  //   this.importMemoryBtn
+  //     .addEventListener('click', () => {
+  //       this.fileInputImportMemory.click();
+  //     });
 
-    this.fileInputImportMemory
-      .addEventListener('change', (event) => {
-        const input = event.target as HTMLInputElement;
-        const file = input.files?.[0];
+  //   this.fileInputImportMemory
+  //     .addEventListener('change', (event) => {
+  //       const input = event.target as HTMLInputElement;
+  //       const file = input.files?.[0];
 
-        if (!file) {
-          return;
-        }
+  //       if (!file) {
+  //         return;
+  //       }
 
-        const reader = new FileReader();
+  //       const reader = new FileReader();
 
-        reader.onload = (e) => {
-          if (!e.target?.result) {
-            return;
-          }
-          const content = e.target.result as string;
+  //       reader.onload = (e) => {
+  //         if (!e.target?.result) {
+  //           return;
+  //         }
+  //         const content = e.target.result as string;
 
-          const lines = content
-            .split('\n')
-            .map(line => line.trim())
-            .filter(line => line !== '');
+  //         const lines = content
+  //           .split('\n')
+  //           .map(line => line.trim())
+  //           .filter(line => line !== '');
 
-          if (lines.length === 0) {
-            console.log('Empty file');
-            return;
-          }
+  //         if (lines.length === 0) {
+  //           console.log('Empty file');
+  //           return;
+  //         }
 
-          const invalidLine = lines.find(line => !line.includes(':'));
-          if (invalidLine) {
-            console.log(`Invalid format in line ${invalidLine}`);
-            return;
-          }
+  //         const invalidLine = lines.find(line => !line.includes(':'));
+  //         if (invalidLine) {
+  //           console.log(`Invalid format in line ${invalidLine}`);
+  //           return;
+  //         }
 
-          this.memoryTable.importMemory(content);
-        };
+  //         this.memoryTable.importMemory(content);
+  //       };
 
-        reader.readAsText(file);
-      });
-  }
+  //       reader.readAsText(file);
+  //     });
+  // }
 
-  private showHexadecimalInMemory(): void {
+  // private showHexadecimalInMemory(): void {
 
-    console.log("Show hexadecimal in memory ENTROOO");
+  //   console.log("Show hexadecimal in memory ENTROOO");
    
-    const toggleColumn = () => {
-      console.log("ENTROOO");
-      const column = this.memoryTable.table.getColumn("hex");
-      if (column) {
-        this.checkShowHexadecimal.checked ? column.show() : column.hide();
-      } else {
-        console.log("Column not found");
-      }
-    };
-    this.checkShowHexadecimal.addEventListener("change", toggleColumn);
-    toggleColumn();
+  //   const toggleColumn = () => {
+  //     console.log("ENTROOO");
+  //     const column = this.memoryTable.table.getColumn("hex");
+  //     if (column) {
+  //       this.checkShowHexadecimal.checked ? column.show() : column.hide();
+  //     } else {
+  //       console.log("Column not found");
+  //     }
+  //   };
+  //   this.checkShowHexadecimal.addEventListener("change", toggleColumn);
+  //   toggleColumn();
     
     
-  }
+  // }
 
-  private setUpSettings() {
-    this.memorySizeInput.addEventListener('change', () => {
-      this.spinner.classList.remove('hidden');
-      this.memorySizeInput.disabled = true;
-      let intValue = Number.parseInt(this.memorySizeInput.value);
-      if (intValue < 32 || this.memorySizeInput.value === '') {
-        this.memorySizeInput.value = '32';
-      }else if (intValue > 512) {
-        this.memorySizeInput.value = '512';
-      }
+  // private setUpSettings() {
+  //   this.memorySizeInput.addEventListener('change', () => {
+  //     this.memorySizeInput.disabled = true;
+  //     let intValue = Number.parseInt(this.memorySizeInput.value);
+  //     if (intValue < 32 || this.memorySizeInput.value === '') {
+  //       this.memorySizeInput.value = '32';
+  //     }else if (intValue > 512) {
+  //       this.memorySizeInput.value = '512';
+  //     }
 
-      if (intValue % 4 !== 0) {
-        intValue = Math.floor(intValue / 4) * 4;
-        this.memorySizeInput.value = intValue.toString();
-      }
+  //     if (intValue % 4 !== 0) {
+  //       intValue = Math.floor(intValue / 4) * 4;
+  //       this.memorySizeInput.value = intValue.toString();
+  //     }
 
-      const value = Number(this.memorySizeInput.value) + Number(this.memoryTable.codeAreaEnd-4);
-      this.sendMessagetoExtension({
-        command: 'event',
-        object: { event: 'memorySizeChanged', value: value}
-      });
-      const newSize = Number.parseInt(this.memorySizeInput.value);
-      this.memoryTable.resizeMemory(newSize, this.spinner, this.memorySizeInput);
-    });
-  }
-
-  private setUpHelp() {
-    const openShowCard = document.getElementById('openShowCard') as HTMLDivElement;
-
-    openShowCard.addEventListener('click', () => {
-      this.sendMessagetoExtension({
-        command: 'event',
-        object: { event: 'clickOpenRISCVCard', value: 'openHelp' }
-      });
-    });
-  }
-
-
-  
+  //     const value = Number(this.memorySizeInput.value) + Number(this.memoryTable.codeAreaEnd-4);
+  //     this.sendMessagetoExtension({
+  //       command: 'event',
+  //       object: { event: 'memorySizeChanged', value: value}
+  //     });
+  //     const newSize = Number.parseInt(this.memorySizeInput.value);    });
+  // }
   
 }

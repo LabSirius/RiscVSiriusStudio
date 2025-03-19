@@ -406,7 +406,7 @@ export class MemoryTable {
     this.table.updateOrAddData(newData);
   }
 
-  public resizeMemory(newSize: number, spinner?: HTMLElement, memorySizeinput?: HTMLElement): void {
+  public resizeMemory(newSize: number,  memorySizeinput?: HTMLElement): void {
     const userMemStart = this.codeAreaEnd;
     const userMemEnd = userMemStart + newSize;
     const codeData = this.table.getData().filter((row) => parseInt(row.address, 16) < userMemStart);
@@ -444,7 +444,7 @@ export class MemoryTable {
 
     this.table.on("tableBuilt", () => {
       this.setupEventListeners();
-      this.updatePC(0, spinner, memorySizeinput);
+      this.updatePC(0, memorySizeinput);
     });
   }
 

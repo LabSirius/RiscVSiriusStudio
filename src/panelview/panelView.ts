@@ -25,7 +25,7 @@ function log(object: any = {}, level: string = 'info') {
 
 function main() {
 
-  //UIManager.createInstance(sendMessageToExtension);
+  UIManager.createInstance(sendMessageToExtension);
 
   window.addEventListener('message', (event) => {
     dispatch(event);
@@ -40,10 +40,9 @@ function dispatch(
   const data = event.data;
   switch (data.operation) {
     case 'uploadMemory':
-      //UIManager.getInstance().uploadMemory(data.memory, data.codeSize, data.symbols);
       sendMessageToReact({ operation: 'uploadMemory', data: 1 });
-
-      break;
+      //UIManager.getInstance().uploadMemory(data.memory, data.codeSize, data.symbols);
+      break; 
     case 'step':
       UIManager.getInstance().step(data.pc, log);
       break;
