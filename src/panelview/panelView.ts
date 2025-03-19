@@ -37,32 +37,23 @@ function dispatch(
 ) {
   log({ msg: 'Dispatching message', data: event.data });
   const data = event.data;
-  switch (data.operation) {
-    case 'uploadMemory':
-      UIManager.getInstance()._sendMessageToPanelView({ operation: 'uploadMemory', data: 1 });
-      break; 
-    case 'step':
-      //UIManager.getInstance().step(data.pc, log);
-      break;
-    case 'setRegister':
-      //UIManager.getInstance().registersTable.setRegister(data.register, data.value);
-      if (data.register === 'x2') {
-        
-        //UIManager.getInstance().memoryTable.setSP(data.value);
+
+  switch (data.from) {
+    case 'extension':
+      switch (data.operation) {
+      case 'uploadMemory':
+        UIManager.getInstance()._sendMessageToPanelView(data);
+        break;
       }
-      break;
-      case 'readMemory':
-        //UIManager.getInstance().animateMemorycell( data.address, data._length);
-        break;
-      case 'writeMemory':
-        //UIManager.getInstance().setMemoryCell( data.address, data._length, data.value);
-        break;
-    case 'stop':
-      //UIManager.getInstance().resetUI();
-      break;
-    default:
-      log({ msg: 'No handler for message', data: data.operation });
-      break;
+    case 'panelView':
+      switch (data.operation) {
+        case 'message':
+          console.log('Message from panelView', data);
+          break;
+        default:
+          log({ msg: 'Unknown operation', data: data });
+          break;
+      }
   }
 }
 

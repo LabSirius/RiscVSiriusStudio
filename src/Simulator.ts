@@ -240,6 +240,7 @@ export class TextSimulator extends Simulator {
     } else {
       // Upload memory to webview
       mainView.postMessage({
+        from: "extension",
         operation: "uploadMemory",
         memory: this.cpu.getDataMemory().getMemory(),
         codeSize: this.cpu.getDataMemory().codeSize,
