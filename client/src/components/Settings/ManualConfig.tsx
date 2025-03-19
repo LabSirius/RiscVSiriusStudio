@@ -7,10 +7,10 @@ const ManualConfig = () => {
       <p className="flex text-md text-gray-400">
         Press
         <span className="inline text-slate-400 mx-2">
-            <RedoDot strokeWidth={1} />
+          <RedoDot strokeWidth={1} />
         </span>{" "}
         to execute the first instruction
-        </p>
+      </p>
 
       <div className="flex flex-col gap-2 mt-1">
         <p className=" ">Import data</p>
@@ -39,18 +39,26 @@ const ManualConfig = () => {
         </div>
       </div>
 
-     
       <div className="flex flex-col gap-3 ">
         <p className="font-semibold">Memory size (In bytes)</p>
         <div className="relative">
-        <div className="absolute top-1/2 left-[0.6rem] -translate-y-1/2 text-gray-400">
-            < Grid2x2Plus strokeWidth={1}width={20} height={20} /> 
+          <div className="absolute top-1/2 left-[0.6rem] -translate-y-1/2 text-gray-400">
+            <Grid2x2Plus strokeWidth={1} width={20} height={20} />
+          </div>
+          <input
+            className="relative rounded-lg border border-gray-400 cursor-pointer z-[2] bg-transparent py-2 pr-2 pl-[2.3rem] w-full"
+            type="number"
+            id="memorySizeInput"
+            value="32"
+            min="32"
+            max="512"
+            step="4"
+            placeholder="e.g. 200, 1024..."
+          />
         </div>
-        <input className="relative rounded-lg border border-gray-400 cursor-pointer z-[2] bg-transparent py-2 pr-2 pl-[2.3rem] w-full" type="number" id="memorySizeInput"  value="32" min="32" max="512" step="4"
-            placeholder="e.g. 200, 1024..." />
-        </div>
-    </div>
-  
+      </div>
+
+      
     </div>
   );
 };

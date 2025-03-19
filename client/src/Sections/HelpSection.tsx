@@ -8,7 +8,7 @@ const HelpSection = () => {
 
   return (
     <div className="section-container w-full mt-1">
-        <div className="flex gap-8 items-center cursor-pointer">
+        <div className="flex gap-9 items-center cursor-pointer">
             <Link  width={18} height={18} />
             <p className="underline text-primary">RISC-V intructions reference</p>
           </div> 

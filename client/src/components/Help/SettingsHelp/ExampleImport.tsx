@@ -5,17 +5,22 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
 
+import { FileDown } from "lucide-react"
+
 const ExampleImport =({ caseValue } : { caseValue: string }) => {
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
+      <div className="flex gap-1 items-center justify-center">
+        <FileDown width={24} height={24} strokeWidth={1} />
         <Button variant="link">@View example</Button>
+        </div>
       </HoverCardTrigger>
       <HoverCardContent className="w-80">
         <div className="flex flex-col gap-4 space-x-4">
           {caseValue === "register" ? (
             <>
-            <p>32 lines of 32 bits</p>
+            <p>32 lines of 32 bits.</p>
             <div className="space-y-1 text-[.8rem]">
               <p className="font-mono">
                 00000000000000000000000000000000 <br />
@@ -28,7 +33,7 @@ const ExampleImport =({ caseValue } : { caseValue: string }) => {
             </>
           ) : (
             <>
-            <p>n lines, for the addresses we want to import</p>
+            <p>n lines, for the addresses we want to import.</p>
             <div className="space-y-1 text-[.8rem]">
               <p className=" font-mono">
                 24:00000000000000000000000000011000 <br />
