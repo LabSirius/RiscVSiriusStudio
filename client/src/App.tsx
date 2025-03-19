@@ -1,15 +1,18 @@
 import { ThemeProvider } from "@/components/ui/theme/theme-provider";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
+
 import { RoutesProvider } from "./context/RoutesContext";
+
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sideBar";
 import Sidebar  from "@/components/SideBar";
-import ConvertSection from "@/sections/ConvertSection";
-import HelpSection from "./sections/HelpSection/HelpSection";
 import MessageListener from "./components/MessageListener";
 
+import ConvertSection from "@/sections/ConvertSection";
+import HelpSection from "./sections/HelpSection/HelpSection";
+import SettingsSection from "./sections/SettingsSection";
+
+
 const App = () => {
-
-
 
   return (
     <MemoryRouter>
@@ -23,6 +26,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<ConvertSection />} />
               <Route path="/help" element={<HelpSection />} />
+              <Route path="/config" element={<SettingsSection />} />
             </Routes>
         </SidebarProvider>
       </div>

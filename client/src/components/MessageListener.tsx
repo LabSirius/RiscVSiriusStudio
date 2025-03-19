@@ -9,7 +9,7 @@ const MessageListener = () => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === "FROM_VSCODE") {
         if (event.data.payload.operation === 'uploadMemory') {
-          setRoutes(['uploadMemory']);
+          setRoutes('uploadMemory');
           console.log('uploadMemory desde REACT');  
         }
       }

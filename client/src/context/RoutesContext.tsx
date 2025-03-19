@@ -2,15 +2,15 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface RoutesContextProps {
-  routes: string[];
-  setRoutes: React.Dispatch<React.SetStateAction<string[]>>;
+  routes: string;
+  setRoutes: React.Dispatch<React.SetStateAction<string>>;
 }
 
 // Declaramos el contexto primero
 const RoutesContext = createContext<RoutesContextProps | undefined>(undefined);
 
 export const RoutesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [routes, setRoutes] = useState<string[]>([]);
+  const [routes, setRoutes] = useState<string>('');
   return (
     <RoutesContext.Provider value={{ routes, setRoutes }}>
       {children}
