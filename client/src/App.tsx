@@ -8,7 +8,7 @@ import Sidebar  from "@/components/SideBar";
 import MessageListener from "./components/MessageListener";
 
 import ConvertSection from "@/sections/ConvertSection";
-import HelpSection from "./sections/HelpSection/HelpSection";
+import HelpSection from "./sections/HelpSection";
 import SettingsSection from "./sections/SettingsSection";
 
 
@@ -26,7 +26,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<ConvertSection />} />
               <Route path="/help" element={<HelpSection />} />
-              <Route path="/config" element={<SettingsSection />} />
+              <Route path="/settings" element={<SettingsSection />} />
             </Routes>
         </SidebarProvider>
       </div>

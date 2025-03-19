@@ -8,7 +8,7 @@ interface ValueInputProps extends InputHTMLAttributes<HTMLInputElement> {
 const ValueInput: React.FC<ValueInputProps> = ({ id, ...props }) => {
   return (
     <div className="flex flex-col gap-1">
-      <p className="label">Value</p>
+      <p className="">Value</p>
       <div className="relative">
         <div className="absolute top-1/2 left-[0.6rem] -translate-y-1/2 text-gray-400">
           <Hash width={20} height={20} strokeWidth={1} />

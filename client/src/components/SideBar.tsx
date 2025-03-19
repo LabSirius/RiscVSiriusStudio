@@ -40,7 +40,7 @@ export function SideBar() {
 
               {(routes === "uploadMemory") && (
                <SidebarMenuItem>
-                <a onClick={() => navigate("/")} className="curser-pointer">
+                <a onClick={() => navigate("/settings")} className="curser-pointer">
                  
                       <Button variant="outline" size="icon">
                         <Settings />
