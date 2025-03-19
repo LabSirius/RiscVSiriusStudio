@@ -1,0 +1,1 @@
+export type RegisterView = 2 | 16 | 'signed' | 'unsigned' | 'ascii';

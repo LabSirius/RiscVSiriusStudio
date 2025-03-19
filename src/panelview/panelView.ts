@@ -25,12 +25,11 @@ function log(object: any = {}, level: string = 'info') {
 
 function main() {
 
-  UIManager.createInstance(sendMessageToExtension);
+  UIManager.createInstance(sendMessageToExtension, sendMessageToPanelView);
 
   window.addEventListener('message', (event) => {
     dispatch(event);
   });
-
 }
 
 function dispatch(
@@ -40,27 +39,26 @@ function dispatch(
   const data = event.data;
   switch (data.operation) {
     case 'uploadMemory':
-      sendMessageToReact({ operation: 'uploadMemory', data: 1 });
-      //UIManager.getInstance().uploadMemory(data.memory, data.codeSize, data.symbols);
+      UIManager.getInstance()._sendMessageToPanelView({ operation: 'uploadMemory', data: 1 });
       break; 
     case 'step':
-      UIManager.getInstance().step(data.pc, log);
+      //UIManager.getInstance().step(data.pc, log);
       break;
     case 'setRegister':
-      UIManager.getInstance().registersTable.setRegister(data.register, data.value);
+      //UIManager.getInstance().registersTable.setRegister(data.register, data.value);
       if (data.register === 'x2') {
         
-        UIManager.getInstance().memoryTable.setSP(data.value);
+        //UIManager.getInstance().memoryTable.setSP(data.value);
       }
       break;
       case 'readMemory':
-        UIManager.getInstance().animateMemorycell( data.address, data._length);
+        //UIManager.getInstance().animateMemorycell( data.address, data._length);
         break;
       case 'writeMemory':
-        UIManager.getInstance().setMemoryCell( data.address, data._length, data.value);
+        //UIManager.getInstance().setMemoryCell( data.address, data._length, data.value);
         break;
     case 'stop':
-      UIManager.getInstance().resetUI();
+      //UIManager.getInstance().resetUI();
       break;
     default:
       log({ msg: 'No handler for message', data: data.operation });
@@ -77,7 +75,7 @@ function sendMessageToExtension(messageObject: any) {
   vscode.postMessage(messageObject);
 }
 
-function sendMessageToReact(data: any) {
+function sendMessageToPanelView(data: any) {
   window.postMessage({ type: 'FROM_VSCODE', payload: data }, '*');
 }
 
