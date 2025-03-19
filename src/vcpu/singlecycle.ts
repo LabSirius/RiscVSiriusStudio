@@ -762,7 +762,7 @@ export class SCCPU {
     const add4Res = (pc + 4).toString(2).padStart(32, "0");
     result.add4.result = add4Res;
     const imm21Val = this.currentInstruction().encoding.imm21 as string;
-    const imm32Val = imm21Val.padStart(32, "0");
+    const imm32Val = imm21Val.padStart(32, imm21Val.substring(0));
 
     const aluRes = this.computeALURes(pcVal, imm32Val, "0000");
 
