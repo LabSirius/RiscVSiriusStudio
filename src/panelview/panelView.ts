@@ -42,13 +42,14 @@ function dispatch(
     case 'extension':
       switch (data.operation) {
       case 'uploadMemory':
-        UIManager.getInstance()._sendMessageToPanelView(data);
+        const { from, ...newData } = data;
+        UIManager.getInstance()._sendMessageToPanelView(newData);
         break;
       }
     case 'panelView':
       switch (data.operation) {
         case 'message':
-          console.log('Message from panelView', data);
+          console.log('Message from panelView AAA', data);
           break;
         default:
           log({ msg: 'Unknown operation', data: data });
@@ -67,7 +68,7 @@ function sendMessageToExtension(messageObject: any) {
 }
 
 function sendMessageToPanelView(data: any) {
-  window.postMessage({ type: 'FROM_VSCODE', payload: data }, '*');
+  window.postMessage({ from: 'UIManager', data }, '*');
 }
 
 

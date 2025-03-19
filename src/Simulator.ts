@@ -242,9 +242,11 @@ export class TextSimulator extends Simulator {
       mainView.postMessage({
         from: "extension",
         operation: "uploadMemory",
-        memory: this.cpu.getDataMemory().getMemory(),
-        codeSize: this.cpu.getDataMemory().codeSize,
-        symbols: this.rvDoc.ir.symbols,
+        payload: {
+          memory: this.cpu.getDataMemory().getMemory(),
+          codeSize: this.cpu.getDataMemory().codeSize,
+          symbols: this.rvDoc.ir.symbols,
+        }
       });
       console.log("Simulator start ", this.cpu.currentInstruction());
       this.makeEditorReadOnly();

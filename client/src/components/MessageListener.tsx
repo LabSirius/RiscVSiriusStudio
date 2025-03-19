@@ -3,20 +3,20 @@ import { useEffect } from "react";
 import { useRoutes } from "@/context/RoutesContext";
 
 const MessageListener = () => {
-  const { setRoutes } = useRoutes();
+  const { setRoutes, setDataMemoryTable } = useRoutes();
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      if (event.data?.type === "FROM_VSCODE") {
-        if (event.data.payload.operation === 'uploadMemory') {
+      if (event.data?.from === "UIManager") {
+        if (event.data.data.operation === 'uploadMemory') {
           setRoutes('uploadMemory');
-          console.log('uploadMemory desde REACT');  
+          setDataMemoryTable(event.data.data.payload);
         }
       }
     };
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
-  }, [setRoutes]);
+  }, [setRoutes, setDataMemoryTable]);
 
   return null;
 };

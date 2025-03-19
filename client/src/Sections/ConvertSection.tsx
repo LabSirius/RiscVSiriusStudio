@@ -18,12 +18,6 @@ const formatOptions: Option[] = [
 
 const ConvertSection: React.FC = () => {
 
-  const sendMessage = () => {
-    window.postMessage({ operation: 'uploadMemory2', data: "Hola" }, '*');
-  };
-
-  sendMessage();
-
   const { routes } = useRoutes();
   const navigate = useNavigate();
 
