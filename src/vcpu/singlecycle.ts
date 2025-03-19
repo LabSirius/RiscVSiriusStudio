@@ -24,11 +24,10 @@ import {
   isIJump,
   isAUIPC,
 } from "../utilities/instructions";
-import { chunk } from "lodash-es";
 import { ALU32 } from "./alu32";
 import { binaryToInt, intToBinary } from "../utilities/conversions";
-
 import { logger } from "../utilities/logger";
+import chunk from "lodash/chunk";
 
 class RegistersFile {
   private registers: Array<string>;
@@ -45,13 +44,20 @@ class RegistersFile {
   private getIndexFromName(name: string): number {
     return parseInt(name.substring(1));
   }
-
   public readRegisterFromName(name: string): string {
-    return this.registers[this.getIndexFromName(name)];
+    const value = this.registers[this.getIndexFromName(name)];
+    if (value === undefined) {
+      throw new Error(`Register ${name} not found`);
+    }
+    return value;
   }
 
   public readRegister(index: number): string {
-    return this.registers[index];
+    const value = this.registers[index];
+    if (value === undefined) {
+      throw new Error(`Register index ${index} not found`);
+    }
+    return value;
   }
 
   public writeRegister(name: string, value: string) {
@@ -152,7 +158,10 @@ class DataMemory {
       throw new Error("Data memory size exceeded.");
     }
     for (let i = 0; i < data.length; i++) {
-      this.memory[address + i] = data[i];
+      if (data[i] === undefined) {
+        throw new Error("Undefined data element");
+      }
+      this.memory[address + i] = data[i]!;
     }
   }
   public read(address: number, length: number): Array<string> {
@@ -162,7 +171,12 @@ class DataMemory {
     }
     let data = [] as Array<string>;
     for (let i = 0; i < length; i++) {
-      data.push(this.memory[address + i]);
+      const value = this.memory[address + i];
+      if (value !== undefined) {
+        data.push(value);
+      } else {
+        throw new Error(`Invalid memory access at ${address + i}`);
+      }
     }
     return data.reverse();
   }
@@ -414,6 +428,7 @@ export class SCCPU {
         break;
       case "0110":
         result = ALU32.or(numA, numB);
+        break;
       case "0111":
         result = ALU32.and(numA, numB);
         break;
