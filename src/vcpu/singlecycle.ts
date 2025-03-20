@@ -27,7 +27,7 @@ import {
 import { ALU32 } from "./alu32";
 import { binaryToInt, intToBinary } from "../utilities/conversions";
 import { logger } from "../utilities/logger";
-import chunk from "lodash/chunk";
+import { chunk } from "lodash-es";
 
 class RegistersFile {
   private registers: Array<string>;
