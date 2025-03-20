@@ -1,5 +1,5 @@
 import RegisterTable from "./RegisterTable"
-import MemoryTable from "./MamoryTable"
+import MemoryTable from "./MemoryTable"
 
 const Tables = () => {
   return (

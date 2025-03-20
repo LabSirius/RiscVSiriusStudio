@@ -18,8 +18,10 @@ export const uploadMemory = (
   newMemory: string[],
   newCodeSize: number,
   newSymbols: Record<string, SymbolData>,
-  pc: number
+  pc: number,
+  onComplete?: () => void
 ): void => {
+  // Procesa la memoria en chunks y actualiza o agrega cada fila
   chunk(newMemory, 4).forEach((word: string[], index: number) => {
     const address = intToHex(index * 4).toUpperCase();
     const hex = word
@@ -46,7 +48,7 @@ export const uploadMemory = (
     }
   });
 
-  // Update heap row
+  // Actualiza la fila del Heap
   const heapAddressHex = intToHex(newCodeSize).toUpperCase();
   table.updateOrAddRow(heapAddressHex, {
     address: heapAddressHex,
@@ -54,11 +56,11 @@ export const uploadMemory = (
     value1: '00000000',
     value2: '00000000',
     value3: '00000000',
-    info: `<span class="text-white text-[0.7rem]   bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>`,
+    info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>`,
     hex: '00-00-00-00',
   });
 
-  // Add symbols to the table
+  // Agrega los símbolos a la tabla
   Object.values(newSymbols).forEach((symbol: SymbolData) => {
     const symbolAddress = intToHex(symbol.memdef).toUpperCase();
     table.updateOrAddRow(symbolAddress, {
@@ -67,12 +69,16 @@ export const uploadMemory = (
       value1: '00000000',
       value2: '00000000',
       value3: '00000000',
-      info: `<span class="text-white text-[0.7rem]  bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`,
+      info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`,
       hex: '00-00-00-00',
     });
   });
   updatePC(pc, { current: table });
+  
+  // Llama al callback para notificar que el upload ha finalizado
+  if (onComplete) onComplete();
 };
+
 
 
 /**
