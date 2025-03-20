@@ -54,7 +54,7 @@ export const uploadMemory = (
     value1: '00000000',
     value2: '00000000',
     value3: '00000000',
-    info: `<span class="info-column-mem-table">Heap</span>`,
+    info: `<span class="text-white text-[0.7rem]   bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>`,
     hex: '00-00-00-00',
   });
 
@@ -67,11 +67,10 @@ export const uploadMemory = (
       value1: '00000000',
       value2: '00000000',
       value3: '00000000',
-      info: `<span class="info-column-mem-table">${symbol.name}</span>`,
+      info: `<span class="text-white text-[0.7rem]  bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`,
       hex: '00-00-00-00',
     });
   });
-
   updatePC(pc, { current: table });
 };
 
@@ -160,18 +159,20 @@ export const createTooltip = (
     e: MouseEvent,
     cell: CellComponent,
     onRendered: (cb: () => void) => void
-    ): string => {
+    ) => {
     const value = cell.getValue() as string;
     const tooltip = document.createElement('div');
-    tooltip.className = 'custom-tooltip';
+    tooltip.className = ' text-white rounded-md px-2 py-1  shadow-md max-w-min max-h-[1.8rem] z-[99999]';
     tooltip.innerHTML = value;
     onRendered(() => {
+        tooltip.style.backgroundColor = 'transparent';
+        tooltip.style.border = 'none';
         tooltip.style.position = 'absolute';
         tooltip.style.left = `${e.clientX + 17}px`;
         tooltip.style.top = `${e.clientY - 22}px`;
         document.body.appendChild(tooltip);
     });
-    return tooltip.outerHTML;
+    return tooltip;
 };
 
 
@@ -267,7 +268,6 @@ export const setupEventListeners = (table: Tabulator): void => {
     table.on('cellEdited', (cell: CellComponent) => {
       if (cell.getField().startsWith('value')) {
         updateHexValue(cell.getRow());
-        // Si necesitas enviar mensajes, puedes agregarlo aquí
         // const currentData = table.getData() as MemoryRow[];
         // const msg = { command: 'event', object: { event: 'memoryChanged', value: currentData } };
         // sendMessagetoExtension(msg);

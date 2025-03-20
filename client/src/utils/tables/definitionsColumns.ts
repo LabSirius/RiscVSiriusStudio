@@ -97,9 +97,10 @@ export const getColumnMemoryDefinitions = (): ColumnDefinition[] => {
         title: 'Info',
         field: 'info',
         width: 60,
-        formatter: (cell) => `<span class="truncated-info">${cell.getValue()}</span>`,
-        tooltip: (e: MouseEvent, cell: CellComponent, onRendered: (cb: () => void) => void): string =>
-          createTooltip(e, cell, onRendered),
+        formatter: (cell) => `<span class="block whitespace-nowrap overflow-hidden truncate text-white ">${cell.getValue()}</span>`,
+        
+        tooltip: (e: MouseEvent, cell: CellComponent, onRendered: (cb: () => void) => void) =>
+          createTooltip(e, cell, onRendered) as any,
       },
       {
         ...frozenAttrs,
