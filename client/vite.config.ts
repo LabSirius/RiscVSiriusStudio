@@ -7,7 +7,7 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [react(),  tailwindcss(),],
   build: {
-    outDir: resolve(__dirname, '../out/webview'),
+    outDir: resolve(__dirname, '../src/templates/panelView'),
     emptyOutDir: true,
   },
   resolve: {

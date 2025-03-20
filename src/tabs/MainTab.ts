@@ -10,10 +10,10 @@ import { RVContext } from "../support/context";
 
 // We extract the html that will be connected to the extension
 export async function getHtmlForRegistersWebview(webview: Webview, extensionUri: Uri) {
-  const indexHtmlPath = join(extensionUri.fsPath, "out", "webview", "index.html");
+  const indexHtmlPath = join(extensionUri.fsPath, "src", "templates", "panelView", "index.html");
   let html = readFileSync(indexHtmlPath, "utf8");
 
-  const baseUri = webview.asWebviewUri(Uri.file(join(extensionUri.fsPath, "out", "webview")));
+  const baseUri = webview.asWebviewUri(Uri.file(join(extensionUri.fsPath, "src", "templates", "panelView")));
   html = html.replace("<head>", `<head><base href="${baseUri}/">`);
   const nonce = getNonce();
   const panelviewUri = webview.asWebviewUri(Uri.joinPath(extensionUri, "out", "panelview.js"));
