@@ -7,7 +7,9 @@ import { registersNames } from '@/utils/tables/data';
 
 import { RegisterView } from '@/utils/tables/types';
 
-import { registerNamesFormatter, valueFormatter, valueRegisterEditor, attachConvertionToggle, createViewTypeFormatter } from '@/utils/tables/handlers';
+import {  createViewTypeFormatter } from '@/utils/tables/handlersRegisters';
+
+import { getColumnsRegisterDefinitions } from '@/utils/tables/definitionsColumns';
 
 interface RegisterValue {
   name: string;
@@ -24,9 +26,6 @@ const RegistersTable = () => {
   const tabulatorInstance = useRef<Tabulator | null>(null);
   const currentHoveredViewTypeCell = useRef<CellComponent | null>(null);
   const [tableData, setTableData] = useState<RegisterValue[]>([]);
-
-
-  const possibleViews: RegisterView[] = [2, 'signed', 'unsigned', 16, 'ascii'];
 
   const viewTypeFormatterCustom = createViewTypeFormatter((cell) => {
     currentHoveredViewTypeCell.current = cell;
@@ -49,7 +48,7 @@ const RegistersTable = () => {
     return () => document.removeEventListener('keydown', handleGlobalKeyPress);
   }, []);
 
-  // --- INICIALIZACIÓN DE DATOS ---jh 
+  // --- INITIALIZATION OF TABLE DATA ---
   useEffect(() => {
     const initialData = registersNames.map((name, id) => {
       const [rawName] = name.split(' ');
@@ -66,51 +65,13 @@ const RegistersTable = () => {
     setTableData(initialData);
   }, []);
 
-  // --- INICIALIZACIÓN DE TABULATOR ---
+  // --- INITIALIZATION ON TABULATOR ---
   useEffect(() => {
     if (!tableRef.current || tableData.length === 0) return;
     if (!tabulatorInstance.current) {
       tabulatorInstance.current = new Tabulator(tableRef.current, {
         data: tableData,
-        columns: [
-          {
-            title: 'Name',
-            field: 'name',
-            frozen: true,
-            width: 100,
-            formatter: registerNamesFormatter,
-            cellDblClick: (_, cell) => {
-              const data = cell.getData();
-              // Alterna inmediatamente la propiedad "watched"
-              const updatedData = { ...data, watched: !data.watched };
-              cell.getRow().update(updatedData);
-              tabulatorInstance.current?.setGroupBy('watched');
-            }
-          },
-          {
-            title: 'Value',
-            field: 'value',
-            width: 160,
-            formatter: valueFormatter,
-            editor: valueRegisterEditor,
-            editable: (cell) => cell.getData().name !== 'x0 zero',
-            cssClass: 'font-mono',
-            cellMouseEnter: (_, cell) => {
-              attachConvertionToggle(cell);
-            }
-          },
-          {
-            title: "Type",
-            field: "viewType",
-            width: 80,
-            editor: "list",
-            editorParams: { values: possibleViews },
-            formatter: viewTypeFormatterCustom,
-            cellEdited: (cell) => cell.getRow().reformat(),
-            editable: () => true,
-          },
-          { title: 'Watched', field: 'watched', visible: false }
-        ],
+        columns: getColumnsRegisterDefinitions(viewTypeFormatterCustom),
         layout: 'fitColumns',
         reactiveData: true,
         groupBy: 'watched',
@@ -126,7 +87,7 @@ const RegistersTable = () => {
   }, [tableData]);
 
   return (
-    <div className="shadow-lg max-h-dvh">
+    <div className="shadow-lg max-h-[calc(100dvh-2.3rem)] ">
       <div
         ref={tableRef}
         className="w-full h-full overflow-y-scroll overflow-x-hidden [&_.tabulator-header]:bg-gray-100 [&_.tabulator-group]:bg-blue-50"
