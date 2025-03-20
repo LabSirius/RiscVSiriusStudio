@@ -7,7 +7,7 @@ import { registersNames } from '@/utils/tables/data';
 
 import { RegisterView } from '@/utils/tables/types';
 
-import {  createViewTypeFormatter } from '@/utils/tables/handlersRegisters';
+import {  createViewTypeFormatter, handleGlobalKeyPress } from '@/utils/tables/handlersRegisters';
 
 import { getColumnsRegisterDefinitions } from '@/utils/tables/definitionsColumns';
 
@@ -33,19 +33,9 @@ const RegistersTable = () => {
   
   // --- GLOBAL KEYBOARD SHORTCUTS TO CHANGE viewType ---
   useEffect(() => {
-    const handleGlobalKeyPress = (e: KeyboardEvent) => {
-      const key = e.key.toLowerCase();
-      const keyMap: Record<string, RegisterView> = {
-        'b': 2, 's': 'signed', 'u': 'unsigned', 'h': 16, 'a': 'ascii'
-      };
-      if (currentHoveredViewTypeCell.current && keyMap[key]) {
-        const row = currentHoveredViewTypeCell.current.getRow();
-        row?.update({ viewType: keyMap[key] });
-        row?.reformat();
-      }
-    };
-    document.addEventListener('keydown', handleGlobalKeyPress);
-    return () => document.removeEventListener('keydown', handleGlobalKeyPress);
+    const keyHandler = handleGlobalKeyPress(currentHoveredViewTypeCell);
+    document.addEventListener("keydown", keyHandler);
+    return () => document.removeEventListener("keydown", keyHandler);
   }, []);
 
   // --- INITIALIZATION OF TABLE DATA ---

@@ -176,6 +176,6 @@ a:hover{
 }
 
 .section-container{
-  @apply flex h-dvh overflow-y-scroll overflow-x-hidden flex-1 flex-col gap-4 max-w-[24rem] px-4 pb-[3rem] ;
+  @apply flex h-dvh overflow-y-scroll overflow-x-hidden flex-1 flex-col gap-4 min-w-[24rem] max-w-[24rem] px-4 pb-[3rem] ;
 }
 

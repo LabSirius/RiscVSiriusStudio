@@ -2,6 +2,9 @@ import { CellComponent } from 'tabulator-tables';
 
 import { RegisterView } from '@/utils/tables/types';
 
+import { RefObject } from 'react';
+
+
 import {
     binaryToUInt,
     binaryToInt,
@@ -269,5 +272,26 @@ export const createViewTypeFormatter = (
     });
     
     return container;
+  };
+};
+
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const handleGlobalKeyPress = (currentHoveredViewTypeCell: RefObject<any>) => {
+  return (e: KeyboardEvent) => {
+    const key = e.key.toLowerCase();
+    const keyMap: Record<string, RegisterView> = {
+      b: 2,
+      s: "signed",
+      u: "unsigned",
+      h: 16,
+      a: "ascii",
+    };
+
+    if (currentHoveredViewTypeCell.current && keyMap[key]) {
+      const row = currentHoveredViewTypeCell.current.getRow();
+      row?.update({ viewType: keyMap[key] });
+      row?.reformat();
+    }
   };
 };

@@ -60,7 +60,7 @@ export const uploadMemory = (
 
   // Add symbols to the table
   Object.values(newSymbols).forEach((symbol: SymbolData) => {
-    const symbolAddress = intToHex(symbol.memdef - 4).toUpperCase();
+    const symbolAddress = intToHex(symbol.memdef).toUpperCase();
     table.updateOrAddRow(symbolAddress, {
       address: symbolAddress,
       value0: '00000000',
@@ -276,9 +276,32 @@ export const setupEventListeners = (table: Tabulator): void => {
   };
 
 
-export const showHexadecimalInMemory = (): void => {
-    console.log('Mostrando valores hexadecimales en la memoria');
-};
+/**
+ * This function toggles the visibility of the hexadecimal column in the memory table.
+ */
+export function toggleHexColumn(
+  tableInstance: Tabulator,
+  showHexadecimal: boolean
+): void {
+  let hexColumn;
+  try {
+    hexColumn = tableInstance.getColumn("hex");
+  } catch  {
+    return;
+  }
+
+  if (hexColumn) {
+    if (showHexadecimal) {
+      hexColumn.show();
+    } else {
+      hexColumn.hide();
+    }
+  } else {
+    console.warn("La columna 'hex' no está disponible.");
+  }
+}
+
+
 export const assignMemoryInputValue = (value: number): void => {
     console.log('Asignando valor al input de memoria:', value);
 };
@@ -286,6 +309,8 @@ export const assignMemoryInputValue = (value: number): void => {
 export const configuration = (): void => {
     console.log('Realizando configuración adicional');
 };
+
+
 
 
 

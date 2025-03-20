@@ -100,6 +100,7 @@ export const getColumnMemoryDefinitions = (): ColumnDefinition[] => {
         formatter: (cell) => `<span class="block whitespace-nowrap overflow-hidden truncate text-white ">${cell.getValue()}</span>`,
         
         tooltip: (e: MouseEvent, cell: CellComponent, onRendered: (cb: () => void) => void) =>
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           createTooltip(e, cell, onRendered) as any,
       },
       {

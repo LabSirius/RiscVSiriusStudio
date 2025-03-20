@@ -6,7 +6,7 @@ import Tables from "./Tables/Tables"
 const SettingsSection = () => {
   const { routes } = useRoutes()
   return (
-    <div className="flex px-4 gap-5 overflow-hidden ">
+    <div className="flex px-4 gap-5 overflow-y-hidden overflow-x-scroll ">
       <Tables />
       <div className='section-container mt-1'>
         <div className="flex flex-col gap-7">

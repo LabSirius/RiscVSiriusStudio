@@ -3,11 +3,12 @@ import { useRoutes } from '@/context/RoutesContext';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 import './tabulator.min.css';
 
-import { uploadMemory, setupEventListeners } from '@/utils/tables/handlersMemory';
+import { uploadMemory, setupEventListeners, toggleHexColumn } from '@/utils/tables/handlersMemory';
 import { getColumnMemoryDefinitions } from '@/utils/tables/definitionsColumns';
 import {  DataMemoryTable } from '@/utils/tables/types';
 
 import {  } from '@/utils/tables/handlersMemory';
+import { useMemoryTable } from '@/context/MemoryTableContext';
 
 interface RoutesContextProps {
   dataMemoryTable: DataMemoryTable;}
@@ -17,6 +18,9 @@ const MemoryTable = () => {
   const tableInstanceRef = useRef<Tabulator | null>(null);
   const context = useRoutes() as unknown as RoutesContextProps;
   const { dataMemoryTable } = context;
+
+  const { showHexadecimal} = useMemoryTable();
+ 
 
   /**
    * Initialize the table with the data from the context
@@ -45,6 +49,12 @@ const MemoryTable = () => {
       });
     }
   }, []); 
+
+  useEffect(() => {
+    if (tableInstanceRef.current) {
+      toggleHexColumn(tableInstanceRef.current, showHexadecimal);
+    }
+  }, [showHexadecimal]);
   
 
   useEffect(() => {
@@ -54,7 +64,7 @@ const MemoryTable = () => {
   }, []);
 
   return (
-    <div className="shadow-lg max-h-[calc(100dvh-2.3rem)] h">
+    <div className="shadow-lg max-h-[calc(100dvh-2.3rem)]">
       <div ref={tableContainerRef} className="w-full h-full overflow-y-scroll overflow-x-hidden [&_.tabulator-header]:bg-gray-100 [&_.tabulator-group]:bg-blue-50" />
     </div>
   );
