@@ -77,7 +77,7 @@ const RegistersTable = () => {
   }, [tableData]);
 
   return (
-    <div className="shadow-lg max-h-[calc(100dvh-2.3rem)] ">
+    <div className="shadow-lg max-h-[calc(100dvh-2.3rem)]   min-w-[22.3rem]">
       <div
         ref={tableRef}
         className="w-full h-full overflow-y-scroll overflow-x-hidden [&_.tabulator-header]:bg-gray-100 [&_.tabulator-group]:bg-blue-50"

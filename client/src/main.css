@@ -180,3 +180,16 @@ a:hover{
 
 }
 
+
+.left-animation {
+  animation: left-move 2s linear infinite;
+}
+
+@keyframes left-move {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-60px);
+  }
+}
