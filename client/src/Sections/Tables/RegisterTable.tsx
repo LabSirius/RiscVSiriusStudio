@@ -32,7 +32,7 @@ const RegistersTable = () => {
     currentHoveredViewTypeCell.current = cell;
   });
   
-  // --- ATAJOS GLOBALES DE TECLADO PARA CAMBIAR EL viewType ---
+  // --- GLOBAL KEYBOARD SHORTCUTS TO CHANGE viewType ---
   useEffect(() => {
     const handleGlobalKeyPress = (e: KeyboardEvent) => {
       const key = e.key.toLowerCase();
