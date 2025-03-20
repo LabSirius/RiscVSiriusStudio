@@ -11,7 +11,7 @@ interface RoutesContextProps {
 const RoutesContext = createContext<RoutesContextProps | undefined>(undefined);
 
 export const RoutesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [routes, setRoutes] = useState<string>('uploadMemory');
+  const [routes, setRoutes] = useState<string>('');
   const [dataMemoryTable, setDataMemoryTable] = useState<Record<string, unknown> | undefined>(undefined);
 
   return (

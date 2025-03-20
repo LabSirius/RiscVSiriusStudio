@@ -69,7 +69,7 @@ const MemoryTable = () => {
   }, []);
 
   return (
-    <div className="shadow-lg max-h-[calc(100dvh-2.3rem)] min-w-[34.8rem] relative">
+    <div className={`shadow-lg max-h-[calc(100dvh-2.3rem)] ${showHexadecimal ? 'min-w-[34.8rem]' : ''} relative`}>
 
       {isLoading && <SkeletonMemoryTable />}
      

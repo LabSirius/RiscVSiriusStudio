@@ -90,7 +90,7 @@ const RegistersTable = () => {
   }, [tableData, viewTypeFormatterCustom]);
 
   return (
-    <div className="shadow-lg max-h-[calc(100dvh-2.3rem)]" ref={tableContainerRef}>
+    <div className="shadow-lg max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem] " ref={tableContainerRef}>
       {!tableBuilt && <SkeletonRegisterTable />}
       <div
         ref={tableRef}
