@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMemoryTable } from '@/context/MemoryTableContext';
+import { useRegistersTable } from '@/context/RegisterTableContext';
+
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 import './tabulator.min.css';
 
@@ -23,11 +25,13 @@ interface MemoryContextProps {
 const MemoryTable = () => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
+
   const context = useMemoryTable() as unknown as MemoryContextProps;
   const { showHexadecimal, dataMemoryTable, setDataMemoryTable, sizeMemory } = context;
   
   const [isLoading, setIsLoading] = useState(true);
 
+  const { setSp} = useRegistersTable();
 
   /**
    * Initialize Tabulator instance
@@ -90,6 +94,7 @@ const MemoryTable = () => {
         0,
         () => {
           setIsLoading(false);
+          setSp(newTotalSize -4);
         },
       );
 
@@ -98,7 +103,7 @@ const MemoryTable = () => {
         memory: newMemory,
       });
 
-       // Send message to update memory size
+     
       sendMessage({ event: "memorySizeChanged", data: { sizeMemory: newTotalSize-4 } });
     }
   }, [sizeMemory]);

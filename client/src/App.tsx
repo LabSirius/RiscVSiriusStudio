@@ -3,6 +3,7 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 
 import { RoutesProvider } from "./context/RoutesContext";
 import { MemoryTableProvider } from "./context/MemoryTableContext";
+import { RegistersTableProvider } from "./context/RegisterTableContext";
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sideBar";
 import Sidebar from "@/components/SideBar";
@@ -17,20 +18,22 @@ const App = () => {
     <MemoryRouter>
       <RoutesProvider>
         <MemoryTableProvider>
-          <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <div className="flex h-full w-full overflow-hidden ">
-              <SidebarProvider>
-                <Sidebar />
-                <SidebarTrigger />
-                <MessageListener />
-                <Routes>
-                  <Route path="/" element={<ConvertSection />} />
-                  <Route path="/help" element={<HelpSection />} />
-                  <Route path="/settings" element={<SettingsSection />} />
-                </Routes>
-              </SidebarProvider>
-            </div>
-          </ThemeProvider>
+          <RegistersTableProvider>
+            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+              <div className="flex h-full w-full overflow-hidden ">
+                <SidebarProvider>
+                  <Sidebar />
+                  <SidebarTrigger />
+                  <MessageListener />
+                  <Routes>
+                    <Route path="/" element={<ConvertSection />} />
+                    <Route path="/help" element={<HelpSection />} />
+                    <Route path="/settings" element={<SettingsSection />} />
+                  </Routes>
+                </SidebarProvider>
+              </div>
+            </ThemeProvider>
+          </RegistersTableProvider>
         </MemoryTableProvider>
       </RoutesProvider>
     </MemoryRouter>
