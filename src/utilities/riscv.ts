@@ -17,22 +17,28 @@
     return memIndex;
   }
 
+  // function extractList(list, index) {
+  //   return list.map(function(element) { return element[index]; });
+  // }
+
   function extractList(list, index) {
-    return list.map(function(element) { return element[index]; });
+    return list.flatMap(t => t[index] !== undefined ? t[index] : [])
   }
 
   // function buildList(head, tail, index) {
   //   return [head].concat(extractList(tail, index));
   // }
 
-  function buildList(head, tail: Array) {
+  function buildList(head, tail: Array, index: Number) {
     if (Array.isArray(head)){
       tail.unshift([[], head[1]]);
       head = head[0];
     }
-    return [head].concat(
-      tail.flatMap(t => Array.isArray(t[1]) ? t[1] : [t[1]])
-    );
+    // return [head].concat(
+    //   tail.flatMap(t => Array.isArray(t[1]) ? t[1] : [t[1]])
+    // );
+
+    return [head].concat(extractList(tail, index))
   }
 
   function normParams(inst){
@@ -43,14 +49,10 @@
     return ret; 
   }
 
-  function verifySymbol(symbol, isFirstPass){
+  function verifySymbol(symbol){
     if (symbol["double"]){
-      if (isFirstPass) {
-        getInstMemPosition();
-      }
-      return true;
+      getInstMemPosition();
     }
-    return false;
   }
 
   function getInt(val) { return parseInt(val,10); }
@@ -1183,15 +1185,16 @@ function peg$parse(input, options) {
       return handleRInstruction('slt', rd, rs2, rs1, location(), true);
     };
   var peg$f50 = function(rd, symbol) {
-    const imm = symbol["value"];
-    if (verifySymbol(symbol, isFirstPass)){
-      if (isFirstPass) { return undefined; }
-      const firstInstruction = handleUInstruction('auipc', rd, shiftLeftLogical(imm, 12), location(), true);
-      const secondInstruction = handleIInstruction('addi', rd, rd, cutNumber(imm, 0xFFF), location(), true);
-      return [firstInstruction, secondInstruction];
+    if (isFirstPass){
+      verifySymbol(symbol)
+      return undefined;
     }
-    if (isFirstPass) { return undefined };
-    return handleIInstruction('addi', rd, rd, imm, location(), true);
+    const imm = symbol["value"];
+    if (symbol["double"]){
+      const complementInstruction = handleUInstruction('auipc', rd, shiftLeftLogical(imm, 12), location(), true);
+    }
+    const mainInstruction = handleIInstruction('addi', rd, rd, cutNumber(imm, 0xFFF), location(), true);
+    return [complementInstruction, mainInstruction];
   };
   var peg$f51 = function(rd, symbol) {
     const imm = symbol["value"];

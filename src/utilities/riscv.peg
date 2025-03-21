@@ -10,22 +10,17 @@
     return memIndex;
   }
 
+
   function extractList(list, index) {
-    return list.map(function(element) { return element[index]; });
+    return list.flatMap(t => t[index] !== undefined ? t[index] : [])
   }
 
-  // function buildList(head, tail, index) {
-  //   return [head].concat(extractList(tail, index));
-  // }
-
-  function buildList(head, tail: Array) {
+  function buildList(head, tail: Array, index: Number) {
     if (Array.isArray(head)){
       tail.unshift([[], head[1]]);
       head = head[0];
     }
-    return [head].concat(
-      tail.flatMap(t => Array.isArray(t[1]) ? t[1] : [t[1]])
-    );
+    return [head].concat(extractList(tail, index))
   }
 
   function normParams(inst){
@@ -36,14 +31,10 @@
     return ret; 
   }
 
-  function verifySymbol(symbol, isFirstPass){
+  function verifySymbol(symbol){
     if (symbol["double"]){
-      if (isFirstPass) {
-        getInstMemPosition();
-      }
-      return true;
+      getInstMemPosition();
     }
-    return false;
   }
 
   function getInt(val) { return parseInt(val,10); }
@@ -656,7 +647,8 @@
     = BPInstruction
     / JPInstruction
     / MiscInstruction
-    / DoublePInstruction
+    / LoadPInstruction
+    / StorePInstruction
 
   BPInstruction "Branch pseudo instruction"
     = name:BPZInstName _ rs:RegisterName ___ offset:Imm13 
@@ -697,7 +689,6 @@
       if (isFirstPass) { return undefined; }
       return handleIInstruction('jalr', regEnc('0'), rs, '0', location(), true);
     }
-//    / jToken _ offset:Imm21
     / jToken _ target:JTarget
     {
       if (isFirstPass) { return undefined; }
@@ -710,31 +701,30 @@
         'jalr', regEnc('0'), regEnc('1'), '0', location(), true
       );
     }
-    /*
-    / name:(callToken / tailToken) _ offset:Imm32
-    { 
-      const x1Reg = { regname: 'x1', regeq: 'x1', regenc: '1'}; 
-      const x6Reg = { regname: 'x6', regeq: 'x6', regenc: '6'}; 
-      const x0Reg = { regname: 'x0', regeq: 'x0', regenc: '0'}; 
 
-      const binOffset = toBinaryString(offset,32);
-      const h = binOffset.substring(0,20);
-      const l = binOffset.substring(20);
-      const high = parseInt(h,10);
-      const low = parseInt(l,10);
-
-      const auipc = handleUInstruction('auipc', x6Reg, high, location(), true);
-
-      let jalr = null;
-      if (name == 'call') {
-        jalr = handleIInstruction('jalr', x1Reg, x6Reg, low, location(), true);
-      } else {
-        jalr = handleIInstruction('jalr', x0Reg, x6Reg, low, location(), true);
-      }
-      
-      return jalr;
+    / name:callToken _ offset:Offset
+  {
+    if (isFirstPass){
+      verifySymbol(symbol);
+      return undefined;
     }
-    */
+    const imm = offset["value"];
+    if (symbol["double"]){ const complementInstruction = handleUInstruction('auipc', regEnc('6'), shiftLeftLogical(imm, 12), location(), true); }
+    const mainInstruction = handleIInstruction('jalr', regEnc('1'), regEnc('1'), cutNumber(imm, 0xFFF), location(), true);
+    return [complementInstruction, mainInstruction];
+  }
+  
+  / name:tailToken _ offset:Offset
+  {
+    if (isFirstPass){
+      verifySymbol(symbol);
+      return undefined;
+    }
+    const imm = offset["value"];
+    if (symbol["double"]){ const complementInstruction = handleUInstruction('auipc', regEnc('6'), shiftLeftLogical(imm, 12), location(), true); }
+    const mainInstruction = handleIInstruction('jalr', regEnc('0'), regEnc('6'), cutNumber(imm, 0xFFF), location(), true);
+    return [complementInstruction, mainInstruction];
+  }
     
     MiscInstruction "Misc. instructions"
     = mvToken _ rd:RegisterName ___ rs:RegisterName
@@ -786,82 +776,55 @@
       return handleRInstruction('slt', rd, rs2, rs1, location(), true);
     }
 
-  DoublePInstruction "Pseudo-instructions that expands into two instructions"
-  = laToken _ rd:RegisterName ___ symbol:Symbol
-  {
-    const imm = symbol["value"];
-    if (verifySymbol(symbol, isFirstPass)){
-      if (isFirstPass) { return undefined; }
-      const firstInstruction = handleUInstruction('auipc', rd, shiftLeftLogical(imm, 12), location(), true);
-      const secondInstruction = handleIInstruction('addi', rd, rd, cutNumber(imm, 0xFFF), location(), true);
-      return [firstInstruction, secondInstruction];
+    / laToken _ rd:RegisterName ___ symbol:Symbol
+    {
+      if (isFirstPass){
+        verifySymbol(symbol);
+        return undefined;
+      }
+      const imm = symbol["value"];
+      if (symbol["double"]){ const complementInstruction = handleUInstruction('auipc', rd, shiftLeftLogical(imm, 12), location(), true); }
+      const mainInstruction = handleIInstruction('addi', rd, rd, cutNumber(imm, 0xFFF), location(), true);
+      return [complementInstruction, mainInstruction];
     }
-    if (isFirstPass) { return undefined };
-    return handleIInstruction('addi', rd, rd, imm, location(), true);
-  }
-  / liToken _ rd:RegisterName ___ symbol:Symbol 
-  {
-    const imm = symbol["value"];
-    if (verifySymbol(symbol, isFirstPass)){
-      if (isFirstPass) { return undefined; }
-      const firstInstruction = handleUInstruction('lui', rd, shiftLeftLogical(imm, 12), location(), true);
-      const secondInstruction = handleIInstruction('addi', rd, regEnc('0'), cutNumber(imm, 0xFFF), location(), true);
-      return [firstInstruction, secondInstruction];
+    / liToken _ rd:RegisterName ___ symbol:Symbol 
+    {
+      if (isFirstPass){
+        verifySymbol(symbol);
+        return undefined;
+      }
+      const imm = symbol["value"];
+      if (symbol["double"]){ const complementInstruction = handleUInstruction('lui', rd, shiftLeftLogical(imm, 12), location(), true); }
+      const mainInstruction = handleIInstruction('addi', rd, regEnc('0'), cutNumber(imm, 0xFFF), location(), true);
+      return [complementInstruction, mainInstruction];
     }
-    if (isFirstPass) { return undefined };
-    return handleIInstruction('addi', rd, regEnc('0'), imm, location(), true);
+
+  LoadPInstruction "Load pseudo instructions"
+  = name:LoadInstName _ rd:RegisterName ___ symbol:Symbol 
+  { 
+    if (isFirstPass){
+      verifySymbol(symbol);
+      return undefined;
+    }
+    const imm = symbol["value"];
+    if (symbol["double"]){ const complementInstruction = handleUInstruction('auipc', rd, shiftLeftLogical(imm, 12), location(), true); }
+    const mainInstruction = handleIInstruction(name, rd, rd, cutNumber(imm, 0xFFF), location(), true);
+    return [complementInstruction, mainInstruction];
   }
 
-  / name:LoadInstName _ rd:RegisterName ___ symbol:Symbol 
+  StorePInstruction "store pseudo instruction"
+  = name:StoreInstName _ rd:RegisterName ___ symbol:Symbol ___ rt:RegisterName
   { 
-    const imm = symbol["value"];
-    if (verifySymbol(symbol, isFirstPass)){
-      if (isFirstPass) { return undefined };
-      const firstInstruction = handleUInstruction('auipc', rd, shiftLeftLogical(imm, 12), location(), true);
-      const secondInstruction = handleIInstruction(name, rd, rd, cutNumber(imm, 0xFFF), location(), true);
-      return [firstInstruction, secondInstruction];
+    if (isFirstPass){
+      verifySymbol(symbol);
+      return undefined;
     }
-    if (isFirstPass) { return undefined };
-    return handleIInstruction(name, rd, rd, imm, location());
+    const imm = symbol["value"];
+    if (symbol["double"]){ const complementInstruction = handleUInstruction('auipc', rt, shiftLeftLogical(imm, 12), location(), true); }
+    const mainInstruction = handleSInstruction(name, rd, cutNumber(imm, 0xFFF), rt, location(), true);
+    return [complementInstruction, mainInstruction];
   }
   
-  / name:StoreInstName _ rd:RegisterName ___ symbol:Symbol ___ rt:RegisterName
-  { 
-    const imm = symbol["value"];
-    if (verifySymbol(symbol, isFirstPass)){
-      if (isFirstPass) { return undefined };
-      const firstInstruction = handleUInstruction('auipc', rt, shiftLeftLogical(imm, 12), location(), true);
-      const secondInstruction = handleSInstruction(name, rd, cutNumber(imm, 0xFFF), rt, location(), true);
-      return [firstInstruction, secondInstruction];
-    }
-    if (isFirstPass) { return undefined };
-    return handleSInstruction(name, rd, imm, rt, location(), true);
-  }
-  / name:callToken _ offset:Offset
-  {
-    const imm = offset["value"];
-    if (verifySymbol(offset, isFirstPass)){
-      if (isFirstPass) { return undefined };
-      const firstInstruction = handleUInstruction('auipc', regEnc('6'), shiftLeftLogical(imm, 12), location(), true);
-      const secondInstruction = handleIInstruction('jalr', regEnc('1'), regEnc('1'), cutNumber(imm, 0xFFF), location(), true);
-      return [firstInstruction, secondInstruction];
-    }
-    if (isFirstPass) { return undefined };
-    return handleIInstruction('jalr', regEnc('1'), regEnc('1'), imm, location(), true);
-  }
-  
-  / name:tailToken _ offset:Offset
-  {
-    const imm = offset["value"];
-    if (verifySymbol(offset, isFirstPass)){
-      if (isFirstPass) { return undefined; }
-      const firstInstruction = handleUInstruction('auipc', regEnc('6'), shiftLeftLogical(imm, 12), location(), true);
-      const secondInstruction = handleIInstruction('jalr', regEnc('0'), regEnc('6'), cutNumber(imm, 0xFFF), location(), true);
-      return [firstInstruction, secondInstruction];
-    }
-    if (isFirstPass) { return undefined };
-    return handleIInstruction('jalr', regEnc('0'), regEnc('6'), imm, location(), true);
-  }
 
   Imm12 "12 bits immediate"
   = val:Integer
