@@ -21,7 +21,6 @@ export const uploadMemory = (
   pc: number,
   onComplete?: () => void
 ): void => {
-  // Procesa la memoria en chunks y actualiza o agrega cada fila
   chunk(newMemory, 4).forEach((word: string[], index: number) => {
     const address = intToHex(index * 4).toUpperCase();
     const hex = word
@@ -48,7 +47,6 @@ export const uploadMemory = (
     }
   });
 
-  // Actualiza la fila del Heap
   const heapAddressHex = intToHex(newCodeSize).toUpperCase();
   table.updateOrAddRow(heapAddressHex, {
     address: heapAddressHex,
@@ -60,7 +58,6 @@ export const uploadMemory = (
     hex: '00-00-00-00',
   });
 
-  // Agrega los símbolos a la tabla
   Object.values(newSymbols).forEach((symbol: SymbolData) => {
     const symbolAddress = intToHex(symbol.memdef).toUpperCase();
     table.updateOrAddRow(symbolAddress, {
@@ -74,8 +71,8 @@ export const uploadMemory = (
     });
   });
   updatePC(pc, { current: table });
+  setSP(newMemory.length-4, { current: table });
   
-  // Llama al callback para notificar que el upload ha finalizado
   if (onComplete) onComplete();
 };
 
@@ -117,8 +114,48 @@ export const createPCIcon = (): HTMLElement => {
     void cellElement.offsetWidth;
     setTimeout(() => cellElement.classList.remove('animate-pc'), 500);
 };
-  
 
+
+
+/**
+ * Updates the stack pointer (SP) in the table using the instance reference.
+ *
+ * @param spValue - Number representing the new position for SP.
+ * @param tableInstanceRef - Mutable reference to the Tabulator instance.
+ * @param prevSP - (Optional) Previous hexadecimal address where the SP was.
+ * @returns The new hexadecimal address assigned to the SP.
+ */
+export const setSP = (
+  spValue: number,
+  tableInstanceRef: React.MutableRefObject<Tabulator | null>,
+  prevSP?: string
+): string => {
+  // Clears the SP mark in the previous row, if it exists
+  if (prevSP && tableInstanceRef.current) {
+    const prevRow = tableInstanceRef.current.getRow(prevSP);
+    if (prevRow) {
+      prevRow.update({ info: "" });
+    }
+  }
+
+  // Converts the numeric value to an uppercase hexadecimal address
+  const address = intToHex(spValue).toUpperCase();
+
+
+  // Updates the corresponding row to show the SP mark
+  if (tableInstanceRef.current) {
+    const targetRow = tableInstanceRef.current.getRow(address);
+    if (targetRow) {
+      targetRow.update({
+        info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">SP</span>`,
+      });
+    }
+  }
+
+  return address;
+};
+
+  
 
 
 /**

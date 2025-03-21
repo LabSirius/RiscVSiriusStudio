@@ -20,23 +20,20 @@ const MemoryTable = () => {
   const context = useMemoryTable() as unknown as MemoryContextProps;
   const { showHexadecimal, dataMemoryTable } = context;
   
-  // Estado que controla si la tabla está cargada (visible) o no
   const [isLoading, setIsLoading] = useState(true);
   console.log(isLoading)
 
-  // Inicializa Tabulator con un array vacío; luego uploadMemory lo actualizará
   useEffect(() => {
     if (!tableContainerRef.current || tableInstanceRef.current) return;
 
     tableInstanceRef.current = new Tabulator(tableContainerRef.current, {
       layout: 'fitColumns',
       index: 'address',
-      data: [], // Arrancamos con array vacío
+      data: [],
       columns: getColumnMemoryDefinitions(),
       initialSort: [{ column: 'address', dir: 'desc' }],
     });
 
-    // Cuando se dispare 'tableBuilt', se ejecuta uploadMemory y luego se quita el skeleton
     tableInstanceRef.current.on('tableBuilt', () => {
       if (dataMemoryTable) {
         uploadMemory(
@@ -46,7 +43,6 @@ const MemoryTable = () => {
           dataMemoryTable.symbols,
           0,
           () => {
-            // Callback que se ejecuta al finalizar uploadMemory:
             setIsLoading(false);
           }
         );
