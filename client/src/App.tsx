@@ -6,7 +6,7 @@ import { MemoryTableProvider } from "./context/MemoryTableContext";
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sideBar";
 import Sidebar from "@/components/SideBar";
-import MessageListener from "./components/MessageListener";
+import MessageListener from "./components/Message/MessageListener";
 
 import ConvertSection from "@/sections/ConvertSection";
 import HelpSection from "./sections/HelpSection";
