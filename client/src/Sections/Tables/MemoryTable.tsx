@@ -116,11 +116,11 @@ const MemoryTable = () => {
   }, []);
 
   return (
-    <div className={`shadow-lg max-h-[calc(100dvh-2.3rem)] ${showHexadecimal ? 'min-w-[34.8rem]' : ''} relative`}>
+    <div className={`shadow-lg  min-h-min ${showHexadecimal ? 'min-w-[34.8rem]' : ''} relative`}>
       {isLoading && <SkeletonMemoryTable />}
       <div
         ref={tableContainerRef}
-        className={`w-full h-full overflow-y-scroll overflow-x-hidden [&_.tabulator-header]:bg-gray-100 [&_.tabulator-group]:bg-blue-50 transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+        className={`w-full max-h-[calc(100dvh-2.3rem)] overflow-y-scroll overflow-x-hidden [&_.tabulator-header]:bg-gray-100 [&_.tabulator-group]:bg-blue-50 transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
       />
     </div>
   );
