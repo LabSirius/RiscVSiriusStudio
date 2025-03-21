@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
+import { useMemoryTable } from "@/context/MemoryTableContext";
 import { RedoDot, FileDown, Save, Grid2x2Plus } from "lucide-react";
 
 const ManualConfig = () => {
+  const { sizeMemory} = useMemoryTable();
+
   return (
     <div className="flex flex-col gap-7 ">
       <p className="flex text-md text-gray-400">
@@ -49,7 +52,7 @@ const ManualConfig = () => {
             className="relative rounded-lg border border-gray-400 cursor-pointer z-[2] bg-transparent py-2 pr-2 pl-[2.3rem] w-full"
             type="number"
             id="memorySizeInput"
-            value="32"
+            value={sizeMemory}
             min="32"
             max="512"
             step="4"

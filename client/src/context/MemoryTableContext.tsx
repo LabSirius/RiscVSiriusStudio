@@ -6,6 +6,8 @@ interface MemoryTableContextProps {
   setShowHexadecimal: React.Dispatch<React.SetStateAction<boolean>>;
    dataMemoryTable: Record<string, unknown> | undefined;
    setDataMemoryTable: React.Dispatch<React.SetStateAction<Record<string, unknown> | undefined>>;
+   sizeMemory: number;
+    setSizeMemory: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const MemoryTableContext = createContext<MemoryTableContextProps | undefined>(undefined);
@@ -13,10 +15,11 @@ const MemoryTableContext = createContext<MemoryTableContextProps | undefined>(un
 export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [showHexadecimal, setShowHexadecimal] = useState<boolean>(true);
   const [dataMemoryTable, setDataMemoryTable] = useState<Record<string, unknown> | undefined>(undefined);
+  const [sizeMemory, setSizeMemory] = useState<number>(0);
  
 
   return (
-    <MemoryTableContext.Provider value={{dataMemoryTable, setDataMemoryTable, showHexadecimal, setShowHexadecimal}}>
+    <MemoryTableContext.Provider value={{dataMemoryTable, setDataMemoryTable, showHexadecimal, setShowHexadecimal, sizeMemory, setSizeMemory}}>
       {children}
     </MemoryTableContext.Provider>
   );
