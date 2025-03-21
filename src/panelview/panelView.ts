@@ -46,7 +46,7 @@ function dispatch(
         UIManager.getInstance()._sendMessageToReact(newData);
         break;
       }
-    case 'panelView':
+    case 'react':
       switch (data.operation) {
         case 'message':
           console.log('Message from panelView AAA', data);
