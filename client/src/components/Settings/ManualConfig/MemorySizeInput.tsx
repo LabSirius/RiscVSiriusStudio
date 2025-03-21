@@ -25,7 +25,8 @@ const MemorySizeInput = () => {
     
     setError(null);
     setSizeMemory(value);
-    console.log("VALUEEE",value);
+
+
     setInputValue(value.toString());
     return true;
   };

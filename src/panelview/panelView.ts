@@ -47,9 +47,12 @@ function dispatch(
         break;
       }
     case 'react':
-      switch (data.operation) {
-        case 'message':
-          console.log('Message from panelView AAA', data);
+      switch (data.event) {
+        case 'updateMemorySize':
+          const { event, ...newData } = data;
+          console.log(event, data.data.sizeMemory )
+
+          UIManager.getInstance()._sendMessageToExtension({event, value: data.data.sizeMemory });
           break;
         default:
           log({ msg: 'Unknown operation', data: data });

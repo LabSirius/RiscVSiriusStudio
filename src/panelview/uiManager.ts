@@ -35,5 +35,9 @@ export class UIManager {
     this.sendMessageToReact(data);
   }
 
+  public _sendMessageToExtension(data: any) {
+    this.sendMessagetoExtension(data);
+  }
+
   
 }

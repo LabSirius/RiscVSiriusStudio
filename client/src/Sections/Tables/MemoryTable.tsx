@@ -9,6 +9,8 @@ import { DataMemoryTable } from '@/utils/tables/types';
 
 import SkeletonMemoryTable from '@/components/Skeleton/SkeletonMemoryTable';
 
+import { sendMessage } from '@/components/Message/sendMessage';
+
 interface MemoryContextProps {
   showHexadecimal: boolean;
   dataMemoryTable: DataMemoryTable;
@@ -95,6 +97,9 @@ const MemoryTable = () => {
         ...dataMemoryTable,
         memory: newMemory,
       });
+
+       // Send message to update memory size
+      sendMessage({ event: "updateMemorySize", data: { sizeMemory: newTotalSize } });
     }
   }, [sizeMemory]);
 
