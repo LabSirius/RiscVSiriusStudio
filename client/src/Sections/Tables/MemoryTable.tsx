@@ -99,7 +99,7 @@ const MemoryTable = () => {
       });
 
        // Send message to update memory size
-      sendMessage({ event: "updateMemorySize", data: { sizeMemory: newTotalSize } });
+      sendMessage({ event: "memorySizeChanged", data: { sizeMemory: newTotalSize-4 } });
     }
   }, [sizeMemory]);
 

@@ -48,11 +48,14 @@ function dispatch(
       }
     case 'react':
       switch (data.event) {
-        case 'updateMemorySize':
+        case 'memorySizeChanged':
           const { event, ...newData } = data;
-          console.log(event, data.data.sizeMemory )
-
-          UIManager.getInstance()._sendMessageToExtension({event, value: data.data.sizeMemory });
+          UIManager.getInstance()._sendMessageToExtension(
+            {
+              command: 'event',
+              object: { event: 'memorySizeChanged', value: data.data.sizeMemory}
+            }
+          );
           break;
         default:
           log({ msg: 'Unknown operation', data: data });
