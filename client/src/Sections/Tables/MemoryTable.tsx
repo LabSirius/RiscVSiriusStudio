@@ -1,25 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
-import { useRoutes } from '@/context/RoutesContext';
+import { useMemoryTable } from '@/context/MemoryTableContext';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 import './tabulator.min.css';
 
 import { uploadMemory, setupEventListeners, toggleHexColumn } from '@/utils/tables/handlersMemory';
 import { getColumnMemoryDefinitions } from '@/utils/tables/definitionsColumns';
 import { DataMemoryTable } from '@/utils/tables/types';
-import { useMemoryTable } from '@/context/MemoryTableContext';
 
 import SkeletonMemoryTable from '@/components/Skeleton/SkeletonMemoryTable';
 
-interface RoutesContextProps {
+interface MemoryContextProps {
+  showHexadecimal: boolean;
   dataMemoryTable: DataMemoryTable;
 }
 
 const MemoryTable = () => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
-  const context = useRoutes() as unknown as RoutesContextProps;
-  const { dataMemoryTable } = context;
-  const { showHexadecimal } = useMemoryTable();
+  const context = useMemoryTable() as unknown as MemoryContextProps;
+  const { showHexadecimal, dataMemoryTable } = context;
   
   // Estado que controla si la tabla está cargada (visible) o no
   const [isLoading, setIsLoading] = useState(true);

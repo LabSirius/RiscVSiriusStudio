@@ -1,9 +1,11 @@
 // MessageListener.tsx
 import { useEffect } from "react";
 import { useRoutes } from "@/context/RoutesContext";
+import { useMemoryTable } from "@/context/MemoryTableContext";
 
 const MessageListener = () => {
-  const { setRoutes, setDataMemoryTable } = useRoutes();
+  const { setRoutes } = useRoutes();
+  const { setDataMemoryTable } = useMemoryTable();
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
