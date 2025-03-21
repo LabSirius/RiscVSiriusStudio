@@ -21,60 +21,110 @@ export const uploadMemory = (
   pc: number,
   onComplete?: () => void
 ): void => {
-  chunk(newMemory, 4).forEach((word: string[], index: number) => {
+  const isInitialLoad = table.getData().length === 0;
+  const expectedRowCount = newMemory.length / 4;
+  const maxAddress = (expectedRowCount - 1) * 4;
+
+  // Generate main data
+  const mainRows = chunk(newMemory, 4).map((word, index) => {
     const address = intToHex(index * 4).toUpperCase();
-    const hex = word
-      .slice()
-      .reverse()
-      .map((byte: string) => binaryToHex(byte).toUpperCase().padStart(2, '0'))
-      .join('-');
-    table.updateOrAddRow(address, {
+    return {
       address,
-      value0: word[0],
-      value1: word[2],
-      value2: word[1],
-      value3: word[3],
+      value0: word[0] || '00000000',
+      value1: word[2] || '00000000',
+      value2: word[1] || '00000000',
+      value3: word[3] || '00000000',
+      hex: word
+        .slice()
+        .reverse()
+        .map((byte) => binaryToHex(byte || '00000000').toUpperCase().padStart(2, '0'))
+        .join('-'),
       info: '',
-      hex,
+      isCode: index * 4 < newCodeSize,
+    };
+  });
+
+  // Update main data
+  table.setData(mainRows);
+
+  // Add/Update Heap
+  const heapAddress = intToHex(newCodeSize).toUpperCase();
+  const heapRow = table.getRow(heapAddress);
+  
+  if (heapRow) {
+    // If the row exists, update only the info field
+    heapRow.update({
+      info: '<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>'
     });
-    const row = table.getRow(address);
-    if (row) {
-      if (index * 4 < newCodeSize) {
-        row.getElement().style.backgroundColor = '#FFF6E5';
-      } else {
-        row.getElement().style.backgroundColor = '';
-      }
-    }
-  });
-
-  const heapAddressHex = intToHex(newCodeSize).toUpperCase();
-  table.updateOrAddRow(heapAddressHex, {
-    address: heapAddressHex,
-    value0: '00000000',
-    value1: '00000000',
-    value2: '00000000',
-    value3: '00000000',
-    info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>`,
-    hex: '00-00-00-00',
-  });
-
-  Object.values(newSymbols).forEach((symbol: SymbolData) => {
-    const symbolAddress = intToHex(symbol.memdef).toUpperCase();
-    table.updateOrAddRow(symbolAddress, {
-      address: symbolAddress,
+  } else {
+    // If it does not exist, add a new row
+    table.addRow({
+      address: heapAddress,
       value0: '00000000',
       value1: '00000000',
       value2: '00000000',
       value3: '00000000',
-      info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`,
+      info: '<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>',
       hex: '00-00-00-00',
+      isCode: false,
     });
+  }
+
+  // Add/Update symbols
+  Object.values(newSymbols).forEach(symbol => {
+    const symbolAddress = intToHex(symbol.memdef).toUpperCase();
+    const symbolRow = table.getRow(symbolAddress);
+
+    if (symbolRow) {
+      // Update only the info field if the row exists
+      symbolRow.update({
+        info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`
+      });
+    } else {
+      // Add a new row if the symbol does not exist
+      table.addRow({
+        address: symbolAddress,
+        value0: '00000000',
+        value1: '00000000',
+        value2: '00000000',
+        value3: '00000000',
+        info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`,
+        hex: '00-00-00-00',
+        isCode: false,
+      });
+    }
   });
+
+  // Apply row colors and hide empty info cells
+  table.getRows().forEach(row => {
+    const data = row.getData();
+    row.getElement().style.backgroundColor = data.isCode ? '#FFF6E5' : '';
+    
+    if (!data.info) {
+      row.getCell("info").getElement().innerHTML = '<div style="opacity:0">\u00A0</div>';
+    }
+  });
+
+  // Delete rows that are no longer needed
+  if (!isInitialLoad) {
+    const rowsToDelete = table.getRows()
+      .filter(row => {
+        const rowAddress = parseInt(row.getData().address, 16);
+        return rowAddress > maxAddress && !row.getData().info;
+      });
+    
+    if (rowsToDelete.length) {
+      table.deleteRow(rowsToDelete.map(row => row.getData().address));
+    }
+  }
+
+  // 7. Actualizar registros especiales
   updatePC(pc, { current: table });
-  setSP(newMemory.length-4, { current: table });
-  
-  if (onComplete) onComplete();
+  setSP(newMemory.length - 4, { current: table });
+
+  onComplete?.();
 };
+
 
 
 /**

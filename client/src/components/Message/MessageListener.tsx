@@ -5,7 +5,7 @@ import { useMemoryTable } from "@/context/MemoryTableContext";
 
 const MessageListener = () => {
   const { setRoutes } = useRoutes();
-  const { setDataMemoryTable, sizeMemory, setSizeMemory } = useMemoryTable();
+  const { setDataMemoryTable, sizeMemory, setSizeMemory, setCodeSize } = useMemoryTable();
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -14,6 +14,7 @@ const MessageListener = () => {
           setRoutes('uploadMemory');
           setDataMemoryTable(event.data.data.payload);
           setSizeMemory(event.data.data.payload.memory.length - event.data.data.payload.codeSize );
+          setCodeSize(event.data.data.payload.codeSize);
 
         }
       }
