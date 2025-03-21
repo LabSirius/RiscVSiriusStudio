@@ -77,7 +77,6 @@ export const uploadMemory = (
 };
 
 
-
 /**
  * This function updates the program counter in the memory table.
  * It adds an icon to the row corresponding to the new program counter.

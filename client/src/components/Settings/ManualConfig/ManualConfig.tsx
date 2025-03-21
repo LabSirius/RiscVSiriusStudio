@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { useMemoryTable } from "@/context/MemoryTableContext";
-import { RedoDot, FileDown, Save, Grid2x2Plus } from "lucide-react";
+import { RedoDot, FileDown, Save } from "lucide-react";
+import MemorySizeInput from "./MemorySizeInput";
 
 const ManualConfig = () => {
-  const { sizeMemory} = useMemoryTable();
 
   return (
-    <div className="flex flex-col gap-7 ">
+    <div className="flex flex-col gap-7">
       <p className="flex text-md text-gray-400">
         Press
         <span className="inline text-slate-400 mx-2">
@@ -16,12 +15,10 @@ const ManualConfig = () => {
       </p>
 
       <div className="flex flex-col gap-2 mt-1">
-        <p className=" ">Import data</p>
-
+        <p>Import data</p>
         <div className="flex gap-3 mt-2 items-center">
           <div className="flex gap-2 items-center">
             <input type="file" id="fileInputImportRegister" accept=".txt" className="hidden" />
-
             <div className="flex gap-2 items-center">
               <Button variant="outline" size="icon" id="importRegisterBtn">
                 <FileDown strokeWidth={1} />
@@ -42,26 +39,10 @@ const ManualConfig = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 ">
+      <div className="flex flex-col gap-3">
         <p className="font-semibold">Memory size (In bytes)</p>
-        <div className="relative">
-          <div className="absolute top-1/2 left-[0.6rem] -translate-y-1/2 text-gray-400">
-            <Grid2x2Plus strokeWidth={1} width={20} height={20} />
-          </div>
-          <input
-            className="relative rounded-lg border border-gray-400 cursor-pointer z-[2] bg-transparent py-2 pr-2 pl-[2.3rem] w-full"
-            type="number"
-            id="memorySizeInput"
-            value={sizeMemory}
-            min="32"
-            max="512"
-            step="4"
-            placeholder="e.g. 200, 1024..."
-          />
-        </div>
+        <MemorySizeInput />
       </div>
-
-      
     </div>
   );
 };
