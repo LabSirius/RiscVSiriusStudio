@@ -43,7 +43,7 @@ function dispatch(
       switch (data.operation) {
       case 'uploadMemory':
         const { from, ...newData } = data;
-        UIManager.getInstance()._sendMessageToPanelView(newData);
+        UIManager.getInstance()._sendMessageToReact(newData);
         break;
       }
     case 'panelView':

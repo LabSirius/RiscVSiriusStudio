@@ -3,16 +3,16 @@ export class UIManager {
   public static instance: UIManager | undefined;
 
   private readonly sendMessagetoExtension: (msg: any) => void;
-  private readonly sendMessageToPanelView: (msg: any) => void;
+  private readonly sendMessageToReact: (msg: any) => void;
 
   private _isSimulating: boolean;
   get isSimulating(): boolean {
     return this._isSimulating;
   }
 
-  public static createInstance(sendMessagetoExtension: (msg: any) => void, sendMessageToPanelView : (msg: any) => void ): UIManager {
+  public static createInstance(sendMessagetoExtension: (msg: any) => void, sendMessageToReact : (msg: any) => void ): UIManager {
     if (!this.instance) {
-      this.instance = new UIManager(sendMessagetoExtension, sendMessageToPanelView);
+      this.instance = new UIManager(sendMessagetoExtension, sendMessageToReact);
     }
     return this.instance;
   }
@@ -25,14 +25,14 @@ export class UIManager {
     }
   }
 
-  private constructor(sendMessagetoExtension: (msg: any) => void, sendMessageToPanelView : (msg: any) => void) {
+  private constructor(sendMessagetoExtension: (msg: any) => void, sendMessageToReact : (msg: any) => void) {
     this._isSimulating = false;
     this.sendMessagetoExtension = sendMessagetoExtension;
-    this.sendMessageToPanelView = sendMessageToPanelView;
+    this.sendMessageToReact = sendMessageToReact;
   }
 
-  public _sendMessageToPanelView(data: any) {
-    this.sendMessageToPanelView(data);
+  public _sendMessageToReact(data: any) {
+    this.sendMessageToReact(data);
   }
 
   
