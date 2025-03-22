@@ -21,9 +21,14 @@ const MessageListener = () => {
           setCodeSize(message.payload.codeSize);
         }
         if(message.operation === 'step') {
-          setOperation('step');
           setNewPc(Number(intToHex(message.pc)));
-          if(!isFirstStep) setIsFirstStep(true);
+          if(!isFirstStep) {
+            setOperation('firstStep');
+            setIsFirstStep(true);
+          }
+          else {
+            setOperation('step');
+          }
         }
       }
     };

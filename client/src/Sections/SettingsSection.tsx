@@ -1,7 +1,6 @@
 import { useOperation } from "@/context/OperationContext";
 import ManualConfig from "../components/Settings/ManualConfig/ManualConfig";
 import SwitchHexadecimal from "@/components/SwitchHexadecimal";
-import Tables from "./Tables/Tables";
 import MouseScrollIcon from "@/components/MouseScrollIcon";
 import { useState, useEffect, useRef } from "react";
 
@@ -36,7 +35,7 @@ const SettingsSection = () => {
       ref={containerRef}
       className="relative flex gap-5 px-4 overflow-x-scroll overflow-y-auto"
     >
-      <Tables />
+      
       <div className="mt-1 section-container">
         <div className="flex flex-col gap-12">
           {operation === "uploadMemory" && <ManualConfig />}

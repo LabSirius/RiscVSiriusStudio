@@ -11,9 +11,7 @@ import Sidebar from "@/components/SideBar";
 import MessageListener from "@/components/Message/MessageListener";
 import Error from "@/components/Error";
 
-import ConvertSection from "@/sections/ConvertSection";
-import HelpSection from "@/sections/HelpSection";
-import SettingsSection from "@/sections/SimulationSection";
+import MainSection from "@/sections/MainSection";
 
 
 const App = () => {
@@ -30,9 +28,7 @@ const App = () => {
                   <SidebarTrigger />
                   <MessageListener />
                   <Routes>
-                    <Route path="/" element={<ConvertSection />} />
-                    <Route path="/help" element={<HelpSection />} />
-                    <Route path="/settings" element={<SettingsSection />} />
+                    <Route path="/" element={<MainSection />} />
                   </Routes>
                   <Error />
                 </SidebarProvider>
