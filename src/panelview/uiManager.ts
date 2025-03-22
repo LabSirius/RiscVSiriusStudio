@@ -35,6 +35,7 @@ export class UIManager {
 
   readonly registerTab: HTMLDivElement;
   readonly memoryTab: HTMLDivElement;
+  readonly spinner: HTMLDivElement;
 
   readonly pcIcon: HTMLButtonElement;
   readonly settingsButton: HTMLButtonElement;
@@ -114,6 +115,7 @@ export class UIManager {
 
     this.registerTab = getElement<HTMLDivElement>('tabs-registers');
     this.memoryTab = getElement<HTMLDivElement>('tabs-memory');
+    this.spinner = getElement<HTMLDivElement>('spinner');
 
     this.pcIcon = getElement<HTMLButtonElement>('pcIcon');
     this.settingsButton = getElement<HTMLButtonElement>('openSettingsButton');
@@ -619,8 +621,18 @@ export class UIManager {
 
   private setUpSettings() {
     this.memorySizeInput.addEventListener('change', () => {
-      if (Number.parseInt(this.memorySizeInput.value) < 32 || this.memorySizeInput.value === '') {
+      this.spinner.classList.remove('hidden');
+      this.memorySizeInput.disabled = true;
+      let intValue = Number.parseInt(this.memorySizeInput.value);
+      if (intValue < 32 || this.memorySizeInput.value === '') {
         this.memorySizeInput.value = '32';
+      }else if (intValue > 512) {
+        this.memorySizeInput.value = '512';
+      }
+
+      if (intValue % 4 !== 0) {
+        intValue = Math.floor(intValue / 4) * 4;
+        this.memorySizeInput.value = intValue.toString();
       }
 
       const value = Number(this.memorySizeInput.value) + Number(this.memoryTable.codeAreaEnd-4);
@@ -629,9 +641,8 @@ export class UIManager {
         object: { event: 'memorySizeChanged', value: value}
       });
       const newSize = Number.parseInt(this.memorySizeInput.value);
-      this.memoryTable.resizeMemory(newSize);
+      this.memoryTable.resizeMemory(newSize, this.spinner, this.memorySizeInput);
     });
-
   }
 
   private setUpHelp() {

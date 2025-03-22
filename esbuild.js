@@ -21,7 +21,7 @@ const extensionConfig = {
   format: "cjs",
   entryPoints: ["./src/extension.ts"],
   outfile: "./out/extension.js",
-  // watch: true,
+  watch: process.argv.includes("--watch"),
   plugins: [
     copy({
       resolveFrom: "cwd",
@@ -70,8 +70,8 @@ const registersviewConfig = {
   ...baseConfig,
   target: "es2020",
   format: "esm",
-  entryPoints: ["./src/registersview/panelView.ts"],
-  outfile: "./out/registersview.js",
+  entryPoints: ["./src/panelview/panelView.ts"],
+  outfile: "./out/panelview.js",
   plugins: [
     copy({
       resolveFrom: "cwd",
@@ -84,14 +84,6 @@ const registersviewConfig = {
       // watch: true
     }),
   ],
-};
-
-const datamemviewConfig = {
-  ...baseConfig,
-  target: "es2020",
-  format: "esm",
-  entryPoints: ["./src/datamemview/datamemview.ts"],
-  outfile: "./out/datamemview.js",
 };
 
 // This watch config adheres to the conventions of the esbuild-problem-matchers
@@ -133,17 +125,12 @@ const watchConfig = {
         ...registersviewConfig,
         ...watchConfig,
       });
-      await build({
-        ...datamemviewConfig,
-        ...watchConfig,
-      });
       console.log("[watch] build finished");
     } else {
       // Build extension and webview code
       await build(extensionConfig);
       await build(simulatorviewConfig);
       await build(registersviewConfig);
-      await build(datamemviewConfig);
       console.log("build complete");
     }
   } catch (err) {
