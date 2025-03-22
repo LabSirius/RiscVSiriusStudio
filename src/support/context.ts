@@ -249,15 +249,6 @@ export class RVContext {
 
   private memorySizeChanged(newSize: number) {
     this.simulator.resizeMemory(newSize);
-    /**
-     * TODO: This should only be called when the user wants sp to actually
-     * represent the stack pointer.
-     */
-    this.mainWebviewView.postMessage({
-      operation: "setRegister",
-      register: "x2",
-      value: intToBinary(newSize),
-    });
   }
 
   private memoryChanged(newMemory: []) {
@@ -270,7 +261,6 @@ export class RVContext {
   public dispatchMainViewEvent(message: any) {
     switch (message.event) {
       case "memorySizeChanged":
-        console.log(`%c[Mainview}]\n`, "color:yellow", message);
         this.memorySizeChanged(message.value);
         break;
       case "memoryChanged":

@@ -53,7 +53,7 @@ function dispatch(
           UIManager.getInstance()._sendMessageToExtension(
             {
               command: 'event',
-              object: { event: 'memorySizeChanged', value: data.data.sizeMemory}
+              object: { event: 'memorySizeChanged', value: data.data.sizeMemory }
             }
           );
           break;

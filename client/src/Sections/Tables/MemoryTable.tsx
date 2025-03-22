@@ -102,7 +102,6 @@ const MemoryTable = () => {
             return newData;
           });
           setRegisterWrite('x2');
-          
         },
       );
 
@@ -112,7 +111,7 @@ const MemoryTable = () => {
       });
 
      
-      sendMessage({ event: "memorySizeChanged", data: { sizeMemory: newTotalSize-4 } });
+      sendMessage({ event: "memorySizeChanged", data: { sizeMemory: newTotalSize-4} });
     }
   }, [sizeMemory]);
 
