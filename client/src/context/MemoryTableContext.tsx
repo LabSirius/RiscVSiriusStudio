@@ -1,6 +1,4 @@
-// RoutesContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from "react";
-
 interface MemoryTableContextProps {
   isCreatedMemoryTable: boolean;  
   setIsCreatedMemoryTable: React.Dispatch<React.SetStateAction<boolean>>;
