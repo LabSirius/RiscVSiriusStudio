@@ -118,7 +118,6 @@ export const uploadMemory = (
     }
   }
 
-  // 7. Actualizar registros especiales
   updatePC(pc, { current: table });
   setSP(newMemory.length - 4, { current: table });
 

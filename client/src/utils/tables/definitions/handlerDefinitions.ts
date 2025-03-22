@@ -44,7 +44,7 @@ export const valueFormatter = (cell: CellComponent) => {
       }
       case 'signed': return binaryToInt(value);
       case 'unsigned': return binaryToUInt(value);
-      case 16: return binaryToHex(value);
+      case 16: return binaryToHex(value).toUpperCase();
       case 'ascii': return binaryToAscii(value);
       default: return value;
     }
