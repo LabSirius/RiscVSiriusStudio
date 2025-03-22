@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import { TabulatorFull as Tabulator, CellComponent } from 'tabulator-tables';
 import './tabulator.min.css';
 
+import { useMemoryTable } from '@/context/MemoryTableContext';
 import { useRegistersTable } from '@/context/RegisterTableContext';
 import { registersNames } from '@/utils/tables/data';
 import { RegisterView } from '@/utils/tables/types';
@@ -10,6 +11,7 @@ import { getColumnsRegisterDefinitions } from '@/utils/tables/definitionsColumns
 import SkeletonRegisterTable from '@/components/Skeleton/SkeletonRegisterTable';
 
 const RegistersTable = () => {
+  const { isCreatedMemoryTable } = useMemoryTable();
   const { registerData, registerWrite, setRegisterWrite } = useRegistersTable();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
@@ -28,6 +30,8 @@ const RegistersTable = () => {
 
   // --- GLOBAL KEYBOARD SHORTCUTS ---
   useEffect(() => {
+
+    if(!tableContainerRef.current) return;
     const keyHandler = handleGlobalKeyPress(currentHoveredViewTypeCell);
     document.addEventListener('keydown', keyHandler);
     return () => document.removeEventListener('keydown', keyHandler);
@@ -64,13 +68,6 @@ const RegistersTable = () => {
 
     tabulatorInstance.current.on('tableBuilt', () => {
       setTableBuilt(true);
-      console.log('Tabla construida.');
-
-      // IMPORTANTE: forzar redraw para recalcular layout
-      // si el contenedor estaba invisible al construir la tabla.
-      setTimeout(() => {
-        tabulatorInstance.current?.redraw(true);
-      }, 0);
     });
 
     return () => {
@@ -80,9 +77,9 @@ const RegistersTable = () => {
         setTableBuilt(false);
       }
     };
-  }, []);
+  }, [isCreatedMemoryTable]);
 
-  // --- ACTUALIZACIÓN DE DATOS SIN REINICIALIZAR LA TABLA ---
+  // Update register value
   useEffect(() => {
     if (!registerWrite || !tabulatorInstance.current) {
       return;

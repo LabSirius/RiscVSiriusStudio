@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useMemoryTable } from '@/context/MemoryTableContext';
 import { useRegistersTable } from '@/context/RegisterTableContext';
 
@@ -15,6 +15,8 @@ import SkeletonMemoryTable from '@/components/Skeleton/SkeletonMemoryTable';
 import { sendMessage } from '@/components/Message/sendMessage';
 
 interface MemoryContextProps {
+  isCreatedMemoryTable: boolean;
+  setIsCreatedMemoryTable: (isCreated: boolean) => void;
   showHexadecimal: boolean;
   dataMemoryTable: DataMemoryTable;
   setDataMemoryTable: (data: DataMemoryTable) => void;
@@ -28,9 +30,7 @@ const MemoryTable = () => {
   const tableInstanceRef = useRef<Tabulator | null>(null);
 
   const context = useMemoryTable() as unknown as MemoryContextProps;
-  const { showHexadecimal, dataMemoryTable, setDataMemoryTable, sizeMemory } = context;
-  
-  const [isLoading, setIsLoading] = useState(true);
+  const { isCreatedMemoryTable, setIsCreatedMemoryTable, showHexadecimal, dataMemoryTable, setDataMemoryTable, sizeMemory } = context;
 
   const { setRegisterData, setRegisterWrite} = useRegistersTable();
 
@@ -57,7 +57,8 @@ const MemoryTable = () => {
           dataMemoryTable.symbols,
           0,
           () => {
-            setIsLoading(false);
+
+            setIsCreatedMemoryTable(true);
           }
         );
         setupEventListeners(tableInstanceRef.current!);
@@ -71,7 +72,7 @@ const MemoryTable = () => {
   */
   useEffect(() => {
     if (tableInstanceRef.current && dataMemoryTable) {
-      setIsLoading(true);
+      
       const newTotalSize = dataMemoryTable.codeSize + sizeMemory;
       let newMemory: string[] = [];
 
@@ -94,7 +95,7 @@ const MemoryTable = () => {
         dataMemoryTable.symbols,
         0,
         () => {
-          setIsLoading(false);
+         
           setRegisterData((prev) => {
             const newData = [...prev];
             newData[2] = intTo32BitBinary(newTotalSize - 4);
@@ -134,10 +135,11 @@ const MemoryTable = () => {
 
   return (
     <div className={`shadow-lg  min-h-min ${showHexadecimal ? 'min-w-[34.8rem]' : ''} relative`}>
-      {isLoading && <SkeletonMemoryTable />}
+      {!isCreatedMemoryTable && <SkeletonMemoryTable />}
       <div
         ref={tableContainerRef}
-        className={`w-full max-h-[calc(100dvh-2.3rem)] overflow-y-scroll overflow-x-hidden [&_.tabulator-header]:bg-gray-100 [&_.tabulator-group]:bg-blue-50 transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+        className={`w-full max-h-[calc(100dvh-2.3rem)] overflow-y-scroll overflow-x-hidden [&_.tabulator-header]:bg-gray-100 [&_.tabulator-group]:bg-blue-50 transition-opacity duration-300
+          `}
       />
     </div>
   );

@@ -2,6 +2,8 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface MemoryTableContextProps {
+  isCreatedMemoryTable: boolean;  
+  setIsCreatedMemoryTable: React.Dispatch<React.SetStateAction<boolean>>;
   showHexadecimal: boolean;
   setShowHexadecimal: React.Dispatch<React.SetStateAction<boolean>>;
   dataMemoryTable: Record<string, unknown> | undefined;
@@ -15,6 +17,7 @@ interface MemoryTableContextProps {
 const MemoryTableContext = createContext<MemoryTableContextProps | undefined>(undefined);
 
 export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [isCreatedMemoryTable, setIsCreatedMemoryTable] = useState<boolean>(false);
   const [showHexadecimal, setShowHexadecimal] = useState<boolean>(true);
   const [dataMemoryTable, setDataMemoryTable] = useState<Record<string, unknown> | undefined>(
     undefined
@@ -25,6 +28,8 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
   return (
     <MemoryTableContext.Provider
       value={{
+        isCreatedMemoryTable, 
+        setIsCreatedMemoryTable,
         dataMemoryTable,
         setDataMemoryTable,
         showHexadecimal,
