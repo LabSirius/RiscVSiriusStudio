@@ -15,7 +15,10 @@ const MessageListener = () => {
           setDataMemoryTable(event.data.data.payload);
           setSizeMemory(event.data.data.payload.memory.length - event.data.data.payload.codeSize );
           setCodeSize(event.data.data.payload.codeSize);
-
+        }
+        if(event.data.data.operation === 'step') {
+          console.log(event.data.data);
+          setRoutes('step');
         }
       }
     };

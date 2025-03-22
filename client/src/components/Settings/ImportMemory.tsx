@@ -62,9 +62,7 @@ const ImportMemory = () => {
           });
           return;
         }
-
-        console.log("EL SIZE MEMORY ES", sizeMemory + (codeSize - 4));
-
+        
         const value0 = binaryValue.slice(24, 32);
         const value1 = binaryValue.slice(16, 24);
         const value2 = binaryValue.slice(8, 16);

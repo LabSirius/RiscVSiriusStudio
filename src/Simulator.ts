@@ -281,7 +281,7 @@ export class TextSimulator extends Simulator {
 
     // Handle the visualization
     const mainView = this.context.mainWebviewView;
-    mainView.postMessage({ operation: "step", pc: this.cpu.getPC() });
+    mainView.postMessage({ from: "extension", operation: "step", pc: this.cpu.getPC() });
 
     const currentInst = this.cpu.currentInstruction();
     const lineNumber = this.rvDoc.getLineForIR(currentInst);

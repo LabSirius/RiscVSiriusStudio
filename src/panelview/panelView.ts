@@ -46,6 +46,10 @@ function dispatch(
         UIManager.getInstance()._sendMessageToReact(newData);
         break;
       }
+      case 'step':
+        const { from, ...newData } = data;
+        UIManager.getInstance()._sendMessageToReact(newData);
+        break;
     case 'react':
       switch (data.event) {
         case 'memorySizeChanged':

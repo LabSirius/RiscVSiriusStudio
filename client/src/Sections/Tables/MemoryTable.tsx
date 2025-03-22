@@ -133,9 +133,6 @@ const MemoryTable = () => {
    * Update memory table when importMemory changes
    */
   useEffect(() => {
-
-    console.log(tableInstanceRef.current?.getData());
-    console.log(importMemory);
     if(importMemory.length === 0) return;
     const importMemoryUppercase = importMemory.map(row => ({
       ...row,
@@ -169,8 +166,7 @@ const MemoryTable = () => {
       {!isCreatedMemoryTable && <SkeletonMemoryTable />}
       <div
         ref={tableContainerRef}
-        className={`w-full max-h-[calc(100dvh-2.3rem)] overflow-y-scroll overflow-x-hidden [&_.tabulator-header]:bg-gray-100 [&_.tabulator-group]:bg-blue-50 transition-opacity duration-300
-          `}
+        className={`w-full max-h-[calc(100dvh-2.3rem)] overflow-y-scroll overflow-x-hidden [&_.tabulator-header]:bg-gray-100 [&_.tabulator-group]:bg-blue-50 transition-opacity duration-300 `}
       />
     </div>
   );
