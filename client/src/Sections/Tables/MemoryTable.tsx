@@ -143,6 +143,7 @@ const MemoryTable = () => {
     }));
     tableInstanceRef.current?.updateData(importMemoryUppercase);
     setImportMemory([]);
+    sendMessage({ event: "memoryChanged", data: { memory: tableInstanceRef.current?.getData() } });
 
   }, [importMemory, setImportMemory]);
 
