@@ -4,6 +4,7 @@ import { useError } from "@/context/ErrorContext";
 import { registersNames } from "@/constants/data";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
+import { sendMessage } from "../Message/sendMessage";
 
 const ImportRegister = () => {
   const { setImportRegister } = useRegistersTable();
@@ -31,12 +32,20 @@ const ImportRegister = () => {
       if (lines.length !== 32) {
         setError({
           title: "Error importing file",
-          description: "The file must contain 32 records.",
+          description: "The file must contain 32 registers.",
         });
         return;
-      }
-      
+      }  
       for (let i = 0; i < lines.length; i++) {
+
+        if(lines[0] !== "00000000000000000000000000000000") {
+          setError({
+            title: "Error importing file",
+            description: "You cannot write to register x0.",
+        })
+      return;
+    }
+
         if (lines[i].length !== 32) {
           setError({
             title: "Error importing file",
@@ -65,14 +74,17 @@ const ImportRegister = () => {
       }));
 
       setImportRegister(newData);
-    };
+      sendMessage({event:"registersChanged", data: { registers: lines }});
+     
+      };
 
-    reader.readAsText(file);
-    
-    if (fileInputRegisterRef.current) {
-      fileInputRegisterRef.current.value = "";
+      reader.readAsText(file);
+      
+      if (fileInputRegisterRef.current) {
+        fileInputRegisterRef.current.value = "";
+      }
     }
-  };
+
 
   return (
     <div className="flex items-center gap-2">
