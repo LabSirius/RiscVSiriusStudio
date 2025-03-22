@@ -1,5 +1,16 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-interface MemoryTableContextProps {
+
+
+export interface MemoryRow {
+  address: string; 
+  hex: string;     
+  value0: string;  
+  value1: string;
+  value2: string;
+  value3: string;
+}
+
+export interface MemoryTableContextProps {
   isCreatedMemoryTable: boolean;  
   setIsCreatedMemoryTable: React.Dispatch<React.SetStateAction<boolean>>;
   showHexadecimal: boolean;
@@ -10,6 +21,8 @@ interface MemoryTableContextProps {
   setSizeMemory: React.Dispatch<React.SetStateAction<number>>;
   codeSize: number;
   setCodeSize: React.Dispatch<React.SetStateAction<number>>;
+  importMemory: MemoryRow[];
+  setImportMemory: React.Dispatch<React.SetStateAction<MemoryRow[]>>;
 }
 
 const MemoryTableContext = createContext<MemoryTableContextProps | undefined>(undefined);
@@ -22,6 +35,7 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
   );
   const [sizeMemory, setSizeMemory] = useState<number>(0);
   const [codeSize, setCodeSize] = useState<number>(0);
+  const [importMemory, setImportMemory] = useState<MemoryRow[]>([]);
 
   return (
     <MemoryTableContext.Provider
@@ -36,6 +50,8 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
         setSizeMemory,
         codeSize,
         setCodeSize,
+        importMemory,
+        setImportMemory
       }}>
       {children}
     </MemoryTableContext.Provider>

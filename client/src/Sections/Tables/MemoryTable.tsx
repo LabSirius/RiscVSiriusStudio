@@ -14,6 +14,8 @@ import SkeletonMemoryTable from '@/components/Skeleton/SkeletonMemoryTable';
 
 import { sendMessage } from '@/components/Message/sendMessage';
 
+import { MemoryRow } from '@/context/MemoryTableContext';
+
 interface MemoryContextProps {
   isCreatedMemoryTable: boolean;
   setIsCreatedMemoryTable: (isCreated: boolean) => void;
@@ -22,6 +24,8 @@ interface MemoryContextProps {
   setDataMemoryTable: (data: DataMemoryTable) => void;
   sizeMemory: number;
   setSizeMemory: (size: number) => void;
+  importMemory: MemoryRow[];
+  setImportMemory: (importMemory: MemoryRow[]) => void;
 }
 
 
@@ -30,7 +34,7 @@ const MemoryTable = () => {
   const tableInstanceRef = useRef<Tabulator | null>(null);
 
   const context = useMemoryTable() as unknown as MemoryContextProps;
-  const { isCreatedMemoryTable, setIsCreatedMemoryTable, showHexadecimal, dataMemoryTable, setDataMemoryTable, sizeMemory } = context;
+  const { isCreatedMemoryTable, setIsCreatedMemoryTable, showHexadecimal, dataMemoryTable, setDataMemoryTable, sizeMemory, importMemory, setImportMemory  } = context;
 
   const { setRegisterData, setRegisterWrite} = useRegistersTable();
 
@@ -123,6 +127,24 @@ const MemoryTable = () => {
       sendMessage({ event: "memorySizeChanged", data: { sizeMemory: newTotalSize-4} });
     }
   }, [sizeMemory]);
+
+
+  /**
+   * Update memory table when importMemory changes
+   */
+  useEffect(() => {
+
+    console.log(tableInstanceRef.current?.getData());
+    console.log(importMemory);
+    if(importMemory.length === 0) return;
+    const importMemoryUppercase = importMemory.map(row => ({
+      ...row,
+      address: row.address.toUpperCase(),
+    }));
+    tableInstanceRef.current?.updateData(importMemoryUppercase);
+    setImportMemory([]);
+
+  }, [importMemory, setImportMemory]);
 
 
   /**

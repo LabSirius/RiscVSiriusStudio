@@ -4,7 +4,7 @@ import { useError } from "@/context/ErrorContext";
 import { registersNames } from "@/constants/data";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
-import { sendMessage } from "../Message/sendMessage";
+import { sendMessage } from "../../Message/sendMessage";
 
 const ImportRegister = () => {
   const { setImportRegister } = useRegistersTable();

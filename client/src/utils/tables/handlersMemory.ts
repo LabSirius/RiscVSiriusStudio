@@ -95,10 +95,18 @@ export const uploadMemory = (
     }
   });
 
+  // Calcular la dirección de SP para evitar colorearla
+  const spAddress = intToHex(newMemory.length - 4).toUpperCase();
+
   // Apply row colors and hide empty info cells
   table.getRows().forEach(row => {
     const data = row.getData();
-    row.getElement().style.backgroundColor = data.isCode ? '#FFF6E5' : '';
+    // Solo se aplica el fondo amarillo si es de código y no es la fila de SP
+    if (data.isCode && data.address !== spAddress) {
+      row.getElement().style.backgroundColor = '#FFF6E5';
+    } else {
+      row.getElement().style.backgroundColor = '';
+    }
     
     if (!data.info) {
       row.getCell("info").getElement().innerHTML = '<div style="opacity:0">\u00A0</div>';
@@ -123,7 +131,6 @@ export const uploadMemory = (
 
   onComplete?.();
 };
-
 
 
 /**
