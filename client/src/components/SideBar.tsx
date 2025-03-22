@@ -1,8 +1,9 @@
 import { useOperation } from "@/context/OperationContext";
 
+import { useSection } from "@/context/SectionContext";
+
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ui/theme/mode-toggle";
-import { useNavigate } from "react-router-dom";
 
 import {
   Sidebar,
@@ -14,32 +15,47 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sideBar";
 
-import { Calculator, Info, Settings } from "lucide-react";
+import { Search, Calculator, Info, Settings } from "lucide-react";
 
 export function SideBar() {
-  const navigate = useNavigate();
   const { operation } = useOperation();
+  const { setSection } = useSection();
   return (
     <Sidebar>
       <SidebarContent className="relative min-h-full overflow-hidden">
         <SidebarGroup className="flex flex-col flex-1">
           <SidebarGroupLabel>Options</SidebarGroupLabel>
-          <SidebarGroupContent className="flex flex-col flex-1">
+          <SidebarGroupContent className="flex flex-col">
             <SidebarMenu className="flex flex-col justify-between min-h-full pl-3 mt-2">
-            {!(operation === "uploadMemory") && (
-              <SidebarMenuItem>
-                <a onClick={() => navigate("/")} className="curser-pointer">
-                      <Button variant="outline" size="icon">
-                        <Calculator />
-                      </Button>
-                
-                </a>
-              </SidebarMenuItem>
-            )}
+
+            <div className="flex flex-col items-start gap-3">
+              { !(operation === "") && !(operation === "uploadMemory") && (
+                <SidebarMenuItem>
+                  <a onClick={() => setSection('search')} className="curser-pointer">
+                        <Button variant="outline" size="icon">
+                          <Search />
+                        </Button>
+                  
+                  </a>
+                </SidebarMenuItem>
+              )}
+
+              
+              {!(operation === "uploadMemory") && (
+                <SidebarMenuItem>
+                  <a onClick={() => setSection('convert')} className="curser-pointer">
+                        <Button variant="outline" size="icon">
+                          <Calculator />
+                        </Button>
+                  
+                  </a>
+                </SidebarMenuItem>
+              )}
+            </div>
 
               {(operation === "uploadMemory") && (
                <SidebarMenuItem>
-                <a onClick={() => navigate("/settings")} className="curser-pointer">
+                <a onClick={() =>  setSection('settings')} className="curser-pointer">
                  
                       <Button variant="outline" size="icon">
                         <Settings />
@@ -61,7 +77,7 @@ export function SideBar() {
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <a onClick={() => navigate("/help")} className="curser-pointer">
+              <a onClick={() =>  setSection('help')} className="curser-pointer">
                 <Button variant="outline" size="icon">
                   <Info />
                 </Button>

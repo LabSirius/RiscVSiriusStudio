@@ -1,13 +1,15 @@
 // MessageListener.tsx
 import { useEffect } from "react";
 import { useOperation } from "@/context/OperationContext";
-import { useMemoryTable } from "@/context/MemoryTableContext";
+import { useSection } from "@/context/SectionContext";
 
+import { useMemoryTable } from "@/context/MemoryTableContext";
 
 import { intToHex } from "@/utils/tables/handlerConversions";
 
 const MessageListener = () => {
   const { setOperation,  isFirstStep, setIsFirstStep } = useOperation();
+  const { setSection } = useSection()
   const { setDataMemoryTable, setSizeMemory, setCodeSize, setNewPc } = useMemoryTable();
 
   useEffect(() => {
@@ -23,11 +25,9 @@ const MessageListener = () => {
         if(message.operation === 'step') {
           setNewPc(Number(intToHex(message.pc)));
           if(!isFirstStep) {
-            setOperation('firstStep');
-            setIsFirstStep(true);
-          }
-          else {
+            setSection('search')
             setOperation('step');
+            setIsFirstStep(true);
           }
         }
       }

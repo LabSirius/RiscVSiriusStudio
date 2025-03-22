@@ -9,7 +9,7 @@ interface SectionContextProps {
 const SectionContext = createContext<SectionContextProps | undefined>(undefined);
 
 export const SectionProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [section, setSection] = useState<string>('');
+  const [section, setSection] = useState<string>('convert');
   
 
   return (

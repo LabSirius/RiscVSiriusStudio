@@ -1,6 +1,4 @@
-import { useRef, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useOperation } from "@/context/OperationContext";
+import { useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -29,17 +27,9 @@ const data = [
 
 export function FirstHelp() {
 
-  const { operation } = useOperation();
-  const navigate = useNavigate();
 
   const [carouselKey, setCarouselKey] = useState(0);
   const carouselRef = useRef(null);
-
-   useEffect(() => {
-      if (operation === 'uploadMemory') {
-        navigate('/settings');
-      }
-  }, [operation, navigate]);
 
   const handleReset = () => {
     setCarouselKey((prev) => prev + 1);

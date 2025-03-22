@@ -10,7 +10,7 @@ interface OperationContextProps {
 const OperationContext = createContext<OperationContextProps | undefined>(undefined);
 
 export const OperationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [operation, setOperation] = useState<string>('');
+  const [operation, setOperation] = useState<string>('uploadMemory');
   const [isFirstStep, setIsFirstStep] = useState<boolean>(false);
   
 
