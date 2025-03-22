@@ -20,7 +20,7 @@ import {
     validAscii,
     toBinary
   } from '@/utils/tables/handlerConversions';
-
+import { animateRegister } from './cells';
 
  export function updateRegisterValue(
     tabulatorRef: React.MutableRefObject<Tabulator | null>,
@@ -35,8 +35,11 @@ import {
     tabulatorRef.current.updateData([
       { rawName: registerWrite, value: registerData[regNum] }
     ]);
-    
+
+    animateRegister(tabulatorRef, registerWrite);
   }
+
+
 
 export const registerNamesFormatter = (cell: CellComponent) => {
     const { name } = cell.getData();
