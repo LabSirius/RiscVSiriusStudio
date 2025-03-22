@@ -148,6 +148,10 @@ export class Simulator {
     this.cpu.replaceDataMemory(newMemory);
   }
 
+  public replaceRegisters(newRegisters: string[]): void {
+    this.cpu.replaceRegisters(newRegisters);
+  }
+
   private bytesToReadOrWrite() {
     const instruction = this.cpu.currentInstruction();
     const funct3 = getFunct3(instruction);

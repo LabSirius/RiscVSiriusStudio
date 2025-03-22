@@ -10,16 +10,17 @@ import { createViewTypeFormatter, handleGlobalKeyPress, updateRegisterValue } fr
 import { getColumnsRegisterDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 import SkeletonRegisterTable from '@/components/Skeleton/SkeletonRegisterTable';
 
+import { sendMessage } from '@/components/Message/sendMessage';
+
 const RegistersTable = () => {
   const { isCreatedMemoryTable } = useMemoryTable();
-  const { registerData, registerWrite, setRegisterWrite } = useRegistersTable();
+  const { registerData, setRegisterData, registerWrite, setRegisterWrite } = useRegistersTable();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
   const tabulatorInstance = useRef<Tabulator | null>(null);
   const currentHoveredViewTypeCell = useRef<CellComponent | null>(null);
   const [tableBuilt, setTableBuilt] = useState(false);
 
-  // 1. Memoizar la función para que no cambie en cada render
   const viewTypeFormatterCustom = useMemo(
     () =>
       createViewTypeFormatter((cell) => {
@@ -70,6 +71,23 @@ const RegistersTable = () => {
       setTableBuilt(true);
     });
 
+    tabulatorInstance.current.on('cellEdited', (cell) => {
+      if (cell.getField() === 'value') {
+        let { value } = cell.getData();
+        const { id } = cell.getData();
+        if (value.length < 32) {
+          value = value.padStart(32, '0');
+        }
+        setRegisterData((prevData) => {
+          const newData = [...prevData];
+          newData[id] = value;
+          sendMessage({ event: "registersChanged", data: { registers: newData } });
+          return newData;
+        });
+      }
+    });
+
+    
     return () => {
       if (tabulatorInstance.current) {
         tabulatorInstance.current.destroy();
@@ -87,7 +105,7 @@ const RegistersTable = () => {
     updateRegisterValue(tabulatorInstance, registerWrite, registerData);
     setRegisterWrite('');
 
-  }, [ registerData]);
+  }, [registerData]);
 
   return (
     <div

@@ -251,6 +251,10 @@ export class RVContext {
     this.simulator.resizeMemory(newSize);
   }
 
+  private registersChanged(newRegisters: string[]) {
+    this.simulator.replaceRegisters(newRegisters);
+  }
+
   private memoryChanged(newMemory: []) {
     this.simulator.replaceMemory(newMemory);
   }
@@ -262,6 +266,9 @@ export class RVContext {
     switch (message.event) {
       case "memorySizeChanged":
         this.memorySizeChanged(message.value);
+        break;
+      case 'registersChanged':
+        this.registersChanged(message.value);
         break;
       case "memoryChanged":
         this.memoryChanged(message.value);

@@ -49,11 +49,18 @@ function dispatch(
     case 'react':
       switch (data.event) {
         case 'memorySizeChanged':
-          const { event, ...newData } = data;
           UIManager.getInstance()._sendMessageToExtension(
             {
               command: 'event',
               object: { event: 'memorySizeChanged', value: data.data.sizeMemory }
+            }
+          );
+          break;
+        case 'registersChanged':
+          UIManager.getInstance()._sendMessageToExtension(
+            {
+              command: 'event',
+              object: { event: 'registersChanged', value: data.data.registers }
             }
           );
           break;
