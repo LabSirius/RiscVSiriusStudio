@@ -3,9 +3,12 @@ import { useEffect } from "react";
 import { useRoutes } from "@/context/RoutesContext";
 import { useMemoryTable } from "@/context/MemoryTableContext";
 
+
+import { intToHex } from "@/utils/tables/handlerConversions";
+
 const MessageListener = () => {
   const { setRoutes } = useRoutes();
-  const { setDataMemoryTable, sizeMemory, setSizeMemory, setCodeSize } = useMemoryTable();
+  const { setDataMemoryTable, setSizeMemory, setCodeSize, setNewPc } = useMemoryTable();
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -19,12 +22,14 @@ const MessageListener = () => {
         if(event.data.data.operation === 'step') {
           console.log(event.data.data);
           setRoutes('step');
+          const pc = Number(intToHex(event.data.data.pc));
+          setNewPc(pc);
         }
       }
     };
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
-  }, [setRoutes, setDataMemoryTable, setSizeMemory, sizeMemory]);
+  }, [setRoutes, setDataMemoryTable, setSizeMemory]);
 
   return null;
 };

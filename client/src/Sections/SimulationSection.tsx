@@ -34,10 +34,10 @@ const SettingsSection = () => {
   return (
     <div
       ref={containerRef}
-      className="flex px-4 gap-5 overflow-y-auto overflow-x-scroll relative"
+      className="relative flex gap-5 px-4 overflow-x-scroll overflow-y-auto"
     >
       <Tables />
-      <div className="section-container mt-1">
+      <div className="mt-1 section-container">
         <div className="flex flex-col gap-12">
           {routes === "uploadMemory" && <ManualConfig />}
           <SwitchHexadecimal />

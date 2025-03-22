@@ -5,7 +5,7 @@ import { useRegistersTable } from '@/context/RegisterTableContext';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 import './tabulator.min.css';
 
-import { uploadMemory, setupEventListeners, toggleHexColumn,  } from '@/utils/tables/handlersMemory';
+import { uploadMemory, setupEventListeners, toggleHexColumn, updatePC,  } from '@/utils/tables/handlersMemory';
 import { intTo32BitBinary } from '@/utils/tables/handlerConversions';
 import { getColumnMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 import { DataMemoryTable } from '@/utils/tables/types';
@@ -26,6 +26,7 @@ interface MemoryContextProps {
   setSizeMemory: (size: number) => void;
   importMemory: MemoryRow[];
   setImportMemory: (importMemory: MemoryRow[]) => void;
+  newPc: number;
 }
 
 
@@ -34,7 +35,7 @@ const MemoryTable = () => {
   const tableInstanceRef = useRef<Tabulator | null>(null);
 
   const context = useMemoryTable() as unknown as MemoryContextProps;
-  const { isCreatedMemoryTable, setIsCreatedMemoryTable, showHexadecimal, dataMemoryTable, setDataMemoryTable, sizeMemory, importMemory, setImportMemory  } = context;
+  const { isCreatedMemoryTable, setIsCreatedMemoryTable, showHexadecimal, dataMemoryTable, setDataMemoryTable, sizeMemory, importMemory, setImportMemory, newPc  } = context;
 
   const { setRegisterData, setRegisterWrite} = useRegistersTable();
 
@@ -153,6 +154,11 @@ const MemoryTable = () => {
       toggleHexColumn(tableInstanceRef.current, showHexadecimal);
     }
   }, [showHexadecimal]);
+
+  useEffect(() => {
+    updatePC(newPc, { current: tableInstanceRef.current});
+
+  }, [newPc]);
 
   
   useEffect(() => {

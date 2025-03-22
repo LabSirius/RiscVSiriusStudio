@@ -13,7 +13,7 @@ import Error from "@/components/Error";
 
 import ConvertSection from "@/sections/ConvertSection";
 import HelpSection from "@/sections/HelpSection";
-import SettingsSection from "@/sections/SettingsSection";
+import SettingsSection from "@/sections/SimulationSection";
 
 
 const App = () => {
