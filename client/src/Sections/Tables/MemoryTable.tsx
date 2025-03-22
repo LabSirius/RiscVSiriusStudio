@@ -59,11 +59,20 @@ const MemoryTable = () => {
           () => {
 
             setIsCreatedMemoryTable(true);
+            
           }
         );
         setupEventListeners(tableInstanceRef.current!);
       }
     });
+
+    tableInstanceRef.current.on('cellEdited', (cell) => {
+      if (cell.getField().startsWith("value")) {
+       sendMessage({ event: "memoryChanged", data: { memory: tableInstanceRef.current?.getData() } });
+      }
+    });
+    
+
   }, []);
 
 
@@ -110,7 +119,7 @@ const MemoryTable = () => {
         memory: newMemory,
       });
 
-     
+      
       sendMessage({ event: "memorySizeChanged", data: { sizeMemory: newTotalSize-4} });
     }
   }, [sizeMemory]);
