@@ -113,10 +113,10 @@ const RegistersTable = () => {
       className="shadow-lg max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem]"
     >
       {!tableBuilt && <SkeletonRegisterTable />}
-      <div
+      {isCreatedMemoryTable &&<div
         ref={tableRef}
         className={`w-full h-full `}
-      />
+      />}
     </div>
   );
 };

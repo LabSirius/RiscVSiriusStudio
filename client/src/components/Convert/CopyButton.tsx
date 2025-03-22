@@ -54,7 +54,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({ result, toFormat }) => {
   };
 
   return (
-    <div className="absolute top-[2.5rem] right-[0.6rem] text-gray-400 cursor-pointer z-10">
+    <div className="absolute top-[2.3rem] right-[0.6rem] text-gray-400 cursor-pointer z-10">
       <div ref={buttonRef} onClick={handleClick} className="z-10 text-gray-400 cursor-pointer">
         {toFormat === 'twoCompl'
           ? (showOptions ? <X width={24} height={24} strokeWidth={2} /> : <Copy width={22} height={22} strokeWidth={1} />)
