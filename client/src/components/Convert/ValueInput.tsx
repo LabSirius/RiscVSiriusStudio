@@ -16,7 +16,7 @@ const ValueInput: React.FC<ValueInputProps> = ({ id, ...props }) => {
         <input
           id={id}
           type="text"
-          className="relative rounded-lg border border-gray-400 cursor-pointer z-[2] bg-transparent py-2 pr-2 pl-[2.3rem] w-full"
+          className="relative text-[.93rem] rounded-lg border border-gray-400 cursor-pointer z-[2] bg-transparent py-2 pr-2 pl-[2.3rem] w-full"
           {...props}
         />
       </div>

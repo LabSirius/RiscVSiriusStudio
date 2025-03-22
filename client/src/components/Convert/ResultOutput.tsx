@@ -13,7 +13,7 @@ const ResultOutput: React.FC<ResultOutputProps> = ({ id, ...props }) => {
           id={id}
           type="text"
           readOnly
-          className="p-2 pr-[2.2rem] rounded-lg w-[22rem] border border-[#3A6973] bg-transparent focus:outline-none hover:outline-none relative"
+          className="p-2 pr-[2.2rem] text-[0.93rem] rounded-lg w-full border border-[#3A6973] bg-transparent focus:outline-none hover:outline-none relative"
           {...props}
         />
       </div>

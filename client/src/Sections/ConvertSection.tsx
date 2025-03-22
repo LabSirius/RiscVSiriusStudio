@@ -76,7 +76,7 @@ const ConvertSection: React.FC = () => {
   };
 
   return (
-      <div className="section-container">
+      <div className=" section-container">
         <div className="flex gap-2">
           {/* From format dropdown */}
           <Dropdown
@@ -108,13 +108,17 @@ const ConvertSection: React.FC = () => {
           id="numberToconvertInput"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
+          onClick={(e) => {
+            const target = e.target as HTMLInputElement;
+            target.setSelectionRange(target.value.length, target.value.length);
+          }}
         />
 
         {/* Checkbox for Two's Complement and swap button */}
-        <div className="flex gap-4 justify-between items-center w-full relative h-10">
+        <div className="relative flex items-center justify-between w-full h-10 gap-4">
           {fromFormat.value === 'twoCompl' && (
             <div>
-              <div className="flex gap-2 items-center">
+              <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="isNegative"
@@ -126,13 +130,13 @@ const ConvertSection: React.FC = () => {
               </div>
             </div>
           )}
-          <div id="checkbox-swapContainer" className="absolute top-1/2 right-0 -translate-y-1/2">
+          <div id="checkbox-swapContainer" className="absolute right-0 -translate-y-1/2 top-1/2">
             <SwapButton onSwap={handleSwap} />
           </div>
         </div>
 
         {/* Result output and copy button */}
-        <div className="flex flex-col gap-2 relative max-h-content">
+        <div className="relative flex flex-col gap-2 max-h-content">
           <ResultOutput id="resultConvertInput" value={result} />
           <CopyButton result={result} toFormat={toFormat.value} />
         </div>

@@ -30,13 +30,13 @@ const Dropdown: React.FC<DropdownProps> = ({ label, options, selected, onSelect,
   }, []);
 
   return (
-    <div className="flex flex-col gap-1 relative" ref={dropdownRef}>
+    <div className="relative flex flex-col gap-1 " ref={dropdownRef}>
       {label && <p className="label">{label}</p>}
       <div className="relative">
         <input
           type="text"
           id={inputId}
-          className="relative rounded-lg border border-gray-400 cursor-pointer z-[2] bg-transparent py-2 pl-2 pr-[2.3rem] w-[10.8rem]"
+          className="relative rounded-lg border border-gray-400 cursor-pointer z-[2] bg-transparent py-2 pl-2 pr-[2.3rem] w-full"
           value={selected.label}
           readOnly
           onClick={() => setOpen(!open)}
