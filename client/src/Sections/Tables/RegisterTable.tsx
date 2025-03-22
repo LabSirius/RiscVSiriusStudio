@@ -14,7 +14,7 @@ import { sendMessage } from '@/components/Message/sendMessage';
 
 const RegistersTable = () => {
   const { isCreatedMemoryTable } = useMemoryTable();
-  const { registerData, setRegisterData, registerWrite, setRegisterWrite } = useRegistersTable();
+  const { registerData, setRegisterData, registerWrite, setRegisterWrite, importRegister, setImportRegister } = useRegistersTable();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
   const tabulatorInstance = useRef<Tabulator | null>(null);
@@ -107,6 +107,15 @@ const RegistersTable = () => {
 
   }, [registerData]);
 
+
+  useEffect(() => {
+    if(importRegister.length === 0) return;
+
+    tabulatorInstance.current?.setData(importRegister);
+    setImportRegister([]);
+
+  }, [importRegister, setImportRegister]);
+  
   return (
     <div
       ref={tableContainerRef}

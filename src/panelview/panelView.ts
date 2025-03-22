@@ -63,6 +63,13 @@ function dispatch(
               object: { event: 'registersChanged', value: data.data.registers }
             }
           );
+        case 'memoryChanged':
+          UIManager.getInstance()._sendMessageToExtension(
+            {
+              command: 'event',
+              object: { event: 'memoryChanged', value: data.data.memory }
+            }
+          );
           break;
         default:
           log({ msg: 'Unknown operation', data: data });

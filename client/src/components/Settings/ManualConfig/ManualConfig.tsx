@@ -1,14 +1,16 @@
-import { Button } from "@/components/ui/button";
-import { RedoDot, FileDown, Save } from "lucide-react";
 import MemorySizeInput from "./MemorySizeInput";
+import ImportRegister from "../ImportRegister";
+
+import { Button } from "@/components/ui/button";
+import { RedoDot, Save } from "lucide-react";
 
 const ManualConfig = () => {
 
   return (
     <div className="flex flex-col gap-7">
-      <p className="flex text-md text-gray-400">
+      <p className="flex text-gray-400 text-md">
         Press
-        <span className="inline text-slate-400 mx-2">
+        <span className="inline mx-2 text-slate-400">
           <RedoDot strokeWidth={1} />
         </span>{" "}
         to execute the first instruction
@@ -16,20 +18,17 @@ const ManualConfig = () => {
 
       <div className="flex flex-col gap-2 mt-1">
         <p>Import data</p>
-        <div className="flex gap-3 mt-2 items-center">
-          <div className="flex gap-2 items-center">
-            <input type="file" id="fileInputImportRegister" accept=".txt" className="hidden" />
-            <div className="flex gap-2 items-center">
-              <Button variant="outline" size="icon" id="importRegisterBtn">
-                <FileDown strokeWidth={1} />
-              </Button>
-              <p className="text-gray">Registers</p>
-            </div>
-          </div>
+        <div className="flex items-center gap-3 mt-2">
 
-          <div className="flex gap-2 items-center ml-4">
-            <input type="file" id="fileInputImportMemory" accept=".txt" className="hidden" />
-            <div className="flex gap-2 items-center">
+          <ImportRegister />
+          <div className="flex items-center gap-2 ml-4">
+            <input
+              type="file"
+              id="fileInputImportMemory"
+              accept=".txt"
+              className="hidden"
+            />
+            <div className="flex items-center gap-2">
               <Button variant="outline" size="icon" id="importMemoryBtn">
                 <Save strokeWidth={1} />
               </Button>

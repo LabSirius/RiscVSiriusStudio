@@ -796,8 +796,8 @@ export class SCCPU {
       flatMemory.push(group.value0, group.value1, group.value2, group.value3);
     });
 
+
     (this.dataMemory as any).memory = flatMemory;
-    console.log("Memory replaced", this.dataMemory.getMemory());
   }
 
   public replaceRegisters(newRegisters: string[]): void {
