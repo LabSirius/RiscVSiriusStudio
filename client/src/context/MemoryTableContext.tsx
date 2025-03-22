@@ -25,6 +25,8 @@ export interface MemoryTableContextProps {
   setImportMemory: React.Dispatch<React.SetStateAction<MemoryRow[]>>;
   newPc: number;
   setNewPc: React.Dispatch<React.SetStateAction<number>>;
+  searchInMemory: string;
+  setSearchInMemory: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const MemoryTableContext = createContext<MemoryTableContextProps | undefined>(undefined);
@@ -39,6 +41,7 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [codeSize, setCodeSize] = useState<number>(0);
   const [importMemory, setImportMemory] = useState<MemoryRow[]>([]);
   const [newPc, setNewPc] = useState<number>(0);
+  const [searchInMemory, setSearchInMemory] = useState<string>("");
 
   return (
     <MemoryTableContext.Provider
@@ -56,7 +59,9 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
         importMemory,
         setImportMemory,
         newPc, 
-        setNewPc
+        setNewPc,
+        searchInMemory, 
+        setSearchInMemory
       }}>
       {children}
     </MemoryTableContext.Provider>

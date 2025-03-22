@@ -9,12 +9,12 @@ import { RegisterView } from '@/utils/tables/types';
 import { createViewTypeFormatter, handleGlobalKeyPress, updateRegisterValue } from '@/utils/tables/handlersRegisters';
 import { getColumnsRegisterDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 import SkeletonRegisterTable from '@/components/Skeleton/SkeletonRegisterTable';
-
 import { sendMessage } from '@/components/Message/sendMessage';
+import { filterTableData, resetCellColors } from '@/utils/tables/handlersRegisters';
 
 const RegistersTable = () => {
   const { isCreatedMemoryTable } = useMemoryTable();
-  const { registerData, setRegisterData, registerWrite, setRegisterWrite, importRegister, setImportRegister } = useRegistersTable();
+  const { registerData, setRegisterData, registerWrite, setRegisterWrite, importRegister, setImportRegister, searchInRegisters } = useRegistersTable();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
   const tabulatorInstance = useRef<Tabulator | null>(null);
@@ -31,8 +31,7 @@ const RegistersTable = () => {
 
   // --- GLOBAL KEYBOARD SHORTCUTS ---
   useEffect(() => {
-
-    if(!tableContainerRef.current) return;
+    if (!tableContainerRef.current) return;
     const keyHandler = handleGlobalKeyPress(currentHoveredViewTypeCell);
     document.addEventListener('keydown', keyHandler);
     return () => document.removeEventListener('keydown', keyHandler);
@@ -81,13 +80,12 @@ const RegistersTable = () => {
         setRegisterData((prevData) => {
           const newData = [...prevData];
           newData[id] = value;
-          sendMessage({ event: "registersChanged", registers: newData  });
+          sendMessage({ event: 'registersChanged', registers: newData });
           return newData;
         });
       }
     });
 
-    
     return () => {
       if (tabulatorInstance.current) {
         tabulatorInstance.current.destroy();
@@ -97,35 +95,38 @@ const RegistersTable = () => {
     };
   }, [isCreatedMemoryTable]);
 
-  // Update register value
+  // Actualiza el valor del registro
   useEffect(() => {
     if (!registerWrite || !tabulatorInstance.current) {
       return;
     }
     updateRegisterValue(tabulatorInstance, registerWrite, registerData);
     setRegisterWrite('');
-
   }, [registerData]);
 
-
   useEffect(() => {
-    if(importRegister.length === 0) return;
-
+    if (importRegister.length === 0) return;
     tabulatorInstance.current?.setData(importRegister);
     setImportRegister([]);
-
   }, [importRegister, setImportRegister]);
-  
+
+  // --- Filter table data ---
+  useEffect(() => {
+    if (!tabulatorInstance.current) return;
+    if (searchInRegisters.trim() === '') {
+      tabulatorInstance.current.clearFilter(true);
+      resetCellColors(tabulatorInstance.current);
+    } else {
+      filterTableData(searchInRegisters, tabulatorInstance.current);
+    }
+  }, [searchInRegisters]);
+
   return (
-    <div
-      ref={tableContainerRef}
-      className="shadow-lg max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem]"
-    >
+    <div ref={tableContainerRef} className="shadow-lg max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem]">
       {!tableBuilt && <SkeletonRegisterTable />}
-      {isCreatedMemoryTable &&<div
-        ref={tableRef}
-        className={`w-full h-full `}
-      />}
+      {isCreatedMemoryTable && (
+        <div ref={tableRef} className="w-full h-full" />
+      )}
     </div>
   );
 };

@@ -1,11 +1,16 @@
+import { useRegistersTable } from '@/context/RegisterTableContext';
+import { useMemoryTable } from '@/context/MemoryTableContext';
 import { File, Save } from 'lucide-react';
 
 const SearchSection = () => {
+  const { setSearchInRegisters } = useRegistersTable();
+  const { setSearchInMemory } = useMemoryTable();
+
   return (
     <div className="w-full mt-1 section-container">
       <div className="flex flex-col p-4">
         <div className="flex flex-col gap-4">
-          <p className='text-lg font-semibold'>Filter</p>
+          <p className="text-lg font-semibold">Filter</p>
           <div className="flex flex-col gap-1">
             <p className="font-medium">In registers table</p>
             <div className="relative">
@@ -15,6 +20,7 @@ const SearchSection = () => {
               <input
                 type="text"
                 placeholder="e.g x17 or 12 or 1100 or 0xC"
+                onChange={(e) => setSearchInRegisters(e.target.value)}
                 className="p-2 pl-[2.3rem] rounded-lg border border-gray-400 w-full bg-transparent"
               />
             </div>
@@ -28,6 +34,7 @@ const SearchSection = () => {
               <input
                 type="text"
                 placeholder="e.g 1234"
+                onChange={(e) => setSearchInMemory(e.target.value)}
                 className="p-2 pl-[2.3rem] rounded-lg border border-gray-400 w-full bg-transparent"
               />
             </div>
@@ -42,3 +49,4 @@ const SearchSection = () => {
 };
 
 export default SearchSection;
+
