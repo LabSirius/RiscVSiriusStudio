@@ -1,3 +1,4 @@
+// Data constants for registers table
 export const registersNames = [
     'x0 zero', 'x1 ra', 'x2 sp', 'x3 gp', 'x4 tp', 'x5 t0', 'x6 t1', 'x7 t2',
     'x8 s0', 'x9 s1', 'x10 a0', 'x11 a1', 'x12 a2', 'x13 a3', 'x14 a4', 'x15 a5',

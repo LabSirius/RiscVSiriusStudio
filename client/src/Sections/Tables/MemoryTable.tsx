@@ -7,7 +7,7 @@ import './tabulator.min.css';
 
 import { uploadMemory, setupEventListeners, toggleHexColumn,  } from '@/utils/tables/handlersMemory';
 import { intTo32BitBinary } from '@/utils/tables/handlerConversions';
-import { getColumnMemoryDefinitions } from '@/utils/tables/definitionsColumns';
+import { getColumnMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 import { DataMemoryTable } from '@/utils/tables/types';
 
 import SkeletonMemoryTable from '@/components/Skeleton/SkeletonMemoryTable';

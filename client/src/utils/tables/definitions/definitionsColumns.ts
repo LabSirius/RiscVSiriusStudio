@@ -1,11 +1,11 @@
-import { registerNamesFormatter, valueFormatter, valueRegisterEditor, attachConvertionToggle } from '@/utils/tables/handlersRegisters';
-import { possibleViews } from '@/utils/tables/data';
+import { registerNamesFormatter, valueFormatter, valueRegisterEditor, attachConvertionToggle } from '@/utils/tables/definitions/handlerDefinitions';
+import { possibleViews } from '@/constants/data';
 
 import { ColumnDefinition, CellComponent } from 'tabulator-tables';
-import { binaryMemEditor, createTooltip, attachMemoryConversionToggle } from '@/utils/tables/handlersMemory';
+import { binaryMemEditor, createTooltip, attachMemoryConversionToggle } from '@/utils/tables/definitions/handlerDefinitions';
 
 
-
+// This function returns the definitions of the columns for the register table.
 export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellComponent) => HTMLElement): ColumnDefinition[] => {
     const defaultAttrs: ColumnDefinition = {
       title: '',

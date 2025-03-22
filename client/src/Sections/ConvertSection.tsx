@@ -6,7 +6,7 @@ import ValueInput from "@/components/Convert/ValueInput";
 import ResultOutput from "@/components/Convert/ResultOutput";
 import SwapButton from "@/components/Convert/SwapButton";
 import CopyButton from "@/components/Convert/CopyButton";
-import { processTwoComplementInput, convertValue } from "@/utils/convertUtils";
+import { processTwoComplementInput, convertValue } from "@/utils/convert";
 
 // Available format options
 const formatOptions: Option[] = [

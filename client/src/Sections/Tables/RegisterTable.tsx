@@ -4,10 +4,10 @@ import './tabulator.min.css';
 
 import { useMemoryTable } from '@/context/MemoryTableContext';
 import { useRegistersTable } from '@/context/RegisterTableContext';
-import { registersNames } from '@/utils/tables/data';
+import { registersNames } from '@/constants/data';
 import { RegisterView } from '@/utils/tables/types';
 import { createViewTypeFormatter, handleGlobalKeyPress, updateRegisterValue } from '@/utils/tables/handlersRegisters';
-import { getColumnsRegisterDefinitions } from '@/utils/tables/definitionsColumns';
+import { getColumnsRegisterDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 import SkeletonRegisterTable from '@/components/Skeleton/SkeletonRegisterTable';
 
 const RegistersTable = () => {
