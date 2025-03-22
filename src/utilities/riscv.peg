@@ -24,7 +24,7 @@
       tail.unshift([[], head[1]]);
       head = head[0];
     }
-    const result =  [head].concat(extractList(tail, index));
+    const result = [head].concat(extractList(tail, index));
     return clearList(result);
   }
 
@@ -61,7 +61,7 @@
   
   function isImm21(val) { return val >= -1048576 && val <= 1048575; }
   
-  function isImm32(val) { return val >= 0 && val <= 4294967295; }
+  function isImm32(val) { return val >= -2147483648 && val <= 2147483648; }
   
   function isValidShift(val) { return val >= 0 && val < 32; }
   
@@ -71,7 +71,9 @@
 
   function shiftLeftLogical(val: number , shift: number): number { return val << shift; }
   
-  function cutNumber(val: number, mask: number): number { return val & mask; }
+  function shiftRightLogical(val: number , shift: number): number { return val >> shift; }
+  
+  function applyBitMask(val: number, mask: number): number { return val & mask; }
 
   function toRadix (value, radix) {
     if (!Number.isSafeInteger(value)) {
@@ -402,7 +404,6 @@
   }
 
   SourceElements = __ head:SourceElement tail:(__ SourceElement)* {
-    // return buildList(head, tail, 1);
     if (isFirstPass){ return undefined; }
     return buildList(head, tail, 1);
   }
@@ -410,7 +411,6 @@
   SourceElement 
   = lbl:LabelDeclaration EOS 
   { 
-    // console.log("label declaration: ", lbl);
     let ret = lbl;
     ret["kind"] = "SrcLabel";
     ret["location"] = location();
@@ -537,7 +537,6 @@
     }
     / inst:PseudoInstruction 
     {
-      // console.error("Pseudo instructions are not yet implemented");
       if (isFirstPass) { 
         getInstMemPosition();
         return undefined; 
@@ -727,7 +726,7 @@
       const imm = offset["value"];
       let complementInstruction;
       if (isDoubleInst(offset)){ complementInstruction = handleUInstruction('auipc', regEnc('6'), shiftLeftLogical(imm, 12), location(), true); }
-      const mainInstruction = handleIInstruction('jalr', regEnc('1'), regEnc('1'), cutNumber(imm, 0xFFF), location(), true);
+      const mainInstruction = handleIInstruction('jalr', regEnc('1'), regEnc('1'), applyBitMask(imm, 0xFFF), location(), true);
       return [complementInstruction, mainInstruction];
     }
     
@@ -740,7 +739,7 @@
       const imm = offset["value"];
       let complementInstruction;
       if (isDoubleInst(offset)){ complementInstruction = handleUInstruction('auipc', regEnc('6'), shiftLeftLogical(imm, 12), location(), true); }
-      const mainInstruction = handleIInstruction('jalr', regEnc('0'), regEnc('6'), cutNumber(imm, 0xFFF), location(), true);
+      const mainInstruction = handleIInstruction('jalr', regEnc('0'), regEnc('6'), applyBitMask(imm, 0xFFF), location(), true);
       return [complementInstruction, mainInstruction];
     }
     
@@ -803,7 +802,7 @@
       const imm = symbol["value"];
       let complementInstruction;
       if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rd, shiftLeftLogical(imm, 12), location(), true); }
-      const mainInstruction = handleIInstruction('addi', rd, rd, cutNumber(imm, 0xFFF), location(), true);
+      const mainInstruction = handleIInstruction('addi', rd, rd, applyBitMask(imm, 0xFFF), location(), true);
       return [complementInstruction, mainInstruction];
     }
     / liToken _ rd:RegisterName ___ symbol:Symbol 
@@ -815,7 +814,7 @@
       const imm = symbol["value"];
       let complementInstruction;
       if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('lui', rd, shiftLeftLogical(imm, 12), location(), true); }
-      const mainInstruction = handleIInstruction('addi', rd, regEnc('0'), cutNumber(imm, 0xFFF), location(), true);
+      const mainInstruction = handleIInstruction('addi', rd, regEnc('0'), applyBitMask(imm, 0xFFF), location(), true);
       return [complementInstruction, mainInstruction];
     }
 
@@ -829,7 +828,7 @@
     const imm = symbol["value"];
     let complementInstruction;
     if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rd, shiftLeftLogical(imm, 12), location(), true); }
-    const mainInstruction = handleIInstruction(name, rd, rd, cutNumber(imm, 0xFFF), location(), true);
+    const mainInstruction = handleIInstruction(name, rd, rd, applyBitMask(imm, 0xFFF), location(), true);
     return [complementInstruction, mainInstruction];
   }
 
@@ -843,7 +842,7 @@
     const imm = symbol["value"];
     let complementInstruction;
     if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rt, shiftLeftLogical(imm, 12), location(), true); }
-    const mainInstruction = handleSInstruction(name, rd, cutNumber(imm, 0xFFF), rt, location(), true);
+    const mainInstruction = handleSInstruction(name, rd, applyBitMask(imm, 0xFFF), rt, location(), true);
     return [complementInstruction, mainInstruction];
   }
   
@@ -889,9 +888,6 @@
   / lbl:Identifier 
   { 
     if (isFirstPass) { return undefined; }
-    // const label = lbl["name"];
-    // const pointsTo = labelTable[label];
-    // const value = pointsTo['memdef'];
     const value = getPosLabel(lbl["name"])
     if (isImm21(value)) {
         return value;
@@ -903,7 +899,7 @@
   = val:Integer
   {
     const v = getInt(val);
-    if (!isImm32(v)) { return error("Expecting 32 bit representable value [-2147483648, 2147483647]. Got " + value); }
+    if (!isImm32(v)) { return error("Expecting 32 bit representable value [-2147483648, 2147483647]. Got " + v); }
     return {"value": v, "double": !isImm12(v)}; 
     
   }
@@ -913,21 +909,15 @@
   / lbl:Identifier
   {
     if (isFirstPass) { return {}; }
-    const label = lbl["name"];
-    const pointsTo = labelTable[label];
-    const value = pointsTo['memdef'];
-    if (isImm12(value)) { return {"value": value, "double": false}; }
-    if (isImm32(value)) { return {"value": value, "double": true}; }
-    return error("Expecting 32 bit representable value [-2147483648, 2147483647]. Got " + value); 
+    const value = getPosLabel(lbl["name"])
+    return {"value": value, "double": !isImm12(value)};
   }
 
   BTarget "target address of a jump instruction"
   = imm:Imm13 { return imm; }
   / lbl:Identifier {
     if (isFirstPass) { return undefined; }
-    const label = lbl["name"];
-    const pointsTo = labelTable[label];
-    const value = pointsTo['memdef'];
+    const value = getPosLabel(lbl["name"]);
     if (isImm13(value)) {
         return value;
     }
@@ -938,9 +928,7 @@
   = imm:Imm13 { return imm; }
   / lbl:Identifier {
     if (isFirstPass) { return undefined; }
-    const label = lbl["name"];
-    const pointsTo = labelTable[label];
-    const value = pointsTo['memdef'];
+    const value = getPosLabel(lbl["name"]);
     if (isImm13(value)) {
         return value;
     }
@@ -960,40 +948,36 @@
         %lo(symbol): The low 12 bits of absolute address for symbol.
     */
     if (isFirstPass) { return undefined; }
-    const label = lbl["name"];
-    const pointsTo = labelTable[label];
-    const value = pointsTo['memdef'];
-    const value13 = ((1 << 13) - 1) & value;
+    const value = getPosLabel(lbl["name"]);
+    const value13 = applyBitMask(value, (1 << 13) - 1)
     console.log("lo(symbol): ", value, value13,location());
     return value13;
   }
   / "%" _ "hi" _ "(" _ lbl:Identifier _ ")"
   {
     if (isFirstPass) { return undefined; }
-    const label = lbl["name"];
-    const pointsTo = labelTable[label];
-    const value = pointsTo['memdef'];
-    const mask = ((1 << 20) - 1) << 12; 
-    const value20 = (mask & value) >> 12;
+    const value = getPosLabel(lbl["name"]);
+    const mask = ((1 << 20) - 1) << 12;
+    const valueMask = applyBitMask(value, mask);
+    const value20 = shiftRightLogical(valueMask, 12);
     console.log("hi(symbol): ", value, value20, location());
     return value20;
   }
   / "%" _ "pcrel_hi" _ "(" _ symbol:Symbol _ ")"
   {
     if (isFirstPass) { return undefined; }
-    const value20 = (symbol - location() * 4 + 0x800) >> 12;
+    const value = symbol["value"]
+    const value20 = shiftRightLogical((value - location() * 4 + 0x800), 12);
     console.log("pcrel_hi: ", value20);
-    return { value20 };
+    return value20;
   }
   / "%" _ "pcrel_lo" _ "(" _ lbl:Identifier _ ")"
   {
     if (isFirstPass) { return undefined; }
-    const label = lbl["name"];
-    const pointsTo = labelTable[label];
-    const value = pointsTo['memdef'];
-    const value13 = (value - location()*4) & 0xFFF;
+    const value = getPosLabel(lbl["name"]);
+    const value13 = applyBitMask((value - location()*4), 0xFFF);
     console.log("pcrel_lo: ", value13);
-    return { value13 };
+    return value13;
   }
 
   JumpInstName "jump instruction"
