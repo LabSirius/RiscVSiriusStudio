@@ -18,6 +18,7 @@ const MessageListener = () => {
       if (message?.from === "UIManager") {
         if (message.operation === 'uploadMemory') {
           setOperation('uploadMemory');
+          setSection('settings');
           setDataMemoryTable(message.payload);
           setSizeMemory(message.payload.memory.length - message.payload.codeSize );
           setCodeSize(message.payload.codeSize);
