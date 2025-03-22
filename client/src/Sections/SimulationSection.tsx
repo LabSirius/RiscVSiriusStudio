@@ -1,4 +1,4 @@
-import { useRoutes } from "@/context/RoutesContext";
+import { useOperation } from "@/context/OperationContext";
 import ManualConfig from "../components/Settings/ManualConfig/ManualConfig";
 import SwitchHexadecimal from "@/components/SwitchHexadecimal";
 import Tables from "./Tables/Tables";
@@ -6,7 +6,7 @@ import MouseScrollIcon from "@/components/MouseScrollIcon";
 import { useState, useEffect, useRef } from "react";
 
 const SettingsSection = () => {
-  const { routes } = useRoutes();
+  const { operation } = useOperation();
   const [showScrollIcon, setShowScrollIcon] = useState(true);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -39,7 +39,7 @@ const SettingsSection = () => {
       <Tables />
       <div className="mt-1 section-container">
         <div className="flex flex-col gap-12">
-          {routes === "uploadMemory" && <ManualConfig />}
+          {operation === "uploadMemory" && <ManualConfig />}
           <SwitchHexadecimal />
         </div>
       </div>

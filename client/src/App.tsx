@@ -1,7 +1,7 @@
 import { ThemeProvider } from "@/components/ui/theme/theme-provider";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 
-import { RoutesProvider } from "./context/RoutesContext";
+import { OperationProvider } from "./context/OperationContext";
 import { MemoryTableProvider } from "./context/MemoryTableContext";
 import { RegistersTableProvider } from "./context/RegisterTableContext";
 import { ErrorProvider } from "./context/ErrorContext";
@@ -19,7 +19,7 @@ import SettingsSection from "@/sections/SimulationSection";
 const App = () => {
   return (
     <MemoryRouter>
-      <RoutesProvider>
+      <OperationProvider>
         <MemoryTableProvider>
           <RegistersTableProvider>
             <ErrorProvider>
@@ -41,7 +41,7 @@ const App = () => {
             </ErrorProvider>
           </RegistersTableProvider>
         </MemoryTableProvider>
-      </RoutesProvider>
+      </OperationProvider>
     </MemoryRouter>
   );
 };

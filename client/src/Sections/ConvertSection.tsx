@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRoutes } from '@/context/RoutesContext';
+import { useOperation } from '@/context/OperationContext';
 import { useNavigate } from 'react-router-dom';
 import Dropdown, { Option } from "@/components/Convert/Dropdown";
 import ValueInput from "@/components/Convert/ValueInput";
@@ -18,7 +18,7 @@ const formatOptions: Option[] = [
 
 const ConvertSection: React.FC = () => {
 
-  const { routes } = useRoutes();
+  const { operation } = useOperation();
   const navigate = useNavigate();
 
   // State for source format, target format, input value, conversion result and negative flag
@@ -29,10 +29,10 @@ const ConvertSection: React.FC = () => {
   const [isNegative, setIsNegative] = useState<boolean>(false);
 
   useEffect(() => {
-    if (routes === 'uploadMemory') {
+    if (operation === 'uploadMemory') {
       navigate('/settings');
     }
-}, [routes, navigate]);
+}, [operation, navigate]);
 
   // Update input when Two's Complement format or negative flag changes
   useEffect(() => {

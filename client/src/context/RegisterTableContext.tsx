@@ -38,7 +38,7 @@ export const RegistersTableProvider: React.FC<{ children: ReactNode }> = ({ chil
 export const useRegistersTable = (): RegistersTableContextProps => {
   const context = useContext(RegistersTableContext);
   if (!context) {
-    throw new Error('useRoutes debe usarse dentro de un RoutesProvider');
+    throw new Error('useRegistersTable debe usarse dentro de un RoutesProvider');
   }
   return context;
 };

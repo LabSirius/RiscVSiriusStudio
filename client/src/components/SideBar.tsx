@@ -1,4 +1,4 @@
-import { useRoutes } from "@/context/RoutesContext";
+import { useOperation } from "@/context/OperationContext";
 
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ui/theme/mode-toggle";
@@ -18,15 +18,15 @@ import { Calculator, Info, Settings } from "lucide-react";
 
 export function SideBar() {
   const navigate = useNavigate();
-  const { routes } = useRoutes();
+  const { operation } = useOperation();
   return (
     <Sidebar>
       <SidebarContent className="relative min-h-full overflow-hidden">
         <SidebarGroup className="flex flex-col flex-1">
           <SidebarGroupLabel>Options</SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-col flex-1">
-            <SidebarMenu className="flex flex-col justify-between min-h-full mt-2 pl-3">
-            {!(routes === "uploadMemory") && (
+            <SidebarMenu className="flex flex-col justify-between min-h-full pl-3 mt-2">
+            {!(operation === "uploadMemory") && (
               <SidebarMenuItem>
                 <a onClick={() => navigate("/")} className="curser-pointer">
                       <Button variant="outline" size="icon">
@@ -37,7 +37,7 @@ export function SideBar() {
               </SidebarMenuItem>
             )}
 
-              {(routes === "uploadMemory") && (
+              {(operation === "uploadMemory") && (
                <SidebarMenuItem>
                 <a onClick={() => navigate("/settings")} className="curser-pointer">
                  
@@ -55,7 +55,7 @@ export function SideBar() {
         <SidebarGroup className="mb-[.5rem]">
           <SidebarGroupLabel>Others</SidebarGroupLabel>
 
-          <div className="flex flex-col mt-2  pl-3 gap-5">
+          <div className="flex flex-col gap-5 pl-3 mt-2">
             <SidebarMenuItem>
               <ModeToggle />
             </SidebarMenuItem>

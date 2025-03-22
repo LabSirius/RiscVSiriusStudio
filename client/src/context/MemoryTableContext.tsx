@@ -66,7 +66,7 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
 export const useMemoryTable = (): MemoryTableContextProps => {
   const context = useContext(MemoryTableContext);
   if (!context) {
-    throw new Error("useRoutes debe usarse dentro de un RoutesProvider");
+    throw new Error("useMemory debe usarse dentro de un RoutesProvider");
   }
   return context;
 };

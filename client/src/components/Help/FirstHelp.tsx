@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRoutes } from "@/context/RoutesContext";
+import { useOperation } from "@/context/OperationContext";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -29,17 +29,17 @@ const data = [
 
 export function FirstHelp() {
 
-  const { routes } = useRoutes();
+  const { operation } = useOperation();
   const navigate = useNavigate();
 
   const [carouselKey, setCarouselKey] = useState(0);
   const carouselRef = useRef(null);
 
    useEffect(() => {
-      if (routes === 'uploadMemory') {
+      if (operation === 'uploadMemory') {
         navigate('/settings');
       }
-  }, [routes, navigate]);
+  }, [operation, navigate]);
 
   const handleReset = () => {
     setCarouselKey((prev) => prev + 1);
@@ -54,9 +54,9 @@ export function FirstHelp() {
             <CarouselItem key={index} className="relative">
               <div className="p-1">
                 <Card>
-                  <CardContent className="flex aspect-square items-center justify-center p-6">
-                    <span className=" font-semibold">{item.content}</span>
-                    <div className=" absolute bottom-8 right-4 ">
+                  <CardContent className="flex items-center justify-center p-6 aspect-square">
+                    <span className="font-semibold ">{item.content}</span>
+                    <div className="absolute bottom-8 right-4">
                       {item.icon}
                     </div>
                   </CardContent>

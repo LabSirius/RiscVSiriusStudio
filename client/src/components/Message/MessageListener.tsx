@@ -1,13 +1,13 @@
 // MessageListener.tsx
 import { useEffect } from "react";
-import { useRoutes } from "@/context/RoutesContext";
+import { useOperation } from "@/context/OperationContext";
 import { useMemoryTable } from "@/context/MemoryTableContext";
 
 
 import { intToHex } from "@/utils/tables/handlerConversions";
 
 const MessageListener = () => {
-  const { setRoutes } = useRoutes();
+  const { setOperation,  isFirstStep, setIsFirstStep } = useOperation();
   const { setDataMemoryTable, setSizeMemory, setCodeSize, setNewPc } = useMemoryTable();
 
   useEffect(() => {
@@ -15,21 +15,21 @@ const MessageListener = () => {
       const message = event.data;
       if (message?.from === "UIManager") {
         if (message.operation === 'uploadMemory') {
-          setRoutes('uploadMemory');
+          setOperation('uploadMemory');
           setDataMemoryTable(message.payload);
           setSizeMemory(message.payload.memory.length - message.payload.codeSize );
           setCodeSize(message.payload.codeSize);
         }
         if(message.operation === 'step') {
-          setRoutes('step');
-          const pc = Number(intToHex(message.pc));
-          setNewPc(pc);
+          setOperation('step');
+          setNewPc(Number(intToHex(message.pc)));
+          if(!isFirstStep) setIsFirstStep(true);
         }
       }
     };
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
-  }, [setRoutes, setDataMemoryTable, setSizeMemory]);
+  }, [setOperation, setDataMemoryTable, setSizeMemory]);
 
   return null;
 };
