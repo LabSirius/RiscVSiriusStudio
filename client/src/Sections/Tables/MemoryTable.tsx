@@ -5,7 +5,8 @@ import { useRegistersTable } from '@/context/RegisterTableContext';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 import './tabulator.min.css';
 
-import { uploadMemory, setupEventListeners, toggleHexColumn } from '@/utils/tables/handlersMemory';
+import { uploadMemory, setupEventListeners, toggleHexColumn,  } from '@/utils/tables/handlersMemory';
+import { intTo32BitBinary } from '@/utils/tables/handlerConversions';
 import { getColumnMemoryDefinitions } from '@/utils/tables/definitionsColumns';
 import { DataMemoryTable } from '@/utils/tables/types';
 
@@ -31,7 +32,7 @@ const MemoryTable = () => {
   
   const [isLoading, setIsLoading] = useState(true);
 
-  const { setSp} = useRegistersTable();
+  const { setRegisterData, setRegisterWrite} = useRegistersTable();
 
   /**
    * Initialize Tabulator instance
@@ -94,7 +95,13 @@ const MemoryTable = () => {
         0,
         () => {
           setIsLoading(false);
-          setSp(newTotalSize -4);
+          setRegisterData((prev) => {
+            const newData = [...prev];
+            newData[2] = intTo32BitBinary(newTotalSize - 4);
+            return newData;
+          });
+          setRegisterWrite('x2');
+          
         },
       );
 

@@ -187,3 +187,14 @@ export function toBinary(value: string, vtype: RegisterView) {
 
 type RegisterView = 2 | 'signed' | 'unsigned' | 16 | 'ascii';
 
+
+
+/**
+ * Convert a 32-bit signed integer to a 32-bit binary string.
+ *
+
+ */
+export function intTo32BitBinary(num: number): string {
+ 
+  return (num >>> 0).toString(2).padStart(32, '0');
+}

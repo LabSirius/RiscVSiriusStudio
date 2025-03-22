@@ -2,18 +2,22 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface RegistersTableContextProps {
-    sp: number;
-    setSp: React.Dispatch<React.SetStateAction<number>>;
+  registerData: string[];
+  setRegisterData: React.Dispatch<React.SetStateAction<string[]>>;
+  registerWrite: string;
+  setRegisterWrite: React.Dispatch<React.SetStateAction<string>>;
+
 }
 
 const RegistersTableContext = createContext<RegistersTableContextProps | undefined>(undefined);
 
 export const RegistersTableProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [sp, setSp] = useState<number>(0);
+  const [registerData, setRegisterData] = useState<string[]>(Array(32).fill('0'.repeat(32)));
+  const [registerWrite, setRegisterWrite] = useState<string>('');
  
 
   return (
-    <RegistersTableContext.Provider value={{sp, setSp}}>
+    <RegistersTableContext.Provider value={{registerWrite, setRegisterWrite, registerData, setRegisterData}}>
       {children}
     </RegistersTableContext.Provider>
   );

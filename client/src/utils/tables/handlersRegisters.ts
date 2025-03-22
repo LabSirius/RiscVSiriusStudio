@@ -1,5 +1,7 @@
 import { CellComponent } from 'tabulator-tables';
 
+import { Tabulator } from 'tabulator-tables';
+
 import { RegisterView } from '@/utils/tables/types';
 
 import { RefObject } from 'react';
@@ -18,6 +20,23 @@ import {
     validAscii,
     toBinary
   } from '@/utils/tables/handlerConversions';
+
+
+ export function updateRegisterValue(
+    tabulatorRef: React.MutableRefObject<Tabulator | null>,
+    registerWrite: string,
+    registerData: string[]
+  ) {
+    if (!registerWrite || !tabulatorRef.current) return;
+  
+    const regNum = parseInt(registerWrite.replace('x', ''), 10);
+    if (isNaN(regNum)) return;
+  
+    tabulatorRef.current.updateData([
+      { rawName: registerWrite, value: registerData[regNum] }
+    ]);
+    
+  }
 
 export const registerNamesFormatter = (cell: CellComponent) => {
     const { name } = cell.getData();
