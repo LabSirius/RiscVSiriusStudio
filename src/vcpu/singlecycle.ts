@@ -794,7 +794,6 @@ export class SCCPU {
     if (!newMemory) {
       return;
   }
-    console.log("MEMORIA VIEJA", this.dataMemory.getMemory());
     const flatMemory: string[] = [];
     newMemory.forEach((group) => {
       flatMemory.push(group.value0, group.value1, group.value2, group.value3);
@@ -803,7 +802,6 @@ export class SCCPU {
 
     (this.dataMemory as any).memory = flatMemory;
 
-    console.log("MEMORIA NUEVA", this.dataMemory.getMemory());
   }
 
   public replaceRegisters(newRegisters: string[]): void {

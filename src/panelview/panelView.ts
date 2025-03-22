@@ -56,7 +56,7 @@ function dispatch(
           UIManager.getInstance()._sendMessageToExtension(
             {
               command: 'event',
-              object: { event: 'memorySizeChanged', value: data.data.sizeMemory }
+              object: { event: data.event, value: data.sizeMemory }
             }
           );
           break;
@@ -64,14 +64,14 @@ function dispatch(
           UIManager.getInstance()._sendMessageToExtension(
             {
               command: 'event',
-              object: { event: 'registersChanged', value: data.data.registers }
+              object: { event: data.event, value: data.registers }
             }
           );
         case 'memoryChanged':
           UIManager.getInstance()._sendMessageToExtension(
             {
               command: 'event',
-              object: { event: 'memoryChanged', value: data.data.memory }
+              object: { event: data.event, value: data.memory }
             }
           );
           break;
@@ -92,7 +92,7 @@ function sendMessageToExtension(messageObject: any) {
 }
 
 function sendMessageToPanelView(data: any) {
-  window.postMessage({ from: 'UIManager', data }, '*');
+  window.postMessage({ from: 'UIManager', ...data }, '*');
 }
 
 

@@ -73,7 +73,7 @@ const MemoryTable = () => {
 
     tableInstanceRef.current.on('cellEdited', (cell) => {
       if (cell.getField().startsWith("value")) {
-       sendMessage({ event: "memoryChanged", data: { memory: tableInstanceRef.current?.getData() } });
+       sendMessage({ event: "memoryChanged", memory: tableInstanceRef.current?.getData() });
       }
     });
     
@@ -125,7 +125,7 @@ const MemoryTable = () => {
       });
 
       
-      sendMessage({ event: "memorySizeChanged", data: { sizeMemory: newTotalSize-4} });
+      sendMessage({ event: "memorySizeChanged", sizeMemory: newTotalSize-4});
     }
   }, [sizeMemory]);
 
@@ -141,7 +141,7 @@ const MemoryTable = () => {
     }));
     tableInstanceRef.current?.updateData(importMemoryUppercase);
     setImportMemory([]);
-    sendMessage({ event: "memoryChanged", data: { memory: tableInstanceRef.current?.getData() } });
+    sendMessage({ event: "memoryChanged", memory: tableInstanceRef.current?.getData() });
 
   }, [importMemory, setImportMemory]);
 

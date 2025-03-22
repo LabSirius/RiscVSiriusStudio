@@ -1,11 +1,10 @@
 interface SendMessageProps {
   event: string;
-    data: Record<string, unknown>;
+  [key: string]: unknown;
 }
+export const sendMessage = ({event, ...data} : SendMessageProps) => {
 
-export const sendMessage = ({event, data} : SendMessageProps) => {
-
-  window.postMessage({ from:"react", event: event, data: data }, '*');
+  window.postMessage({ from:"react", event: event, ...data }, '*');
   return 
 }
 

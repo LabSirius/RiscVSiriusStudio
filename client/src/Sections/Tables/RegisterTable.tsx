@@ -81,7 +81,7 @@ const RegistersTable = () => {
         setRegisterData((prevData) => {
           const newData = [...prevData];
           newData[id] = value;
-          sendMessage({ event: "registersChanged", data: { registers: newData } });
+          sendMessage({ event: "registersChanged", registers: newData  });
           return newData;
         });
       }

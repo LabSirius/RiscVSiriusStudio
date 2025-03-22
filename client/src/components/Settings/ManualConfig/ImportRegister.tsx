@@ -74,7 +74,7 @@ const ImportRegister = () => {
       }));
 
       setImportRegister(newData);
-      sendMessage({event:"registersChanged", data: { registers: lines }});
+      sendMessage({event:"registersChanged", registers: lines });
      
       };
 

@@ -12,17 +12,17 @@ const MessageListener = () => {
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      if (event.data?.from === "UIManager") {
-        if (event.data.data.operation === 'uploadMemory') {
+      const message = event.data;
+      if (message?.from === "UIManager") {
+        if (message.operation === 'uploadMemory') {
           setRoutes('uploadMemory');
-          setDataMemoryTable(event.data.data.payload);
-          setSizeMemory(event.data.data.payload.memory.length - event.data.data.payload.codeSize );
-          setCodeSize(event.data.data.payload.codeSize);
+          setDataMemoryTable(message.payload);
+          setSizeMemory(message.payload.memory.length - message.payload.codeSize );
+          setCodeSize(message.payload.codeSize);
         }
-        if(event.data.data.operation === 'step') {
-          console.log(event.data.data);
+        if(message.operation === 'step') {
           setRoutes('step');
-          const pc = Number(intToHex(event.data.data.pc));
+          const pc = Number(intToHex(message.pc));
           setNewPc(pc);
         }
       }
