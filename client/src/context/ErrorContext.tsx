@@ -6,14 +6,14 @@ interface ErrorObject {
 }
 
 interface ErrorContextProps {
-  error: ErrorObject;
-  setError: React.Dispatch<React.SetStateAction<ErrorObject>>;
+  error?: ErrorObject;
+  setError: React.Dispatch<React.SetStateAction<ErrorObject | undefined>>;
 }
 
 const ErrorContext = createContext<ErrorContextProps | undefined>(undefined);
 
 export const ErrorProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [error, setError] = useState<ErrorObject>({ title: '', description: '' });
+  const [error, setError] = useState<ErrorObject | undefined>(undefined);
 
   return (
     <ErrorContext.Provider value={{ error, setError }}>

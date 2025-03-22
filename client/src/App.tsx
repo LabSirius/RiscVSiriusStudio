@@ -4,14 +4,17 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { RoutesProvider } from "./context/RoutesContext";
 import { MemoryTableProvider } from "./context/MemoryTableContext";
 import { RegistersTableProvider } from "./context/RegisterTableContext";
+import { ErrorProvider } from "./context/ErrorContext";
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sideBar";
 import Sidebar from "@/components/SideBar";
-import MessageListener from "./components/Message/MessageListener";
+import MessageListener from "@/components/Message/MessageListener";
+import Error from "@/components/Error";
 
 import ConvertSection from "@/sections/ConvertSection";
-import HelpSection from "./sections/HelpSection";
-import SettingsSection from "./sections/SettingsSection";
+import HelpSection from "@/sections/HelpSection";
+import SettingsSection from "@/sections/SettingsSection";
+
 
 const App = () => {
   return (
@@ -19,8 +22,9 @@ const App = () => {
       <RoutesProvider>
         <MemoryTableProvider>
           <RegistersTableProvider>
+            <ErrorProvider>
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-              <div className="flex h-full w-full overflow-hidden ">
+              <div className="relative flex w-full h-full overflow-hidden ">
                 <SidebarProvider>
                   <Sidebar />
                   <SidebarTrigger />
@@ -30,9 +34,11 @@ const App = () => {
                     <Route path="/help" element={<HelpSection />} />
                     <Route path="/settings" element={<SettingsSection />} />
                   </Routes>
+                  <Error />
                 </SidebarProvider>
               </div>
             </ThemeProvider>
+            </ErrorProvider>
           </RegistersTableProvider>
         </MemoryTableProvider>
       </RoutesProvider>
