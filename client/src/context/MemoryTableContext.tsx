@@ -7,7 +7,6 @@ interface MemoryData {
   symbols: Record<string, any>;
 }
 
-
 interface MemoryRow {
   address: string; 
   hex: string;      
@@ -15,6 +14,12 @@ interface MemoryRow {
   value1: string;   
   value2: string;   
   value3: string;  
+}
+
+interface WriteInMemory {
+  address: number;
+  value: string;
+  _length: number;
 }
 
 export interface MemoryTableContextProps {
@@ -44,6 +49,9 @@ export interface MemoryTableContextProps {
   
   searchInMemory: string;
   setSearchInMemory: React.Dispatch<React.SetStateAction<string>>;
+
+  writeInMemory: WriteInMemory;
+  setWriteInMemory: React.Dispatch<React.SetStateAction<WriteInMemory>>;
 }
 
 const MemoryTableContext = createContext<MemoryTableContextProps | undefined>(undefined);
@@ -58,6 +66,7 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [importMemory, setImportMemory] = useState<MemoryRow[]>([]);
   const [newPc, setNewPc] = useState<number>(0);
   const [searchInMemory, setSearchInMemory] = useState<string>("");
+   const [writeInMemory, setWriteInMemory] = useState<WriteInMemory>({ address: 0, value: '', _length: 0 });
 
   return (
     <MemoryTableContext.Provider
@@ -79,7 +88,9 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
         newPc, 
         setNewPc,
         searchInMemory, 
-        setSearchInMemory
+        setSearchInMemory,
+        writeInMemory, 
+        setWriteInMemory,
       }}>
       {children}
     </MemoryTableContext.Provider>

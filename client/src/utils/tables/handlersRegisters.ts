@@ -6,9 +6,17 @@ import { RegisterView, RowData } from '@/utils/tables/types';
 import { RefObject } from 'react';
 
 
-import { animateRegister, resetCellColors } from '@/utils/tables/handlersShared';
+import { resetCellColors } from '@/utils/tables/handlersShared';
 
- export function updateRegisterValue(
+
+/**
+ *  This function updates the value of a register in the table.
+ * @param tabulatorRef 
+ * @param registerWrite 
+ * @param valueWrite 
+ * @returns 
+ */
+export function updateRegisterValue(
     tabulatorRef: React.MutableRefObject<Tabulator | null>,
     registerWrite: string,
     valueWrite: string
@@ -25,6 +33,32 @@ import { animateRegister, resetCellColors } from '@/utils/tables/handlersShared'
 
     animateRegister(tabulatorRef, registerWrite);
   }
+
+/**
+ * * This function animates a register cell by adding a CSS class to it.
+ * @param tabulatorRef   tabulatorInstance.current
+ * @param registerName  Name of the register to animate
+ */
+export function animateRegister(
+  tabulatorRef: React.MutableRefObject<Tabulator | null>,
+  registerName: string
+) {
+  if (!tabulatorRef.current) return;
+  
+  const row = tabulatorRef.current.getRow(registerName);
+  if (row) {
+    const element = row.getElement();
+    element.classList.add('animate-cell');
+    setTimeout(() => {
+      element.classList.remove('animate-cell');
+    }, 500);
+  }
+
+  const index = parseInt(registerName.replace('x', ''), 10);
+  const position = (index >= 0 && index <= 12) ? "center" : "top";
+
+  tabulatorRef.current.scrollToRow(registerName, position, true);
+}
 
 
 export const createViewTypeFormatter = (

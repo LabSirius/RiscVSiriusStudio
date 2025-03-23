@@ -200,6 +200,12 @@ a:hover{
   animation: flashAnimation 0.5s ease-out forwards;
 }
 
+.written-cell{
+  font-weight: 500;
+  color: #3A6973;
+  
+}
+
 
 
 @keyframes flashAnimation {
@@ -216,3 +222,4 @@ a:hover{
     opacity: 1;
   }
 }
+

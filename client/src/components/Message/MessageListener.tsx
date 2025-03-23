@@ -11,8 +11,9 @@ import { useRegistersTable } from "@/context/RegisterTableContext";
 const MessageListener = () => {
   const { setOperation,  isFirstStep, setIsFirstStep } = useOperation();
   const { setSection } = useSection()
-  const { setDataMemoryTable, setSizeMemory, setCodeSize, setNewPc } = useMemoryTable();
+  const { setDataMemoryTable, setSizeMemory, setCodeSize, setNewPc, setWriteInMemory } = useMemoryTable();
   const { setWriteInRegister} = useRegistersTable();
+
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -34,7 +35,7 @@ const MessageListener = () => {
         }else if(message.operation === 'setRegister') {
           setWriteInRegister({ registerName: message.register, value: message.value });
         }else if(message.operation === 'writeMemory') {
-          console.log(message);
+          setWriteInMemory({ address: message.address, value: message.value, _length: message._length });
         }
       }
     };

@@ -2,7 +2,7 @@
 import { chunk } from 'lodash';
 import { intToHex, binaryToHex,  } from '@/utils/tables/handlerConversions';
 import { SymbolData } from '@/utils/tables/types';
-import { TabulatorFull as Tabulator, CellComponent, RowComponent,  } from 'tabulator-tables';
+import { TabulatorFull as Tabulator, CellComponent, RowComponent } from 'tabulator-tables';
 import { MemoryRow } from '@/utils/tables/types';
 
 /**
@@ -236,9 +236,6 @@ export const setupEventListeners = (table: Tabulator): void => {
     table.on('cellEdited', (cell: CellComponent) => {
       if (cell.getField().startsWith('value')) {
         updateHexValue(cell.getRow());
-        // const currentData = table.getData() as MemoryRow[];
-        // const msg = { command: 'event', object: { event: 'memoryChanged', value: currentData } };
-        // sendMessagetoExtension(msg);
       }
     });
   };
@@ -312,3 +309,89 @@ export function filterMemoryData(searchInput: string, table: Tabulator): void {
     });
   });
 }
+
+
+/**
+ * This function writes a value to a memory cell in the table.
+ * It updates the corresponding row with the new value and highlights the cell.
+ * 
+ * @param tableInstance - Tabulator instance of the memory table.
+ * @param address - Memory address to write to.
+ * @param leng - Length of the value to write (1, 2, or 4 bytes).
+ * @param value - Binary value to write to the memory cell.
+ */
+export const writeInMemoryCell = (
+  tableInstance: Tabulator | null,
+  address: number,
+  leng: number,
+  value: string
+): void => {
+  if (!tableInstance) return;
+  const rowStart = address - (address % 4);
+  const hexRowStart = rowStart.toString(16).toUpperCase();
+  const row = tableInstance.getRow(hexRowStart);
+  if (!row) return;
+
+  const rowElement = row.getElement();
+  const cell0 = rowElement.querySelector('div[tabulator-field="value0"]') as HTMLElement | null;
+  const cell1 = rowElement.querySelector('div[tabulator-field="value1"]') as HTMLElement | null;
+  const cell2 = rowElement.querySelector('div[tabulator-field="value2"]') as HTMLElement | null;
+  const cell3 = rowElement.querySelector('div[tabulator-field="value3"]') as HTMLElement | null;
+
+  const newData: Partial<{ value3: string; value2: string; value1: string; value0: string }> = {};
+
+  const updateCell = (
+    cell: HTMLElement | null,
+    segment: string,
+    key: 'value0' | 'value1' | 'value2' | 'value3'
+  ) => {
+    if (!cell) return;
+    cell.innerHTML = `<b>${segment}</b>`;
+    newData[key] = segment;
+  };
+
+  if (leng === 1) {
+    const segment = value.substring(24, 32);
+    updateCell(cell0, segment, 'value0');
+  } else if (leng === 2) {
+    const lower16 = value.substring(16, 32);
+    updateCell(cell1, lower16.substring(0, 8), 'value1');
+    updateCell(cell0, lower16.substring(8, 16), 'value0');
+  } else if (leng === 4) {
+    updateCell(cell3, value.substring(0, 8), 'value3');
+    updateCell(cell2, value.substring(8, 16), 'value2');
+    updateCell(cell1, value.substring(16, 24), 'value1');
+    updateCell(cell0, value.substring(24, 32), 'value0');
+  }
+
+  row.update(newData);
+
+  const currentData = row.getData();
+  const hexParts = ['value3', 'value2', 'value1', 'value0'].map((field) => {
+    const binary: string = currentData[field];
+    return parseInt(binary, 2).toString(16).padStart(2, '0');
+  });
+  row.update({ hex: hexParts.join('-').toUpperCase() });
+
+  animateMemoryCell(tableInstance, address, leng);
+};
+
+export const animateMemoryCell = (
+  tableInstance: Tabulator,
+  address: number,
+  leng: number
+): void => {
+  const hexAddress = address.toString(16).toUpperCase();
+  const row = tableInstance.getRow(hexAddress);
+  if (!row) return;
+  const rowElement = row.getElement();
+  const binaryCells: Element[] = Array.from(
+    rowElement.querySelectorAll('div[tabulator-field^="value"]')
+  );
+  const cellsToAnimate = leng === 4 ? binaryCells : binaryCells.slice(-leng);
+  cellsToAnimate.forEach(cell => cell.classList.add('animate-cell', 'written-cell'));
+  setTimeout(() => {
+    cellsToAnimate.forEach(cell => cell.classList.remove('animate-cell'));
+  }, 400);
+  tableInstance.scrollToRow(hexAddress, 'center', true);
+};

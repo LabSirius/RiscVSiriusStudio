@@ -11,7 +11,8 @@ import {
   toggleHexColumn,
   updatePC, 
   filterMemoryData, 
-  setSP
+  setSP,
+  writeInMemoryCell
 } from '@/utils/tables/handlersMemory';
 import { intTo32BitBinary,intToHex, binaryToInt, hexToInt } from '@/utils/tables/handlerConversions';
 import { getColumnMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
@@ -36,6 +37,8 @@ const MemoryTable = () => {
     setImportMemory,
     newPc,
     searchInMemory,
+    writeInMemory,
+    setWriteInMemory,
   } = useMemoryTable();
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
@@ -188,6 +191,17 @@ const MemoryTable = () => {
       setError({title: 'Error in memory', description: `The stack pointer attempted to access the program code section at address ${sp}`});
     }
   }, [sp, dataMemoryTable?.codeSize, setError, isCreatedMemoryTable]);
+
+
+
+  /* 
+    This useEffect updates the memory table when the writeInMemory
+  */
+  useEffect(() => {
+    if (!isCreatedMemoryTable || writeInMemory.value === '' ) return;
+      writeInMemoryCell(tableInstanceRef.current, writeInMemory.address, writeInMemory._length, writeInMemory.value);
+      setWriteInMemory({address: 0, _length: 0, value: ''});
+  }, [writeInMemory, isCreatedMemoryTable]);
 
   useEffect(() => {
     return () => {
