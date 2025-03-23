@@ -47,9 +47,9 @@ const MessageListener = () => {
             setError({ title: "Info", description: "The program has finished." });
             setOperation("");
             setSection("convert");
+            setIsFirstStep(false);
             break;
           default:
-            // Puedes manejar operaciones desconocidas aquí
             break;
         }
       }

@@ -138,7 +138,6 @@ const RegistersTable = () => {
       tabulatorInstance.current?.destroy();
       tabulatorInstance.current = null;
       setTableBuilt(false);
-      
     };
   }, []);
 

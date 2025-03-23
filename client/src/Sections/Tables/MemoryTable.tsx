@@ -37,6 +37,7 @@ const MemoryTable = () => {
     importMemory,
     setImportMemory,
     newPc,
+    setNewPc,
     searchInMemory,
     writeInMemory,
     setWriteInMemory,
@@ -231,6 +232,7 @@ const MemoryTable = () => {
 
   useEffect(() => {
     return () => {
+      setNewPc(0);
       tableInstanceRef.current?.destroy();
       tableInstanceRef.current = null;
       setIsCreatedMemoryTable(false);
