@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { useMemoryTable } from "@/context/MemoryTableContext";
-import { MemoryRow } from "@/context/MemoryTableContext";
 import { useError } from "@/context/ErrorContext";
 import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
@@ -28,7 +27,7 @@ const ImportMemory = () => {
         .map((line) => line.trim())
         .filter((line) => line !== "");
 
-      const newData: MemoryRow[] = [];
+      const newData = [];
       for (const line of lines) {
         const parts = line.split(":");
         if (parts.length !== 2) {

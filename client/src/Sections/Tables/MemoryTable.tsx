@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useMemoryTable } from '@/context/MemoryTableContext';
 import { useRegistersTable } from '@/context/RegisterTableContext';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
-import './tabulator.min.css';
+import './tabulator.css';
 
 import { 
   uploadMemory, 

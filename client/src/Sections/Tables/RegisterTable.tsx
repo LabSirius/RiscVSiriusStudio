@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { TabulatorFull as Tabulator, CellComponent } from 'tabulator-tables';
-import './tabulator.min.css';
+import './tabulator.css';
 
 import { useMemoryTable } from '@/context/MemoryTableContext';
 import { useRegistersTable } from '@/context/RegisterTableContext';
