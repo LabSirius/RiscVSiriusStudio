@@ -11,15 +11,16 @@ import { animateRegister, resetCellColors } from '@/utils/tables/handlersShared'
  export function updateRegisterValue(
     tabulatorRef: React.MutableRefObject<Tabulator | null>,
     registerWrite: string,
-    registerData: string[]
+    valueWrite: string
   ) {
+   
     if (!registerWrite || !tabulatorRef.current) return;
   
     const regNum = parseInt(registerWrite.replace('x', ''), 10);
     if (isNaN(regNum)) return;
   
     tabulatorRef.current.updateData([
-      { rawName: registerWrite, value: registerData[regNum] }
+      { rawName: registerWrite, value: valueWrite }
     ]);
 
     animateRegister(tabulatorRef, registerWrite);

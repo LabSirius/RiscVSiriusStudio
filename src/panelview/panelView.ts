@@ -38,47 +38,60 @@ function dispatch(
   log({ msg: 'Dispatching message', data: event.data });
   const data = event.data;
 
+
   switch (data.from) {
-    case 'extension':
+    case 'extension': {
       switch (data.operation) {
-      case 'uploadMemory':
-        const { from, ...newData } = data;
-        UIManager.getInstance()._sendMessageToReact(newData);
-        break;
-      }
-      case 'step':
-        const { from, ...newData } = data;
-        UIManager.getInstance()._sendMessageToReact(newData);
-        break;
-    case 'react':
-      switch (data.event) {
-        case 'memorySizeChanged':
-          UIManager.getInstance()._sendMessageToExtension(
-            {
-              command: 'event',
-              object: { event: data.event, value: data.sizeMemory }
-            }
-          );
+        case 'uploadMemory': {
+          const { from, ...newData } = data;
+          UIManager.getInstance()._sendMessageToReact(newData);
           break;
-        case 'registersChanged':
-          UIManager.getInstance()._sendMessageToExtension(
-            {
-              command: 'event',
-              object: { event: data.event, value: data.registers }
-            }
-          );
-        case 'memoryChanged':
-          UIManager.getInstance()._sendMessageToExtension(
-            {
-              command: 'event',
-              object: { event: data.event, value: data.memory }
-            }
-          );
+        }
+        case 'step': {
+          const { from, ...newData } = data;
+          UIManager.getInstance()._sendMessageToReact(newData);
           break;
+        }
+        case 'setRegister': {
+          const { from, ...newData } = data;
+          UIManager.getInstance()._sendMessageToReact(newData);
+          break;
+        }
         default:
+          break;
+      }
+      break;
+    }
+    case 'react': {
+      switch (data.event) {
+        case 'memorySizeChanged': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event, value: data.sizeMemory }
+          });
+          break;
+        }
+        case 'registersChanged': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event, value: data.registers }
+          });
+          break;
+        }
+        case 'memoryChanged': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event, value: data.memory }
+          });
+          break;
+        }
+        default: {
           log({ msg: 'Unknown operation', data: data });
           break;
+        }
       }
+      break;
+    }
   }
 }
 

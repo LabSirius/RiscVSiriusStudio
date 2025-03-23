@@ -18,7 +18,7 @@ import { sendMessage } from '@/components/Message/sendMessage';
 
 const RegistersTable = () => {
   const { isCreatedMemoryTable } = useMemoryTable();
-  const { registerData, setRegisterData, registerWrite, setRegisterWrite, importRegister, setImportRegister, searchInRegisters } = useRegistersTable();
+  const { registerData, setRegisterData, valueWrite, setValueWrite, registerWrite, setRegisterWrite, importRegister, setImportRegister, searchInRegisters } = useRegistersTable();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
   const tabulatorInstance = useRef<Tabulator | null>(null);
@@ -72,6 +72,8 @@ const RegistersTable = () => {
 
     tabulatorInstance.current.on('tableBuilt', () => {
       setTableBuilt(true);
+      console.log('X2 AAA ', registerWrite, valueWrite);
+      updateRegisterValue(tabulatorInstance, registerWrite, valueWrite);
     });
 
     tabulatorInstance.current.on('cellEdited', (cell) => {
@@ -88,6 +90,9 @@ const RegistersTable = () => {
           return newData;
         });
       }
+
+     
+      
     });
 
     return () => {
@@ -101,12 +106,13 @@ const RegistersTable = () => {
 
   // Actualiza el valor del registro
   useEffect(() => {
-    if (!registerWrite || !tabulatorInstance.current) {
+    if (registerWrite === '' || valueWrite === '' ||  !tabulatorInstance.current) {
       return;
     }
-    updateRegisterValue(tabulatorInstance, registerWrite, registerData);
+    updateRegisterValue(tabulatorInstance, registerWrite, valueWrite);
     setRegisterWrite('');
-  }, [registerData]);
+    setValueWrite('');
+  }, [registerWrite, valueWrite]);
 
   useEffect(() => {
     if (importRegister.length === 0) return;

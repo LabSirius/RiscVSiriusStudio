@@ -258,6 +258,7 @@ export class TextSimulator extends Simulator {
       // upload sp information to  webview
       const spValue = this.cpu.getDataMemory().spInitialAddress;
       mainView.postMessage({
+        from: "extension",
         operation: "setRegister",
         register: "x2",
         value: intToBinary(spValue),
@@ -325,6 +326,7 @@ export class TextSimulator extends Simulator {
 
     //  Notify the main view that the register has been updated
     this.sendToMainView({
+      from: "extension",
       operation: "setRegister",
       register: register,
       value: value,

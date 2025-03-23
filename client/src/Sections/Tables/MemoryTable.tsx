@@ -34,7 +34,7 @@ const MemoryTable = () => {
     searchInMemory,
   } = useMemoryTable();
 
-  const { setRegisterData, setRegisterWrite } = useRegistersTable();
+  const { setValueWrite, setRegisterWrite } = useRegistersTable();
 
   useEffect(() => {
     if (!tableContainerRef.current || tableInstanceRef.current) return;
@@ -93,11 +93,7 @@ const MemoryTable = () => {
         dataMemoryTable.symbols,
         0,
         () => {
-          setRegisterData((prev) => {
-            const newData = [...prev];
-            newData[2] = intTo32BitBinary(newTotalSize - 4);
-            return newData;
-          });
+          setValueWrite(String(intTo32BitBinary(newTotalSize - 4)));
           setRegisterWrite('x2');
         }
       );

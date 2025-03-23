@@ -14,6 +14,8 @@ interface Register {
 interface RegistersTableContextProps {
   registerData: string[];
   setRegisterData: React.Dispatch<React.SetStateAction<string[]>>;
+  valueWrite: string;
+  setValueWrite: React.Dispatch<React.SetStateAction<string>>;
   registerWrite: string;
   setRegisterWrite: React.Dispatch<React.SetStateAction<string>>;
   importRegister: Register[];
@@ -26,13 +28,14 @@ const RegistersTableContext = createContext<RegistersTableContextProps | undefin
 
 export const RegistersTableProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [registerData, setRegisterData] = useState<string[]>(Array(32).fill('0'.repeat(32)));
+  const [valueWrite, setValueWrite] = useState<string>('');
   const [registerWrite, setRegisterWrite] = useState<string>('');
   const [importRegister, setImportRegister] = useState<Register[]>([]);
   const [searchInRegisters, setSearchInRegisters] = useState<string>('');
  
 
   return (
-    <RegistersTableContext.Provider value={{registerWrite, setRegisterWrite, registerData, setRegisterData, importRegister, setImportRegister, searchInRegisters, setSearchInRegisters}}>
+    <RegistersTableContext.Provider value={{registerWrite, valueWrite, setValueWrite, setRegisterWrite, registerData, setRegisterData, importRegister, setImportRegister, searchInRegisters, setSearchInRegisters}}>
       {children}
     </RegistersTableContext.Provider>
   );
