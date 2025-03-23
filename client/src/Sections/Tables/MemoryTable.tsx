@@ -38,7 +38,7 @@ const MemoryTable = () => {
     searchInMemory,
   } = useMemoryTable();
 
-  const {valueWrite, setValueWrite, registerWrite, setRegisterWrite } = useRegistersTable();
+  const { writeInRegister, setWriteInRegister } = useRegistersTable();
   const { setError } = useError();
 
   /*
@@ -107,8 +107,8 @@ const MemoryTable = () => {
         0,
         () => {
           setSp(intToHex(newTotalSize - 4));
-          setValueWrite(String(intTo32BitBinary(newTotalSize - 4)));
-          setRegisterWrite('x2');
+          const newMemorySize = intTo32BitBinary(newTotalSize - 4);
+          setWriteInRegister({registerName: 'x2', value: newMemorySize});
         }
       );
 
@@ -161,12 +161,12 @@ const MemoryTable = () => {
   This useEffect updates the stack pointer value in the memory table
 */
   useEffect(() => {
-    if(registerWrite === "" || !tableInstanceRef.current || !isCreatedMemoryTable) return;
-    if(registerWrite === "x2") {
-      setSp(setSP(Number(binaryToInt(valueWrite)), { current: tableInstanceRef.current }, sp));
+    if(writeInRegister.value === "" || !tableInstanceRef.current || !isCreatedMemoryTable) return;
+    if(writeInRegister.registerName === "x2") {
+      setSp(setSP(Number(binaryToInt(writeInRegister.value)), { current: tableInstanceRef.current }, sp));
     }
 
-  }, [valueWrite, registerWrite, sp, setRegisterWrite, setValueWrite, setSp, isCreatedMemoryTable]);
+  }, [writeInRegister, sp, setSp, isCreatedMemoryTable]);
 
 
   /*

@@ -25,7 +25,7 @@ function log(object: any = {}, level: string = 'info') {
 
 function main() {
 
-  UIManager.createInstance(sendMessageToExtension, sendMessageToPanelView);
+  UIManager.createInstance(sendMessageToExtension, sendMessageToReact);
 
   window.addEventListener('message', (event) => {
     dispatch(event);
@@ -57,6 +57,10 @@ function dispatch(
           UIManager.getInstance()._sendMessageToReact(newData);
           break;
         }
+        case 'writeMemory':
+            const { from, ...newData } = data;
+            UIManager.getInstance()._sendMessageToReact(newData);
+        break;
         default:
           break;
       }
@@ -104,7 +108,7 @@ function sendMessageToExtension(messageObject: any) {
   vscode.postMessage(messageObject);
 }
 
-function sendMessageToPanelView(data: any) {
+function sendMessageToReact(data: any) {
   window.postMessage({ from: 'UIManager', ...data }, '*');
 }
 

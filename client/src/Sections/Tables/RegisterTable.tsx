@@ -18,7 +18,7 @@ import { sendMessage } from '@/components/Message/sendMessage';
 
 const RegistersTable = () => {  
   const { isCreatedMemoryTable } = useMemoryTable();
-  const { registerData, setRegisterData, valueWrite, setValueWrite, registerWrite, setRegisterWrite, importRegister, setImportRegister, searchInRegisters } = useRegistersTable();
+  const { registerData, setRegisterData, writeInRegister, setWriteInRegister, importRegister, setImportRegister, searchInRegisters } = useRegistersTable();
   
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
@@ -75,7 +75,7 @@ const RegistersTable = () => {
 
     tabulatorInstance.current.on('tableBuilt', () => {
       setTableBuilt(true);
-      updateRegisterValue(tabulatorInstance, registerWrite, valueWrite);
+      updateRegisterValue(tabulatorInstance, writeInRegister.value, writeInRegister.registerName);
     });
 
     tabulatorInstance.current.on('cellEdited', (cell) => {
@@ -107,13 +107,12 @@ const RegistersTable = () => {
     * This useEffect updates the value of a register when the user writes a new value
   */
   useEffect(() => {
-    if (registerWrite === '' || valueWrite === '' || !tableBuilt) {
+    if (writeInRegister.value === '' || !tableBuilt) {
       return;
     }
-    updateRegisterValue(tabulatorInstance, registerWrite, valueWrite);
-    setRegisterWrite('');
-    setValueWrite('');
-  }, [registerWrite,valueWrite, setRegisterWrite, setValueWrite, tableBuilt]);
+    updateRegisterValue(tabulatorInstance, writeInRegister.registerName, writeInRegister.value);
+    setWriteInRegister({ registerName: '', value: '' });
+  }, [writeInRegister, setWriteInRegister, tableBuilt]);
 
   // This useEffect updates the table when the importRegister state changes
   useEffect(() => {

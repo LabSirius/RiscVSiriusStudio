@@ -343,6 +343,7 @@ export class TextSimulator extends Simulator {
 
   public notifyMemoryWrite(address: number, value: string, length: number) {
     this.sendToMainView({
+      from: "extension",
       operation: "writeMemory",
       address: address,
       value: value,

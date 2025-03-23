@@ -12,7 +12,7 @@ const MessageListener = () => {
   const { setOperation,  isFirstStep, setIsFirstStep } = useOperation();
   const { setSection } = useSection()
   const { setDataMemoryTable, setSizeMemory, setCodeSize, setNewPc } = useMemoryTable();
-  const { setValueWrite, setRegisterWrite } = useRegistersTable();
+  const { setWriteInRegister} = useRegistersTable();
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -32,8 +32,9 @@ const MessageListener = () => {
             setIsFirstStep(true);
           }
         }else if(message.operation === 'setRegister') {
-          setValueWrite(message.value);
-          setRegisterWrite(message.register);
+          setWriteInRegister({ registerName: message.register, value: message.value });
+        }else if(message.operation === 'writeMemory') {
+          console.log(message);
         }
       }
     };

@@ -20,20 +20,28 @@ interface MemoryRow {
 export interface MemoryTableContextProps {
   isCreatedMemoryTable: boolean;  
   setIsCreatedMemoryTable: React.Dispatch<React.SetStateAction<boolean>>;
+
   showHexadecimal: boolean;
   setShowHexadecimal: React.Dispatch<React.SetStateAction<boolean>>;
+
   dataMemoryTable: MemoryData | undefined;  
   setDataMemoryTable: React.Dispatch<React.SetStateAction<MemoryData | undefined>>;
-  sizeMemory: number;
+
+  sizeMemory: number
   setSizeMemory: React.Dispatch<React.SetStateAction<number>>;
+
   codeSize: number;
   setCodeSize: React.Dispatch<React.SetStateAction<number>>;
+
   sp: string;
   setSp: React.Dispatch<React.SetStateAction<string>>;
+
   importMemory: MemoryRow[];
   setImportMemory: React.Dispatch<React.SetStateAction<MemoryRow[]>>;
+
   newPc: number;
   setNewPc: React.Dispatch<React.SetStateAction<number>>;
+  
   searchInMemory: string;
   setSearchInMemory: React.Dispatch<React.SetStateAction<string>>;
 }
