@@ -304,6 +304,7 @@ export class TextSimulator extends Simulator {
       return;
     } else {
       mainView.postMessage({
+        from: "extension",
         operation: "stop",
       });
     }

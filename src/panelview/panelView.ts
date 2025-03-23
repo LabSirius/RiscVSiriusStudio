@@ -66,6 +66,10 @@ function dispatch(
           const { from, ...newData } = data;
           UIManager.getInstance()._sendMessageToReact(newData);
         }
+        case 'stop': {
+          const { from, ...newData } = data;
+          UIManager.getInstance()._sendMessageToReact(newData);
+        }
       break;
         default:
           break;
