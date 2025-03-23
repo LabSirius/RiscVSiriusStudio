@@ -41,7 +41,9 @@ const MemoryTable = () => {
     writeInMemory,
     setWriteInMemory,
     readInMemory,
-    setReadInMemory
+    setReadInMemory,
+    locatePc,
+    setLocatePc
   } = useMemoryTable();
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
@@ -214,6 +216,16 @@ const MemoryTable = () => {
       animateMemoryCell(tableInstanceRef.current, readInMemory.address, readInMemory._length, true);
       setReadInMemory({address: 0, _length: 0, value: '-1'});
   }, [readInMemory,setReadInMemory, isCreatedMemoryTable]);
+
+  /*
+  
+  */
+ useEffect(() => {
+    if(!isCreatedMemoryTable || !locatePc) return;
+    const targetValue = ( newPc * 4).toString(16).toUpperCase();
+    tableInstanceRef.current?.scrollToRow(targetValue, "top", true);
+    setLocatePc(false);
+ }, [locatePc, setLocatePc, isCreatedMemoryTable]);
 
 
 

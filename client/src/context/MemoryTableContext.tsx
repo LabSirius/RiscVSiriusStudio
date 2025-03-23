@@ -60,7 +60,12 @@ export interface MemoryTableContextProps {
 
   readInMemory: ReadInMemory;
   setReadInMemory: React.Dispatch<React.SetStateAction<ReadInMemory>>;
+
+  locatePc: boolean;
+  setLocatePc: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+
 
 const MemoryTableContext = createContext<MemoryTableContextProps | undefined>(undefined);
 
@@ -76,6 +81,7 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [searchInMemory, setSearchInMemory] = useState<string>("");
   const [writeInMemory, setWriteInMemory] = useState<WriteInMemory>({ address: 0, value: '', _length: 0 });
   const [readInMemory, setReadInMemory] = useState<ReadInMemory>({ address: 0, value: '-1' , _length: 0, });
+  const [locatePc, setLocatePc] = useState<boolean>(false);
 
   return (
     <MemoryTableContext.Provider
@@ -101,7 +107,9 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
         writeInMemory, 
         setWriteInMemory,
         readInMemory,
-        setReadInMemory
+        setReadInMemory,
+        locatePc,
+        setLocatePc
       }}>
       {children}
     </MemoryTableContext.Provider>
