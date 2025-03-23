@@ -27,9 +27,13 @@ function main() {
 
   UIManager.createInstance(sendMessageToExtension, sendMessageToReact);
 
+  theme(); 
+
   window.addEventListener('message', (event) => {
     dispatch(event);
   });
+
+
 }
 
 function dispatch(
@@ -110,6 +114,15 @@ function dispatch(
 }
 
 
+function theme() {
+  if (document.body.classList.contains('vscode-dark')) {
+    UIManager.getInstance()._sendMessageToReact({ operation: 'theme', theme: 'dark' });
+ } else if (document.body.classList.contains('vscode-light')) {
+   UIManager.getInstance()._sendMessageToReact({  operation: 'theme', theme: 'light' });
+ }
+}
+
+
 /**
  * View extension communication.
  * @param messageObject message to send to the extension
@@ -121,8 +134,4 @@ function sendMessageToExtension(messageObject: any) {
 function sendMessageToReact(data: any) {
   window.postMessage({ from: 'UIManager', ...data }, '*');
 }
-
-
-
-
 

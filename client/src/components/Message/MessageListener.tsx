@@ -1,4 +1,4 @@
-// MessageListener.tsx
+import { useTheme } from "@/components/ui/theme/theme-provider"
 import { useEffect } from "react";
 import { useOperation } from "@/context/OperationContext";
 import { useSection } from "@/context/SectionContext";
@@ -8,6 +8,7 @@ import { useError } from "@/context/ErrorContext";
 import { intToHex } from "@/utils/tables/handlerConversions";
 
 const MessageListener = () => {
+  const { setTheme } = useTheme()
   const { setOperation, isFirstStep, setIsFirstStep } = useOperation();
   const { setSection } = useSection();
   const { setDataMemoryTable, setSizeMemory, setCodeSize, setNewPc, setWriteInMemory, setReadInMemory } = useMemoryTable();
@@ -19,6 +20,9 @@ const MessageListener = () => {
       const message = event.data;
       if (message?.from === "UIManager") {
         switch (message.operation) {
+          case "theme":
+            setTheme(message.theme);
+          break;
           case "uploadMemory":
             setOperation("uploadMemory");
             setSection("settings");
