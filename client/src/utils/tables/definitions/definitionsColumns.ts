@@ -73,8 +73,7 @@ export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellCom
 /**
  * This function returns the definitions of the columns for the memory table.
  */
-export const getColumnMemoryDefinitions = (showHexadecimal: boolean = true): ColumnDefinition[] => {
-  console.log('getColumnMemoryDefinitions', showHexadecimal);
+export const getColumnMemoryDefinitions = (): ColumnDefinition[] => {
     const defaultAttrs: ColumnDefinition = {
       title: '',
       visible: true,
@@ -131,4 +130,6 @@ export const getColumnMemoryDefinitions = (showHexadecimal: boolean = true): Col
   
     return columns;
   };
+  
+
   
