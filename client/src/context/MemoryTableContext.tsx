@@ -22,12 +22,14 @@ export interface MemoryTableContextProps {
   setIsCreatedMemoryTable: React.Dispatch<React.SetStateAction<boolean>>;
   showHexadecimal: boolean;
   setShowHexadecimal: React.Dispatch<React.SetStateAction<boolean>>;
-  dataMemoryTable: MemoryData | undefined;  // usa la interfaz importada
+  dataMemoryTable: MemoryData | undefined;  
   setDataMemoryTable: React.Dispatch<React.SetStateAction<MemoryData | undefined>>;
   sizeMemory: number;
   setSizeMemory: React.Dispatch<React.SetStateAction<number>>;
   codeSize: number;
   setCodeSize: React.Dispatch<React.SetStateAction<number>>;
+  sp: string;
+  setSp: React.Dispatch<React.SetStateAction<string>>;
   importMemory: MemoryRow[];
   setImportMemory: React.Dispatch<React.SetStateAction<MemoryRow[]>>;
   newPc: number;
@@ -44,6 +46,7 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [dataMemoryTable, setDataMemoryTable] = useState<MemoryData | undefined>(undefined);
   const [sizeMemory, setSizeMemory] = useState<number>(0);
   const [codeSize, setCodeSize] = useState<number>(0);
+  const [sp, setSp] = useState<string>('');
   const [importMemory, setImportMemory] = useState<MemoryRow[]>([]);
   const [newPc, setNewPc] = useState<number>(0);
   const [searchInMemory, setSearchInMemory] = useState<string>("");
@@ -59,6 +62,8 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
         setShowHexadecimal,
         sizeMemory,
         setSizeMemory,
+        sp,
+        setSp,
         codeSize,
         setCodeSize,
         importMemory,

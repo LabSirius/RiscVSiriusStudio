@@ -72,7 +72,6 @@ const RegistersTable = () => {
 
     tabulatorInstance.current.on('tableBuilt', () => {
       setTableBuilt(true);
-      console.log('X2 AAA ', registerWrite, valueWrite);
       updateRegisterValue(tabulatorInstance, registerWrite, valueWrite);
     });
 
@@ -104,7 +103,7 @@ const RegistersTable = () => {
     };
   }, [isCreatedMemoryTable]);
 
-  // Actualiza el valor del registro
+  // Update register value
   useEffect(() => {
     if (registerWrite === '' || valueWrite === '' ||  !tabulatorInstance.current) {
       return;

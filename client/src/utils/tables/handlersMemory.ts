@@ -95,13 +95,11 @@ export const uploadMemory = (
     }
   });
 
-  // Calcular la dirección de SP para evitar colorearla
   const spAddress = intToHex(newMemory.length - 4).toUpperCase();
 
   // Apply row colors and hide empty info cells
   table.getRows().forEach(row => {
     const data = row.getData();
-    // Solo se aplica el fondo amarillo si es de código y no es la fila de SP
     if (data.isCode && data.address !== spAddress) {
       row.getElement().style.backgroundColor = '#FFF6E5';
     } else {
@@ -187,7 +185,7 @@ export const setSP = (
 ): string => {
   // Clears the SP mark in the previous row, if it exists
   if (prevSP && tableInstanceRef.current) {
-    const prevRow = tableInstanceRef.current.getRow(prevSP);
+    const prevRow = tableInstanceRef.current.getRow(prevSP.toUpperCase());
     if (prevRow) {
       prevRow.update({ info: "" });
     }

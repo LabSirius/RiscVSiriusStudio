@@ -9,9 +9,10 @@ import {
   setupEventListeners, 
   toggleHexColumn, 
   updatePC, 
-  filterMemoryData 
+  filterMemoryData, 
+  setSP
 } from '@/utils/tables/handlersMemory';
-import { intTo32BitBinary } from '@/utils/tables/handlerConversions';
+import { intTo32BitBinary,intToHex, binaryToInt } from '@/utils/tables/handlerConversions';
 import { getColumnMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 
 import SkeletonMemoryTable from '@/components/Skeleton/SkeletonMemoryTable';
@@ -28,13 +29,15 @@ const MemoryTable = () => {
     dataMemoryTable,
     setDataMemoryTable,
     sizeMemory,
+    sp,
+    setSp,
     importMemory,
     setImportMemory,
     newPc,
     searchInMemory,
   } = useMemoryTable();
 
-  const { setValueWrite, setRegisterWrite } = useRegistersTable();
+  const {valueWrite, setValueWrite, registerWrite, setRegisterWrite } = useRegistersTable();
 
   useEffect(() => {
     if (!tableContainerRef.current || tableInstanceRef.current) return;
@@ -51,11 +54,12 @@ const MemoryTable = () => {
       if (dataMemoryTable) {
         uploadMemory(
           tableInstanceRef.current!,
-          dataMemoryTable.memory, // ahora TS conoce el tipo
+          dataMemoryTable.memory, 
           dataMemoryTable.codeSize,
           dataMemoryTable.symbols,
           0,
           () => {
+            setSp(intToHex(dataMemoryTable.memory.length - 4));
             setIsCreatedMemoryTable(true);
           }
         );
@@ -93,6 +97,7 @@ const MemoryTable = () => {
         dataMemoryTable.symbols,
         0,
         () => {
+          setSp(intToHex(newTotalSize - 4));
           setValueWrite(String(intTo32BitBinary(newTotalSize - 4)));
           setRegisterWrite('x2');
         }
@@ -132,6 +137,15 @@ const MemoryTable = () => {
     if (!tableInstanceRef.current) return;
     filterMemoryData(searchInMemory, tableInstanceRef.current);
   }, [searchInMemory]);
+
+
+  useEffect(() => {
+    if(registerWrite === "" || !tableInstanceRef.current) return;
+    if(registerWrite === "x2") {
+      setSp(setSP(Number(binaryToInt(valueWrite)), { current: tableInstanceRef.current }, sp));
+    }
+
+  }, [valueWrite, registerWrite]);
 
   useEffect(() => {
     return () => {
