@@ -373,14 +373,16 @@ export const writeInMemoryCell = (
   });
   row.update({ hex: hexParts.join('-').toUpperCase() });
 
-  animateMemoryCell(tableInstance, address, leng);
+  animateMemoryCell(tableInstance, address, leng, false);
 };
 
 export const animateMemoryCell = (
   tableInstance: Tabulator,
   address: number,
-  leng: number
+  leng: number,
+  onlyRead: boolean
 ): void => {
+  
   const hexAddress = address.toString(16).toUpperCase();
   const row = tableInstance.getRow(hexAddress);
   if (!row) return;
@@ -389,9 +391,12 @@ export const animateMemoryCell = (
     rowElement.querySelectorAll('div[tabulator-field^="value"]')
   );
   const cellsToAnimate = leng === 4 ? binaryCells : binaryCells.slice(-leng);
-  cellsToAnimate.forEach(cell => cell.classList.add('animate-cell', 'written-cell'));
+  cellsToAnimate.forEach(cell => {
+    cell.classList.add('animate-cell', 'written-cell')
+    if(onlyRead) cell.classList.add('animate-cell');
+  });
   setTimeout(() => {
     cellsToAnimate.forEach(cell => cell.classList.remove('animate-cell'));
-  }, 400);
+  }, 500);
   tableInstance.scrollToRow(hexAddress, 'center', true);
 };

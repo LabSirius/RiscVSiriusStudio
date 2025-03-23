@@ -57,10 +57,16 @@ function dispatch(
           UIManager.getInstance()._sendMessageToReact(newData);
           break;
         }
-        case 'writeMemory':
+        case 'writeMemory':{
             const { from, ...newData } = data;
             UIManager.getInstance()._sendMessageToReact(newData);
         break;
+        }
+        case 'readMemory': {
+          const { from, ...newData } = data;
+          UIManager.getInstance()._sendMessageToReact(newData);
+        }
+      break;
         default:
           break;
       }

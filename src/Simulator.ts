@@ -335,6 +335,7 @@ export class TextSimulator extends Simulator {
 
   public notifyMemoryRead(address: number, length: number) {
     this.sendToMainView({
+      from: "extension",
       operation: "readMemory",
       address: address,
       _length: length,

@@ -12,7 +12,8 @@ import {
   updatePC, 
   filterMemoryData, 
   setSP,
-  writeInMemoryCell
+  writeInMemoryCell,
+  animateMemoryCell
 } from '@/utils/tables/handlersMemory';
 import { intTo32BitBinary,intToHex, binaryToInt, hexToInt } from '@/utils/tables/handlerConversions';
 import { getColumnMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
@@ -39,6 +40,8 @@ const MemoryTable = () => {
     searchInMemory,
     writeInMemory,
     setWriteInMemory,
+    readInMemory,
+    setReadInMemory
   } = useMemoryTable();
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
@@ -201,7 +204,18 @@ const MemoryTable = () => {
     if (!isCreatedMemoryTable || writeInMemory.value === '' ) return;
       writeInMemoryCell(tableInstanceRef.current, writeInMemory.address, writeInMemory._length, writeInMemory.value);
       setWriteInMemory({address: 0, _length: 0, value: ''});
-  }, [writeInMemory, isCreatedMemoryTable]);
+  }, [writeInMemory,setWriteInMemory, isCreatedMemoryTable]);
+
+  /* 
+    This useEffect animates the memory cell when the readInMemory
+  */
+  useEffect(() => {
+    if (!isCreatedMemoryTable || readInMemory.value === '-1' || !tableInstanceRef.current ) return;
+      animateMemoryCell(tableInstanceRef.current, readInMemory.address, readInMemory._length, true);
+      setReadInMemory({address: 0, _length: 0, value: '-1'});
+  }, [readInMemory,setReadInMemory, isCreatedMemoryTable]);
+
+
 
   useEffect(() => {
     return () => {
