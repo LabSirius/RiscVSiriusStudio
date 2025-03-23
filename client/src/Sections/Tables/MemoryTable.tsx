@@ -42,7 +42,7 @@ const MemoryTable = () => {
   const { setError } = useError();
 
   /*
-    this useEffect initializes the memory table
+    This useEffect initializes the memory table
   */
   useEffect(() => {
     if (!tableContainerRef.current || tableInstanceRef.current) return;
@@ -80,9 +80,10 @@ const MemoryTable = () => {
   }, []);
 
   /*
-    this useEffect updates the memory table when the dataMemoryTable state changes
+    This useEffect updates the memory table when the dataMemoryTable state changes
   */
   useEffect(() => {
+    if(!isCreatedMemoryTable) return;
     if (tableInstanceRef.current && dataMemoryTable) {
       const newTotalSize = dataMemoryTable.codeSize + sizeMemory;
       let newMemory: string[] = [];
@@ -121,10 +122,10 @@ const MemoryTable = () => {
   }, [sizeMemory]);
 
   /*
-    this useEffect updates the memory table when the importMemory state changes
+    This useEffect updates the memory table when the importMemory state changes
   */
   useEffect(() => {
-    if (importMemory.length === 0) return;
+    if (importMemory.length === 0 || !isCreatedMemoryTable) return;
     const importMemoryUppercase = importMemory.map((row) => ({
       ...row,
       address: row.address.toUpperCase(),
@@ -132,54 +133,56 @@ const MemoryTable = () => {
     tableInstanceRef.current?.updateData(importMemoryUppercase);
     setImportMemory([]);
     sendMessage({ event: 'memoryChanged', memory: tableInstanceRef.current?.getData() });
-  }, [importMemory, setImportMemory]);
+  }, [importMemory, setImportMemory, isCreatedMemoryTable]);
 
   /*
-    this useEffect updates the memory table when the showHexadecimal state changes
+    This useEffect updates the memory table when the showHexadecimal state changes
   */
   useEffect(() => {
-    if (tableInstanceRef.current) {
+    if (tableInstanceRef.current && isCreatedMemoryTable) {
       toggleHexColumn(tableInstanceRef.current, showHexadecimal);
     }
-  }, [showHexadecimal]);
+  }, [showHexadecimal, isCreatedMemoryTable]);
 
   /*
-    this useEffect updates the program counter value in the memory table
+    This useEffect updates the program counter value in the memory table
   */
   useEffect(() => {
+    if (!isCreatedMemoryTable) return
     updatePC(newPc, { current: tableInstanceRef.current });
-  }, [newPc]);
+  }, [newPc, isCreatedMemoryTable]);
 
 
   /*
     this useEffect updates the memory table when the search input changes
   */
   useEffect(() => {
-    if (!tableInstanceRef.current) return;
+    if (!tableInstanceRef.current || isCreatedMemoryTable) return;
     filterMemoryData(searchInMemory, tableInstanceRef.current);
-  }, [searchInMemory]);
+  }, [searchInMemory, isCreatedMemoryTable]);
 
 
 /* 
-  this useEffect updates the stack pointer value in the memory table
+  This useEffect updates the stack pointer value in the memory table
 */
   useEffect(() => {
-    if(registerWrite === "" || !tableInstanceRef.current) return;
+    if(registerWrite === "" || !tableInstanceRef.current || !isCreatedMemoryTable) return;
     if(registerWrite === "x2") {
       setSp(setSP(Number(binaryToInt(valueWrite)), { current: tableInstanceRef.current }, sp));
     }
 
-  }, [valueWrite, registerWrite]);
+  }, [valueWrite, registerWrite, sp, setRegisterWrite, setValueWrite, setSp, isCreatedMemoryTable]);
 
 
   /*
     this useEffect checks if the stack pointer is trying to access the program code section
   */
   useEffect(() => {
+    if (!isCreatedMemoryTable) return;
     if (dataMemoryTable?.codeSize !== undefined && Number(hexToInt(sp)) <= dataMemoryTable.codeSize) {
       setError({title: 'Error in memory', description: `The stack pointer attempted to access the program code section at address ${sp}`});
     }
-  }, [sp]);
+  }, [sp, dataMemoryTable?.codeSize, setError, isCreatedMemoryTable]);
 
   useEffect(() => {
     return () => {

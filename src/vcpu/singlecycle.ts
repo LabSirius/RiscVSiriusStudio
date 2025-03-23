@@ -122,8 +122,6 @@ class DataMemory {
         this.memory[address] = w;
       });
     });
-    console.table(this.memory);
-    console.log(`Program uploaded. initial sp ${this.spInitialAddress} `);
   }
 
   public lastAddress() {

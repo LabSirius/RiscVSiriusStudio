@@ -16,12 +16,15 @@ import { resetCellColors } from '@/utils/tables/handlersShared';
 import SkeletonRegisterTable from '@/components/Skeleton/SkeletonRegisterTable';
 import { sendMessage } from '@/components/Message/sendMessage';
 
-const RegistersTable = () => {
+const RegistersTable = () => {  
   const { isCreatedMemoryTable } = useMemoryTable();
   const { registerData, setRegisterData, valueWrite, setValueWrite, registerWrite, setRegisterWrite, importRegister, setImportRegister, searchInRegisters } = useRegistersTable();
+  
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
+  
   const tabulatorInstance = useRef<Tabulator | null>(null);
+  
   const currentHoveredViewTypeCell = useRef<CellComponent | null>(null);
   const [tableBuilt, setTableBuilt] = useState(false);
 
@@ -35,17 +38,17 @@ const RegistersTable = () => {
 
   // --- GLOBAL KEYBOARD SHORTCUTS ---
   useEffect(() => {
-    if (!tableContainerRef.current) return;
+    if (!tableBuilt) return;
     const keyHandler = handleGlobalKeyPress(currentHoveredViewTypeCell);
     document.addEventListener('keydown', keyHandler);
     return () => document.removeEventListener('keydown', keyHandler);
-  }, []);
+  }, [tableBuilt]);
 
   // --- TABULATOR INITIALIZATION (se ejecuta solo una vez) ---
   useEffect(() => {
     if (!tableRef.current || tabulatorInstance.current) return;
 
-    // Data inicial
+    // Initial data
     const initialData = registersNames.map((name, id) => ({
       name,
       rawName: name.split(' ')[0],
@@ -89,9 +92,6 @@ const RegistersTable = () => {
           return newData;
         });
       }
-
-     
-      
     });
 
     return () => {
@@ -103,32 +103,36 @@ const RegistersTable = () => {
     };
   }, [isCreatedMemoryTable]);
 
-  // Update register value
+  /* 
+    * This useEffect updates the value of a register when the user writes a new value
+  */
   useEffect(() => {
-    if (registerWrite === '' || valueWrite === '' ||  !tabulatorInstance.current) {
+    if (registerWrite === '' || valueWrite === '' || !tableBuilt) {
       return;
     }
     updateRegisterValue(tabulatorInstance, registerWrite, valueWrite);
     setRegisterWrite('');
     setValueWrite('');
-  }, [registerWrite, valueWrite]);
+  }, [registerWrite,valueWrite, setRegisterWrite, setValueWrite, tableBuilt]);
 
+  // This useEffect updates the table when the importRegister state changes
   useEffect(() => {
-    if (importRegister.length === 0) return;
+    if (!tableBuilt || importRegister.length === 0) return;
     tabulatorInstance.current?.setData(importRegister);
     setImportRegister([]);
-  }, [importRegister, setImportRegister]);
+  }, [importRegister, setImportRegister, tableBuilt]);
 
-  // --- Filter table data ---
+  
+  // This useEffect filters the table when the searchInRegisters state changes
   useEffect(() => {
-    if (!tabulatorInstance.current) return;
+    if (!tabulatorInstance.current || !tableBuilt) return;
     if (searchInRegisters.trim() === '') {
       tabulatorInstance.current.clearFilter(true);
       resetCellColors(tabulatorInstance.current);
     } else {
       filterTableData(searchInRegisters, tabulatorInstance.current);
     }
-  }, [searchInRegisters]);
+  }, [searchInRegisters, tableBuilt]);
 
   return (
     <div ref={tableContainerRef} className="shadow-lg max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem]">
