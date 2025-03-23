@@ -1,13 +1,20 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
+interface MemoryData {
+  memory: string[];            
+  codeSize: number;        
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  symbols: Record<string, any>;
+}
 
-export interface MemoryRow {
+
+interface MemoryRow {
   address: string; 
-  hex: string;     
-  value0: string;  
-  value1: string;
-  value2: string;
-  value3: string;
+  hex: string;      
+  value0: string;   
+  value1: string;   
+  value2: string;   
+  value3: string;  
 }
 
 export interface MemoryTableContextProps {
@@ -15,8 +22,8 @@ export interface MemoryTableContextProps {
   setIsCreatedMemoryTable: React.Dispatch<React.SetStateAction<boolean>>;
   showHexadecimal: boolean;
   setShowHexadecimal: React.Dispatch<React.SetStateAction<boolean>>;
-  dataMemoryTable: Record<string, unknown> | undefined;
-  setDataMemoryTable: React.Dispatch<React.SetStateAction<Record<string, unknown> | undefined>>;
+  dataMemoryTable: MemoryData | undefined;  // usa la interfaz importada
+  setDataMemoryTable: React.Dispatch<React.SetStateAction<MemoryData | undefined>>;
   sizeMemory: number;
   setSizeMemory: React.Dispatch<React.SetStateAction<number>>;
   codeSize: number;
@@ -34,9 +41,7 @@ const MemoryTableContext = createContext<MemoryTableContextProps | undefined>(un
 export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isCreatedMemoryTable, setIsCreatedMemoryTable] = useState<boolean>(false);
   const [showHexadecimal, setShowHexadecimal] = useState<boolean>(true);
-  const [dataMemoryTable, setDataMemoryTable] = useState<Record<string, unknown> | undefined>(
-    undefined
-  );
+  const [dataMemoryTable, setDataMemoryTable] = useState<MemoryData | undefined>(undefined);
   const [sizeMemory, setSizeMemory] = useState<number>(0);
   const [codeSize, setCodeSize] = useState<number>(0);
   const [importMemory, setImportMemory] = useState<MemoryRow[]>([]);
@@ -71,7 +76,7 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
 export const useMemoryTable = (): MemoryTableContextProps => {
   const context = useContext(MemoryTableContext);
   if (!context) {
-    throw new Error("useMemory debe usarse dentro de un RoutesProvider");
+    throw new Error("useMemoryTable debe usarse dentro de un MemoryTableProvider");
   }
   return context;
 };

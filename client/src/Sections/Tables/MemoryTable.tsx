@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useMemoryTable } from '@/context/MemoryTableContext';
 import { useRegistersTable } from '@/context/RegisterTableContext';
-
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 import './tabulator.min.css';
 
@@ -14,33 +13,14 @@ import {
 } from '@/utils/tables/handlersMemory';
 import { intTo32BitBinary } from '@/utils/tables/handlerConversions';
 import { getColumnMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
-import { DataMemoryTable } from '@/utils/tables/types';
 
 import SkeletonMemoryTable from '@/components/Skeleton/SkeletonMemoryTable';
 import { sendMessage } from '@/components/Message/sendMessage';
-
-import { MemoryRow } from '@/context/MemoryTableContext';
-
-interface MemoryContextProps {
-  isCreatedMemoryTable: boolean;
-  setIsCreatedMemoryTable: (isCreated: boolean) => void;
-  showHexadecimal: boolean;
-  dataMemoryTable: DataMemoryTable;
-  setDataMemoryTable: (data: DataMemoryTable) => void;
-  sizeMemory: number;
-  setSizeMemory: (size: number) => void;
-  importMemory: MemoryRow[];
-  setImportMemory: (importMemory: MemoryRow[]) => void;
-  newPc: number;
-  searchInMemory: string;
-}
 
 const MemoryTable = () => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
 
-  // Extract memory context (including searchInMemory)
-  const context = useMemoryTable() as unknown as MemoryContextProps;
   const {
     isCreatedMemoryTable,
     setIsCreatedMemoryTable,
@@ -52,13 +32,10 @@ const MemoryTable = () => {
     setImportMemory,
     newPc,
     searchInMemory,
-  } = context;
+  } = useMemoryTable();
 
   const { setRegisterData, setRegisterWrite } = useRegistersTable();
 
-  /**
-   * Initialize Tabulator instance
-   */
   useEffect(() => {
     if (!tableContainerRef.current || tableInstanceRef.current) return;
 
@@ -74,7 +51,7 @@ const MemoryTable = () => {
       if (dataMemoryTable) {
         uploadMemory(
           tableInstanceRef.current!,
-          dataMemoryTable.memory,
+          dataMemoryTable.memory, // ahora TS conoce el tipo
           dataMemoryTable.codeSize,
           dataMemoryTable.symbols,
           0,
@@ -93,9 +70,6 @@ const MemoryTable = () => {
     });
   }, []);
 
-  /**
-   * Update memory table when memory size changes
-   */
   useEffect(() => {
     if (tableInstanceRef.current && dataMemoryTable) {
       const newTotalSize = dataMemoryTable.codeSize + sizeMemory;
@@ -137,9 +111,6 @@ const MemoryTable = () => {
     }
   }, [sizeMemory]);
 
-  /**
-   * Update memory table when importMemory changes
-   */
   useEffect(() => {
     if (importMemory.length === 0) return;
     const importMemoryUppercase = importMemory.map((row) => ({
@@ -151,28 +122,18 @@ const MemoryTable = () => {
     sendMessage({ event: 'memoryChanged', memory: tableInstanceRef.current?.getData() });
   }, [importMemory, setImportMemory]);
 
-  /**
-   * Toggle visibility of hexadecimal column
-   */
   useEffect(() => {
     if (tableInstanceRef.current) {
       toggleHexColumn(tableInstanceRef.current, showHexadecimal);
     }
   }, [showHexadecimal]);
 
-  /**
-   * Update PC indicator in the memory table
-   */
   useEffect(() => {
     updatePC(newPc, { current: tableInstanceRef.current });
   }, [newPc]);
 
-  /**
-   * FILTERING: Filter the memory table using the searchInMemory state
-   */
   useEffect(() => {
     if (!tableInstanceRef.current) return;
-    // Call the optimized filter function (defined below in handlersMemory)
     filterMemoryData(searchInMemory, tableInstanceRef.current);
   }, [searchInMemory]);
 

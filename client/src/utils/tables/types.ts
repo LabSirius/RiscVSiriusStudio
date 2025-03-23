@@ -1,3 +1,7 @@
+/**
+ * This function filters the data in a Tabulator table based on the search input.
+ */
+
 export type RegisterView = 2 | 16 | "signed" | "unsigned" | "ascii";
 
 export interface SymbolData {
@@ -21,3 +25,9 @@ export interface MemoryRow {
   info: string;
   hex: string;
 }
+
+
+export type RowData = {
+  name?: string;
+  value?: string;
+};

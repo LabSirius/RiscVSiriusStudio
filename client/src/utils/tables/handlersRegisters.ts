@@ -1,7 +1,7 @@
 
 import { Tabulator, CellComponent,RowComponent } from 'tabulator-tables';
 
-import { RegisterView } from '@/utils/tables/types';
+import { RegisterView, RowData } from '@/utils/tables/types';
 
 import { RefObject } from 'react';
 
@@ -104,11 +104,6 @@ export const handleGlobalKeyPress = (currentHoveredViewTypeCell: RefObject<any>)
  * @param table The Tabulator table
  * @returns void
  */
-
-type RowData = {
-  name?: string;
-  value?: string;
-};
 
 export function filterTableData(searchInput: string, table: Tabulator): void {
   resetCellColors(table);
