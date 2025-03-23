@@ -1,4 +1,4 @@
-import { Tabulator } from 'tabulator-tables';
+import { Tabulator, RowComponent, CellComponent } from 'tabulator-tables';
 
 /**
  * @param tabulatorRef   tabulatorInstance.current
@@ -23,4 +23,14 @@ export function animateRegister(
   const position = (index >= 0 && index <= 12) ? "center" : "top";
 
   tabulatorRef.current.scrollToRow(registerName, position, true);
+}
+
+
+export function resetCellColors(table: Tabulator): void {
+  table.getRows().forEach((row: RowComponent) => {
+    row.getCells().forEach((cell: CellComponent) => {
+      cell.getElement().style.backgroundColor = '';
+      cell.getElement().style.borderBottom = '';
+    });
+  });
 }

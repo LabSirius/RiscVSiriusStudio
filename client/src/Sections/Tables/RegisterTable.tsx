@@ -4,13 +4,17 @@ import './tabulator.min.css';
 
 import { useMemoryTable } from '@/context/MemoryTableContext';
 import { useRegistersTable } from '@/context/RegisterTableContext';
+
+import { getColumnsRegisterDefinitions } from '@/utils/tables/definitions/definitionsColumns';
+
 import { registersNames } from '@/constants/data';
 import { RegisterView } from '@/utils/tables/types';
-import { createViewTypeFormatter, handleGlobalKeyPress, updateRegisterValue } from '@/utils/tables/handlersRegisters';
-import { getColumnsRegisterDefinitions } from '@/utils/tables/definitions/definitionsColumns';
+
+import { createViewTypeFormatter, handleGlobalKeyPress, updateRegisterValue, filterTableData } from '@/utils/tables/handlersRegisters';
+import { resetCellColors } from '@/utils/tables/handlersShared';
+
 import SkeletonRegisterTable from '@/components/Skeleton/SkeletonRegisterTable';
 import { sendMessage } from '@/components/Message/sendMessage';
-import { filterTableData, resetCellColors } from '@/utils/tables/handlersRegisters';
 
 const RegistersTable = () => {
   const { isCreatedMemoryTable } = useMemoryTable();

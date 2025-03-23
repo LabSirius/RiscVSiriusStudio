@@ -6,7 +6,7 @@ import { RegisterView } from '@/utils/tables/types';
 import { RefObject } from 'react';
 
 
-import { animateRegister } from '@/utils/tables/animation';
+import { animateRegister, resetCellColors } from '@/utils/tables/handlersShared';
 
  export function updateRegisterValue(
     tabulatorRef: React.MutableRefObject<Tabulator | null>,
@@ -184,12 +184,10 @@ export function filterTableData(searchInput: string, table: Tabulator): void {
               cellValue.includes(candidateFromUnsigned))
           ) {
             cell.getElement().style.backgroundColor = '#D1E3E7';
-            cell.getElement().style.borderBottom = '0.5px solid gray';
           }
         } else {
           if ((field === 'name' || field === 'value') && cellValue.includes(lowerSearch)) {
             cell.getElement().style.backgroundColor = '#D1E3E7';
-            cell.getElement().style.borderBottom = '0.5px solid gray';
           }
         }
       });
@@ -197,11 +195,3 @@ export function filterTableData(searchInput: string, table: Tabulator): void {
   }
 }
 
-export function resetCellColors(table: Tabulator): void {
-  table.getRows().forEach((row: RowComponent) => {
-    row.getCells().forEach((cell: CellComponent) => {
-      cell.getElement().style.backgroundColor = '';
-      cell.getElement().style.borderBottom = '';
-    });
-  });
-}

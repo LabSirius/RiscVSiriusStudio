@@ -2,7 +2,7 @@
 import { chunk } from 'lodash';
 import { intToHex, binaryToHex,  } from '@/utils/tables/handlerConversions';
 import { SymbolData } from '@/utils/tables/types';
-import { TabulatorFull as Tabulator, CellComponent, RowComponent } from 'tabulator-tables';
+import { TabulatorFull as Tabulator, CellComponent, RowComponent,  } from 'tabulator-tables';
 import { MemoryRow } from '@/utils/tables/types';
 
 /**
@@ -271,18 +271,54 @@ export function toggleHexColumn(
   }
 }
 
+/**
+ * Filters the memory table by checking if any of the specified fields contain the search string.
+ * The fields include "address", "value3", "value2", "value1", "value0", and "hex".
+ * 
+ * Performance improvements:
+ * - When the search input is empty, the filter is cleared and the cell styles are reset
+ *   using requestAnimationFrame, avoiding a synchronous iteration over all rows.
+ * - When a non-empty search is applied, only the active (visible) rows are processed for highlighting.
+ */
+export function filterMemoryData(searchInput: string, table: Tabulator): void {
+  const lowerSearch = searchInput.trim().toLowerCase();
+  const fieldsToSearch = ["address", "value3", "value2", "value1", "value0", "hex"];
 
-export const assignMemoryInputValue = (value: number): void => {
-    console.log('Asignando valor al input de memoria:', value);
-};
+  // If search input is empty, clear the filter and reset styles asynchronously
+  if (lowerSearch === '') {
+    table.clearFilter(true);
+    requestAnimationFrame(() => {
+      const activeRows = table.getRows("active");
+      activeRows.forEach((row: RowComponent) => {
+        row.getCells().forEach((cell: CellComponent) => {
+          if (fieldsToSearch.includes(cell.getField())) {
+            cell.getElement().style.backgroundColor = '';
+          }
+        });
+      });
+    });
+    return;
+  }
 
-export const configuration = (): void => {
-    console.log('Realizando configuración adicional');
-};
+  // Set the filter: check if any of the specified fields contain the search substring
+  table.setFilter((data) => {
+    return fieldsToSearch.some(field => {
+      const cellVal = data[field];
+      return cellVal !== undefined && cellVal.toString().toLowerCase().includes(lowerSearch);
+    });
+  });
 
-
-
-
-
-
-
+  // Update cell styles for active (visible) rows asynchronously to highlight matches
+  requestAnimationFrame(() => {
+    const activeRows = table.getRows("active");
+    activeRows.forEach((row: RowComponent) => {
+      row.getCells().forEach((cell: CellComponent) => {
+        const field = cell.getField();
+        if (fieldsToSearch.includes(field)) {
+          const cellText = cell.getValue() !== undefined ? cell.getValue().toString().toLowerCase() : "";
+          cell.getElement().style.backgroundColor = cellText.includes(lowerSearch) ? '#D1E3E7' : '';
+        }
+      });
+    });
+  });
+}

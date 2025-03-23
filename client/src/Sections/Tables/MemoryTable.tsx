@@ -5,13 +5,18 @@ import { useRegistersTable } from '@/context/RegisterTableContext';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 import './tabulator.min.css';
 
-import { uploadMemory, setupEventListeners, toggleHexColumn, updatePC,  } from '@/utils/tables/handlersMemory';
+import { 
+  uploadMemory, 
+  setupEventListeners, 
+  toggleHexColumn, 
+  updatePC, 
+  filterMemoryData 
+} from '@/utils/tables/handlersMemory';
 import { intTo32BitBinary } from '@/utils/tables/handlerConversions';
 import { getColumnMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 import { DataMemoryTable } from '@/utils/tables/types';
 
 import SkeletonMemoryTable from '@/components/Skeleton/SkeletonMemoryTable';
-
 import { sendMessage } from '@/components/Message/sendMessage';
 
 import { MemoryRow } from '@/context/MemoryTableContext';
@@ -27,17 +32,29 @@ interface MemoryContextProps {
   importMemory: MemoryRow[];
   setImportMemory: (importMemory: MemoryRow[]) => void;
   newPc: number;
+  searchInMemory: string;
 }
-
 
 const MemoryTable = () => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
 
+  // Extract memory context (including searchInMemory)
   const context = useMemoryTable() as unknown as MemoryContextProps;
-  const { isCreatedMemoryTable, setIsCreatedMemoryTable, showHexadecimal, dataMemoryTable, setDataMemoryTable, sizeMemory, importMemory, setImportMemory, newPc  } = context;
+  const {
+    isCreatedMemoryTable,
+    setIsCreatedMemoryTable,
+    showHexadecimal,
+    dataMemoryTable,
+    setDataMemoryTable,
+    sizeMemory,
+    importMemory,
+    setImportMemory,
+    newPc,
+    searchInMemory,
+  } = context;
 
-  const { setRegisterData, setRegisterWrite} = useRegistersTable();
+  const { setRegisterData, setRegisterWrite } = useRegistersTable();
 
   /**
    * Initialize Tabulator instance
@@ -62,9 +79,7 @@ const MemoryTable = () => {
           dataMemoryTable.symbols,
           0,
           () => {
-
             setIsCreatedMemoryTable(true);
-            
           }
         );
         setupEventListeners(tableInstanceRef.current!);
@@ -72,31 +87,26 @@ const MemoryTable = () => {
     });
 
     tableInstanceRef.current.on('cellEdited', (cell) => {
-      if (cell.getField().startsWith("value")) {
-       sendMessage({ event: "memoryChanged", memory: tableInstanceRef.current?.getData() });
+      if (cell.getField().startsWith('value')) {
+        sendMessage({ event: 'memoryChanged', memory: tableInstanceRef.current?.getData() });
       }
     });
-    
-
   }, []);
 
-
-  /*
-  * Update memory table when size memory changes
-  */
+  /**
+   * Update memory table when memory size changes
+   */
   useEffect(() => {
     if (tableInstanceRef.current && dataMemoryTable) {
-      
       const newTotalSize = dataMemoryTable.codeSize + sizeMemory;
       let newMemory: string[] = [];
 
       if (newTotalSize < dataMemoryTable.memory.length) {
         newMemory = dataMemoryTable.memory.slice(0, newTotalSize);
-      }
-      else if (newTotalSize > dataMemoryTable.memory.length) {
+      } else if (newTotalSize > dataMemoryTable.memory.length) {
         newMemory = [
           ...dataMemoryTable.memory,
-          ...new Array(newTotalSize - dataMemoryTable.memory.length).fill('00000000')
+          ...new Array(newTotalSize - dataMemoryTable.memory.length).fill('00000000'),
         ];
       } else {
         newMemory = dataMemoryTable.memory;
@@ -109,14 +119,13 @@ const MemoryTable = () => {
         dataMemoryTable.symbols,
         0,
         () => {
-         
           setRegisterData((prev) => {
             const newData = [...prev];
             newData[2] = intTo32BitBinary(newTotalSize - 4);
             return newData;
           });
           setRegisterWrite('x2');
-        },
+        }
       );
 
       setDataMemoryTable({
@@ -124,30 +133,26 @@ const MemoryTable = () => {
         memory: newMemory,
       });
 
-      
-      sendMessage({ event: "memorySizeChanged", sizeMemory: newTotalSize-4});
+      sendMessage({ event: 'memorySizeChanged', sizeMemory: newTotalSize - 4 });
     }
   }, [sizeMemory]);
-
 
   /**
    * Update memory table when importMemory changes
    */
   useEffect(() => {
-    if(importMemory.length === 0) return;
-    const importMemoryUppercase = importMemory.map(row => ({
+    if (importMemory.length === 0) return;
+    const importMemoryUppercase = importMemory.map((row) => ({
       ...row,
       address: row.address.toUpperCase(),
     }));
     tableInstanceRef.current?.updateData(importMemoryUppercase);
     setImportMemory([]);
-    sendMessage({ event: "memoryChanged", memory: tableInstanceRef.current?.getData() });
-
+    sendMessage({ event: 'memoryChanged', memory: tableInstanceRef.current?.getData() });
   }, [importMemory, setImportMemory]);
 
-
   /**
-   * Update memory table if hexadecimal column visibility changes
+   * Toggle visibility of hexadecimal column
    */
   useEffect(() => {
     if (tableInstanceRef.current) {
@@ -155,12 +160,22 @@ const MemoryTable = () => {
     }
   }, [showHexadecimal]);
 
+  /**
+   * Update PC indicator in the memory table
+   */
   useEffect(() => {
-    updatePC(newPc, { current: tableInstanceRef.current});
-
+    updatePC(newPc, { current: tableInstanceRef.current });
   }, [newPc]);
 
-  
+  /**
+   * FILTERING: Filter the memory table using the searchInMemory state
+   */
+  useEffect(() => {
+    if (!tableInstanceRef.current) return;
+    // Call the optimized filter function (defined below in handlersMemory)
+    filterMemoryData(searchInMemory, tableInstanceRef.current);
+  }, [searchInMemory]);
+
   useEffect(() => {
     return () => {
       tableInstanceRef.current?.destroy();
@@ -168,11 +183,11 @@ const MemoryTable = () => {
   }, []);
 
   return (
-    <div className={`shadow-lg  min-h-min ${showHexadecimal ? 'min-w-[34.8rem]' : ''} relative`}>
+    <div className={`shadow-lg min-h-min ${showHexadecimal ? 'min-w-[34.8rem]' : ''} relative`}>
       {!isCreatedMemoryTable && <SkeletonMemoryTable />}
       <div
         ref={tableContainerRef}
-        className={`w-full max-h-[calc(100dvh-2.3rem)] overflow-y-scroll overflow-x-hidden [&_.tabulator-header]:bg-gray-100 [&_.tabulator-group]:bg-blue-50 transition-opacity duration-300 `}
+        className={`w-full max-h-[calc(100dvh-2.3rem)] overflow-y-scroll overflow-x-hidden [&_.tabulator-header]:bg-gray-100 [&_.tabulator-group]:bg-blue-50 transition-opacity duration-300`}
       />
     </div>
   );
