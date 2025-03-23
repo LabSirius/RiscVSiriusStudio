@@ -1,14 +1,5 @@
-import { useRef, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "@/components/ui/carousel";
-import { Button } from "@/components/ui/button";
 import { File, Play, Cpu } from "lucide-react";
+import Carouser from "./Carouser";
 
 const data = [
   {
@@ -27,41 +18,8 @@ const data = [
 
 export function FirstHelp() {
 
-
-  const [carouselKey, setCarouselKey] = useState(0);
-  const carouselRef = useRef(null);
-
-  const handleReset = () => {
-    setCarouselKey((prev) => prev + 1);
-  };
-
-
   return (
-    <div className="flex flex-col gap-4">
-      <Carousel key={carouselKey} ref={carouselRef} className="max-w-7/12">
-        <CarouselContent >
-          {data.map((item, index) => (
-            <CarouselItem key={index} className="relative">
-              <div className="p-1">
-                <Card>
-                  <CardContent className="flex items-center justify-center p-6 aspect-square">
-                    <span className="font-semibold ">{item.content}</span>
-                    <div className="absolute bottom-8 right-4">
-                      {item.icon}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        {/* Los controles internos del carousel */}
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
-       
-      <Button variant="outline" className="w-min" onClick={handleReset}>Start</Button>
-    </div>
+      <Carouser data={data} />
   );
 }
 
@@ -69,13 +27,3 @@ export default FirstHelp;
 
 
 
-{data.map((item, index) => (
-  <CarouselItem key={index}>
-    <Card>
-      <CardContent className="flex items-center gap-4">
-        {item.icon}
-        <p>{item.content}</p>
-      </CardContent>
-    </Card>
-  </CarouselItem>
-))}

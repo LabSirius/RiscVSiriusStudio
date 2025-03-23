@@ -1,7 +1,9 @@
 import { useOperation } from "@/context/OperationContext"
 import FirstHelp from "@/components/Help/FirstHelp"
 import SettingsHelp from "@/components/Help/SettingsHelp/SettingsHelp"
+import LastHelp from "@/components/Help/LastHelp"
 import { Link } from "lucide-react"
+
 
 const HelpSection = () => {
   const { operation } = useOperation();
@@ -12,8 +14,9 @@ const HelpSection = () => {
             <Link  width={18} height={18} />
             <p className="underline text-primary">RISC-V intructions reference</p>
           </div> 
-          {operation !== "uploadMemory" && <FirstHelp /> }
+          {(operation !== "uploadMemory" && operation !== "step"  )&& <FirstHelp /> }
           {operation === "uploadMemory" && <SettingsHelp />}
+          {operation === "step" && <LastHelp />}
 
     </div>
   )

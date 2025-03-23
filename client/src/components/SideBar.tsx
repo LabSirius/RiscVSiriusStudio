@@ -3,7 +3,6 @@ import { useOperation } from "@/context/OperationContext";
 import { useSection } from "@/context/SectionContext";
 
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/ui/theme/mode-toggle";
 
 import {
   Sidebar,
@@ -72,9 +71,6 @@ export function SideBar() {
           <SidebarGroupLabel>Others</SidebarGroupLabel>
 
           <div className="flex flex-col gap-5 pl-3 mt-2">
-            <SidebarMenuItem>
-              <ModeToggle />
-            </SidebarMenuItem>
 
             <SidebarMenuItem>
               <a onClick={() =>  setSection('help')} className="curser-pointer">
