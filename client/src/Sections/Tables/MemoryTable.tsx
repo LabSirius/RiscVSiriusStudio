@@ -158,7 +158,7 @@ const MemoryTable = () => {
     this useEffect updates the memory table when the search input changes
   */
   useEffect(() => {
-    if (!tableInstanceRef.current || isCreatedMemoryTable) return;
+    if (!tableInstanceRef.current || !isCreatedMemoryTable) return;
     filterMemoryData(searchInMemory, tableInstanceRef.current);
   }, [searchInMemory, isCreatedMemoryTable]);
 
