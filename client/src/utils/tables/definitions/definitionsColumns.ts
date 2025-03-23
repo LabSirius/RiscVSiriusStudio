@@ -73,7 +73,7 @@ export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellCom
 /**
  * This function returns the definitions of the columns for the memory table.
  */
-export const getColumnMemoryDefinitions = (): ColumnDefinition[] => {
+export const getColumnMemoryDefinitions = (showHexadecimal: boolean = true): ColumnDefinition[] => {
     const defaultAttrs: ColumnDefinition = {
       title: '',
       visible: true,
@@ -88,16 +88,16 @@ export const getColumnMemoryDefinitions = (): ColumnDefinition[] => {
       editable: true,
       cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
     };
-
-    return [
+  
+    const columns: ColumnDefinition[] = [
       { ...defaultAttrs, visible: false, field: 'index' },
       {
         ...frozenAttrs,
         title: 'Info',
         field: 'info',
         width: 60,
-        formatter: (cell) => `<span class="block whitespace-nowrap overflow-hidden truncate text-white ">${cell.getValue()}</span>`,
-        
+        formatter: (cell) =>
+          `<span class="block whitespace-nowrap overflow-hidden truncate text-white ">${cell.getValue()}</span>`,
         tooltip: (e: MouseEvent, cell: CellComponent, onRendered: (cb: () => void) => void) =>
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           createTooltip(e, cell, onRendered) as any,
@@ -109,13 +109,28 @@ export const getColumnMemoryDefinitions = (): ColumnDefinition[] => {
         sorter: (a: string, b: string) => parseInt(a, 16) - parseInt(b, 16),
         headerSort: true,
         width: 75,
-        formatter: (cell) => `<span class="address-value">${(cell.getValue() as string).toUpperCase()}</span>`,
+        formatter: (cell) =>
+          `<span class="address-value">${(cell.getValue() as string).toUpperCase()}</span>`,
         cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
       },
       { ...editableAttrs, title: '0x3', field: 'value3', width: 83 },
       { ...editableAttrs, title: '0x2', field: 'value2', width: 83 },
       { ...editableAttrs, title: '0x1', field: 'value1', width: 83 },
       { ...editableAttrs, title: '0x0', field: 'value0', width: 83 },
-      { ...frozenAttrs, title: 'HEX', field: 'hex', width: 100,  formatter: (cell) => `<span class="hex-value">${(cell.getValue() as string).toUpperCase()}</span>`, },
     ];
+  
+    // Agregar la columna HEX solo si showHexadecimal es true.
+    if (showHexadecimal) {
+      columns.push({
+        ...frozenAttrs,
+        title: 'HEX',
+        field: 'hex',
+        width: 100,
+        formatter: (cell) =>
+          `<span class="hex-value">${(cell.getValue() as string).toUpperCase()}</span>`,
+      });
+    }
+  
+    return columns;
   };
+  

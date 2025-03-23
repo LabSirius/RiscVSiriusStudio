@@ -29,6 +29,10 @@ export function intToHex(sgnInteger: number): string {
   return binaryToHex(intToBinary(sgnInteger));
 }
 
+export function hexToInt(hex: string): string {
+  return parseInt(hex, 16).toString();
+}
+
 /**
  * Converts the binary representation of a number to an hexadecimal
  * representation.

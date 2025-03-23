@@ -264,9 +264,7 @@ export function toggleHexColumn(
     } else {
       hexColumn.hide();
     }
-  } else {
-    console.warn("La columna 'hex' no está disponible.");
-  }
+  } 
 }
 
 /**
