@@ -251,20 +251,14 @@ export function toggleHexColumn(
   tableInstance: Tabulator,
   showHexadecimal: boolean
 ): void {
-  let hexColumn;
-  try {
-    hexColumn = tableInstance.getColumn("hex");
-  } catch  {
-    return;
-  }
+  const hexColumn = tableInstance.getColumn("hex");
 
-  if (hexColumn) {
     if (showHexadecimal) {
       hexColumn.show();
     } else {
       hexColumn.hide();
     }
-  } 
+  
 }
 
 /**

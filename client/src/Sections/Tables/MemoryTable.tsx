@@ -8,7 +8,7 @@ import './tabulator.css';
 import { 
   uploadMemory, 
   setupEventListeners, 
-  toggleHexColumn, 
+   
   updatePC, 
   filterMemoryData, 
   setSP
@@ -51,7 +51,7 @@ const MemoryTable = () => {
       layout: 'fitColumns',
       index: 'address',
       data: [],
-      columns: getColumnMemoryDefinitions(),
+      columns: getColumnMemoryDefinitions(showHexadecimal),
       initialSort: [{ column: 'address', dir: 'desc' }],
     });
 
@@ -138,12 +138,7 @@ const MemoryTable = () => {
   /*
     This useEffect updates the memory table when the showHexadecimal state changes
   */
-  useEffect(() => {
-    if (tableInstanceRef.current && isCreatedMemoryTable) {
-      toggleHexColumn(tableInstanceRef.current, showHexadecimal);
-    }
-  }, [showHexadecimal, isCreatedMemoryTable]);
-
+ 
   /*
     This useEffect updates the program counter value in the memory table
   */

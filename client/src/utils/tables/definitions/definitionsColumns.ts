@@ -74,6 +74,7 @@ export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellCom
  * This function returns the definitions of the columns for the memory table.
  */
 export const getColumnMemoryDefinitions = (showHexadecimal: boolean = true): ColumnDefinition[] => {
+  console.log('getColumnMemoryDefinitions', showHexadecimal);
     const defaultAttrs: ColumnDefinition = {
       title: '',
       visible: true,
@@ -117,19 +118,16 @@ export const getColumnMemoryDefinitions = (showHexadecimal: boolean = true): Col
       { ...editableAttrs, title: '0x2', field: 'value2', width: 83 },
       { ...editableAttrs, title: '0x1', field: 'value1', width: 83 },
       { ...editableAttrs, title: '0x0', field: 'value0', width: 83 },
-    ];
-  
-    // Agregar la columna HEX solo si showHexadecimal es true.
-    if (showHexadecimal) {
-      columns.push({
+      {
         ...frozenAttrs,
         title: 'HEX',
         field: 'hex',
         width: 100,
         formatter: (cell) =>
           `<span class="hex-value">${(cell.getValue() as string).toUpperCase()}</span>`,
-      });
-    }
+      }
+    ];
+  
   
     return columns;
   };
