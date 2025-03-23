@@ -232,6 +232,8 @@ const MemoryTable = () => {
   useEffect(() => {
     return () => {
       tableInstanceRef.current?.destroy();
+      tableInstanceRef.current = null;
+      setIsCreatedMemoryTable(false);
     };
   }, []);
 

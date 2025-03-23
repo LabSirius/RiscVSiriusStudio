@@ -133,6 +133,15 @@ const RegistersTable = () => {
     }
   }, [searchInRegisters, tableBuilt]);
 
+  useEffect(() => {
+    return () => {
+      tabulatorInstance.current?.destroy();
+      tabulatorInstance.current = null;
+      setTableBuilt(false);
+      
+    };
+  }, []);
+
   return (
     <div ref={tableContainerRef} className="shadow-lg max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem]">
       {!tableBuilt && <SkeletonRegisterTable />}
