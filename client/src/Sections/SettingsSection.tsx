@@ -1,7 +1,7 @@
 import { useOperation } from "@/context/OperationContext";
 import ManualConfig from "../components/Settings/ManualConfig/ManualConfig";
 import StepConfig from "@/components/Settings/Step/StepConfig";
-import SwitchHexadecimal from "@/components/SwitchHexadecimal";
+import SwitchHexadecimal from "@/components/Settings/SwitchHexadecimal";
 
 
 
