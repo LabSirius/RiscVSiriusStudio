@@ -58,6 +58,8 @@ const MainSection = () => {
               <SearchSection />
             ) : section === "convert" ? (
               <ConvertSection />
+            ) : section === "settings" ? (
+              <SettingsSection />
             ) : (
               <HelpSection />
             ))}

@@ -1,8 +1,8 @@
-import MemorySizeInput from "./MemorySizeInput";
+import MemorySizeInput from "../MemorySizeInput";
 import ImportRegister from "./ImportRegister";
 
 import { RedoDot } from "lucide-react";
-import ImportMemory from "../ImportMemory";
+import ImportMemory from "./ImportMemory";
 
 const ManualConfig = () => {
 

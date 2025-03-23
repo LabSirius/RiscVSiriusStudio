@@ -25,7 +25,7 @@ export function SideBar() {
         <SidebarGroup className="flex flex-col flex-1">
           <SidebarGroupLabel>Options</SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-col">
-            <SidebarMenu className="flex flex-col justify-between min-h-full pl-3 mt-2">
+            <SidebarMenu className="flex flex-col justify-between min-h-full pl-3 mt-1">
 
             <div className="flex flex-col items-start gap-3">
               { !(operation === "") && !(operation === "uploadMemory") && (
@@ -50,9 +50,9 @@ export function SideBar() {
                   </a>
                 </SidebarMenuItem>
               )}
-            </div>
+           
 
-              {(operation === "uploadMemory") && (
+              {(operation === "uploadMemory" || operation === "step") && (
                <SidebarMenuItem>
                 <a onClick={() =>  setSection('settings')} className="curser-pointer">
                  
@@ -63,12 +63,12 @@ export function SideBar() {
                 </a>
               </SidebarMenuItem>
               )}
+             </div>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup className="mb-[.5rem]">
-          <SidebarGroupLabel>Others</SidebarGroupLabel>
 
           <div className="flex flex-col gap-5 pl-3 mt-2">
 

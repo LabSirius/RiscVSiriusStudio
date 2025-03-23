@@ -2,7 +2,11 @@ import React, { useState, useRef } from "react";
 import { Grid2x2Plus } from "lucide-react";
 import { useMemoryTable } from "@/context/MemoryTableContext";
 
-const MemorySizeInput = () => {
+interface MemorySizeInputProps {
+  disabled?: boolean;
+}
+
+const MemorySizeInput = ({ disabled = false }: MemorySizeInputProps) => {
   const { sizeMemory, setSizeMemory } = useMemoryTable();
   const [inputValue, setInputValue] = useState<string>(sizeMemory.toString());
   const [error, setError] = useState<string | null>(null);
@@ -25,33 +29,33 @@ const MemorySizeInput = () => {
     
     setError(null);
     setSizeMemory(value);
-
-
     setInputValue(value.toString());
     return true;
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (disabled) return;
     const intValue = Number(inputValue);
     updateMemorySize(intValue);
     inputRef.current?.blur();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (disabled) return;
     const value = e.target.value;
     setInputValue(value);
     setError(null);
   };
 
   const handleBlur = () => {
+    if (disabled) return;
     const intValue = Number(inputValue);
     if (!updateMemorySize(intValue)) {
       // Reset to last valid value if invalid
       setInputValue(sizeMemory.toString());
     }
   };
-
 
   return (
     <form onSubmit={handleSubmit} className="relative" noValidate>
@@ -60,9 +64,10 @@ const MemorySizeInput = () => {
       </div>
       <input
         ref={inputRef}
+        disabled={disabled}
         className={`relative rounded-lg border ${
           error ? "border-red-500" : "border-gray-400"
-        } cursor-pointer z-[2] bg-transparent py-2 pr-2 pl-[2.3rem] w-full`}
+        } ${disabled ? "cursor-not-allowed" : "cursor-pointer"} z-[2] bg-transparent py-2 pr-2 pl-[2.3rem] w-full`}
         type="number"
         value={inputValue}
         min="32"
@@ -73,7 +78,6 @@ const MemorySizeInput = () => {
         onBlur={handleBlur}
         title={error || ""}
       />
-      
       {error && (
         <div className="absolute left-0 mt-1 text-sm text-red-500 top-full">
           {error}
