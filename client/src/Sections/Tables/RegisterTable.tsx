@@ -38,10 +38,9 @@ const RegistersTable = () => {
     []
   );
 
+  //Reset the registerData when the memory table is created (for 2 or more simulations)
   useEffect(() => {
-
     if (!isCreatedMemoryTable) setRegisterData(Array(32).fill('0'.repeat(32)));
-
   }, [isCreatedMemoryTable])
 
   // --- GLOBAL KEYBOARD SHORTCUTS ---

@@ -66,8 +66,8 @@ const MainSection = () => {
         </div>
       )}
 
-    {showScrollIcon && (
-        <div className="absolute right-8 bottom-[1rem] transform -translate-y-1/2 z-10 text-black left-animation">
+    { operation !== "" && showScrollIcon && (
+        <div className="absolute right-8 bottom-[1rem] transform -translate-y-1/2 z-10000 text-black left-animation ">
           <div className="flex items-center justify-center">
             <MouseScrollIcon />
           </div>
