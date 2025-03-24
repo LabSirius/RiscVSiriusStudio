@@ -154,7 +154,7 @@ const MemoryTable = () => {
     if (!isCreatedMemoryTable) return;
     if (dataMemoryTable?.codeSize !== undefined) {
       if (newPc * 4 >= dataMemoryTable?.codeSize) {
-        setError({ title: "Info", description: "The program has finished" });
+        setError({ title: "Info", description: "The program has finished." });
       } else {
         updatePC(newPc, { current: tableInstanceRef.current });
       }

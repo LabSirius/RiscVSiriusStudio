@@ -4,6 +4,7 @@ import { useOperation } from "@/context/OperationContext";
 import { useSection } from "@/context/SectionContext";
 import { useMemoryTable } from "@/context/MemoryTableContext";
 import { useRegistersTable } from "@/context/RegisterTableContext";
+import { useError } from "@/context/ErrorContext";
 
 const MessageListener = () => {
   const { setTheme } = useTheme()
@@ -11,6 +12,7 @@ const MessageListener = () => {
   const { setSection } = useSection();
   const { setDataMemoryTable, setSizeMemory, setCodeSize, setNewPc, setWriteInMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
   const { setWriteInRegister } = useRegistersTable();
+  const { setError} = useError();
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -46,8 +48,8 @@ const MessageListener = () => {
           case "readMemory":
             setReadInMemory({ address: message.address, value: "1", _length: message._length });
             break;
- 
-            
+          case "stop":
+            setError({ title: "Info", description: "The program has stopped." });
             break;
           default:
             break;
