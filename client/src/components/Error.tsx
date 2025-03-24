@@ -36,7 +36,7 @@ const Error = () => {
             <Ban className="w-6 h-6 mr-2" />
             {error?.title}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-[1rem]">
+          <AlertDialogDescription className="text-[1rem] text-start">
             {error?.description}
           </AlertDialogDescription>
         </AlertDialogHeader>

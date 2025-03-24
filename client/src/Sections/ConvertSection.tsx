@@ -6,7 +6,6 @@ import SwapButton from "@/components/Convert/SwapButton";
 import CopyButton from "@/components/Convert/CopyButton";
 import { processTwoComplementInput, convertValue } from "@/utils/convert";
 
-// Available format options
 const formatOptions: Option[] = [
   { label: "Two's complement", value: 'twoCompl' },
   { label: "Hexadecimal", value: 'hex' },
@@ -15,15 +14,12 @@ const formatOptions: Option[] = [
 ];
 
 const ConvertSection: React.FC = () => {
-
-  // State for source format, target format, input value, conversion result and negative flag
   const [fromFormat, setFromFormat] = useState<Option>(formatOptions[0]);
   const [toFormat, setToFormat] = useState<Option>(formatOptions[1]);
   const [inputValue, setInputValue] = useState<string>('');
   const [result, setResult] = useState<string>('');
   const [isNegative, setIsNegative] = useState<boolean>(false);
 
-  // Update input when Two's Complement format or negative flag changes
   useEffect(() => {
     if (fromFormat.value === 'twoCompl') {
       setInputValue(
@@ -36,7 +32,6 @@ const ConvertSection: React.FC = () => {
     }
   }, [fromFormat, isNegative]);
 
-  // Update conversion result whenever input or formats change
   useEffect(() => {
     let processedValue = inputValue;
     if (fromFormat.value === 'twoCompl') {
@@ -51,7 +46,6 @@ const ConvertSection: React.FC = () => {
     setResult(convResult);
   }, [inputValue, fromFormat, toFormat, isNegative]);
 
-  // Swap the "from" and "to" formats
   const handleSwap = () => {
     const temp = fromFormat;
     setFromFormat(toFormat);
@@ -64,72 +58,87 @@ const ConvertSection: React.FC = () => {
     }
   };
 
-  return (
-      <div className=" section-container">
-        <div className="flex gap-2">
-          {/* From format dropdown */}
-          <Dropdown
-            label="From"
-            inputId="fromConvertInput"
-            options={formatOptions}
-            selected={fromFormat}
-            onSelect={(option) => {
-              setFromFormat(option);
-              setInputValue('');
-              setResult('');
-            }}
-          />
-          {/* To format dropdown */}
-          <Dropdown
-            label="To"
-            inputId="toConvertInput"
-            options={formatOptions}
-            selected={toFormat}
-            onSelect={(option) => {
-              setToFormat(option);
-              setResult('');
-            }}
-          />
-        </div>
+  // Handler para filtrar la entrada (sólo 0 y 1) cuando estamos en Two's Complement
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let newVal = e.target.value;
+    if (fromFormat.value === 'twoCompl') {
+      // Elimina cualquier carácter que no sea 0 o 1
+      newVal = newVal.replace(/[^01]/g, '');
+    }
+    setInputValue(newVal);
+  };
 
-        {/* Input for the value */}
-        <ValueInput
-          id="numberToconvertInput"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          onClick={(e) => {
-            const target = e.target as HTMLInputElement;
-            target.setSelectionRange(target.value.length, target.value.length);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (fromFormat.value === 'twoCompl' && e.key === 'Backspace') {
+      e.preventDefault();
+      // Quita el último dígito y agrega un "0" al inicio
+      const newVal = '0' + inputValue.slice(0, -1);
+      setInputValue(newVal);
+    }
+  };
+
+  return (
+    <div className="section-container">
+      <div className="flex gap-2">
+        <Dropdown
+          label="From"
+          inputId="fromConvertInput"
+          options={formatOptions}
+          selected={fromFormat}
+          onSelect={(option) => {
+            setFromFormat(option);
+            setInputValue('');
+            setResult('');
           }}
         />
+        <Dropdown
+          label="To"
+          inputId="toConvertInput"
+          options={formatOptions}
+          selected={toFormat}
+          onSelect={(option) => {
+            setToFormat(option);
+            setResult('');
+          }}
+        />
+      </div>
 
-        {/* Checkbox for Two's Complement and swap button */}
-        <div className="relative flex items-center justify-between w-full h-10 gap-4">
-          {fromFormat.value === 'twoCompl' && (
-            <div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="isNegative"
-                  className="cursor-pointer"
-                  checked={isNegative}
-                  onChange={(e) => setIsNegative(e.target.checked)}
-                />
-                <p >Fill with ones (negative)</p>
-              </div>
+      <ValueInput
+        id="numberToconvertInput"
+        value={inputValue}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        onClick={(e) => {
+          const target = e.target as HTMLInputElement;
+          target.setSelectionRange(target.value.length, target.value.length);
+        }}
+      />
+
+      <div className="relative flex items-center justify-between w-full h-10 gap-4">
+        {fromFormat.value === 'twoCompl' && (
+          <div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="isNegative"
+                className="cursor-pointer"
+                checked={isNegative}
+                onChange={(e) => setIsNegative(e.target.checked)}
+              />
+              <p>Fill with ones (negative)</p>
             </div>
-          )}
-          <div id="checkbox-swapContainer" className="absolute right-0 -translate-y-1/2 top-1/2">
-            <SwapButton onSwap={handleSwap} />
           </div>
-        </div>
-
-        {/* Result output and copy button */}
-        <div className="relative flex flex-col gap-2 max-h-content">
-          <ResultOutput id="resultConvertInput" value={result} />
-          <CopyButton result={result} toFormat={toFormat.value} />
+        )}
+        <div id="checkbox-swapContainer" className="absolute right-0 -translate-y-1/2 top-1/2">
+          <SwapButton onSwap={handleSwap} />
         </div>
       </div>
+
+      <div className="relative flex flex-col gap-2 max-h-content">
+        <ResultOutput id="resultConvertInput" value={result} />
+        <CopyButton result={result} toFormat={toFormat.value} />
+      </div>
+    </div>
   );
 };
 

@@ -1,8 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useMemoryTable } from "@/context/MemoryTableContext";
 import { useRegistersTable } from "@/context/RegisterTableContext";
-import { useOperation } from "@/context/OperationContext";
-
 import { useError } from "@/context/ErrorContext";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "./tabulator.css";
@@ -23,7 +21,6 @@ import {
   intTo32BitBinary,
   intToHex,
   binaryToInt,
-  hexToInt,
 } from "@/utils/tables/handlerConversions";
 import { getColumnMemoryDefinitions } from "@/utils/tables/definitions/definitionsColumns";
 
@@ -59,7 +56,6 @@ const MemoryTable = () => {
   } = useMemoryTable();
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
-  const { isFirstStep} = useOperation();
   const { setError } = useError();
 
   
@@ -68,7 +64,7 @@ const MemoryTable = () => {
     This useEffect initializes the memory table
   */
   useEffect(() => {
-    if (!tableContainerRef.current || tableInstanceRef.current) return;
+    if (!tableContainerRef.current || isCreatedMemoryTable) return;
 
     tableInstanceRef.current = new Tabulator(tableContainerRef.current, {
       layout: "fitColumns",
@@ -89,6 +85,7 @@ const MemoryTable = () => {
           () => {
             setSp(intToHex(dataMemoryTable.memory.length - 4));
             setIsCreatedMemoryTable(true);
+            setNewPc(0);
           }
         );
         setupEventListeners(tableInstanceRef.current!);
@@ -100,7 +97,7 @@ const MemoryTable = () => {
         sendMessage({ event: "memoryChanged", memory: tableInstanceRef.current?.getData() });
       }
     });
-  }, []);
+  }, [isCreatedMemoryTable]);
 
   /*
     This useEffect updates the memory table when the dataMemoryTable state changes
@@ -145,13 +142,6 @@ const MemoryTable = () => {
   }, [sizeMemory]);
 
 
-  useEffect(() => {
-
-    if(!isCreatedMemoryTable) return;
-    
-
-  }, [isFirstStep, isCreatedMemoryTable]);
-
   /*
     This useEffect updates the memory table when the importMemory state changes
   */
@@ -168,11 +158,17 @@ const MemoryTable = () => {
 
 
   /*
-    This useEffect updates the program counter value in the memory table
+    This useEffect updates the program counter value in the memory table and shows an error if the program has finished
   */
   useEffect(() => {
     if (!isCreatedMemoryTable) return;
-    updatePC(newPc, { current: tableInstanceRef.current });
+    if (dataMemoryTable?.codeSize !== undefined) {
+      if(newPc * 4 >= dataMemoryTable?.codeSize){
+        setError({ title: "Info", description: `The program has finished` });
+      }else{
+        updatePC(newPc, { current: tableInstanceRef.current });
+      }
+    }
   }, [newPc, isCreatedMemoryTable]);
 
   /*
@@ -204,21 +200,6 @@ const MemoryTable = () => {
     }
   }, [showHexadecimal, isCreatedMemoryTable]);
 
-  /*
-    this useEffect checks if the stack pointer is trying to access the program code section
-  */
-  useEffect(() => {
-    if (!isCreatedMemoryTable) return;
-    if (
-      dataMemoryTable?.codeSize !== undefined &&
-      Number(hexToInt(sp)) <= dataMemoryTable.codeSize
-    ) {
-      setError({
-        title: "Error in memory",
-        description: `The stack pointer attempted to access the program code section at address ${sp}`,
-      });
-    }
-  }, [sp, dataMemoryTable?.codeSize, setError, isCreatedMemoryTable]);
 
   /* 
     This useEffect updates the memory table when the writeInMemory
@@ -253,26 +234,6 @@ const MemoryTable = () => {
     setLocatePc(false);
   }, [locatePc, setLocatePc, isCreatedMemoryTable]);
 
-  /*
-    This useEffect checks if the program has finished
-  */
-    useEffect(() => {
-      if (!isCreatedMemoryTable) return;
-      if (dataMemoryTable?.codeSize !== undefined) {
-        if (newPc * 4 >= dataMemoryTable?.codeSize) {
-          setError({ title: "Info", description: `The program has finished.` });
-        }
-      }
-    }, [newPc, isCreatedMemoryTable]);
-
-  useEffect(() => {
-    return () => {
-      setNewPc(0);
-      tableInstanceRef.current?.destroy();
-      tableInstanceRef.current = null;
-      setIsCreatedMemoryTable(false);
-    };
-  }, []);
 
   return (
     <div className={`shadow-lg min-h-min ${showHexadecimal ? "min-w-[34.8rem]" : ""} relative`}>

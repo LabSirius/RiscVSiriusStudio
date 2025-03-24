@@ -239,6 +239,17 @@ export class RVContext {
     // From now on the editor must be read only
     const simulator: Simulator = new TextSimulator(settings, rvDoc, this);
 
+    simulator.onDidStop(() => {    
+      this._isSimulating = false;
+      this._simulator = undefined;
+      const editor = window.activeTextEditor;
+      if (editor) {
+        this._encoderDecorator?.clearDecorations(editor);
+        this._encoderDecorator = undefined;
+      }
+      commands.executeCommand("setContext", "ext.isSimulating", false);
+    });
+
     // This tells vscode that the extension is simulating and in turn some
     // commands get enabled.
     this._isSimulating = true;

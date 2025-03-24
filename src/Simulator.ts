@@ -73,15 +73,7 @@ export class Simulator {
       // Prevent any further changes to configuration
       this._configured = true;
     }
-    if (this.cpu.finished()) {
-      // this.sendToSimulator({
-      //   operation: 'simulationFinished',
-      //   title: 'Simulation finished',
-      //   body: '..... Something ....'
-      // });
-      return;
-    }
-
+    
     const instruction = this.cpu.currentInstruction();
     const result = this.cpu.executeInstruction();
 
@@ -110,16 +102,19 @@ export class Simulator {
       this.cpu.nextInstruction();
     }
     this.didStep.fire();
+
+    if (this.cpu.finished()) {
+      this.finished();
+      return;
+    }
   }
 
   stop(): void {
-    console.log("Simulator stop");
     this.didStop.fire();
   }
 
   // This function is called when the simulation finishes. (normally)
   finished(): void {
-    console.log("Simulator finished");
     this.stop();
   }
 
@@ -252,7 +247,6 @@ export class TextSimulator extends Simulator {
           symbols: this.rvDoc.ir.symbols,
         }
       });
-      console.log("Simulator start ", this.cpu.currentInstruction());
       this.makeEditorReadOnly();
       super.start();
       // upload sp information to  webview
@@ -352,6 +346,7 @@ export class TextSimulator extends Simulator {
       _length: length,
     });
   }
+
 
   private highlightLine(lineNumber: number): void {
     const editor = this.rvDoc.editor;
