@@ -6,7 +6,6 @@ interface MemoryData {
  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   symbols: Record<string, any>;
 }
-
 interface MemoryRow {
   address: string; 
   hex: string;      
