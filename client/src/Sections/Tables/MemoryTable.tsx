@@ -7,6 +7,8 @@ import { useError } from "@/context/ErrorContext";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "./tabulator.css";
 
+import { useTheme } from "@/components/ui/theme/theme-provider"
+
 import {
   uploadMemory,
   setupEventListeners,
@@ -30,6 +32,7 @@ import { sendMessage } from "@/components/Message/sendMessage";
 
 
 const MemoryTable = () => {
+  const { theme } = useTheme()
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
 
@@ -276,7 +279,7 @@ const MemoryTable = () => {
       {!isCreatedMemoryTable && <SkeletonMemoryTable />}
       <div
         ref={tableContainerRef}
-        className={`w-full max-h-[calc(100dvh-2.3rem)] overflow-y-scroll overflow-x-hidden [&_.tabulator-header]:bg-gray-100 [&_.tabulator-group]:bg-blue-50 transition-opacity duration-300`}
+        className={`w-full max-h-[calc(100dvh-2.3rem)] overflow-y-scroll overflow-x-hidden ${theme === "light" ? "theme-light" : "theme-dark"}`}
       />
     </div>
   );

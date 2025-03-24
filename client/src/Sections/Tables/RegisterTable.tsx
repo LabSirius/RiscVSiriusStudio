@@ -4,6 +4,7 @@ import './tabulator.css';
 
 import { useMemoryTable } from '@/context/MemoryTableContext';
 import { useRegistersTable } from '@/context/RegisterTableContext';
+import { useTheme } from "@/components/ui/theme/theme-provider"
 
 import { getColumnsRegisterDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 
@@ -17,6 +18,7 @@ import SkeletonRegisterTable from '@/components/Skeleton/SkeletonRegisterTable';
 import { sendMessage } from '@/components/Message/sendMessage';
 
 const RegistersTable = () => {  
+  const { theme } = useTheme()
   const { isCreatedMemoryTable } = useMemoryTable();
   const { registerData, setRegisterData, writeInRegister, setWriteInRegister, importRegister, setImportRegister, searchInRegisters } = useRegistersTable();
   
@@ -142,10 +144,10 @@ const RegistersTable = () => {
   }, []);
 
   return (
-    <div ref={tableContainerRef} className="shadow-lg max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem]">
+    <div ref={tableContainerRef} className="shadow-lg max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem] ">
       {!tableBuilt && <SkeletonRegisterTable />}
       {isCreatedMemoryTable && (
-        <div ref={tableRef} className="w-full h-full" />
+        <div ref={tableRef} className={`w-full h-full ${theme === "light" ? "theme-light" : "theme-dark"}`} />
       )}
     </div>
   );

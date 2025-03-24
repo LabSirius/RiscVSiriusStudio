@@ -101,10 +101,18 @@ export const uploadMemory = (
   table.getRows().forEach(row => {
     const data = row.getData();
     if (data.isCode && data.address !== spAddress) {
-      row.getElement().style.backgroundColor = '#FFF6E5';
+      row.getElement().style.backgroundColor = '#D1E3E7';    
+
+    ['address', 'value0', 'value1', 'value2', 'value3', 'hex'].forEach(col => {
+      const cell = row.getCell(col);
+      if (cell) {
+        cell.getElement().style.color = 'black';
+    }
+  });
     } else {
       row.getElement().style.backgroundColor = '';
     }
+    
     
     if (!data.info) {
       row.getCell("info").getElement().innerHTML = '<div style="opacity:0">\u00A0</div>';
