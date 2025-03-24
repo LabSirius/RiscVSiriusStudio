@@ -34,7 +34,6 @@ export const RegistersTableProvider: React.FC<{ children: ReactNode }> = ({ chil
   const [writeInRegister, setWriteInRegister] = useState<WriteInRegister>({ registerName: '', value: '' });
   const [importRegister, setImportRegister] = useState<Register[]>([]);
   const [searchInRegisters, setSearchInRegisters] = useState<string>('');
- 
 
   return (
     <RegistersTableContext.Provider value={{ registerData, setRegisterData, writeInRegister, setWriteInRegister, importRegister, setImportRegister, searchInRegisters, setSearchInRegisters}}>

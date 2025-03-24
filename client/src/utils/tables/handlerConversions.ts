@@ -25,6 +25,9 @@ export function intToBinary(sgnInteger: number): string {
   }
 }
 
+export function unsignedToHex(int: number): string { 
+  return int.toString(16).toUpperCase();
+}
 export function intToHex(sgnInteger: number): string {
   return binaryToHex(intToBinary(sgnInteger));
 }

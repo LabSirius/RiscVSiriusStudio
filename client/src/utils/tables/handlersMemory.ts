@@ -165,7 +165,7 @@ export const createPCIcon = (): HTMLElement => {
     cellElement.appendChild(createPCIcon());
     cellElement.classList.add('animate-pc');
     void cellElement.offsetWidth;
-    setTimeout(() => cellElement.classList.remove('animate-pc'), 500);
+    setTimeout(() => cellElement.classList.remove('animate-pc'), 300);
 };
 
 
