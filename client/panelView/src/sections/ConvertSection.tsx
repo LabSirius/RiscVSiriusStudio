@@ -71,7 +71,6 @@ const ConvertSection: React.FC = () => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (fromFormat.value === 'twoCompl' && e.key === 'Backspace') {
       e.preventDefault();
-      // Quita el último dígito y agrega un "0" al inicio
       const newVal = '0' + inputValue.slice(0, -1);
       setInputValue(newVal);
     }
