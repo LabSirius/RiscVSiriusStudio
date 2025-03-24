@@ -6,7 +6,7 @@ import { binaryMemEditor, createTooltip, attachMemoryConversionToggle } from '@/
 
 
 // This function returns the definitions of the columns for the register table.
-export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellComponent) => HTMLElement): ColumnDefinition[] => {
+export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellComponent) => HTMLElement, isFirstStep : boolean): ColumnDefinition[]=>{
     const defaultAttrs: ColumnDefinition = {
       title: '',
       visible: true,
@@ -20,7 +20,10 @@ export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellCom
     const editableAttrs: ColumnDefinition = {
       ...frozenAttrs,
       editor: valueRegisterEditor,
-      editable: (cell: CellComponent) => cell.getData().name !== 'x0 zero',
+      editable: function (cell: CellComponent) { 
+        if(isFirstStep) return false;
+        return cell.getData().name !== 'x0 zero'
+      },
       cssClass: 'font-mono',
       cellMouseEnter: (_e, cell: CellComponent) => {
         attachConvertionToggle(cell);

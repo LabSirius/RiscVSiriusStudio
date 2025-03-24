@@ -4,6 +4,7 @@ import './tabulator.css';
 
 import { useMemoryTable } from '@/context/MemoryTableContext';
 import { useRegistersTable } from '@/context/RegisterTableContext';
+import { useOperation } from '@/context/OperationContext';
 import { useTheme } from "@/components/ui/theme/theme-provider"
 
 import { getColumnsRegisterDefinitions } from '@/utils/tables/definitions/definitionsColumns';
@@ -29,6 +30,8 @@ const RegistersTable = () => {
   
   const currentHoveredViewTypeCell = useRef<CellComponent | null>(null);
   const [tableBuilt, setTableBuilt] = useState(false);
+
+  const { isFirstStep } = useOperation();
 
   const viewTypeFormatterCustom = useMemo(
     () =>
@@ -68,7 +71,7 @@ const RegistersTable = () => {
 
     tabulatorInstance.current = new Tabulator(tableRef.current, {
       data: initialData,
-      columns: getColumnsRegisterDefinitions(viewTypeFormatterCustom),
+      columns: getColumnsRegisterDefinitions(viewTypeFormatterCustom, isFirstStep),
       layout: 'fitColumns',
       renderVertical: 'virtual',
       reactiveData: true,
@@ -127,6 +130,14 @@ const RegistersTable = () => {
     tabulatorInstance.current?.setData(importRegister);
     setImportRegister([]);
   }, [importRegister, setImportRegister, tableBuilt]);
+
+
+  // This useEffect disable editor in the first step
+  useEffect(() => {
+    if (tabulatorInstance.current) {
+      tabulatorInstance.current.setColumns(getColumnsRegisterDefinitions(viewTypeFormatterCustom, isFirstStep));
+    }
+  },[isFirstStep]);
 
   
   // This useEffect filters the table when the searchInRegisters state changes
