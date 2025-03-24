@@ -65,7 +65,7 @@ const MemoryTable = () => {
     tableInstanceRef.current = new Tabulator(tableContainerRef.current, {
       layout: "fitColumns",
       index: "address",
-      data: dataMemoryTable ? dataMemoryTable.memory : [],
+      data: [],
       columns: getColumnMemoryDefinitions(),
       initialSort: [{ column: "address", dir: "desc" }],
     });
