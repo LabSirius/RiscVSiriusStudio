@@ -1,5 +1,5 @@
 import MouseScrollIcon from "@/components/MouseScrollIcon";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sideBar";
 import Sidebar from "@/components/SideBar";
@@ -14,55 +14,47 @@ import SearchSection from "./SearchSection";
 import HelpSection from "./HelpSection";
 import { useTheme } from "@/components/ui/theme/theme-provider"
 
-
 const MainSection = () => {
   const { setTheme } = useTheme();
   const { operation } = useOperation();
   const { section } = useSection();
   const [showScrollIcon, setShowScrollIcon] = useState(true);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
-
-  useEffect(() => {
-      if(document.body.classList.value === 'vscode-light'){
-        setTheme('light');
-      
-      }else{
-        setTheme('dark')
-      }
-    }, []);
-  
+  const BASE_WIDTH = 1296;
 
   useEffect(() => {
-    const BASE_WIDTH = 1296; 
-    if (window.innerWidth > BASE_WIDTH) {
-      setShowScrollIcon(false);
+    // Configurar tema según la clase del body
+    if (document.body.classList.contains('vscode-light')) {
+      setTheme('light');
+    } else {
+      setTheme('dark');
     }
-  }, []);
+  }, [setTheme]);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      if (container.scrollTop > 0 || container.scrollLeft > 0) {
+    // Función para verificar el ancho de la ventana
+    const handleResize = () => {
+      if (window.innerWidth < BASE_WIDTH) {
+        setShowScrollIcon(true);
+      } else {
         setShowScrollIcon(false);
       }
     };
 
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
-  
+
   return (
-    <SidebarProvider ref={containerRef}>
+    <SidebarProvider>
       <Sidebar />
       <SidebarTrigger />
 
       {operation === "" && (section === "convert" ? <ConvertSection /> : <HelpSection />)}
 
       {(operation === "uploadMemory" || operation === "step") && (
-        <div className="relative flex gap-5 px-4 overflow-x-scroll overflow-y-auto">
+        <div className="relative flex gap-5 px-4 overflow-x-scroll overflow-y-hidden">
           <Tables />
           {operation === "uploadMemory" &&
             (section === "settings" ? <SettingsSection /> : <HelpSection />)}
@@ -80,14 +72,13 @@ const MainSection = () => {
         </div>
       )}
 
-    { operation !== "" && showScrollIcon && (
-        <div className="absolute right-8 bottom-[1rem] transform -translate-y-1/2 z-10000 text-black left-animation ">
+      {operation !== "" && showScrollIcon && (
+        <div className="absolute right-8 bottom-[1rem] transform -translate-y-1/2 z-10000 text-black left-animation">
           <div className="flex items-center justify-center">
             <MouseScrollIcon />
           </div>
         </div>
       )}
-
     </SidebarProvider>
   );
 };
