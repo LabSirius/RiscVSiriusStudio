@@ -5,7 +5,7 @@ import { useError } from "@/context/ErrorContext";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "./tabulator.css";
 
-import { useTheme } from "@/components/ui/theme/theme-provider"
+import { useTheme } from "@/components/ui/theme/theme-provider";
 
 import {
   uploadMemory,
@@ -27,9 +27,8 @@ import { getColumnMemoryDefinitions } from "@/utils/tables/definitions/definitio
 import SkeletonMemoryTable from "@/components/Skeleton/SkeletonMemoryTable";
 import { sendMessage } from "@/components/Message/sendMessage";
 
-
 const MemoryTable = () => {
-  const { theme } = useTheme()
+  const { theme } = useTheme();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
 
@@ -58,23 +57,23 @@ const MemoryTable = () => {
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
   const { setError } = useError();
 
-  
-
-  /*
-    This useEffect initializes the memory table
-  */
+  // Initialize the memory table regardless of dataMemoryTable so that the container is always rendered.
+  // Then, in the "tableBuilt" event, mark the table as created and load the data (if available).
   useEffect(() => {
     if (!tableContainerRef.current || isCreatedMemoryTable) return;
 
     tableInstanceRef.current = new Tabulator(tableContainerRef.current, {
       layout: "fitColumns",
       index: "address",
-      data: [],
+      data: dataMemoryTable ? dataMemoryTable.memory : [],
       columns: getColumnMemoryDefinitions(),
       initialSort: [{ column: "address", dir: "desc" }],
     });
 
     tableInstanceRef.current.on("tableBuilt", () => {
+      // Mark the table as created to hide the Skeleton.
+      setIsCreatedMemoryTable(true);
+      // If dataMemoryTable is available, upload the data.
       if (dataMemoryTable) {
         uploadMemory(
           tableInstanceRef.current!,
@@ -84,12 +83,11 @@ const MemoryTable = () => {
           0,
           () => {
             setSp(intToHex(dataMemoryTable.memory.length - 4));
-            setIsCreatedMemoryTable(true);
             setNewPc(0);
           }
         );
-        setupEventListeners(tableInstanceRef.current!);
       }
+      setupEventListeners(tableInstanceRef.current!);
     });
 
     tableInstanceRef.current.on("cellEdited", (cell) => {
@@ -99,9 +97,7 @@ const MemoryTable = () => {
     });
   }, [isCreatedMemoryTable]);
 
-  /*
-    This useEffect updates the memory table when the dataMemoryTable state changes
-  */
+  // Update the memory table when the memory size changes.
   useEffect(() => {
     if (!isCreatedMemoryTable) return;
     if (tableInstanceRef.current && dataMemoryTable) {
@@ -141,10 +137,7 @@ const MemoryTable = () => {
     }
   }, [sizeMemory]);
 
-
-  /*
-    This useEffect updates the memory table when the importMemory state changes
-  */
+  // Update the table when importMemory state changes.
   useEffect(() => {
     if (importMemory.length === 0 || !isCreatedMemoryTable) return;
     const importMemoryUppercase = importMemory.map((row) => ({
@@ -156,32 +149,25 @@ const MemoryTable = () => {
     sendMessage({ event: "memoryChanged", memory: tableInstanceRef.current?.getData() });
   }, [importMemory, setImportMemory, isCreatedMemoryTable]);
 
-
-  /*
-    This useEffect updates the program counter value in the memory table and shows an error if the program has finished
-  */
+  // Update the program counter value in the table and show an error if the program has finished.
   useEffect(() => {
     if (!isCreatedMemoryTable) return;
     if (dataMemoryTable?.codeSize !== undefined) {
-      if(newPc * 4 >= dataMemoryTable?.codeSize){
-        setError({ title: "Info", description: `The program has finished` });
-      }else{
+      if (newPc * 4 >= dataMemoryTable?.codeSize) {
+        setError({ title: "Info", description: "The program has finished" });
+      } else {
         updatePC(newPc, { current: tableInstanceRef.current });
       }
     }
   }, [newPc, isCreatedMemoryTable]);
 
-  /*
-    this useEffect updates the memory table when the search input changes
-  */
+  // Filter the memory data when the search input changes.
   useEffect(() => {
     if (!tableInstanceRef.current || !isCreatedMemoryTable) return;
     filterMemoryData(searchInMemory, tableInstanceRef.current);
   }, [searchInMemory, isCreatedMemoryTable]);
 
-  /* 
-  This useEffect updates the stack pointer value in the memory table
-*/
+  // Update the stack pointer in the table when writeInRegister changes.
   useEffect(() => {
     if (writeInRegister.value === "" || !tableInstanceRef.current || !isCreatedMemoryTable) return;
     if (writeInRegister.registerName === "x2") {
@@ -191,19 +177,14 @@ const MemoryTable = () => {
     }
   }, [writeInRegister, sp, setSp, isCreatedMemoryTable]);
 
-  /*
-    This useEffect updates the memory table when the showHexadecimal state changes
-  */
+  // Update the hexadecimal column when showHexadecimal changes.
   useEffect(() => {
     if (tableInstanceRef.current && isCreatedMemoryTable) {
       toggleHexColumn(tableInstanceRef.current, showHexadecimal);
     }
   }, [showHexadecimal, isCreatedMemoryTable]);
 
-
-  /* 
-    This useEffect updates the memory table when the writeInMemory
-  */
+  // Update the memory cell when writeInMemory changes.
   useEffect(() => {
     if (!isCreatedMemoryTable || writeInMemory.value === "") return;
     writeInMemoryCell(
@@ -215,18 +196,14 @@ const MemoryTable = () => {
     setWriteInMemory({ address: 0, _length: 0, value: "" });
   }, [writeInMemory, setWriteInMemory, isCreatedMemoryTable]);
 
-  /* 
-    This useEffect animates the memory cell when the readInMemory
-  */
+  // Animate the memory cell when readInMemory changes.
   useEffect(() => {
     if (!isCreatedMemoryTable || readInMemory.value === "-1" || !tableInstanceRef.current) return;
     animateMemoryCell(tableInstanceRef.current, readInMemory.address, readInMemory._length, true);
     setReadInMemory({ address: 0, _length: 0, value: "-1" });
   }, [readInMemory, setReadInMemory, isCreatedMemoryTable]);
 
-  /*
-  
-  */
+  // Scroll to locate the program counter.
   useEffect(() => {
     if (!isCreatedMemoryTable || !locatePc) return;
     const targetValue = (newPc * 4).toString(16).toUpperCase();
@@ -234,14 +211,21 @@ const MemoryTable = () => {
     setLocatePc(false);
   }, [locatePc, setLocatePc, isCreatedMemoryTable]);
 
-
   return (
     <div className={`shadow-lg min-h-min ${showHexadecimal ? "min-w-[34.8rem]" : ""} relative`}>
-      {!isCreatedMemoryTable && <SkeletonMemoryTable />}
+ 
+      <div className= {`h-full w-full transition-opacity ease-in 9000  ${isCreatedMemoryTable ? 'opacity-100' : 'opacity-0'}`}> 
       <div
         ref={tableContainerRef}
-        className={`w-full max-h-[calc(100dvh-2.3rem)] overflow-y-scroll overflow-x-hidden ${theme === "light" ? "theme-light" : "theme-dark"}`}
-      />
+        className={`w-full max-h-[calc(100dvh-2.3rem)] overflow-y-scroll overflow-x-hidden  }  ${
+          theme === "light" ? "theme-light" : "theme-dark"
+        }`}
+      /></div>
+      {!isCreatedMemoryTable && (
+        <div className="absolute inset-0">
+          <SkeletonMemoryTable />
+        </div>
+      )}
     </div>
   );
 };

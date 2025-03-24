@@ -147,7 +147,7 @@ const RegistersTable = () => {
     <div ref={tableContainerRef} className="shadow-lg max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem] ">
       {!tableBuilt && <SkeletonRegisterTable />}
       {isCreatedMemoryTable && (
-        <div ref={tableRef} className={`w-full h-full ${theme === "light" ? "theme-light" : "theme-dark"}`} />
+        <div ref={tableRef} className={`w-full h-full overflow-y-scroll overflow-x-hidden ${theme === "light" ? "theme-light" : "theme-dark"}`} />
       )}
     </div>
   );
