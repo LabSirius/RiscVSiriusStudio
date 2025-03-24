@@ -5,7 +5,6 @@ import { useSection } from "@/context/SectionContext";
 import { useMemoryTable } from "@/context/MemoryTableContext";
 import { useRegistersTable } from "@/context/RegisterTableContext";
 import { useError } from "@/context/ErrorContext";
-import { intToHex } from "@/utils/tables/handlerConversions";
 
 const MessageListener = () => {
   const { setTheme } = useTheme()
@@ -31,7 +30,7 @@ const MessageListener = () => {
             setCodeSize(message.payload.codeSize);
             break;
           case "step":
-            setNewPc(Number(intToHex(message.pc)));
+            setNewPc(message.pc);
             if (!isFirstStep) {
               setSection("search");
               setOperation("step");
