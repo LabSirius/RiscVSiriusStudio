@@ -14,7 +14,7 @@ const HelpSection = () => {
     
   return (
     <div className="w-full mt-1 section-container">
-        <div className="flex items-center cursor-pointer gap-9" onClick={handleLinkClick}>
+        <div className="flex items-center gap-4 cursor-pointer" onClick={handleLinkClick}>
             <Link  width={18} height={18} />
             <p className="underline text-primary">RISC-V intructions reference</p>
           </div> 
