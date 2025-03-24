@@ -2,7 +2,7 @@ import { WebviewPanel, window, ViewColumn, Uri, Webview } from "vscode";
 import { getUri } from "../utilities/getUri";
 import { readFileSync } from "fs";
 import { join } from "path";
-import { getNonce } from "../utilities/getNonce"; // Función para generar un nonce
+import { getNonce } from "../utilities/getNonce"; 
 
 export class RiscCardPanel {
   public static currentPanel: WebviewPanel | undefined;
@@ -21,7 +21,7 @@ export class RiscCardPanel {
         enableScripts: true,
         localResourceRoots: [
           Uri.joinPath(extensionUri, "node_modules"),
-          Uri.joinPath(extensionUri, "out")
+          Uri.joinPath(extensionUri, "src", "templates", "riscCard") 
         ],
       }
     );
@@ -30,24 +30,23 @@ export class RiscCardPanel {
     RiscCardPanel.setHtmlContent(webview, extensionUri);
   }
 
-  private static setHtmlContent(webview: Webview, extensionUri: Uri) {
-    // Se define la ruta del template HTML
+  private static async setHtmlContent(webview: Webview, extensionUri: Uri) {
+    const indexHtmlPath = join(extensionUri.fsPath, "src", "templates", "riscCard", "index.html");
+    let html = readFileSync(indexHtmlPath, "utf8");
+  
+    const baseUri = webview.asWebviewUri(Uri.file(join(extensionUri.fsPath, "src", "templates", "riscCard")));
+    html = html.replace("<head>", `<head><base href="${baseUri}/">`);
+  
     const nonce = getNonce();
-    const tailwindCSS = getUri(webview, extensionUri, ["out", "tailwind-output.css"]);
-    
-    const templatePath = join(extensionUri.fsPath, "src", "templates", "riscCard.html");
-    let template = readFileSync(templatePath, "utf-8");
-    // Se definen los _placeholders_ y sus valores correspondientes
-    const replacements: Record<string, string> = {
-      "${tailwindCSS}": tailwindCSS.toString(),
-      '${nonce}': nonce,
-    };
-
-    // Reemplaza en el template cada placeholder por su valor
-    template = template.replace(/\${[^}]+}/g, match => replacements[match] || match);
-
-    webview.html = template;
+  
+    html = html.replace(
+      "</body>",
+      `<script type="module" nonce="${nonce}"></script></body>`
+    );
+  
+    webview.html = html;
   }
+  
 }
 
 

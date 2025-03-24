@@ -103,6 +103,13 @@ function dispatch(
           });
           break;
         }
+        case 'clickOpenRISCVCard': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event }
+          });
+          break;
+        }
         default: {
           log({ msg: 'Unknown operation', data: data });
           break;
