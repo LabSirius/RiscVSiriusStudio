@@ -12,8 +12,7 @@ import Error from "@/components/Error";
 import MainSection from "@/sections/MainSection";
 import { SectionProvider } from "./context/SectionContext";
 
-
-const App = () => {
+const App = () => {  
   return (
     <SectionProvider>
       <OperationProvider>

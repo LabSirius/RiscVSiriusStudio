@@ -12,12 +12,26 @@ import Tables from "./Tables/Tables";
 import SettingsSection from "./SettingsSection";
 import SearchSection from "./SearchSection";
 import HelpSection from "./HelpSection";
+import { useTheme } from "@/components/ui/theme/theme-provider"
+
 
 const MainSection = () => {
+  const { setTheme } = useTheme();
   const { operation } = useOperation();
   const { section } = useSection();
   const [showScrollIcon, setShowScrollIcon] = useState(true);
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+
+  useEffect(() => {
+      if(document.body.classList.value === 'vscode-light'){
+        setTheme('light');
+      
+      }else{
+        setTheme('dark')
+      }
+    }, []);
+  
 
   useEffect(() => {
     const BASE_WIDTH = 1296; 
