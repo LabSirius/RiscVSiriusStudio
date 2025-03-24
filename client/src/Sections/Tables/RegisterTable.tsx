@@ -48,7 +48,7 @@ const RegistersTable = () => {
 
   // --- TABULATOR INITIALIZATION ---
   useEffect(() => {
-    if (!tableRef.current || tabulatorInstance.current) return;
+    if (!tableRef.current || tabulatorInstance.current ) return;
 
     // Initial data
     const initialData = registersNames.map((name, id) => ({
