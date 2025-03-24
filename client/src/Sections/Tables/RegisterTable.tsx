@@ -46,9 +46,9 @@ const RegistersTable = () => {
     return () => document.removeEventListener('keydown', keyHandler);
   }, [tableBuilt]);
 
-  // --- TABULATOR INITIALIZATION ---
+  // --- TABULATOR INITIALIZATION (se ejecuta solo una vez) ---
   useEffect(() => {
-    if (!tableRef.current || tabulatorInstance.current ) return;
+    if (!tableRef.current || tabulatorInstance.current) return;
 
     // Initial data
     const initialData = registersNames.map((name, id) => ({
@@ -147,7 +147,7 @@ const RegistersTable = () => {
     <div ref={tableContainerRef} className="shadow-lg max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem] ">
       {!tableBuilt && <SkeletonRegisterTable />}
       {isCreatedMemoryTable && (
-        <div ref={tableRef} className={`w-full h-full overflow-y-scroll overflow-x-hidden ${theme === "light" ? "theme-light" : "theme-dark"}`} />
+        <div ref={tableRef} className={`w-full h-full ${theme === "light" ? "theme-light" : "theme-dark"}`} />
       )}
     </div>
   );

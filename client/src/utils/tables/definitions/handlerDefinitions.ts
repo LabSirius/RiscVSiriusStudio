@@ -89,7 +89,6 @@ export const valueRegisterEditor = (
         editor.addEventListener('keydown', (e) => {
           if(e.key === '0' || e.key === '1'){
             e.preventDefault();
-            // Desplaza a la izquierda, eliminando el primer dígito y añadiendo el nuevo al final
             editor.value = editor.value.substring(1) + e.key;
           } else if(e.key === 'Backspace' || e.key === 'Delete'){
             e.preventDefault();
@@ -100,7 +99,6 @@ export const valueRegisterEditor = (
           } else if(e.key === 'Escape'){
             cancel();
           } else {
-            // Prevenir cualquier otra tecla
             e.preventDefault();
           }
         });

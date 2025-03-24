@@ -7,6 +7,7 @@
     color: #eee;
   }
   
+  
   .theme-dark .tabulator .tabulator-header {
     background-color: #444;
     border-bottom: 1px solid #666;
@@ -29,6 +30,10 @@
   }
   .theme-dark .tabulator-row.tabulator-row-even {
     background-color: #3a3a3a;  
+  }
+
+  .theme-dark .tabulator-row.tabulator-group:hover{
+    color: black !important;
   }
   
   .theme-dark .tabulator-row.tabulator-selectable:hover {
@@ -360,6 +365,7 @@
 }
 
 .tabulator .tabulator-tableholder {
+    background-color: transparent !important;
     -webkit-overflow-scrolling: touch;
     overflow: auto;
     position: relative;
