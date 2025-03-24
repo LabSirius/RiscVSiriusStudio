@@ -38,6 +38,12 @@ const RegistersTable = () => {
     []
   );
 
+  useEffect(() => {
+
+    if (!isCreatedMemoryTable) setRegisterData(Array(32).fill('0'.repeat(32)));
+
+  }, [isCreatedMemoryTable])
+
   // --- GLOBAL KEYBOARD SHORTCUTS ---
   useEffect(() => {
     if (!tableBuilt) return;
