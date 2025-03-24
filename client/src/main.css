@@ -199,7 +199,10 @@ a:hover{
 .written-cell{
   font-weight: 500;
   color: #3A6973;
-  
+}
+.written-cell-dark{
+  font-weight: 525;
+  color: #D1E3E7;
 }
 
 

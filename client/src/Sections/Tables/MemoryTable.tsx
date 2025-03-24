@@ -191,7 +191,8 @@ const MemoryTable = () => {
       tableInstanceRef.current,
       writeInMemory.address,
       writeInMemory._length,
-      writeInMemory.value
+      writeInMemory.value,
+      theme
     );
     setWriteInMemory({ address: 0, _length: 0, value: "" });
   }, [writeInMemory, setWriteInMemory, isCreatedMemoryTable]);

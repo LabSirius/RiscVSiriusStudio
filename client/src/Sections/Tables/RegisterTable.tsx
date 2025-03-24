@@ -46,7 +46,7 @@ const RegistersTable = () => {
     return () => document.removeEventListener('keydown', keyHandler);
   }, [tableBuilt]);
 
-  // --- TABULATOR INITIALIZATION (se ejecuta solo una vez) ---
+  // --- TABULATOR INITIALIZATION ---
   useEffect(() => {
     if (!tableRef.current || tabulatorInstance.current) return;
 

@@ -35,11 +35,12 @@ export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellCom
         frozen: true,
         width: 100,
         formatter: registerNamesFormatter,
-        cellDblClick: (_e, cell: CellComponent) => {
+        cellClick: (_e, cell: CellComponent) => {
           const data = cell.getData();
           const updatedData = { ...data, watched: !data.watched };
           cell.getRow().update(updatedData);
-        },
+          cell.getTable().setGroupBy("watched");
+        }
       },
       {
         ...editableAttrs,

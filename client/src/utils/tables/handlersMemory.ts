@@ -332,7 +332,8 @@ export const writeInMemoryCell = (
   tableInstance: Tabulator | null,
   address: number,
   leng: number,
-  value: string
+  value: string,
+  theme: string
 ): void => {
   if (!tableInstance) return;
   const rowStart = address - (address % 4);
@@ -381,14 +382,15 @@ export const writeInMemoryCell = (
   });
   row.update({ hex: hexParts.join('-').toUpperCase() });
 
-  animateMemoryCell(tableInstance, address, leng, false);
+  animateMemoryCell(tableInstance, address, leng, false, theme);
 };
 
 export const animateMemoryCell = (
   tableInstance: Tabulator,
   address: number,
   leng: number,
-  onlyRead: boolean
+  onlyRead: boolean,
+  theme? : string
 ): void => {
   
   const hexAddress = address.toString(16).toUpperCase();
@@ -400,7 +402,9 @@ export const animateMemoryCell = (
   );
   const cellsToAnimate = leng === 4 ? binaryCells : binaryCells.slice(-leng);
   cellsToAnimate.forEach(cell => {
-    cell.classList.add('animate-cell', 'written-cell')
+    if(theme === 'light') cell.classList.add('animate-cell', 'written-cell')
+    else cell.classList.add('animate-cell', 'written-cell-dark')
+    
     if(onlyRead) cell.classList.add('animate-cell');
   });
   setTimeout(() => {
