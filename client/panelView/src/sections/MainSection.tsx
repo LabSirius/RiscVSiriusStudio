@@ -22,7 +22,6 @@ const MainSection = () => {
   const BASE_WIDTH = 1296;
 
   useEffect(() => {
-    // Configurar tema según la clase del body
     if (document.body.classList.contains('vscode-light')) {
       setTheme('light');
     } else {
@@ -31,7 +30,6 @@ const MainSection = () => {
   }, [setTheme]);
 
   useEffect(() => {
-    // Función para verificar el ancho de la ventana
     const handleResize = () => {
       if (window.innerWidth < BASE_WIDTH) {
         setShowScrollIcon(true);
