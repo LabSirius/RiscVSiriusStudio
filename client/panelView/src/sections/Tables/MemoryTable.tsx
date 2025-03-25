@@ -11,7 +11,6 @@ import { useTheme } from "@/components/ui/theme/theme-provider";
 import {
   uploadMemory,
   setupEventListeners,
-  toggleHexColumn,
   updatePC,
   filterMemoryData,
   setSP,
@@ -188,11 +187,11 @@ const MemoryTable = () => {
   }, [writeInRegister, sp, setSp, isCreatedMemoryTable]);
 
   // Update the hexadecimal column when showHexadecimal changes.
-  useEffect(() => {
-    if (tableInstanceRef.current && isCreatedMemoryTable) {
-      toggleHexColumn(tableInstanceRef.current, showHexadecimal);
-    }
-  }, [showHexadecimal, isCreatedMemoryTable]);
+  // useEffect(() => {
+  //   if (tableInstanceRef.current && isCreatedMemoryTable) {
+  //     toggleHexColumn(tableInstanceRef.current, showHexadecimal);
+  //   }
+  // }, [showHexadecimal, isCreatedMemoryTable]);
 
   // Update the memory cell when writeInMemory changes.
   useEffect(() => {

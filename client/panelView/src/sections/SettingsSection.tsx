@@ -1,7 +1,7 @@
 import { useOperation } from "@/context/OperationContext";
 import ManualConfig from "../components/Settings/ManualConfig/ManualConfig";
 import StepConfig from "@/components/Settings/Step/StepConfig";
-import SwitchHexadecimal from "@/components/Settings/SwitchHexadecimal";
+
 
 
 
@@ -12,7 +12,7 @@ const SettingsSection = () => {
         <div className="flex flex-col gap-8">
           {operation === "uploadMemory" && <ManualConfig />}
           {operation === "step" && <StepConfig />}
-          <SwitchHexadecimal />
+          
         </div>
       </div>
   );
