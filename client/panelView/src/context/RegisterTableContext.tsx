@@ -38,7 +38,7 @@ export const RegistersTableProvider: React.FC<{ children: ReactNode }> = ({ chil
   const [writeInRegister, setWriteInRegister] = useState<WriteInRegister>({ registerName: '', value: '' });
   const [importRegister, setImportRegister] = useState<Register[]>([]);
   const [searchInRegisters, setSearchInRegisters] = useState<string>('');
-  const [checkFixedRegisters, setCheckFixedRegisters] = useState<boolean>(false);
+  const [checkFixedRegisters, setCheckFixedRegisters] = useState<boolean>(true);
   const [fixedchangedRegisters, setFixedchangedRegisters] = useState<string[]>([]);
 
   return (
