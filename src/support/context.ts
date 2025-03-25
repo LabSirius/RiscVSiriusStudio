@@ -143,7 +143,10 @@ export class RVContext {
         if (!this.mainWebviewView) {
           throw new Error("Main webview is not available");
         }
-        this._simulator.step();
+        try{
+          this._simulator.step();
+        }catch{}
+       
       })
     );
     //  Simulate-stop
