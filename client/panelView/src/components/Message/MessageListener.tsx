@@ -44,7 +44,7 @@ const MessageListener = () => {
             setReadInMemory({ address: message.address, value: "1", _length: message._length });
             break;
           case "stop":
-            setError({ title: "Info", description: "The program has stopped." });
+            setError({ title: "Info", description: "The program has ended." });
             break;
           default:
             break;

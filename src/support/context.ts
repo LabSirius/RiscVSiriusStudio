@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { commands, Disposable, ExtensionContext, Webview, window } from "vscode";
+import { commands, Disposable, ExtensionContext, Webview, window, TextEditor  } from "vscode";
 import {
   activateMessageListenerForRegistersView,
   getHtmlForRegistersWebview,
@@ -146,7 +146,9 @@ export class RVContext {
         // If not found other instructions, stop
         try{
           this._simulator.step();
-        }catch{}
+        }catch{
+          this._simulator.stop();
+        }
        
       })
     );
@@ -160,11 +162,6 @@ export class RVContext {
           this._isSimulating = false;
           this._simulator = undefined;
           const editor = window.activeTextEditor;
-          if (editor) {
-            this._encoderDecorator?.clearDecorations(editor);
-            this._encoderDecorator = undefined;
-          }
-          commands.executeCommand("setContext", "ext.isSimulating", false);
         }
       })
     );
@@ -225,7 +222,7 @@ export class RVContext {
     const editor = window.activeTextEditor;
     if (editor) {
       const document = editor.document;
-      if (document.languageId === "riscvasm") {
+      if (document.languageId === "riscvasm" && this._encoderDecorator) {
         this._currentDocument = new RVDocument(editor, this);
         this._currentDocument.buildAndDecorate(this);
       }
@@ -243,16 +240,7 @@ export class RVContext {
     // From now on the editor must be read only
     const simulator: Simulator = new TextSimulator(settings, rvDoc, this);
 
-    simulator.onDidStop(() => {    
-      this._isSimulating = false;
-      this._simulator = undefined;
-      const editor = window.activeTextEditor;
-      if (editor) {
-        this._encoderDecorator?.clearDecorations(editor);
-        this._encoderDecorator = undefined;
-      }
-      commands.executeCommand("setContext", "ext.isSimulating", false);
-    });
+   
 
     // This tells vscode that the extension is simulating and in turn some
     // commands get enabled.
@@ -272,6 +260,13 @@ export class RVContext {
 
   private memoryChanged(newMemory: []) {
     this.simulator.replaceMemory(newMemory);
+  }
+
+  public resetEncoderDecorator(editor: TextEditor): void {
+    if (this._encoderDecorator) {
+      this._encoderDecorator.clearDecorations(editor);
+      this._encoderDecorator = undefined;
+    }
   }
 
   /**
@@ -296,4 +291,8 @@ export class RVContext {
         break;
     }
   }
+
+  
 }
+
+

@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { useMemoryTable } from "@/context/MemoryTableContext";
 import { useRegistersTable } from "@/context/RegisterTableContext";
 import { useOperation } from "@/context/OperationContext";
-import { useError } from "@/context/ErrorContext";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "./tabulator.css";
 
@@ -56,7 +55,6 @@ const MemoryTable = () => {
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
   const { isFirstStep } = useOperation();
   const isFirstStepRef = useRef(isFirstStep);
-  const { setError } = useError();
 
   // Initialize the memory table regardless of dataMemoryTable so that the container is always rendered.
   // Then, in the "tableBuilt" event, mark the table as created and load the data (if available).
@@ -166,11 +164,11 @@ const MemoryTable = () => {
   useEffect(() => {
     if (!isCreatedMemoryTable) return;
     if (dataMemoryTable?.codeSize !== undefined) {
-      if (newPc * 4 >= dataMemoryTable?.codeSize) {
-        setError({ title: "Info", description: "The program has finished." });
-      } else {
+      if (!(newPc * 4 >= dataMemoryTable?.codeSize)) {
         updatePC(newPc, { current: tableInstanceRef.current });
       }
+        
+      
     }
   }, [newPc, isCreatedMemoryTable]);
 

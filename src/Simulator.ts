@@ -104,7 +104,6 @@ export class Simulator {
     this.didStep.fire();
 
     if (this.cpu.finished()) {
-      this.finished();
       return;
     }
   }
@@ -291,12 +290,17 @@ export class TextSimulator extends Simulator {
     if (this.currentHighlight) {
       this.currentHighlight.dispose();
     }
+    const editor = window.activeTextEditor;
+  if (editor) {
+    this.context.resetEncoderDecorator(editor);
+  }
     this.makeEditorWritable();
     const mainView = this.context.mainWebviewView;
     if (!mainView) {
       commands.executeCommand(`rv-simulator.riscv.focus`);
       return;
     } else {
+      commands.executeCommand("setContext", "ext.isSimulating", false);
       mainView.postMessage({
         from: "extension",
         operation: "stop",
