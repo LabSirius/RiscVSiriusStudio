@@ -35,7 +35,6 @@ const MemoryTable = () => {
   const {
     isCreatedMemoryTable,
     setIsCreatedMemoryTable,
-    showHexadecimal,
     dataMemoryTable,
     setDataMemoryTable,
     sizeMemory,
@@ -222,7 +221,7 @@ const MemoryTable = () => {
   }, [locatePc, setLocatePc, isCreatedMemoryTable]);
 
   return (
-    <div className={`shadow-lg min-h-min ${showHexadecimal ? "min-w-[34.8rem]" : ""} relative`}>
+    <div className={`shadow-lg min-h-min "min-w-[34.8rem] relative`}>
  
       <div className= {`h-full w-full transition-opacity ease-in 9000  ${isCreatedMemoryTable ? 'opacity-100' : 'opacity-0'}`}> 
       <div

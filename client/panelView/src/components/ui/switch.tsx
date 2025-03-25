@@ -1,18 +1,18 @@
 import * as React from "react"
 import * as SwitchPrimitive from "@radix-ui/react-switch"
-import { useMemoryTable } from "@/context/MemoryTableContext"
 import { cn } from "@/lib/utils"
+import { useRegistersTable } from "@/context/RegisterTableContext"
 
 function Switch({
   className,
   ...props
 }: React.ComponentProps<typeof SwitchPrimitive.Root>) {
-  const { setShowHexadecimal } = useMemoryTable()
+  const { setCheckFixedRegisters } = useRegistersTable()
   const [checked, setChecked] = React.useState(true)
 
   const handleCheckedChange = (value: boolean) => {
     setChecked(value)
-    setShowHexadecimal(value)  
+    setCheckFixedRegisters(value)  
   }
 
   return (

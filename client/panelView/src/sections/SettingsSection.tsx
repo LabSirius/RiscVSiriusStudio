@@ -1,9 +1,7 @@
 import { useOperation } from "@/context/OperationContext";
 import ManualConfig from "../components/Settings/ManualConfig/ManualConfig";
 import StepConfig from "@/components/Settings/Step/StepConfig";
-
-
-
+import SwitchSeeRegistersChanged from "@/components/Settings/SwitchSeeRegistersChanged";
 
 const SettingsSection = () => {
   const { operation } = useOperation();
@@ -12,7 +10,7 @@ const SettingsSection = () => {
         <div className="flex flex-col gap-8">
           {operation === "uploadMemory" && <ManualConfig />}
           {operation === "step" && <StepConfig />}
-          
+          <SwitchSeeRegistersChanged />
         </div>
       </div>
   );

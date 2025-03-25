@@ -25,6 +25,10 @@ interface RegistersTableContextProps {
   setImportRegister: React.Dispatch<React.SetStateAction<Register[]>>;
   searchInRegisters: string;
   setSearchInRegisters: React.Dispatch<React.SetStateAction<string>>;
+  checkFixedRegisters: boolean;
+  setCheckFixedRegisters: React.Dispatch<React.SetStateAction<boolean>>;
+  fixedchangedRegisters: string[];
+  setFixedchangedRegisters: React.Dispatch<React.SetStateAction<string[]>>; 
 }
 
 const RegistersTableContext = createContext<RegistersTableContextProps | undefined>(undefined);
@@ -34,9 +38,11 @@ export const RegistersTableProvider: React.FC<{ children: ReactNode }> = ({ chil
   const [writeInRegister, setWriteInRegister] = useState<WriteInRegister>({ registerName: '', value: '' });
   const [importRegister, setImportRegister] = useState<Register[]>([]);
   const [searchInRegisters, setSearchInRegisters] = useState<string>('');
+  const [checkFixedRegisters, setCheckFixedRegisters] = useState<boolean>(false);
+  const [fixedchangedRegisters, setFixedchangedRegisters] = useState<string[]>([]);
 
   return (
-    <RegistersTableContext.Provider value={{ registerData, setRegisterData, writeInRegister, setWriteInRegister, importRegister, setImportRegister, searchInRegisters, setSearchInRegisters}}>
+    <RegistersTableContext.Provider value={{ registerData, setRegisterData, writeInRegister, setWriteInRegister, importRegister, setImportRegister, searchInRegisters, setSearchInRegisters, checkFixedRegisters, setCheckFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters}}>
       {children}
     </RegistersTableContext.Provider>
   );
