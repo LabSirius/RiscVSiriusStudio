@@ -21,7 +21,7 @@ import { sendMessage } from '@/components/Message/sendMessage';
 const RegistersTable = () => {  
   const { theme } = useTheme()
   const { isCreatedMemoryTable } = useMemoryTable();
-  const { registerData, setRegisterData, writeInRegister, setWriteInRegister, importRegister, setImportRegister, searchInRegisters } = useRegistersTable();
+  const { registerData, setRegisterData, writeInRegister, setWriteInRegister, importRegister, setImportRegister, searchInRegisters, checkFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters } = useRegistersTable();
   
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
@@ -43,7 +43,10 @@ const RegistersTable = () => {
 
   //Reset the registerData when the memory table is created (for 2 or more simulations)
   useEffect(() => {
-    if (!isCreatedMemoryTable) setRegisterData(Array(32).fill('0'.repeat(32)));
+    if (!isCreatedMemoryTable){
+      setFixedchangedRegisters([]);
+      setRegisterData(Array(32).fill('0'.repeat(32)))
+    };
   }, [isCreatedMemoryTable])
 
   // --- GLOBAL KEYBOARD SHORTCUTS ---
@@ -114,15 +117,60 @@ const RegistersTable = () => {
   }, [isCreatedMemoryTable]);
 
   /* 
-    * This useEffect updates the value of a register when the user writes a new value
+    * This useEffect updates the value of a register when the user writes a new value and if checkFixedRegisters is true, updates the watched property of the register.
   */
   useEffect(() => {
-    if (writeInRegister.value === '' || !tableBuilt) {
-      return;
+    if (writeInRegister.value === '' || !tableBuilt) return;
+  
+  
+    updateRegisterValue(
+      tabulatorInstance,
+      writeInRegister.registerName,
+      writeInRegister.value
+    );
+  
+    
+    if (checkFixedRegisters) {
+      const row = tabulatorInstance.current?.getRow(writeInRegister.registerName);
+      if (row) {
+        const rowData = row.getData();
+        if (!rowData.watched) {
+          row.update({ ...rowData, watched: true });
+          tabulatorInstance.current?.setGroupBy('watched');
+        }
+      }
     }
-    updateRegisterValue(tabulatorInstance, writeInRegister.registerName, writeInRegister.value);
+  
+    setFixedchangedRegisters((prev) => [
+      ...prev,
+      writeInRegister.registerName,
+    ]);
     setWriteInRegister({ registerName: '', value: '' });
-  }, [writeInRegister, setWriteInRegister, tableBuilt]);
+  }, [
+    writeInRegister,
+    setWriteInRegister,
+    tableBuilt,
+    setFixedchangedRegisters,
+    checkFixedRegisters,
+  ]);
+
+
+  useEffect(() => {
+    if (!tableBuilt || !checkFixedRegisters) return;
+  
+    tabulatorInstance.current?.getRows().forEach((row) => {
+      const rowData = row.getData();
+      
+      if (fixedchangedRegisters.includes(rowData.rawName) && !rowData.watched) {
+        row.update({ ...rowData, watched: true });
+      }
+    });
+  
+    tabulatorInstance.current?.setGroupBy('watched');
+  
+  }, [checkFixedRegisters, tableBuilt, fixedchangedRegisters]);
+  
+  
 
   // This useEffect updates the table when the importRegister state changes
   useEffect(() => {
