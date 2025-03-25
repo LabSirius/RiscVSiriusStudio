@@ -84,11 +84,11 @@ const MemoryTable = () => {
           dataMemoryTable.memory,
           dataMemoryTable.codeSize,
           dataMemoryTable.symbols,
+          0,
+          theme,
           () => {
-           
             setSp(intToHex(dataMemoryTable.memory.length - 4));
             setNewPc(0);
-            updatePC(0, { current: tableInstanceRef.current })
           }
         );
       }
@@ -125,12 +125,13 @@ const MemoryTable = () => {
         newMemory,
         dataMemoryTable.codeSize,
         dataMemoryTable.symbols,
+        0,
+        theme,
         () => {
           setNewPc(0);
           setSp(intToHex(newTotalSize - 4));
           const newMemorySize = intTo32BitBinary(newTotalSize - 4);
           setWriteInRegister({ registerName: "x2", value: newMemorySize });
-          updatePC(0, { current: tableInstanceRef.current })
         }
       );
 
@@ -176,8 +177,9 @@ const MemoryTable = () => {
 
   // Filter the memory data when the search input changes.
   useEffect(() => {
-    if (!tableInstanceRef.current || !isCreatedMemoryTable) return;
-    filterMemoryData(searchInMemory, tableInstanceRef.current);
+    if (!tableInstanceRef.current || !isCreatedMemoryTable || newPc === 0) return;
+    filterMemoryData(searchInMemory, tableInstanceRef);
+    updatePC(newPc, { current: tableInstanceRef.current });
   }, [searchInMemory, isCreatedMemoryTable]);
 
   // Update the stack pointer in the table when writeInRegister changes.

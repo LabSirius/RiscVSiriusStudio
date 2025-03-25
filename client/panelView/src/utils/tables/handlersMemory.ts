@@ -1,4 +1,3 @@
-
 import { chunk } from 'lodash';
 import { intToHex, binaryToHex,  } from '@/utils/tables/handlerConversions';
 import { SymbolData } from '@/utils/tables/types';
@@ -18,6 +17,8 @@ export const uploadMemory = (
   newMemory: string[],
   newCodeSize: number,
   newSymbols: Record<string, SymbolData>,
+  pc: number,
+  theme: string,
   onComplete?: () => void
 ): void => {
   const isInitialLoad = table.getData().length === 0;
@@ -100,14 +101,9 @@ export const uploadMemory = (
   table.getRows().forEach(row => {
     const data = row.getData();
     if (data.isCode && data.address !== spAddress) {
-      row.getElement().style.backgroundColor = '#D1E3E7';    
-
-    ['address', 'value0', 'value1', 'value2', 'value3', 'hex'].forEach(col => {
-      const cell = row.getCell(col);
-      if (cell) {
-        cell.getElement().style.color = 'black';
-    }
-  });
+      if(theme === 'light') row.getElement().style.backgroundColor = '#D1E3E7';
+      else row.getElement().style.backgroundColor = '#8BA0AA';    
+     
     } else {
       row.getElement().style.backgroundColor = '';
     }
@@ -131,6 +127,7 @@ export const uploadMemory = (
     }
   }
 
+  updatePC(pc, { current: table });
   setSP(newMemory.length - 4, { current: table });
 
   onComplete?.();
@@ -161,6 +158,7 @@ export const createPCIcon = (): HTMLElement => {
   };
   
   export const updatePC = (newPC: number, tableInstanceRef: React.MutableRefObject<Tabulator | null>): void => {
+    console.log("PCCCCC", newPC);
     document.querySelectorAll('.pc-icon').forEach((icon) => icon.remove());
     const targetValue = (newPC * 4).toString(16).toUpperCase();
     const foundRows = tableInstanceRef.current?.searchRows('address', '=', targetValue) || [];
@@ -273,24 +271,58 @@ export function toggleHexColumn(
  *   using requestAnimationFrame, avoiding a synchronous iteration over all rows.
  * - When a non-empty search is applied, only the active (visible) rows are processed for highlighting.
  */
-export function filterMemoryData(searchInput: string, table: Tabulator): void {
+function highlightTextNode(node: Text, regex: RegExp): DocumentFragment {
+  const frag = document.createDocumentFragment();
+  const text = node.textContent || "";
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      frag.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+    }
+    const strong = document.createElement('strong');
+    strong.style.fontWeight = '800';
+    strong.style.color = 'inherit';
+    strong.textContent = match[0];
+    frag.appendChild(strong);
+    lastIndex = match.index + match[0].length;
+  }
+  // Agrega el resto del texto
+  if (lastIndex < text.length) {
+    frag.appendChild(document.createTextNode(text.substring(lastIndex)));
+  }
+
+  
+  return frag;
+}
+
+function highlightElement(el: HTMLElement, regex: RegExp): void {
+  Array.from(el.childNodes).forEach((child) => {
+    if (child.nodeType === Node.TEXT_NODE) {
+      const frag = highlightTextNode(child as Text, regex);
+      el.replaceChild(frag, child);
+    } else if (child.nodeType === Node.ELEMENT_NODE) {
+      highlightElement(child as HTMLElement, regex);
+    }
+  });
+}
+
+export function filterMemoryData(searchInput: string, table: React.MutableRefObject<Tabulator | null>): void {
   const lowerSearch = searchInput.trim().toLowerCase();
   const fieldsToSearch = ["address", "value3", "value2", "value1", "value0", "hex"];
 
-  // If search input is empty, clear the filter and restore original cell content asynchronously
+
   if (lowerSearch === '') {
-    table.clearFilter(true);
+    table.current?.clearFilter(true);
     requestAnimationFrame(() => {
-      const activeRows = table.getRows("active");
-      activeRows.forEach((row: RowComponent) => {
+      const allRows = table.current?.getRows();
+      allRows?.forEach((row: RowComponent) => {
         row.getCells().forEach((cell: CellComponent) => {
           if (fieldsToSearch.includes(cell.getField())) {
             const el = cell.getElement();
-            // Restore the original HTML if it was stored
             if (el.dataset.originalContent) {
               el.innerHTML = el.dataset.originalContent;
             } else {
-              // Fallback: set text content if no original content was stored
               el.textContent = cell.getValue() !== undefined ? cell.getValue().toString() : "";
             }
           }
@@ -300,39 +332,34 @@ export function filterMemoryData(searchInput: string, table: Tabulator): void {
     return;
   }
 
-  // Set the filter: check if any of the specified fields contain the search substring
-  table.setFilter((data) => {
+  table.current?.setFilter((data) => {
     return fieldsToSearch.some(field => {
       const cellVal = data[field];
       return cellVal !== undefined && cellVal.toString().toLowerCase().includes(lowerSearch);
     });
   });
 
-  // Update cell content for active (visible) rows asynchronously to highlight matches
   requestAnimationFrame(() => {
-    const activeRows = table.getRows("active");
-    activeRows.forEach((row: RowComponent) => {
+    const activeRows = table.current?.getRows("active");
+    const regex = new RegExp(`(${lowerSearch})`, "gi");
+    activeRows?.forEach((row: RowComponent) => {
       row.getCells().forEach((cell: CellComponent) => {
-        const field = cell.getField();
-        if (fieldsToSearch.includes(field)) {
+        if (fieldsToSearch.includes(cell.getField())) {
           const el = cell.getElement();
-          // Store the original content (including HTML y/o íconos) if no se ha guardado
           if (!el.dataset.originalContent) {
             el.dataset.originalContent = el.innerHTML;
+          } else {
+            el.innerHTML = el.dataset.originalContent;
           }
-          const originalContent = el.dataset.originalContent;
-          // Create a regex to match the search input (case-insensitive, global)
-          const regex = new RegExp(`(${lowerSearch})`, "gi");
-          // Replace the matched substring with a bold version preserving inherited styles
-          const newHtml = originalContent.replace(regex, '<strong style="color: inherit; font-weight: 660;">$1</strong>');
-          el.innerHTML = newHtml;
+          highlightElement(el, regex);
         }
       });
     });
   });
+
+
+  if(!table.current) return;
 }
-
-
 
 
 
