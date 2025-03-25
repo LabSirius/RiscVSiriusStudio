@@ -18,8 +18,7 @@ const MainSection = () => {
   const { setTheme } = useTheme();
   const { operation } = useOperation();
   const { section } = useSection();
-  const [showScrollIcon, setShowScrollIcon] = useState(true);
-  const BASE_WIDTH = 1296;
+  const [showScrollIcon, setShowScrollIcon] = useState(false);
 
   useEffect(() => {
     if (document.body.classList.contains('vscode-light')) {
@@ -30,19 +29,14 @@ const MainSection = () => {
   }, [setTheme]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < BASE_WIDTH) {
-        setShowScrollIcon(true);
-      } else {
+    if (operation === "uploadMemory" || operation === "step") {
+      setShowScrollIcon(true);
+      const timer = setTimeout(() => {
         setShowScrollIcon(false);
-      }
-    };
-
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+      }, 1000); 
+      return () => clearTimeout(timer);
+    }
+  }, [operation]);
 
   return (
     <SidebarProvider>
