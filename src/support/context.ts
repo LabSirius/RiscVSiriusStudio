@@ -26,9 +26,9 @@ export class RVContext {
   }
   // Reference to the decorator
   private _encoderDecorator: EncoderDecorator | undefined;
-  get encoderDecorator(): EncoderDecorator {
+  get encoderDecorator(): EncoderDecorator  | undefined {
     if (!this._encoderDecorator) {
-      throw new Error("Encoder decorator is not initialized");
+      return undefined;
     }
     return this._encoderDecorator;
   }
@@ -222,7 +222,7 @@ export class RVContext {
     const editor = window.activeTextEditor;
     if (editor) {
       const document = editor.document;
-      if (document.languageId === "riscvasm" && this._encoderDecorator) {
+      if (document.languageId === "riscvasm" ) {
         this._currentDocument = new RVDocument(editor, this);
         this._currentDocument.buildAndDecorate(this);
       }

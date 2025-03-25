@@ -22,10 +22,6 @@ const SkeletonMemoryTable = () => {
                 />
               ))}
               </div>
-              <Skeleton
-                className="h-8 w-[7rem]"
-              />
-
              
             </div>
           ))}

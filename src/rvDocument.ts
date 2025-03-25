@@ -77,6 +77,7 @@ export class RVDocument {
 
   public async buildAndDecorate(rvContext: RVContext) {
     console.log("Document changed, rebuilding IR");
+    if (!rvContext.encoderDecorator) {return;}
     this.build();
     if (!this.editor) {
       throw new Error("No editor found for this document");
