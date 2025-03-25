@@ -195,7 +195,7 @@ const RegistersTable = () => {
       tabulatorInstance.current.clearFilter(true);
       resetCellColors(tabulatorInstance.current);
     } else {
-      filterTableData(searchInRegisters, tabulatorInstance.current);
+      filterTableData(searchInRegisters, tabulatorInstance.current, theme);
     }
   }, [searchInRegisters, tableBuilt]);
 
