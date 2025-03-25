@@ -7,7 +7,7 @@ import { MutableRefObject } from 'react';
 
 
 // This function returns the definitions of the columns for the register table.
-export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellComponent) => HTMLElement, isFirstStep : boolean): ColumnDefinition[]=>{
+export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellComponent) => HTMLElement, isFirstStep : boolean, theme: string): ColumnDefinition[]=>{
     const defaultAttrs: ColumnDefinition = {
       title: '',
       visible: true,
@@ -52,6 +52,9 @@ export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellCom
         field: 'value',
         width: 160,
         formatter: valueFormatter,
+        formatterParams: {
+          theme,
+        },
         cellMouseEnter: (_e, cell: CellComponent) => {
           attachConvertionToggle(cell);
         },

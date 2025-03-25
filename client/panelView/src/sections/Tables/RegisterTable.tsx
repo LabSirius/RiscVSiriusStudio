@@ -74,7 +74,7 @@ const RegistersTable = () => {
 
     tabulatorInstance.current = new Tabulator(tableRef.current, {
       data: initialData,
-      columns: getColumnsRegisterDefinitions(viewTypeFormatterCustom, isFirstStep),
+      columns: getColumnsRegisterDefinitions(viewTypeFormatterCustom, isFirstStep, theme),
       layout: 'fitColumns',
       renderVertical: 'virtual',
       reactiveData: true,
@@ -183,7 +183,7 @@ const RegistersTable = () => {
   // This useEffect disable editor in the first step
   useEffect(() => {
     if (tabulatorInstance.current) {
-      tabulatorInstance.current.setColumns(getColumnsRegisterDefinitions(viewTypeFormatterCustom, isFirstStep));
+      tabulatorInstance.current.setColumns(getColumnsRegisterDefinitions(viewTypeFormatterCustom, isFirstStep, theme));
     }
   },[isFirstStep]);
 

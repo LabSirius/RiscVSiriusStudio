@@ -33,13 +33,16 @@ export const registerNamesFormatter = (cell: CellComponent) => {
 
 export const valueFormatter = (cell: CellComponent) => {
     const { value, viewType } = cell.getData();
+    const { theme } = (cell.getColumn().getDefinition().formatterParams as { theme?: string }) || {};
     switch (viewType) {
       case 2: {
         const intValue = Number(binaryToInt(value));
         const binStr = binaryRepresentation(value);
         return intValue < 0 
-  ? `<div class="font-mono text-slate-400"><span class="text-gray-600">${binStr}</span></div>` 
-  : `<div class="font-mono ">${binStr}</div>`;
+        ? (theme === "dark" 
+          ? `<div class="font-mono text-[#8BA0AA]">${binStr}</div>` 
+          : `<div class="font-mono text-[#3A6973]">${binStr}</div>`)
+      : `<div class="font-mono">${binStr}</div>`;
 
       }
       case 'signed': return binaryToInt(value);

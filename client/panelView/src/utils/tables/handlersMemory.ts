@@ -102,7 +102,7 @@ export const uploadMemory = (
     const data = row.getData();
     if (data.isCode && data.address !== spAddress) {
       if(theme === 'light') row.getElement().style.backgroundColor = '#D1E3E7';
-      else row.getElement().style.backgroundColor = '#8BA0AA';    
+      else row.getElement().style.backgroundColor = '#3B4049';    
      
     } else {
       row.getElement().style.backgroundColor = '';
@@ -271,95 +271,29 @@ export function toggleHexColumn(
  *   using requestAnimationFrame, avoiding a synchronous iteration over all rows.
  * - When a non-empty search is applied, only the active (visible) rows are processed for highlighting.
  */
-function highlightTextNode(node: Text, regex: RegExp): DocumentFragment {
-  const frag = document.createDocumentFragment();
-  const text = node.textContent || "";
-  let lastIndex = 0;
-  let match: RegExpExecArray | null;
-  while ((match = regex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      frag.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
-    }
-    const strong = document.createElement('strong');
-    strong.style.fontWeight = '800';
-    strong.style.color = 'inherit';
-    strong.textContent = match[0];
-    frag.appendChild(strong);
-    lastIndex = match.index + match[0].length;
-  }
-  // Agrega el resto del texto
-  if (lastIndex < text.length) {
-    frag.appendChild(document.createTextNode(text.substring(lastIndex)));
-  }
-
-  
-  return frag;
-}
-
-function highlightElement(el: HTMLElement, regex: RegExp): void {
-  Array.from(el.childNodes).forEach((child) => {
-    if (child.nodeType === Node.TEXT_NODE) {
-      const frag = highlightTextNode(child as Text, regex);
-      el.replaceChild(frag, child);
-    } else if (child.nodeType === Node.ELEMENT_NODE) {
-      highlightElement(child as HTMLElement, regex);
-    }
-  });
-}
-
 export function filterMemoryData(searchInput: string, table: React.MutableRefObject<Tabulator | null>): void {
+  // Convert search input to lowercase and trim whitespace.
   const lowerSearch = searchInput.trim().toLowerCase();
   const fieldsToSearch = ["address", "value3", "value2", "value1", "value0", "hex"];
 
-
+  // If the search input is empty, clear the filter and restore the full dataset.
   if (lowerSearch === '') {
     table.current?.clearFilter(true);
-    requestAnimationFrame(() => {
-      const allRows = table.current?.getRows();
-      allRows?.forEach((row: RowComponent) => {
-        row.getCells().forEach((cell: CellComponent) => {
-          if (fieldsToSearch.includes(cell.getField())) {
-            const el = cell.getElement();
-            if (el.dataset.originalContent) {
-              el.innerHTML = el.dataset.originalContent;
-            } else {
-              el.textContent = cell.getValue() !== undefined ? cell.getValue().toString() : "";
-            }
-          }
-        });
-      });
-    });
     return;
   }
 
-  table.current?.setFilter((data) => {
-    return fieldsToSearch.some(field => {
+  // Apply filter: only keep rows where at least one specified field contains the search input.
+  table.current?.setFilter((data) =>
+    fieldsToSearch.some(field => {
       const cellVal = data[field];
       return cellVal !== undefined && cellVal.toString().toLowerCase().includes(lowerSearch);
-    });
-  });
-
-  requestAnimationFrame(() => {
-    const activeRows = table.current?.getRows("active");
-    const regex = new RegExp(`(${lowerSearch})`, "gi");
-    activeRows?.forEach((row: RowComponent) => {
-      row.getCells().forEach((cell: CellComponent) => {
-        if (fieldsToSearch.includes(cell.getField())) {
-          const el = cell.getElement();
-          if (!el.dataset.originalContent) {
-            el.dataset.originalContent = el.innerHTML;
-          } else {
-            el.innerHTML = el.dataset.originalContent;
-          }
-          highlightElement(el, regex);
-        }
-      });
-    });
-  });
-
-
-  if(!table.current) return;
+    })
+  );
 }
+
+
+
+
 
 
 
