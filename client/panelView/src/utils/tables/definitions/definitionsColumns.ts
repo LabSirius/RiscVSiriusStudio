@@ -3,6 +3,7 @@ import { possibleViews } from '@/constants/data';
 
 import { ColumnDefinition, CellComponent } from 'tabulator-tables';
 import { binaryMemEditor, createTooltip, attachMemoryConversionToggle } from '@/utils/tables/definitions/handlerDefinitions';
+import { MutableRefObject } from 'react';
 
 
 // This function returns the definitions of the columns for the register table.
@@ -77,7 +78,7 @@ export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellCom
 /**
  * This function returns the definitions of the columns for the memory table.
  */
-export const getColumnMemoryDefinitions = (): ColumnDefinition[] => {
+export const getColumnMemoryDefinitions = (isFirstStepRef: MutableRefObject<boolean> ): ColumnDefinition[]=>{
     const defaultAttrs: ColumnDefinition = {
       title: '',
       visible: true,
@@ -89,7 +90,7 @@ export const getColumnMemoryDefinitions = (): ColumnDefinition[] => {
     const editableAttrs: ColumnDefinition = {
       ...frozenAttrs,
       editor: binaryMemEditor,
-      editable: true,
+      editable: function () { return !isFirstStepRef.current;},
       cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
     };
   

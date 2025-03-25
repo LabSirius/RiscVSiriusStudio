@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useMemoryTable } from "@/context/MemoryTableContext";
 import { useRegistersTable } from "@/context/RegisterTableContext";
+import { useOperation } from "@/context/OperationContext";
 import { useError } from "@/context/ErrorContext";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "./tabulator.css";
@@ -55,6 +56,8 @@ const MemoryTable = () => {
   } = useMemoryTable();
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
+  const { isFirstStep } = useOperation();
+  const isFirstStepRef = useRef(isFirstStep);
   const { setError } = useError();
 
   // Initialize the memory table regardless of dataMemoryTable so that the container is always rendered.
@@ -66,7 +69,7 @@ const MemoryTable = () => {
       layout: "fitColumns",
       index: "address",
       data: [],
-      columns: getColumnMemoryDefinitions(),
+      columns: getColumnMemoryDefinitions(isFirstStepRef),
       initialSort: [{ column: "address", dir: "desc" }],
     });
 
@@ -148,6 +151,13 @@ const MemoryTable = () => {
     setImportMemory([]);
     sendMessage({ event: "memoryChanged", memory: tableInstanceRef.current?.getData() });
   }, [importMemory, setImportMemory, isCreatedMemoryTable]);
+
+
+  // This useEffect disable editor in the first step
+  useEffect(() => {
+    if(!isCreatedMemoryTable) return;
+    isFirstStepRef.current = isFirstStep;
+  },[isFirstStep, isCreatedMemoryTable]);
 
   // Update the program counter value in the table and show an error if the program has finished.
   useEffect(() => {
