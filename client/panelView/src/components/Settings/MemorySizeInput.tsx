@@ -14,7 +14,7 @@ const MemorySizeInput = ({ disabled = false }: MemorySizeInputProps) => {
 
   const validateInput = (value: number): string | null => {
     if (isNaN(value)) return "Please enter a valid number";
-    if (value < 32) return "Value must be at least 32";
+    if (value < 16) return "Value must be at least 16";
     if (value > 512) return "Value must be at most 512";
     if (value % 4 !== 0) return "Value must be a multiple of 4";
     return null;

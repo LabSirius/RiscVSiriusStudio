@@ -140,7 +140,7 @@ export const handleGlobalKeyPress = (currentHoveredViewTypeCell: RefObject<any>)
  * @returns void
  */
 
-export function filterTableData(searchInput: string, table: Tabulator): void {
+export function filterTableData(searchInput: string, table: Tabulator, theme: string): void {
   resetCellColors(table);
 
   if (searchInput.toLowerCase().startsWith('0x')) {
@@ -158,7 +158,10 @@ export function filterTableData(searchInput: string, table: Tabulator): void {
         if (cell.getField() === 'value') {
           const cellValue = cell.getValue()?.toString().toLowerCase() || '';
           if (cellValue.includes(binaryHex)) {
-            cell.getElement().style.backgroundColor = '#D1E3E7';
+            if(theme === 'dark') {
+              cell.getElement().style.backgroundColor = '#3A6973';
+            }else cell.getElement().style.backgroundColor = '#D1E3E7';
+            
           }
         }
       });
@@ -213,11 +216,15 @@ export function filterTableData(searchInput: string, table: Tabulator): void {
               cellValue.includes(candidateFromDecimal) ||
               cellValue.includes(candidateFromUnsigned))
           ) {
-            cell.getElement().style.backgroundColor = '#D1E3E7';
+            if(theme === 'dark') {
+              cell.getElement().style.backgroundColor = '#3A6973';
+            }else cell.getElement().style.backgroundColor = '#D1E3E7';
           }
         } else {
           if ((field === 'name' || field === 'value') && cellValue.includes(lowerSearch)) {
-            cell.getElement().style.backgroundColor = '#D1E3E7';
+            if(theme === 'dark') {
+              cell.getElement().style.backgroundColor = '#3A6973';
+            }else cell.getElement().style.backgroundColor = '#D1E3E7';
           }
         }
       });
