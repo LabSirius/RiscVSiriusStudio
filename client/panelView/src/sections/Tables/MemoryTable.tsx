@@ -84,10 +84,11 @@ const MemoryTable = () => {
           dataMemoryTable.memory,
           dataMemoryTable.codeSize,
           dataMemoryTable.symbols,
-          0,
           () => {
+           
             setSp(intToHex(dataMemoryTable.memory.length - 4));
             setNewPc(0);
+            updatePC(0, { current: tableInstanceRef.current })
           }
         );
       }
@@ -124,11 +125,12 @@ const MemoryTable = () => {
         newMemory,
         dataMemoryTable.codeSize,
         dataMemoryTable.symbols,
-        0,
         () => {
+          setNewPc(0);
           setSp(intToHex(newTotalSize - 4));
           const newMemorySize = intTo32BitBinary(newTotalSize - 4);
           setWriteInRegister({ registerName: "x2", value: newMemorySize });
+          updatePC(0, { current: tableInstanceRef.current })
         }
       );
 

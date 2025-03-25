@@ -52,7 +52,7 @@ export class RVContext {
     }
     return this._simulator;
   }
-
+  
   static create(context: ExtensionContext): RVContext {
     if (!RVContext.#instance) {
       RVContext.#instance = new RVContext(context);

@@ -18,7 +18,6 @@ export const uploadMemory = (
   newMemory: string[],
   newCodeSize: number,
   newSymbols: Record<string, SymbolData>,
-  pc: number,
   onComplete?: () => void
 ): void => {
   const isInitialLoad = table.getData().length === 0;
@@ -132,7 +131,6 @@ export const uploadMemory = (
     }
   }
 
-  updatePC(pc, { current: table });
   setSP(newMemory.length - 4, { current: table });
 
   onComplete?.();
@@ -279,7 +277,7 @@ export function filterMemoryData(searchInput: string, table: Tabulator): void {
   const lowerSearch = searchInput.trim().toLowerCase();
   const fieldsToSearch = ["address", "value3", "value2", "value1", "value0", "hex"];
 
-  // If search input is empty, clear the filter and reset styles asynchronously
+  // If search input is empty, clear the filter and restore original cell content asynchronously
   if (lowerSearch === '') {
     table.clearFilter(true);
     requestAnimationFrame(() => {
@@ -287,7 +285,14 @@ export function filterMemoryData(searchInput: string, table: Tabulator): void {
       activeRows.forEach((row: RowComponent) => {
         row.getCells().forEach((cell: CellComponent) => {
           if (fieldsToSearch.includes(cell.getField())) {
-            cell.getElement().style.backgroundColor = '';
+            const el = cell.getElement();
+            // Restore the original HTML if it was stored
+            if (el.dataset.originalContent) {
+              el.innerHTML = el.dataset.originalContent;
+            } else {
+              // Fallback: set text content if no original content was stored
+              el.textContent = cell.getValue() !== undefined ? cell.getValue().toString() : "";
+            }
           }
         });
       });
@@ -303,20 +308,32 @@ export function filterMemoryData(searchInput: string, table: Tabulator): void {
     });
   });
 
-  // Update cell styles for active (visible) rows asynchronously to highlight matches
+  // Update cell content for active (visible) rows asynchronously to highlight matches
   requestAnimationFrame(() => {
     const activeRows = table.getRows("active");
     activeRows.forEach((row: RowComponent) => {
       row.getCells().forEach((cell: CellComponent) => {
         const field = cell.getField();
         if (fieldsToSearch.includes(field)) {
-          const cellText = cell.getValue() !== undefined ? cell.getValue().toString().toLowerCase() : "";
-          cell.getElement().style.backgroundColor = cellText.includes(lowerSearch) ? '#D1E3E7' : '';
+          const el = cell.getElement();
+          // Store the original content (including HTML y/o íconos) if no se ha guardado
+          if (!el.dataset.originalContent) {
+            el.dataset.originalContent = el.innerHTML;
+          }
+          const originalContent = el.dataset.originalContent;
+          // Create a regex to match the search input (case-insensitive, global)
+          const regex = new RegExp(`(${lowerSearch})`, "gi");
+          // Replace the matched substring with a bold version preserving inherited styles
+          const newHtml = originalContent.replace(regex, '<strong style="color: inherit; font-weight: 660;">$1</strong>');
+          el.innerHTML = newHtml;
         }
       });
     });
   });
 }
+
+
+
 
 
 /**
