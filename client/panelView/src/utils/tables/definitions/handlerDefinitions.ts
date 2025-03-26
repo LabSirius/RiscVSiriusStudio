@@ -40,9 +40,9 @@ export const valueFormatter = (cell: CellComponent) => {
         const binStr = binaryRepresentation(value);
         return intValue < 0 
         ? (theme === "dark" 
-          ? `<div class="font-mono text-[#8BA0AA]">${binStr}</div>` 
-          : `<div class="font-mono text-[#3A6973]">${binStr}</div>`)
-      : `<div class="font-mono">${binStr}</div>`;
+          ? `<div class="monospace text-[#8BA0AA]">${binStr}</div>` 
+          : `<div class="monospace text-[#3A6973]">${binStr}</div>`)
+      : `<div class="monospace">${binStr}</div>`;
 
       }
       case 'signed': return binaryToInt(value);

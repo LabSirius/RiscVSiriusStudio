@@ -14,6 +14,7 @@ export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellCom
       headerSort: false,
       headerHozAlign: 'center',
       formatter: 'html',
+      cssClass: 'monospace'
     };
   
     const frozenAttrs: ColumnDefinition = { ...defaultAttrs, frozen: true };
@@ -25,7 +26,6 @@ export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellCom
         if(isFirstStep) return false;
         return cell.getData().name !== 'x0 zero'
       },
-      cssClass: 'font-mono',
       cellMouseEnter: (_e, cell: CellComponent) => {
         attachConvertionToggle(cell);
       },
@@ -88,6 +88,7 @@ export const getColumnMemoryDefinitions = (isFirstStepRef: MutableRefObject<bool
       headerSort: false,
       headerHozAlign: 'center',
       formatter: 'html',
+      cssClass: 'monospace',
     };
     const frozenAttrs: ColumnDefinition = { ...defaultAttrs, frozen: true };
     const editableAttrs: ColumnDefinition = {
@@ -129,7 +130,7 @@ export const getColumnMemoryDefinitions = (isFirstStepRef: MutableRefObject<bool
          ...frozenAttrs,
         title: 'HEX',
          field: 'hex',
-         width: 100,
+         width: 110,
          formatter: (cell) =>
         `<span class="hex-value">${(cell.getValue() as string).toUpperCase()}</span>`,
        }

@@ -22,7 +22,7 @@ const ExampleImport =({ caseValue } : { caseValue: string }) => {
             <>
             <p>32 lines of 32 bits.</p>
             <div className="space-y-1 text-[.8rem]">
-              <p className="font-mono">
+              <p className="monospace">
                 00000000000000000000000000000000 <br />
                 00000000000000001000001000000001 <br />
                 00000000000000000000000000111111 <br />
@@ -35,7 +35,7 @@ const ExampleImport =({ caseValue } : { caseValue: string }) => {
             <>
             <p>n lines, for the addresses we want to import.</p>
             <div className="space-y-1 text-[.8rem]">
-              <p className=" font-mono">
+              <p className="monospace">
                 24:00000000000000000000000000011000 <br />
                 4C:00000000000000001000001000000001 <br />
                 80:00000000000000000000000000111111 <br />

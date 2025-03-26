@@ -75,7 +75,7 @@ export const createViewTypeFormatter = (
       default: tag = String(viewType);
     }
     const container = document.createElement("div");
-    container.className = "flex items-center justify-between w-full";
+    container.className = "flex items-center justify-between w-full monospace";
     const textSpan = document.createElement("span");
     textSpan.textContent = tag;
     const iconSpan = document.createElement("span");

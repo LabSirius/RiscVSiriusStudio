@@ -104,11 +104,13 @@ export class RVDocument {
   }
 
   public build(): void {
+
     const result = compile(this.getText(), this.getFileName());
     if (result.success) {
       this._ir = result.ir;
       this.syncIR();
     } else {
+      console.log("RESULT", result);
       this._ir = undefined;
     }
     console.log("Building IR for ", this.getFileName());
