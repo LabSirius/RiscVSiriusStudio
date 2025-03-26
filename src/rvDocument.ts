@@ -22,9 +22,9 @@ export class RVDocument {
    *
    */
   private _ir: InternalRepresentation | undefined;
-  get ir(): InternalRepresentation {
+  get ir(): InternalRepresentation | undefined {
     if (!this._ir) {
-      throw new Error('IR not built');
+      return undefined;
     }
     return this._ir;
   }
