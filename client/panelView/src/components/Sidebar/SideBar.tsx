@@ -4,6 +4,8 @@ import { useSection } from "@/context/SectionContext";
 
 import { Button } from "@/components/ui/button";
 
+import CircleActive from "./CircleActive";
+
 import {
   Sidebar,
   SidebarContent,
@@ -18,7 +20,7 @@ import { Search, Calculator, Info, Settings } from "lucide-react";
 
 export function SideBar() {
   const { operation } = useOperation();
-  const { setSection } = useSection();
+  const { section, setSection } = useSection();
   return (
     <Sidebar>
       <SidebarContent className="relative min-h-full overflow-auto">
@@ -29,38 +31,41 @@ export function SideBar() {
 
             <div className="flex flex-col items-start gap-3">
               { !(operation === "") && !(operation === "uploadMemory") && (
-                <SidebarMenuItem>
+                <SidebarMenuItem className="flex items-center gap-1">
                   <a onClick={() => setSection('search')} className="curser-pointer">
                         <Button variant="outline" size="icon">
                           <Search />
                         </Button>
                   
                   </a>
+                  {section === "search" && <CircleActive />}
                 </SidebarMenuItem>
               )}
 
               
               {!(operation === "uploadMemory") && (
-                <SidebarMenuItem>
+                <SidebarMenuItem className="flex items-center gap-1">
                   <a onClick={() => setSection('convert')} className="curser-pointer">
                         <Button variant="outline" size="icon">
                           <Calculator />
                         </Button>
                   
                   </a>
+                  {section === "convert" && <CircleActive />}
                 </SidebarMenuItem>
+               
               )}
            
 
               {(operation === "uploadMemory" || operation === "step") && (
-               <SidebarMenuItem>
+               <SidebarMenuItem className="flex items-center gap-1">
                 <a onClick={() =>  setSection('settings')} className="curser-pointer">
                  
                       <Button variant="outline" size="icon">
                         <Settings />
                       </Button>
-            
                 </a>
+                {section === "settings" && <CircleActive />}
               </SidebarMenuItem>
               )}
              </div>
@@ -72,12 +77,13 @@ export function SideBar() {
 
           <div className="flex flex-col gap-5 pl-3 mt-2">
 
-            <SidebarMenuItem>
+            <SidebarMenuItem className="flex items-center gap-1">
               <a onClick={() =>  setSection('help')} className="curser-pointer">
                 <Button variant="outline" size="icon">
                   <Info />
                 </Button>
               </a>
+              {section === "help" && <CircleActive />}
             </SidebarMenuItem>
           </div>
         </SidebarGroup>

@@ -2,7 +2,7 @@ import MouseScrollIcon from "@/components/MouseScrollIcon";
 import { useState, useEffect } from "react";
 
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sideBar";
-import Sidebar from "@/components/SideBar";
+import Sidebar from "@/components/Sidebar/SideBar";
 
 import { useOperation } from "@/context/OperationContext";
 import { useSection } from "@/context/SectionContext";
