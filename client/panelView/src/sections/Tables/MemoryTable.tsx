@@ -30,6 +30,7 @@ const MemoryTable = () => {
   const { theme } = useTheme();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
+  
 
   const {
     isCreatedMemoryTable,
@@ -143,6 +144,7 @@ const MemoryTable = () => {
       sendMessage({ event: "memorySizeChanged", sizeMemory: newTotalSize - 4 });
     }
   }, [sizeMemory]);
+
 
   // Update the table when importMemory state changes.
   useEffect(() => {

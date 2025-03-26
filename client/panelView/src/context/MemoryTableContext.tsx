@@ -51,6 +51,9 @@ export interface MemoryTableContextProps {
   searchInMemory: string;
   setSearchInMemory: React.Dispatch<React.SetStateAction<string>>;
 
+  showHex: boolean;
+  setShowHex: React.Dispatch<React.SetStateAction<boolean>>;
+
   writeInMemory: WriteInMemory;
   setWriteInMemory: React.Dispatch<React.SetStateAction<WriteInMemory>>;
 
@@ -74,6 +77,7 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [importMemory, setImportMemory] = useState<MemoryRow[]>([]);
   const [newPc, setNewPc] = useState<number>(0);
   const [searchInMemory, setSearchInMemory] = useState<string>("");
+  const [showHex, setShowHex] = useState<boolean>(true);
   const [writeInMemory, setWriteInMemory] = useState<WriteInMemory>({ address: 0, value: '', _length: 0 });
   const [readInMemory, setReadInMemory] = useState<ReadInMemory>({ address: 0, value: '-1' , _length: 0, });
   const [locatePc, setLocatePc] = useState<boolean>(false);
@@ -97,6 +101,8 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
         setNewPc,
         searchInMemory, 
         setSearchInMemory,
+        showHex,
+        setShowHex,
         writeInMemory, 
         setWriteInMemory,
         readInMemory,
