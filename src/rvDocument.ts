@@ -38,6 +38,15 @@ export class RVDocument {
    */
   private _instructionLine: Map<number, number>;
 
+
+  /**
+   * Error object if the IR could not be built.
+   */
+  private _error: any;
+  get error(): any {
+    return this._error;
+  }
+
   // get document(): TextDocument {
   //   return this._document;
   // }
@@ -77,19 +86,19 @@ export class RVDocument {
 
   public async buildAndDecorate(rvContext: RVContext) {
     console.log("Document changed, rebuilding IR");
-    if (!rvContext.encoderDecorator) {return;}
+    if (!rvContext.encoderDecorator) { return; }
     this.build();
     if (!this.editor) {
       throw new Error("No editor found for this document");
     }
-
+    rvContext.encoderDecorator.clearDecorations(this.editor);
     if (this.validIR()) {
       rvContext.encoderDecorator.decorate(this);
     } else {
-      console.log("Invalid IR, should write another decorator to report the compiler error");
-      rvContext.encoderDecorator.clearDecorations(this.editor);
+      rvContext.encoderDecorator.decorateError(this);
     }
   }
+  
 
   private syncIR() {
     if (!this.validIR) {
@@ -110,15 +119,14 @@ export class RVDocument {
       this._ir = result.ir;
       this.syncIR();
     } else {
-      console.log("RESULT", result);
       this._ir = undefined;
+      this._error = result.extra;
     }
-    console.log("Building IR for ", this.getFileName());
-    console.log("Result ", result);
+    
   }
 
   public validIR(): boolean {
-    return this.ir !== undefined;
+    return this._ir !== undefined;
   }
 
   public getIRForLine(line: number): any | undefined {

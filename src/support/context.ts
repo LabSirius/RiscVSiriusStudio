@@ -206,6 +206,8 @@ export class RVContext {
     console.log("Context constructor done");
   }
 
+  
+
   private onMainViewVisible() {
     if (this._mainViewIsFirstTimeVisible) {
       console.log("Main view is visible for the first time", this.mainWebviewView);
@@ -232,7 +234,7 @@ export class RVContext {
   private simulateProgram(rvDoc: RVDocument) {
     console.log("Simulating program");
     if (!rvDoc.ir) {
-      throw new Error("No valid IR found");
+      return;
     }
     const settings: SimulationParameters = {
       memorySize: 40,
