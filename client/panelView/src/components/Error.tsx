@@ -32,7 +32,7 @@ const Error = () => {
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle className="flex items-center gap-2 text-red-400">
+          <AlertDialogTitle className="flex items-center gap-2 text-[#3A6973]">
             <Ban className="w-6 h-6 mr-2" />
             {error?.title}
           </AlertDialogTitle>
