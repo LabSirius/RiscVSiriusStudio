@@ -98,9 +98,14 @@ const MemoryTable = () => {
 
     tableInstanceRef.current?.on("cellClick", (_, cell) => {
       if (cell.getField() === "address") {
+
         const address = cell.getValue();
-        const intAdress = Number(hexToInt(address)); 
-        sendMessage({ event: "clickInInstruction", line: dataMemoryTable?.addressLine[intAdress/4]});
+        const intAdress = Number(hexToInt(address))/4; 
+        if(dataMemoryTable?.codeSize){
+          if(intAdress*4 < dataMemoryTable?.codeSize){
+              sendMessage({ event: "clickInInstruction", line: dataMemoryTable?.addressLine[intAdress]});
+          }
+        }
       }
     })
 

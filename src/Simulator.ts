@@ -295,23 +295,37 @@ export class TextSimulator extends Simulator {
   }
 
   public override animateLine(line: number): void {
-  const editor = this.rvDoc.editor;
-  if (!editor) {
-    return;
+    const editor = this.rvDoc.editor;
+    if (!editor) {
+      return;
+    }
+  
+    // Creamos una decoración con el estilo que quieras (por ejemplo, fondo semitransparente)
+    const blinkDecoration = window.createTextEditorDecorationType({
+      isWholeLine: true,
+      backgroundColor: 'rgba(255, 255, 0, 0.3)'  // Ejemplo: amarillo claro
+    });
+  
+    const range = editor.document.lineAt(line-1).range;
+    let show = true;
+  
+    // Alterna la decoración cada 250ms
+    const intervalId = setInterval(() => {
+      if (show) {
+        editor.setDecorations(blinkDecoration, [range]);
+      } else {
+        editor.setDecorations(blinkDecoration, []);
+      }
+      show = !show;
+    }, 250);
+  
+    setTimeout(() => {
+      clearInterval(intervalId);
+      editor.setDecorations(blinkDecoration, []); +
+      blinkDecoration.dispose();
+    }, 1000);
   }
-
-  const warningUnderlineDecoration = window.createTextEditorDecorationType({
-    textDecoration: 'underline wavy cornflowerblue'
-  });
-
-  const range = editor.document.lineAt(line-1).range;
-
-  editor.setDecorations(warningUnderlineDecoration, [range]);
-
-  setTimeout(() => {
-    editor.setDecorations(warningUnderlineDecoration, []);
-  }, 1000);
-}
+  
 
   
   private clickListener() {
