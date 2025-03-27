@@ -5,6 +5,8 @@ interface MemoryData {
   codeSize: number;        
  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   symbols: Record<string, any>;
+  addressLine : number[];
+  
 }
 interface MemoryRow {
   address: string; 
@@ -26,6 +28,8 @@ interface ReadInMemory {
   _length: number;
 }
 
+
+
 export interface MemoryTableContextProps {
   isCreatedMemoryTable: boolean;  
   setIsCreatedMemoryTable: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,9 +39,6 @@ export interface MemoryTableContextProps {
 
   sizeMemory: number
   setSizeMemory: React.Dispatch<React.SetStateAction<number>>;
-
-  codeSize: number;
-  setCodeSize: React.Dispatch<React.SetStateAction<number>>;
 
   sp: string;
   setSp: React.Dispatch<React.SetStateAction<string>>;
@@ -72,7 +73,6 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [isCreatedMemoryTable, setIsCreatedMemoryTable] = useState<boolean>(false);
   const [dataMemoryTable, setDataMemoryTable] = useState<MemoryData | undefined>(undefined);
   const [sizeMemory, setSizeMemory] = useState<number>(0);
-  const [codeSize, setCodeSize] = useState<number>(0);
   const [sp, setSp] = useState<string>('');
   const [importMemory, setImportMemory] = useState<MemoryRow[]>([]);
   const [newPc, setNewPc] = useState<number>(0);
@@ -93,8 +93,6 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
         setSizeMemory,
         sp,
         setSp,
-        codeSize,
-        setCodeSize,
         importMemory,
         setImportMemory,
         newPc, 
