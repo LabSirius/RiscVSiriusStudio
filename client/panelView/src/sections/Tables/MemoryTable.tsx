@@ -15,6 +15,7 @@ import {
   setSP,
   writeInMemoryCell,
   animateMemoryCell,
+  animateRow,
 } from "@/utils/tables/handlersMemory";
 import {
   intTo32BitBinary,
@@ -54,7 +55,7 @@ const MemoryTable = () => {
   } = useMemoryTable();
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
-  const { isFirstStep } = useOperation();
+  const { isFirstStep, clickInLine, setClickInLine } = useOperation();
   const isFirstStepRef = useRef(isFirstStep);
 
   // Initialize the memory table regardless of dataMemoryTable so that the container is always rendered.
@@ -228,6 +229,21 @@ const MemoryTable = () => {
     tableInstanceRef.current?.scrollToRow(targetValue, "top", true);
     setLocatePc(false);
   }, [locatePc, setLocatePc, isCreatedMemoryTable]);
+
+
+  // Animate the memory cell when clickInLine changes.
+  useEffect(() =>  {
+    if(!isCreatedMemoryTable || clickInLine === -1) return;
+    console.log("CLICKKK EN LINEAAAA",clickInLine);
+    const position = dataMemoryTable?.addressLine.indexOf(clickInLine);
+    console.log("POSITION ES",position, dataMemoryTable?.addressLine  );
+    if (position !== -1) {
+      if(tableInstanceRef.current && (position || position === 0)) animateRow(tableInstanceRef.current, position*4);
+      setClickInLine(-1);
+    } 
+
+
+  }, [clickInLine, setClickInLine, isCreatedMemoryTable]);
 
   return (
     <div className={`shadow-lg min-h-min "min-w-[34.8rem] relative`}>

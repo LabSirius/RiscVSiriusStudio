@@ -202,7 +202,7 @@ a:hover{
 
 
 .animate-cell, .animate-pc {
-  animation: flashAnimation 0.5s ease-out forwards;
+  animation: opcity 0.5s ease-out forwards;
 }
 
 .written-cell{
@@ -210,24 +210,21 @@ a:hover{
   color: #3A6973;
 }
 .written-cell-dark{
-  font-weight: 525;
+  font-weight: 600;
   color: #D1E3E7;
 }
 
+.animate-row{
+  animation: opcity 0.8s ease-in-out;
+
+}
 
 
-@keyframes flashAnimation {
-  0% {
-    transform: scale(1);
-    opacity: 1;
+@keyframes opcity{
+  0%{
+    opacity: 0.6;
   }
-  50% {
-    transform: scale(0.95);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1);
+  100%{
     opacity: 1;
   }
 }
-

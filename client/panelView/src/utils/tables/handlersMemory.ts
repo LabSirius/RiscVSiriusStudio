@@ -158,7 +158,6 @@ export const createPCIcon = (): HTMLElement => {
   };
   
   export const updatePC = (newPC: number, tableInstanceRef: React.MutableRefObject<Tabulator | null>): void => {
-    console.log("PCCCCC", newPC);
     document.querySelectorAll('.pc-icon').forEach((icon) => icon.remove());
     const targetValue = (newPC * 4).toString(16).toUpperCase();
     const foundRows = tableInstanceRef.current?.searchRows('address', '=', targetValue) || [];
@@ -388,5 +387,26 @@ export const animateMemoryCell = (
   setTimeout(() => {
     cellsToAnimate.forEach(cell => cell.classList.remove('animate-cell'));
   }, 500);
+  tableInstance.scrollToRow(hexAddress, 'center', true);
+};
+
+
+export const animateRow = (
+  tableInstance: Tabulator,
+  address: number,
+
+): void => {
+  console.log("ANIMANDO FILA", address);
+  const hexAddress = address.toString(16).toUpperCase();
+  const row = tableInstance.getRow(hexAddress);
+  if (!row) return;
+  const rowElement = row.getElement();
+
+  rowElement.classList.add('animate-row');
+  
+  setTimeout(() => {
+    rowElement.classList.remove('animate-row');
+  }, 500);
+
   tableInstance.scrollToRow(hexAddress, 'center', true);
 };
