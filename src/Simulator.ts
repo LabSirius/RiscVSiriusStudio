@@ -1,5 +1,6 @@
 import {
   window,
+  Uri,
   EventEmitter,
   Event,
   TextEditor,
@@ -293,6 +294,26 @@ export class TextSimulator extends Simulator {
     }
   }
 
+  public override animateLine(line: number): void {
+  const editor = this.rvDoc.editor;
+  if (!editor) {
+    return;
+  }
+
+  const warningUnderlineDecoration = window.createTextEditorDecorationType({
+    textDecoration: 'underline wavy cornflowerblue'
+  });
+
+  const range = editor.document.lineAt(line-1).range;
+
+  editor.setDecorations(warningUnderlineDecoration, [range]);
+
+  setTimeout(() => {
+    editor.setDecorations(warningUnderlineDecoration, []);
+  }, 1000);
+}
+
+  
   private clickListener() {
     if (this.selectionListenerDisposable) {
       return;
