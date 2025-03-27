@@ -6,7 +6,7 @@ import { useRegistersTable } from "@/context/RegisterTableContext";
 import { useError } from "@/context/ErrorContext";
 
 const MessageListener = () => {
-  const { setOperation, isFirstStep, setIsFirstStep } = useOperation();
+  const { setOperation, isFirstStep, setIsFirstStep, setClickInLine } = useOperation();
   const { setSection } = useSection();
   const { setDataMemoryTable, setSizeMemory, setNewPc, setWriteInMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
   const { setWriteInRegister } = useRegistersTable();
@@ -34,7 +34,7 @@ const MessageListener = () => {
             }
             break;
           case "clickInLine":
-            console.log("DIOO CLICK EN", message.lineNumber);
+            setClickInLine(message.lineNumber);
             break;
           case "setRegister":
             setWriteInRegister({ registerName: message.register, value: message.value });

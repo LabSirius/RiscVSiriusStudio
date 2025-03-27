@@ -5,6 +5,8 @@ interface OperationContextProps {
   setOperation: React.Dispatch<React.SetStateAction<string>>;
   isFirstStep: boolean;
   setIsFirstStep: React.Dispatch<React.SetStateAction<boolean>>;
+  clickInLine: number;
+  setClickInLine: (lineNumber: number) => void;
 }
 
 const OperationContext = createContext<OperationContextProps | undefined>(undefined);
@@ -12,10 +14,11 @@ const OperationContext = createContext<OperationContextProps | undefined>(undefi
 export const OperationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [operation, setOperation] = useState<string>('');
   const [isFirstStep, setIsFirstStep] = useState<boolean>(false);
+  const [clickInLine, setClickInLine] = useState<number>(-1);
   
 
   return (
-    <OperationContext.Provider value={{ operation, setOperation, isFirstStep, setIsFirstStep }}>
+    <OperationContext.Provider value={{ operation, setOperation, isFirstStep, setIsFirstStep, clickInLine, setClickInLine }}>
       {children}
     </OperationContext.Provider>
   );
