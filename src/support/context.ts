@@ -276,6 +276,9 @@ export class RVContext {
    */
   public dispatchMainViewEvent(message: any) {
     switch (message.event) {
+      case "clickInInstruction":
+        console.log("LINE: ", message.value);
+      break;
       case "memorySizeChanged":
         this.memorySizeChanged(message.value);
         break;

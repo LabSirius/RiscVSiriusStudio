@@ -21,6 +21,7 @@ import {
   intTo32BitBinary,
   intToHex,
   binaryToInt,
+  hexToInt
 } from "@/utils/tables/handlerConversions";
 import { getColumnMemoryDefinitions } from "@/utils/tables/definitions/definitionsColumns";
 
@@ -94,6 +95,15 @@ const MemoryTable = () => {
           }
         );
       }
+
+    tableInstanceRef.current?.on("cellClick", (_, cell) => {
+      if (cell.getField() === "address") {
+        const address = cell.getValue();
+        const intAdress = Number(hexToInt(address)); 
+        sendMessage({ event: "clickInInstruction", line: dataMemoryTable?.addressLine[intAdress/4]});
+      }
+    })
+
       setupEventListeners(tableInstanceRef.current!);
     });
 
@@ -234,9 +244,7 @@ const MemoryTable = () => {
   // Animate the memory cell when clickInLine changes.
   useEffect(() =>  {
     if(!isCreatedMemoryTable || clickInLine === -1) return;
-    console.log("CLICKKK EN LINEAAAA",clickInLine);
     const position = dataMemoryTable?.addressLine.indexOf(clickInLine);
-    console.log("POSITION ES",position, dataMemoryTable?.addressLine  );
     if (position !== -1) {
       if(tableInstanceRef.current && (position || position === 0)) animateRow(tableInstanceRef.current, position*4);
       setClickInLine(-1);

@@ -86,6 +86,13 @@ function dispatch(
     }
     case 'react': {
       switch (data.event) {
+        case 'clickInInstruction': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event, value: data.line }
+          });
+          break;
+        }
         case 'memorySizeChanged': {
           UIManager.getInstance()._sendMessageToExtension({
             command: 'event',
