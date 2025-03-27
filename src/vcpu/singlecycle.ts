@@ -130,8 +130,6 @@ class DataMemory {
         this.memory[address] = w;
       });
     });
-    console.table(this.memory);
-    console.log(`Program uploaded. initial sp ${this.spInitialAddress} `);
   }
 
   public lastAddress() {
@@ -799,12 +797,21 @@ export class SCCPU {
   }
 
   public replaceDataMemory(newMemory: any[]): void {
+    if (!newMemory) {
+      return;
+  }
     const flatMemory: string[] = [];
     newMemory.forEach((group) => {
       flatMemory.push(group.value0, group.value1, group.value2, group.value3);
     });
 
+
     (this.dataMemory as any).memory = flatMemory;
+
+  }
+
+  public replaceRegisters(newRegisters: string[]): void {
+    (this.registers as any).registers = newRegisters;
   }
 
   public printInfo() {

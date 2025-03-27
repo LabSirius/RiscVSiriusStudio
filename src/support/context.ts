@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { commands, Disposable, ExtensionContext, Webview, window } from "vscode";
+import { commands, Disposable, ExtensionContext, Webview, window, TextEditor  } from "vscode";
 import {
   activateMessageListenerForRegistersView,
   getHtmlForRegistersWebview,
-} from "../panels/MainPanel";
-import { RiscCardPanel } from "../panels/RiscCardPanel";
+} from "../tabs/MainTab";
+import { RiscCardPanel } from "../tabs/RiscCardTab";
 import { RVDocument } from "../rvDocument";
 import { EncoderDecorator } from "../encoderDecorator";
 import { ConfigurationManager } from "./configurationManager";
@@ -26,9 +26,9 @@ export class RVContext {
   }
   // Reference to the decorator
   private _encoderDecorator: EncoderDecorator | undefined;
-  get encoderDecorator(): EncoderDecorator {
+  get encoderDecorator(): EncoderDecorator  | undefined {
     if (!this._encoderDecorator) {
-      throw new Error("Encoder decorator is not initialized");
+      return undefined;
     }
     return this._encoderDecorator;
   }
@@ -52,7 +52,7 @@ export class RVContext {
     }
     return this._simulator;
   }
-
+  
   static create(context: ExtensionContext): RVContext {
     if (!RVContext.#instance) {
       RVContext.#instance = new RVContext(context);
@@ -143,7 +143,13 @@ export class RVContext {
         if (!this.mainWebviewView) {
           throw new Error("Main webview is not available");
         }
-        this._simulator.step();
+        // If not found other instructions, stop
+        try{
+          this._simulator.step();
+        }catch{
+          this._simulator.stop();
+        }
+       
       })
     );
     //  Simulate-stop
@@ -156,11 +162,6 @@ export class RVContext {
           this._isSimulating = false;
           this._simulator = undefined;
           const editor = window.activeTextEditor;
-          if (editor) {
-            this._encoderDecorator?.clearDecorations(editor);
-            this._encoderDecorator = undefined;
-          }
-          commands.executeCommand("setContext", "ext.isSimulating", false);
         }
       })
     );
@@ -205,6 +206,8 @@ export class RVContext {
     console.log("Context constructor done");
   }
 
+  
+
   private onMainViewVisible() {
     if (this._mainViewIsFirstTimeVisible) {
       console.log("Main view is visible for the first time", this.mainWebviewView);
@@ -221,7 +224,7 @@ export class RVContext {
     const editor = window.activeTextEditor;
     if (editor) {
       const document = editor.document;
-      if (document.languageId === "riscvasm") {
+      if (document.languageId === "riscvasm" ) {
         this._currentDocument = new RVDocument(editor, this);
         this._currentDocument.buildAndDecorate(this);
       }
@@ -231,13 +234,15 @@ export class RVContext {
   private simulateProgram(rvDoc: RVDocument) {
     console.log("Simulating program");
     if (!rvDoc.ir) {
-      throw new Error("No valid IR found");
+      return;
     }
     const settings: SimulationParameters = {
-      memorySize: 128,
+      memorySize: 40,
     };
     // From now on the editor must be read only
     const simulator: Simulator = new TextSimulator(settings, rvDoc, this);
+
+   
 
     // This tells vscode that the extension is simulating and in turn some
     // commands get enabled.
@@ -249,19 +254,21 @@ export class RVContext {
 
   private memorySizeChanged(newSize: number) {
     this.simulator.resizeMemory(newSize);
-    /**
-     * TODO: This should only be called when the user wants sp to actually
-     * represent the stack pointer.
-     */
-    this.mainWebviewView.postMessage({
-      operation: "setRegister",
-      register: "x2",
-      value: intToBinary(newSize),
-    });
+  }
+
+  private registersChanged(newRegisters: string[]) {
+    this.simulator.replaceRegisters(newRegisters);
   }
 
   private memoryChanged(newMemory: []) {
     this.simulator.replaceMemory(newMemory);
+  }
+
+  public resetEncoderDecorator(editor: TextEditor): void {
+    if (this._encoderDecorator) {
+      this._encoderDecorator.clearDecorations(editor);
+      this._encoderDecorator = undefined;
+    }
   }
 
   /**
@@ -270,8 +277,10 @@ export class RVContext {
   public dispatchMainViewEvent(message: any) {
     switch (message.event) {
       case "memorySizeChanged":
-        console.log(`%c[Mainview}]\n`, "color:yellow", message);
         this.memorySizeChanged(message.value);
+        break;
+      case 'registersChanged':
+        this.registersChanged(message.value);
         break;
       case "memoryChanged":
         this.memoryChanged(message.value);
@@ -284,4 +293,8 @@ export class RVContext {
         break;
     }
   }
+
+  
 }
+
+
