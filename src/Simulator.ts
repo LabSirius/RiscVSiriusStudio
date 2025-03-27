@@ -236,6 +236,7 @@ export class TextSimulator extends Simulator {
       commands.executeCommand(`rv-simulator.riscv.focus`);
       return;
     } else {
+      const adressLine = this.rvDoc.ir?.instructions.map(instr => instr.location.start.line) || [];
       // Upload memory to webview
       mainView.postMessage({
         from: "extension",
@@ -243,7 +244,8 @@ export class TextSimulator extends Simulator {
         payload: {
           memory: this.cpu.getDataMemory().getMemory(),
           codeSize: this.cpu.getDataMemory().codeSize,
-          symbols: this.rvDoc.ir.symbols,
+          addressLine: adressLine,
+          symbols: this.rvDoc.ir?.symbols,
         }
       });
       this.makeEditorReadOnly();

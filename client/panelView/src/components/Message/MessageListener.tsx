@@ -8,7 +8,7 @@ import { useError } from "@/context/ErrorContext";
 const MessageListener = () => {
   const { setOperation, isFirstStep, setIsFirstStep } = useOperation();
   const { setSection } = useSection();
-  const { setDataMemoryTable, setSizeMemory, setCodeSize, setNewPc, setWriteInMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
+  const { setDataMemoryTable, setSizeMemory, setNewPc, setWriteInMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
   const { setWriteInRegister } = useRegistersTable();
   const { setError} = useError();
 
@@ -24,7 +24,6 @@ const MessageListener = () => {
             setSection("settings");
             setDataMemoryTable(message.payload);
             setSizeMemory(message.payload.memory.length - message.payload.codeSize);
-            setCodeSize(message.payload.codeSize);
             break;
           case "step":
             setNewPc(message.pc);
@@ -58,14 +57,15 @@ const MessageListener = () => {
     setOperation,
     setDataMemoryTable,
     setSizeMemory,
-    setCodeSize,
     setNewPc,
     setWriteInMemory,
     setReadInMemory,
     setWriteInRegister,
     setSection,
     isFirstStep,
-    setIsFirstStep
+    setIsFirstStep,
+    setError,
+    setIsCreatedMemoryTable,
   ]);
 
   return null;

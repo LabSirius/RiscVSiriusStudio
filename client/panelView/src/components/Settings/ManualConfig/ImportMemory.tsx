@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 
 const ImportMemory = () => {
-  const { setImportMemory, codeSize, sizeMemory } = useMemoryTable();
+  const { setImportMemory, dataMemoryTable, sizeMemory } = useMemoryTable();
   const { setError } = useError();
   const fileInputMemoryRef = useRef<HTMLInputElement>(null);
 
@@ -39,14 +39,15 @@ const ImportMemory = () => {
         }
         const addressStr = parts[0].trim();
         const address = parseInt(addressStr, 16);
-        if (address < codeSize) {
+        if(!dataMemoryTable) return
+        if (address < dataMemoryTable.codeSize) {
           setError({
             title: "Error importing memory",
             description: `Cannot import data into the instruction reserved area. Invalid address: ${addressStr.toUpperCase()}`,
           });
           return;
         }
-        if (address > sizeMemory + (codeSize - 4)) {
+        if (address > sizeMemory + (dataMemoryTable.codeSize - 4)) {
             setError({
               title: "Error importing memory",
               description: `Memory overflow: address ${addressStr} exceeds the allowed limit)`,
