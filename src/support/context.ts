@@ -252,6 +252,10 @@ export class RVContext {
     simulator.start();
   }
 
+  private animateLine(line: number) {
+      this.simulator.animateLine(line);
+  }
+
   private memorySizeChanged(newSize: number) {
     this.simulator.resizeMemory(newSize);
   }
@@ -277,7 +281,7 @@ export class RVContext {
   public dispatchMainViewEvent(message: any) {
     switch (message.event) {
       case "clickInInstruction":
-        console.log("LINE: ", message.value);
+        this.animateLine(message.value);
       break;
       case "memorySizeChanged":
         this.memorySizeChanged(message.value);

@@ -129,6 +129,10 @@ export class Simulator {
     // do nothing. Must be implemented by the subclass.
   }
 
+  public animateLine(line: number) {
+    // do nothing. Must be implemented by the subclass.
+  }
+
   public resizeMemory(newSize: number): void {
     if (this.configured) {
       throw new Error("Cannot resize memory after configuration");
