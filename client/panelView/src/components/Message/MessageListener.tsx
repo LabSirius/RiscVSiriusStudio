@@ -33,6 +33,9 @@ const MessageListener = () => {
               setIsFirstStep(true);
             }
             break;
+          case "clickInLine":
+            console.log("DIOO CLICK EN", message.lineNumber);
+            break;
           case "setRegister":
             setWriteInRegister({ registerName: message.register, value: message.value });
             break;

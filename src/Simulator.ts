@@ -208,6 +208,7 @@ export class Simulator {
 export class TextSimulator extends Simulator {
   // Line highlighting
   private currentHighlight: TextEditorDecorationType | undefined;
+  private selectionListenerDisposable: any;
 
   constructor(
     settings: SimulationParameters,
@@ -226,7 +227,7 @@ export class TextSimulator extends Simulator {
     commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
   }
 
-  public start(): void {
+  public override start(): void {
     const mainView = this.context.mainWebviewView;
     if (!mainView) {
       // If the view is not available this will trigger its construction. The
@@ -236,6 +237,7 @@ export class TextSimulator extends Simulator {
       commands.executeCommand(`rv-simulator.riscv.focus`);
       return;
     } else {
+      this.clickListener();
       const adressLine = this.rvDoc.ir?.instructions.map(instr => instr.location.start.line) || [];
       // Upload memory to webview
       mainView.postMessage({
@@ -271,7 +273,7 @@ export class TextSimulator extends Simulator {
     }
   }
 
-  public step(): void {
+  public override step(): void {
     console.log(`%c[Simulator] step\n`, "color:pink");
     super.step();
 
@@ -287,7 +289,33 @@ export class TextSimulator extends Simulator {
     }
   }
 
-  public stop(): void {
+  private clickListener() {
+    if (this.selectionListenerDisposable) {
+      return;
+    }
+    this.selectionListenerDisposable = window.onDidChangeTextEditorSelection(event => {
+      if (!event.selections || event.selections.length === 0) {
+        return;
+      }
+      const lineNumber = event.selections[0]?.active.line;
+      const mainView = this.context.mainWebviewView;
+      if (!mainView) {
+        commands.executeCommand(`rv-simulator.riscv.focus`);
+        return;
+      }
+      if (lineNumber === undefined) {
+        return;
+      }
+      mainView.postMessage({
+        from: "extension",
+        operation: "clickInLine",
+        lineNumber: lineNumber+1,
+      });
+    });
+  }
+
+
+  public override stop(): void {
     super.stop();
     if (this.currentHighlight) {
       this.currentHighlight.dispose();
@@ -310,7 +338,7 @@ export class TextSimulator extends Simulator {
     }
   }
 
-  public notifyRegisterWrite(register: string, value: string) {
+  public override notifyRegisterWrite(register: string, value: string) {
     // Warn the user if the register has a special meaning and the new value is
     // not valid
     // debugger;
@@ -334,7 +362,7 @@ export class TextSimulator extends Simulator {
     });
   }
 
-  public notifyMemoryRead(address: number, length: number) {
+  public override notifyMemoryRead(address: number, length: number) {
     this.sendToMainView({
       from: "extension",
       operation: "readMemory",
@@ -343,7 +371,7 @@ export class TextSimulator extends Simulator {
     });
   }
 
-  public notifyMemoryWrite(address: number, value: string, length: number) {
+  public override notifyMemoryWrite(address: number, value: string, length: number) {
     this.sendToMainView({
       from: "extension",
       operation: "writeMemory",
