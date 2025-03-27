@@ -19,6 +19,7 @@ const MainSection = () => {
   const { operation } = useOperation();
   const { section } = useSection();
   const [showScrollIcon, setShowScrollIcon] = useState(false);
+  const BASE_WIDTH = 1296;
 
   useEffect(() => {
     if (document.body.classList.contains('vscode-light')) {
@@ -29,13 +30,20 @@ const MainSection = () => {
   }, [setTheme]);
 
   useEffect(() => {
-    if (operation === "uploadMemory" || operation === "step") {
-      setShowScrollIcon(true);
-      const timer = setTimeout(() => {
-        setShowScrollIcon(false);
-      }, 1000); 
-      return () => clearTimeout(timer);
+    const handleResize = () => {
+
+      if (window.innerWidth < BASE_WIDTH &&  (operation === "uploadMemory" || operation === "step")) {
+        setShowScrollIcon(true);
+        const timer = setTimeout(() => {
+          setShowScrollIcon(false);
+        }, 1000); 
+        return () => clearTimeout(timer);
+      }
     }
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [operation]);
 
   return (
