@@ -300,16 +300,14 @@ export class TextSimulator extends Simulator {
       return;
     }
   
-    // Creamos una decoración con el estilo que quieras (por ejemplo, fondo semitransparente)
     const blinkDecoration = window.createTextEditorDecorationType({
       isWholeLine: true,
-      backgroundColor: 'rgba(255, 255, 0, 0.3)'  // Ejemplo: amarillo claro
+      backgroundColor: 'rgba(58, 108, 115, 0.3)'  
     });
   
     const range = editor.document.lineAt(line-1).range;
     let show = true;
   
-    // Alterna la decoración cada 250ms
     const intervalId = setInterval(() => {
       if (show) {
         editor.setDecorations(blinkDecoration, [range]);
