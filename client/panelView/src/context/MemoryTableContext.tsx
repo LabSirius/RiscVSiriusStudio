@@ -1,11 +1,17 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
+
+interface AddressLine{
+  line: number;
+  jump: number;
+}
+
 interface MemoryData {
   memory: string[];            
   codeSize: number;        
  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   symbols: Record<string, any>;
-  addressLine : number[];
+  addressLine : AddressLine[];
   
 }
 interface MemoryRow {

@@ -16,6 +16,16 @@ export function binaryToInt(binary: string): string {
   return (~~parseInt(binary, 2)).toString();
 }
 
+
+export function binaryToIntTwoComplement(binary: string): string {
+  const bits = binary.length;
+  const num = parseInt(binary, 2);
+  if (binary[0] === '1') {
+    return (num - (1 << bits)).toString();
+  }
+  return num.toString();
+}
+
 export function intToBinary(sgnInteger: number): string {
   const result = (sgnInteger >>> 0).toString(2);
   if (sgnInteger < 0) {

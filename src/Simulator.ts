@@ -243,7 +243,11 @@ export class TextSimulator extends Simulator {
       return;
     } else {
       this.clickListener();
-      const adressLine = this.rvDoc.ir?.instructions.map(instr => instr.location.start.line) || [];
+      const addressLine = this.rvDoc.ir?.instructions.map(instr => {
+        const line = instr.location.start.line;
+        const jump = branchesOrJumps(instr.type, instr.opcode) ? instr.encoding.imm13 : null;
+        return { line, jump };
+      }) || [];
       // Upload memory to webview
       mainView.postMessage({
         from: "extension",
@@ -251,7 +255,7 @@ export class TextSimulator extends Simulator {
         payload: {
           memory: this.cpu.getDataMemory().getMemory(),
           codeSize: this.cpu.getDataMemory().codeSize,
-          addressLine: adressLine,
+          addressLine,
           symbols: this.rvDoc.ir?.symbols,
         }
       });

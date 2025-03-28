@@ -16,11 +16,13 @@ import {
   writeInMemoryCell,
   animateMemoryCell,
   animateRow,
+  animateArrowBetweenCells
 } from "@/utils/tables/handlersMemory";
 import {
   intTo32BitBinary,
   intToHex,
   binaryToInt,
+  binaryToIntTwoComplement,
   hexToInt
 } from "@/utils/tables/handlerConversions";
 import { getColumnMemoryDefinitions } from "@/utils/tables/definitions/definitionsColumns";
@@ -107,17 +109,20 @@ const MemoryTable = () => {
       }
 
     tableInstanceRef.current?.on("cellClick", (_, cell) => {
-      if (cell.getField() === "address") {
-
-        const address = cell.getValue();
-        const intAdress = Number(hexToInt(address))/4; 
-        if(dataMemoryTable?.codeSize){
-          if(intAdress*4 < dataMemoryTable?.codeSize){
-              sendMessage({ event: "clickInInstruction", line: dataMemoryTable?.addressLine[intAdress]});
+        if (cell.getField() === "address") {
+          const address = cell.getValue();
+          const intAdress = Number(hexToInt(address)) / 4; 
+          if(dataMemoryTable?.codeSize){
+            if(intAdress * 4 < dataMemoryTable?.codeSize){
+              const instruction = dataMemoryTable?.addressLine[intAdress];
+              if (instruction) {
+                sendMessage({ event: "clickInInstruction", line: instruction.line });
+              }
+            }
           }
         }
-      }
-    })
+      });
+      
 
       setupEventListeners(tableInstanceRef.current!);
     });
@@ -258,9 +263,19 @@ const MemoryTable = () => {
   // Animate the memory cell when clickInLine changes.
   useEffect(() =>  {
     if(!isCreatedMemoryTable || clickInLine === -1) return;
-    const position = dataMemoryTable?.addressLine.indexOf(clickInLine);
+    const position = dataMemoryTable?.addressLine.findIndex(item => item.line === clickInLine);
     if (position !== -1) {
-      if(tableInstanceRef.current && (position || position === 0)) animateRow(tableInstanceRef.current, position*4);
+      if(tableInstanceRef.current && (position || position === 0)){ 
+        animateRow(tableInstanceRef.current, position*4);
+        if(dataMemoryTable?.addressLine[position].jump){
+          const intJump = Number(binaryToIntTwoComplement(String(dataMemoryTable?.addressLine[position].jump)));
+          const jumpTo = intJump + position*4;
+          if (tableInstanceRef.current) {
+            animateArrowBetweenCells(tableInstanceRef.current, position * 4, jumpTo);
+          }
+          
+        }
+      }
       setClickInLine(-1);
     } 
 

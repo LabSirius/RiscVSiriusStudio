@@ -385,7 +385,6 @@ export const animateRow = (
   address: number,
 
 ): void => {
-  console.log("ANIMANDO FILA", address);
   const hexAddress = address.toString(16).toUpperCase();
   const row = tableInstance.getRow(hexAddress);
   if (!row) return;
@@ -399,3 +398,55 @@ export const animateRow = (
 
   tableInstance.scrollToRow(hexAddress, 'center', true);
 };
+
+
+export function animateArrowBetweenCells(
+  table: Tabulator,
+  currentAddress: number,
+  targetAddress: number
+): void {
+  const currentHex = intToHex(currentAddress).toUpperCase();
+  const targetHex = intToHex(targetAddress).toUpperCase();
+
+  const currentRow = table.getRow(currentHex);
+  const targetRow = table.getRow(targetHex);
+  if (!currentRow || !targetRow) return;
+
+  const currentCellEl = currentRow.getCell("address")?.getElement();
+  const targetCellEl = targetRow.getCell("address")?.getElement();
+  if (!currentCellEl || !targetCellEl) return;
+
+  const fromRect = currentCellEl.getBoundingClientRect();
+  const toRect = targetCellEl.getBoundingClientRect();
+  const startX = fromRect.left + fromRect.width / 2;
+  const startY = fromRect.top + fromRect.height / 2;
+  const endX = toRect.left + toRect.width / 2;
+  const endY = toRect.top + toRect.height / 2;
+
+  const deltaX = endX - startX;
+  const deltaY = endY - startY;
+  const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+  const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+
+  const arrow = document.createElement('div');
+  arrow.classList.add('animated-arrow');
+  document.body.appendChild(arrow);
+
+  arrow.style.position = 'absolute';
+  arrow.style.left = `${startX}px`;
+  arrow.style.top = `${startY}px`;
+  arrow.style.width = '0px'; 
+  arrow.style.height = '2px';
+  arrow.style.backgroundColor = 'blue'; 
+  arrow.style.transformOrigin = '0 0';
+  arrow.style.transform = `rotate(${angle}deg)`;
+  arrow.style.transition = 'width 1s ease-out';
+
+  requestAnimationFrame(() => {
+    arrow.style.width = `${distance}px`;
+  });
+
+  setTimeout(() => {
+    arrow.remove();
+  }, 1000);
+}
