@@ -117,6 +117,14 @@ const MemoryTable = () => {
               const instruction = dataMemoryTable?.addressLine[intAdress];
               if (instruction) {
                 sendMessage({ event: "clickInInstruction", line: instruction.line });
+                if(dataMemoryTable?.addressLine[intAdress].jump){
+                  const intJump = Number(binaryToIntTwoComplement(String(dataMemoryTable?.addressLine[intAdress].jump)));
+                  const jumpTo = intJump + intAdress*4;
+                  if (tableInstanceRef.current) {
+                    animateArrowBetweenCells(tableInstanceRef.current, intAdress * 4, jumpTo);
+                  }
+                  
+                }
               }
             }
           }

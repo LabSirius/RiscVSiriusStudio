@@ -47,6 +47,7 @@ const MessageListener = () => {
             break;
           case "stop":
             setError({ title: "Info", description: "The program has ended." });
+            
             break;
           default:
             break;
