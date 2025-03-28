@@ -74,6 +74,17 @@ const MemoryTable = () => {
       index: "address",
       data: [],
       columns: getColumnMemoryDefinitions(isFirstStepRef),
+      rowFormatter: function(row) {
+        const data = row.getData();
+        if(!dataMemoryTable) return;
+        const spAddress = intToHex(dataMemoryTable?.memory.length - 4).toUpperCase();
+        if (data.isCode && data.address !== spAddress) {
+          row.getElement().style.backgroundColor ='#D1E3E7';
+          row.getElement().style.color =  '#000';
+        } else {
+          row.getElement().style.backgroundColor = '';
+        }
+      },
       initialSort: [{ column: "address", dir: "desc" }],
     });
 
@@ -88,7 +99,6 @@ const MemoryTable = () => {
           dataMemoryTable.codeSize,
           dataMemoryTable.symbols,
           0,
-          theme,
           () => {
             setSp(intToHex(dataMemoryTable.memory.length - 4));
             setNewPc(0);
@@ -143,7 +153,6 @@ const MemoryTable = () => {
         dataMemoryTable.codeSize,
         dataMemoryTable.symbols,
         0,
-        theme,
         () => {
           setNewPc(0);
           setSp(intToHex(newTotalSize - 4));

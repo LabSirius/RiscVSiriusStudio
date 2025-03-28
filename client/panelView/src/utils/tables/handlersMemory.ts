@@ -18,7 +18,6 @@ export const uploadMemory = (
   newCodeSize: number,
   newSymbols: Record<string, SymbolData>,
   pc: number,
-  theme: string,
   onComplete?: () => void
 ): void => {
   const isInitialLoad = table.getData().length === 0;
@@ -95,20 +94,10 @@ export const uploadMemory = (
     }
   });
 
-  const spAddress = intToHex(newMemory.length - 4).toUpperCase();
 
   // Apply row colors and hide empty info cells
   table.getRows().forEach(row => {
     const data = row.getData();
-    if (data.isCode && data.address !== spAddress) {
-      if(theme === 'light') row.getElement().style.backgroundColor = '#D1E3E7';
-      else row.getElement().style.backgroundColor = '#3B4049';    
-     
-    } else {
-      row.getElement().style.backgroundColor = '';
-    }
-    
-    
     if (!data.info) {
       row.getCell("info").getElement().innerHTML = '<div style="opacity:0">\u00A0</div>';
     }
