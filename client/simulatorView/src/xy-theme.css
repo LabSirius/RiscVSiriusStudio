@@ -1,4 +1,3 @@
-/* xyflow theme files. Delete these to start from our base */
  
 .react-flow {
     /* Custom Variables */
@@ -76,6 +75,7 @@
 .react-flow__edge.selectable:hover .react-flow__edge-path,
 .react-flow__edge.selectable.selected .react-flow__edge-path {
     stroke: var(--xy-theme-edge-hover);
+    z-index: 1000000  !important;
 }
  
 .react-flow__handle {
@@ -106,3 +106,13 @@
     width: 5px;
     height: 5px;
 }
+
+.react-flow__edge path {
+    stroke: black !important; /* Asegura que la línea sea visible */
+    stroke-width: 2px !important; /* Ajusta el grosor */
+  }
+
+  .react-flow__edges {
+    z-index: 2 !important;
+  }
+  
