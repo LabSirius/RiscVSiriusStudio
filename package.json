@@ -19,6 +19,7 @@
         "icon": "$(chip)",
         "when": "!ext.isSimulating"
       },
+      
       {
         "command": "rv-simulator.simulateStep",
         "title": "RISCV simulator: step simulation",
@@ -153,6 +154,11 @@
         },
         {
           "command": "rv-simulator.simulate",
+          "group": "navigation",
+          "when": "editorLangId == riscvasm && !ext.isSimulating"
+        },
+        {
+          "command": "rv-simulator.graphicsimulate",
           "group": "navigation",
           "when": "editorLangId == riscvasm && !ext.isSimulating"
         },

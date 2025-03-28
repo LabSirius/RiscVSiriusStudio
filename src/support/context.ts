@@ -6,6 +6,7 @@ import {
   getHtmlForRegistersWebview,
 } from "../tabs/MainTab";
 import { RiscCardPanel } from "../tabs/RiscCardTab";
+import { SimulatorPanel } from "../tabs/SimulatorPanelTab";
 import { RVDocument } from "../rvDocument";
 import { EncoderDecorator } from "../encoderDecorator";
 import { ConfigurationManager } from "./configurationManager";
@@ -173,6 +174,13 @@ export class RVContext {
           this._encoderDecorator = new EncoderDecorator();
         }
         this.buildCurrentDocument();
+      })
+    );
+
+    //  Graphicsimulate
+    this.disposables.push(
+      commands.registerCommand("rv-simulator.graphicsimulate", () => {
+        SimulatorPanel.simulatorPanel(this.extensionContext.extensionUri);
       })
     );
 
