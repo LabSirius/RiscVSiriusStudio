@@ -19,7 +19,12 @@
         "icon": "$(chip)",
         "when": "!ext.isSimulating"
       },
-      
+      {
+        "command": "rv-simulator.graphicsimulate",
+        "title": "RISCV simulator: simulate program execution (graphics)",
+        "icon": "$(eye)",
+        "when": "!ext.isSimulating"
+      },
       {
         "command": "rv-simulator.simulateStep",
         "title": "RISCV simulator: step simulation",
