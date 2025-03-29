@@ -13,6 +13,9 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import PCSVG from './svgs/PCSVG';
+import InstructionMemorySvg from './svgs/InstructionMemorySvg'; 
+
+import AnimatedSVGEdge from './animate/AnimatedSVGEdge';
 
 const initialNodes: Node[] = [
   // SECTIONS (STATIC)
@@ -31,24 +34,11 @@ const initialNodes: Node[] = [
     },
   },
 
-  //  CHILD NODES SECTION 1
-  {
-    id: '1a',
-    data: { label: 'Node 1-A' },
-    position: { x: 30, y: 50 },
-    parentId: 'section-1',
-    extent: 'parent',
-    style: {
-      width: 120,
-      height: 60,
-      fontSize: '16px',
-      padding: '10px',
-    },
-  },
+  // CHILD NODES SECTION 1
 
   {
     id: 'pcsvg',
-    type: 'pcsvg', 
+    type: 'pcsvg',
     data: { label: 'PCSVG' },
     position: { x: 30, y: 150 },
     parentId: 'section-1',
@@ -64,8 +54,28 @@ const initialNodes: Node[] = [
     },
   },
 
-  //OTHER SECTIONS (STATIC)
+  
 
+  // NODE: Instruction Memory SVG in Section 1
+  {
+    id: 'instructionMemory',
+    type: 'instructionMemorySvg', 
+    data: { label: 'Instruction Memory' },
+    position: { x: 30, y: 320 },
+    parentId: 'section-1',
+    extent: 'parent',
+    style: {
+      width: 230,
+      height: 260,
+      backgroundColor: 'transparent',
+      border: 'none',
+      borderRadius: 0,
+      padding: 0,
+      boxShadow: 'none',
+    },
+  },
+
+  // OTHER SECTIONS (STATIC)
   {
     id: 'section-2',
     type: 'group',
@@ -80,19 +90,7 @@ const initialNodes: Node[] = [
       borderRadius: 8,
     },
   },
-  {
-    id: '2a',
-    data: { label: 'Node 2-A' },
-    position: { x: 30, y: 50 },
-    parentId: 'section-2',
-    extent: 'parent',
-    style: {
-      width: 120,
-      height: 60,
-      fontSize: '16px',
-      padding: '10px',
-    },
-  },
+  
 
   {
     id: 'section-3',
@@ -108,20 +106,7 @@ const initialNodes: Node[] = [
       borderRadius: 8,
     },
   },
-  {
-    id: '3a',
-    data: { label: 'Node 3-A' },
-    position: { x: 30, y: 50 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 120,
-      height: 60,
-      fontSize: '16px',
-      padding: '10px',
-    },
-  },
-
+ 
   {
     id: 'section-4',
     type: 'group',
@@ -136,53 +121,37 @@ const initialNodes: Node[] = [
       borderRadius: 8,
     },
   },
-  {
-    id: '4a',
-    data: { label: 'Node 4-A' },
-    position: { x: 30, y: 50 },
-    parentId: 'section-4',
-    extent: 'parent',
-    style: {
-      width: 120,
-      height: 60,
-      fontSize: '16px',
-      padding: '10px',
-    },
-  },
-
-  // OUTSIDE NODE (STATIC)
-
-  {
-    id: 'outside-node',
-    data: { label: 'Outside Node' },
-    position: { x: 548 * 4 + 100, y: 120 },
-  },
+ 
 ];
 
 const initialEdges: Edge[] = [
-
   // CONNECTIONS
-  { id: 'e1a-2a', source: '1a', target: '2a', animated: true },
-  { id: 'e2a-3a', source: '2a', target: '3a', animated: true },
-  { id: 'e3a-4a', source: '3a', target: '4a', animated: true },
-  { id: 'e4a-outside', source: '4a', target: 'outside-node', animated: true },
+  { id: 'pc-to-memory',  source: 'pcsvg', target: 'instructionMemory', type: 'animatedSvg', animated: true,
+  },
 ];
 
 const nodeTypes = {
   pcsvg: PCSVG,
+  instructionMemorySvg: InstructionMemorySvg, 
+};
+
+const edgeTypes = {
+  animatedSvg: AnimatedSVGEdge,
 };
 
 export default function Sections() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = useCallback((connection: Connection) => {
-    setEdges((eds) => addEdge(connection, eds));
-  }, [setEdges]);
+  const onConnect = useCallback(
+    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
+    [setEdges]
+  );
 
   return (
     <ReactFlow
       nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
