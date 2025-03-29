@@ -24,6 +24,7 @@ import InstructionMemorySvg from '../svgs/section1/InstructionMemorySvg';
 
 // Section 2
 import RegistersUnitSvg from '../svgs/section2/RegistersUnitSvg';
+import ControlUnitSvg from '../svgs/section2/ControlUnitSvg';
 
 //pivots
 import PcPivotAdder4 from '../svgs/pivots/PcPivotAdder4';
@@ -45,6 +46,7 @@ const nodeTypes = {
 
   //Section 2
   registerUnitSvg: RegistersUnitSvg,
+  controlUnitSvg: ControlUnitSvg,
 
   //Pivots
   pcPivotAdder4: PcPivotAdder4,

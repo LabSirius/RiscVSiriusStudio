@@ -151,6 +151,26 @@ export const initialNodes: Node[] = [
 
      // CHILD NODES SECTION 1
     //NODE Registers Unit
+
+    {
+      id: 'controlUnit',
+      type: 'controlUnitSvg',
+      data: { label: 'Control Unit' },
+      position: { x: 280, y: 285 },
+      parentId: 'section-2',
+      extent: 'parent',
+      style: {
+        width: 170,
+        height: 220,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
+
     {
       id: 'registersUnit',
       type: 'registerUnitSvg',
