@@ -35,7 +35,7 @@ export const initialNodes: Node[] = [
       id: 'pcsvg',
       type: 'pcsvg',
       data: { label: 'PCSVG' },
-      position: { x: 30, y: 150 },
+      position: { x: 30, y: 700 },
       parentId: 'section-1',
       extent: 'parent',
       style: {
@@ -56,7 +56,7 @@ export const initialNodes: Node[] = [
       id: 'instructionMemory',
       type: 'instructionMemorySvg', 
       data: { label: 'Instruction Memory' },
-      position: { x: 30, y: 320 },
+      position: { x: 300, y: 670 },
       parentId: 'section-1',
       extent: 'parent',
       style: {
