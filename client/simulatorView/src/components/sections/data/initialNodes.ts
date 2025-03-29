@@ -39,8 +39,8 @@ export const initialNodes: Node[] = [
       parentId: 'section-1',
       extent: 'parent',
       style: {
-        width: 120,
-        height: 150,
+        width: 90,
+        height: 120,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,
