@@ -30,7 +30,6 @@ export const initialNodes: Node[] = [
 
 
     //NODE PC
-  
     {
       id: 'pc',
       type: 'pcSvg',
@@ -68,7 +67,10 @@ export const initialNodes: Node[] = [
         boxShadow: 'none',
       },
     },
+  
 
+
+    //NODE Four
     {
       id: 'four',
       type: 'fourSvg',
@@ -88,8 +90,6 @@ export const initialNodes: Node[] = [
     },
   
   
-    
-  
     // NODE Instruction Memory
     {
       id: 'instructionMemory',
@@ -108,6 +108,32 @@ export const initialNodes: Node[] = [
         boxShadow: 'none',
       },
     },
+
+    
+
+    //PIVOTS S1
+
+    //NODE PC-PIVOT-ADDER4
+    {
+      id: 'pcPivotAdder4',
+      type: 'pcPivotAdder4',
+      data: { label: '' },
+      position: { x: 200, y: 280 },
+      parentId: 'section-1',
+      extent: 'parent',
+      style: {
+        width: 0.5,
+        height: 0.5,
+        opacity: 0,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
+
   
     // OTHER SECTIONS (STATIC)
     {

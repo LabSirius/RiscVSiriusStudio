@@ -19,7 +19,11 @@ import Adder4SVG from '../svgs/section1/Adder4Svg';
 import _4Svg from '../svgs/section1/4Svg';
 import InstructionMemorySvg from '../svgs/section1/InstructionMemorySvg'; 
 
+//pivots
+import PcPivotAdder4 from '../svgs/pivots/PcPivotAdder4';
+
 import AnimatedSVGEdge from '../animate/AnimatedSVGEdge';
+
 
 
 
@@ -28,6 +32,9 @@ const nodeTypes = {
   adder4Svg: Adder4SVG,
   instructionMemorySvg: InstructionMemorySvg, 
   fourSvg: _4Svg,
+
+  //Pivots
+  pcPivotAdder4: PcPivotAdder4,
 };
 
 const edgeTypes = {

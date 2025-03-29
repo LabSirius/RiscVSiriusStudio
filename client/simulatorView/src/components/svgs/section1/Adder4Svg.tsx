@@ -21,7 +21,7 @@ export default function Adder4SVG() {
       <Handle
         type="target"
         position={Position.Left}
-        id="pcTarget"
+        id="adder4Target"
         style={{ top: '5rem', background: '#555', width: 10, height: 10 }}
       />
 
