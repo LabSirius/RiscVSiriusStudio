@@ -120,8 +120,8 @@ export const initialNodes: Node[] = [
       parentId: 'section-1',
       extent: 'parent',
       style: {
-        width: 0.5,
-        height: 0.5,
+        width: 1,
+        height: 1,
         opacity: 0,
         backgroundColor: 'transparent',
         border: 'none',
