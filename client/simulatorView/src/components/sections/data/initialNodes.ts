@@ -33,9 +33,9 @@ export const initialNodes: Node[] = [
   
     {
       id: 'pc',
-      type: 'pcsvg',
-      data: { label: 'PCSVG' },
-      position: { x: 30, y: 700 },
+      type: 'pcSvg',
+      data: { label: 'PC' },
+      position: { x: 30, y: 710 },
       parentId: 'section-1',
       extent: 'parent',
       style: {
@@ -48,6 +48,45 @@ export const initialNodes: Node[] = [
         boxShadow: 'none',
       },
     },
+
+
+    //NODE Adder4
+    {
+      id: 'adder4',
+      type: 'adder4Svg',
+      data: { label: 'Adder 4' },
+      position: { x: 440, y: 200 },
+      parentId: 'section-1',
+      extent: 'parent',
+      style: {
+        width: 90,
+        height: 120,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
+    {
+      id: 'four',
+      type: 'fourSvg',
+      data: { label: '4' },
+      position: { x: 310, y: 170},
+      parentId: 'section-1',
+      extent: 'parent',
+      style: {
+        width: 90,
+        height: 120,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+  
   
     
   

@@ -14,14 +14,20 @@ import '@xyflow/react/dist/style.css';
 import { initialNodes } from './data/initialNodes'; // Nodes
 import { initialEdges } from './data/initialEdges'; //Conecctions between npdes
 
-import PCSVG from '../svgs/PCSVG';
-import InstructionMemorySvg from '../svgs/InstructionMemorySvg'; 
+import PCSVG from '../svgs/section1/PCSVG';
+import Adder4SVG from '../svgs/section1/Adder4Svg';
+import _4Svg from '../svgs/section1/4Svg';
+import InstructionMemorySvg from '../svgs/section1/InstructionMemorySvg'; 
 
 import AnimatedSVGEdge from '../animate/AnimatedSVGEdge';
 
+
+
 const nodeTypes = {
-  pcsvg: PCSVG,
+  pcSvg: PCSVG,
+  adder4Svg: Adder4SVG,
   instructionMemorySvg: InstructionMemorySvg, 
+  fourSvg: _4Svg,
 };
 
 const edgeTypes = {

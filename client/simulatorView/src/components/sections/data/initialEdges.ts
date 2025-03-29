@@ -14,4 +14,20 @@ export const initialEdges: Edge[] = [
     color: '#FF0072',
   },
   },
+  { id: 'pc->adder4',  source: 'pc', target: 'adder4',  targetHandle: 'pcTarget', type: 'animatedSvg', animated: true,  markerEnd:
+    {
+   type: MarkerType.ArrowClosed,
+   width: 18,
+   height: 18,
+   color: '#FF0072',
+ },
+ },
+ { id: 'four->adder4',  source: 'four', target: 'adder4', targetHandle: 'fourTarget', type: 'animatedSvg', animated: true,  markerEnd:
+  {
+ type: MarkerType.ArrowClosed,
+ width: 18,
+ height: 18,
+ color: '#FF0072',
+},
+},
 ];

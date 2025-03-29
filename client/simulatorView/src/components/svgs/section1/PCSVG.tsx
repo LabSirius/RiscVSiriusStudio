@@ -1,5 +1,5 @@
 import { Handle, Position } from '@xyflow/react';
-import LargeContainerSVG from './containers/LargeContainerSVG';
+import LargeContainerSVG from '../containers/LargeContainerSVG';
 import {Triangle} from 'lucide-react';
 
 export default function PCSVG() {

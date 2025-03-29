@@ -1,4 +1,4 @@
-import ContainerSVG from './containers/ContainerSvg';
+import ContainerSVG from '../containers/ContainerSvg';
 import { Handle , Position} from '@xyflow/react';
 
 export default function InstructionMemorySvg() {
