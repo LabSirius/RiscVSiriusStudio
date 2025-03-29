@@ -2,7 +2,7 @@ import { Handle, Position } from '@xyflow/react';
 import LargeContainerSVG from '../containers/LargeContainerSVG';
 import { Sigma } from 'lucide-react'; 
 
-export default function Adder4SVG() {
+export default function Adder4Svg() {
   return (
     <div className='relative w-full h-full'>
       <div>

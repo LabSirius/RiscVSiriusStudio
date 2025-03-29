@@ -27,8 +27,6 @@ export const initialNodes: Node[] = [
     },
   
     // CHILD NODES SECTION 1
-
-
     //NODE PC
     {
       id: 'pc',
@@ -135,7 +133,7 @@ export const initialNodes: Node[] = [
 
 
   
-    // OTHER SECTIONS (STATIC)
+    // SECTION 2
     {
       id: 'section-2',
       type: 'group',
@@ -150,7 +148,29 @@ export const initialNodes: Node[] = [
         borderRadius: 8,
       },
     },
+
+     // CHILD NODES SECTION 1
+    //NODE Registers Unit
+    {
+      id: 'registerUnit',
+      type: 'registerUnitSvg',
+      data: { label: 'Registers Unit' },
+      position: { x: 250, y: 610 },
+      parentId: 'section-2',
+      extent: 'parent',
+      style: {
+        width: 220,
+        height: 280,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
     
+
+    // OTHER SECTIONS (STATIC)
   
     {
       id: 'section-3',
