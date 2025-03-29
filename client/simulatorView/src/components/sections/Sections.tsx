@@ -32,6 +32,7 @@ import IMPivotRU from '../svgs/pivots/IMPivotRU';
 
 import AnimatedSVGEdge from '../animate/AnimatedSVGEdge';
 import ImmGeneratorSvg from '../svgs/section2/ImmGeneratosSvg';
+import ImmSrc from '../svgs/section2/ImmSRC';
 
 
 
@@ -49,6 +50,7 @@ const nodeTypes = {
   registerUnitSvg: RegistersUnitSvg,
   controlUnitSvg: ControlUnitSvg,
   immGeneratorSvg: ImmGeneratorSvg,
+  immSrc: ImmSrc,
 
   //Pivots
   pcPivotAdder4: PcPivotAdder4,

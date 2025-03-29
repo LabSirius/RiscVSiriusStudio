@@ -7,6 +7,7 @@ import { Edge, MarkerType  } from '@xyflow/react';
 import { IM_RU } from './IM_RU';
 import { IM_CU } from './IM_CU';
 import { PC_ADDR4 } from './PC_ADDR4';
+import { IM_IG } from './IM_IG';
 
 export const initialEdges: Edge[] = [
 
@@ -24,4 +25,14 @@ export const initialEdges: Edge[] = [
 
   ...IM_RU,  // Instruction Memory to Register Unit connections
   ...IM_CU, // Instruction Memory to Control Unit connections
+
+  ...IM_IG, // Instruction Memory to Immediate Generator connections
+  { id: 'immSrc->immGenerator',  source: 'immSrc', target: 'immGenerator', targetHandle: 'immSrc', type: 'smoothstep', animated: true,  markerEnd:
+    {
+      type: MarkerType.ArrowClosed,
+      width: 18,
+      height: 18,
+      color: '#FF0072',
+    },
+  },
 ];
