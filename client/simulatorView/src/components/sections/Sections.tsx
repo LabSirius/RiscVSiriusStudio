@@ -12,7 +12,7 @@ import {
 import '@xyflow/react/dist/style.css';
 
 import { initialNodes } from './data/initialNodes'; // Nodes
-import { initialEdges } from './data/initialEdges'; //Conecctions between npdes
+import { initialEdges } from './data/edges/initialEdges'; //Conecctions between npdes
 
 
 //Section 1

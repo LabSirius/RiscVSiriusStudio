@@ -7,7 +7,7 @@ export default function ControlUnitSvg() {
 
        <div className='relative w-full h-full'>
        <h2 className=" titleInElement top-[50%] left-[50%]  -translate-x-[50%] -translate-y-[50%] ">Control Unit</h2>
-        <ContainerSVG height={12}  />
+        <ContainerSVG height={14}  />
        </div>
 
        <Handle  type="target"
