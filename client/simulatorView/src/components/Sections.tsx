@@ -54,8 +54,8 @@ const initialNodes: Node[] = [
     parentId: 'section-1',
     extent: 'parent',
     style: {
-      width: 150,
-      height: 180,
+      width: 110,
+      height: 140,
       backgroundColor: 'transparent',
       border: 'none',
       borderRadius: 0,
