@@ -32,7 +32,7 @@ export const initialNodes: Node[] = [
       id: 'pc',
       type: 'pcSvg',
       data: { label: 'PC' },
-      position: { x: 30, y: 710 },
+      position: { x: 30, y: 713 },
       parentId: 'section-1',
       extent: 'parent',
       style: {
@@ -155,7 +155,7 @@ export const initialNodes: Node[] = [
       id: 'registersUnit',
       type: 'registerUnitSvg',
       data: { label: 'Registers Unit' },
-      position: { x: 280, y: 630 },
+      position: { x: 280, y: 635 },
       parentId: 'section-2',
       extent: 'parent',
       style: {

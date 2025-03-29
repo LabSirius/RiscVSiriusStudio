@@ -1,15 +1,15 @@
 import { Handle, Position } from '@xyflow/react';
-import LargeContainerSVG from '../containers/LargeContainerSVG';
+import ContainerSVG from '../ContainerSVG';
 import {Triangle} from 'lucide-react';
 
 export default function RegistersUnitSvg() {
   return (
-    <div className=''>
+    <div className='w-full'>
 
        <div className='relative w-full h-full'>
-       <h2 className=" titleInElement top-[50%] left-[45%]  -translate-x-[45%] -translate-y-[50%] ">Registers Unit</h2>
-        <LargeContainerSVG  />
-        <Triangle size={20} className='absolute left-[45%]  transform -translate-x-[45%] text-[#404040] bottom-[1.4rem] z-2 ' />
+       <h2 className=" titleInElement top-[50%] left-[50%]  -translate-x-[50%] -translate-y-[50%] ">Registers Unit</h2>
+        <ContainerSVG height={18.9}  />
+        <Triangle size={20} className='absolute left-[50%]  transform -translate-x-[50%] text-[#404040] bottom-0 z-2' />
        </div>
         
 
