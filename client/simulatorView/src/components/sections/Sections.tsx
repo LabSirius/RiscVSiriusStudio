@@ -18,7 +18,7 @@ import { initialEdges } from './data/edges/initialEdges'; //Conecctions between 
 //Section 1
 import PCSvg from '../svgs/section1/PCSVG';
 import Adder4Svg from '../svgs/section1/Adder4Svg';
-import _4Svg from '../svgs/section1/4Svg';
+import FourSvg from '../svgs/section1/FourSvg';
 import InstructionMemorySvg from '../svgs/section1/InstructionMemorySvg'; 
 
 
@@ -44,7 +44,7 @@ const nodeTypes = {
   pcSvg: PCSvg,
   adder4Svg: Adder4Svg,
   instructionMemorySvg: InstructionMemorySvg, 
-  fourSvg: _4Svg,
+  fourSvg: FourSvg,
 
   //Section 2
   registerUnitSvg: RegistersUnitSvg,

@@ -1,6 +1,6 @@
 import { Handle, Position } from '@xyflow/react';
 
-export default function _4Svg() {
+export default function FourSvg() {
   return (
     <div className=''>
 
