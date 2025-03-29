@@ -5,7 +5,7 @@ export default function InstructionMemorySvg() {
   return (
     <div style={{ position: 'relative' }}>
       <div className='relative w-full h-full'>
-       <h2 className="text-xl text-[#555555] absolute top-[15%] left-[45%] transform -translate-x-[45%] -translate-y-[15%] z-2">Instruction Memory</h2>
+       <h2 className="titleInElement top-[15%] left-[45%]  -translate-x-[45%] -translate-y-[15%]">Instruction Memory</h2>
         <ContainerSVG />
        </div>
       <Handle  type="target"

@@ -17,3 +17,7 @@ body {
   width: 100vw;
   height: 100vh;
 }
+
+.titleInElement{
+  @apply text-xl text-[#555555] absolute transform z-2;
+}

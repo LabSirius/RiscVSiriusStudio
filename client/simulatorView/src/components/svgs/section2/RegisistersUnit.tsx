@@ -7,7 +7,7 @@ export default function RegistersUnitSvg() {
     <div className=''>
 
        <div className='relative w-full h-full'>
-       <h2 className="text-xl text-[#555555] absolute top-[50%] left-[45%] transform -translate-x-[45%] -translate-y-[50%] z-2">Registers Unit</h2>
+       <h2 className=" titleInElement top-[50%] left-[45%]  -translate-x-[45%] -translate-y-[50%] ">Registers Unit</h2>
         <LargeContainerSVG  />
         <Triangle size={20} className='absolute left-[45%]  transform -translate-x-[45%] text-[#404040] bottom-[1.4rem] z-2 ' />
        </div>
