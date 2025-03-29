@@ -40,7 +40,7 @@ export const initialNodes: Node[] = [
       extent: 'parent',
       style: {
         width: 120,
-        height: 120,
+        height: 150,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,

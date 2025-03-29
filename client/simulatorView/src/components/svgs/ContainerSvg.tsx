@@ -3,8 +3,6 @@ export default function ContainerSVG() {
       <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      width="2200"
-      height="2000"
       viewBox="0 0 1650 1499.999933"
       zoomAndPan="magnify"
       preserveAspectRatio="xMidYMid meet"
