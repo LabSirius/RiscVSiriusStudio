@@ -170,6 +170,28 @@ export const initialNodes: Node[] = [
     },
     
 
+    //PIVOTS S2
+    //NODE INSTRUCTIONMEMORY-PIVOT-REGISTERSUNIT
+
+    {
+      id: 'instMemPivotRU',
+      type: 'instMemPivotRU',
+      data: { label: '' },
+      position: { x: 0, y: 830 },
+      parentId: 'section-2',
+      extent: 'parent',
+      style: {
+        width: 1,
+        height: 1,
+        opacity: 0,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
     // OTHER SECTIONS (STATIC)
   
     {

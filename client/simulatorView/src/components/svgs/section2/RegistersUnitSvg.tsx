@@ -9,14 +9,26 @@ export default function RegistersUnitSvg() {
        <div className='relative w-full h-full'>
        <h2 className=" titleInElement top-[50%] left-[50%]  -translate-x-[50%] -translate-y-[50%] ">Registers Unit</h2>
         <ContainerSVG height={18.9}  />
-        <Triangle size={20} className='absolute left-[50%]  transform -translate-x-[50%] text-[#404040] bottom-0 z-2' />
+        <Triangle size={24} className='absolute left-[50%]  transform -translate-x-[50%] text-[#404040] bottom-0 z-2' />
        </div>
+
+       <Handle  type="target"
+        id="[19:15]"
+        position={Position.Left}
+        style={{ top: '2.2rem', background: '#555', width: 10, height: 10 }} />
+
+       <Handle  type="target"
+        id="[24:20]"
+        position={Position.Left}
+        style={{ top: '6.2rem', background: '#555', width: 10, height: 10 }} />
         
 
        <Handle  type="target"
-        id="instructionMemoryTarget"
+        id="[17:7]"
         position={Position.Left}
         style={{ top: '12.2rem', background: '#555', width: 10, height: 10 }} />
+
+    
     </div>
     
   );

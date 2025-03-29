@@ -23,10 +23,11 @@ import InstructionMemorySvg from '../svgs/section1/InstructionMemorySvg';
 
 
 // Section 2
-import RegistersUnitSvg from '../svgs/section2/RegisistersUnit';
+import RegistersUnitSvg from '../svgs/section2/RegistersUnitSvg';
 
 //pivots
 import PcPivotAdder4 from '../svgs/pivots/PcPivotAdder4';
+import IMPivotRU from '../svgs/pivots/IMPivotRU';
 
 import AnimatedSVGEdge from '../animate/AnimatedSVGEdge';
 
@@ -47,6 +48,7 @@ const nodeTypes = {
 
   //Pivots
   pcPivotAdder4: PcPivotAdder4,
+  instMemPivotRU: IMPivotRU,
 };
 
 const edgeTypes = {
