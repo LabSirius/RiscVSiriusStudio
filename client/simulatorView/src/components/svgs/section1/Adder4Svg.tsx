@@ -1,11 +1,12 @@
 import { Handle, Position } from '@xyflow/react';
 import LargeContainerSVG from '../containers/LargeContainerSVG';
+import { Sigma } from 'lucide-react'; 
 
 export default function Adder4SVG() {
   return (
     <div className='relative w-full h-full'>
       <div>
-        <h2 className="text-2xl text-[#4A4A4A] absolute top-[50%] left-[45%] transform -translate-x-[45%] -translate-y-[50%] z-2">4</h2>
+        <Sigma size={46} className="text-[#4A4A4A] absolute top-[50%] left-[45%] transform -translate-x-[45%] -translate-y-[50%] z-2" />
         <LargeContainerSVG />
       </div>
 
