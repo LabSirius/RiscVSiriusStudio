@@ -1,11 +1,11 @@
 //import { ThemeProvider } from "@/components/ui/theme/theme-provider";
-import MyCanvas from "./components/Canvas";
+import Sections from "./components/sections/Sections";
 
 const App = () => {
   return (
     //<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="relative flex w-full h-full overflow-hidden ">
-          <MyCanvas /> {/* here we import the canvas component */}
+      <div style={{ width: '100vw', height: '100vh' }} className="relative flex overflow-hidden ">
+          <Sections /> {/* here we import the canvas component */}
       </div>
     //</ThemeProvider>
   );
