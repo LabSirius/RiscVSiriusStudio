@@ -39,8 +39,8 @@ export const initialNodes: Node[] = [
       parentId: 'section-1',
       extent: 'parent',
       style: {
-        width: 110,
-        height: 140,
+        width: 120,
+        height: 120,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,
@@ -61,7 +61,7 @@ export const initialNodes: Node[] = [
       extent: 'parent',
       style: {
         width: 230,
-        height: 260,
+        height: 200,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,
