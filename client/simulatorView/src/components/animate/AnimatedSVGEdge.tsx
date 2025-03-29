@@ -1,4 +1,4 @@
-import { BaseEdge, EdgeProps, getBezierPath } from '@xyflow/react';
+import { BaseEdge, EdgeProps, getSmoothStepPath } from '@xyflow/react';
 
 const AnimatedSVGEdge = ({
   id,
@@ -10,13 +10,14 @@ const AnimatedSVGEdge = ({
   targetPosition,
   markerEnd,
 }: EdgeProps) => {
-  const [edgePath] = getBezierPath({
+  const [edgePath] = getSmoothStepPath({
     sourceX,
     sourceY,
     sourcePosition,
     targetX,
     targetY,
     targetPosition,
+    borderRadius: 10,
   });
 
   return (
