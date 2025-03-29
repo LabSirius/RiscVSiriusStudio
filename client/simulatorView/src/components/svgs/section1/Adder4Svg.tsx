@@ -6,7 +6,7 @@ export default function Adder4Svg() {
   return (
     <div className='relative w-full h-full'>
       <div>
-        <Sigma size={46} className="text-[#4A4A4A] absolute top-[50%] left-[45%] transform -translate-x-[45%] -translate-y-[50%] z-2" />
+        <Sigma size={46} className="text-[#555555] absolute top-[50%] left-[45%] transform -translate-x-[45%] -translate-y-[50%] z-2" />
         <LargeContainerSVG />
       </div>
 

@@ -152,15 +152,15 @@ export const initialNodes: Node[] = [
      // CHILD NODES SECTION 1
     //NODE Registers Unit
     {
-      id: 'registerUnit',
+      id: 'registersUnit',
       type: 'registerUnitSvg',
       data: { label: 'Registers Unit' },
-      position: { x: 250, y: 610 },
+      position: { x: 280, y: 630 },
       parentId: 'section-2',
       extent: 'parent',
       style: {
-        width: 220,
-        height: 280,
+        width: 240,
+        height: 300,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,

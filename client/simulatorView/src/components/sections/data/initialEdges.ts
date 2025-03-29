@@ -32,5 +32,30 @@ export const initialEdges: Edge[] = [
       height: 18,
       color: '#FF0072',
     },
-},
+  },
+  {
+    id: 'instructionMemory->RegistersUnit',
+    source: 'instructionMemory',
+    target: 'registersUnit',
+    targetHandle: 'instructionMemoryTarget',
+    type: 'smoothstep',
+    animated: true,
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      width: 18,
+      height: 18,
+      color: '#FF0072',
+    },
+    label: '[Inst 17:7] rd',
+    labelStyle: { 
+      fill: '#555555', 
+      fontSize: 20,
+      transform: 'translateY(-16px)',
+      fontFamily: 'Verdana, sans-serif' 
+    },
+    labelBgStyle: { fill: 'transparent', stroke: 'none' },
+    labelBgPadding: [0, 0],
+    labelBgBorderRadius: 0,
+  },
+  
 ];

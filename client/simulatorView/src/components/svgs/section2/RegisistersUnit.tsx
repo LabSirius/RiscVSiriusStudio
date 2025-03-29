@@ -7,15 +7,16 @@ export default function RegistersUnitSvg() {
     <div className=''>
 
        <div className='relative w-full h-full'>
-       <h2 className="text-2xl text-[#4A4A4A] absolute top-[50%] left-[45%] transform -translate-x-[45%] -translate-y-[50%] z-2">RU</h2>
+       <h2 className="text-xl text-[#555555] absolute top-[50%] left-[45%] transform -translate-x-[45%] -translate-y-[50%] z-2">Registers Unit</h2>
         <LargeContainerSVG  />
-        <Triangle size={20} className='absolute left-[45%]  transform -translate-x-[45%] text-[#404040] bottom-[1.3rem] z-2 ' />
+        <Triangle size={20} className='absolute left-[45%]  transform -translate-x-[45%] text-[#404040] bottom-[1.4rem] z-2 ' />
        </div>
         
 
-        <Handle  type="source"
-        position={Position.Right}
-        style={{ transform: 'translateX(-50%)' }}/>
+       <Handle  type="target"
+        id="instructionMemoryTarget"
+        position={Position.Left}
+        style={{ top: '12.2rem', background: '#555', width: 10, height: 10 }} />
     </div>
     
   );
