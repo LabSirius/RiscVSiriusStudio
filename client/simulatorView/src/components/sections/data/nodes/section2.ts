@@ -60,6 +60,24 @@ export const section2: Node[] = [
         boxShadow: 'none',
       },
     },
+
+    {
+      id: 'immGenerator',
+      type: 'immGeneratorSvg',
+      data: { label: 'Registers Unit' },
+      position: { x: 280, y: 1025 },
+      parentId: 'section-2',
+      extent: 'parent',
+      style: {
+        width: 240,
+        height: 100,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
     
 
     //PIVOTS S2
