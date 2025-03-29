@@ -12,6 +12,7 @@ import {
   Edge,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import PCSVG from './svgs/PCSVG';
 
 const initialNodes: Node[] = [
   // SECTIONS (STATIC)
@@ -29,6 +30,8 @@ const initialNodes: Node[] = [
       borderRadius: 8,
     },
   },
+
+  //  CHILD NODES SECTION 1
   {
     id: '1a',
     data: { label: 'Node 1-A' },
@@ -42,6 +45,26 @@ const initialNodes: Node[] = [
       padding: '10px',
     },
   },
+
+  {
+    id: 'pcsvg',
+    type: 'pcsvg', 
+    data: { label: 'PCSVG' },
+    position: { x: 30, y: 150 },
+    parentId: 'section-1',
+    extent: 'parent',
+    style: {
+      width: 150,
+      height: 180,
+      backgroundColor: 'transparent',
+      border: 'none',
+      borderRadius: 0,
+      padding: 0,
+      boxShadow: 'none',
+    },
+  },
+
+  //OTHER SECTIONS (STATIC)
 
   {
     id: 'section-2',
@@ -127,7 +150,8 @@ const initialNodes: Node[] = [
     },
   },
 
-  // NODO fuera de las secciones
+  // OUTSIDE NODE (STATIC)
+
   {
     id: 'outside-node',
     data: { label: 'Outside Node' },
@@ -136,11 +160,17 @@ const initialNodes: Node[] = [
 ];
 
 const initialEdges: Edge[] = [
+
+  // CONNECTIONS
   { id: 'e1a-2a', source: '1a', target: '2a', animated: true },
   { id: 'e2a-3a', source: '2a', target: '3a', animated: true },
   { id: 'e3a-4a', source: '3a', target: '4a', animated: true },
   { id: 'e4a-outside', source: '4a', target: 'outside-node', animated: true },
 ];
+
+const nodeTypes = {
+  pcsvg: PCSVG,
+};
 
 export default function Sections() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
@@ -152,6 +182,7 @@ export default function Sections() {
 
   return (
     <ReactFlow
+      nodeTypes={nodeTypes}
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
@@ -163,7 +194,6 @@ export default function Sections() {
       <Background color="#E6E6E6" />
       <MiniMap />
       <Controls />
-      
     </ReactFlow>
   );
 }
