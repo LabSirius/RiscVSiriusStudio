@@ -3,9 +3,15 @@
 * Each edge has an id, source node, target node, and type.
 */
 
-import { Edge } from '@xyflow/react';
+import { Edge, MarkerType  } from '@xyflow/react';
 
 export const initialEdges: Edge[] = [
-  { id: 'pc-to-memory',  source: 'pcsvg', target: 'instructionMemory', type: 'animatedSvg', animated: true,
+  { id: 'pc->instMemory',  source: 'pc', target: 'instructionMemory', type: 'animatedSvg', animated: true,  markerEnd:
+     {
+    type: MarkerType.ArrowClosed,
+    width: 18,
+    height: 18,
+    color: '#FF0072',
+  },
   },
 ];

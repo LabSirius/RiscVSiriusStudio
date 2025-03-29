@@ -32,7 +32,7 @@ export const initialNodes: Node[] = [
     //NODE PC
   
     {
-      id: 'pcsvg',
+      id: 'pc',
       type: 'pcsvg',
       data: { label: 'PCSVG' },
       position: { x: 30, y: 700 },
