@@ -7,32 +7,32 @@ import {
   } from '@xyflow/react';
 
 
-export const section5: Node[] = [
+export const MEM: Node[] = [
     {
-        id: 'section-5',
+        id: 'MEM',
         type: 'group',
-        data: { label: 'Section 5' },
-        position: { x: 548 * 4, y: 0 },
+        data: { label: 'Section 4' },
+        position: { x: 548 * 3, y: 0 },
         draggable: false,
         style: {
-          width: 400,
+          width: 548,
           height: 1200,
-          backgroundColor: '#E3F2FD',
+          backgroundColor: '#E8F5E9',
           border: '1px solid #93c4e6',
           borderRadius: 8,
         },
     },
 
     {
-      id: 'title-WB',
+      id: 'title-MEM',
       type: 'title',
-      data: { label: 'Write back (WB)' },
+      data: { label: 'Memory (MEM)' },
       position: { x: 0, y: 0 },
-      parentId: 'section-5',
+      parentId: 'MEM',
       extent: 'parent',
       draggable: false,
       style: {
-        width: 400,
+        width: 548,
         height: 50,
         backgroundColor: 'transparent',
         border: 'none',

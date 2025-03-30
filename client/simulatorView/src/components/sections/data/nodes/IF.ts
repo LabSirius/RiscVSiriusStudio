@@ -8,9 +8,9 @@ import {
   } from '@xyflow/react';
 
 
-export const section1: Node[] = [
+export const IF: Node[] = [
     {
-      id: 'section-1',
+      id: 'IF',
       type: 'group',
       data: { label: 'Section 1' },
       position: { x: 0, y: 0 },
@@ -29,7 +29,7 @@ export const section1: Node[] = [
       type: 'title',
       data: { label: 'Fetch (IF)' },
       position: { x: 0, y: 0 },
-      parentId: 'section-1',
+      parentId: 'IF',
       extent: 'parent',
       draggable: false,
       style: {
@@ -48,7 +48,7 @@ export const section1: Node[] = [
       type: 'pc',
       data: { label: 'PC' },
       position: { x: 30, y: 585 },
-      parentId: 'section-1',
+      parentId: 'IF',
       extent: 'parent',
       style: {
         width: 90,
@@ -67,7 +67,7 @@ export const section1: Node[] = [
       type: 'adder4',
       data: { label: 'Adder 4' },
       position: { x: 440, y: 150 },
-      parentId: 'section-1',
+      parentId: 'IF',
       extent: 'parent',
       style: {
         width: 90,
@@ -85,7 +85,7 @@ export const section1: Node[] = [
       type: 'four',
       data: { label: '4' },
       position: { x: 310, y: 117},
-      parentId: 'section-1',
+      parentId: 'IF',
       extent: 'parent',
       style: {
         width: 90,
@@ -104,7 +104,7 @@ export const section1: Node[] = [
       type: 'instructionMemory', 
       data: { label: 'Instruction Memory' },
       position: { x: 300, y: 545 },
-      parentId: 'section-1',
+      parentId: 'IF',
       extent: 'parent',
       style: {
         width: 230,
@@ -127,7 +127,7 @@ export const section1: Node[] = [
       type: 'pivot1',
       data: { label: '' },
       position: { x: 200, y: 470 },
-      parentId: 'section-1',
+      parentId: 'IF',
       extent: 'parent',
       style: {
         width: 1,

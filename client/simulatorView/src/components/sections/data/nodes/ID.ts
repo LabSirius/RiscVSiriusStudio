@@ -7,9 +7,9 @@ import {
   } from '@xyflow/react';
 
 
-export const section2: Node[] = [
+export const ID: Node[] = [
     {
-      id: 'section-2',
+      id: 'ID',
       type: 'group',
       data: { label: 'Section 2' },
       position: { x: 548, y: 0 },
@@ -28,7 +28,7 @@ export const section2: Node[] = [
       type: 'title',
       data: { label: 'Decode (ID)' },
       position: { x: 0, y: 0 },
-      parentId: 'section-2',
+      parentId: 'ID',
       extent: 'parent',
       draggable: false,
       style: {
@@ -48,7 +48,7 @@ export const section2: Node[] = [
       type: 'controlUnit',
       data: { label: 'Control Unit' },
       position: { x: 280, y: 205 },
-      parentId: 'section-2',
+      parentId: 'ID',
       extent: 'parent',
       style: {
         width: 170,
@@ -67,7 +67,7 @@ export const section2: Node[] = [
       type: 'registerUnit',
       data: { label: 'Registers Unit' },
       position: { x: 280, y: 510 },
-      parentId: 'section-2',
+      parentId: 'ID',
       extent: 'parent',
       style: {
         width: 240,
@@ -85,7 +85,7 @@ export const section2: Node[] = [
       type: 'immSrc',
       data: { label: 'IMMSrc' },
       position: { x: 133, y: 1120},
-      parentId: 'section-2',
+      parentId: 'ID',
       extent: 'parent',
       style: {
         width: 90,
@@ -103,7 +103,7 @@ export const section2: Node[] = [
       type: 'immGenerator',
       data: { label: 'Immediate Generator' },
       position: { x: 280, y: 1060 },
-      parentId: 'section-2',
+      parentId: 'ID',
       extent: 'parent',
       style: {
         width: 240,
@@ -124,7 +124,7 @@ export const section2: Node[] = [
       type: 'pivot3',
       data: { label: '' },
       position: { x: 0, y: 705 },
-      parentId: 'section-2',
+      parentId: 'ID',
       extent: 'parent',
       style: {
         width: 1,
@@ -145,7 +145,7 @@ export const section2: Node[] = [
       type: 'pivotJump1',
       data: { label: 'pivotJump1' },
       position: { x: 120, y: 445 },
-      parentId: 'section-2',
+      parentId: 'ID',
       extent: 'parent',
       style: {
         width: 47,

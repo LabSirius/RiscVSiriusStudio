@@ -7,9 +7,9 @@ import {
   } from '@xyflow/react';
 
 
-export const section3: Node[] = [
+export const IE: Node[] = [
     {
-        id: 'section-3',
+        id: 'IE',
         type: 'group',
         data: { label: 'Section 3' },
         position: { x: 548 * 2, y: 0 },
@@ -28,7 +28,7 @@ export const section3: Node[] = [
       type: 'title',
       data: { label: 'Execute (IE)' },
       position: { x: 0, y: 0 },
-      parentId: 'section-3',
+      parentId: 'IE',
       extent: 'parent',
       draggable: false,
       style: {
@@ -49,7 +49,7 @@ export const section3: Node[] = [
         type: 'muxA',
         data: { label: 'MUX A' },
         position: { x: 120, y: 465 },
-        parentId: 'section-3',
+        parentId: 'IE',
         extent: 'parent',
         style: {
           width: 65,
@@ -68,7 +68,7 @@ export const section3: Node[] = [
         type: 'aluASrc',
         data: { label: 'ALU A SRC' },
         position: { x: 120, y: 360 },
-        parentId: 'section-3',
+        parentId: 'IE',
         extent: 'parent',
         style: {
           width: 65,
@@ -86,7 +86,7 @@ export const section3: Node[] = [
         type: 'muxB',
         data: { label: 'MUX B' },
         position: { x: 120, y: 660 },
-        parentId: 'section-3',
+        parentId: 'IE',
         extent: 'parent',
         style: {
           width: 65,
@@ -104,7 +104,7 @@ export const section3: Node[] = [
         type: 'aluBSrc',
         data: { label: 'ALU B SRC' },
         position: { x: 120, y: 760 },
-        parentId: 'section-3',
+        parentId: 'IE',
         extent: 'parent',
         style: {
           width: 65,
@@ -122,7 +122,7 @@ export const section3: Node[] = [
         type: 'alu',
         data: { label: 'ALU' },
         position: { x: 250, y: 465 },
-        parentId: 'section-3',
+        parentId: 'IE',
         extent: 'parent',
         style: {
           width: 240,
@@ -140,7 +140,7 @@ export const section3: Node[] = [
         type: 'aluOp',
         data: { label: 'ALU OPERATION' },
         position: { x: 338, y: 761 },
-        parentId: 'section-3',
+        parentId: 'IE',
         extent: 'parent',
         style: {
           width: 65,
@@ -158,7 +158,7 @@ export const section3: Node[] = [
         type: 'branchUnit',
         data: { label: 'Branch Unit' },
         position: { x: 250, y: 235 },
-        parentId: 'section-3',
+        parentId: 'IE',
         extent: 'parent',
         style: {
           width: 240,
@@ -179,7 +179,7 @@ export const section3: Node[] = [
       type: 'pivot2',
       data: { label: '' },
       position: { x: 60, y: 471 },
-      parentId: 'section-3',
+      parentId: 'IE',
       extent: 'parent',
       style: {
         width: 1,
