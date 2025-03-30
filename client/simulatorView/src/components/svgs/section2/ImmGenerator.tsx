@@ -7,7 +7,7 @@ export default function ImmGenerator() {
 
        <div className='relative w-full h-full'>
        <h2 className=" titleInElement top-[50%] left-[50%]  -translate-x-[50%] -translate-y-[50%] ">Inmmediate Generator</h2>
-        <ContainerSVG height={6}  />
+        <ContainerSVG height={7.2}  />
        </div>
 
         <Handle  type="target"
@@ -18,7 +18,7 @@ export default function ImmGenerator() {
         <Handle  type="target"
                id="immSrc"
                position={Position.Left}
-               style={{ top: '4.4rem', background: '#555', width: 10, height: 10 }} />
+               style={{ top: '5rem', background: '#555', width: 10, height: 10 }} />
 
         <Handle type="source"
               position={Position.Right}

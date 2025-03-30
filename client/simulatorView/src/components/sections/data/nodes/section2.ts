@@ -65,7 +65,7 @@ export const section2: Node[] = [
       id: 'immSrc',
       type: 'immSrc',
       data: { label: 'IMMSrc' },
-      position: { x: 133, y: 1078},
+      position: { x: 133, y: 1085},
       parentId: 'section-2',
       extent: 'parent',
       style: {
@@ -88,7 +88,7 @@ export const section2: Node[] = [
       extent: 'parent',
       style: {
         width: 240,
-        height: 100,
+        height: 110,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,

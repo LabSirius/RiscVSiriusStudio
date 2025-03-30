@@ -27,7 +27,7 @@ export const section3: Node[] = [
         id: 'muxA',
         type: 'muxA',
         data: { label: 'MUX A' },
-        position: { x: 100, y: 430 },
+        position: { x: 120, y: 430 },
         parentId: 'section-3',
         extent: 'parent',
         style: {
@@ -46,7 +46,7 @@ export const section3: Node[] = [
         id: 'aluASrc',
         type: 'aluASrc',
         data: { label: 'ALU A SRC' },
-        position: { x: 100, y: 325 },
+        position: { x: 120, y: 325 },
         parentId: 'section-3',
         extent: 'parent',
         style: {
@@ -64,7 +64,7 @@ export const section3: Node[] = [
         id: 'muxB',
         type: 'muxB',
         data: { label: 'MUX B' },
-        position: { x: 100, y: 625 },
+        position: { x: 120, y: 625 },
         parentId: 'section-3',
         extent: 'parent',
         style: {
@@ -82,7 +82,7 @@ export const section3: Node[] = [
         id: 'aluBSrc',
         type: 'aluBSrc',
         data: { label: 'ALU B SRC' },
-        position: { x: 100, y: 725 },
+        position: { x: 120, y: 725 },
         parentId: 'section-3',
         extent: 'parent',
         style: {
@@ -131,7 +131,7 @@ export const section3: Node[] = [
           boxShadow: 'none',
         },
       },
-      
+
       {
         id: 'branchUnit',
         type: 'branchUnit',
@@ -157,7 +157,7 @@ export const section3: Node[] = [
       id: 'pivot2',
       type: 'pivot2',
       data: { label: '' },
-      position: { x: 30, y: 436 },
+      position: { x: 60, y: 436 },
       parentId: 'section-3',
       extent: 'parent',
       style: {
