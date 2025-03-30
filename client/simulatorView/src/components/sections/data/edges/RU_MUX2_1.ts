@@ -4,10 +4,10 @@ import { Edge, MarkerType  } from '@xyflow/react';
 
 export const RU_MUX2: Edge[] = [
     {
-        id: 'registersUnit->mux2_1A',
+        id: 'registersUnit->muxA',
         source: 'registersUnit',
-        sourceHandle: 'mux2_1A',
-        target: 'mux2_1A',
+        sourceHandle: 'muxA',
+        target: 'muxA',
         targetHandle: 'registersUnitA',
         type: 'smoothstep',
         animated: true,
@@ -19,10 +19,10 @@ export const RU_MUX2: Edge[] = [
         },
     },
     {
-      id: 'registersUnit->mux2_1B',
+      id: 'registersUnit->mux2B',
       source: 'registersUnit',
-      sourceHandle: 'mux2_1B',
-      target: 'mux2_1B',
+      sourceHandle: 'mux2B',
+      target: 'mux2B',
       targetHandle: 'registersUnitB',
       type: 'smoothstep',
       animated: true,

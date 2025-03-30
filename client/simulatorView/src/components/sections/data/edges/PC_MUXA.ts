@@ -1,8 +1,8 @@
-// this file contains the edges for the PC_ADDR4 component
+// 
 
 import { Edge, MarkerType  } from '@xyflow/react';
 
-export const Pv_MUX2_1A: Edge[] = [
+export const Pv_MUXA: Edge[] = [
 
     { id: 'pcPivotAdder4->pcPivotMUXA',  source: 'pcPivotAdder4', target: 'pcPivotMUXA', type: 'smoothstep', animated:true,  markerEnd:
         {

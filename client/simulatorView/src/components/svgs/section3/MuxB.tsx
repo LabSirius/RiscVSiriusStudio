@@ -1,11 +1,11 @@
-import Mux2_1 from "./MUX_2_1";
+import MuxContainer from "./MUXContainer";
 import { Handle, Position } from '@xyflow/react';
 
-function Mux2_1B() {
+function MuxB() {
   return (
     <div className='relative w-full h-full'>
       <div className="relative w-full h-full">
-          <Mux2_1 />
+          <MuxContainer />
       </div>
       <Handle  
         type="target"
@@ -31,4 +31,4 @@ function Mux2_1B() {
   );
 }
 
-export default Mux2_1B;
+export default MuxB;

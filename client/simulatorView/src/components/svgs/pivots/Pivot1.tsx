@@ -1,3 +1,5 @@
+// This pivot is used to mark the lines between pc->adder4 and pc->muxA
+
 import { Handle, Position } from '@xyflow/react';
 
 export default function Pivot1() {
@@ -10,12 +12,12 @@ export default function Pivot1() {
       />
       <Handle
         type="source"
-        position={Position.Right}
+        position={Position.Top}
         style={{ width: 10, height: 10 }}
       />
       <Handle
         type="source"
-        id="mux2_1A"
+        id="muxA"
         position={Position.Bottom}
         style={{ width: 10, height: 10 }}
       />
