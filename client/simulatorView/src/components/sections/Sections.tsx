@@ -28,7 +28,9 @@ import ControlUnit from '../svgs/section2/ControlUnit';
 
 //Section 3
 import Mux2_1A from '../svgs/section3/Mux2_1A';
+import ALUASrc from '../svgs/section3/ALUASrc';
 import Mux2_1B from '../svgs/section3/Mux2_1B';
+import ALUBSrc from '../svgs/section3/ALUBSrc';
 
 //pivots
 import PcPivotAdder4 from '../svgs/pivots/PcPivotAdder4';
@@ -37,17 +39,6 @@ import IMPivotRU from '../svgs/pivots/IMPivotRU';
 import AnimatedSVGEdge from '../animate/AnimatedSVGEdge';
 import ImmGenerator from '../svgs/section2/ImmGenerator';
 import ImmSrc from '../svgs/section2/ImmSRC';
-
-
-import ImmGenerator from '../svgs/section2/ImmGenerator';
-import ImmSrc from '../svgs/section2/ImmSrc';
-
-//jumps
-import PivotJump1 from '../svgs/pivots/jump/PivotJump1';
-
-//Customs 
-import AnimatedSVGEdge from '../customs/AnimatedSVGEdge';
-
 
 const nodeTypes = {
 
@@ -65,15 +56,13 @@ const nodeTypes = {
 
   //Section 3
   mux2_1A: Mux2_1A,
+  aluASrc: ALUASrc,
   mux2_1B: Mux2_1B,
+  aluBSrc: ALUBSrc,
 
   //Pivots
-  pivot1: Pivot1,
-  pivot2: Pivot2,
-  pivot3: Pivot3,
-
-  //Jumps
-  pivotJump1: PivotJump1,
+  pcPivotAdder4: PcPivotAdder4,
+  instMemPivotRU: IMPivotRU,
 };
 
 const edgeTypes = {

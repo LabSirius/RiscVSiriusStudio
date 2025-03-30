@@ -1,8 +1,9 @@
-// this file contains the edges for the ALU A AND B source connections in MUXS
+// 
+
 import { Edge, MarkerType  } from '@xyflow/react';
 
 export const ALUXSRC: Edge[] = [
-      { id: 'aluASrc->muxA',  source: 'aluASrc', target: 'muxA', targetHandle: 'aluASrc', type: 'smoothstep', animated: true,  markerEnd:
+      { id: 'aluASrc->mux2_1A',  source: 'aluASrc', target: 'mux2_1A', targetHandle: 'aluASrc', type: 'smoothstep', animated: true,  markerEnd:
       {
             type: MarkerType.ArrowClosed,
             width: 18,
@@ -10,7 +11,7 @@ export const ALUXSRC: Edge[] = [
             color: '#FF0072',
       },
     },
-    { id: 'aluBSrc->mux2B',  source: 'aluBSrc', target: 'mux2B', targetHandle: 'aluBSrc', type: 'smoothstep', animated: true,  markerEnd:
+    { id: 'aluBSrc->mux2_1B',  source: 'aluBSrc', target: 'mux2_1B', targetHandle: 'aluBSrc', type: 'smoothstep', animated: true,  markerEnd:
       {
             type: MarkerType.ArrowClosed,
             width: 18,
