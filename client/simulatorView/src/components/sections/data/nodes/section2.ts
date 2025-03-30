@@ -118,5 +118,27 @@ export const section2: Node[] = [
         boxShadow: 'none',
       },
     },
+
+
+    //jump
+    {
+      id: 'pivotJump1',
+      type: 'pivotJump1',
+      data: { label: 'pivotJump1' },
+      position: { x: 120, y: 410 },
+      parentId: 'section-2',
+      extent: 'parent',
+      style: {
+        width: 47,
+        height: 47,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
+
    
   ];
