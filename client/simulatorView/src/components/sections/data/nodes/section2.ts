@@ -23,6 +23,31 @@ export const section2: Node[] = [
       },
     },
 
+    {
+      id: 'instruction-decode-title',
+      type: 'titleText',
+      data: { label: 'Decode (ID)' },
+      position: { x: 0, y: 10 },
+      parentId: 'section-2',
+      extent: 'parent',
+      selectable: false,
+      draggable: false,
+      style: {
+        // TODO; this has to go in TitleText.tsx for the other titles to be consistently rendered.
+        fontSize: '28px',
+        fontWeight: 'bold',
+        color: '#3A6973',
+        padding: 0,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderBottom: '4px solid #e3aaaa', 
+        paddingBottom: '10px',
+        boxShadow: 'none',
+        width: 540,
+        height: 30,
+      },
+    },
+
      // CHILD NODES SECTION 2
     {
       id: 'controlUnit',

@@ -1,7 +1,7 @@
 import ContainerSVG from '../ContainerSVG';
 import { Handle , Position} from '@xyflow/react';
 
-export default function InstructionMemory() {
+export function InstructionMemory() {
   return (
     <div className='w-full h-full'>
       <div className='relative w-full h-full'>
@@ -15,5 +15,22 @@ export default function InstructionMemory() {
         position={Position.Right}
         style={{ top: '10rem', background: '#555', width: 10, height: 10 }} />
       </div>
+  );
+}
+
+export function IMAddress() {
+  return (
+    <div>
+      <div>
+      <span>Address</span><br></br>
+      <span>0x777777</span>
+      </div>
+      <Handle  type="target"
+        position={Position.Left}
+      />
+      <Handle  type="source"
+        position={Position.Right}
+      />
+    </div>
   );
 }

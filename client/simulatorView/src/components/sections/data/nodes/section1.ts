@@ -19,11 +19,37 @@ export const section1: Node[] = [
         width: 548,
         height: 1200,
         backgroundColor: '#FCE4EC',
+        opacity: 0.5,
         border: '1px solid #e3aaaa',
         borderRadius: 8,
       },
     },
-  
+
+    {
+      id: 'instruction-fetch-title',
+      type: 'titleText',
+      data: { label: 'Fetch (IF)' },
+      position: { x: 0, y: 10 },
+      parentId: 'section-1',
+      extent: 'parent',
+      selectable: false,
+      draggable: false,
+      style: {
+        // TODO; this has to go in TitleText.tsx for the other titles to be consistently rendered.
+        fontSize: '28px',
+        fontWeight: 'bold',
+        color: '#3A6973',
+        padding: 0,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderBottom: '4px solid #e3aaaa', 
+        paddingBottom: '10px',
+        boxShadow: 'none',
+        width: 540,
+        height: 30,
+      },
+    },
+      
     {
       id: 'pc',
       type: 'pc',
@@ -98,7 +124,41 @@ export const section1: Node[] = [
       },
     },
 
-    
+    {
+      id: 'imAddressInput',
+      type: 'imAddressInputSvg',
+      data: { label: 'Address' },
+      position: { x: 10, y: 30 },  // Position relative to parent's top-left corner
+      parentId: 'instructionMemory',  // Make it a child of instructionMemory
+      extent: 'parent',  // Confine it to parent's boundaries
+      style: {
+        width: 80,
+        height: 40,
+        backgroundColor: '#f0f8ff',
+        border: '1px solid #3a6973',
+        borderRadius: 4,
+        padding: 0,
+        fontSize: '12px',
+      },
+    },
+
+    {
+      id: 'imInstructionOutput',
+      type: 'imInstructionOutputSvg',
+      data: { label: 'Instruction' },
+      position: { x: 10, y: 130 },  // Position relative to parent's top-left corner
+      parentId: 'instructionMemory',  // Make it a child of instructionMemory
+      extent: 'parent',  // Confine it to parent's boundaries
+      style: {
+        width: 80,
+        height: 40,
+        backgroundColor: '#f0f8ff',
+        border: '1px solid #3a6973',
+        borderRadius: 4,
+        padding: 0,
+        fontSize: '12px',
+      },
+    },
 
     //PIVOTS S1
 
