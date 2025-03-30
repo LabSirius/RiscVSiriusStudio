@@ -13,6 +13,7 @@ import { RU_MUXS } from './RU_MUXS';
 import { IG_MUXB } from './IG_MUXB';
 import { ALUXSRC } from './ALUXSRC';
 import { PC_MUXA } from './PC_MUXA';
+import { MUXS_ALU } from './MUXS_ALU';
 
 
 export const initialEdges: Edge[] = [
@@ -30,4 +31,5 @@ export const initialEdges: Edge[] = [
   ...ALUXSRC, // ALU Source to MUX 2_1 A connections and ALU  Source to MUX 2_1 B connections 
 
   ...PC_MUXA, // PC to MUX 2_1 A connections
+  ...MUXS_ALU, // MUXS to ALU connections
 ];

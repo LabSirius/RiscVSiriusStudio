@@ -27,6 +27,11 @@ function MuxB() {
         position={Position.Bottom}
         style={{ top: '7rem', background: '#555', width: 10, height: 10 }} 
       />
+
+
+      <Handle  type="source"
+        position={Position.Right}
+        style={{ transform: 'translateX(-50%)', right:'.3rem',  background: '#555', width: 10, height: 10 }} />
     </div>
   );
 }

@@ -19,10 +19,10 @@ export const RU_MUXS: Edge[] = [
         },
     },
     {
-      id: 'registersUnit->mux2B',
+      id: 'registersUnit->muxB',
       source: 'registersUnit',
-      sourceHandle: 'mux2B',
-      target: 'mux2B',
+      sourceHandle: 'muxB',
+      target: 'muxB',
       targetHandle: 'registersUnitB',
       type: 'smoothstep',
       animated: true,

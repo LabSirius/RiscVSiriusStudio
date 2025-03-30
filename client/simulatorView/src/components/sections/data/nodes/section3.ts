@@ -61,8 +61,8 @@ export const section3: Node[] = [
       },
 
       {
-        id: 'mux2B',
-        type: 'mux2B',
+        id: 'muxB',
+        type: 'muxB',
         data: { label: 'MUX B' },
         position: { x: 100, y: 625 },
         parentId: 'section-3',
@@ -95,8 +95,6 @@ export const section3: Node[] = [
           boxShadow: 'none',
         },
       },
-
-
 
       {
         id: 'alu',

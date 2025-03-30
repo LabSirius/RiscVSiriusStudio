@@ -14,9 +14,9 @@ export const IG_MUXB: Edge[] = [
     },
 
     {
-        id: 'immGenerator->mux2B',  
+        id: 'immGenerator->muxB',  
         source: 'immGenerator', 
-        target: 'mux2B', 
+        target: 'muxB', 
         targetHandle: 'immGenerator', 
         type: 'smoothstep', 
         animated: true,  

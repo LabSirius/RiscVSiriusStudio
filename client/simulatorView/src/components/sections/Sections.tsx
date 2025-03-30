@@ -39,7 +39,7 @@ import Pivot2 from '../svgs/pivots/Pivot2';
 import Pivot3 from '../svgs/pivots/Pivot3';
 
 import ImmGenerator from '../svgs/section2/ImmGenerator';
-import ImmSrc from '../svgs/section2/ImmSRC';
+import ImmSrc from '../svgs/section2/ImmSrc';
 
 //jumps
 import PivotJump1 from '../svgs/pivots/jump/PivotJump1';
@@ -60,11 +60,11 @@ const nodeTypes = {
   controlUnit: ControlUnit,
   immGenerator: ImmGenerator,
   immSrc: ImmSrc,
-  
+
   //Section 3
   muxA: MuxA,
   aluASrc: ALUASrc,
-  mux2B: MuxB,
+  muxB: MuxB,
   aluBSrc: ALUBSrc,
   alu: ALU,
 

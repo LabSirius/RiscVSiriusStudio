@@ -10,7 +10,7 @@ export const ALUXSRC: Edge[] = [
             color: '#FF0072',
       },
     },
-    { id: 'aluBSrc->mux2B',  source: 'aluBSrc', target: 'mux2B', targetHandle: 'aluBSrc', type: 'smoothstep', animated: true,  markerEnd:
+    { id: 'aluBSrc->muxB',  source: 'aluBSrc', target: 'muxB', targetHandle: 'aluBSrc', type: 'smoothstep', animated: true,  markerEnd:
       {
             type: MarkerType.ArrowClosed,
             width: 18,

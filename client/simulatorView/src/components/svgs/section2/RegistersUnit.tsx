@@ -31,11 +31,11 @@ export default function RegistersUnit() {
       <Handle  type="source"
         position={Position.Right}
         id="muxA"
-        style={{ top: '4rem', background: '#555', width: 10, height: 10 }} />
+        style={{ top: '3.9rem', background: '#555', width: 10, height: 10 }} />
 
       <Handle  type="source"
         position={Position.Right}
-        id="mux2B"
+        id="muxB"
         style={{ top: '12.2rem', background: '#555', width: 10, height: 10 }} />
 
     
