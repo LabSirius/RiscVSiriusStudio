@@ -131,6 +131,24 @@ export const section3: Node[] = [
           boxShadow: 'none',
         },
       },
+      
+      {
+        id: 'branchUnit',
+        type: 'branchUnit',
+        data: { label: 'Branch Unit' },
+        position: { x: 250, y: 200 },
+        parentId: 'section-3',
+        extent: 'parent',
+        style: {
+          width: 240,
+          height: 110,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
 
 
     //PIVOTS S3

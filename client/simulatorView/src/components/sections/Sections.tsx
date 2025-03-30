@@ -33,6 +33,7 @@ import MuxB from '../svgs/section3/MuxB';
 import ALUBSrc from '../svgs/section3/ALUBSrc';
 import ALU from '../svgs/section3/ALU';
 import ALUOp from '../svgs/section3/ALUOp';
+import BranchUnit from '../svgs/section3/BranchUnit';
 
 //pivots
 import Pivot1 from '../svgs/pivots/Pivot1';
@@ -69,6 +70,7 @@ const nodeTypes = {
   aluBSrc: ALUBSrc,
   alu: ALU,
   aluOp: ALUOp,
+  branchUnit: BranchUnit,
 
   //Pivots
   pivot1: Pivot1,

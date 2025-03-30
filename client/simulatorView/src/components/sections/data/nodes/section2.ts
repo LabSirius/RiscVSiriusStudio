@@ -82,7 +82,7 @@ export const section2: Node[] = [
     {
       id: 'immGenerator',
       type: 'immGenerator',
-      data: { label: 'Registers Unit' },
+      data: { label: 'Immediate Generator' },
       position: { x: 280, y: 1025 },
       parentId: 'section-2',
       extent: 'parent',
