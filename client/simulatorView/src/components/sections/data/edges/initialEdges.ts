@@ -10,6 +10,7 @@ import { PC_ADDR4 } from './PC_ADDR4';
 import { IM_IG } from './IM_IG';
 import { RU_MUX2 } from './RU_MUX2_1';
 import { IG_MUX2_1B } from './IG_MUX2_1B';
+import { ALUXSRC } from './ALUXSRC';
 
 export const initialEdges: Edge[] = [
 
@@ -21,4 +22,6 @@ export const initialEdges: Edge[] = [
 
   ...RU_MUX2, // Register Unit to MUX 2 connections
   ...IG_MUX2_1B, // Immediate Generator to MUX 2 connections and ImmSrc to ImmGen connections
+
+  ...ALUXSRC, // ALUASrc Source to MUX 2_1 A connections and ALUBSRC  Source to MUX 2_1 B connections in MUXS
 ];

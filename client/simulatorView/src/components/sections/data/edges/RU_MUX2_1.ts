@@ -1,4 +1,4 @@
-// this file contains the edge between the instruction memory and the immediate generator
+// this file contains the edges for the RU_MUX2 component
 
 import { Edge, MarkerType  } from '@xyflow/react';
 

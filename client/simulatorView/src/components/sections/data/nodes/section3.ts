@@ -41,6 +41,25 @@ export const section3: Node[] = [
         },
       },
 
+
+      {
+        id: 'aluASrc',
+        type: 'aluASrc',
+        data: { label: 'ALU A SRC' },
+        position: { x: 80, y: 510 },
+        parentId: 'section-3',
+        extent: 'parent',
+        style: {
+          width: 65,
+          height: 150,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
       {
         id: 'mux2_1B',
         type: 'mux2_1B',
@@ -58,5 +77,25 @@ export const section3: Node[] = [
           boxShadow: 'none',
         },
       },
+
+      {
+        id: 'aluBSrc',
+        type: 'aluBSrc',
+        data: { label: 'ALU B SRC' },
+        position: { x: 80, y: 965 },
+        parentId: 'section-3',
+        extent: 'parent',
+        style: {
+          width: 65,
+          height: 150,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
+    
    
   ];

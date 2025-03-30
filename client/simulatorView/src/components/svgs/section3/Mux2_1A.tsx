@@ -11,6 +11,11 @@ function Mux2_1A() {
               id="registersUnitA"
               position={Position.Left}
               style={{ top: '6.8rem', background: '#555', width: 10, height: 10 }} />
+
+      <Handle  type="target"
+              id="aluASrc"
+              position={Position.Top}
+              style={{ top: '1.5rem', background: '#555', width: 10, height: 10 }} />
     </div>
   );
 }

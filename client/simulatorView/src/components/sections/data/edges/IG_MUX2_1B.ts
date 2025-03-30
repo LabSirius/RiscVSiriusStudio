@@ -1,4 +1,4 @@
-// this file contains the edges for the PC_ADDR4 component
+// this file contains the edges for the IG_MUX2_1B component
 
 import { Edge, MarkerType  } from '@xyflow/react';
 

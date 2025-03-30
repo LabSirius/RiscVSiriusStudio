@@ -28,7 +28,9 @@ import ControlUnit from '../svgs/section2/ControlUnit';
 
 //Section 3
 import Mux2_1A from '../svgs/section3/Mux2_1A';
+import ALUASrc from '../svgs/section3/ALUASrc';
 import Mux2_1B from '../svgs/section3/Mux2_1B';
+import ALUBSrc from '../svgs/section3/ALUBSrc';
 
 //pivots
 import PcPivotAdder4 from '../svgs/pivots/PcPivotAdder4';
@@ -36,12 +38,7 @@ import IMPivotRU from '../svgs/pivots/IMPivotRU';
 
 import AnimatedSVGEdge from '../animate/AnimatedSVGEdge';
 import ImmGenerator from '../svgs/section2/ImmGenerator';
-import ImmSrc from '../svgs/section2/ImmSRC';
-
-
-
-
-
+import ImmSrc from '../svgs/section2/ImmSrc';
 
 const nodeTypes = {
 
@@ -59,7 +56,9 @@ const nodeTypes = {
 
   //Section 3
   mux2_1A: Mux2_1A,
+  aluASrc: ALUASrc,
   mux2_1B: Mux2_1B,
+  aluBSrc: ALUBSrc,
 
   //Pivots
   pcPivotAdder4: PcPivotAdder4,
