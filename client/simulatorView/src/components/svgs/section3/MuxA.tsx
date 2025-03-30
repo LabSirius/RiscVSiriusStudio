@@ -7,11 +7,6 @@ function MuxA() {
       <div className="relative w-full h-full ">
           <MuxContainer />
       </div>
-
-      <Handle  type="target"
-              id="pc"
-              position={Position.Left}
-              style={{ top: '2.8rem', background: '#555', width: 10, height: 10 }} />
   
       <Handle  type="target"
               id="registersUnitA"

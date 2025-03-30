@@ -30,12 +30,12 @@ export default function RegistersUnit() {
 
       <Handle  type="source"
         position={Position.Right}
-        id="mux2_1A"
+        id="muxA"
         style={{ top: '4rem', background: '#555', width: 10, height: 10 }} />
 
       <Handle  type="source"
         position={Position.Right}
-        id="mux2_1B"
+        id="mux2B"
         style={{ top: '12.2rem', background: '#555', width: 10, height: 10 }} />
 
     

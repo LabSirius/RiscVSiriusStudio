@@ -27,9 +27,9 @@ import RegistersUnit from '../svgs/section2/RegistersUnit';
 import ControlUnit from '../svgs/section2/ControlUnit';
 
 //Section 3
-import Mux2_1A from '../svgs/section3/Mux2_1A';
+import MuxA from '../svgs/section3/MuxA';
 import ALUASrc from '../svgs/section3/ALUASrc';
-import Mux2_1B from '../svgs/section3/Mux2_1B';
+import MuxB from '../svgs/section3/MuxB';
 import ALUBSrc from '../svgs/section3/ALUBSrc';
 
 //pivots
@@ -60,9 +60,9 @@ const nodeTypes = {
   immSrc: ImmSrc,
 
   //Section 3
-  mux2_1A: Mux2_1A,
+  muxA: MuxA,
   aluASrc: ALUASrc,
-  mux2_1B: Mux2_1B,
+  mux2B: MuxB,
   aluBSrc: ALUBSrc,
 
   //Pivots

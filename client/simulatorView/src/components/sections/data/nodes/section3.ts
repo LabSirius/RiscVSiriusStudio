@@ -24,9 +24,9 @@ export const section3: Node[] = [
     },
 
     {
-        id: 'mux2_1A',
-        type: 'mux2_1A',
-        data: { label: 'MUX 2_1 A' },
+        id: 'muxA',
+        type: 'muxA',
+        data: { label: 'MUX A' },
         position: { x: 100, y: 430 },
         parentId: 'section-3',
         extent: 'parent',
@@ -61,9 +61,9 @@ export const section3: Node[] = [
       },
 
       {
-        id: 'mux2_1B',
-        type: 'mux2_1B',
-        data: { label: 'MUX 2_1B' },
+        id: 'mux2B',
+        type: 'mux2B',
+        data: { label: 'MUX B' },
         position: { x: 100, y: 625 },
         parentId: 'section-3',
         extent: 'parent',
