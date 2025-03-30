@@ -1,7 +1,7 @@
 
 import { Handle, Position } from '@xyflow/react';
 
-export default function IMPivot() {
+export default function Pivot3() {
   return (
     <div style={{ width: 0, height: 0, opacity: 0, position: 'relative' }}>
       <Handle

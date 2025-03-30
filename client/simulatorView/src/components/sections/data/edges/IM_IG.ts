@@ -5,8 +5,8 @@ import { Edge, MarkerType  } from '@xyflow/react';
 export const IM_IG: Edge[] = [
 
     {
-        id: 'instMemPivotRU->immediateGenerator[31:7]',
-        source: 'instMemPivotRU',
+        id: 'pivot3->immediateGenerator[31:7]',
+        source: 'pivot3',
         target: 'immGenerator',
         targetHandle: '[31:7]',
         type: 'smoothstep',

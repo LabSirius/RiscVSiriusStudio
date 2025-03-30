@@ -101,8 +101,8 @@ export const section2: Node[] = [
     //NODE INSTRUCTIONMEMORY-PIVOT-REGISTERSUNIT
 
     {
-      id: 'instMemPivotRU',
-      type: 'instMemPivotRU',
+      id: 'pivot3',
+      type: 'pivot3',
       data: { label: '' },
       position: { x: 0, y: 670 },
       parentId: 'section-2',

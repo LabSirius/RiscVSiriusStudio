@@ -5,8 +5,8 @@ import { Edge, MarkerType  } from '@xyflow/react';
 export const IM_CU: Edge[] = [
 
     {
-        id: 'instMemPivotRU->controlUnit[6:0]',
-        source: 'instMemPivotRU',
+        id: 'pivot3->controlUnit[6:0]',
+        source: 'pivot3',
         target: 'controlUnit',
         targetHandle: '[6:0]',
         type: 'smoothstep',
@@ -19,8 +19,8 @@ export const IM_CU: Edge[] = [
         },
       },
       {
-        id: 'instMemPivotRU->controlUnit[14:12]',
-        source: 'instMemPivotRU',
+        id: 'pivot3->controlUnit[14:12]',
+        source: 'pivot3',
         target: 'controlUnit',
         targetHandle: '[14:12]',
         type: 'smoothstep',
@@ -33,8 +33,8 @@ export const IM_CU: Edge[] = [
         },
       },
       {
-        id: 'instMemPivotRU->controlUnit[35:25]',
-        source: 'instMemPivotRU',
+        id: 'pivot3->controlUnit[35:25]',
+        source: 'pivot3',
         target: 'controlUnit',
         targetHandle: '[35:25]',
         type: 'smoothstep',

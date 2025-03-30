@@ -104,8 +104,8 @@ export const section1: Node[] = [
 
     //NODE PC-PIVOT-ADDER4
     {
-      id: 'pcPivotAdder4',
-      type: 'pcPivotAdder4',
+      id: 'pivot1',
+      type: 'pivot1',
       data: { label: '' },
       position: { x: 200, y: 150 },
       parentId: 'section-1',

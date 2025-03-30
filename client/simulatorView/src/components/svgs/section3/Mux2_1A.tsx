@@ -7,6 +7,7 @@ function Mux2_1A() {
       <div className="relative w-full h-full ">
           <Mux2_1 />
       </div>
+  
       <Handle  type="target"
               id="registersUnitA"
               position={Position.Left}
