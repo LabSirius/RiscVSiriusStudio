@@ -1,4 +1,4 @@
-
+// This pivot is used to mark the cut points between the instruction memory and what is received by the control unit, the registers unit, and the imm generator of the instruction memory.
 import { Handle, Position } from '@xyflow/react';
 
 export default function Pivot3() {

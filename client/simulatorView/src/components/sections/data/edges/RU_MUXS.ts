@@ -2,7 +2,7 @@
 
 import { Edge, MarkerType  } from '@xyflow/react';
 
-export const RU_MUX2: Edge[] = [
+export const RU_MUXS: Edge[] = [
     {
         id: 'registersUnit->muxA',
         source: 'registersUnit',

@@ -1,4 +1,4 @@
-// this file contains the edges for the IG_MUX2_1B component
+// this file contains the edges for the IMMGENERATOR_MUX2_1B component
 
 import { Edge, MarkerType  } from '@xyflow/react';
 

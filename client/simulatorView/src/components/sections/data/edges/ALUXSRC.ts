@@ -1,5 +1,4 @@
-// 
-
+// this file contains the edges for the ALU A AND B source connections in MUXS
 import { Edge, MarkerType  } from '@xyflow/react';
 
 export const ALUXSRC: Edge[] = [

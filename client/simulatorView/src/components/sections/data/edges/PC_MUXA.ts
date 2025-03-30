@@ -2,7 +2,7 @@
 
 import { Edge, MarkerType  } from '@xyflow/react';
 
-export const Pv_MUXA: Edge[] = [
+export const PC_MUXA: Edge[] = [
 
     { id: 'pcPivotAdder4->pcPivotMUXA',  source: 'pcPivotAdder4', target: 'pcPivotMUXA', type: 'smoothstep', animated:true,  markerEnd:
         {
