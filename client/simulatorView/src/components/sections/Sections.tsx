@@ -32,6 +32,10 @@ import ALUASrc from '../svgs/section3/ALUASrc';
 import MuxB from '../svgs/section3/MuxB';
 import ALUBSrc from '../svgs/section3/ALUBSrc';
 
+//Section 3
+import Mux2_1A from '../svgs/section3/Mux2_1A';
+import Mux2_1B from '../svgs/section3/Mux2_1B';
+
 //pivots
 import Pivot1 from '../svgs/pivots/Pivot1';
 import Pivot2 from '../svgs/pivots/Pivot2';
@@ -45,6 +49,7 @@ import PivotJump1 from '../svgs/pivots/jump/PivotJump1';
 
 //Customs 
 import AnimatedSVGEdge from '../customs/AnimatedSVGEdge';
+
 
 const nodeTypes = {
 
@@ -61,10 +66,8 @@ const nodeTypes = {
   immSrc: ImmSrc,
 
   //Section 3
-  muxA: MuxA,
-  aluASrc: ALUASrc,
-  mux2B: MuxB,
-  aluBSrc: ALUBSrc,
+  mux2_1A: Mux2_1A,
+  mux2_1B: Mux2_1B,
 
   //Pivots
   pivot1: Pivot1,
