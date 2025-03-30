@@ -22,4 +22,13 @@ export const PC_ADDR4: Edge[] = [
          color: '#FF0072',
        }
      },
+
+     { id: 'four->adder4',  source: 'four', target: 'adder4', targetHandle: 'fourTarget', type: 'smoothstep', animated: true,  markerEnd:
+         {
+           type: MarkerType.ArrowClosed,
+           width: 18,
+           height: 18,
+           color: '#FF0072',
+         },
+       },
 ];

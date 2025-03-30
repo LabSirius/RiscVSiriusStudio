@@ -13,6 +13,13 @@ function Mux2_1B() {
         position={Position.Left}
         style={{ top: '2.8rem', background: '#555', width: 10, height: 10 }} 
       />
+
+      <Handle  
+        type="target"
+        id="immGenerator"
+        position={Position.Left}
+        style={{ top: '6.8rem', background: '#555', width: 10, height: 10 }} 
+      />
     </div>
   );
 }
