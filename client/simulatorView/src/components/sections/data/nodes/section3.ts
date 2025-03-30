@@ -27,7 +27,7 @@ export const section3: Node[] = [
         id: 'mux2_1A',
         type: 'mux2_1A',
         data: { label: 'MUX 2_1 A' },
-        position: { x: 80, y: 625 },
+        position: { x: 100, y: 430 },
         parentId: 'section-3',
         extent: 'parent',
         style: {
@@ -46,7 +46,7 @@ export const section3: Node[] = [
         id: 'aluASrc',
         type: 'aluASrc',
         data: { label: 'ALU A SRC' },
-        position: { x: 80, y: 510 },
+        position: { x: 100, y: 325 },
         parentId: 'section-3',
         extent: 'parent',
         style: {
@@ -64,7 +64,7 @@ export const section3: Node[] = [
         id: 'mux2_1B',
         type: 'mux2_1B',
         data: { label: 'MUX 2_1B' },
-        position: { x: 80, y: 850 },
+        position: { x: 100, y: 625 },
         parentId: 'section-3',
         extent: 'parent',
         style: {
@@ -82,7 +82,7 @@ export const section3: Node[] = [
         id: 'aluBSrc',
         type: 'aluBSrc',
         data: { label: 'ALU B SRC' },
-        position: { x: 80, y: 965 },
+        position: { x: 100, y: 725 },
         parentId: 'section-3',
         extent: 'parent',
         style: {
