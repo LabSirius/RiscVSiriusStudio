@@ -33,12 +33,17 @@ import Mux2_1B from '../svgs/section3/Mux2_1B';
 import ALUBSrc from '../svgs/section3/ALUBSrc';
 
 //pivots
-import PcPivotAdder4 from '../svgs/pivots/PcPivotAdder4';
-import IMPivotRU from '../svgs/pivots/IMPivotRU';
+import Pivot1 from '../svgs/pivots/Pivot1';
+import Pivot3 from '../svgs/pivots/Pivot3';
 
-import AnimatedSVGEdge from '../animate/AnimatedSVGEdge';
 import ImmGenerator from '../svgs/section2/ImmGenerator';
 import ImmSrc from '../svgs/section2/ImmSRC';
+
+//jumps
+import PivotJump1 from '../svgs/pivots/jump/PivotJump1';
+
+//Customs 
+import AnimatedSVGEdge from '../customs/AnimatedSVGEdge';
 
 const nodeTypes = {
 
@@ -61,8 +66,11 @@ const nodeTypes = {
   aluBSrc: ALUBSrc,
 
   //Pivots
-  pcPivotAdder4: PcPivotAdder4,
-  instMemPivotRU: IMPivotRU,
+  pivot1: Pivot1,
+  pivot3: Pivot3,
+
+  //Jumps
+  pivotJump1: PivotJump1,
 };
 
 const edgeTypes = {
