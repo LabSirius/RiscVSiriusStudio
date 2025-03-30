@@ -13,7 +13,6 @@ export default function Pivot2() {
       <Handle
         type="source"
         position={Position.Bottom}
-        style={{ width: 10, height: 10 }}
       />
     </div>
   );

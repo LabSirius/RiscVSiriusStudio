@@ -12,7 +12,6 @@ export default function PivotJump2() {
        </div>
 
        <Handle  type="target"
-
         position={Position.Left}
         style={{ top: '1.6rem', left:'.4rem' }} />
         

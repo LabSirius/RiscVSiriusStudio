@@ -178,7 +178,7 @@ export const IE: Node[] = [
       id: 'pivot2',
       type: 'pivot2',
       data: { label: '' },
-      position: { x: 105, y: 471 },
+      position: { x: 110, y: 471 },
       parentId: 'IE',
       extent: 'parent',
       style: {
