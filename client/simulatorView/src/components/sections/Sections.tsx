@@ -11,6 +11,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
+import DownloadButton from '../DownloadButton';
 import { initialNodes } from './data/nodes/initialNodes'; // Nodes
 import { initialEdges } from './data/edges/initialEdges'; //Conecctions between npdes
 
@@ -50,6 +51,7 @@ import PivotJump1 from '../svgs/pivots/jump/PivotJump1';
 //Customs 
 import AnimatedSVGEdge from '../customs/AnimatedSVGEdge';
 import PivotJump2 from '../svgs/pivots/jump/PivotJump2';
+import CustomControls from '../customs/CustomControls';
 
 const nodeTypes = {
 
@@ -98,6 +100,8 @@ export default function Sections() {
     [setEdges]
   );
 
+
+
   return (
     <ReactFlow
       nodeTypes={nodeTypes}
@@ -119,7 +123,7 @@ export default function Sections() {
          gap={20}
          size={2} />
       <MiniMap />
-      <Controls />
+      <CustomControls />
     </ReactFlow>
   );
 }
