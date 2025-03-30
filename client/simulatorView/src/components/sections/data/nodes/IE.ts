@@ -48,7 +48,7 @@ export const IE: Node[] = [
         id: 'muxA',
         type: 'muxA',
         data: { label: 'MUX A' },
-        position: { x: 120, y: 465 },
+        position: { x: 140, y: 465 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -67,7 +67,7 @@ export const IE: Node[] = [
         id: 'aluASrc',
         type: 'aluASrc',
         data: { label: 'ALU A SRC' },
-        position: { x: 120, y: 360 },
+        position: { x: 140, y: 360 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -85,7 +85,7 @@ export const IE: Node[] = [
         id: 'muxB',
         type: 'muxB',
         data: { label: 'MUX B' },
-        position: { x: 120, y: 660 },
+        position: { x: 140, y: 660 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -103,7 +103,7 @@ export const IE: Node[] = [
         id: 'aluBSrc',
         type: 'aluBSrc',
         data: { label: 'ALU B SRC' },
-        position: { x: 120, y: 760 },
+        position: { x: 140, y: 760 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -178,7 +178,25 @@ export const IE: Node[] = [
       id: 'pivot2',
       type: 'pivot2',
       data: { label: '' },
-      position: { x: 60, y: 471 },
+      position: { x: 105, y: 471 },
+      parentId: 'IE',
+      extent: 'parent',
+      style: {
+        width: 1,
+        height: 1,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
+    {
+      id: 'pivot4',
+      type: 'pivot4',
+      data: { label: '' },
+      position: { x: 70, y: 573},
       parentId: 'IE',
       extent: 'parent',
       style: {

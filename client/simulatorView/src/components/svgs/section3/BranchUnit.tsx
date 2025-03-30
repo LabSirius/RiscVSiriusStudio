@@ -11,12 +11,12 @@ export default function BranchUnit() {
        </div>
 
        <Handle  type="target"
-        id="[19:15]"
+        id=""
         position={Position.Left}
         style={{ top: '2rem', background: '#555', width: 10, height: 10 }} />
 
        <Handle  type="target"
-        id="[24:20]"
+        id="RS1"
         position={Position.Left}
         style={{ top: '5rem', background: '#555', width: 10, height: 10 }} />    
     </div>

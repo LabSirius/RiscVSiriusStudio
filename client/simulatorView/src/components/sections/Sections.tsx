@@ -40,6 +40,7 @@ import BranchUnit from '../svgs/section3/BranchUnit';
 import Pivot1 from '../svgs/pivots/Pivot1';
 import Pivot2 from '../svgs/pivots/Pivot2';
 import Pivot3 from '../svgs/pivots/Pivot3';
+import Pivot4 from '../svgs/pivots/Pivot4';
 
 import ImmGenerator from '../svgs/section2/ImmGenerator';
 import ImmSrc from '../svgs/section2/ImmSrc';
@@ -78,6 +79,7 @@ const nodeTypes = {
   pivot1: Pivot1,
   pivot2: Pivot2,
   pivot3: Pivot3,
+  pivot4: Pivot4,
 
   //Jumps
   pivotJump1: PivotJump1,

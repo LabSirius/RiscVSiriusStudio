@@ -15,6 +15,7 @@ import { ALUXSRC } from './ALUXSRC';
 import { PC_MUXA } from './PC_MUXA';
 import { MUXS_ALU } from './MUXS_ALU';
 import { ALUOp_ALU } from './ALUOp_ALU';
+import { RURS1_BU } from './RU[RS1]_BU';
 
 
 export const initialEdges: Edge[] = [
@@ -35,4 +36,6 @@ export const initialEdges: Edge[] = [
   ...MUXS_ALU, // MUXS to ALU connections
 
   ...ALUOp_ALU, // ALUOp to ALU connection
+
+  ...RURS1_BU // Register Unit to Branch Unit connections
 ];
