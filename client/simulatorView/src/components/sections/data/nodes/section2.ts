@@ -28,7 +28,7 @@ export const section2: Node[] = [
       id: 'controlUnit',
       type: 'controlUnitSvg',
       data: { label: 'Control Unit' },
-      position: { x: 280, y: 285 },
+      position: { x: 280, y: 255 },
       parentId: 'section-2',
       extent: 'parent',
       style: {

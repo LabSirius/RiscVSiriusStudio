@@ -47,7 +47,7 @@ export const section1: Node[] = [
       id: 'adder4',
       type: 'adder4Svg',
       data: { label: 'Adder 4' },
-      position: { x: 440, y: 200 },
+      position: { x: 440, y: 120 },
       parentId: 'section-1',
       extent: 'parent',
       style: {
@@ -65,7 +65,7 @@ export const section1: Node[] = [
       id: 'four',
       type: 'fourSvg',
       data: { label: '4' },
-      position: { x: 310, y: 170},
+      position: { x: 310, y: 90},
       parentId: 'section-1',
       extent: 'parent',
       style: {
@@ -107,7 +107,7 @@ export const section1: Node[] = [
       id: 'pcPivotAdder4',
       type: 'pcPivotAdder4',
       data: { label: '' },
-      position: { x: 200, y: 280 },
+      position: { x: 200, y: 200 },
       parentId: 'section-1',
       extent: 'parent',
       style: {
