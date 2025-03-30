@@ -97,9 +97,6 @@ export const section2: Node[] = [
       },
     },
 
-    
-    
-
     //PIVOTS S2
     //NODE INSTRUCTIONMEMORY-PIVOT-REGISTERSUNIT
 
