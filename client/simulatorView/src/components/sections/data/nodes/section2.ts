@@ -28,7 +28,7 @@ export const section2: Node[] = [
       id: 'controlUnit',
       type: 'controlUnit',
       data: { label: 'Control Unit' },
-      position: { x: 280, y: 255 },
+      position: { x: 280, y: 140 },
       parentId: 'section-2',
       extent: 'parent',
       style: {
@@ -47,7 +47,7 @@ export const section2: Node[] = [
       id: 'registersUnit',
       type: 'registerUnit',
       data: { label: 'Registers Unit' },
-      position: { x: 280, y: 635 },
+      position: { x: 280, y: 475 },
       parentId: 'section-2',
       extent: 'parent',
       style: {
@@ -104,7 +104,7 @@ export const section2: Node[] = [
       id: 'instMemPivotRU',
       type: 'instMemPivotRU',
       data: { label: '' },
-      position: { x: 0, y: 830 },
+      position: { x: 0, y: 670 },
       parentId: 'section-2',
       extent: 'parent',
       style: {

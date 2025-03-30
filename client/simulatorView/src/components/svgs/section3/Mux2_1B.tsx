@@ -25,7 +25,7 @@ function Mux2_1B() {
         type="target"
         id="aluBSrc"
         position={Position.Bottom}
-        style={{ top: '6.9rem', background: '#555', width: 10, height: 10 }} 
+        style={{ top: '7rem', background: '#555', width: 10, height: 10 }} 
       />
     </div>
   );

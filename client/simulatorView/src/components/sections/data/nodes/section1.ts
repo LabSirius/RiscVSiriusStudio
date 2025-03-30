@@ -28,7 +28,7 @@ export const section1: Node[] = [
       id: 'pc',
       type: 'pc',
       data: { label: 'PC' },
-      position: { x: 30, y: 713 },
+      position: { x: 30, y: 550 },
       parentId: 'section-1',
       extent: 'parent',
       style: {
@@ -47,7 +47,7 @@ export const section1: Node[] = [
       id: 'adder4',
       type: 'adder4',
       data: { label: 'Adder 4' },
-      position: { x: 440, y: 120 },
+      position: { x: 440, y: 70 },
       parentId: 'section-1',
       extent: 'parent',
       style: {
@@ -65,7 +65,7 @@ export const section1: Node[] = [
       id: 'four',
       type: 'four',
       data: { label: '4' },
-      position: { x: 310, y: 90},
+      position: { x: 310, y: 37},
       parentId: 'section-1',
       extent: 'parent',
       style: {
@@ -84,7 +84,7 @@ export const section1: Node[] = [
       id: 'instructionMemory',
       type: 'instructionMemory', 
       data: { label: 'Instruction Memory' },
-      position: { x: 300, y: 670 },
+      position: { x: 300, y: 510 },
       parentId: 'section-1',
       extent: 'parent',
       style: {
@@ -107,7 +107,7 @@ export const section1: Node[] = [
       id: 'pcPivotAdder4',
       type: 'pcPivotAdder4',
       data: { label: '' },
-      position: { x: 200, y: 200 },
+      position: { x: 200, y: 150 },
       parentId: 'section-1',
       extent: 'parent',
       style: {
