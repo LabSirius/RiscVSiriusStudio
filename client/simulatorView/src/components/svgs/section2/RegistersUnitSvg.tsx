@@ -28,6 +28,16 @@ export default function RegistersUnitSvg() {
         position={Position.Left}
         style={{ top: '12.2rem', background: '#555', width: 10, height: 10 }} />
 
+      <Handle  type="source"
+        position={Position.Right}
+        id="mux2_1A"
+        style={{ top: '6.2rem', background: '#555', width: 10, height: 10 }} />
+
+      <Handle  type="source"
+        position={Position.Right}
+        id="mux2_1B"
+        style={{ top: '16.2rem', background: '#555', width: 10, height: 10 }} />
+
     
     </div>
     

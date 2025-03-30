@@ -21,7 +21,7 @@ export default function Adder4Svg() {
       <Handle
         type="target"
         position={Position.Left}
-        id="adder4Target"
+        id="pivot"
         style={{ top: '5rem', background: '#555', width: 10, height: 10 }}
       />
 

@@ -26,6 +26,10 @@ import InstructionMemorySvg from '../svgs/section1/InstructionMemorySvg';
 import RegistersUnitSvg from '../svgs/section2/RegistersUnitSvg';
 import ControlUnitSvg from '../svgs/section2/ControlUnitSvg';
 
+//Section 3
+import Mux2_1A from '../svgs/section3/Mux2_1A';
+import Mux2_1B from '../svgs/section3/Mux2_1B';
+
 //pivots
 import PcPivotAdder4 from '../svgs/pivots/PcPivotAdder4';
 import IMPivotRU from '../svgs/pivots/IMPivotRU';
@@ -33,8 +37,7 @@ import IMPivotRU from '../svgs/pivots/IMPivotRU';
 import AnimatedSVGEdge from '../animate/AnimatedSVGEdge';
 import ImmGeneratorSvg from '../svgs/section2/ImmGeneratosSvg';
 import ImmSrc from '../svgs/section2/ImmSRC';
-import Mux2_1A from '../svgs/section3/Mux2_1A';
-import Mux2_1B from '../svgs/section3/Mux2_1B';
+
 
 
 

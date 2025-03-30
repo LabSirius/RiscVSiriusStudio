@@ -8,6 +8,7 @@ import { IM_RU } from './IM_RU';
 import { IM_CU } from './IM_CU';
 import { PC_ADDR4 } from './PC_ADDR4';
 import { IM_IG } from './IM_IG';
+import { RU_MUX2 } from './RU_MUX2_1';
 
 export const initialEdges: Edge[] = [
 
@@ -35,4 +36,6 @@ export const initialEdges: Edge[] = [
       color: '#FF0072',
     },
   },
+
+  ...RU_MUX2, // Register Unit to MUX 2 connections
 ];

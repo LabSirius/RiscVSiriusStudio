@@ -10,7 +10,7 @@ export default function InstructionMemorySvg() {
        </div>
       <Handle  type="target"
         position={Position.Left}
-        style={{ transform: 'translateX(-50%)' }} />
+        style={{ transform: 'translateX(-50%)',  background: '#555', width: 10, height: 10 }} />
       <Handle  type="source"
         position={Position.Right}
         style={{ top: '10rem', background: '#555', width: 10, height: 10 }} />
