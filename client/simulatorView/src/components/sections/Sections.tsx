@@ -50,6 +50,7 @@ import PivotJump1 from '../svgs/pivots/jump/PivotJump1';
 
 //Customs 
 import AnimatedSVGEdge from '../customs/AnimatedSVGEdge';
+import PivotJump2 from '../svgs/pivots/jump/PivotJump2';
 
 const nodeTypes = {
 
@@ -83,6 +84,7 @@ const nodeTypes = {
 
   //Jumps
   pivotJump1: PivotJump1,
+  pivotJump2: PivotJump2,
 };
 
 const edgeTypes = {

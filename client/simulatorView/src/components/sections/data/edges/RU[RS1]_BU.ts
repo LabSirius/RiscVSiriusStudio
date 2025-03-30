@@ -11,12 +11,12 @@ export const RURS1_BU: Edge[] = [
         targetHandle: 'RS1',
         type: 'smoothstep',
         animated: true,
-        markerEnd: {
-            type: MarkerType.ArrowClosed,
-            width: 18,
-            height: 18,
-            color: '#FF0072',
-            },
+         markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 18,
+                height: 18,
+                color: '#FF0072',
+        },
     },
 
    
