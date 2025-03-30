@@ -109,6 +109,8 @@ export default function Sections() {
       onConnect={onConnect}
       style={{ backgroundColor: '#F7F9FB' }}
       fitView
+      minZoom={0.1}    
+      maxZoom={2}       
     >
       <Background 
          //color="#E6E6E6"
