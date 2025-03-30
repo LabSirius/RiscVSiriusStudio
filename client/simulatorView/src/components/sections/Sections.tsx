@@ -43,7 +43,7 @@ import Pivot3 from '../svgs/pivots/Pivot3';
 import Pivot4 from '../svgs/pivots/Pivot4';
 
 import ImmGenerator from '../svgs/section2/ImmGenerator';
-import ImmSrc from '../svgs/section2/ImmSrc';
+import ImmSrc from '../svgs/section2/ImmSRC';
 
 //jumps
 import PivotJump1 from '../svgs/pivots/jump/PivotJump1';
