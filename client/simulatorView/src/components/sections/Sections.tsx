@@ -14,12 +14,13 @@ import '@xyflow/react/dist/style.css';
 import { initialNodes } from './data/nodes/initialNodes'; // Nodes
 import { initialEdges } from './data/edges/initialEdges'; //Conecctions between npdes
 
+import TitleText from '../svgs/TittleText';
 
 //Section 1
 import PC from '../svgs/section1/PC';
 import Adder4 from '../svgs/section1/Adder4';
 import Four from '../svgs/section1/Four';
-import {InstructionMemory, IMAddress} from '../svgs/section1/InstructionMemory'; 
+import InstructionMemory from '../svgs/section1/InstructionMemory'; 
 
 
 // Section 2
@@ -35,13 +36,13 @@ import ALU from '../svgs/section3/ALU';
 import ALUOp from '../svgs/section3/ALUOp';
 import BranchUnit from '../svgs/section3/BranchUnit';
 
+//pivots
 import Pivot1 from '../svgs/pivots/Pivot1';
 import Pivot2 from '../svgs/pivots/Pivot2';
 import Pivot3 from '../svgs/pivots/Pivot3';
 
-import TitleText from '../svgs/TitleText';
 import ImmGenerator from '../svgs/section2/ImmGenerator';
-import ImmSrc from '../svgs/section2/ImmSRC';
+import ImmSrc from '../svgs/section2/ImmSrc';
 
 //jumps
 import PivotJump1 from '../svgs/pivots/jump/PivotJump1';
@@ -51,13 +52,12 @@ import AnimatedSVGEdge from '../customs/AnimatedSVGEdge';
 
 const nodeTypes = {
 
-  titleText: TitleText,
+  title: TitleText,
   // Section 1
   pc: PC,
   adder4: Adder4,
   instructionMemory: InstructionMemory, 
   four: Four,
-  imAddressInput: IMAddress,
 
   //Section 2
   registerUnit: RegistersUnit,
@@ -109,11 +109,11 @@ export default function Sections() {
       fitView
     >
       <Background 
-        //color="#E6E6E6"
-        color="#FF0000"
-        variant='cross'
-        gap={20}
-        size={2} />
+         //color="#E6E6E6"
+         color="#FF0000"
+         variant='cross'
+         gap={20}
+         size={2} />
       <MiniMap />
       <Controls />
     </ReactFlow>

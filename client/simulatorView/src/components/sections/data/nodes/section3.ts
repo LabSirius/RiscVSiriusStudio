@@ -1,280 +1,199 @@
 /*
-* this file contains the nodes of the second section of the simulator
+* this file contains the nodes of the second third of the simulator
 */
 
 import {
-  Node,
-} from '@xyflow/react';
+    Node,
+  } from '@xyflow/react';
 
 
 export const section3: Node[] = [
-  {
-    id: 'section-3',
-    type: 'group',
-    data: { label: 'Section 3' },
-    position: { x: 548 * 2, y: 0 },
-    draggable: false,
-    style: {
-      width: 548,
-      height: 1200,
-      backgroundColor: '#E3F2FD',
-      border: '1px solid #93c4e6',
-      borderRadius: 8,
+    {
+        id: 'section-3',
+        type: 'group',
+        data: { label: 'Section 3' },
+        position: { x: 548 * 2, y: 0 },
+        draggable: false,
+        style: {
+          width: 548,
+          height: 1200,
+          backgroundColor: '#E3F2FD',
+          border: '1px solid #93c4e6',
+          borderRadius: 8,
+        },
     },
-  },
 
-  {
-    id: 'instruction-execute-title',
-    type: 'titleText',
-    data: { label: 'Execute (IE)' },
-    position: { x: 0, y: 10 },
-    parentId: 'section-3',
-    extent: 'parent',
-    selectable: false,
-    draggable: false,
-    style: {
-      // TODO; this has to go in TitleText.tsx for the other titles to be consistently rendered.
-      fontSize: '28px',
-      fontWeight: 'bold',
-      color: '#3A6973',
-      padding: 0,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderBottom: '4px solid #e3aaaa',
-      paddingBottom: '10px',
-      boxShadow: 'none',
-      width: 540,
-      height: 30,
+    {
+      id: 'title-IE',
+      type: 'title',
+      data: { label: 'Execute (IE)' },
+      position: { x: 0, y: 0 },
+      parentId: 'section-3',
+      extent: 'parent',
+      draggable: false,
+      style: {
+        width: 548,
+        height: 50,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
     },
-  },
 
-  {
-    id: 'muxA',
-    type: 'muxA',
-    data: { label: 'MUX A' },
-    position: { x: 100, y: 430 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 65,
-      height: 150,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
+ 
+
+    {
+        id: 'muxA',
+        type: 'muxA',
+        data: { label: 'MUX A' },
+        position: { x: 120, y: 465 },
+        parentId: 'section-3',
+        extent: 'parent',
+        style: {
+          width: 65,
+          height: 150,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
+
+      {
+        id: 'aluASrc',
+        type: 'aluASrc',
+        data: { label: 'ALU A SRC' },
+        position: { x: 120, y: 360 },
+        parentId: 'section-3',
+        extent: 'parent',
+        style: {
+          width: 65,
+          height: 150,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
+      {
+        id: 'muxB',
+        type: 'muxB',
+        data: { label: 'MUX B' },
+        position: { x: 120, y: 660 },
+        parentId: 'section-3',
+        extent: 'parent',
+        style: {
+          width: 65,
+          height: 150,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
+      {
+        id: 'aluBSrc',
+        type: 'aluBSrc',
+        data: { label: 'ALU B SRC' },
+        position: { x: 120, y: 760 },
+        parentId: 'section-3',
+        extent: 'parent',
+        style: {
+          width: 65,
+          height: 150,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
+      {
+        id: 'alu',
+        type: 'alu',
+        data: { label: 'ALU' },
+        position: { x: 250, y: 465 },
+        parentId: 'section-3',
+        extent: 'parent',
+        style: {
+          width: 240,
+          height: 320,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
+      {
+        id: 'aluOp',
+        type: 'aluOp',
+        data: { label: 'ALU OPERATION' },
+        position: { x: 338, y: 761 },
+        parentId: 'section-3',
+        extent: 'parent',
+        style: {
+          width: 65,
+          height: 150,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
+      {
+        id: 'branchUnit',
+        type: 'branchUnit',
+        data: { label: 'Branch Unit' },
+        position: { x: 250, y: 235 },
+        parentId: 'section-3',
+        extent: 'parent',
+        style: {
+          width: 240,
+          height: 110,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
+
+    //PIVOTS S3
+    //NODE PC-PIVOT1-PIVOTJUMP1-PIVOT2-MUXA
+    {
+      id: 'pivot2',
+      type: 'pivot2',
+      data: { label: '' },
+      position: { x: 60, y: 471 },
+      parentId: 'section-3',
+      extent: 'parent',
+      style: {
+        width: 1,
+        height: 1,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
     },
-  },
-
-
-  {
-    id: 'aluASrc',
-    type: 'aluASrc',
-    data: { label: 'ALU A SRC' },
-    position: { x: 100, y: 325 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 65,
-      height: 150,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
-
-  {
-    id: 'muxB',
-    type: 'muxB',
-    data: { label: 'MUX B' },
-    position: { x: 100, y: 625 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 65,
-      height: 150,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
-
-  {
-    id: 'aluBSrc',
-    type: 'aluBSrc',
-    data: { label: 'ALU B SRC' },
-    position: { x: 100, y: 725 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 65,
-      height: 150,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
-
-  {
-    id: 'alu',
-    type: 'alu',
-    data: { label: 'ALU' },
-    position: { x: 250, y: 460 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 240,
-      height: 300,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
-
-
-  //PIVOTS S3
-  //NODE PC-PIVOT1-PIVOTJUMP1-PIVOT2-MUXA
-  {
-    id: 'pivot2',
-    type: 'pivot2',
-    data: { label: '' },
-    position: { x: 30, y: 436 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 1,
-      height: 1,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
-
-
-  {
-    id: 'muxA',
-    type: 'muxA',
-    data: { label: 'MUX A' },
-    position: { x: 100, y: 430 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 65,
-      height: 150,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
-
-
-  {
-    id: 'aluASrc',
-    type: 'aluASrc',
-    data: { label: 'ALU A SRC' },
-    position: { x: 100, y: 325 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 65,
-      height: 150,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
-
-  {
-    id: 'mux2B',
-    type: 'mux2B',
-    data: { label: 'MUX B' },
-    position: { x: 100, y: 625 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 65,
-      height: 150,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
-
-  {
-    id: 'aluBSrc',
-    type: 'aluBSrc',
-    data: { label: 'ALU B SRC' },
-    position: { x: 100, y: 725 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 65,
-      height: 150,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
-
-  {
-    id: 'alu',
-    type: 'alu',
-    data: { label: 'ALU' },
-    position: { x: 250, y: 460 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 240,
-      height: 300,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
-
-
-  //PIVOTS S3
-  //NODE PC-PIVOT1-PIVOTJUMP1-PIVOT2-MUXA
-  {
-    id: 'pivot2',
-    type: 'pivot2',
-    data: { label: '' },
-    position: { x: 30, y: 436 },
-    parentId: 'section-3',
-    extent: 'parent',
-    style: {
-      width: 1,
-      height: 1,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
 
 
 
-
-
-];
+    
+   
+  ];

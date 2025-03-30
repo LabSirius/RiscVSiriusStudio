@@ -24,27 +24,21 @@ export const section2: Node[] = [
     },
 
     {
-      id: 'instruction-decode-title',
-      type: 'titleText',
+      id: 'title-ID',
+      type: 'title',
       data: { label: 'Decode (ID)' },
-      position: { x: 0, y: 10 },
+      position: { x: 0, y: 0 },
       parentId: 'section-2',
       extent: 'parent',
-      selectable: false,
       draggable: false,
       style: {
-        // TODO; this has to go in TitleText.tsx for the other titles to be consistently rendered.
-        fontSize: '28px',
-        fontWeight: 'bold',
-        color: '#3A6973',
-        padding: 0,
+        width: 548,
+        height: 50,
         backgroundColor: 'transparent',
         border: 'none',
-        borderBottom: '4px solid #e3aaaa', 
-        paddingBottom: '10px',
+        borderRadius: 0,
+        padding: 0,
         boxShadow: 'none',
-        width: 540,
-        height: 30,
       },
     },
 
@@ -53,7 +47,7 @@ export const section2: Node[] = [
       id: 'controlUnit',
       type: 'controlUnit',
       data: { label: 'Control Unit' },
-      position: { x: 280, y: 140 },
+      position: { x: 280, y: 205 },
       parentId: 'section-2',
       extent: 'parent',
       style: {
@@ -72,7 +66,7 @@ export const section2: Node[] = [
       id: 'registersUnit',
       type: 'registerUnit',
       data: { label: 'Registers Unit' },
-      position: { x: 280, y: 475 },
+      position: { x: 280, y: 510 },
       parentId: 'section-2',
       extent: 'parent',
       style: {
@@ -90,7 +84,7 @@ export const section2: Node[] = [
       id: 'immSrc',
       type: 'immSrc',
       data: { label: 'IMMSrc' },
-      position: { x: 133, y: 1085},
+      position: { x: 133, y: 1120},
       parentId: 'section-2',
       extent: 'parent',
       style: {
@@ -108,7 +102,7 @@ export const section2: Node[] = [
       id: 'immGenerator',
       type: 'immGenerator',
       data: { label: 'Immediate Generator' },
-      position: { x: 280, y: 1025 },
+      position: { x: 280, y: 1060 },
       parentId: 'section-2',
       extent: 'parent',
       style: {
@@ -129,7 +123,7 @@ export const section2: Node[] = [
       id: 'pivot3',
       type: 'pivot3',
       data: { label: '' },
-      position: { x: 0, y: 670 },
+      position: { x: 0, y: 705 },
       parentId: 'section-2',
       extent: 'parent',
       style: {
@@ -150,7 +144,7 @@ export const section2: Node[] = [
       id: 'pivotJump1',
       type: 'pivotJump1',
       data: { label: 'pivotJump1' },
-      position: { x: 120, y: 410 },
+      position: { x: 120, y: 445 },
       parentId: 'section-2',
       extent: 'parent',
       style: {
