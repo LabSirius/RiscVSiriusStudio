@@ -27,19 +27,17 @@ import RegistersUnit from '../svgs/section2/RegistersUnit';
 import ControlUnit from '../svgs/section2/ControlUnit';
 
 //Section 3
-import MuxA from '../svgs/section3/MuxA';
-import ALUASrc from '../svgs/section3/ALUASrc';
-import MuxB from '../svgs/section3/MuxB';
-import ALUBSrc from '../svgs/section3/ALUBSrc';
-
-//Section 3
 import Mux2_1A from '../svgs/section3/Mux2_1A';
 import Mux2_1B from '../svgs/section3/Mux2_1B';
 
 //pivots
-import Pivot1 from '../svgs/pivots/Pivot1';
-import Pivot2 from '../svgs/pivots/Pivot2';
-import Pivot3 from '../svgs/pivots/Pivot3';
+import PcPivotAdder4 from '../svgs/pivots/PcPivotAdder4';
+import IMPivotRU from '../svgs/pivots/IMPivotRU';
+
+import AnimatedSVGEdge from '../animate/AnimatedSVGEdge';
+import ImmGenerator from '../svgs/section2/ImmGenerator';
+import ImmSrc from '../svgs/section2/ImmSRC';
+
 
 import ImmGenerator from '../svgs/section2/ImmGenerator';
 import ImmSrc from '../svgs/section2/ImmSrc';

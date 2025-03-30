@@ -41,103 +41,106 @@ export const section2: Node[] = [
       boxShadow: 'none',
     },
   },
+  },
 
 
-  {
-    id: 'registersUnit',
+{
+  id: 'registersUnit',
     type: 'registerUnit',
-    data: { label: 'Registers Unit' },
-    position: { x: 280, y: 475 },
-    parentId: 'section-2',
+      data: { label: 'Registers Unit' },
+  position: { x: 280, y: 635 },
+  parentId: 'section-2',
     extent: 'parent',
-    style: {
-      width: 240,
+      style: {
+    width: 240,
       height: 300,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
+        backgroundColor: 'transparent',
+          border: 'none',
+            borderRadius: 0,
+              padding: 0,
+                boxShadow: 'none',
+      },
+},
   },
 
-  {
-    id: 'immSrc',
+{
+  id: 'immSrc',
     type: 'immSrc',
-    data: { label: 'IMMSrc' },
-    position: { x: 133, y: 1078 },
-    parentId: 'section-2',
+      data: { label: 'IMMSrc' },
+  position: { x: 133, y: 1078 },
+  parentId: 'section-2',
     extent: 'parent',
-    style: {
-      width: 90,
+      style: {
+    width: 90,
       height: 30,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
+        backgroundColor: 'transparent',
+          border: 'none',
+            borderRadius: 0,
+              padding: 0,
+                boxShadow: 'none',
     },
-  },
+},
 
-  {
-    id: 'immGenerator',
+{
+  id: 'immGenerator',
     type: 'immGenerator',
-    data: { label: 'Registers Unit' },
-    position: { x: 280, y: 1025 },
-    parentId: 'section-2',
+      data: { label: 'Registers Unit' },
+  position: { x: 280, y: 1025 },
+  parentId: 'section-2',
     extent: 'parent',
-    style: {
-      width: 240,
+      style: {
+    width: 240,
       height: 100,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
+        backgroundColor: 'transparent',
+          border: 'none',
+            borderRadius: 0,
+              padding: 0,
+                boxShadow: 'none',
+      },
+},
   },
 
-  //PIVOTS S2
-  //NODE INSTRUCTIONMEMORY-PIVOT-REGISTERSUNIT
+//PIVOTS S2
+//NODE INSTRUCTIONMEMORY-PIVOT-REGISTERSUNIT
 
-  {
-    id: 'pivot3',
+{
+  id: 'pivot3',
     type: 'pivot3',
-    data: { label: '' },
-    position: { x: 0, y: 670 },
-    parentId: 'section-2',
+      data: { label: '' },
+  position: { x: 0, y: 670 },
+  parentId: 'section-2',
     extent: 'parent',
-    style: {
-      width: 1,
+      style: {
+    width: 1,
       height: 1,
-      opacity: 0,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
+        opacity: 0,
+          backgroundColor: 'transparent',
+            border: 'none',
+              borderRadius: 0,
+                padding: 0,
+                  boxShadow: 'none',
     },
-  },
+},
 
 
-  //jump
-  {
-    id: 'pivotJump1',
+//jump
+{
+  id: 'pivotJump1',
     type: 'pivotJump1',
-    data: { label: 'pivotJump1' },
-    position: { x: 120, y: 410 },
-    parentId: 'section-2',
+      data: { label: 'pivotJump1' },
+  position: { x: 120, y: 410 },
+  parentId: 'section-2',
     extent: 'parent',
-    style: {
-      width: 47,
+      style: {
+    width: 47,
       height: 47,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
+        backgroundColor: 'transparent',
+          border: 'none',
+            borderRadius: 0,
+              padding: 0,
+                boxShadow: 'none',
     },
-  },
+},
 
 
 

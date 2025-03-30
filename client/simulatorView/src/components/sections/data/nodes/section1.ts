@@ -22,13 +22,12 @@ export const section1: Node[] = [
       border: '1px solid #e3aaaa',
       borderRadius: 8,
     },
-  },
-
-  {
+  
+    {
     id: 'pc',
     type: 'pc',
     data: { label: 'PC' },
-    position: { x: 30, y: 550 },
+    position: { x: 30, y: 713 },
     parentId: 'section-1',
     extent: 'parent',
     style: {
@@ -41,85 +40,87 @@ export const section1: Node[] = [
       boxShadow: 'none',
     },
   },
+  },
 
 
-  {
-    id: 'adder4',
+{
+  id: 'adder4',
     type: 'adder4',
-    data: { label: 'Adder 4' },
-    position: { x: 440, y: 120 },
-    parentId: 'section-1',
+      data: { label: 'Adder 4' },
+  position: { x: 440, y: 120 },
+  parentId: 'section-1',
     extent: 'parent',
-    style: {
-      width: 90,
+      style: {
+    width: 90,
       height: 120,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
+        backgroundColor: 'transparent',
+          border: 'none',
+            borderRadius: 0,
+              padding: 0,
+                boxShadow: 'none',
+      },
+},
 
-  {
-    id: 'four',
+{
+  id: 'four',
     type: 'four',
-    data: { label: '4' },
-    position: { x: 310, y: 90 },
-    parentId: 'section-1',
+      data: { label: '4' },
+  position: { x: 310, y: 90 },
+  parentId: 'section-1',
     extent: 'parent',
-    style: {
-      width: 90,
+      style: {
+    width: 90,
       height: 120,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
+        backgroundColor: 'transparent',
+          border: 'none',
+            borderRadius: 0,
+              padding: 0,
+                boxShadow: 'none',
+      },
+},
 
 
-  {
-    id: 'instructionMemory',
+{
+  id: 'instructionMemory',
     type: 'instructionMemory',
-    data: { label: 'Instruction Memory' },
-    position: { x: 300, y: 510 },
-    parentId: 'section-1',
+      data: { label: 'Instruction Memory' },
+  position: { x: 300, y: 670 },
+  parentId: 'section-1',
     extent: 'parent',
-    style: {
-      width: 230,
+      style: {
+    width: 230,
       height: 200,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
+        backgroundColor: 'transparent',
+          border: 'none',
+            borderRadius: 0,
+              padding: 0,
+                boxShadow: 'none',
+      },
+},
   },
 
 
 
-  //PIVOTS S1
+//PIVOTS S1
 
-  //NODE PC-PIVOT-ADDER4
-  {
-    id: 'pivot1',
+//NODE PC-PIVOT-ADDER4
+{
+  id: 'pivot1',
     type: 'pivot1',
-    data: { label: '' },
-    position: { x: 200, y: 200 },
-    parentId: 'section-1',
+      data: { label: '' },
+  position: { x: 200, y: 200 },
+  parentId: 'section-1',
     extent: 'parent',
-    style: {
-      width: 1,
+      style: {
+    width: 1,
       height: 1,
-      opacity: 0,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
+        opacity: 0,
+          backgroundColor: 'transparent',
+            border: 'none',
+              borderRadius: 0,
+                padding: 0,
+                  boxShadow: 'none',
     },
-  },
+},
 
 ];
