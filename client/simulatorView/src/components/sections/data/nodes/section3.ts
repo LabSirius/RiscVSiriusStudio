@@ -97,6 +97,26 @@ export const section3: Node[] = [
       },
 
 
+
+      {
+        id: 'alu',
+        type: 'alu',
+        data: { label: 'ALU' },
+        position: { x: 250, y: 460 },
+        parentId: 'section-3',
+        extent: 'parent',
+        style: {
+          width: 240,
+          height: 300,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
+
     //PIVOTS S3
     //NODE PC-PIVOT1-PIVOTJUMP1-PIVOT2-MUXA
     {

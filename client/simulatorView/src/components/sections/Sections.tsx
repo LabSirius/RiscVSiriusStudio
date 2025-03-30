@@ -31,6 +31,7 @@ import MuxA from '../svgs/section3/MuxA';
 import ALUASrc from '../svgs/section3/ALUASrc';
 import MuxB from '../svgs/section3/MuxB';
 import ALUBSrc from '../svgs/section3/ALUBSrc';
+import ALU from '../svgs/section3/ALU';
 
 //pivots
 import Pivot1 from '../svgs/pivots/Pivot1';
@@ -59,12 +60,13 @@ const nodeTypes = {
   controlUnit: ControlUnit,
   immGenerator: ImmGenerator,
   immSrc: ImmSrc,
-
+  
   //Section 3
   muxA: MuxA,
   aluASrc: ALUASrc,
   mux2B: MuxB,
   aluBSrc: ALUBSrc,
+  alu: ALU,
 
   //Pivots
   pivot1: Pivot1,
