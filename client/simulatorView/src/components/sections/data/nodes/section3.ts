@@ -105,7 +105,25 @@ export const section3: Node[] = [
         extent: 'parent',
         style: {
           width: 240,
-          height: 300,
+          height: 320,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
+      {
+        id: 'aluOp',
+        type: 'aluOp',
+        data: { label: 'ALU OPERATION' },
+        position: { x: 338, y: 755 },
+        parentId: 'section-3',
+        extent: 'parent',
+        style: {
+          width: 65,
+          height: 150,
           backgroundColor: 'transparent',
           border: 'none',
           borderRadius: 0,

@@ -1,4 +1,4 @@
-// this file contains the edges for the RU_MUX2 component
+// this file contains the edges for the RU_MUXS component
 
 import { Edge, MarkerType  } from '@xyflow/react';
 

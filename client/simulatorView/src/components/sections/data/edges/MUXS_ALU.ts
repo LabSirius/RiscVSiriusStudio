@@ -1,4 +1,4 @@
-// 
+// This file contains the edges for the MUXS_ALU component
 
 import { Edge, MarkerType  } from '@xyflow/react';
 
