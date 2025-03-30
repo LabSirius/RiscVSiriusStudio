@@ -96,6 +96,29 @@ export const section3: Node[] = [
         },
       },
 
+
+    //PIVOTS S3
+    //NODE PC-PIVOT1-PIVOTJUMP1-PIVOT2-MUXA
+    {
+      id: 'pivot2',
+      type: 'pivot2',
+      data: { label: '' },
+      position: { x: 30, y: 436 },
+      parentId: 'section-3',
+      extent: 'parent',
+      style: {
+        width: 1,
+        height: 1,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
+
+
     
    
   ];

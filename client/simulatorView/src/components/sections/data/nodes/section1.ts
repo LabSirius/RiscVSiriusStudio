@@ -107,7 +107,7 @@ export const section1: Node[] = [
       id: 'pivot1',
       type: 'pivot1',
       data: { label: '' },
-      position: { x: 200, y: 430 },
+      position: { x: 200, y: 435 },
       parentId: 'section-1',
       extent: 'parent',
       style: {

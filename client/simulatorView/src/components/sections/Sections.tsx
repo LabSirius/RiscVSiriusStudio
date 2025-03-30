@@ -34,6 +34,7 @@ import ALUBSrc from '../svgs/section3/ALUBSrc';
 
 //pivots
 import Pivot1 from '../svgs/pivots/Pivot1';
+import Pivot2 from '../svgs/pivots/Pivot2';
 import Pivot3 from '../svgs/pivots/Pivot3';
 
 import ImmGenerator from '../svgs/section2/ImmGenerator';
@@ -67,6 +68,7 @@ const nodeTypes = {
 
   //Pivots
   pivot1: Pivot1,
+  pivot2: Pivot2,
   pivot3: Pivot3,
 
   //Jumps

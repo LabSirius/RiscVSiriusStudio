@@ -18,7 +18,7 @@ export default function Pivot1() {
       <Handle
         type="source"
         id="muxA"
-        position={Position.Bottom}
+        position={Position.Right}
         style={{ width: 10, height: 10 }}
       />
     </div>
