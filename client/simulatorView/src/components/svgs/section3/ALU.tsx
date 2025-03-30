@@ -13,12 +13,12 @@ export default function ALU() {
        <Handle  type="target"
         id="muxA"
         position={Position.Left}
-        style={{ top: '3.1rem', background: '#555', width: 10, height: 10 }} />
+        style={{ top: '5rem', background: '#555', width: 10, height: 10 }} />
 
        <Handle  type="target"
         id="muxB"
         position={Position.Left}
-        style={{ top: '15.3rem', background: '#555', width: 10, height: 10 }} />  
+        style={{ top: '15.8rem', background: '#555', width: 10, height: 10 }} />  
 
       <Handle  
         type="target"

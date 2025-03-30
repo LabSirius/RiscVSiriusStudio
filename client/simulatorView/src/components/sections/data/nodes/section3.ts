@@ -100,7 +100,7 @@ export const section3: Node[] = [
         id: 'alu',
         type: 'alu',
         data: { label: 'ALU' },
-        position: { x: 250, y: 460 },
+        position: { x: 250, y: 430 },
         parentId: 'section-3',
         extent: 'parent',
         style: {
@@ -118,7 +118,7 @@ export const section3: Node[] = [
         id: 'aluOp',
         type: 'aluOp',
         data: { label: 'ALU OPERATION' },
-        position: { x: 338, y: 755 },
+        position: { x: 338, y: 726 },
         parentId: 'section-3',
         extent: 'parent',
         style: {
