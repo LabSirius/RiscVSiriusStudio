@@ -1,7 +1,7 @@
 import { Handle, Position } from '@xyflow/react';
 import ContainerSVG from '../ContainerSVG';
 
-export default function ControlUnitSvg() {
+export default function ControlUnit() {
   return (
     <div className='w-full'>
 

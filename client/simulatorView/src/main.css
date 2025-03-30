@@ -21,3 +21,9 @@ body {
 .titleInElement{
   @apply text-xl text-[#555555] absolute transform z-2;
 }
+
+
+h2{
+  margin: 0;
+  padding: 0;
+}

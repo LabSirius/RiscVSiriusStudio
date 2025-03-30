@@ -1,11 +1,11 @@
 import { Handle, Position } from '@xyflow/react';
 
-export default function FourSvg() {
+export default function Four() {
   return (
     <div className=''>
 
        <div className='relative w-full h-full'>
-       <h2 className="titleInElement top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] ">4</h2>
+       <h2 className="titleInElement right-0 top-[50%] -translate-y-[50%]">4</h2>
        </div>
         
        <Handle  type="source"

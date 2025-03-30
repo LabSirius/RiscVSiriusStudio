@@ -1,7 +1,7 @@
 import ContainerSVG from '../ContainerSVG';
 import { Handle , Position} from '@xyflow/react';
 
-export default function InstructionMemorySvg() {
+export default function InstructionMemory() {
   return (
     <div className='w-full h-full'>
       <div className='relative w-full h-full'>

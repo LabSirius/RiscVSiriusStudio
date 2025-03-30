@@ -2,7 +2,7 @@ import { Handle, Position } from '@xyflow/react';
 import ContainerSVG from '../ContainerSVG';
 import {Triangle} from 'lucide-react';
 
-export default function RegistersUnitSvg() {
+export default function RegistersUnit() {
   return (
     <div className='w-full'>
 

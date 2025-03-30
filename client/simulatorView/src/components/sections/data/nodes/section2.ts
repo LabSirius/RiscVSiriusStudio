@@ -26,7 +26,7 @@ export const section2: Node[] = [
      // CHILD NODES SECTION 2
     {
       id: 'controlUnit',
-      type: 'controlUnitSvg',
+      type: 'controlUnit',
       data: { label: 'Control Unit' },
       position: { x: 280, y: 255 },
       parentId: 'section-2',
@@ -45,7 +45,7 @@ export const section2: Node[] = [
 
     {
       id: 'registersUnit',
-      type: 'registerUnitSvg',
+      type: 'registerUnit',
       data: { label: 'Registers Unit' },
       position: { x: 280, y: 635 },
       parentId: 'section-2',
@@ -81,7 +81,7 @@ export const section2: Node[] = [
 
     {
       id: 'immGenerator',
-      type: 'immGeneratorSvg',
+      type: 'immGenerator',
       data: { label: 'Registers Unit' },
       position: { x: 280, y: 1025 },
       parentId: 'section-2',

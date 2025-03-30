@@ -1,7 +1,7 @@
 import ContainerSVG from '../ContainerSVG';
 import { Handle, Position } from '@xyflow/react';
 
-export default function ImmGeneratorSvg() {
+export default function ImmGenerator() {
   return (
     <div className='w-full '>
 

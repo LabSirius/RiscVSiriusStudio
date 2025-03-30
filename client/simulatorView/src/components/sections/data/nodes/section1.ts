@@ -26,7 +26,7 @@ export const section1: Node[] = [
   
     {
       id: 'pc',
-      type: 'pcSvg',
+      type: 'pc',
       data: { label: 'PC' },
       position: { x: 30, y: 713 },
       parentId: 'section-1',
@@ -45,7 +45,7 @@ export const section1: Node[] = [
 
     {
       id: 'adder4',
-      type: 'adder4Svg',
+      type: 'adder4',
       data: { label: 'Adder 4' },
       position: { x: 440, y: 120 },
       parentId: 'section-1',
@@ -63,7 +63,7 @@ export const section1: Node[] = [
   
     {
       id: 'four',
-      type: 'fourSvg',
+      type: 'four',
       data: { label: '4' },
       position: { x: 310, y: 90},
       parentId: 'section-1',
@@ -82,7 +82,7 @@ export const section1: Node[] = [
   
     {
       id: 'instructionMemory',
-      type: 'instructionMemorySvg', 
+      type: 'instructionMemory', 
       data: { label: 'Instruction Memory' },
       position: { x: 300, y: 670 },
       parentId: 'section-1',

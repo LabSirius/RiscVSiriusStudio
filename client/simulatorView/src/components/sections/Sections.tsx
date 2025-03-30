@@ -16,15 +16,15 @@ import { initialEdges } from './data/edges/initialEdges'; //Conecctions between 
 
 
 //Section 1
-import PCSvg from '../svgs/section1/PCSVG';
-import Adder4Svg from '../svgs/section1/Adder4Svg';
-import FourSvg from '../svgs/section1/FourSvg';
-import InstructionMemorySvg from '../svgs/section1/InstructionMemorySvg'; 
+import PC from '../svgs/section1/PC';
+import Adder4 from '../svgs/section1/Adder4';
+import Four from '../svgs/section1/Four';
+import InstructionMemory from '../svgs/section1/InstructionMemory'; 
 
 
 // Section 2
-import RegistersUnitSvg from '../svgs/section2/RegistersUnitSvg';
-import ControlUnitSvg from '../svgs/section2/ControlUnitSvg';
+import RegistersUnit from '../svgs/section2/RegistersUnit';
+import ControlUnit from '../svgs/section2/ControlUnit';
 
 //Section 3
 import Mux2_1A from '../svgs/section3/Mux2_1A';
@@ -35,7 +35,7 @@ import PcPivotAdder4 from '../svgs/pivots/PcPivotAdder4';
 import IMPivotRU from '../svgs/pivots/IMPivotRU';
 
 import AnimatedSVGEdge from '../animate/AnimatedSVGEdge';
-import ImmGeneratorSvg from '../svgs/section2/ImmGeneratosSvg';
+import ImmGenerator from '../svgs/section2/ImmGenerator';
 import ImmSrc from '../svgs/section2/ImmSRC';
 
 
@@ -46,15 +46,15 @@ import ImmSrc from '../svgs/section2/ImmSRC';
 const nodeTypes = {
 
   // Section 1
-  pcSvg: PCSvg,
-  adder4Svg: Adder4Svg,
-  instructionMemorySvg: InstructionMemorySvg, 
-  fourSvg: FourSvg,
+  pc: PC,
+  adder4: Adder4,
+  instructionMemory: InstructionMemory, 
+  four: Four,
 
   //Section 2
-  registerUnitSvg: RegistersUnitSvg,
-  controlUnitSvg: ControlUnitSvg,
-  immGeneratorSvg: ImmGeneratorSvg,
+  registerUnit: RegistersUnit,
+  controlUnit: ControlUnit,
+  immGenerator: ImmGenerator,
   immSrc: ImmSrc,
 
   //Section 3
