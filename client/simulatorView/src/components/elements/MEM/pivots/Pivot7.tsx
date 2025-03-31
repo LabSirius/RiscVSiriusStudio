@@ -10,7 +10,7 @@ export default function Pivot7() {
         id="alu"
         position={Position.Left}
       />
-      
+
       <Handle
         type="source"
         position={Position.Top} />
@@ -20,6 +20,7 @@ export default function Pivot7() {
         position={Position.Right} />
        <Handle
         type="source"
+        id="wb"
         position={Position.Bottom} />
     </div>
   );
