@@ -27,14 +27,14 @@ import RegistersUnit from '../elements/ID/RegistersUnit';
 import ControlUnit from '../elements/ID/ControlUnit';
 
 //Section 3
-import MuxA from '../elements/section3/MuxA';
-import ALUASrc from '../elements/section3/ALUASrc';
-import MuxB from '../elements/section3/MuxB';
-import ALUBSrc from '../elements/section3/ALUBSrc';
-import ALU from '../elements/section3/ALU';
-import ALUOp from '../elements/section3/ALUOp';
-import BranchUnit from '../elements/section3/BranchUnit';
-import BrOp from '../elements/section3/BrOp';
+import MuxA from '../elements/IE/MuxA';
+import ALUASrc from '../elements/IE/ALUASrc';
+import MuxB from '../elements/IE/MuxB';
+import ALUBSrc from '../elements/IE/ALUBSrc';
+import ALU from '../elements/IE/ALU';
+import ALUOp from '../elements/IE/ALUOp';
+import BranchUnit from '../elements/IE/BranchUnit';
+import BrOp from '../elements/IE/BrOp';
 
 //pivots
 import Pivot1 from '../elements/pivots/Pivot1';
