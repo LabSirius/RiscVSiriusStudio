@@ -95,4 +95,24 @@ export const MEM: Node[] = [
         boxShadow: 'none',
       },
     },
+
+    //Pivots
+
+    {
+      id: 'pivot6',
+      type: 'pivot6',
+      data: { label: '' },
+      position: { x: 45, y: 940},
+      parentId: 'MEM',
+      extent: 'parent',
+      style: {
+        width: 1,
+        height: 1,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
 ]

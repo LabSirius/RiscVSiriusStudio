@@ -12,19 +12,26 @@ export const RU_DM: Edge[] = [
     type: 'step',
     animated: true
   },
-
+  
   {
     id: 'pivot5->pivotJump5',
-    source: 'pivot2',
-    sourceHandle: 'dataMemory',
+    source: 'pivot5',
     target: 'pivotJump5',
+    type: 'default',
+    animated: true
+  },
+
+  {
+    id: 'pivotJump5->pivot6',
+    source: 'pivotJump5',
+    target: 'pivot6',
     type: 'step',
     animated: true
   },
 
   {
-    id: 'pivotJump5->dataMemory',
-    source: 'pivotJump5',
+    id: 'pivot6->dataMemory',
+    source: 'pivot6',
     target: 'dataMemory',
     targetHandle: 'rs2',
     type: 'smoothstep',
