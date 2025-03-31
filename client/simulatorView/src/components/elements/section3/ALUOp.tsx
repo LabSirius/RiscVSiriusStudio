@@ -13,7 +13,7 @@ export default function ALUOp() {
         className='output'
         style={{ top: '4.4rem' }} />
 
-        
+      
     </div>
     
   );

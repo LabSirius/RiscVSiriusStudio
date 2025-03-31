@@ -16,7 +16,7 @@ import { PC_MUXA } from './PC_MUXA';
 import { MUXS_ALU } from './MUXS_ALU';
 import { ALUOp_ALU } from './ALUOp_ALU';
 import { RU_BU } from './RU_BU';
-
+import { BrOp_BU } from './BrOp_BU';
 
 export const initialEdges: Edge[] = [
 
@@ -37,5 +37,6 @@ export const initialEdges: Edge[] = [
 
   ...ALUOp_ALU, // ALUOp to ALU connection
 
-  ...RU_BU // Register Unit to Branch Unit connections
+  ...RU_BU, // Register Unit to Branch Unit connections
+  ...BrOp_BU // Branch operation to Branch Unit connections
 ];
