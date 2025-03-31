@@ -2,7 +2,7 @@
 
 import { Edge, MarkerType  } from '@xyflow/react';
 
-export const BrOp_BU: Edge[] = [
+export const brOp_BU: Edge[] = [
 
     { id: 'brOp->branchUnit',  source: 'brOp', target: 'branchUnit', targetHandle: 'brOp',  type: 'default', animated:true, markerEnd: {
         type: MarkerType.ArrowClosed,

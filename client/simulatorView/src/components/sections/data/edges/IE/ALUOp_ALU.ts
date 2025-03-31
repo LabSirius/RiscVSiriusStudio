@@ -1,4 +1,4 @@
-// this file contains the edges for the ALUOp_ALU component
+// This file contains the connection between the aluOp and the ALU
 
 import { Edge, MarkerType  } from '@xyflow/react';
 

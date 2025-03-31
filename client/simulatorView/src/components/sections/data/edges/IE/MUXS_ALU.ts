@@ -1,4 +1,4 @@
-// This file contains the edges for the MUXS_ALU component
+// This file contains the connection between the MUXs and the ALU
 
 import { Edge, MarkerType  } from '@xyflow/react';
 
