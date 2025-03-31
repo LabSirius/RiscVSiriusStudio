@@ -37,19 +37,19 @@ import BranchUnit from '../elements/IE/BranchUnit';
 import BrOp from '../elements/IE/BrOp';
 
 //pivots
-import Pivot1 from '../elements/pivots/Pivot1';
-import Pivot2 from '../elements/pivots/Pivot2';
-import Pivot3 from '../elements/pivots/Pivot3';
-import Pivot4 from '../elements/pivots/Pivot4';
+import Pivot1 from '../elements/IF/pivots/Pivot1';
+import Pivot2 from '../elements/IE/pivots/Pivot2';
+import Pivot3 from '../elements/ID/pivots/Pivot3';
+import Pivot4 from '../elements/IE/pivots/Pivot4';
 
 import ImmGenerator from '../elements/ID/ImmGenerator';
 import ImmSrc from '../elements/ID/ImmSRC';
 
 //jumps
-import PivotJump1 from '../elements/pivots/jump/PivotJump1';
-import PivotJump2 from '../elements/pivots/jump/PivotJump2';
-import PivotJump3 from '../elements/pivots/jump/PivotJump3';
-import PivotJump4 from '../elements/pivots/jump/PivotJump4';
+import PivotJump1 from '../elements/ID/pivots/PivotJump1';
+import PivotJump2 from '../elements/IE/pivots/PivotJump2';
+import PivotJump3 from '../elements/IE/pivots/PivotJump3';
+import PivotJump4 from '../elements/IE/pivots/PivotJump4';
 
 
 
