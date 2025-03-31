@@ -1,4 +1,4 @@
-//import { Handle, Position } from '@xyflow/react';
+import { Handle, Position } from '@xyflow/react';
 import ContainerSVG from '../ContainerSVG';
 import {Triangle} from 'lucide-react';
 
@@ -12,7 +12,12 @@ export default function DataMemory() {
         <Triangle size={24} className='absolute left-[50%]  transform -translate-x-[50%] text-[#404040] bottom-0 z-2' />
        </div>
 
-
+       <Handle  type="target"
+              id="alu"
+              position={Position.Left}
+              className='input'
+              style={{top:'7.75rem'}} />
+            
     
     </div>
     

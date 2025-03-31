@@ -28,6 +28,13 @@ export default function ALU() {
         position={Position.Bottom}
         className='input'
       />  
+
+      <Handle  
+        type="source"
+        id="dataMemory"
+        position={Position.Right}
+        className='output'
+      />  
     </div>
     
   );
