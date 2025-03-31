@@ -1,7 +1,6 @@
 import {
   useReactFlow,
   getNodesBounds,
-  getViewportForBounds,
   ControlButton,
 } from '@xyflow/react';
 
@@ -91,7 +90,7 @@ function DownloadButton() {
       .join('\n');
     
     // Get the ReactFlow viewport element
-    const reactFlowViewport = document.querySelector('.react-flow__viewport');
+    const reactFlowViewport = document.querySelector('.react-flow__viewport')! as HTMLElement;
     
     // Small delay to ensure the DOM updates before capturing
     setTimeout(() => {
@@ -100,8 +99,8 @@ function DownloadButton() {
         width: imageWidth,
         height: imageHeight,
         style: {
-          width: imageWidth,
-          height: imageHeight,
+          width: imageWidth.toString(),
+          height: imageHeight.toString(),
           transform: `translate(${-x * zoom}px, ${-y * zoom}px) scale(${zoom})`,
         },
         filter: (node) => {
