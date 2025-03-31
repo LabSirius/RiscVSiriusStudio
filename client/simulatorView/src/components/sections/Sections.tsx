@@ -47,6 +47,7 @@ import Pivot1 from '../elements/IF/pivots/Pivot1';
 import Pivot2 from '../elements/IE/pivots/Pivot2';
 import Pivot3 from '../elements/ID/pivots/Pivot3';
 import Pivot4 from '../elements/IE/pivots/Pivot4';
+import Pivot5 from '../elements/IE/pivots/Pivot5';
 
 import ImmGenerator from '../elements/ID/ImmGenerator';
 import ImmSrc from '../elements/ID/ImmSRC';
@@ -99,6 +100,7 @@ const nodeTypes = {
   pivot2: Pivot2,
   pivot3: Pivot3,
   pivot4: Pivot4,
+  pivot5: Pivot5,
 
   //PIVOTS Jumps
   pivotJump1: PivotJump1,

@@ -12,6 +12,7 @@ import { ID_IE } from './ID-IE/ID_IE';
 import { IE } from './IE/IE';
 import { IE_MEM } from './IE-MEM/IE_MEM';
 import { MEM } from './MEM/MEM';
+import { ID_MEM } from './ID-MEM/ID_MEM';
 
 export const initialEdges: Edge[] = [
   ...IF, // IF stage edges
@@ -22,4 +23,5 @@ export const initialEdges: Edge[] = [
   ...IE, // IE stage edges
   ...IE_MEM, // IE-MEM stage edges
   ...MEM, // MEM stage edges
+  ...ID_MEM // ID-MEM stage edges
 ];

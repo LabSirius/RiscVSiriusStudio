@@ -229,6 +229,24 @@ export const IE: Node[] = [
       },
     },
 
+    {
+      id: 'pivot5',
+      type: 'pivot5',
+      data: { label: '' },
+      position: { x: 27, y: 955},
+      parentId: 'IE',
+      extent: 'parent',
+      style: {
+        width: 1,
+        height: 1,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
       //jump
       {
         id: 'pivotJump2',
