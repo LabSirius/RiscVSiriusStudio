@@ -10,7 +10,7 @@ export default function ImmSrc() {
         
        <Handle  type="source"
         position={Position.Right}
-        className='output' />
+        className='output' style={{top:'1.2rem'}} />
     </div>
     
   );

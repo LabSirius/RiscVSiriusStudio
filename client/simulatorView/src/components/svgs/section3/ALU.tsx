@@ -14,7 +14,7 @@ export default function ALU() {
         id="muxA"
         position={Position.Left}
         className='input'
-        style={{ top: '5rem'}} />
+        style={{ top: '4.7rem'}} />
 
        <Handle  type="target"
         id="muxB"
