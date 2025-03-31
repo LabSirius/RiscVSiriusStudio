@@ -9,7 +9,7 @@ export const IG_MUXB: Edge[] = [
           type: MarkerType.ArrowClosed,
           width: 18,
           height: 18,
-          color: '#FF0072',
+          color: '#888888',
         },
     },
 
@@ -25,7 +25,7 @@ export const IG_MUXB: Edge[] = [
           type: MarkerType.ArrowClosed,
           width: 18,
           height: 18,
-          color: '#FF0072',
+          color: '#888888',
         },
     },
 

@@ -22,6 +22,11 @@ body {
   @apply text-xl text-[#555555] absolute transform z-2;
 }
 
+.input {
+  @apply !w-[.6rem] !h-[.8rem] !bg-[#E91E63];
+  border: none !important;
+  clip-path: circle(50% at 50% 50%);
+}
 
 h2{
   margin: 0;

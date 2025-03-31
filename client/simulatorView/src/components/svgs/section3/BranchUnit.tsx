@@ -13,12 +13,14 @@ export default function BranchUnit() {
        <Handle  type="target"
         id=""
         position={Position.Left}
-        style={{ top: '2rem', background: '#555', width: 10, height: 10 }} />
+        className='input'
+        style={{ top: '2rem' }} />
 
        <Handle  type="target"
         id="RS1"
         position={Position.Left}
-        style={{ top: '5rem', background: '#555', width: 10, height: 10 }} />    
+        className='input'
+        style={{ top: '5rem' }} />    
     </div>
     
   );

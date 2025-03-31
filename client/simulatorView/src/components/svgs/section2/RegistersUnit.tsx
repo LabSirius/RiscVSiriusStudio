@@ -15,28 +15,31 @@ export default function RegistersUnit() {
        <Handle  type="target"
         id="[19:15]"
         position={Position.Left}
-        style={{ top: '2.2rem', background: '#555', width: 10, height: 10 }} />
+        className='input'
+        style={{ top: '2.2rem' }} />
 
        <Handle  type="target"
         id="[24:20]"
         position={Position.Left}
-        style={{ top: '6.2rem', background: '#555', width: 10, height: 10 }} />
+        className='input'
+        style={{ top: '6.2rem' }} />
         
 
        <Handle  type="target"
         id="[17:7]"
         position={Position.Left}
-        style={{ top: '12.2rem', background: '#555', width: 10, height: 10 }} />
+        className='input'
+        style={{ top: '12.2rem'}} />
 
       <Handle  type="source"
         position={Position.Right}
         id="muxA"
-        style={{ top: '3.9rem', background: '#555', width: 10, height: 10 }} />
+        style={{ top: '3.9rem'}} />
 
       <Handle  type="source"
         position={Position.Right}
         id="muxB"
-        style={{ top: '12.2rem', background: '#555', width: 10, height: 10 }} />
+        style={{ top: '12.2rem'}} />
 
     
     </div>

@@ -33,7 +33,7 @@ export const PC_ADDR4: Edge[] = [
          type: MarkerType.ArrowClosed,
          width: 18,
          height: 18,
-         color: '#FF0072',
+         color: '#888888',
        }
      },
 
@@ -43,7 +43,7 @@ export const PC_ADDR4: Edge[] = [
         type: MarkerType.ArrowClosed,
         width: 18,
         height: 18,
-        color: '#FF0072',
+        color: '#888888',
       },
     },
 

@@ -13,16 +13,17 @@ export default function ImmGenerator() {
         <Handle  type="target"
                id="[31:7]"
                position={Position.Left}
-               style={{ top: '2rem', background: '#555', width: 10, height: 10 }} />
+               className='input'
+               style={{ top: '2rem' }} />
 
         <Handle  type="target"
                id="immSrc"
                position={Position.Left}
-               style={{ top: '5rem', background: '#555', width: 10, height: 10 }} />
+               className='input'
+               style={{ top: '5rem' }} />
 
         <Handle type="source"
-              position={Position.Right}
-              style={{   background: '#555', width: 10, height: 10 }} />
+              position={Position.Right} />
 
     </div>
     

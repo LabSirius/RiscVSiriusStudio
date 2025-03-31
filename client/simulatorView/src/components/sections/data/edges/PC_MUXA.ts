@@ -10,7 +10,7 @@ export const PC_MUXA: Edge[] = [
         type: MarkerType.ArrowClosed,
         width: 18,
         height: 18,
-        color: '#FF0072',
+        color: '#888888',
      },},
    
 ];

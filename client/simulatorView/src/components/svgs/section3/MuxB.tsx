@@ -11,21 +11,24 @@ function MuxB() {
         type="target"
         id="registersUnitB"
         position={Position.Left}
-        style={{ top: '2.8rem', background: '#555', width: 10, height: 10 }} 
+        className='input'
+        style={{ top: '2.8rem' }} 
       />
 
       <Handle  
         type="target"
         id="immGenerator"
         position={Position.Left}
-        style={{ top: '6.8rem', background: '#555', width: 10, height: 10 }} 
+        className='input'
+        style={{ top: '6.8rem' }} 
       />
 
       <Handle  
         type="target"
         id="aluBSrc"
         position={Position.Bottom}
-        style={{ top: '7rem', background: '#555', width: 10, height: 10 }} 
+        className='input'
+        style={{ top: '7rem' }} 
       />
 
 

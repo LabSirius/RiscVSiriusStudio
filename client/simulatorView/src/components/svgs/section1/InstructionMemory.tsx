@@ -10,10 +10,10 @@ export function InstructionMemory() {
        </div>
       <Handle  type="target"
         position={Position.Left}
-        style={{ background: '#555', width: 10, height: 10 }} />
+        className='input' />
       <Handle  type="source"
         position={Position.Right}
-        style={{ top: '10rem', background: '#555', width: 10, height: 10 }} />
+        style={{ top: '10rem', }} />
       </div>
   );
 }

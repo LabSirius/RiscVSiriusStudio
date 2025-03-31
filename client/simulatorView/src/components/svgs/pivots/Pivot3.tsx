@@ -7,12 +7,10 @@ export default function Pivot3() {
       <Handle
         type="target"
         position={Position.Left}
-        style={{ width: 10, height: 10 }}
       />
       <Handle
         type="source"
         position={Position.Right}
-        style={{ width: 10, height: 10 }}
       />
     </div>
   );

@@ -15,7 +15,7 @@ export const RURS1_BU: Edge[] = [
                 type: MarkerType.ArrowClosed,
                 width: 18,
                 height: 18,
-                color: '#FF0072',
+                color: '#888888',
         },
     },
 

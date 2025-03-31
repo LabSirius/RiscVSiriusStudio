@@ -13,17 +13,20 @@ export default function ControlUnit() {
        <Handle  type="target"
         id="[6:0]"
         position={Position.Left}
-        style={{ top: '2.2rem', background: '#555', width: 10, height: 10 }} />
+        className='input'
+        style={{ top: '2.2rem'}} />
 
         <Handle  type="target"
         id="[14:12]"
         position={Position.Left}
-        style={{ top: '6.7rem', background: '#555', width: 10, height: 10 }} />
+        className='input'
+        style={{ top: '6.7rem'}} />
 
         <Handle  type="target"
         id="[35:25]"
         position={Position.Left}
-        style={{ top: '11.2rem', background: '#555', width: 10, height: 10 }} />
+        className='input'
+        style={{ top: '11.2rem'}} />
 
     </div>
     

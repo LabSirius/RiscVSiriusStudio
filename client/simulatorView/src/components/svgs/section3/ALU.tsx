@@ -13,18 +13,20 @@ export default function ALU() {
        <Handle  type="target"
         id="muxA"
         position={Position.Left}
-        style={{ top: '5rem', background: '#555', width: 10, height: 10 }} />
+        className='input'
+        style={{ top: '5rem'}} />
 
        <Handle  type="target"
         id="muxB"
         position={Position.Left}
-        style={{ top: '15.8rem', background: '#555', width: 10, height: 10 }} />  
+        className='input'
+        style={{ top: '15.8rem'}} />  
 
       <Handle  
         type="target"
         id="aluOp"
         position={Position.Bottom}
-        style={{ background: '#555', width: 10, height: 10 }} 
+        className='input'
       />  
     </div>
     

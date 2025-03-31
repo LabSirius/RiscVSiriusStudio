@@ -10,19 +10,20 @@ export default function Adder4() {
         <ContainerSVG height={7.5}/>
       </div>
 
-
       <Handle
         type="target"
         position={Position.Left}
         id="fourTarget"
-        style={{ top: '2rem', background: '#555', width: 10, height: 10 }}
+         className='input'
+        style={{ top: '2rem' }}
       />
       
       <Handle
         type="target"
         position={Position.Left}
         id="pivot"
-        style={{ top: '5rem', background: '#555', width: 10, height: 10 }}
+        className='input'
+        style={{ top: '5rem'}}
       />
 
 

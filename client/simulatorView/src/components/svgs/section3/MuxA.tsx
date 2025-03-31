@@ -11,17 +11,20 @@ function MuxA() {
       <Handle  type="target"
               id="pc"
               position={Position.Left}
-              style={{ top: '2.8rem', background: '#555', width: 10, height: 10 }} />
+              className='input'
+              style={{ top: '2.8rem' }} />
   
       <Handle  type="target"
               id="registersUnitA"
               position={Position.Left}
-              style={{ top: '6.8rem', background: '#555', width: 10, height: 10 }} />
+              className='input'
+              style={{ top: '6.8rem' }} />
 
       <Handle  type="target"
               id="aluASrc"
               position={Position.Top}
-              style={{ top: '1.5rem', background: '#555', width: 10, height: 10 }} />
+              className='input'
+              style={{ top: '1.5rem' }} />
 
       <Handle  type="source"
             position={Position.Right}
