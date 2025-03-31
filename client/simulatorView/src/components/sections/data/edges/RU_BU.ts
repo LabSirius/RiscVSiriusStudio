@@ -2,7 +2,7 @@
 
 import { Edge, MarkerType } from '@xyflow/react';
 
-export const RURS1_BU: Edge[] = [
+export const RU_BU: Edge[] = [
     {
         id: 'pivot4->branchUnit',
         source: 'pivot4',
