@@ -1,4 +1,4 @@
-// this file contains the edges for the program counter and instruction memory
+// This file contains the connection between the program counter and the instruction memory
 
 import { Edge, MarkerType  } from '@xyflow/react';
 

@@ -6,8 +6,7 @@
 import { Edge } from '@xyflow/react';
 import { IM_RU } from './IM_RU';
 import { IM_CU } from './IM_CU';
-import { PC_ADDR4 } from './PC_ADDR4';
-import { PC_IM } from './PC_IM';
+import { PC_IM } from './IF/PC_IM';
 import { IM_IG } from './IM_IG';
 import { RU_MUXS } from './RU_MUXS';
 import { IG_MUXB } from './IG_MUXB';
@@ -17,10 +16,14 @@ import { MUXS_ALU } from './MUXS_ALU';
 import { ALUOp_ALU } from './ALUOp_ALU';
 import { RU_BU } from './RU_BU';
 import { BrOp_BU } from './BrOp_BU';
+import { IFEdges } from './IF/IFEdges';
 
 export const initialEdges: Edge[] = [
 
-  ...PC_ADDR4, //PC to Adder 4 connection and Four to Adder 4 connection
+
+  ...IFEdges, // IF stage edges
+  
+
   ...PC_IM, // PC to Instruction Memory connection
   ...IM_RU,  // Instruction Memory to Register Unit connections
   ...IM_CU, // Instruction Memory to Control Unit connections
