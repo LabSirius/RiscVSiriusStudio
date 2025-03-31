@@ -13,42 +13,42 @@ import '@xyflow/react/dist/style.css';
 import { initialNodes } from './data/nodes/initialNodes'; // Nodes
 import { initialEdges } from './data/edges/initialEdges'; //Conecctions between npdes
 
-import TitleText from '../svgs/TittleText';
+import TitleText from '../elements/TittleText';
 
 //Section 1
-import PC from '../svgs/section1/PC';
-import Adder4 from '../svgs/section1/Adder4';
-import Four from '../svgs/section1/Four';
-import InstructionMemory from '../svgs/section1/InstructionMemory'; 
+import PC from '../elements/section1/PC';
+import Adder4 from '../elements/section1/Adder4';
+import Four from '../elements/section1/Four';
+import InstructionMemory from '../elements/section1/InstructionMemory'; 
 
 
 // Section 2
-import RegistersUnit from '../svgs/section2/RegistersUnit';
-import ControlUnit from '../svgs/section2/ControlUnit';
+import RegistersUnit from '../elements/section2/RegistersUnit';
+import ControlUnit from '../elements/section2/ControlUnit';
 
 //Section 3
-import MuxA from '../svgs/section3/MuxA';
-import ALUASrc from '../svgs/section3/ALUASrc';
-import MuxB from '../svgs/section3/MuxB';
-import ALUBSrc from '../svgs/section3/ALUBSrc';
-import ALU from '../svgs/section3/ALU';
-import ALUOp from '../svgs/section3/ALUOp';
-import BranchUnit from '../svgs/section3/BranchUnit';
+import MuxA from '../elements/section3/MuxA';
+import ALUASrc from '../elements/section3/ALUASrc';
+import MuxB from '../elements/section3/MuxB';
+import ALUBSrc from '../elements/section3/ALUBSrc';
+import ALU from '../elements/section3/ALU';
+import ALUOp from '../elements/section3/ALUOp';
+import BranchUnit from '../elements/section3/BranchUnit';
 
 //pivots
-import Pivot1 from '../svgs/pivots/Pivot1';
-import Pivot2 from '../svgs/pivots/Pivot2';
-import Pivot3 from '../svgs/pivots/Pivot3';
-import Pivot4 from '../svgs/pivots/Pivot4';
+import Pivot1 from '../elements/pivots/Pivot1';
+import Pivot2 from '../elements/pivots/Pivot2';
+import Pivot3 from '../elements/pivots/Pivot3';
+import Pivot4 from '../elements/pivots/Pivot4';
 
-import ImmGenerator from '../svgs/section2/ImmGenerator';
-import ImmSrc from '../svgs/section2/ImmSRC';
+import ImmGenerator from '../elements/section2/ImmGenerator';
+import ImmSrc from '../elements/section2/ImmSRC';
 
 //jumps
-import PivotJump1 from '../svgs/pivots/jump/PivotJump1';
-import PivotJump2 from '../svgs/pivots/jump/PivotJump2';
-import PivotJump3 from '../svgs/pivots/jump/PivotJump3';
-import PivotJump4 from '../svgs/pivots/jump/PivotJump4';
+import PivotJump1 from '../elements/pivots/jump/PivotJump1';
+import PivotJump2 from '../elements/pivots/jump/PivotJump2';
+import PivotJump3 from '../elements/pivots/jump/PivotJump3';
+import PivotJump4 from '../elements/pivots/jump/PivotJump4';
 
 
 
