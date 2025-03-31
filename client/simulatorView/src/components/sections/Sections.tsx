@@ -57,7 +57,7 @@ import PivotJump1 from '../elements/ID/pivots/PivotJump1';
 import PivotJump2 from '../elements/IE/pivots/PivotJump2';
 import PivotJump3 from '../elements/IE/pivots/PivotJump3';
 import PivotJump4 from '../elements/IE/pivots/PivotJump4';
-
+import PivotJump5 from '../elements/IE/pivots/PivotJum5';
 
 
 //Customs 
@@ -107,6 +107,7 @@ const nodeTypes = {
   pivotJump2: PivotJump2,
   pivotJump3: PivotJump3,
   pivotJump4: PivotJump4,
+  pivotJump5: PivotJump5,
 };
 
 const edgeTypes = {

@@ -304,6 +304,24 @@ export const IE: Node[] = [
       },
     },
 
+    {
+      id: 'pivotJump5',
+      type: 'pivotJump5',
+      data: { label: 'pivotJump5' },
+      position: { x: 49, y: 930 },
+      parentId: 'IE',
+      extent: 'parent',
+      style: {
+        width: 47,
+        height: 47,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
 
     
    
