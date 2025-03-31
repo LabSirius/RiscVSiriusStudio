@@ -1,4 +1,4 @@
-// this file contains the edges for the instruction memory to registers unit
+// This file contains the connections between Instruction memory and Registers unit
 
 import { Edge, MarkerType  } from '@xyflow/react';
 

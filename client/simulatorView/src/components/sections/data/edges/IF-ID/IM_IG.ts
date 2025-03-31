@@ -1,4 +1,4 @@
-// this file contains the edge between the instruction memory and the immediate generator
+// This file contains the connections between Instruction memory and inmmediate generator
 
 import { Edge, MarkerType  } from '@xyflow/react';
 

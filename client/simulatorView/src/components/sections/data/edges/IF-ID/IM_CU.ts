@@ -1,4 +1,4 @@
-// this file contains the edges for the instruction memory and control unit
+// This file contains the connections between IM and RU
 
 import { Edge, MarkerType  } from '@xyflow/react';
 

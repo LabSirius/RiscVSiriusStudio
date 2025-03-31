@@ -3,11 +3,12 @@
 * Each edge has an id, source node, target node, and type.
 */
 
-import { Edge } from '@xyflow/react';
-import { IM_RU } from './IM_RU';
-import { IM_CU } from './IM_CU';
+import { IF } from './IF/IF';
+import { IF_ID } from './IF-ID/IF-ID';
+
+import { Edge  } from '@xyflow/react';
+
 import { PC_IM } from './IF/PC_IM';
-import { IM_IG } from './IM_IG';
 import { RU_MUXS } from './RU_MUXS';
 import { IG_MUXB } from './IG_MUXB';
 import { ALUXSRC } from './ALUXSRC';
@@ -16,19 +17,19 @@ import { MUXS_ALU } from './MUXS_ALU';
 import { ALUOp_ALU } from './ALUOp_ALU';
 import { RU_BU } from './RU_BU';
 import { BrOp_BU } from './BrOp_BU';
-import { IFEdges } from './IF/IFEdges';
+
+
 
 export const initialEdges: Edge[] = [
 
 
-  ...IFEdges, // IF stage edges
+  ...IF, // IF stage edges
+
+  ...IF_ID, // IF-ID stage edges
   
 
   ...PC_IM, // PC to Instruction Memory connection
-  ...IM_RU,  // Instruction Memory to Register Unit connections
-  ...IM_CU, // Instruction Memory to Control Unit connections
 
-  ...IM_IG, // Instruction Memory to Immediate Generator connection
 
   ...RU_MUXS, // Register Unit to MUXS connections
   ...IG_MUXB, // Immediate Generator to MUXB connections and ImmSrc to ImmGen connections
