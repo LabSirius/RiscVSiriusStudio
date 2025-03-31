@@ -37,6 +37,7 @@ import BranchUnit from '../svgs/section3/BranchUnit';
 
 //pivots
 import Pivot1 from '../svgs/pivots/Pivot1';
+import Pivot2 from '../svgs/pivots/Pivot2';
 import Pivot3 from '../svgs/pivots/Pivot3';
 import Pivot4 from '../svgs/pivots/Pivot4';
 
@@ -53,6 +54,7 @@ import PivotJump3 from '../svgs/pivots/jump/PivotJump3';
 //Customs 
 import AnimatedSVGEdge from '../customs/AnimatedSVGEdge';
 import CustomControls from '../customs/CustomControls';
+
 
 const nodeTypes = {
 
@@ -80,6 +82,7 @@ const nodeTypes = {
 
   //Pivots
   pivot1: Pivot1,
+  pivot2: Pivot2,
   pivot3: Pivot3,
   pivot4: Pivot4,
 

@@ -35,7 +35,7 @@ export default function RegistersUnit() {
         position={Position.Right}
         id="muxA"
         className='output'
-        style={{ top: '3.9rem'}} />
+        style={{ top: '3.95rem'}} />
 
       <Handle  type="source"
         position={Position.Right}

@@ -26,19 +26,29 @@ export const RU_MUXS: Edge[] = [
         color: '#888888',
       },
   },
-    {
-      id: 'registersUnit->muxB',
-      source: 'registersUnit',
-      sourceHandle: 'muxB',
-      target: 'muxB',
-      targetHandle: 'registersUnitB',
-      type: 'smoothstep',
-      animated: true,
-      markerEnd: {
-        type: MarkerType.ArrowClosed,
-        width: 18,
-        height: 18,
-        color: '#888888',
-      },
+    
+  {
+    id: 'registersUnit->pivot2',
+    source: 'registersUnit',
+    sourceHandle: 'muxB',
+    target: 'pivot2',
+    type: 'smoothstep',
+    animated: true,
   },
+
+  {
+    id: 'pivot2->muxB',
+    source: 'pivot2',
+    sourceHandle: 'muxB',
+    target: 'muxB',
+    targetHandle: 'registersUnitB',
+    type: 'smoothstep',
+    animated: true,
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      width: 18,
+      height: 18,
+      color: '#888888',
+    },
+  }
 ];

@@ -174,6 +174,25 @@ export const IE: Node[] = [
 
     //PIVOTS S3
 
+
+    {
+      id: 'pivot2',
+      type: 'pivot2',
+      data: { label: '' },
+      position: { x: 25, y: 705 },
+      parentId: 'IE',
+      extent: 'parent',
+      style: {
+        width: 1,
+        height: 1,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
     {
       id: 'pivot4',
       type: 'pivot4',
