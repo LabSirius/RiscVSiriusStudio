@@ -47,7 +47,7 @@ export const WB: Node[] = [
       id: 'muxC',
       type: 'muxC',
       data: { label: 'MUX C' },
-      position: { x: 90, y: 665 },
+      position: { x: 90, y: 660 },
       parentId: 'WB',
       extent: 'parent',
       style: {

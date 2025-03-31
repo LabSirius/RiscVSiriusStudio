@@ -17,6 +17,7 @@ function MuxC() {
      <Handle  
         type="target"
         position={Position.Left}
+        id='dataMemory'
         className='input'
         style={{ top: '4.7rem' }} 
       />

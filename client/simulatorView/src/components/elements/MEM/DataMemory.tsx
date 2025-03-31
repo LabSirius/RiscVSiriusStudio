@@ -31,11 +31,16 @@ export default function DataMemory() {
               style={{top:'7.75rem'}} />
               
 
-              <Handle  type="target"
-              id="rs2"
-              position={Position.Left}
-              className='input'
-              style={{top:'12.75rem'}} />
+        <Handle  type="target"
+        id="rs2"
+        position={Position.Left}
+        className='input'
+        style={{top:'12.75rem'}} />
+
+        <Handle  type="source"
+        position={Position.Right}
+        className='output'
+        style={{top:'12.75rem'}} />
             
     
     </div>
