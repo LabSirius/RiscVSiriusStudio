@@ -1,4 +1,4 @@
-import MuxContainer from "./MUXContainer";
+import MuxContainer from "../MUXContainer";
 import { Handle, Position } from '@xyflow/react';
 
 function MuxA() {

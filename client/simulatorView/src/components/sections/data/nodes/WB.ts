@@ -41,4 +41,23 @@ export const WB: Node[] = [
         boxShadow: 'none',
       },
     },
+
+
+    {
+      id: 'muxC',
+      type: 'muxC',
+      data: { label: 'MUX C' },
+      position: { x: 90, y: 665 },
+      parentId: 'WB',
+      extent: 'parent',
+      style: {
+        width: 65,
+        height: 150,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
 ]

@@ -1,31 +1,35 @@
 import MuxContainer from "../MUXContainer";
 import { Handle, Position } from '@xyflow/react';
 
-function MuxB() {
+function MuxC() {
   return (
     <div className='relative w-full h-full'>
       <div className="relative w-full h-full">
-          <MuxContainer />
+        <MuxContainer />
       </div>
       <Handle  
         type="target"
-        id="registersUnitB"
         position={Position.Left}
         className='input'
-        style={{ top: '2.8rem' }} 
+        style={{ top: '1.8rem' }} 
+      />
+
+     <Handle  
+        type="target"
+        position={Position.Left}
+        className='input'
+        style={{ top: '4.7rem' }} 
       />
 
       <Handle  
         type="target"
-        id="immGenerator"
         position={Position.Left}
         className='input'
-        style={{ top: '6.8rem' }} 
+        style={{ top: '7.5rem' }} 
       />
 
       <Handle  
         type="target"
-        id="aluBSrc"
         position={Position.Bottom}
         className='input'
         style={{ top: '7rem' }} 
@@ -40,4 +44,4 @@ function MuxB() {
   );
 }
 
-export default MuxB;
+export default MuxC;

@@ -42,6 +42,9 @@ import DataMemory from '../elements/MEM/DataMemory';
 import DMWR from '../elements/MEM/DMWr';
 import DMCtrl from '../elements/MEM/DMCtrl';
 
+//Section 5
+import MuxC from '../elements/WB/MuxC';
+
 //pivots
 import Pivot1 from '../elements/IF/pivots/Pivot1';
 import Pivot2 from '../elements/IE/pivots/Pivot2';
@@ -95,6 +98,9 @@ const nodeTypes = {
   dataMemory: DataMemory,
   dmWr: DMWR,
   dmCtrl: DMCtrl,
+
+  //WB
+  muxC: MuxC,
 
   //PITOVS
   pivot1: Pivot1,
