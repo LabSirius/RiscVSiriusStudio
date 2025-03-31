@@ -59,4 +59,40 @@ export const MEM: Node[] = [
         boxShadow: 'none',
       },
     },
+
+    {
+      id: 'dmWr',
+      type: 'dmWr',
+      data: { label: 'DMWR' },
+      position: { x: 170, y: 400 },
+      parentId: 'MEM',
+      extent: 'parent',
+      style: {
+        width: 65,
+        height: 150,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
+    {
+      id: 'dmCtrl',
+      type: 'dmCtrl',
+      data: { label: 'DMCtrl' },
+      position: { x: 280, y: 400 },
+      parentId: 'MEM',
+      extent: 'parent',
+      style: {
+        width: 65,
+        height: 150,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
 ]

@@ -13,6 +13,18 @@ export default function DataMemory() {
        </div>
 
        <Handle  type="target"
+              id="dmWr"
+              position={Position.Top}
+              className='input'
+              style={{left:'4.5rem'}} />
+        
+        <Handle  type="target"
+              id="dmCtrl"
+              position={Position.Top}
+              className='input'
+              style={{left:'11.38rem'}} />
+
+       <Handle  type="target"
               id="alu"
               position={Position.Left}
               className='input'

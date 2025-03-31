@@ -39,6 +39,8 @@ import BrOp from '../elements/IE/BrOp';
 
 //Section 4
 import DataMemory from '../elements/MEM/DataMemory';
+import DMWR from '../elements/MEM/DMWr';
+import DMCtrl from '../elements/MEM/DMCtrl';
 
 //pivots
 import Pivot1 from '../elements/IF/pivots/Pivot1';
@@ -89,6 +91,8 @@ const nodeTypes = {
 
   //MEM
   dataMemory: DataMemory,
+  dmWr: DMWR,
+  dmCtrl: DMCtrl,
 
   //PITOVS
   pivot1: Pivot1,
