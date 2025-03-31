@@ -23,8 +23,8 @@ import InstructionMemory from '../elements/IF/InstructionMemory';
 
 
 // Section 2
-import RegistersUnit from '../elements/section2/RegistersUnit';
-import ControlUnit from '../elements/section2/ControlUnit';
+import RegistersUnit from '../elements/ID/RegistersUnit';
+import ControlUnit from '../elements/ID/ControlUnit';
 
 //Section 3
 import MuxA from '../elements/section3/MuxA';
@@ -42,8 +42,8 @@ import Pivot2 from '../elements/pivots/Pivot2';
 import Pivot3 from '../elements/pivots/Pivot3';
 import Pivot4 from '../elements/pivots/Pivot4';
 
-import ImmGenerator from '../elements/section2/ImmGenerator';
-import ImmSrc from '../elements/section2/ImmSRC';
+import ImmGenerator from '../elements/ID/ImmGenerator';
+import ImmSrc from '../elements/ID/ImmSRC';
 
 //jumps
 import PivotJump1 from '../elements/pivots/jump/PivotJump1';
