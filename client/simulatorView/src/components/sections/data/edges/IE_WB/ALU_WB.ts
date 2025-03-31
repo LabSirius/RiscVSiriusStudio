@@ -20,7 +20,24 @@ export const ALU_WB: Edge[] = [
     target: 'pivotJump6', 
     type: 'default', 
     animated: true,  
+  },
+
+  {
+    id: 'pivotJump6->pivot9',  
+    source: 'pivotJump6', 
+    target: 'pivot9', 
+    type: 'step', 
+    animated: true,  
+  },
+  {
+    id: 'pivot9->muxC',  
+    source: 'pivot9', 
+    target: 'muxC', 
+    targetHandle: 'alu',
+    type: 'smoothstep', 
+    animated: true,  
   }
+
 
 ];
 

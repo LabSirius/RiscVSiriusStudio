@@ -25,6 +25,7 @@ function MuxC() {
       <Handle  
         type="target"
         position={Position.Left}
+        id='alu'
         className='input'
         style={{ top: '7.5rem' }} 
       />
