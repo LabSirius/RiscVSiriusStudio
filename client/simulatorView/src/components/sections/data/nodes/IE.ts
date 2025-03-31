@@ -121,7 +121,7 @@ export const IE: Node[] = [
         id: 'alu',
         type: 'alu',
         data: { label: 'ALU' },
-        position: { x: 275, y: 465 },
+        position: { x: 275, y: 495 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -139,7 +139,7 @@ export const IE: Node[] = [
         id: 'aluOp',
         type: 'aluOp',
         data: { label: 'ALU OPERATION' },
-        position: { x: 363, y: 761 },
+        position: { x: 363, y: 789 },
         parentId: 'IE',
         extent: 'parent',
         style: {

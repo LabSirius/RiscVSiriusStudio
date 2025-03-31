@@ -41,4 +41,22 @@ export const MEM: Node[] = [
         boxShadow: 'none',
       },
     },
+
+    {
+      id: 'dataMemory',
+      type: 'dataMemory', 
+      data: { label: 'Data Memory' },
+      position: { x: 200, y: 541 },
+      parentId: 'MEM',
+      extent: 'parent',
+      style: {
+        width: 260,
+        height: 280,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
 ]

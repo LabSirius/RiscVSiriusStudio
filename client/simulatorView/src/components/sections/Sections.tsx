@@ -36,6 +36,10 @@ import ALUOp from '../elements/IE/ALUOp';
 import BranchUnit from '../elements/IE/BranchUnit';
 import BrOp from '../elements/IE/BrOp';
 
+
+//Section 4
+import DataMemory from '../elements/MEM/DataMemory';
+
 //pivots
 import Pivot1 from '../elements/IF/pivots/Pivot1';
 import Pivot2 from '../elements/IE/pivots/Pivot2';
@@ -82,6 +86,9 @@ const nodeTypes = {
   aluOp: ALUOp,
   branchUnit: BranchUnit,
   brOp: BrOp,
+
+  //MEM
+  dataMemory: DataMemory,
 
   //PITOVS
   pivot1: Pivot1,

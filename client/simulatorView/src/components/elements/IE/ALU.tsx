@@ -20,7 +20,7 @@ export default function ALU() {
         id="muxB"
         position={Position.Left}
         className='input'
-        style={{ top: '15.8rem'}} />  
+        style={{ top: '15rem'}} />  
 
       <Handle  
         type="target"
