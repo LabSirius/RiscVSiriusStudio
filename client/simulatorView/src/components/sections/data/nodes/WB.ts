@@ -62,6 +62,26 @@ export const WB: Node[] = [
     },
 
     {
+      id: 'ruDataWrSrc',
+      type: 'ruDataWrSrc',
+      data: { label: 'RUDataWrSrc' },
+      position: { x: 163, y: 789 },
+      parentId: 'WB',
+      extent: 'parent',
+      style: {
+        width: 65,
+        height: 150,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
+    //pivot
+
+    {
       id: 'pivot9',
       type: 'pivot9',
       data: { label: '' },

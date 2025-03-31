@@ -44,6 +44,7 @@ import DMCtrl from '../elements/MEM/DMCtrl';
 
 //Section 5
 import MuxC from '../elements/WB/MuxC';
+import RUDataWrSrc from '../elements/WB/RUDATAWrSrc';
 
 //pivots
 import Pivot1 from '../elements/IF/pivots/Pivot1';
@@ -105,6 +106,7 @@ const nodeTypes = {
 
   //WB
   muxC: MuxC,
+  ruDataWrSrc: RUDataWrSrc,
 
   //PITOVS
   pivot1: Pivot1,
