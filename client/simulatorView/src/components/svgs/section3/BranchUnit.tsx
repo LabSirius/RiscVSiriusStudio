@@ -11,7 +11,7 @@ export default function BranchUnit() {
        </div>
 
        <Handle  type="target"
-        id=""
+        id="RS2"
         position={Position.Left}
         className='input'
         style={{ top: '2rem' }} />

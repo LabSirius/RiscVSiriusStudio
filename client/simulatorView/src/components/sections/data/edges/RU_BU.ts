@@ -19,5 +19,25 @@ export const RU_BU: Edge[] = [
         },
     },
 
+    {
+        id: 'pivot2->branchUnit',
+        source: 'pivot2',
+        sourceHandle: 'branchUnit',
+        target: 'branchUnit',
+        targetHandle: 'RS2',
+        type: 'smoothstep',
+        animated: true,
+         markerEnd: {
+                type: MarkerType.ArrowClosed,
+                width: 18,
+                height: 18,
+                color: '#888888',
+        },
+    },
+
+
+
+
+
    
 ];
