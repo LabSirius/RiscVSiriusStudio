@@ -15,7 +15,7 @@ export const WB: Node[] = [
         position: { x: 548 * 4, y: 0 },
         draggable: false,
         style: {
-          width: 400,
+          width: 300,
           height: 1200,
           backgroundColor: '#E3F2FD',
           border: '1px solid #93c4e6',
@@ -32,7 +32,7 @@ export const WB: Node[] = [
       extent: 'parent',
       draggable: false,
       style: {
-        width: 400,
+        width: 300,
         height: 50,
         backgroundColor: 'transparent',
         border: 'none',
