@@ -23,24 +23,24 @@ export const WB: Node[] = [
         },
     },
 
-    {
-      id: 'title-WB',
-      type: 'title',
-      data: { label: 'Write back (WB)' },
-      position: { x: 0, y: 0 },
-      parentId: 'WB',
-      extent: 'parent',
-      draggable: false,
-      style: {
-        width: 300,
-        height: 50,
-        backgroundColor: 'transparent',
-        border: 'none',
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: 'none',
-      },
-    },
+    // {
+    //   id: 'title-WB',
+    //   type: 'title',
+    //   data: { label: 'Write back (WB)' },
+    //   position: { x: 0, y: 0 },
+    //   parentId: 'WB',
+    //   extent: 'parent',
+    //   draggable: false,
+    //   style: {
+    //     width: 300,
+    //     height: 50,
+    //     backgroundColor: 'transparent',
+    //     border: 'none',
+    //     borderRadius: 0,
+    //     padding: 0,
+    //     boxShadow: 'none',
+    //   },
+    // },
 
 
     {

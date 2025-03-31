@@ -13,7 +13,7 @@ import '@xyflow/react/dist/style.css';
 import { initialNodes } from './data/nodes/initialNodes'; // Nodes
 import { initialEdges } from './data/edges/initialEdges'; //Conecctions between npdes
 
-import TitleText from '../elements/TittleText';
+//import TitleText from '../elements/TittleText';
 
 //Section 1
 import PC from '../elements/IF/PC';
@@ -74,7 +74,7 @@ import CustomControls from '../custom/CustomControls';
 
 const nodeTypes = {
 
-  title: TitleText,
+  //title: TitleText,
   // IF
   pc: PC,
   adder4: Adder4,

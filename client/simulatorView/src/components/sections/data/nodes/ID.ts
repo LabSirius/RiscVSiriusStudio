@@ -23,24 +23,24 @@ export const ID: Node[] = [
       },
     },
 
-    {
-      id: 'title-ID',
-      type: 'title',
-      data: { label: 'Decode (ID)' },
-      position: { x: 0, y: 0 },
-      parentId: 'ID',
-      extent: 'parent',
-      draggable: false,
-      style: {
-        width: 548,
-        height: 50,
-        backgroundColor: 'transparent',
-        border: 'none',
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: 'none',
-      },
-    },
+    // {
+    //   id: 'title-ID',
+    //   type: 'title',
+    //   data: { label: 'Decode (ID)' },
+    //   position: { x: 0, y: 0 },
+    //   parentId: 'ID',
+    //   extent: 'parent',
+    //   draggable: false,
+    //   style: {
+    //     width: 548,
+    //     height: 50,
+    //     backgroundColor: 'transparent',
+    //     border: 'none',
+    //     borderRadius: 0,
+    //     padding: 0,
+    //     boxShadow: 'none',
+    //   },
+    // },
 
      // CHILD NODES SECTION 2
     {

@@ -23,24 +23,24 @@ export const IE: Node[] = [
         },
     },
 
-    {
-      id: 'title-IE',
-      type: 'title',
-      data: { label: 'Execute (IE)' },
-      position: { x: 0, y: 0 },
-      parentId: 'IE',
-      extent: 'parent',
-      draggable: false,
-      style: {
-        width: 548,
-        height: 50,
-        backgroundColor: 'transparent',
-        border: 'none',
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: 'none',
-      },
-    },
+    // {
+    //   id: 'title-IE',
+    //   type: 'title',
+    //   data: { label: 'Execute (IE)' },
+    //   position: { x: 0, y: 0 },
+    //   parentId: 'IE',
+    //   extent: 'parent',
+    //   draggable: false,
+    //   style: {
+    //     width: 548,
+    //     height: 50,
+    //     backgroundColor: 'transparent',
+    //     border: 'none',
+    //     borderRadius: 0,
+    //     padding: 0,
+    //     boxShadow: 'none',
+    //   },
+    // },
 
  
 

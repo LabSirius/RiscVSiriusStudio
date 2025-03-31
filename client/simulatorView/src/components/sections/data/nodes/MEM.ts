@@ -23,24 +23,24 @@ export const MEM: Node[] = [
         },
     },
 
-    {
-      id: 'title-MEM',
-      type: 'title',
-      data: { label: 'Memory (MEM)' },
-      position: { x: 0, y: 0 },
-      parentId: 'MEM',
-      extent: 'parent',
-      draggable: false,
-      style: {
-        width: 548,
-        height: 50,
-        backgroundColor: 'transparent',
-        border: 'none',
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: 'none',
-      },
-    },
+    // {
+    //   id: 'title-MEM',
+    //   type: 'title',
+    //   data: { label: 'Memory (MEM)' },
+    //   position: { x: 0, y: 0 },
+    //   parentId: 'MEM',
+    //   extent: 'parent',
+    //   draggable: false,
+    //   style: {
+    //     width: 548,
+    //     height: 50,
+    //     backgroundColor: 'transparent',
+    //     border: 'none',
+    //     borderRadius: 0,
+    //     padding: 0,
+    //     boxShadow: 'none',
+    //   },
+    // },
 
     {
       id: 'dataMemory',
