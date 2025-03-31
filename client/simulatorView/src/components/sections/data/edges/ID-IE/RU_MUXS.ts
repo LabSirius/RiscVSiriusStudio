@@ -1,4 +1,4 @@
-// this file contains the edges for the RU_MUXS component
+// This file contains the connection between the Registers unit and the muxs A and B
 
 import { Edge, MarkerType  } from '@xyflow/react';
 
@@ -18,9 +18,7 @@ export const RU_MUXS: Edge[] = [
       type: 'default',
       animated: true
   },
-    
-
-    {
+  {
       id: 'pivot4->muxA',
       source: 'pivot4',
       sourceHandle: 'muxA',

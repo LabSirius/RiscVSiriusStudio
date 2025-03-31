@@ -1,4 +1,4 @@
-// this file contains the edges for the RU_MUXS component
+// This file contains the connection between the Registers unit and the branch unit
 
 import { Edge, MarkerType } from '@xyflow/react';
 

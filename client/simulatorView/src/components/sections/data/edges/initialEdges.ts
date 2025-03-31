@@ -11,12 +11,12 @@ import { IF_IE } from './IF-IE/IF-IE';
 import { Edge  } from '@xyflow/react';
 
 import { PC_IM } from './IF/PC_IM';
-import { RU_MUXS } from './RU_MUXS';
-import { IG_MUXB } from './IG_MUXB';
+import { RU_MUXS } from './ID-IE/RU_MUXS';
+import { IG_MUXB } from './ID-IE/IG_MUXB';
 import { ALUXSRC } from './ALUXSRC';
 import { MUXS_ALU } from './MUXS_ALU';
 import { ALUOp_ALU } from './ALUOp_ALU';
-import { RU_BU } from './RU_BU';
+import { RU_BU } from './ID-IE/RU_BU';
 import { BrOp_BU } from './BrOp_BU';
 
 
