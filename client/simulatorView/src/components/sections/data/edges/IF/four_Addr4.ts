@@ -3,7 +3,7 @@
 import { Edge, MarkerType  } from '@xyflow/react';
 
 export const four_Addr4: Edge[] = [
-     { id: 'four->adder4',  source: 'four', target: 'adder4', targetHandle: 'fourTarget', type: 'smoothstep', animated: true,  markerEnd:
+     { id: 'four->adder4',  source: 'four', target: 'adder4', targetHandle: 'fourTarget', type: 'default', animated: true,  markerEnd:
       {
         type: MarkerType.ArrowClosed,
         width: 18,

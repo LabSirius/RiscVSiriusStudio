@@ -157,7 +157,7 @@ export const IE: Node[] = [
         id: 'branchUnit',
         type: 'branchUnit',
         data: { label: 'Branch Unit' },
-        position: { x: 275, y: 235 },
+        position: { x: 275, y: 200 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -175,7 +175,7 @@ export const IE: Node[] = [
         id: 'brOp',
         type: 'brOp',
         data: { label: 'BrOp' },
-        position: { x: 363, y: 320 },
+        position: { x: 363, y: 285 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -192,30 +192,11 @@ export const IE: Node[] = [
 
     //PIVOTS S3
 
-
-    {
-      id: 'pivot2',
-      type: 'pivot2',
-      data: { label: '' },
-      position: { x: 27, y: 705 },
-      parentId: 'IE',
-      extent: 'parent',
-      style: {
-        width: 1,
-        height: 1,
-        backgroundColor: 'transparent',
-        border: 'none',
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: 'none',
-      },
-    },
-
     {
       id: 'pivot4',
       type: 'pivot4',
       data: { label: '' },
-      position: { x: 80, y: 573},
+      position: { x: 45, y: 573},
       parentId: 'IE',
       extent: 'parent',
       style: {
@@ -230,10 +211,10 @@ export const IE: Node[] = [
     },
 
     {
-      id: 'pivot5',
-      type: 'pivot5',
+      id: 'pivot10',
+      type: 'pivot10',
       data: { label: '' },
-      position: { x: 27, y: 940},
+      position: { x: 44, y:1114},
       parentId: 'IE',
       extent: 'parent',
       style: {
@@ -247,31 +228,15 @@ export const IE: Node[] = [
       },
     },
 
+    
+
       //jump
-      {
-        id: 'pivotJump2',
-        type: 'pivotJump2',
-        data: { label: 'pivotJump2' },
-        position: { x: 8, y: 445 },
-        parentId: 'IE',
-        extent: 'parent',
-        style: {
-          width: 47,
-          height: 47,
-          backgroundColor: 'transparent',
-          border: 'none',
-          borderRadius: 0,
-          padding: 0,
-          boxShadow: 'none',
-        },
-      },
-
-
+     
      {
       id: 'pivotJump3',
       type: 'pivotJump3',
       data: { label: 'pivotJump3' },
-      position: { x: 61, y: 445 },
+      position: { x: 25, y: 445 },
       parentId: 'IE',
       extent: 'parent',
       style: {
@@ -286,29 +251,12 @@ export const IE: Node[] = [
     },
 
 
-    {
-      id: 'pivotJump4',
-      type: 'pivotJump4',
-      data: { label: 'pivotJump4' },
-      position: { x: 8, y: 547 },
-      parentId: 'IE',
-      extent: 'parent',
-      style: {
-        width: 47,
-        height: 47,
-        backgroundColor: 'transparent',
-        border: 'none',
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: 'none',
-      },
-    },
-
+    
     {
       id: 'pivotJump5',
       type: 'pivotJump5',
       data: { label: 'pivotJump5' },
-      position: { x: 49, y: 915 },
+      position: { x: 25, y: 915 },
       parentId: 'IE',
       extent: 'parent',
       style: {

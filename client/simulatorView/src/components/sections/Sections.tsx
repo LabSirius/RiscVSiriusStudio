@@ -47,24 +47,25 @@ import MuxC from '../elements/WB/MuxC';
 
 //pivots
 import Pivot1 from '../elements/IF/pivots/Pivot1';
-import Pivot2 from '../elements/IE/pivots/Pivot2';
+import Pivot2 from '../elements/ID/pivots/Pivot2';
 import Pivot3 from '../elements/ID/pivots/Pivot3';
 import Pivot4 from '../elements/IE/pivots/Pivot4';
-import Pivot5 from '../elements/IE/pivots/Pivot5';
+import Pivot5 from '../elements/ID/pivots/Pivot5';
 import Pivot6 from '../elements/MEM/pivots/Pivot6';
 import Pivot7 from '../elements/MEM/pivots/Pivot7';
 import Pivot8 from '../elements/MEM/pivots/Pivot8';
 import Pivot9 from '../elements/WB/pivots/Pivot9';
+import Pivot10 from '../elements/IE/pivots/Pivot10';
 
 import ImmGenerator from '../elements/ID/ImmGenerator';
 import ImmSrc from '../elements/ID/ImmSRC';
 
 //jumps
 import PivotJump1 from '../elements/ID/pivots/PivotJump1';
-import PivotJump2 from '../elements/IE/pivots/PivotJump2';
+import PivotJump2 from '../elements/ID/pivots/PivotJump2';
 import PivotJump3 from '../elements/IE/pivots/PivotJump3';
-import PivotJump4 from '../elements/IE/pivots/PivotJump4';
-import PivotJump5 from '../elements/IE/pivots/PivotJum5';
+import PivotJump4 from '../elements/ID/pivots/PivotJump4';
+import PivotJump5 from '../elements/IE/pivots/PivotJump5';
 import PivotJump6 from '../elements/MEM/pivots/PivotJum6';
 
 //Customs 
@@ -115,6 +116,7 @@ const nodeTypes = {
   pivot7: Pivot7,
   pivot8: Pivot8,
   pivot9: Pivot9,
+  pivot10: Pivot10,
 
   //PIVOTS Jumps
   pivotJump1: PivotJump1,
