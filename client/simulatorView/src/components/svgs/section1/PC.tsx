@@ -15,7 +15,7 @@ export default function PC() {
 
         <Handle  type="source"
         position={Position.Right}
-        style={{ background: '#555', width: 10, height: 10 }} />
+        className='output' />
     </div>
     
   );

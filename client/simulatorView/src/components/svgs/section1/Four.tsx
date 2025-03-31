@@ -10,7 +10,8 @@ export default function Four() {
         
        <Handle  type="source"
         position={Position.Right}
-        style={{ transform: 'translateX(-50%)',  background: '#555', width: 10, height: 10 }} />
+        className='output'
+        style={{ transform: 'translateX(-50%)'}} />
     </div>
     
   );

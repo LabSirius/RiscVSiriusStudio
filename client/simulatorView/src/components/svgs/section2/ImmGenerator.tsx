@@ -23,7 +23,7 @@ export default function ImmGenerator() {
                style={{ top: '5rem' }} />
 
         <Handle type="source"
-              position={Position.Right} />
+              position={Position.Right} className='output' />
 
     </div>
     

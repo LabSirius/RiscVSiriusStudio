@@ -23,9 +23,17 @@ body {
 }
 
 .input {
-  @apply !w-[.6rem] !h-[.8rem] !bg-[#E91E63];
+  @apply !bg-[#9C27B0];
+}
+
+.output {
+  @apply !bg-[#E91E63];
+}
+
+.input, .output {
+  @apply !w-[0.8rem] !h-[0.8rem];
+  clip-path: inset(5% 20% 15% 10%);
   border: none !important;
-  clip-path: circle(50% at 50% 50%);
 }
 
 h2{

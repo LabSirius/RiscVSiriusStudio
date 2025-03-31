@@ -13,7 +13,8 @@ export function InstructionMemory() {
         className='input' />
       <Handle  type="source"
         position={Position.Right}
-        style={{ top: '10rem', }} />
+        className='output'
+        style={{ top: '10rem'}} />
       </div>
   );
 }
