@@ -1,4 +1,4 @@
-// This file contains the edges for the PC_MUXA component
+// This file contains the connection between the PC and the MUXA
 
 import { Edge, MarkerType  } from '@xyflow/react';
 
