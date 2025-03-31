@@ -3,16 +3,6 @@
 import { Edge, MarkerType  } from '@xyflow/react';
 
 export const IG_MUXB: Edge[] = [
-
-    { id: 'immSrc->immGenerator',  source: 'immSrc', target: 'immGenerator', targetHandle: 'immSrc', type: 'smoothstep', animated: true,  markerEnd:
-        {
-          type: MarkerType.ArrowClosed,
-          width: 18,
-          height: 18,
-          color: '#888888',
-        },
-    },
-
     {
         id: 'immGenerator->muxB',  
         source: 'immGenerator', 

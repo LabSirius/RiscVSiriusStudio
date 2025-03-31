@@ -4,6 +4,7 @@
 */
 
 import { IF } from './IF/IF';
+import { ID } from './ID/ID';
 import { IF_ID } from './IF-ID/IF-ID';
 
 import { Edge  } from '@xyflow/react';
@@ -12,7 +13,7 @@ import { PC_IM } from './IF/PC_IM';
 import { RU_MUXS } from './RU_MUXS';
 import { IG_MUXB } from './IG_MUXB';
 import { ALUXSRC } from './ALUXSRC';
-import { PC_MUXA } from './PC_MUXA';
+import { PC_MUXA } from './IF-IE/PC_MUXA';
 import { MUXS_ALU } from './MUXS_ALU';
 import { ALUOp_ALU } from './ALUOp_ALU';
 import { RU_BU } from './RU_BU';
@@ -24,10 +25,9 @@ export const initialEdges: Edge[] = [
 
 
   ...IF, // IF stage edges
-
+  ...ID, // ID stage edges
   ...IF_ID, // IF-ID stage edges
   
-
   ...PC_IM, // PC to Instruction Memory connection
 
 
