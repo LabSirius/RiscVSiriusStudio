@@ -16,10 +16,10 @@ import { initialEdges } from './data/edges/initialEdges'; //Conecctions between 
 import TitleText from '../elements/TittleText';
 
 //Section 1
-import PC from '../elements/section1/PC';
-import Adder4 from '../elements/section1/Adder4';
-import Four from '../elements/section1/Four';
-import InstructionMemory from '../elements/section1/InstructionMemory'; 
+import PC from '../elements/IF/PC';
+import Adder4 from '../elements/IF/Adder4';
+import Four from '../elements/IF/Four';
+import InstructionMemory from '../elements/IF/InstructionMemory'; 
 
 
 // Section 2
