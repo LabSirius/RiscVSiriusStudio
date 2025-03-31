@@ -53,8 +53,8 @@ import PivotJump4 from '../svgs/pivots/jump/PivotJump4';
 
 
 //Customs 
-import AnimatedSVGEdge from '../customs/AnimatedSVGEdge';
-import CustomControls from '../customs/CustomControls';
+import AnimatedSVGEdge from '../custom/AnimatedSVGEdge';
+import CustomControls from '../custom/CustomControls';
 
 
 const nodeTypes = {
