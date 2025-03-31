@@ -7,7 +7,7 @@ import {
 
 import { Download } from 'lucide-react';
 
-import { toPng, toSvg } from 'html-to-image';
+import { toSvg } from 'html-to-image';
  
 function downloadImage(dataUrl: string) {
   const a = document.createElement('a');
@@ -17,40 +17,114 @@ function downloadImage(dataUrl: string) {
   a.click();
 }
  
-const imageWidth = 1024;
-const imageHeight = 768;
+const imageWidth = 1920;
+const imageHeight = 1080;
  
 function DownloadButton() {
-  const { getNodes } = useReactFlow();
+  const { getNodes, getEdges, setEdges, fitView } = useReactFlow();
+  
   const onClick = () => {
-    // we calculate a transform for the nodes so that all nodes are visible
-    // we then overwrite the transform of the `.react-flow__viewport` element
-    // with the style option of the html-to-image library
-    const nodesBounds = getNodesBounds(getNodes());
-    const viewport = getViewportForBounds(
-      nodesBounds,
-      imageWidth,
-      imageHeight,
-      0.5,
-      2,
-      4
+    // Store the original edges
+    const originalEdges = getEdges();
+    
+    // Create a copy of edges with animations disabled
+    const staticEdges = originalEdges.map(edge => ({
+      ...edge,
+      animated: false,
+      type: edge.type === 'animatedSvg' ? 'default' : edge.type,
+    }));
+    
+    // Apply the static edges
+    setEdges(staticEdges);
+    
+    // Get all nodes to calculate bounds
+    const nodes = getNodes();
+    
+    // Calculate the bounds that include all nodes
+    const nodesBounds = getNodesBounds(nodes);
+    
+    // Calculate aspect ratio of the bounds and the target image
+    const boundsAspectRatio = nodesBounds.width / nodesBounds.height;
+    const imageAspectRatio = imageWidth / imageHeight;
+    
+    // Determine dimensions based on aspect ratio
+    let width, height;
+    if (boundsAspectRatio > imageAspectRatio) {
+      // Diagram is wider than the image aspect ratio
+      width = nodesBounds.width + 40; // Small padding
+      height = width / imageAspectRatio;
+    } else {
+      // Diagram is taller than the image aspect ratio
+      height = nodesBounds.height + 40; // Small padding
+      width = height * imageAspectRatio;
+    }
+    
+    // Calculate the transform to center the diagram
+    const x = nodesBounds.x - (width - nodesBounds.width) / 2;
+    const y = nodesBounds.y - (height - nodesBounds.height) / 2;
+    
+    // Calculate the zoom level to fit the diagram
+    const zoom = Math.min(
+      imageWidth / width,
+      imageHeight / height
     );
- 
-    toSvg(document.querySelector('.react-flow__viewport'), {
-      backgroundColor: '#1a365d',
-      width: imageWidth,
-      height: imageHeight,
-      style: {
+    
+    // Get all stylesheets
+    const stylesheets = Array.from(document.styleSheets)
+      .filter(stylesheet => {
+        try {
+          return !stylesheet.href || stylesheet.href.startsWith(window.location.origin);
+        } catch (e) {
+          return false;
+        }
+      })
+      .map(stylesheet => {
+        try {
+          return Array.from(stylesheet.cssRules)
+            .map(rule => rule.cssText)
+            .join('\n');
+        } catch (e) {
+          console.warn('Cannot access stylesheet rules', e);
+          return '';
+        }
+      })
+      .join('\n');
+    
+    // Get the ReactFlow viewport element
+    const reactFlowViewport = document.querySelector('.react-flow__viewport');
+    
+    // Small delay to ensure the DOM updates before capturing
+    setTimeout(() => {
+      toSvg(reactFlowViewport, {
+        backgroundColor: '#F7F9FB',
         width: imageWidth,
         height: imageHeight,
-        transform: `translate(${viewport.x}px, ${viewport.y}px) scale(${viewport.zoom})`,
-      },
-    }).then(downloadImage);
+        style: {
+          width: imageWidth,
+          height: imageHeight,
+          transform: `translate(${-x * zoom}px, ${-y * zoom}px) scale(${zoom})`,
+        },
+        filter: (node) => {
+          return true;
+        },
+        fontEmbedCSS: stylesheets,
+      }).then((dataUrl) => {
+        // Restore original edges with animations
+        setEdges(originalEdges);
+        downloadImage(dataUrl);
+      }).catch(error => {
+        console.error("Error generating SVG:", error);
+        setEdges(originalEdges);
+      });
+    }, 100);
   };
  
   return (
     <ControlButton onClick={onClick} title="Export SVG">
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Download size={20} />
+        <span style={{ fontSize: '10px', marginTop: '2px' }}>SVG</span>
+      </div>
     </ControlButton>
   );
 }
