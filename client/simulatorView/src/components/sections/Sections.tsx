@@ -6,12 +6,10 @@ import {
   useNodesState,
   useEdgesState,
   MiniMap,
-  Controls,
   Connection,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-import DownloadButton from '../DownloadButton';
 import { initialNodes } from './data/nodes/initialNodes'; // Nodes
 import { initialEdges } from './data/edges/initialEdges'; //Conecctions between npdes
 
@@ -50,7 +48,7 @@ import PivotJump1 from '../svgs/pivots/jump/PivotJump1';
 
 //Customs 
 import AnimatedSVGEdge from '../customs/AnimatedSVGEdge';
-import PivotJump2 from '../svgs/pivots/jump/PivotJump2';
+import PivotJump3 from '../svgs/pivots/jump/PivotJump3';
 import CustomControls from '../customs/CustomControls';
 
 const nodeTypes = {
@@ -84,7 +82,7 @@ const nodeTypes = {
 
   //Jumps
   pivotJump1: PivotJump1,
-  pivotJump2: PivotJump2,
+  pivotJump3: PivotJump3,
 };
 
 const edgeTypes = {

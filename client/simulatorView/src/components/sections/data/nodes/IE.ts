@@ -196,9 +196,9 @@ export const IE: Node[] = [
 
      //jump
      {
-      id: 'pivotJump2',
-      type: 'pivotJump2',
-      data: { label: 'pivotJump2' },
+      id: 'pivotJump3',
+      type: 'pivotJump3',
+      data: { label: 'pivotJump3' },
       position: { x: 53, y: 445 },
       parentId: 'IE',
       extent: 'parent',

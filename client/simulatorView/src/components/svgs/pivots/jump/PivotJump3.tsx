@@ -3,7 +3,7 @@
 import { Handle, Position } from '@xyflow/react';
 import { Brackets } from 'lucide-react';
 
-export default function PivotJump2() {
+export default function PivotJump3() {
   return (
     <div className='w-full'>
 
