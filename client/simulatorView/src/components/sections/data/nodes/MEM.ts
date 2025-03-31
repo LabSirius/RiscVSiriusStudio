@@ -46,7 +46,7 @@ export const MEM: Node[] = [
       id: 'dataMemory',
       type: 'dataMemory', 
       data: { label: 'Data Memory' },
-      position: { x: 200, y: 541 },
+      position: { x: 130, y: 531 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
