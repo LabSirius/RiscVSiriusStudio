@@ -20,7 +20,7 @@ const imageWidth = 1920;
 const imageHeight = 1080;
  
 function DownloadButton() {
-  const { getNodes, getEdges, setEdges, fitView } = useReactFlow();
+  const { getNodes, getEdges, setEdges } = useReactFlow();
   
   const onClick = () => {
     // Store the original edges
@@ -103,7 +103,7 @@ function DownloadButton() {
           height: imageHeight.toString(),
           transform: `translate(${-x * zoom}px, ${-y * zoom}px) scale(${zoom})`,
         },
-        filter: (node) => {
+        filter: (_node) => {
           return true;
         },
         fontEmbedCSS: stylesheets,
