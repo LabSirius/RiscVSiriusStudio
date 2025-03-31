@@ -16,7 +16,7 @@ export const IF: Node[] = [
       position: { x: 0, y: 0 },
       draggable: false, 
       style: {
-        width: 548,
+        width: 620,
         height: 1200,
         backgroundColor: '#FCE4EC',
         border: '1px solid #e3aaaa',
@@ -33,7 +33,7 @@ export const IF: Node[] = [
       extent: 'parent',
       draggable: false,
       style: {
-        width: 548,
+        width: 620,
         height: 50,
         backgroundColor: 'transparent',
         border: 'none',

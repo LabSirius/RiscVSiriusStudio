@@ -7,8 +7,10 @@ export default function Pivot7() {
 
       <Handle
         type="target"
+        id="alu"
         position={Position.Left}
       />
+      
       <Handle
         type="source"
         position={Position.Top} />

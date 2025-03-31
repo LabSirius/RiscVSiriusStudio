@@ -102,7 +102,25 @@ export const MEM: Node[] = [
       id: 'pivot6',
       type: 'pivot6',
       data: { label: '' },
-      position: { x: 70, y: 940},
+      position: { x: 75, y: 940},
+      parentId: 'MEM',
+      extent: 'parent',
+      style: {
+        width: 1,
+        height: 1,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
+    {
+      id: 'pivot7',
+      type: 'pivot7',
+      data: { label: '' },
+      position: { x: 40, y: 654},
       parentId: 'MEM',
       extent: 'parent',
       style: {
