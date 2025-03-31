@@ -233,7 +233,7 @@ export const IE: Node[] = [
       id: 'pivot5',
       type: 'pivot5',
       data: { label: '' },
-      position: { x: 27, y: 955},
+      position: { x: 27, y: 940},
       parentId: 'IE',
       extent: 'parent',
       style: {
@@ -308,7 +308,7 @@ export const IE: Node[] = [
       id: 'pivotJump5',
       type: 'pivotJump5',
       data: { label: 'pivotJump5' },
-      position: { x: 49, y: 930 },
+      position: { x: 49, y: 915 },
       parentId: 'IE',
       extent: 'parent',
       style: {
