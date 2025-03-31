@@ -10,7 +10,8 @@ export default function ALUOp() {
 
       <Handle  type="source"
         position={Position.Top}
-        style={{ top: '4.4rem', background: '#555', width: 10, height: 10 }} />
+        className='output'
+        style={{ top: '4.4rem' }} />
 
         
     </div>

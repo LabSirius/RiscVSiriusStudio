@@ -171,6 +171,24 @@ export const IE: Node[] = [
         },
       },
 
+      {
+        id: 'brOp',
+        type: 'brOp',
+        data: { label: 'BrOp' },
+        position: { x: 363, y: 320 },
+        parentId: 'IE',
+        extent: 'parent',
+        style: {
+          width: 65,
+          height: 150,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
 
     //PIVOTS S3
 

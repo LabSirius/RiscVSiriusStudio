@@ -34,6 +34,7 @@ import ALUBSrc from '../elements/section3/ALUBSrc';
 import ALU from '../elements/section3/ALU';
 import ALUOp from '../elements/section3/ALUOp';
 import BranchUnit from '../elements/section3/BranchUnit';
+import BrOp from '../elements/section3/BrOp';
 
 //pivots
 import Pivot1 from '../elements/pivots/Pivot1';
@@ -60,19 +61,19 @@ import CustomControls from '../custom/CustomControls';
 const nodeTypes = {
 
   title: TitleText,
-  // Section 1
+  // IF
   pc: PC,
   adder4: Adder4,
   instructionMemory: InstructionMemory, 
   four: Four,
 
-  //Section 2
+  //ID
   registerUnit: RegistersUnit,
   controlUnit: ControlUnit,
   immGenerator: ImmGenerator,
   immSrc: ImmSrc,
 
-  //Section 3
+  //IE
   muxA: MuxA,
   aluASrc: ALUASrc,
   muxB: MuxB,
@@ -80,14 +81,15 @@ const nodeTypes = {
   alu: ALU,
   aluOp: ALUOp,
   branchUnit: BranchUnit,
+  brOp: BrOp,
 
-  //Pivots
+  //PITOVS
   pivot1: Pivot1,
   pivot2: Pivot2,
   pivot3: Pivot3,
   pivot4: Pivot4,
 
-  //Jumps
+  //PIVOTS Jumps
   pivotJump1: PivotJump1,
   pivotJump2: PivotJump2,
   pivotJump3: PivotJump3,
@@ -126,7 +128,7 @@ export default function Sections() {
       <Background 
          //color="#E6E6E6"
          color="#FF0000"
-         variant='cross'
+         //variant='cross'
          gap={20}
          size={2} />
       <MiniMap />
