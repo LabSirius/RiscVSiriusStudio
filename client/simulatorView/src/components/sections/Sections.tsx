@@ -48,6 +48,7 @@ import ImmSrc from '../svgs/section2/ImmSRC';
 import PivotJump1 from '../svgs/pivots/jump/PivotJump1';
 import PivotJump2 from '../svgs/pivots/jump/PivotJump2';
 import PivotJump3 from '../svgs/pivots/jump/PivotJump3';
+import PivotJump4 from '../svgs/pivots/jump/PivotJump4';
 
 
 
@@ -90,6 +91,7 @@ const nodeTypes = {
   pivotJump1: PivotJump1,
   pivotJump2: PivotJump2,
   pivotJump3: PivotJump3,
+  pivotJump4: PivotJump4,
 };
 
 const edgeTypes = {

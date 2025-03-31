@@ -4,12 +4,21 @@ import { Edge, MarkerType  } from '@xyflow/react';
 
 export const RU_MUXS: Edge[] = [
     {
-        id: 'registersUnit->pivot4',
+        id: 'registersUnit->pivotJump4',
         source: 'registersUnit',
-        target: 'pivot4',
-        type: 'smoothstep',
+        target: 'pivotJump4',
+        type: 'default',
         animated: true
     },
+
+    {
+      id: 'pivotJump4->pivot4',
+      source: 'pivotJump4',
+      target: 'pivot4',
+      type: 'default',
+      animated: true
+  },
+    
 
     {
       id: 'pivot4->muxA',
