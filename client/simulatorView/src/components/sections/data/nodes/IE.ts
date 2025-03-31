@@ -48,7 +48,7 @@ export const IE: Node[] = [
         id: 'muxA',
         type: 'muxA',
         data: { label: 'MUX A' },
-        position: { x: 140, y: 465 },
+        position: { x: 165, y: 465 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -67,7 +67,7 @@ export const IE: Node[] = [
         id: 'aluASrc',
         type: 'aluASrc',
         data: { label: 'ALU A SRC' },
-        position: { x: 140, y: 360 },
+        position: { x: 165, y: 360 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -85,7 +85,7 @@ export const IE: Node[] = [
         id: 'muxB',
         type: 'muxB',
         data: { label: 'MUX B' },
-        position: { x: 140, y: 660 },
+        position: { x: 165, y: 660 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -103,7 +103,7 @@ export const IE: Node[] = [
         id: 'aluBSrc',
         type: 'aluBSrc',
         data: { label: 'ALU B SRC' },
-        position: { x: 140, y: 760 },
+        position: { x: 165, y: 760 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -121,7 +121,7 @@ export const IE: Node[] = [
         id: 'alu',
         type: 'alu',
         data: { label: 'ALU' },
-        position: { x: 250, y: 465 },
+        position: { x: 275, y: 465 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -139,7 +139,7 @@ export const IE: Node[] = [
         id: 'aluOp',
         type: 'aluOp',
         data: { label: 'ALU OPERATION' },
-        position: { x: 338, y: 761 },
+        position: { x: 363, y: 761 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -157,7 +157,7 @@ export const IE: Node[] = [
         id: 'branchUnit',
         type: 'branchUnit',
         data: { label: 'Branch Unit' },
-        position: { x: 250, y: 235 },
+        position: { x: 275, y: 235 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -197,7 +197,7 @@ export const IE: Node[] = [
       id: 'pivot4',
       type: 'pivot4',
       data: { label: '' },
-      position: { x: 70, y: 573},
+      position: { x: 80, y: 573},
       parentId: 'IE',
       extent: 'parent',
       style: {
@@ -235,7 +235,7 @@ export const IE: Node[] = [
       id: 'pivotJump3',
       type: 'pivotJump3',
       data: { label: 'pivotJump3' },
-      position: { x: 51, y: 445 },
+      position: { x: 61, y: 445 },
       parentId: 'IE',
       extent: 'parent',
       style: {
