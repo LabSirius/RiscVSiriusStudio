@@ -65,7 +65,7 @@ export const WB: Node[] = [
       id: 'ruDataWrSrc',
       type: 'ruDataWrSrc',
       data: { label: 'RUDataWrSrc' },
-      position: { x: 163, y: 789 },
+      position: { x: 90, y: 765},
       parentId: 'WB',
       extent: 'parent',
       style: {
@@ -85,7 +85,7 @@ export const WB: Node[] = [
       id: 'pivot9',
       type: 'pivot9',
       data: { label: '' },
-      position: { x: 63, y: 868 },
+      position: { x: 18, y: 868 },
       parentId: 'WB',
       extent: 'parent',
       style: {

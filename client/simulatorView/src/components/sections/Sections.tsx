@@ -44,7 +44,7 @@ import DMCtrl from '../elements/MEM/DMCtrl';
 
 //Section 5
 import MuxC from '../elements/WB/MuxC';
-import RUDataWrSrc from '../elements/WB/RUDATAWrSrc';
+import RUDataWrSrc from '../elements/WB/RUDataWrSrc';
 
 //pivots
 import Pivot1 from '../elements/IF/pivots/Pivot1';

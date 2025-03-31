@@ -32,6 +32,7 @@ function MuxC() {
 
       <Handle  
         type="target"
+        id='ruDataWrSrc'
         position={Position.Bottom}
         className='input'
         style={{ top: '7rem' }} 
