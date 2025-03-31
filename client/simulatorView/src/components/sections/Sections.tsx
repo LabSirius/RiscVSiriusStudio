@@ -45,10 +45,13 @@ import ImmSrc from '../svgs/section2/ImmSRC';
 
 //jumps
 import PivotJump1 from '../svgs/pivots/jump/PivotJump1';
+import PivotJump2 from '../svgs/pivots/jump/PivotJump2';
+import PivotJump3 from '../svgs/pivots/jump/PivotJump3';
+
+
 
 //Customs 
 import AnimatedSVGEdge from '../customs/AnimatedSVGEdge';
-import PivotJump3 from '../svgs/pivots/jump/PivotJump3';
 import CustomControls from '../customs/CustomControls';
 
 const nodeTypes = {
@@ -82,6 +85,7 @@ const nodeTypes = {
 
   //Jumps
   pivotJump1: PivotJump1,
+  pivotJump2: PivotJump2,
   pivotJump3: PivotJump3,
 };
 

@@ -16,7 +16,7 @@ export const IM_RU: Edge[] = [
     source: 'pivot3',
     target: 'registersUnit',
     targetHandle: '[17:7]',
-    type: 'smoothstep',
+    type: 'step',
     animated: true,
     markerEnd: {
       type: MarkerType.ArrowClosed,
@@ -30,7 +30,7 @@ export const IM_RU: Edge[] = [
     source: 'pivot3',
     target: 'registersUnit',
     targetHandle: '[24:20]',
-    type: 'smoothstep',
+    type: 'step',
     animated: true,
     markerEnd: {
       type: MarkerType.ArrowClosed,
@@ -44,7 +44,7 @@ export const IM_RU: Edge[] = [
     source: 'pivot3',
     target: 'registersUnit',
     targetHandle: '[19:15]',
-    type: 'smoothstep',
+    type: 'step',
     animated: true,
     markerEnd: {
       type: MarkerType.ArrowClosed,

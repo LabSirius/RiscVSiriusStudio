@@ -192,6 +192,25 @@ export const IE: Node[] = [
       },
     },
 
+      //jump
+      {
+        id: 'pivotJump2',
+        type: 'pivotJump2',
+        data: { label: 'pivotJump2' },
+        position: { x: 8, y: 445 },
+        parentId: 'IE',
+        extent: 'parent',
+        style: {
+          width: 47,
+          height: 47,
+          backgroundColor: 'transparent',
+          border: 'none',
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: 'none',
+        },
+      },
+
 
 
      //jump
@@ -199,7 +218,7 @@ export const IE: Node[] = [
       id: 'pivotJump3',
       type: 'pivotJump3',
       data: { label: 'pivotJump3' },
-      position: { x: 53, y: 445 },
+      position: { x: 51, y: 445 },
       parentId: 'IE',
       extent: 'parent',
       style: {
