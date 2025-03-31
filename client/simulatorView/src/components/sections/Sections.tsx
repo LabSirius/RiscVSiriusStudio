@@ -64,7 +64,7 @@ import PivotJump2 from '../elements/IE/pivots/PivotJump2';
 import PivotJump3 from '../elements/IE/pivots/PivotJump3';
 import PivotJump4 from '../elements/IE/pivots/PivotJump4';
 import PivotJump5 from '../elements/IE/pivots/PivotJum5';
-
+import PivotJump6 from '../elements/MEM/pivots/PivotJum6';
 
 //Customs 
 import AnimatedSVGEdge from '../custom/AnimatedSVGEdge';
@@ -112,7 +112,7 @@ const nodeTypes = {
   pivot5: Pivot5,
   pivot6: Pivot6,
   pivot7: Pivot7,
-  puvot8: Pivot8,
+  pivot8: Pivot8,
 
   //PIVOTS Jumps
   pivotJump1: PivotJump1,
@@ -120,6 +120,7 @@ const nodeTypes = {
   pivotJump3: PivotJump3,
   pivotJump4: PivotJump4,
   pivotJump5: PivotJump5,
+  pivotJump6: PivotJump6,
 };
 
 const edgeTypes = {

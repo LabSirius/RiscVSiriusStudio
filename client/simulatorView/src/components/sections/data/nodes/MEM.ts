@@ -151,4 +151,24 @@ export const MEM: Node[] = [
         boxShadow: 'none',
       },
     },
+
+    //jump
+
+    {
+      id: 'pivotJump6',
+      type: 'pivotJump6',
+      data: { label: 'pivotJump6' },
+      position: { x: 66, y: 843 },
+      parentId: 'MEM',
+      extent: 'parent',
+      style: {
+        width: 47,
+        height: 47,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
 ]
