@@ -74,3 +74,41 @@ h2 {
   margin: 0;
   padding: 0;
 }
+
+
+@keyframes scaleOverlay {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+.overlay-scale {
+  animation: scaleOverlay 1s ease-in-out infinite;
+}
+
+
+@keyframes rotateOverlay {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+
+.overlay-rotate {
+  animation: rotateOverlay 1s ease-in-out infinite;
+}
+
+
