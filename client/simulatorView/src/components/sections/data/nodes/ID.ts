@@ -52,7 +52,7 @@ export const ID: Node[] = [
       extent: 'parent',
       style: {
         width: 170,
-        height: 220,
+        height: 250,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,
