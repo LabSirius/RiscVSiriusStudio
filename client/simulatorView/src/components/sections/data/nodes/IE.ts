@@ -16,7 +16,7 @@ export const IE: Node[] = [
         draggable: false,
         style: {
           width: 548,
-          height: 1350,
+          height: 1300,
           backgroundColor: '#E3F2FD',
           border: '1px solid #93c4e6',
           borderRadius: 8,
@@ -46,7 +46,7 @@ export const IE: Node[] = [
         id: 'muxA',
         type: 'muxA',
         data: { label: 'MUX A' },
-        position: { x: 165, y: 525 },
+        position: { x: 165, y: 545 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -65,7 +65,7 @@ export const IE: Node[] = [
         id: 'aluASrc',
         type: 'aluASrc',
         data: { label: 'ALU A SRC' },
-        position: { x: 153, y: 455 },
+        position: { x: 153, y: 475 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -83,7 +83,7 @@ export const IE: Node[] = [
         id: 'muxB',
         type: 'muxB',
         data: { label: 'MUX B' },
-        position: { x: 165, y: 720 },
+        position: { x: 165, y: 740 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -101,7 +101,7 @@ export const IE: Node[] = [
         id: 'aluBSrc',
         type: 'aluBSrc',
         data: { label: 'ALU B SRC' },
-        position: { x: 153, y: 902 },
+        position: { x: 153, y: 922 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -119,7 +119,7 @@ export const IE: Node[] = [
         id: 'alu',
         type: 'alu',
         data: { label: 'ALU' },
-        position: { x: 275, y: 555 },
+        position: { x: 275, y: 575 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -137,7 +137,7 @@ export const IE: Node[] = [
         id: 'aluOp',
         type: 'aluOp',
         data: { label: 'ALU OPERATION' },
-        position: { x: 350, y: 920 },
+        position: { x: 350, y: 940 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -155,7 +155,7 @@ export const IE: Node[] = [
         id: 'branchUnit',
         type: 'branchUnit',
         data: { label: 'Branch Unit' },
-        position: { x: 275, y: 260 },
+        position: { x: 275, y: 280 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -173,7 +173,7 @@ export const IE: Node[] = [
         id: 'brOp',
         type: 'brOp',
         data: { label: 'BrOp' },
-        position: { x: 350, y: 420 },
+        position: { x: 350, y: 440 },
         parentId: 'IE',
         extent: 'parent',
         style: {
@@ -194,7 +194,7 @@ export const IE: Node[] = [
       id: 'pivot4',
       type: 'pivot4',
       data: { label: '' },
-      position: { x: 45, y: 633},
+      position: { x: 45, y: 653},
       parentId: 'IE',
       extent: 'parent',
       style: {
@@ -212,7 +212,7 @@ export const IE: Node[] = [
       id: 'pivot10',
       type: 'pivot10',
       data: { label: '' },
-      position: { x: 44, y:1174},
+      position: { x: 44, y:1194},
       parentId: 'IE',
       extent: 'parent',
       style: {
@@ -234,7 +234,7 @@ export const IE: Node[] = [
       id: 'pivotJump3',
       type: 'pivotJump3',
       data: { label: 'pivotJump3' },
-      position: { x: 25, y: 485 },
+      position: { x: 25, y: 505 },
       parentId: 'IE',
       extent: 'parent',
       style: {
@@ -252,7 +252,7 @@ export const IE: Node[] = [
       id: 'pivotJump5',
       type: 'pivotJump5',
       data: { label: 'pivotJump5' },
-      position: { x: 25, y: 975 },
+      position: { x: 25, y: 995 },
       parentId: 'IE',
       extent: 'parent',
       style: {
@@ -271,7 +271,7 @@ export const IE: Node[] = [
       id: 'pivotJump7',
       type: 'pivotJump7',
       data: { label: 'pivotJump7' },
-      position: { x: 25, y: 1030 },
+      position: { x: 25, y: 1050 },
       parentId: 'IE',
       extent: 'parent',
       style: {
