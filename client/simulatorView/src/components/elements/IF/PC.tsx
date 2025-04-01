@@ -11,6 +11,10 @@ export default function PC() {
         <ContainerSVG  height={7.4} />
         <Triangle size={20} className='absolute left-[45%]  transform -translate-x-[45%] text-[#404040] bottom-0 z-2 ' />
        </div>
+
+       <Handle type="target"
+        position={Position.Left}
+        className='input' />
         
 
         <Handle  type="source"

@@ -75,7 +75,13 @@ export const IF_WB: Edge[] = [
       target: 'muxD',
       targetHandle: 'adder4',
       type: 'step',
-      animated: true
+      animated: true,
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        width: 18,
+        height: 18,
+        color: '#888888',
+      },
     },
  
 ];
