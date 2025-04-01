@@ -7,7 +7,7 @@ export default function RUWr() {
     <div className={`w-full`}>
 
        <div className='relative w-full h-full'>
-       <h2 className={`titleInElement top-[-.9rem]  right-[1rem] ${overlayDecodeActive && 'overlay-scale'}`}>RUWr</h2>
+       <h2 className={`titleInElement right-[1rem] top-[55%] -translate-y-[55%] ${overlayDecodeActive && 'overlay-scale'}`}>RUWr</h2>
        </div>
         
         <div  className={`${overlayDecodeActive && 'overlay-moveY'}`} >
