@@ -68,5 +68,14 @@ export const IF_WB: Edge[] = [
       type: 'step',
       animated: true
     },
+
+    {
+      id: 'pivot19->muxD',
+      source: 'pivot19',
+      target: 'muxD',
+      targetHandle: 'adder4',
+      type: 'step',
+      animated: true
+    },
  
 ];

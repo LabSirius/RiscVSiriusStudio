@@ -11,6 +11,7 @@ function MuxD() {
       
       <Handle  type="target"
               position={Position.Left}
+              id='adder4'
               className='input'
               style={{ top: '2.8rem' }} />
   
