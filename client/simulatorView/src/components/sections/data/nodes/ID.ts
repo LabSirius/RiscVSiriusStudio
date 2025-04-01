@@ -268,5 +268,23 @@ export const ID: Node[] = [
       },
     },
 
+    {
+      id: 'pivotJump10',
+      type: 'pivotJump10',
+      data: { label: 'pivotJump10' },
+      position: { x: 32, y: 175 },
+      parentId: 'ID',
+      extent: 'parent',
+      style: {
+        width: 47,
+        height: 47,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
 
   ];
