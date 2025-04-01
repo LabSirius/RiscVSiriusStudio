@@ -8,7 +8,7 @@ export default function ImmSrc() {
     <div className='w-full'>
 
        <div className='relative w-full h-full'>
-       <h2 className={`titleInElement right-[1.7rem] top-[50%] -translate-y-[50%]  ${overlayDecodeActive && 'overlay-scale'}`}>IMMSrc</h2>
+       <h2 className={`titleInElement right-[.7rem] top-[50%] -translate-y-[50%]  ${overlayDecodeActive && 'overlay-scale'}`}>IMMSrc</h2>
        </div>
         
        <div  className={`${overlayDecodeActive && 'overlay-rotate'}`} >

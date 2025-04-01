@@ -81,7 +81,7 @@ h2 {
     transform: scale(1);
   }
   50% {
-    transform: scale(0.95);
+    transform: scale(1.04);
   }
   100% {
     transform: scale(1);
@@ -111,4 +111,26 @@ h2 {
   animation: rotateOverlay 1s ease-in-out infinite;
 }
 
+
+@keyframes move {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(50px);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  75% {
+    transform: translateX(-50px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.overlay-moving {
+  animation: move 2s ease-in-out infinite;
+}
 
