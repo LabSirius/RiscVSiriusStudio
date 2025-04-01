@@ -14,9 +14,19 @@ export const IF_WB: Edge[] = [
       type: 'step',
       animated: true
     },
-    {
-        id: 'pivotJump8->pivot13',
+   
+
+      {
+        id: 'pivotJump8->pivotJump9',
         source: 'pivotJump8',
+        target: 'pivotJump9',
+        type: 'step',
+        animated: true
+      },
+
+      {
+        id: 'pivotJump9->pivot13',
+        source: 'pivotJump9',
         target: 'pivot13',
         type: 'step',
         animated: true
