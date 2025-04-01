@@ -13,6 +13,7 @@ export default function Pivot7() {
 
       <Handle
         type="source"
+        id='muxD'
         position={Position.Top} />
        <Handle
         type="source"

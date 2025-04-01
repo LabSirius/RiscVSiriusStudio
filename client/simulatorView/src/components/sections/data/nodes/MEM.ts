@@ -169,6 +169,24 @@ export const MEM: Node[] = [
         boxShadow: 'none',
       },
     },
+
+    {
+      id: 'pivot16',
+      type: 'pivot16',
+      data: { label: '' },
+      position: { x: 90, y: 90 },
+      parentId: 'MEM',
+      extent: 'parent',
+      style: {
+        width: 1,
+        height: 1,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
     
     //jump
     
@@ -211,7 +229,7 @@ export const MEM: Node[] = [
       id: 'pivotJump9',
       type: 'pivotJump9',
       data: { label: 'pivotJump9' },
-      position: { x: 85, y: 251 },
+      position: { x: 72, y: 251 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
