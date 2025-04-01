@@ -16,7 +16,7 @@ export const WB: Node[] = [
         draggable: false,
         style: {
           width: 300,
-          height: 1200,
+          height: 1350,
           backgroundColor: '#FFF2E0',
           border: '1px solid #FFF2E0',
           borderRadius: 8,

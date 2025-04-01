@@ -16,7 +16,7 @@ export const IE: Node[] = [
         draggable: false,
         style: {
           width: 548,
-          height: 1200,
+          height: 1350,
           backgroundColor: '#E3F2FD',
           border: '1px solid #93c4e6',
           borderRadius: 8,

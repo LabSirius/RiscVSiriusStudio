@@ -16,7 +16,7 @@ export const MEM: Node[] = [
         draggable: false,
         style: {
           width: 480,
-          height: 1200,
+          height: 1350,
           backgroundColor: '#E8F5E9',
           border: '1px solid #93c4e6',
           borderRadius: 8,

@@ -17,7 +17,7 @@ export const IF: Node[] = [
       draggable: false, 
       style: {
         width: 548,
-        height: 1200,
+        height: 1350,
         backgroundColor: '#FCE4EC',
         border: '1px solid #e3aaaa',
         borderRadius: 8,

@@ -16,7 +16,7 @@ export const ID: Node[] = [
       draggable: false,
       style: {
         width: 700,
-        height: 1200,
+        height: 1350,
         backgroundColor: '#FFF9C4',
         border: '1px solid #eed97f',
         borderRadius: 8,
