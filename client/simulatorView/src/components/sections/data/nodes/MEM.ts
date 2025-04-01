@@ -64,7 +64,7 @@ export const MEM: Node[] = [
       id: 'dmWr',
       type: 'dmWr',
       data: { label: 'DMWR' },
-      position: { x: 188, y: 530 },
+      position: { x: 187, y: 530 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
@@ -82,7 +82,7 @@ export const MEM: Node[] = [
       id: 'dmCtrl',
       type: 'dmCtrl',
       data: { label: 'DMCtrl' },
-      position: { x: 298, y: 530 },
+      position: { x: 297, y: 530 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
