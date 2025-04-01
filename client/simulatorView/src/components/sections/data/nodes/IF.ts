@@ -117,6 +117,24 @@ export const IF: Node[] = [
       },
     },
 
+    {
+      id: 'muxD',
+      type: 'muxD',
+      data: { label: 'MUX D' },
+      position: { x: 130, y: 660 },
+      parentId: 'IE',
+      extent: 'parent',
+      style: {
+        width: 65,
+        height: 150,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
     
 
     //PIVOTS S1

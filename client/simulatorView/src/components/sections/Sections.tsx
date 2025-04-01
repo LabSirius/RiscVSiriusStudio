@@ -20,6 +20,7 @@ import PC from '../elements/IF/PC';
 import Adder4 from '../elements/IF/Adder4';
 import Four from '../elements/IF/Four';
 import InstructionMemory from '../elements/IF/InstructionMemory';
+import MuxD from '../elements/IF/MuxD';
 
 
 // Section 2
@@ -91,6 +92,7 @@ const nodeTypes = {
   adder4: Adder4,
   instructionMemory: InstructionMemory,
   four: Four,
+  muxD: MuxD,
 
   //ID
   registerUnit: RegistersUnit,
