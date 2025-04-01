@@ -236,7 +236,7 @@ export const IE: Node[] = [
       id: 'pivotJump3',
       type: 'pivotJump3',
       data: { label: 'pivotJump3' },
-      position: { x: 25, y: 445 },
+      position: { x: 25, y: 425 },
       parentId: 'IE',
       extent: 'parent',
       style: {

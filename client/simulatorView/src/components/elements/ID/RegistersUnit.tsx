@@ -6,10 +6,10 @@ export default function RegistersUnit() {
   return (
     <div className='w-full'>
 
-       <div className='relative w-full h-full'>
-       <h2 className=" titleInElement top-[50%] left-[50%]  -translate-x-[50%] -translate-y-[50%] ">Registers Unit</h2>
-        <ContainerSVG height={18.9}  />
-        <Triangle size={24} className='absolute left-[50%]  transform -translate-x-[50%] text-[#404040] bottom-0 z-2' />
+       <div className='relative w-full h-full mt-[5.5rem]'>
+       <h2 className=" titleInElement top-[33%] left-[50%]  -translate-x-[50%] -translate-y-[33%] ">Registers Unit</h2>
+        <ContainerSVG height={25}  />
+        <Triangle size={24} className='absolute left-[50%]  transform -translate-x-[50%] text-[#404040] bottom-0 z-2 mb-[5.5rem]' />
        </div>
 
        <Handle  type="target"
@@ -22,7 +22,7 @@ export default function RegistersUnit() {
         id="[24:20]"
         position={Position.Left}
         className='input'
-        style={{ top: '6.2rem' }} />
+        style={{ top: '6.5rem' }} />
         
 
        <Handle  type="target"
@@ -30,6 +30,13 @@ export default function RegistersUnit() {
         position={Position.Left}
         className='input'
         style={{ top: '12.2rem'}} />
+
+
+        <Handle  type="target"
+        id="dataWr"
+        position={Position.Left}
+        className='input'
+        style={{ top: '17.8rem'}} />
 
       <Handle  type="source"
         position={Position.Right}

@@ -58,6 +58,7 @@ import Pivot8 from '../elements/MEM/pivots/Pivot8';
 import Pivot9 from '../elements/WB/pivots/Pivot9';
 import Pivot10 from '../elements/IE/pivots/Pivot10';
 import Pivot11 from '../elements/WB/pivots/Pivot11';
+import Pivot12 from '../elements/ID/pivots/Pivot12';
 
 import ImmGenerator from '../elements/ID/ImmGenerator';
 import ImmSrc from '../elements/ID/ImmSRC';
@@ -123,6 +124,7 @@ const nodeTypes = {
   pivot9: Pivot9,
   pivot10: Pivot10,
   pivot11: Pivot11,
+  pivot12: Pivot12,
 
   //PIVOTS Jumps
   pivotJump1: PivotJump1,
