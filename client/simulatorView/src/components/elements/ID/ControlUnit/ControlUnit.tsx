@@ -32,21 +32,21 @@ export default function ControlUnit() {
         id="[6:0]"
         position={Position.Left}
         className="input"
-        style={{ top: '2.2rem' }}
+        style={{ top: '2.7rem' }}
       />
       <Handle
         type="target"
         id="[14:12]"
         position={Position.Left}
         className="input"
-        style={{ top: '6.7rem' }}
+        style={{ top: '7.9rem' }}
       />
       <Handle
         type="target"
         id="[35:25]"
         position={Position.Left}
         className="input"
-        style={{ top: '11.2rem' }}
+        style={{ top: '13.2rem' }}
       />
     </div>
   );
