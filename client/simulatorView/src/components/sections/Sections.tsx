@@ -25,6 +25,9 @@ import InstructionMemory from '../elements/IF/InstructionMemory';
 // Section 2
 import RegistersUnit from '../elements/ID/RegistersUnit';
 import ControlUnit from '../elements/ID/ControlUnit';
+import RUWr from '../elements/ID/RUWr';
+import ImmGenerator from '../elements/ID/ImmGenerator';
+import ImmSrc from '../elements/ID/ImmSRC';
 
 //Section 3
 import MuxA from '../elements/IE/MuxA';
@@ -60,9 +63,6 @@ import Pivot10 from '../elements/IE/pivots/Pivot10';
 import Pivot11 from '../elements/WB/pivots/Pivot11';
 import Pivot12 from '../elements/ID/pivots/Pivot12';
 
-import ImmGenerator from '../elements/ID/ImmGenerator';
-import ImmSrc from '../elements/ID/ImmSRC';
-
 //jumps
 import PivotJump1 from '../elements/ID/pivots/PivotJump1';
 import PivotJump2 from '../elements/ID/pivots/PivotJump2';
@@ -92,6 +92,7 @@ const nodeTypes = {
   controlUnit: ControlUnit,
   immGenerator: ImmGenerator,
   immSrc: ImmSrc,
+  ruWr: RUWr,
 
   //IE
   muxA: MuxA,

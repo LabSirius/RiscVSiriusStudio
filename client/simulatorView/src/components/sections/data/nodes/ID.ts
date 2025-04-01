@@ -61,6 +61,25 @@ export const ID: Node[] = [
       },
     },
 
+    {
+      id: 'ruWr',
+      type: 'ruWr',
+      data: { label: 'RUWR' },
+      position: { x: 118, y: 928},
+      parentId: 'ID',
+      extent: 'parent',
+      style: {
+        width: 90,
+        height: 30,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
+
 
     {
       id: 'registersUnit',
