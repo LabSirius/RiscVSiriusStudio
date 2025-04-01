@@ -24,7 +24,7 @@ import InstructionMemory from '../elements/IF/InstructionMemory';
 
 // Section 2
 import RegistersUnit from '../elements/ID/RegistersUnit';
-import ControlUnit from '../elements/ID/ControlUnit';
+import ControlUnit from '../elements/ID/ControlUnit/ControlUnit';
 import RUWr from '../elements/ID/RUWr';
 import ImmGenerator from '../elements/ID/ImmGenerator';
 import ImmSrc from '../elements/ID/ImmSRC';

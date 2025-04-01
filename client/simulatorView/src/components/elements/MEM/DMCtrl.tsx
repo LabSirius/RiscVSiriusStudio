@@ -10,7 +10,7 @@ export default function DMCtrl() {
 
       <Handle  type="source"
                position={Position.Bottom}
-               className='output'
+               className='output-tunnel'
                style={{ top: '4.5rem'}} />
 
         

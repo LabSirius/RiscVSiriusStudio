@@ -10,7 +10,7 @@ export default function RUWr() {
         
        <Handle  type="source"
         position={Position.Right}
-        className='output'  />
+        className='output-tunnel'  />
     </div>
     
   );

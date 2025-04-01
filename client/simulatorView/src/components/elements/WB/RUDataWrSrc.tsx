@@ -10,7 +10,7 @@ export default function RUDataWrSrc() {
 
       <Handle  type="source"
                position={Position.Top}
-               className='output'
+               className='output-tunnel'
                style={{ top: '4.4rem'}} />  
     </div>
     

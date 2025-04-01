@@ -32,12 +32,22 @@ body {
   @apply !bg-[#E91E63];
 }
 
+.input, .output, .output-tunnel{
+  @apply !w-[0.8rem] !h-[0.8rem];
+}
+
 .input,
 .output {
   @apply !w-[0.8rem] !h-[0.8rem];
   clip-path: inset(5% 20% 15% 10%);
-  border: none !important;
 }
+
+.output-tunnel{
+  @apply !bg-[#FFA8A8];
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.out
 
 h2 {
   margin: 0;
