@@ -17,7 +17,7 @@ export const IF: Node[] = [
       draggable: false, 
       style: {
         width: 548,
-        height: 1350,
+        height: 1300,
         backgroundColor: '#FCE4EC',
         border: '1px solid #e3aaaa',
         borderRadius: 8,
@@ -47,7 +47,7 @@ export const IF: Node[] = [
       id: 'pc',
       type: 'pc',
       data: { label: 'PC' },
-      position: { x: 30, y: 585 },
+      position: { x: 30, y: 645 },
       parentId: 'IF',
       extent: 'parent',
       style: {
@@ -66,7 +66,7 @@ export const IF: Node[] = [
       id: 'adder4',
       type: 'adder4',
       data: { label: 'Adder 4' },
-      position: { x: 440, y: 120 },
+      position: { x: 440, y: 155 },
       parentId: 'IF',
       extent: 'parent',
       style: {
@@ -84,7 +84,7 @@ export const IF: Node[] = [
       id: 'four',
       type: 'four',
       data: { label: '4' },
-      position: { x: 310, y: 86},
+      position: { x: 310, y: 121},
       parentId: 'IF',
       extent: 'parent',
       style: {
@@ -103,7 +103,7 @@ export const IF: Node[] = [
       id: 'instructionMemory',
       type: 'instructionMemory', 
       data: { label: 'Instruction Memory' },
-      position: { x: 300, y: 545 },
+      position: { x: 300, y: 605 },
       parentId: 'IF',
       extent: 'parent',
       style: {
@@ -126,7 +126,7 @@ export const IF: Node[] = [
       id: 'pivot1',
       type: 'pivot1',
       data: { label: '' },
-      position: { x: 200, y: 450 },
+      position: { x: 200, y: 510 },
       parentId: 'IF',
       extent: 'parent',
       style: {
