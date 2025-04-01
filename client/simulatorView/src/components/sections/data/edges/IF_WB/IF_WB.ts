@@ -8,8 +8,17 @@ export const IF_WB: Edge[] = [
 
     
     {
-      id: 'adder4->pivotJump8',
+      id: 'adder4->pivot18',
       source: 'adder4',
+      target: 'pivot18',
+      type: 'step',
+      animated: true
+    },
+
+    {
+      id: 'pivot18->pivotJump8',
+      source: 'pivot18',
+      sourceHandle: 'muxC',
       target: 'pivotJump8',
       type: 'step',
       animated: true
@@ -47,5 +56,17 @@ export const IF_WB: Edge[] = [
           color: '#888888',
         },
       },
+
+
+      //Addr_MuxC connections
+      
+    {
+      id: 'pivot18->pivot19',
+      source: 'pivot18',
+      sourceHandle: 'muxD',
+      target: 'pivot19',
+      type: 'step',
+      animated: true
+    },
  
 ];

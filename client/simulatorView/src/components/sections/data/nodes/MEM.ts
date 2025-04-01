@@ -82,7 +82,7 @@ export const MEM: Node[] = [
       id: 'dmCtrl',
       type: 'dmCtrl',
       data: { label: 'DMCtrl' },
-      position: { x: 357, y: 610 },
+      position: { x: 347, y: 610 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
