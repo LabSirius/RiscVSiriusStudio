@@ -16,7 +16,7 @@ export const WB: Node[] = [
         draggable: false,
         style: {
           width: 300,
-          height: 1300,
+          height: 1400,
           backgroundColor: '#FFF2E0',
           border: '1px solid #FFF2E0',
           borderRadius: 8,
@@ -47,7 +47,7 @@ export const WB: Node[] = [
       id: 'muxC',
       type: 'muxC',
       data: { label: 'MUX C' },
-      position: { x: 90, y: 740 },
+      position: { x: 90, y: 820 },
       parentId: 'WB',
       extent: 'parent',
       style: {
@@ -60,12 +60,12 @@ export const WB: Node[] = [
         boxShadow: 'none',
       },
     },
-
+    
     {
       id: 'ruDataWrSrc',
       type: 'ruDataWrSrc',
       data: { label: 'RUDataWrSrc' },
-      position: { x: 78, y: 945},
+      position: { x: 78, y: 1025 },
       parentId: 'WB',
       extent: 'parent',
       style: {
@@ -78,14 +78,14 @@ export const WB: Node[] = [
         boxShadow: 'none',
       },
     },
-
+    
     //pivot
-
+    
     {
       id: 'pivot9',
       type: 'pivot9',
       data: { label: '' },
-      position: { x: 18, y: 948 },
+      position: { x: 18, y: 1028 },
       parentId: 'WB',
       extent: 'parent',
       style: {
@@ -98,12 +98,12 @@ export const WB: Node[] = [
         boxShadow: 'none',
       },
     },
-
+    
     {
       id: 'pivot11',
       type: 'pivot11',
       data: { label: '' },
-      position: { x: 230, y: 1076 },
+      position: { x: 230, y: 1156 },
       parentId: 'WB',
       extent: 'parent',
       style: {
@@ -116,12 +116,12 @@ export const WB: Node[] = [
         boxShadow: 'none',
       },
     },
-
+    
     {
       id: 'pivot13',
       type: 'pivot13',
       data: { label: '' },
-      position: { x: 18, y: 196 },
+      position: { x: 18, y: 276 },
       parentId: 'WB',
       extent: 'parent',
       style: {
@@ -134,4 +134,5 @@ export const WB: Node[] = [
         boxShadow: 'none',
       },
     },
+    
 ]

@@ -17,7 +17,7 @@ export const IF: Node[] = [
       draggable: false, 
       style: {
         width: 800,
-        height: 1300,
+        height: 1400,
         backgroundColor: '#FCE4EC',
         border: '1px solid #e3aaaa',
         borderRadius: 8,
@@ -47,7 +47,7 @@ export const IF: Node[] = [
       id: 'pc',
       type: 'pc',
       data: { label: 'PC' },
-      position: { x: 260, y: 665 },
+      position: { x: 260, y: 745 },
       parentId: 'IF',
       extent: 'parent',
       style: {
@@ -60,13 +60,12 @@ export const IF: Node[] = [
         boxShadow: 'none',
       },
     },
-
-
+    
     {
       id: 'adder4',
       type: 'adder4',
       data: { label: 'Adder 4' },
-      position: { x: 660, y: 165 },
+      position: { x: 660, y: 245 },
       parentId: 'IF',
       extent: 'parent',
       style: {
@@ -79,12 +78,12 @@ export const IF: Node[] = [
         boxShadow: 'none',
       },
     },
-  
+    
     {
       id: 'four',
       type: 'four',
       data: { label: '4' },
-      position: { x: 530, y: 131},
+      position: { x: 530, y: 211 },
       parentId: 'IF',
       extent: 'parent',
       style: {
@@ -97,13 +96,12 @@ export const IF: Node[] = [
         boxShadow: 'none',
       },
     },
-  
-  
+    
     {
       id: 'instructionMemory',
       type: 'instructionMemory', 
       data: { label: 'Instruction Memory' },
-      position: { x: 520, y: 625 },
+      position: { x: 520, y: 705 },
       parentId: 'IF',
       extent: 'parent',
       style: {
@@ -116,12 +114,12 @@ export const IF: Node[] = [
         boxShadow: 'none',
       },
     },
-
+    
     {
       id: 'muxD',
       type: 'muxD',
       data: { label: 'MUX D' },
-      position: { x: 130, y: 660 },
+      position: { x: 130, y: 740 },
       parentId: 'IE',
       extent: 'parent',
       style: {
@@ -134,17 +132,15 @@ export const IF: Node[] = [
         boxShadow: 'none',
       },
     },
-
     
-
     //PIVOTS S1
-
+    
     //NODE PC-PIVOT-ADDER4
     {
       id: 'pivot1',
       type: 'pivot1',
       data: { label: '' },
-      position: { x: 410, y: 530 },
+      position: { x: 410, y: 610 },
       parentId: 'IF',
       extent: 'parent',
       style: {
@@ -158,12 +154,12 @@ export const IF: Node[] = [
         boxShadow: 'none',
       },
     },
-
+    
     {
       id: 'pivot15',
       type: 'pivot15',
       data: { label: '' },
-      position: { x: 40, y: 90 },
+      position: { x: 190, y: 200 },
       parentId: 'IF',
       extent: 'parent',
       style: {
