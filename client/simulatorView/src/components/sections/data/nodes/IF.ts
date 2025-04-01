@@ -47,7 +47,7 @@ export const IF: Node[] = [
       id: 'pc',
       type: 'pc',
       data: { label: 'PC' },
-      position: { x: 30, y: 685 },
+      position: { x: 30, y: 665 },
       parentId: 'IF',
       extent: 'parent',
       style: {

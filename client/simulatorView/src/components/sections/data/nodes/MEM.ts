@@ -171,4 +171,21 @@ export const MEM: Node[] = [
         boxShadow: 'none',
       },
     },
+    {
+      id: 'pivotJump8',
+      type: 'pivotJump8',
+      data: { label: 'pivotJump8' },
+      position: { x: 40, y: 171 },
+      parentId: 'MEM',
+      extent: 'parent',
+      style: {
+        width: 47,
+        height: 47,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
 ]

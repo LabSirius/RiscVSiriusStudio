@@ -5,13 +5,23 @@ import { Edge, MarkerType  } from '@xyflow/react';
 export const IF_WB: Edge[] = [
 
     //Addr_MuxC connections
+
+    
     {
-        id: 'adder4->pivot13',
-        source: 'adder4',
+      id: 'adder4->pivotJump8',
+      source: 'adder4',
+      target: 'pivotJump8',
+      type: 'step',
+      animated: true
+    },
+    {
+        id: 'pivotJump8->pivot13',
+        source: 'pivotJump8',
         target: 'pivot13',
         type: 'step',
         animated: true
       },
+
 
       {
         id: 'pivot13->muxC',

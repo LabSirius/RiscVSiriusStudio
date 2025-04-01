@@ -72,10 +72,12 @@ import PivotJump4 from '../elements/ID/pivots/PivotJump4';
 import PivotJump5 from '../elements/IE/pivots/PivotJump5';
 import PivotJump6 from '../elements/MEM/pivots/PivotJum6';
 import PivotJump7 from '../elements/IE/pivots/PivotJump7';
+import PivotJump8 from '../elements/MEM/pivots/PivotJum8';
 
 //Customs 
 import AnimatedSVGEdge from '../custom/AnimatedSVGEdge';
 import CustomControls from '../custom/CustomControls';
+
 
 
 
@@ -137,6 +139,7 @@ const nodeTypes = {
   pivotJump5: PivotJump5,
   pivotJump6: PivotJump6,
   pivotJump7: PivotJump7,
+  pivotJump8: PivotJump8,
 };
 
 const edgeTypes = {
