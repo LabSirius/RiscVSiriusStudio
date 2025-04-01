@@ -12,10 +12,10 @@ export const IE: Node[] = [
         id: 'IE',
         type: 'group',
         data: { label: 'Section 3' },
-        position: { x: 548 * 2, y: 0 },
+        position: { x: 548 + 690, y: 0 },
         draggable: false,
         style: {
-          width: 548,
+          width: 700,
           height: 1200,
           backgroundColor: '#E3F2FD',
           border: '1px solid #93c4e6',

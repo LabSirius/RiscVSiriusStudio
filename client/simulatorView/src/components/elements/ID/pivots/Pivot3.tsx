@@ -10,7 +10,7 @@ export default function Pivot3() {
       />
       <Handle
         type="source"
-        position={Position.Right}
+        position={Position.Top}
       />
     </div>
   );

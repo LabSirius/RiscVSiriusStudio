@@ -29,7 +29,7 @@ export default function RegistersUnit() {
         id="[17:7]"
         position={Position.Left}
         className='input'
-        style={{ top: '12.2rem'}} />
+        style={{ top: '10.8rem'}} />
 
 
         <Handle  type="target"

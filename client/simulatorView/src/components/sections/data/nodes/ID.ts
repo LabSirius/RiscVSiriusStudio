@@ -15,7 +15,7 @@ export const ID: Node[] = [
       position: { x: 548, y: 0 },
       draggable: false,
       style: {
-        width: 548,
+        width: 700,
         height: 1200,
         backgroundColor: '#FFF9C4',
         border: '1px solid #eed97f',
@@ -47,7 +47,7 @@ export const ID: Node[] = [
       id: 'controlUnit',
       type: 'controlUnit',
       data: { label: 'Control Unit' },
-      position: { x: 190, y: 150 },
+      position: { x: 295, y: 150 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -65,7 +65,7 @@ export const ID: Node[] = [
       id: 'ruWr',
       type: 'ruWr',
       data: { label: 'RUWR' },
-      position: { x: 118, y: 928},
+      position: { x: 143, y: 844},
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -85,7 +85,7 @@ export const ID: Node[] = [
       id: 'registersUnit',
       type: 'registerUnit',
       data: { label: 'Registers Unit' },
-      position: { x: 190, y: 510 },
+      position: { x: 295, y: 510 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -103,7 +103,7 @@ export const ID: Node[] = [
       id: 'immSrc',
       type: 'immSrc',
       data: { label: 'IMMSrc' },
-      position: { x: 43, y: 1121},
+      position: { x: 148, y: 1121},
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -121,7 +121,7 @@ export const ID: Node[] = [
       id: 'immGenerator',
       type: 'immGenerator',
       data: { label: 'Immediate Generator' },
-      position: { x: 190, y: 1060 },
+      position: { x: 295, y: 1060 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -142,7 +142,7 @@ export const ID: Node[] = [
       id: 'pivot2',
       type: 'pivot2',
       data: { label: '' },
-      position: { x: 500, y: 705 },
+      position: { x: 640, y: 705 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -160,7 +160,7 @@ export const ID: Node[] = [
       id: 'pivot3',
       type: 'pivot3',
       data: { label: '' },
-      position: { x: 10, y: 705 },
+      position: { x: 50, y: 705 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -180,7 +180,7 @@ export const ID: Node[] = [
       id: 'pivot5',
       type: 'pivot5',
       data: { label: '' },
-      position: { x: 500, y: 940},
+      position: { x: 640, y: 940},
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -218,7 +218,7 @@ export const ID: Node[] = [
       id: 'pivotJump1',
       type: 'pivotJump1',
       data: { label: 'pivotJump1' },
-      position: { x: 80, y: 425 },
+      position: { x: 32, y: 425 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -236,7 +236,7 @@ export const ID: Node[] = [
       id: 'pivotJump2',
       type: 'pivotJump2',
       data: { label: 'pivotJump2' },
-      position: { x: 480, y: 425 },
+      position: { x: 621, y: 425 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -254,7 +254,7 @@ export const ID: Node[] = [
       id: 'pivotJump4',
       type: 'pivotJump4',
       data: { label: 'pivotJump4' },
-      position: { x: 480, y: 547 },
+      position: { x: 621, y: 547 },
       parentId: 'ID',
       extent: 'parent',
       style: {

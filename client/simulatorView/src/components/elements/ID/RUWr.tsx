@@ -5,11 +5,11 @@ export default function RUWr() {
     <div className='w-full'>
 
        <div className='relative w-full h-full'>
-       <h2 className="titleInElement top-[-.4rem] left-[50%] -translate-x-[50%]  ">RUWr</h2>
+       <h2 className="titleInElement top-[-.9rem]  right-[1rem]  ">RUWr</h2>
        </div>
         
        <Handle  type="source"
-        position={Position.Top}
+        position={Position.Right}
         className='output'  />
     </div>
     
