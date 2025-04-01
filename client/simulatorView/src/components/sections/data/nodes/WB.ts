@@ -103,7 +103,7 @@ export const WB: Node[] = [
       id: 'pivot11',
       type: 'pivot11',
       data: { label: '' },
-      position: { x: 169, y: 990 },
+      position: { x: 230, y: 996 },
       parentId: 'WB',
       extent: 'parent',
       style: {

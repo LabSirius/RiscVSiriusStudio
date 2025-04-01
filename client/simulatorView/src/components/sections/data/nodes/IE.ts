@@ -250,13 +250,30 @@ export const IE: Node[] = [
       },
     },
 
-
-    
     {
       id: 'pivotJump5',
       type: 'pivotJump5',
       data: { label: 'pivotJump5' },
       position: { x: 25, y: 915 },
+      parentId: 'IE',
+      extent: 'parent',
+      style: {
+        width: 47,
+        height: 47,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
+    
+    {
+      id: 'pivotJump7',
+      type: 'pivotJump7',
+      data: { label: 'pivotJump7' },
+      position: { x: 25, y: 970 },
       parentId: 'IE',
       extent: 'parent',
       style: {
