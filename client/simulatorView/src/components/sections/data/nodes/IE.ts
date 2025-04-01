@@ -12,7 +12,7 @@ export const IE: Node[] = [
         id: 'IE',
         type: 'group',
         data: { label: 'Section 3' },
-        position: { x: 548 + 700, y: 0 },
+        position: { x: 800 + 700, y: 0 },
         draggable: false,
         style: {
           width: 548,
