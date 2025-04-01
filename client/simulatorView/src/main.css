@@ -117,13 +117,13 @@ h2 {
     transform: translateX(0);
   }
   25% {
-    transform: translateX(40px);
+    transform: translateX(27px);
   }
   50% {
     transform: translateX(0);
   }
   75% {
-    transform: translateX(-40px);
+    transform: translateX(-27px);
   }
   100% {
     transform: translateX(0);

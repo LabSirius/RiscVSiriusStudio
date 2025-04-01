@@ -7,6 +7,9 @@ type OverlayContextType = {
 
   overlayExecuteActive: boolean;
   setOverlayExecuteActive: (active: boolean) => void;
+
+  overlayMemoryActive: boolean;
+  setOverlayMemoryActive: (active: boolean) => void;
 };
 
 const OverlayContext = createContext<OverlayContextType>({
@@ -15,6 +18,9 @@ const OverlayContext = createContext<OverlayContextType>({
 
   overlayExecuteActive: false,
   setOverlayExecuteActive: () => {},
+
+  overlayMemoryActive: false,
+  setOverlayMemoryActive: () => {},
 });
 
 export const useOverlay = () => useContext(OverlayContext);
@@ -22,9 +28,10 @@ export const useOverlay = () => useContext(OverlayContext);
 export const OverlayProvider = ({ children }: { children: ReactNode }) => {
   const [overlayDecodeActive, setOverlayDecodeActive] = useState(false);
   const [overlayExecuteActive, setOverlayExecuteActive] = useState(false);
+  const [overlayMemoryActive, setOverlayMemoryActive] = useState(false);
 
   return (
-    <OverlayContext.Provider value={{ overlayDecodeActive, setOverlayDecodeActive, overlayExecuteActive, setOverlayExecuteActive }}>
+    <OverlayContext.Provider value={{ overlayDecodeActive, setOverlayDecodeActive, overlayExecuteActive, setOverlayExecuteActive, overlayMemoryActive, setOverlayMemoryActive }}>
       {children}
     </OverlayContext.Provider>
   );

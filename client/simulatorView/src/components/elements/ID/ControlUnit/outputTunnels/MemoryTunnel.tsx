@@ -1,8 +1,14 @@
 import TunnelContainer from "./TunnelContainer"
+import { useOverlay } from "@/context/OverlayContext";
+
 
 const MemoryTunnel = () => {
+  const { setOverlayMemoryActive } = useOverlay();
+
   return (
-    <div className="w-full relative">
+    <div className="relative w-full"
+    onMouseEnter={() => setOverlayMemoryActive(true)}
+    onMouseLeave={() => setOverlayMemoryActive(false)}>
      <h2 className="subtitleInTunnel ">
        Memory
       </h2>
