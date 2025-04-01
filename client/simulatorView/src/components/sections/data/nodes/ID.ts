@@ -70,8 +70,8 @@ export const ID: Node[] = [
       parentId: 'ID',
       extent: 'parent',
       style: {
-        width: 240,
-        height: 300,
+        width: 260,
+        height: 400,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,
@@ -106,7 +106,7 @@ export const ID: Node[] = [
       parentId: 'ID',
       extent: 'parent',
       style: {
-        width: 240,
+        width: 260,
         height: 110,
         backgroundColor: 'transparent',
         border: 'none',
