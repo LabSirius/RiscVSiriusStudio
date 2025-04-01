@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import {
   ReactFlow,
   addEdge,
@@ -19,7 +19,7 @@ import { initialEdges } from './data/edges/initialEdges'; //Conecctions between 
 import PC from '../elements/IF/PC';
 import Adder4 from '../elements/IF/Adder4';
 import Four from '../elements/IF/Four';
-import InstructionMemory from '../elements/IF/InstructionMemory'; 
+import InstructionMemory from '../elements/IF/InstructionMemory';
 
 
 // Section 2
@@ -84,7 +84,7 @@ const nodeTypes = {
   // IF
   pc: PC,
   adder4: Adder4,
-  instructionMemory: InstructionMemory, 
+  instructionMemory: InstructionMemory,
   four: Four,
 
   //ID
@@ -144,6 +144,8 @@ const edgeTypes = {
 export default function Sections() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  // Add state for minimap visibility
+  const [showMinimap, setShowMinimap] = useState(false);
 
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
@@ -163,17 +165,19 @@ export default function Sections() {
       onConnect={onConnect}
       style={{ backgroundColor: '#F7F9FB' }}
       fitView
-      minZoom={0.1}    
-      maxZoom={2}       
+      minZoom={0.1}
+      maxZoom={2}
     >
-      <Background 
-         //color="#E6E6E6"
-         color="#FF0000"
-         //variant='cross'
-         gap={20}
-         size={2} />
-      <MiniMap />
-      <CustomControls />
+      <Background
+        //color="#E6E6E6"
+        color="#FF0000"
+        //variant='cross'
+        gap={20}
+        size={2} />
+      {/* Conditionally render the MiniMap based on state */}
+      {showMinimap && <MiniMap />}
+      {/* Pass the toggle function to CustomControls */}
+      <CustomControls onToggleMinimap={() => setShowMinimap(!showMinimap)} />
     </ReactFlow>
   );
 }
