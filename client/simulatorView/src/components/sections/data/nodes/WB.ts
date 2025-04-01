@@ -12,7 +12,7 @@ export const WB: Node[] = [
         id: 'WB',
         type: 'group',
         data: { label: 'Section 5' },
-        position: { x: 800 + 700 + 548 + 480, y: 0 },
+        position: { x: 800 + 700 + 548 + 550, y: 0 },
         draggable: false,
         style: {
           width: 300,

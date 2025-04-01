@@ -15,7 +15,7 @@ export const MEM: Node[] = [
         position: { x: 800 + 700 + 548  , y: 0 },
         draggable: false,
         style: {
-          width: 480,
+          width: 550,
           height: 1300,
           backgroundColor: '#E8F5E9',
           border: '1px solid #93c4e6',
@@ -32,7 +32,7 @@ export const MEM: Node[] = [
       extent: 'parent',
       draggable: false,
       style: {
-        width: 480,
+        width: 550,
         height: 50,
         backgroundColor: 'transparent',
         border: 'none',
@@ -46,7 +46,7 @@ export const MEM: Node[] = [
       id: 'dataMemory',
       type: 'dataMemory', 
       data: { label: 'Data Memory' },
-      position: { x: 160, y: 611 },
+      position: { x: 210, y: 611 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
@@ -64,7 +64,7 @@ export const MEM: Node[] = [
       id: 'dmWr',
       type: 'dmWr',
       data: { label: 'DMWR' },
-      position: { x: 187, y: 530 },
+      position: { x: 237, y: 530 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
@@ -82,7 +82,7 @@ export const MEM: Node[] = [
       id: 'dmCtrl',
       type: 'dmCtrl',
       data: { label: 'DMCtrl' },
-      position: { x: 297, y: 530 },
+      position: { x: 357, y: 530 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
@@ -102,7 +102,7 @@ export const MEM: Node[] = [
       id: 'pivot6',
       type: 'pivot6',
       data: { label: '' },
-      position: { x: 85, y: 1020},
+      position: { x: 135, y: 1020},
       parentId: 'MEM',
       extent: 'parent',
       style: {
@@ -120,7 +120,7 @@ export const MEM: Node[] = [
       id: 'pivot7',
       type: 'pivot7',
       data: { label: '' },
-      position: { x: 40, y: 734},
+      position: { x: 90, y: 734},
       parentId: 'MEM',
       extent: 'parent',
       style: {
@@ -138,7 +138,7 @@ export const MEM: Node[] = [
       id: 'pivot8',
       type: 'pivot8',
       data: { label: '' },
-      position: { x: 40, y: 948},
+      position: { x: 90, y: 948},
       parentId: 'MEM',
       extent: 'parent',
       style: {
@@ -156,7 +156,7 @@ export const MEM: Node[] = [
       id: 'pivot14',
       type: 'pivot14',
       data: { label: '' },
-      position: { x: 59, y: 90},
+      position: { x: 18, y: 90},
       parentId: 'MEM',
       extent: 'parent',
       style: {
@@ -176,7 +176,7 @@ export const MEM: Node[] = [
       id: 'pivotJump6',
       type: 'pivotJump6',
       data: { label: 'pivotJump6' },
-      position: { x: 66, y: 923 },
+      position: { x: 116, y: 923 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
@@ -193,7 +193,7 @@ export const MEM: Node[] = [
       id: 'pivotJump8',
       type: 'pivotJump8',
       data: { label: 'pivotJump8' },
-      position: { x: 40, y: 171 },
+      position: { x: 0, y: 171 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
