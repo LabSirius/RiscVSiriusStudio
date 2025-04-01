@@ -12,10 +12,11 @@ export const IM_RU: Edge[] = [
     animated: true,
   },
   {
-    id: 'pivot3->RegistersUnit[17:7]',
+    id: 'pivot3->RegistersUnit[11:7]',
     source: 'pivot3',
+    sourceHandle: '[11:7]',
     target: 'registersUnit',
-    targetHandle: '[17:7]',
+    targetHandle: '[11:7]',
     type: 'step',
     animated: true,
     markerEnd: {
@@ -28,6 +29,7 @@ export const IM_RU: Edge[] = [
   {
     id: 'pivot3->RegistersUnit[24:20]',
     source: 'pivot3',
+    sourceHandle: '[24:20]',
     target: 'registersUnit',
     targetHandle: '[24:20]',
     type: 'step',
@@ -42,6 +44,7 @@ export const IM_RU: Edge[] = [
   {
     id: 'pivot3->RegistersUnit[19:15]',
     source: 'pivot3',
+    sourceHandle: '[19:15]',
     target: 'registersUnit',
     targetHandle: '[19:15]',
     type: 'step',

@@ -22,14 +22,14 @@ export default function RegistersUnit() {
         id="[24:20]"
         position={Position.Left}
         className='input'
-        style={{ top: '6.5rem' }} />
+        style={{ top: '7.2rem' }} />
         
 
        <Handle  type="target"
-        id="[17:7]"
+        id="[11:7]"
         position={Position.Left}
         className='input'
-        style={{ top: '10.8rem'}} />
+        style={{ top: '12.2rem'}} />
 
 
         <Handle  type="target"
