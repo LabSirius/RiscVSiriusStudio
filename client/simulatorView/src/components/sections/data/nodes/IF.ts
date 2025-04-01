@@ -141,4 +141,23 @@ export const IF: Node[] = [
       },
     },
 
+    {
+      id: 'pivot15',
+      type: 'pivot15',
+      data: { label: '' },
+      position: { x: 40, y: 90 },
+      parentId: 'IF',
+      extent: 'parent',
+      style: {
+        width: 1,
+        height: 1,
+        opacity: 0,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
   ];

@@ -64,6 +64,7 @@ import Pivot11 from '../elements/WB/pivots/Pivot11';
 import Pivot12 from '../elements/ID/pivots/Pivot12';
 import Pivot13 from '../elements/WB/pivots/Pivot13';
 import Pivot14 from '../elements/MEM/pivots/Pivot14';
+import Pivot15 from '../elements/IF/pivots/Pivot15';
 
 //jumps
 import PivotJump1 from '../elements/ID/pivots/PivotJump1';
@@ -132,6 +133,7 @@ const nodeTypes = {
   pivot12: Pivot12,
   pivot13: Pivot13,
   pivot14: Pivot14,
+  pivot15: Pivot15,
 
   //PIVOTS Jumps
   pivotJump1: PivotJump1,
