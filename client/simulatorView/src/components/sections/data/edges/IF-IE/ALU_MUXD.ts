@@ -1,11 +1,16 @@
 // This file contains the connection between the BU and the MUXD
 
-import { Edge  } from '@xyflow/react';
+import { Edge, MarkerType  } from '@xyflow/react';
 
 export const ALU_MUXD: Edge[] = [
 
     { id: 'pivot7->pivot16',  source: 'pivot7', sourceHandle:'muxD', target: 'pivot16',  type: 'smoothstep', animated:true},
     { id: 'pivot16->pivot17',  source: 'pivot16', target: 'pivot17',  type: 'smoothstep', animated:true},
-    { id: 'pivot17->muxD',  source: 'pivot17', target: 'muxD', targetHandle:'alu',  type: 'smoothstep', animated:true}
+    { id: 'pivot17->muxD',  source: 'pivot17', target: 'muxD', targetHandle:'alu',  type: 'smoothstep', animated:true,  markerEnd: {
+        type: MarkerType.ArrowClosed,
+        width: 18,
+        height: 18,
+        color: '#888888',
+    },}
    
 ];
