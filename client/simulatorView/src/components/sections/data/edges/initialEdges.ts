@@ -17,6 +17,7 @@ import { MEM_WB } from './MEM_WB/MEM_WB';
 import { IE_WB } from './IE_WB/IE_WB';
 import { WB } from './WB/WB';
 import { WB_ID } from './WB_ID/WB_ID';
+import { IF_WB } from './IF_WB/IF_WB';
 
 export const initialEdges: Edge[] = [
   ...IF, // IF stage edges
@@ -32,4 +33,7 @@ export const initialEdges: Edge[] = [
   ...IE_WB, // IE-WB stage edges
   ...WB, // WB stage edges
   ...WB_ID, // WB-ID stage edges
+
+
+  ...IF_WB   // Connections between  adder4 and MuxC
 ];

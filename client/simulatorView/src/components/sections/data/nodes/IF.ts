@@ -66,7 +66,7 @@ export const IF: Node[] = [
       id: 'adder4',
       type: 'adder4',
       data: { label: 'Adder 4' },
-      position: { x: 440, y: 155 },
+      position: { x: 440, y: 145 },
       parentId: 'IF',
       extent: 'parent',
       style: {
@@ -84,7 +84,7 @@ export const IF: Node[] = [
       id: 'four',
       type: 'four',
       data: { label: '4' },
-      position: { x: 310, y: 121},
+      position: { x: 310, y: 111},
       parentId: 'IF',
       extent: 'parent',
       style: {

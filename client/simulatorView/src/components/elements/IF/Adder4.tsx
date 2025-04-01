@@ -26,6 +26,13 @@ export default function Adder4() {
         style={{ top: '5rem'}}
       />
 
+      <Handle
+        type="source"
+        position={Position.Right}
+        className='output'
+        style={{ top: '2rem'}}
+      />
+
 
     </div>
   );

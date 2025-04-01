@@ -116,4 +116,22 @@ export const WB: Node[] = [
         boxShadow: 'none',
       },
     },
+
+    {
+      id: 'pivot13',
+      type: 'pivot13',
+      data: { label: '' },
+      position: { x: 18, y: 176 },
+      parentId: 'WB',
+      extent: 'parent',
+      style: {
+        width: 1,
+        height: 1,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
 ]
