@@ -12,7 +12,7 @@ const MemoryTunnel = () => {
      <h2 className="subtitleInTunnel ">
        Memory
       </h2>
-    <TunnelContainer />
+    <TunnelContainer color='#E8F5E9' />
    </div>
   )
 }

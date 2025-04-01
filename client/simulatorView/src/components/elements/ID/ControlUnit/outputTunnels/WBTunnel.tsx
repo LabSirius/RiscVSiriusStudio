@@ -10,7 +10,7 @@ const WBTunnel = () => {
      <h2 className="subtitleInTunnel ">
        WB
       </h2>
-    <TunnelContainer />
+    <TunnelContainer color="#FFF2E0" />
    </div>
   )
 }

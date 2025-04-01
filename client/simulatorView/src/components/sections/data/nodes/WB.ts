@@ -17,8 +17,8 @@ export const WB: Node[] = [
         style: {
           width: 300,
           height: 1200,
-          backgroundColor: '#E3F2FD',
-          border: '1px solid #93c4e6',
+          backgroundColor: '#FFF2E0',
+          border: '1px solid #FFF2E0',
           borderRadius: 8,
         },
     },

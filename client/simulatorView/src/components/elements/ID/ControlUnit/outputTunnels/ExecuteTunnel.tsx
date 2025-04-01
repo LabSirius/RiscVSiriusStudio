@@ -6,14 +6,14 @@ const ExecuteTunnel = () => {
   const { setOverlayExecuteActive } = useOverlay();
 
   return (
-    <div className="w-full relative"
+    <div className="relative w-full"
     onMouseEnter={() => setOverlayExecuteActive(true)}
     onMouseLeave={() => setOverlayExecuteActive(false)}
     >
      <h2 className="subtitleInTunnel ">
        Execute
       </h2>
-    <TunnelContainer />
+      <TunnelContainer color="#E3F2FD"/>
    </div>
   )
 }
