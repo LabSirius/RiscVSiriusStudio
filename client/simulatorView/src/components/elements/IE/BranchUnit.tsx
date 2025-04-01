@@ -26,6 +26,10 @@ export default function BranchUnit() {
         id="brOp"
         position={Position.Bottom}
         className='input' />  
+
+        <Handle  type="source"
+        position={Position.Right}
+        className='output' />  
     </div>
     
   );
