@@ -98,4 +98,22 @@ export const WB: Node[] = [
         boxShadow: 'none',
       },
     },
+
+    {
+      id: 'pivot11',
+      type: 'pivot11',
+      data: { label: '' },
+      position: { x: 169, y: 990 },
+      parentId: 'WB',
+      extent: 'parent',
+      style: {
+        width: 1,
+        height: 1,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
 ]
