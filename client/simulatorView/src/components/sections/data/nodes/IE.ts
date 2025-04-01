@@ -12,10 +12,10 @@ export const IE: Node[] = [
         id: 'IE',
         type: 'group',
         data: { label: 'Section 3' },
-        position: { x: 548 + 690, y: 0 },
+        position: { x: 548 + 700, y: 0 },
         draggable: false,
         style: {
-          width: 700,
+          width: 548,
           height: 1200,
           backgroundColor: '#E3F2FD',
           border: '1px solid #93c4e6',
@@ -23,26 +23,24 @@ export const IE: Node[] = [
         },
     },
 
-    // {
-    //   id: 'title-IE',
-    //   type: 'title',
-    //   data: { label: 'Execute (IE)' },
-    //   position: { x: 0, y: 0 },
-    //   parentId: 'IE',
-    //   extent: 'parent',
-    //   draggable: false,
-    //   style: {
-    //     width: 548,
-    //     height: 50,
-    //     backgroundColor: 'transparent',
-    //     border: 'none',
-    //     borderRadius: 0,
-    //     padding: 0,
-    //     boxShadow: 'none',
-    //   },
-    // },
-
- 
+    {
+      id: 'title-IE',
+      type: 'title',
+      data: { label: 'Execute (IE)' },
+      position: { x: 0, y: 0 },
+      parentId: 'IE',
+      extent: 'parent',
+      draggable: false,
+      style: {
+        width: 548,
+        height: 50,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
 
     {
         id: 'muxA',

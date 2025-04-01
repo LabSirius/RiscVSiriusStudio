@@ -16,7 +16,7 @@ export const IF: Node[] = [
       position: { x: 0, y: 0 },
       draggable: false, 
       style: {
-        width: 620,
+        width: 548,
         height: 1200,
         backgroundColor: '#FCE4EC',
         border: '1px solid #e3aaaa',
@@ -24,24 +24,24 @@ export const IF: Node[] = [
       },
     },
 
-    // {
-    //   id: 'title-IF',
-    //   type: 'title',
-    //   data: { label: 'Fetch (IF)' },
-    //   position: { x: 0, y: 0 },
-    //   parentId: 'IF',
-    //   extent: 'parent',
-    //   draggable: false,
-    //   style: {
-    //     width: 620,
-    //     height: 50,
-    //     backgroundColor: 'transparent',
-    //     border: 'none',
-    //     borderRadius: 0,
-    //     padding: 0,
-    //     boxShadow: 'none',
-    //   },
-    // },
+    {
+      id: 'title-IF',
+      type: 'title',
+      data: { label: 'Fetch (IF)' },
+      position: { x: 0, y: 0 },
+      parentId: 'IF',
+      extent: 'parent',
+      draggable: false,
+      style: {
+        width: 548,
+        height: 50,
+        backgroundColor: 'transparent',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
   
     {
       id: 'pc',
