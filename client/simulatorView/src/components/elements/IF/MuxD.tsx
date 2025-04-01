@@ -10,19 +10,17 @@ function MuxD() {
       
       
       <Handle  type="target"
-              id="pc"
               position={Position.Left}
               className='input'
               style={{ top: '2.8rem' }} />
   
       <Handle  type="target"
-              id="registersUnitA"
               position={Position.Left}
               className='input'
               style={{ top: '6.8rem' }} />
 
       <Handle  type="target"
-              id="aluASrc"
+              id="bu"
               position={Position.Top}
               className='input'
               style={{ top: '1.5rem' }} />
