@@ -12,11 +12,11 @@ export default function ALUASrc() {
        <h2 className={` titleInElement top-[-1.3rem]   ${overlayExecuteActive && 'overlay-scale'}`}>ALUASrc</h2>
        </div>
 
-       <div  className={`${overlayExecuteActive && 'overlay-moving'}`} >
+       <div  className={`${overlayExecuteActive && 'overlay-moving-t'}`} >
       <Handle  type="source"
                position={Position.Bottom}
                className='output-tunnel'
-               style={{ top: '1.3rem'}} />
+               style={{ top: '1rem'}} />
       </div>
 
         

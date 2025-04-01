@@ -9,7 +9,7 @@ export default function ALUBSrc() {
     <div className='w-full'>
 
        <div className='relative w-full h-full'>
-       <h2 className={` titleInElement top-[.3rem]   ${overlayExecuteActive && 'overlay-scale'}`}>ALUBSrc</h2>
+       <h2 className={` titleInElement top-[-.3rem]   ${overlayExecuteActive && 'overlay-scale'}`}>ALUBSrc</h2>
        </div>
 
        <div  className={`${overlayExecuteActive && 'overlay-moving'}`} >
