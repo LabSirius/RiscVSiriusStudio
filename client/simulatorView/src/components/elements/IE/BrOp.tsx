@@ -11,7 +11,7 @@ export default function BrOp() {
        <h2 className={` titleInElement top-[.3rem] left-[25%] -translate-y-[25%] ${overlayExecuteActive && 'overlay-scale'}`}>BrOp</h2>
        </div>
 
-       <div  className={`${overlayExecuteActive && 'overlay-moving'}`} >
+       <div  className={`${overlayExecuteActive && 'overlay-moveX'}`} >
       <Handle  type="source"
                position={Position.Top}
                className='output-tunnel'

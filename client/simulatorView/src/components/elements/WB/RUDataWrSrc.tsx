@@ -12,7 +12,7 @@ export default function RUDataWrSrc() {
        <h2 className={` titleInElement top-[.6rem] left-[50%] -translate-[50%]   ${overlayWBActive && 'overlay-scale'}`}>RUDataWrSrc</h2>
        </div>
 
-       <div  className={`${overlayWBActive && 'overlay-moving'}`} >
+       <div  className={`${overlayWBActive && 'overlay-moveX'}`} >
       <Handle  type="source"
                position={Position.Top}
                className='output-tunnel'

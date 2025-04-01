@@ -94,25 +94,31 @@ h2 {
 }
 
 
-@keyframes rotateOverlay {
-  0% {
-    transform: rotate(0deg);
+@keyframes moveY {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(27px);
   }
   50% {
-    transform: rotate(360deg);
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-27px);
   }
   100% {
-    transform: rotate(0deg);
+    transform: translateY(0);
   }
 }
 
 
-.overlay-rotate {
-  animation: rotateOverlay 1s ease-in-out infinite;
+.overlay-moveY {
+  animation: moveY 1s ease-in-out infinite;
 }
 
 
-@keyframes move {
+@keyframes moveX {
   0%, 100% {
     transform: translateX(0);
   }
@@ -130,13 +136,13 @@ h2 {
   }
 }
 
-.overlay-moving-t {
-  animation: move 2s ease-in-out infinite;
+.overlay-moveX-t {
+  animation: moveX 1s ease-in-out infinite;
   margin-top: -.4rem;
 }
 
-.overlay-moving {
-  animation: move 2s ease-in-out infinite;
+.overlay-moveX {
+  animation: moveX 1s ease-in-out infinite;
   margin-top: -1.2rem;
 }
 

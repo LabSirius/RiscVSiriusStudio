@@ -12,7 +12,7 @@ export default function DMCtrl() {
        <h2 className={`titleInElement  top-[-1.3rem] left-[50%] -translate-x-[50%]   ${overlayMemoryActive && 'overlay-scale'}`}>DMCtrl</h2>
        </div>
        
-       <div  className={`${overlayMemoryActive && 'overlay-moving-t'}`} >
+       <div  className={`${overlayMemoryActive && 'overlay-moveX-t'}`} >
       <Handle  type="source"
                position={Position.Bottom}
                className='output-tunnel'

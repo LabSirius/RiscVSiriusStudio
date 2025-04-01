@@ -12,7 +12,7 @@ export default function ALUBSrc() {
        <h2 className={` titleInElement top-[-.3rem]   ${overlayExecuteActive && 'overlay-scale'}`}>ALUBSrc</h2>
        </div>
 
-       <div  className={`${overlayExecuteActive && 'overlay-moving'}`} >
+       <div  className={`${overlayExecuteActive && 'overlay-moveX'}`} >
       <Handle  type="source"
                position={Position.Top}
                className='output-tunnel'
