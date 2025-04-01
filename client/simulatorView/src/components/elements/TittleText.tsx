@@ -8,7 +8,7 @@ import React from 'react';
  
  const TitleText: React.FC<TitleTextProps> = ({ data }) => {
    return (
-     <div className='w-full h-full p-2 border-b-2 text-start b-[#555555] rounded-t-lg'>
+     <div className='w-full h-full p-2 rounded-t-lg border-b-1 text-start'>
       <h2 className='text-2xl text-[#555555]'>{data.label}</h2>  
      </div>
    );
