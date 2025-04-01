@@ -1,5 +1,6 @@
 import { Controls } from '@xyflow/react';
 import { Map } from 'lucide-react';
+import DownloadButton from '../DownloadButton';
 
 interface CustomControlsProps {
     onToggleMinimap: () => void;
@@ -8,7 +9,7 @@ interface CustomControlsProps {
 export default function CustomControls({ onToggleMinimap }: CustomControlsProps) {
     return (
         <Controls>
-            {/* Add a custom button for toggling the minimap */}
+            {/* Custom button for toggling the minimap */}
             <button
                 className="react-flow__controls-button"
                 onClick={onToggleMinimap}
@@ -16,7 +17,8 @@ export default function CustomControls({ onToggleMinimap }: CustomControlsProps)
             >
                 <Map size={16} />
             </button>
-            {/* Your existing custom controls */}
+            {/* Download button */}
+            <DownloadButton />
         </Controls>
     );
 }
