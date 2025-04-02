@@ -1,6 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, MouseEvent } from 'react';
 import {
   ReactFlow,
+  Edge,
+  useReactFlow,
   addEdge,
   Background,
   useNodesState,
@@ -91,6 +93,7 @@ import AnimatedSVGEdge from '../custom/AnimatedSVGEdge';
 import CustomControls from '../custom/CustomControls';
 
 
+import { animateLine } from '../animateLine/animateLine';
 
 
 const nodeTypes = {
@@ -173,6 +176,7 @@ export default function Sections() {
   const [showMinimap, setShowMinimap] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [isInteractive, setIsInteractive] = useState(true); 
+  const { updateEdge } = useReactFlow();
 
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
@@ -195,10 +199,27 @@ export default function Sections() {
     setIsInteractive((prev) => !prev);
   };
 
+
+  const handleEdgeMouseEnter = (
+    _event: MouseEvent<Element>, 
+    edge: Edge
+  ): void => {
+    animateLine(updateEdge, edge, true);
+  };
+  
+  const handleEdgeMouseLeave = (
+    _event: MouseEvent<Element>, 
+    edge: Edge
+  ): void => {
+    animateLine(updateEdge, edge, false);
+  };
+
   return (
     <ReactFlow
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
+      onEdgeMouseEnter={handleEdgeMouseEnter}
+      onEdgeMouseLeave={handleEdgeMouseLeave}
       nodes={nodes}
       onInit={(instance) => {
         setReactFlowInstance(instance);
