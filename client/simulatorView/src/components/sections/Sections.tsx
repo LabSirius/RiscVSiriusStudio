@@ -7,6 +7,8 @@ import {
   useEdgesState,
   MiniMap,
   Connection,
+  ReactFlowInstance
+  
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -168,41 +170,60 @@ const edgeTypes = {
 export default function Sections() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  // Add state for minimap visibility
   const [showMinimap, setShowMinimap] = useState(false);
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
+  const [isInteractive, setIsInteractive] = useState(true); 
 
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges]
   );
 
+  const handleFitView = () => {
+    reactFlowInstance?.fitView({ padding: 0.01 });
+  };
 
+  const handleZoomIn = () => {
+    reactFlowInstance?.zoomIn?.();
+  };
+
+  const handleZoomOut = () => {
+    reactFlowInstance?.zoomOut?.();
+  };
+
+  const handleToggleInteractive = () => {
+    setIsInteractive((prev) => !prev);
+  };
 
   return (
     <ReactFlow
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
       nodes={nodes}
+      onInit={(instance) => {
+        setReactFlowInstance(instance);
+        instance.fitView({ padding: 0.01 });
+      }}
+      fitView={false}
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       style={{ backgroundColor: '#F7F9FB' }}
-      fitView
       minZoom={0.1}
       maxZoom={2}
-      
+      panOnDrag={isInteractive} 
+      elementsSelectable={isInteractive} 
     >
-      <Background
-        //color="#E6E6E6"
-        color="#FF0000"
-        //variant='cross'
-        gap={20}
-        size={2} />
-      {/* Conditionally render the MiniMap based on state */}
+      <Background color="#FF0000" gap={20} size={2} />
       {showMinimap && <MiniMap />}
-      {/* Pass the toggle function to CustomControls */}
-      <CustomControls onToggleMinimap={() => setShowMinimap(!showMinimap)} />
+      <CustomControls
+        onFitView={handleFitView}
+        onToggleMinimap={() => setShowMinimap((prev) => !prev)}
+        onZoomIn={handleZoomIn}
+        onZoomOut={handleZoomOut}
+        onToggleInteractive={handleToggleInteractive}
+      />
     </ReactFlow>
   );
 }

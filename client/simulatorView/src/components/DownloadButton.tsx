@@ -1,7 +1,6 @@
 import {
   useReactFlow,
   getNodesBounds,
-  ControlButton,
 } from '@xyflow/react';
 
 import { Download } from 'lucide-react';
@@ -119,12 +118,10 @@ function DownloadButton() {
   };
  
   return (
-    <ControlButton onClick={onClick} title="Export SVG">
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Download size={20} />
-        <span style={{ fontSize: '10px', marginTop: '2px' }}>SVG</span>
+      <div onClick={onClick} className='flex flex-col items-center react-flow__controls-button-custom' title="Export SVG">
+        <Download size={16} />
+        <span style={{ fontSize: '7px', marginTop: '2px' }}>SVG</span>
       </div>
-    </ControlButton>
   );
 }
  
