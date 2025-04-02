@@ -120,7 +120,7 @@ export const IF: Node[] = [
       type: 'muxD',
       data: { label: 'MUX D' },
       position: { x: 158, y: 730 },
-      parentId: 'IE',
+      parentId: 'IF',
       extent: 'parent',
       style: {
         width: 65,
