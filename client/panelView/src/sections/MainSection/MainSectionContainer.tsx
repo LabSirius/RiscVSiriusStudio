@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MainSection from './MainSection';
 
 const ResizableBottomContainer: React.FC = () => {
-  const [height, setHeight] = useState<number>(400); // Altura inicial en píxeles
+  const [height, setHeight] = useState<number>(400); 
   const [isResizing, setIsResizing] = useState<boolean>(false);
   const [startY, setStartY] = useState<number>(0);
   const [startHeight, setStartHeight] = useState<number>(200);
@@ -16,7 +16,7 @@ const ResizableBottomContainer: React.FC = () => {
   const handleMouseMove = (e: MouseEvent) => {
     if (!isResizing) return;
     const newHeight = startHeight + (startY - e.clientY);
-    if (newHeight >= 100) {
+    if (newHeight >= 10) {
       setHeight(newHeight);
     }
   };
