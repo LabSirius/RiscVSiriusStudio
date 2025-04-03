@@ -1,7 +1,7 @@
 import { Edge, MarkerType  } from '@xyflow/react';
 
 export const MUXD_PC: Edge[] = [
-    { id: 'muxD->pc',  source: 'muxD', target: 'pc', type: 'default',  markerEnd:
+    { id: 'muxD->pc',  source: 'muxD', target: 'pc', type: 'default', animated: true,  markerEnd:
         {
          type: MarkerType.ArrowClosed,
          width: 18,

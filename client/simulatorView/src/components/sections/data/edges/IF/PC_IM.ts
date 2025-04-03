@@ -3,7 +3,7 @@
 import { Edge, MarkerType  } from '@xyflow/react';
 
 export const PC_IM: Edge[] = [
-    { id: 'pc->instMemory',  source: 'pc', target: 'instructionMemory', type: 'smoothstep',  markerEnd:
+    { id: 'pc->instMemory',  source: 'pc', target: 'instructionMemory', type: 'smoothstep', animated: true, markerEnd:
         {
          type: MarkerType.ArrowClosed,
          width: 18,

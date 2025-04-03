@@ -11,6 +11,7 @@ export const IM_CU: Edge[] = [
         target: 'controlUnit',
         targetHandle: '[6:0]',
         type: 'step',
+        animated: true,
         markerEnd: {
           type: MarkerType.ArrowClosed,
           width: 18,
@@ -25,6 +26,7 @@ export const IM_CU: Edge[] = [
         target: 'controlUnit',
         targetHandle: '[14:12]',
         type: 'step',
+        animated: true,
         markerEnd: {
           type: MarkerType.ArrowClosed,
           width: 18,
@@ -38,6 +40,7 @@ export const IM_CU: Edge[] = [
         sourceHandle: '[35:25]',
         target: 'controlUnit',
         targetHandle: '[35:25]',
+        animated: true,
         type: 'step',
         markerEnd: {
           type: MarkerType.ArrowClosed,
