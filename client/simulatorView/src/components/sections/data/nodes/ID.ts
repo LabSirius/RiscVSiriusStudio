@@ -247,6 +247,42 @@ export const ID: Node[] = [
       },
     },
 
+    {
+      id: 'pivot20',
+      type: 'pivot20',
+      data: { label: '' },
+      position: { x: 50, y: 783 },
+      parentId: 'ID',
+      extent: 'parent',
+      style: {
+        width: 5,
+        height: 5,
+        backgroundColor: 'black',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
+    {
+      id: 'pivot21',
+      type: 'pivot21',
+      data: { label: '' },
+      position: { x: 50, y: 703 },
+      parentId: 'ID',
+      extent: 'parent',
+      style: {
+        width: 5,
+        height: 5,
+        backgroundColor: 'black',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
 
     //jump
     {

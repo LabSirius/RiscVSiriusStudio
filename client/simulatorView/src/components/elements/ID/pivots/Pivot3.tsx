@@ -38,24 +38,6 @@ export default function Pivot3() {
         id="[24:20]"
         position={Position.Top}
       />
-
-      <Handle
-        type="source"
-        id="[19:15]"
-        position={Position.Top}
-      />
-      <Handle
-        type="source"
-        id="[24:20]"
-        position={Position.Top}
-      />
-
-      {/* IM_IG */}
-      <Handle
-        type="source"
-        id="[31:7]"
-        position={Position.Bottom}
-      />
     </div>
   );
 }

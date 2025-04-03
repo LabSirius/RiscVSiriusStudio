@@ -25,8 +25,17 @@ export const IM_RU: Edge[] = [
     },
   },
   {
-    id: 'pivot3->RegistersUnit[24:20]',
+    id: 'pivot3->pivot20',
     source: 'pivot3',
+    sourceHandle: '[24:20]',
+    target: 'pivot20',
+    type: 'smoothstep',
+    animated: true,
+  },
+
+  {
+    id: 'pivot20->RegistersUnit[24:20]',
+    source: 'pivot20',
     sourceHandle: '[24:20]',
     target: 'registersUnit',
     targetHandle: '[24:20]',
@@ -37,18 +46,31 @@ export const IM_RU: Edge[] = [
       color: '#888888',
     },
   },
+
   {
-    id: 'pivot3->RegistersUnit[19:15]',
-    source: 'pivot3',
+    id: 'pivot20->pivot21',
+    source: 'pivot20',
     sourceHandle: '[19:15]',
-    target: 'registersUnit',
-    targetHandle: '[19:15]',
+    target: 'pivot21',
     type: 'step',
-    animated: true,
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      color: '#888888',
-    },
+    animated: true
   },
+
+ 
+
+
+  // {
+  //   id: 'pivot3->RegistersUnit[19:15]',
+  //   source: 'pivot3',
+  //   sourceHandle: '[19:15]',
+  //   target: 'registersUnit',
+  //   targetHandle: '[19:15]',
+  //   type: 'step',
+  //   animated: true,
+  //   markerEnd: {
+  //     type: MarkerType.ArrowClosed,
+  //     color: '#888888',
+  //   },
+  // },
  
 ];
