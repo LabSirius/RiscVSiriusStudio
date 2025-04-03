@@ -59,24 +59,6 @@
         "title": "RISCV simuator: synchronize code with program memory"
       }
     ],
-    "viewsContainers": {
-      "panel": [
-        {
-          "id": "riscv",
-          "title": "RISCV",
-          "icon": "media/cpu-chip-svgrepo-com.svg"
-        }
-      ]
-    },
-    "views": {
-      "riscv": [
-        {
-          "type": "webview",
-          "id": "rv-simulator.riscv",
-          "name": "RiscV simulator"
-        }
-      ]
-    },
     "configuration": {
       "title": "RISCV Simulator",
       "properties": {

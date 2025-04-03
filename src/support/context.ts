@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { commands, Disposable, ExtensionContext, Webview, window, TextEditor  } from "vscode";
+import { commands, Disposable, ExtensionContext, Webview, window, TextEditor, ViewColumn, Uri   } from "vscode";
 import {
-  activateMessageListenerForRegistersView,
   getHtmlForRegistersWebview,
 } from "../tabs/MainTab";
 import { RiscCardPanel } from "../tabs/RiscCardTab";
@@ -11,7 +10,6 @@ import { RVDocument } from "../rvDocument";
 import { EncoderDecorator } from "../encoderDecorator";
 import { ConfigurationManager } from "./configurationManager";
 import { SimulationParameters, Simulator, TextSimulator } from "../Simulator";
-import { intToBinary } from "../utilities/conversions";
 
 export class RVContext {
   // For the singleton pattern
@@ -35,9 +33,6 @@ export class RVContext {
   }
   private _mainWebviewView: Webview | undefined;
   get mainWebviewView(): Webview {
-    if (!this._mainWebviewView) {
-      throw new Error("Main view is not initialized");
-    }
     return this._mainWebviewView as Webview;
   }
   private _mainViewIsFirstTimeVisible = true;
@@ -80,69 +75,54 @@ export class RVContext {
      * Main webview initialization
      */
     this.disposables.push(
-      window.registerWebviewViewProvider(
-        "rv-simulator.riscv",
-        {
-          resolveWebviewView: async (webviewView, context, token) => {
-            console.log("Creating main webview");
-            webviewView.webview.options = {
-              enableScripts: true,
-              localResourceRoots: [this.extensionContext.extensionUri],
-            };
+      commands.registerCommand('rv-simulator.simulate', () => {
 
-            webviewView.title = "Registers and memory view";
-            webviewView.webview.html = await getHtmlForRegistersWebview(
-              webviewView.webview,
-              this.extensionContext.extensionUri
-            );
-            await activateMessageListenerForRegistersView(webviewView.webview, this);
-            this._mainWebviewView = webviewView.webview;
-            if (webviewView.visible) {
-              this.onMainViewVisible();
-            }
+        const panel = window.createWebviewPanel(
+          'riscCard',
+          'RISC-V',
+          ViewColumn.One,
+          {
+            enableScripts: true,
+          retainContextWhenHidden: true,
 
-            webviewView.onDidChangeVisibility(() => {
-              if (webviewView.visible) {
-                // The webview is now visible
-                this.onMainViewVisible();
-              }
-            });
-          },
-        },
-        {
-          webviewOptions: { retainContextWhenHidden: true },
-        }
-      )
-    );
-
-    // Commands
-    //  Simulator (start)
-    this.disposables.push(
-      commands.registerCommand("rv-simulator.simulate", () => {
-        const editor = window.activeTextEditor;
-        if (editor && RVDocument.isValid(editor.document)) {
-          // We have an editor with a valid RiscV document open
-          this._encoderDecorator = new EncoderDecorator();
-          this.buildCurrentDocument();
-          if (!this._currentDocument) {
-            throw new Error("There is no valid program to simulate");
+            localResourceRoots: [
+              Uri.joinPath(this.extensionContext.extensionUri, "node_modules"),
+              Uri.joinPath(this.extensionContext.extensionUri, "src/templates"),
+              Uri.joinPath(this.extensionContext.extensionUri, "out")
+            ]
           }
+        );
+    
+        getHtmlForRegistersWebview(panel.webview, this.extensionContext.extensionUri)
+          .then(html => {
+            panel.webview.html = html;
+          });
 
-          this.simulateProgram(this._currentDocument);
-        } else {
-          // In case the command is invoked via the command palette
-          window.showErrorMessage("There is no a valid RiscV document open");
-        }
+          this._mainWebviewView = panel.webview;
+
+          const editor = window.activeTextEditor;
+          if (editor && RVDocument.isValid(editor.document)) {
+            // We have an editor with a valid RiscV document open
+            this._encoderDecorator = new EncoderDecorator();
+            this.buildCurrentDocument();
+            if (!this._currentDocument) {
+              throw new Error("There is no valid program to simulate");
+            }
+  
+            this.simulateProgram(this._currentDocument);
+          } else {
+            // In case the command is invoked via the command palette
+            window.showErrorMessage("There is no a valid RiscV document open");
+          }
       })
     );
+
+
     //  Simulate-step
     this.disposables.push(
       commands.registerCommand("rv-simulator.simulateStep", () => {
         if (!this._simulator) {
           throw new Error("No simulator is running");
-        }
-        if (!this.mainWebviewView) {
-          throw new Error("Main webview is not available");
         }
         // If not found other instructions, stop
         try{

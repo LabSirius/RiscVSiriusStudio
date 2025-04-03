@@ -40,7 +40,6 @@ function dispatch(
   log({ msg: 'Dispatching message', data: event.data });
   const data = event.data;
 
-
   switch (data.from) {
     case 'extension': {
       switch (data.operation) {

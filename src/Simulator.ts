@@ -239,7 +239,6 @@ export class TextSimulator extends Simulator {
       // first time the view is created the view becomes available and the flag
       // isSimulating is set to true, the context will call this method again.
       // The second time the view will be defined and thes case is not executed.
-      commands.executeCommand(`rv-simulator.riscv.focus`);
       return;
     } else {
       this.clickListener();
@@ -340,10 +339,6 @@ export class TextSimulator extends Simulator {
       }
       const lineNumber = event.selections[0]?.active.line;
       const mainView = this.context.mainWebviewView;
-      if (!mainView) {
-        commands.executeCommand(`rv-simulator.riscv.focus`);
-        return;
-      }
       if (lineNumber === undefined) {
         return;
       }
@@ -367,16 +362,12 @@ export class TextSimulator extends Simulator {
   }
     this.makeEditorWritable();
     const mainView = this.context.mainWebviewView;
-    if (!mainView) {
-      commands.executeCommand(`rv-simulator.riscv.focus`);
-      return;
-    } else {
       commands.executeCommand("setContext", "ext.isSimulating", false);
       mainView.postMessage({
         from: "extension",
         operation: "stop",
       });
-    }
+
   }
 
   public override notifyRegisterWrite(register: string, value: string) {
