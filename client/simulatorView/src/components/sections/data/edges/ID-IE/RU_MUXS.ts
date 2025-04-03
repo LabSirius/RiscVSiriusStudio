@@ -28,8 +28,6 @@ export const RU_MUXS: Edge[] = [
       animated: true,
       markerEnd: {
         type: MarkerType.ArrowClosed,
-        width: 18,
-        height: 18,
         color: '#888888',
       },
   },
@@ -53,8 +51,6 @@ export const RU_MUXS: Edge[] = [
     animated: true,
     markerEnd: {
       type: MarkerType.ArrowClosed,
-      width: 18,
-      height: 18,
       color: '#888888',
     },
   }

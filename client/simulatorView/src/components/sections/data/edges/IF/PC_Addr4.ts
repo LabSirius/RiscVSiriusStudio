@@ -8,8 +8,6 @@ export const PC_Addr4: Edge[] = [
      { id: 'pivot1->adder4',  source: 'pivot1', target: 'adder4', targetHandle: 'pivot', animated: true, type: 'smoothstep',   markerEnd:
        {
          type: MarkerType.ArrowClosed,
-         width: 18,
-         height: 18,
          color: '#888888',
        }
      },

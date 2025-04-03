@@ -6,16 +6,12 @@ export const flags_DM: Edge[] = [
      { id: 'dmWr->dataMemory',  source: 'dmWr', target: 'dataMemory', targetHandle: 'dmWr', type: 'step', animated: true,  markerEnd:
       {
         type: MarkerType.ArrowClosed,
-        width: 18,
-        height: 18,
         color: '#888888',
       },
     },
     { id: 'dmCtrl->dataMemory',  source: 'dmCtrl', target: 'dataMemory', targetHandle: 'dmCtrl', type: 'step', animated: true,  markerEnd:
         {
           type: MarkerType.ArrowClosed,
-          width: 18,
-          height: 18,
           color: '#888888',
         },
       },

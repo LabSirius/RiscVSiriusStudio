@@ -6,8 +6,6 @@ export const RU_MuxC: Edge[] = [
 
     { id: 'dataMemory->muxC',  source: 'dataMemory', target: 'muxC', targetHandle: 'dataMemory',  type: 'step', animated:true, markerEnd: {
         type: MarkerType.ArrowClosed,
-        width: 18,
-        height: 18,
         color: '#888888',
      },},
    

@@ -7,8 +7,6 @@ export const immSrc_IG: Edge[] = [
     { id: 'immSrc->immGenerator',  source: 'immSrc', target: 'immGenerator', targetHandle: 'immSrc', type: 'default', animated: true,  markerEnd:
         {
           type: MarkerType.ArrowClosed,
-          width: 18,
-          height: 18,
           color: '#888888',
         },
     },

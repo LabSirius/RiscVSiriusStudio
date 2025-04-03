@@ -25,8 +25,6 @@ export const ALU_DM: Edge[] = [
     markerEnd:
     {
       type: MarkerType.ArrowClosed,
-      width: 18,
-      height: 18,
       color: '#888888',
     },
   },

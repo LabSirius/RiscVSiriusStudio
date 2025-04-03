@@ -109,7 +109,7 @@
 
 .react-flow__edge path {
     stroke: black !important; /* Asegura que la línea sea visible */
-    stroke-width: 2px !important; /* Ajusta el grosor */
+    stroke-width: 3px !important; /* Ajusta el grosor */
   }
 
   .react-flow__edges {

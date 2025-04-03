@@ -8,8 +8,6 @@ export const MUXS_ALU: Edge[] = [
      { id: 'muxA->alu',  source: 'muxA', target: 'alu', targetHandle: 'muxA', type: 'smoothstep', animated: true,  markerEnd:
        {
          type: MarkerType.ArrowClosed,
-         width: 18,
-         height: 18,
          color: '#888888',
        }
      },
@@ -18,8 +16,6 @@ export const MUXS_ALU: Edge[] = [
      { id: 'muxB->alu',  source: 'muxB', target: 'alu', targetHandle: 'muxB', type: 'smoothstep', animated: true,  markerEnd:
       {
         type: MarkerType.ArrowClosed,
-        width: 18,
-        height: 18,
         color: '#888888',
       },
     },

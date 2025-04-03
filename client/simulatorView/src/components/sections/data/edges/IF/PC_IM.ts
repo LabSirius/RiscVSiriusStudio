@@ -6,8 +6,6 @@ export const PC_IM: Edge[] = [
     { id: 'pc->instMemory',  source: 'pc', target: 'instructionMemory', type: 'smoothstep', animated: true, markerEnd:
         {
          type: MarkerType.ArrowClosed,
-         width: 18,
-         height: 18,
          color: '#888888',
        },
      },

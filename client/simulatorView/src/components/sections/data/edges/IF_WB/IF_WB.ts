@@ -51,8 +51,6 @@ export const IF_WB: Edge[] = [
         animated: true,
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          width: 18,
-          height: 18,
           color: '#888888',
         },
       },
@@ -78,8 +76,6 @@ export const IF_WB: Edge[] = [
       animated: true,
       markerEnd: {
         type: MarkerType.ArrowClosed,
-        width: 18,
-        height: 18,
         color: '#888888',
       },
     },
