@@ -93,6 +93,7 @@ const imGroup = [
   "pivot23->controlUnit[14:12]",
   "pivot23->pivot24",
   "pivot24->controlUnit[6:0]",
+  "pivot3->immediateGenerator[31:7]"
 ];
 
 const edgeGroups: Record<string, string[]> = {
