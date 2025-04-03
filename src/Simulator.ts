@@ -1,10 +1,8 @@
 import {
   window,
-  Uri,
   EventEmitter,
   Event,
   TextEditor,
-  workspace,
   TextEditorDecorationType,
   commands,
 } from "vscode";
@@ -15,11 +13,10 @@ import {
   branchesOrJumps,
   getFunct3,
   readsDM,
-  usesRegister,
   writesDM,
   writesRU,
 } from "./utilities/instructions";
-import { binaryToInt, intToBinary } from "./utilities/conversions";
+import { intToBinary } from "./utilities/conversions";
 
 export type SimulationParameters = {
   memorySize: number;
