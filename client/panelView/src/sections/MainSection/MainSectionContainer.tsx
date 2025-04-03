@@ -25,7 +25,6 @@ const ResizableBottomContainer: React.FC = () => {
     setIsResizing(false);
   };
 
-  // Añadimos y removemos los listeners a nivel global
   useEffect(() => {
     if (isResizing) {
       window.addEventListener('mousemove', handleMouseMove);
