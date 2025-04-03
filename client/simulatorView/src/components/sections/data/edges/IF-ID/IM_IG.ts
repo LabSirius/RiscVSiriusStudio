@@ -3,7 +3,6 @@
 import { Edge, MarkerType  } from '@xyflow/react';
 
 export const IM_IG: Edge[] = [
-
      {
        id: 'pivot3->immediateGenerator[31:7]',
         source: 'pivot3',
