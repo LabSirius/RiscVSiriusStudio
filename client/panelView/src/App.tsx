@@ -5,11 +5,10 @@ import { MemoryTableProvider } from "./context/MemoryTableContext";
 import { RegistersTableProvider } from "./context/RegisterTableContext";
 import { ErrorProvider } from "./context/ErrorContext";
 
+import MainSectionContainer from "./sections/MainSection/MainSectionContainer";
 
 import MessageListener from "@/components/Message/MessageListener";
 import Error from "@/components/Error";
-
-import MainSection from "@/sections/MainSection";
 import { SectionProvider } from "./context/SectionContext";
 
 const App = () => {  
@@ -22,7 +21,8 @@ const App = () => {
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
               <div className="relative flex w-full h-full overflow-hidden ">
                   <MessageListener />
-                   <MainSection />
+                   
+                   <MainSectionContainer />
                   <Error />
               </div>
             </ThemeProvider>

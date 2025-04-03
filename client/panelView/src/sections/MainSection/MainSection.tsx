@@ -7,11 +7,11 @@ import Sidebar from "@/components/Sidebar/SideBar";
 import { useOperation } from "@/context/OperationContext";
 import { useSection } from "@/context/SectionContext";
 
-import ConvertSection from "./ConvertSection";
-import Tables from "./Tables/Tables";
-import SettingsSection from "./SettingsSection";
-import SearchSection from "./SearchSection";
-import HelpSection from "./HelpSection";
+import ConvertSection from "../ConvertSection";
+import Tables from "../Tables/Tables";
+import SettingsSection from "../SettingsSection";
+import SearchSection from "../SearchSection";
+import HelpSection from "../HelpSection";
 import { useTheme } from "@/components/ui/theme/theme-provider"
 
 const MainSection = () => {
