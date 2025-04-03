@@ -189,5 +189,8 @@ export const animateLine = (
 ): void => {
   console.log('edge', edge);
   const idsToUpdate = edgeGroups[edge.id];
-  idsToUpdate.forEach(id => updateEdge(id, { animated }));
+  const color = animated ? '#000000' : '#006400';
+  idsToUpdate.forEach(id =>
+    updateEdge(id, { animated, style: { stroke: color } })
+  );
 };
