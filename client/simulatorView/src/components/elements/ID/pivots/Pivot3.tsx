@@ -9,25 +9,6 @@ export default function Pivot3() {
         position={Position.Left}
       />
 
-      {/* CU */}
-      <Handle
-        type="source"
-        id="[6:0]"
-        position={Position.Top}
-      />
-      <Handle
-        type="source"
-        id="[14:12]"
-        position={Position.Top}
-      />
-      <Handle
-        type="source"
-        id="[35:25]"
-        position={Position.Top}
-      />
-
-      {/* RU */}
-
       <Handle
         type="source"
         id="[11:7]"

@@ -56,21 +56,19 @@ export const IM_RU: Edge[] = [
     animated: true
   },
 
- 
 
-
-  // {
-  //   id: 'pivot3->RegistersUnit[19:15]',
-  //   source: 'pivot3',
-  //   sourceHandle: '[19:15]',
-  //   target: 'registersUnit',
-  //   targetHandle: '[19:15]',
-  //   type: 'step',
-  //   animated: true,
-  //   markerEnd: {
-  //     type: MarkerType.ArrowClosed,
-  //     color: '#888888',
-  //   },
-  // },
+  {
+    id: 'pivot21->RegistersUnit[19:15]',
+    source: 'pivot21',
+    sourceHandle: '[19:15]',
+    target: 'registersUnit',
+    targetHandle: '[19:15]',
+    type: 'step',
+    animated: true,
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      color: '#888888',
+    },
+  },
  
 ];
