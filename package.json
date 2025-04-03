@@ -139,11 +139,6 @@
           "when": "editorLangId == riscvasm && !ext.isSimulating"
         },
         {
-          "command": "rv-simulator.graphicsimulate",
-          "group": "navigation",
-          "when": "editorLangId == riscvasm && !ext.isSimulating"
-        },
-        {
           "command": "rv-simulator.simulateStep",
           "group": "navigation",
           "when": "editorLangId == riscvasm && ext.isSimulating"
