@@ -204,14 +204,14 @@ export default function Sections() {
     _event: MouseEvent<Element>, 
     edge: Edge
   ): void => {
-    animateLine(updateEdge, edge, true);
+    animateLine(updateEdge, edge, false);
   };
   
   const handleEdgeMouseLeave = (
     _event: MouseEvent<Element>, 
     edge: Edge
   ): void => {
-    animateLine(updateEdge, edge, false);
+    animateLine(updateEdge, edge, true);
   };
 
   return (
