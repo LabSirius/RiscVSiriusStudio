@@ -2,6 +2,7 @@
   var instcounter = 0;
   var instEncoding = {};
   let labelTable = {};
+  let constantTable = {};
 /* Support functions */
 
   function getInstMemPosition() {
@@ -50,6 +51,14 @@
   function getPosLabel(labelName) {
     const pointsTo = labelTable[labelName];
     const value = pointsTo['memdef'];
+    return value;
+  }
+
+  function getConstantValue(name: string): number {
+    const value = constantTable[name];
+    if (value === undefined){
+      return error(`Expecting a valid constant name. Got ${name}`);
+    }
     return value;
   }
 
@@ -457,9 +466,18 @@
   }
 
   Directive
-  = id:DirectiveName _ val:QuotedString
+  // https://michaeljclark.github.io/asm.html
+  // = id:DirectiveName _ val:QuotedString
+  // {
+  //   return {"name":id, "value":{val}};
+  // }
+  = equToken _ name:IdentifierString ___ val:Imm32
   {
-    return {"name":id, "value":{val}};
+    if (isFirstPass){
+      constantTable[name] = val;
+      console.log(`equ ${name}: ${val}`);
+    }
+    return {identifier: name, value: val};
   }
 
   Instruction "Instruction"
@@ -540,7 +558,7 @@
       if (isFirstPass) { 
         getInstMemPosition();
         return undefined; 
-        }
+      }
       inst["asm"] = text();
       return inst;
     }
@@ -557,46 +575,32 @@
     }
   // Parsing rule for I type instructions
   IInstruction "I-type instruction"
-    = name:IInstName _ rd:RegisterName ___ rs1:RegisterName ___ imm:Imm12 
+    = name:IInstName _ rd:RegisterName ___ rs1:RegisterName ___ imm:OperandKind12
     { 
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, imm, location()); 
     }
-    / addiToken _ rd:RegisterName ___ rs1:RegisterName ___ imm:AsmModifier
-    {
-      console.log("Assembler modifier!");
-      return handleIInstruction('addi', rd, rs1, imm, location());
-    }
+
   /* Parsing rule for load instructions.
    *
    * They are I instructions but are written in a different format and hence
    * need a different rule.
    */
   LInstruction "Load instruction"
-    = name:LoadInstName _ rd:RegisterName ___ offset:Imm12 _"("_ rs1:RegisterName _")" 
+    = name:LoadInstName _ rd:RegisterName ___ offset:OperandKind12 _"("_ rs1:RegisterName _")"
     { 
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, offset, location()); 
     }
-    / name:LoadInstName _ rd:RegisterName ___ offset:AsmModifier _"("_ rs1:RegisterName _")" 
+    / name:LoadUInstName _ rd:RegisterName ___ offset:OperandKind12 _"("_ rs1:RegisterName _")" 
     { 
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, offset, location()); 
     }
-    / name:LoadUInstName _ rd:RegisterName ___ offset:Imm12 _"("_ rs1:RegisterName _")" 
-    { 
-      if (isFirstPass) { return undefined; }
-      return handleIInstruction(name, rd, rs1, offset, location()); 
-    }
-    / name:LoadUInstName _ rd:RegisterName ___ offset:AsmModifier _"("_ rs1:RegisterName _")" 
-    { 
-      if (isFirstPass) { return undefined; }
-      return handleIInstruction(name, rd, rs1, offset, location()); 
-    }
-    
+
   // Parsing rule for store instructions
   SInstruction "Store instruction"
-    = name:StoreInstName _ rs2:RegisterName ___ offset:Imm12 _"("_ rs1:RegisterName _")" 
+    = name:StoreInstName _ rs2:RegisterName ___ offset:OperandKind12 _"("_ rs1:RegisterName _")" 
     {
       if (isFirstPass) { return undefined; }
       return handleSInstruction(name, rs2, offset, rs1, location()); 
@@ -604,7 +608,7 @@
 
   // Parsing rule for branch instructions
   BInstruction "Branch instruction"
-    = name:BranchInstName _ rs1:RegisterName ___ rs2:RegisterName ___ target:BTarget
+    = name:BranchInstName _ rs1:RegisterName ___ rs2:RegisterName ___ target:OperandKindB
     { 
       if (isFirstPass) { return undefined; } 
       return handleBInstruction(name, rs1, rs2, target, location()); 
@@ -614,19 +618,19 @@
   // TODO: still missing the ripes format for JALR
   JInstruction "Jump instruction"
     // This is the jalr format described in riscv-asm-manual.pdf
-    = name:jalrToken _ rd:RegisterName ___ offset:Imm12 _ "(" _ rs1:RegisterName _ ")" 
+    = name:jalrToken _ rd:RegisterName ___ offset:OperandKind12 _ "(" _ rs1:RegisterName _ ")" 
     { 
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, offset, location()); 
     }
     // This is the JALR format supported by rars.
     // https://github.com/TheThirdOne/rars/wiki/Supported-Instructions
-    / name:jalrToken _ rd:RegisterName ___  rs1:RegisterName ___ offset:Imm12  
+    / name:jalrToken _ rd:RegisterName ___  rs1:RegisterName ___ offset:OperandKind12 
     { 
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, offset, location()); 
     }
-    /  name:jalToken _ rd:RegisterName ___ target:JTarget 
+    /  name:jalToken _ rd:RegisterName ___ target:OperandKindJ 
     {
       if (isFirstPass) { return undefined; }
       return handleJInstruction(name, rd, target, location()); 
@@ -634,20 +638,14 @@
     
   // Parsing rule for upper immediate instructions
   UInstruction "Upper imm instruction"
-    = luiToken _ rd:RegisterName ___  imm:AsmModifier
-    {
-      if (isFirstPass) { return undefined; }
-      console.log("assembler identifier");
-      return handleUInstruction('lui', rd, imm, location());
-    }
-    / name:UpperImmInstName _ rd:RegisterName ___ offset:Imm21 
+    = name:UpperImmInstName _ rd:RegisterName ___ offset:OperandKind21 
     { 
       if (isFirstPass) { return undefined; }
       return handleUInstruction(name, rd, offset, location()); 
     }
 
   EInstruction "E instruction"
-    = name:(ecallToken / ebreakToken) 
+    = name:(ecallToken / ebreakToken)
     {
       if (isFirstPass) { return undefined; }
       const zeroReg = { regname: 'x0', regeq: 'x0', regenc: '0'};
@@ -666,28 +664,17 @@
     / StorePInstruction
 
   BPInstruction "Branch pseudo instruction"
-    = name:BPZInstName _ rs:RegisterName ___ offset:Imm13 
+    = name:BPZInstName _ rs:RegisterName ___ offset:OperandKindB 
     { 
       if (isFirstPass) { return undefined; }
       return handleBPInstruction(name, rs, null, offset, location()); 
     }
-    / name:BPZInstName _ rs:RegisterName ___ target:BTarget
-    { 
-      if (isFirstPass) { return undefined; }
-      return handleBPInstruction(name, rs, null, target, location()); 
-    }
-    / name:BPInstName _ rs1:RegisterName ___ rs2:RegisterName ___ offset:Imm13 
+    / name:BPInstName _ rs1:RegisterName ___ rs2:RegisterName ___ offset:OperandKindB 
     { 
       if (isFirstPass) { return undefined; }
       return handleBPInstruction(name, rs1, rs2, offset, location()); 
     }
 
-    / name:BPInstName _ rs1:RegisterName ___ rs2:RegisterName ___ target:BTarget 
-    { 
-      if (isFirstPass) { return undefined; }
-      return handleBPInstruction(name, rs1, rs2, target, location());
-    }
-  
   JPInstruction "Jump pseudo instruction"
     = jalrToken _ rs:RegisterName
     {
@@ -717,7 +704,7 @@
       );
     }
 
-    / name:callToken _ offset:Offset
+    / name:callToken _ offset:OperandKindOffset
     {
       if (isFirstPass){
         verifySymbol(offset);
@@ -730,7 +717,7 @@
       return [complementInstruction, mainInstruction];
     }
     
-    / name:tailToken _ offset:Offset
+    / name:tailToken _ offset:OperandKindOffset
     {
       if (isFirstPass){
         verifySymbol(offset);
@@ -793,7 +780,7 @@
       return handleRInstruction('slt', rd, rs2, rs1, location(), true);
     }
 
-    / laToken _ rd:RegisterName ___ symbol:Symbol
+    / laToken _ rd:RegisterName ___ symbol:OperandKindOffset
     {
       if (isFirstPass){
         verifySymbol(symbol);
@@ -805,7 +792,7 @@
       const mainInstruction = handleIInstruction('addi', rd, rd, applyBitMask(imm, 0xFFF), location(), true);
       return [complementInstruction, mainInstruction];
     }
-    / liToken _ rd:RegisterName ___ symbol:Symbol 
+    / liToken _ rd:RegisterName ___ symbol:OperandKindSymbol
     {
       if (isFirstPass){
         verifySymbol(symbol);
@@ -819,7 +806,7 @@
     }
 
   LoadPInstruction "Load pseudo instructions"
-  = name:LoadInstName _ rd:RegisterName ___ symbol:Symbol 
+  = name:LoadInstName _ rd:RegisterName ___ symbol:OperandKindSymbol 
   { 
     if (isFirstPass){
       verifySymbol(symbol);
@@ -833,7 +820,7 @@
   }
 
   StorePInstruction "store pseudo instruction"
-  = name:StoreInstName _ rd:RegisterName ___ symbol:Symbol ___ rt:RegisterName
+  = name:StoreInstName _ rd:RegisterName ___ symbol:OperandKindSymbol ___ rt:RegisterName
   { 
     if (isFirstPass){
       verifySymbol(symbol);
@@ -913,6 +900,68 @@
     return {"value": value, "double": !isImm12(value)};
   }
 
+  ConstantName32 "Constant name for 32 bit representable value loaded from .equ directive"
+  = name:IdentifierString
+  {
+    // if (isFirstPass) { return undefined; }
+    const value = getConstantValue(name);
+    if (isImm32(value)) { return value; }
+    else { return error("Constant value most be 32 bit representable value"); }
+  }
+
+  ConstantName12 "Constant name for 12 bit representable value loaded from .equ directive"
+  = name:IdentifierString
+  {
+    // if (isFirstPass) { return undefined; }
+    const value = getConstantValue(name);
+    if (isImm12(value)) { return value; }
+    else { return error("Constant value most be 12 bit representable value"); }
+  }
+
+  ConstantName13 "Constant name for 13 bit representable value loaded from .equ directive"
+  = name:IdentifierString
+  {
+    // if (isFirstPass) { return undefined; }
+    const value = getConstantValue(name);
+    if (isImm13(value)) { return value; }
+    else { return error("Constant value most be 13 bit representable value"); }
+  }
+
+  ConstantName21 "Constant name for 21 bit representable value loaded from .equ directive"
+  = name:IdentifierString
+  {
+    // if (isFirstPass) { return undefined; }
+    const value = getConstantValue(name);
+    if (isImm21(value)) { return value; }
+    else { return error("Constant value most be 21 bit representable value"); }
+  }
+
+  OperandKind12 "Imm12, Asm modifier low or ConstantName12"
+  = Imm12
+  / AsmModifierLow
+  / ConstantName12
+
+  OperandKind21 "Imm21, Asm modifier high or ConstantName21"
+  = Imm21
+  / AsmModifierHigh
+  / ConstantName21
+
+  OperandKindSymbol "Symbol or ConstantName32"
+  = Symbol
+  / ConstantName32
+
+  OperandKindOffset "Offset or ConstantName32"
+  = Offset
+  / ConstantName32
+
+  OperandKindB "BTarget or ConstantName13"
+  = BTarget
+  / ConstantName13
+
+  OperandKindJ "JTarget or ConstantName13"
+  = JTarget
+  / ConstantName13
+
   BTarget "target address of a jump instruction"
   = imm:Imm13 { return imm; }
   / lbl:Identifier {
@@ -942,6 +991,10 @@
 
     TODO: Is there any other source?
   */
+  = AsmModifierLow
+  / AsmModifierHigh
+
+  AsmModifierLow
   = "%" _ "lo" _ "(" _ lbl:Identifier _ ")"
   {
     /*
@@ -953,6 +1006,26 @@
     console.log("lo(symbol): ", value, value13,location());
     return value13;
   }
+  / "%" _ "pcrel_lo" _ "(" _ lbl:Identifier _ ")"
+  {
+    if (isFirstPass) { return undefined; }
+    const value = getPosLabel(lbl["name"]);
+    const value13 = applyBitMask((value - location()*4), 0xFFF);
+    console.log("pcrel_lo: ", value13);
+    return value13;
+  }
+  
+
+  AsmModifierHigh
+  = "%" _ "pcrel_hi" _ "(" _ symbol:Symbol _ ")"
+  {
+    if (isFirstPass) { return undefined; }
+    const value = symbol["value"]
+    const value20 = shiftRightLogical((value - location() * 4 + 0x800), 12);
+    console.log("pcrel_hi: ", value20);
+    return value20;
+  }
+  
   / "%" _ "hi" _ "(" _ lbl:Identifier _ ")"
   {
     if (isFirstPass) { return undefined; }
@@ -962,22 +1035,6 @@
     const value20 = shiftRightLogical(valueMask, 12);
     console.log("hi(symbol): ", value, value20, location());
     return value20;
-  }
-  / "%" _ "pcrel_hi" _ "(" _ symbol:Symbol _ ")"
-  {
-    if (isFirstPass) { return undefined; }
-    const value = symbol["value"]
-    const value20 = shiftRightLogical((value - location() * 4 + 0x800), 12);
-    console.log("pcrel_hi: ", value20);
-    return value20;
-  }
-  / "%" _ "pcrel_lo" _ "(" _ lbl:Identifier _ ")"
-  {
-    if (isFirstPass) { return undefined; }
-    const value = getPosLabel(lbl["name"]);
-    const value13 = applyBitMask((value - location()*4), 0xFFF);
-    console.log("pcrel_lo: ", value13);
-    return value13;
   }
 
   JumpInstName "jump instruction"
@@ -1291,8 +1348,8 @@
   DirectiveName
   = ascizToken
   
-  ascizToken= ".asciz"
-
+  ascizToken = ".asciz"
+  equToken = ".equ"
 
   Integer "Integer"
   = _ "0x" digits:[0-9a-fA-F]+ { return parseInt(digits.join(""), 16); }
@@ -1316,10 +1373,10 @@
   = !ReservedWord name:IdentifierName { return name; }
 
   IdentifierName "identifier"
-  = name:LabelIdentifier _ "(" _ [^)]* ")" { return { type: "IdentifierName", name: text() }; }
-  / name:LabelIdentifier { return { type: "IdentifierName", name: text() }; }
+  = name:IdentifierString _ "(" _ [^)]* ")" { return { type: "IdentifierName", name: text() }; }
+  / name:IdentifierString { return { type: "IdentifierName", name: text() }; }
 
-  LabelIdentifier
+  IdentifierString
     = [a-zA-Z_.][a-zA-Z0-9_]* { return text(); }
 
   QuotedString "quoted string"
