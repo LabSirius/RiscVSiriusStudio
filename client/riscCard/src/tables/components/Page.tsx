@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { useTheme } from "@/components/ui/theme/theme-provider";
+import { useTheme } from "@/tables/components/ui/theme/theme-provider";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@/components/ui/accordion";
+} from "@/tables/components/ui/accordion";
 import {
   Table,
   TableBody,
@@ -14,7 +14,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/tables/components/ui/table";
 
 
 const coreFormats = [
