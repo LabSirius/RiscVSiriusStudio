@@ -1,15 +1,19 @@
-import { ThemeProvider } from "@/components/ui/theme/theme-provider";
+import { ThemeProvider } from "@/components/panel/ui/theme/theme-provider";
 
-import { OperationProvider } from "./context/OperationContext";
-import { MemoryTableProvider } from "./context/MemoryTableContext";
-import { RegistersTableProvider } from "./context/RegisterTableContext";
-import { ErrorProvider } from "./context/ErrorContext";
+import { OperationProvider } from "./context/panel/OperationContext";
+import { MemoryTableProvider } from "./context/panel/MemoryTableContext";
+import { RegistersTableProvider } from "./context/panel/RegisterTableContext";
+import { ErrorProvider } from "./context/panel/ErrorContext";
 
-import MainSectionContainer from "./sections/MainSection/MainSectionContainer";
+import MainSectionContainer from "@/components/panel/Sections/MainSection/MainSectionContainer";
 
-import MessageListener from "@/components/Message/MessageListener";
-import Error from "@/components/Error";
-import { SectionProvider } from "./context/SectionContext";
+import MessageListener from "@/components/panel/Message/MessageListener";
+import Error from "@/components/panel/Error";
+import { SectionProvider } from "./context/panel/SectionContext";
+
+
+import { OverlayProvider } from "@/context/graphic/OverlayContext";
+import { ReactFlowProvider } from "@xyflow/react";
 
 const App = () => {  
   return (
@@ -19,11 +23,15 @@ const App = () => {
           <RegistersTableProvider>
             <ErrorProvider>
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-              <div className="relative flex w-full h-dvh overflow-hidden ">
+            <ReactFlowProvider>
+            <OverlayProvider>
+              <div className="relative flex w-dvh h-dvh overflow-hidden ">
                   <MessageListener />
                    <MainSectionContainer />
                   <Error />
               </div>
+              </OverlayProvider>
+              </ReactFlowProvider>
             </ThemeProvider>
             </ErrorProvider>
           </RegistersTableProvider>

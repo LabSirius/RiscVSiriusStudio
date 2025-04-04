@@ -1,5 +1,5 @@
 import { registerNamesFormatter, valueFormatter, valueRegisterEditor, attachConvertionToggle } from '@/utils/tables/definitions/handlerDefinitions';
-import { possibleViews } from '@/constants/data';
+import { possibleViews } from '@/components/panel/Sections/constants/data';
 
 import { ColumnDefinition, CellComponent } from 'tabulator-tables';
 import { binaryMemEditor, createTooltip, attachMemoryConversionToggle } from '@/utils/tables/definitions/handlerDefinitions';
