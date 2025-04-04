@@ -75,16 +75,14 @@ export class RVContext {
      * Main webview initialization
      */
     this.disposables.push(
-      commands.registerCommand('rv-simulator.simulate', () => {
-
+      commands.registerCommand('rv-simulator.simulate', async () => {
         const panel = window.createWebviewPanel(
           'riscCard',
           'RISC-V',
           ViewColumn.One,
           {
             enableScripts: true,
-          retainContextWhenHidden: true,
-
+            retainContextWhenHidden: true,
             localResourceRoots: [
               Uri.joinPath(this.extensionContext.extensionUri, "node_modules"),
               Uri.joinPath(this.extensionContext.extensionUri, "src/templates"),
@@ -93,31 +91,25 @@ export class RVContext {
           }
         );
     
-        getHtmlForRegistersWebview(panel.webview, this.extensionContext.extensionUri)
-          .then(html => {
-            panel.webview.html = html;
-          });
-
-          this._mainWebviewView = panel.webview;
-
-          const editor = window.activeTextEditor;
-          if (editor && RVDocument.isValid(editor.document)) {
-            // We have an editor with a valid RiscV document open
-            this._encoderDecorator = new EncoderDecorator();
-            this.buildCurrentDocument();
-            if (!this._currentDocument) {
-              throw new Error("There is no valid program to simulate");
-            }
-  
-            this.simulateProgram(this._currentDocument);
-          } else {
-            // In case the command is invoked via the command palette
-            window.showErrorMessage("There is no a valid RiscV document open");
+        panel.webview.html = await getHtmlForRegistersWebview(panel.webview, this.extensionContext.extensionUri);
+    
+        await activateMessageListenerForRegistersView(panel.webview, this);
+        this._mainWebviewView = panel.webview;
+    
+        const editor = window.activeTextEditor;
+        if (editor && RVDocument.isValid(editor.document)) {
+          this._encoderDecorator = new EncoderDecorator();
+          this.buildCurrentDocument();
+          if (!this._currentDocument) {
+            throw new Error("There is no valid program to simulate");
           }
+          this.simulateProgram(this._currentDocument);
+        } else {
+          window.showErrorMessage("There is no a valid RiscV document open");
+        }
       })
-
     );
-
+    
 
     //  Simulate-step
     this.disposables.push(
