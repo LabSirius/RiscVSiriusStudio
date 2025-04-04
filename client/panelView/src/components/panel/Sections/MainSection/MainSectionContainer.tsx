@@ -17,10 +17,12 @@ const MainSectionContainer: React.FC = () => {
 
   const handleMouseMove = (e: MouseEvent) => {
     if (!isResizing) return;
-    const newHeight = startHeight + (startY - e.clientY);
-    if (newHeight >= 10) {
-      setHeight(newHeight);
-    }
+    window.requestAnimationFrame(() => {
+      const newHeight = startHeight + (startY - e.clientY);
+      if (newHeight >= 10) {
+        setHeight(newHeight);
+      }
+    });
   };
 
   const handleMouseUp = () => {
@@ -43,13 +45,13 @@ const MainSectionContainer: React.FC = () => {
   }, [isResizing, startHeight, startY]);
 
   return (
-    <div className={`flex relative w-full overflow-hidden  bg-${theme==="dark" ? "[#1a1a1a]" : "white"}`}>
+    <div className={`flex  bg-${theme==="dark" ? "[#1a1a1a]" : "white"}`}>
       <div style={{ height: `${height}px` }} className="relative overflow-y-hidden w-full">
         <div
-          className="flex absolute top-0 left-0 min-w-full h-[.1rem]   cursor-ns-resize bg-gray-500 z-1000"
+          className="flex absolute top-0 left-0 min-w-full h-[.1rem]  cursor-ns-resize bg-gray-500 z-1000"
           onMouseDown={handleMouseDown}
         />
-        <div className="p-4 h-full overflow-hidden ">
+        <div className="p-4 h-full ">
           <MainSection />
         </div>
       </div>

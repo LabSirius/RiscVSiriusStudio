@@ -120,7 +120,7 @@ function DownloadButton() {
   return (
       <div onClick={onClick} className='flex flex-col items-center react-flow__controls-button-custom' title="Export SVG">
         <Download size={16} />
-        <span style={{ fontSize: '7px', marginTop: '2px' }}>SVG</span>
+        <span className='text-black' style={{ fontSize: '7px', marginTop: '2px' }}>SVG</span>
       </div>
   );
 }
