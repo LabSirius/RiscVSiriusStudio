@@ -17,6 +17,9 @@ const MessageListener = () => {
       const message = event.data;
       if (message?.from === "UIManager") {
         switch (message.operation) {
+          case "textProgram":
+              console.log("PROGRAM  TEXT IN VIEW", message.textProgram)
+          break
           case "uploadMemory":
             setIsCreatedMemoryTable(false);
             setIsFirstStep(false);
