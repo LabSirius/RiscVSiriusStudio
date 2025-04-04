@@ -104,6 +104,8 @@ export class RVContext {
             throw new Error("There is no valid program to simulate");
           }
           this.simulateProgram(this._currentDocument);
+          this.sendTextProgramToView(); //Send the text program to the view
+
         } else {
           window.showErrorMessage("There is no a valid RiscV document open");
         }
@@ -180,6 +182,8 @@ export class RVContext {
     console.log("Context constructor done");
   }
 
+ 
+
   private buildCurrentDocument() {
     const editor = window.activeTextEditor;
     if (editor) {
@@ -210,6 +214,15 @@ export class RVContext {
     commands.executeCommand("setContext", "ext.isSimulating", true);
     this._simulator = simulator;
     simulator.start();
+  }
+
+
+  // This method is in charge of sending the text program to the view when start the  simulation
+  private sendTextProgramToView(){
+    if (!this._currentDocument) {
+      throw new Error("No current document");
+    }
+    this.simulator.sendTextProgramToView(this._currentDocument.getText());
   }
 
   private animateLine(line: number) {

@@ -43,6 +43,11 @@ function dispatch(
   switch (data.from) {
     case 'extension': {
       switch (data.operation) {
+        case 'textProgram': {
+          const { from, ...newData } = data;
+          UIManager.getInstance()._sendMessageToReact(newData);
+          break;
+        }
         case 'uploadMemory': {
           const { from, ...newData } = data;
           UIManager.getInstance()._sendMessageToReact(newData);

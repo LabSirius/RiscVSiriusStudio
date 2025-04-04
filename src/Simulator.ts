@@ -115,6 +115,9 @@ export class Simulator {
     this.stop();
   }
 
+  public sendTextProgramToView(textProgram: string){
+    // do nothing. Must be implemented by the subclass.
+  }
   public notifyRegisterWrite(register: string, value: string) {
     // do nothing. Must be implemented by the subclass.
   }
@@ -367,22 +370,21 @@ export class TextSimulator extends Simulator {
 
   }
 
-  public override notifyRegisterWrite(register: string, value: string) {
-    // Warn the user if the register has a special meaning and the new value is
-    // not valid
-    // debugger;
-    // const address = Number.parseInt(binaryToInt(value));
-    // if (register === 'x2' && !this.cpu.getDataMemory().validAddress(address)) {
-    //   const message = `Address ${address} is not valid for the current memory settings`;
-    //   window.showErrorMessage(message);
-    // }
-    // const valueAsNumber = parseInt(value, 2);
-    // if (register === 'x2' && !this.cpu.getDataMemory().validAAddress(value)) {
-    //   const message = `Invalid PC value: ${value}`;
-    //   window.showErrorMessage(message);
-    // }
+  public override sendTextProgramToView(textProgram: string) {
+    const mainView = this.context.mainWebviewView;
+    if (!mainView) {
+      throw new Error("Main view not found");
+    }
+    mainView.postMessage({
+      from: "extension",
+      operation: "textProgram",
+      textProgram: textProgram,
+    });
+  }
 
-    //  Notify the main view that the register has been updated
+  public override notifyRegisterWrite(register: string, value: string) {
+    
+
     this.sendToMainView({
       from: "extension",
       operation: "setRegister",
