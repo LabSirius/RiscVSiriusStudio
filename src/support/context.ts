@@ -180,20 +180,6 @@ export class RVContext {
     console.log("Context constructor done");
   }
 
-  
-
-  private onMainViewVisible() {
-    if (this._mainViewIsFirstTimeVisible) {
-      console.log("Main view is visible for the first time", this.mainWebviewView);
-      if (this._isSimulating) {
-        this._simulator?.start();
-      }
-      this._mainViewIsFirstTimeVisible = false;
-    } else {
-      console.log("Main view is visible again");
-    }
-  }
-
   private buildCurrentDocument() {
     const editor = window.activeTextEditor;
     if (editor) {
