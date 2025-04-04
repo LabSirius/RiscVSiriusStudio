@@ -1,5 +1,5 @@
-import { ThemeProvider } from "@/tables/components/ui/theme/theme-provider";
-import Page from "@/tables/components/Page";
+import { ThemeProvider } from "@/components/ui/theme/theme-provider";
+import Page from "@/components/Page";
 
 const App = () => {
   return (
