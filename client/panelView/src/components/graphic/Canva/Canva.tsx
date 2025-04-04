@@ -180,7 +180,7 @@ const edgeTypes = {
   animatedSvg: AnimatedSVGEdge,
 };
 
-export default function Sections() {
+export default function Canva() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [showMinimap, setShowMinimap] = useState(false);

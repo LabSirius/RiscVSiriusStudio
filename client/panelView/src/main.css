@@ -16,12 +16,17 @@
   font-family:  "Courier New";
 }
 
+#app {
+  width: 100vw;
+  height: 100vh;
+}
+
 
 
 body {
   max-height: 100dvh ;
   overflow: hidden;
-  width: 100%;
+  min-width: 100vh;
   margin: 0;
   padding: 0rem 0rem 1rem 0rem ;
 }

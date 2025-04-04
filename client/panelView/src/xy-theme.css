@@ -134,4 +134,5 @@
   .react-flow__controls-button-custom svg {
     stroke: currentColor; 
     fill: none; 
+    color: black;
   }
