@@ -47,7 +47,7 @@ const MainSection = () => {
   }, [operation]);
 
   return (
-    <SidebarProvider>
+    <SidebarProvider >
       <Sidebar />
       <SidebarTrigger />
 

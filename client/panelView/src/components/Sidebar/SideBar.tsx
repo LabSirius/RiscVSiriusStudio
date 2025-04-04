@@ -22,12 +22,12 @@ export function SideBar() {
   const { operation } = useOperation();
   const { section, setSection } = useSection();
   return (
-    <Sidebar>
-      <SidebarContent className="relative min-h-full overflow-auto">
+    <Sidebar >
+      <SidebarContent className="relative h-full overflow-auto">
         <SidebarGroup className="flex flex-col flex-1">
           <SidebarGroupLabel>Options</SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-col">
-            <SidebarMenu className="flex flex-col justify-between min-h-full pl-3 mt-1">
+            <SidebarMenu className="flex flex-col justify-between h-auto pl-3 mt-1">
 
             <div className="flex flex-col items-start gap-3">
               { !(operation === "") && !(operation === "uploadMemory") && (
