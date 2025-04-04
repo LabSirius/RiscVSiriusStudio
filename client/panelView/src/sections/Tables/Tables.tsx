@@ -3,7 +3,7 @@ import MemoryTable from "./MemoryTable"
 
 const Tables = () => {
   return (
-    <div className="flex gap-5 overflow-x-hidden min-w-min">
+    <div className="flex gap-5 overflow-hidden min-w-min">
         <RegisterTable />
         <MemoryTable />
     

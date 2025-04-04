@@ -77,7 +77,7 @@ const ConvertSection: React.FC = () => {
   };
 
   return (
-    <div className="section-container">
+    <div className="section-container ">
       <div className="flex gap-2">
         <Dropdown
           label="From"

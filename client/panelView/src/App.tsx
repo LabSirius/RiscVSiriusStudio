@@ -19,9 +19,8 @@ const App = () => {
           <RegistersTableProvider>
             <ErrorProvider>
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-              <div className="relative flex w-full h-full overflow-hidden ">
+              <div className="relative flex w-full h-dvh overflow-hidden ">
                   <MessageListener />
-                   
                    <MainSectionContainer />
                   <Error />
               </div>

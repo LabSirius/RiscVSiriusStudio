@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MainSection from './MainSection';
 
-const ResizableBottomContainer: React.FC = () => {
+const MainSectionContainer: React.FC = () => {
   const [height, setHeight] = useState<number>(400); 
   const [isResizing, setIsResizing] = useState<boolean>(false);
   const [startY, setStartY] = useState<number>(0);
@@ -41,13 +41,13 @@ const ResizableBottomContainer: React.FC = () => {
   }, [isResizing, startHeight, startY]);
 
   return (
-    <div className="fixed bottom-0 left-0 w-full">
-      <div style={{ height: `${height}px` }} className="relative">
+    <div className="fixed bottom-0 left-0 w-full overflow-hidden ">
+      <div style={{ height: `${height}px` }} className="relative overflow-y-hidden">
         <div
-          className="absolute top-0 left-0 w-full h-[.1rem] cursor-ns-resize bg-gray-500"
+          className="absolute top-0 left-0 w-full h-[.1rem]  cursor-ns-resize bg-gray-500 z-1000"
           onMouseDown={handleMouseDown}
         />
-        <div className="p-4">
+        <div className="p-4 h-full overflow-hidden ">
           <MainSection />
         </div>
       </div>
@@ -55,4 +55,4 @@ const ResizableBottomContainer: React.FC = () => {
   );
 };
 
-export default ResizableBottomContainer;
+export default MainSectionContainer;

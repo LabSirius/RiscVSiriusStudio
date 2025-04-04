@@ -14,7 +14,7 @@ import SearchSection from "../SearchSection";
 import HelpSection from "../HelpSection";
 import { useTheme } from "@/components/ui/theme/theme-provider"
 
-const MainSection = () => {
+const  MainSection = () => {
   const { setTheme } = useTheme();
   const { operation } = useOperation();
   const { section } = useSection();
@@ -47,7 +47,7 @@ const MainSection = () => {
   }, [operation]);
 
   return (
-    <SidebarProvider >
+    <SidebarProvider  className="h-full overflow-hidden">
       <Sidebar />
       <SidebarTrigger />
 

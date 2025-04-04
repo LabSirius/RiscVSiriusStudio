@@ -293,10 +293,10 @@ const MemoryTable = () => {
   return (
     <div className={`shadow-lg min-h-min "min-w-[34.8rem] relative`}>
  
-      <div className= {`h-full w-full transition-opacity ease-in 9000  ${isCreatedMemoryTable ? 'opacity-100' : 'opacity-0'}`}> 
+      <div className= {`h-full w-full transition-opacity overflow-y-scroll ease-in 9000  ${isCreatedMemoryTable ? 'opacity-100' : 'opacity-0'}`}> 
       <div
         ref={tableContainerRef}
-        className={`w-full max-h-[calc(100dvh-2.3rem)] overflow-y-scroll overflow-x-hidden  ${
+        className={`w-full max-h-[calc(100dvh-2.3rem)]  overflow-x-hidden  ${
           theme === "light" ? "theme-light" : "theme-dark"
         }`}
       /></div>
