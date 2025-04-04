@@ -44,7 +44,7 @@ export class RVContext {
   private _simulator: Simulator | undefined;
   get simulator(): Simulator {
     if (!this._simulator) {
-      throw new Error("Simulator is not initialized");
+      throw new Error("Error in the program to be simulated.");
     }
     return this._simulator;
   }
@@ -76,6 +76,26 @@ export class RVContext {
      */
     this.disposables.push(
       commands.registerCommand('rv-simulator.simulate', async () => {
+
+        const editor = window.activeTextEditor;
+        if (editor && RVDocument.isValid(editor.document)) {
+          this._encoderDecorator = new EncoderDecorator();
+          this.buildCurrentDocument();
+          if (!this._currentDocument) {
+            throw new Error("There is no valid program to simulate");
+          }
+        } else {
+          window.showErrorMessage("There is no a valid RiscV document open");
+          return;
+        }
+
+        // If the document is not valid (parser error), return
+        if(this._currentDocument.ir === undefined){
+          return;
+        }
+
+
+        // Create the webview panel
         const panel = window.createWebviewPanel(
           'riscCard',
           'RISC-V',
@@ -93,22 +113,13 @@ export class RVContext {
     
         panel.webview.html = await getHtmlForRegistersWebview(panel.webview, this.extensionContext.extensionUri);
     
+        // Message listener
         await activateMessageListenerForRegistersView(panel.webview, this);
         this._mainWebviewView = panel.webview;
+        this.simulateProgram(this._currentDocument);
+        this.sendTextProgramToView(); //Send the text program to the view
     
-        const editor = window.activeTextEditor;
-        if (editor && RVDocument.isValid(editor.document)) {
-          this._encoderDecorator = new EncoderDecorator();
-          this.buildCurrentDocument();
-          if (!this._currentDocument) {
-            throw new Error("There is no valid program to simulate");
-          }
-          this.simulateProgram(this._currentDocument);
-          this.sendTextProgramToView(); //Send the text program to the view
-
-        } else {
-          window.showErrorMessage("There is no a valid RiscV document open");
-        }
+        
       })
     );
     
