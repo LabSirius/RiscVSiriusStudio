@@ -3,6 +3,7 @@
 import { commands, Disposable, ExtensionContext, Webview, window, TextEditor, ViewColumn, Uri   } from "vscode";
 import {
   getHtmlForRegistersWebview,
+  activateMessageListenerForRegistersView
 } from "../tabs/MainTab";
 import { RiscCardPanel } from "../tabs/RiscCardTab";
 import { RVDocument } from "../rvDocument";
@@ -114,6 +115,7 @@ export class RVContext {
             window.showErrorMessage("There is no a valid RiscV document open");
           }
       })
+
     );
 
 
