@@ -88,7 +88,6 @@ const RegistersTable = () => {
 
     tabulatorInstance.current.on('tableBuilt', () => {
       setTableBuilt(true);
-      updateRegisterValue(tabulatorInstance, writeInRegister.value, writeInRegister.registerName);
     });
 
     tabulatorInstance.current.on('cellEdited', (cell) => {
@@ -121,8 +120,7 @@ const RegistersTable = () => {
   */
   useEffect(() => {
     if (writeInRegister.value === '' || !tableBuilt) return;
-  
-  
+      
     updateRegisterValue(
       tabulatorInstance,
       writeInRegister.registerName,
