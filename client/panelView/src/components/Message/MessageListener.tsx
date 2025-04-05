@@ -5,14 +5,18 @@ import { useMemoryTable } from "@/context/panel/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useDialog } from "@/context/panel/DialogContext";
 import { useLines } from "@/context/panel/LinesContext";
+import { useIR } from "@/context/graphic/IRContext";
 
 const MessageListener = () => {
+  const { setDataMemoryTable, setSizeMemory, setNewPc, setWriteInMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
+  const { setWriteInRegister } = useRegistersTable();
+  const { setIr } = useIR();
+
   const { setTextProgram, setOperation, isFirstStep, setIsFirstStep } = useOperation();
   const { setLineDecorationNumber, setClickInEditorLine } = useLines();
   const { setSection } = useSection();
-  const { setDataMemoryTable, setSizeMemory, setNewPc, setWriteInMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
-  const { setWriteInRegister } = useRegistersTable();
   const { setDialog} = useDialog();
+
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -24,12 +28,17 @@ const MessageListener = () => {
           break
           case "uploadMemory":
             setDialog({ title: "Info", description: "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu." });
+            
             setIsCreatedMemoryTable(false);
+            setDataMemoryTable(message.payload);
+            setSizeMemory(message.payload.memory.length - message.payload.codeSize);
+
+            setIr(message.payload.ir);
+
             setIsFirstStep(false);
             setOperation("uploadMemory");
             setSection("program");
-            setDataMemoryTable(message.payload);
-            setSizeMemory(message.payload.memory.length - message.payload.codeSize);
+           
             break;
           case 'decorateLine': 
            setLineDecorationNumber(message.lineDecorationNumber);

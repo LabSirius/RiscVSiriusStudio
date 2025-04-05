@@ -252,6 +252,7 @@ export class TextSimulator extends Simulator {
           codeSize: this.cpu.getDataMemory().codeSize,
           addressLine,
           symbols: this.rvDoc.ir?.symbols,
+          ir: this.rvDoc.ir,
         }
       });
       this.makeEditorReadOnly();

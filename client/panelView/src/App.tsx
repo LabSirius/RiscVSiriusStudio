@@ -14,13 +14,16 @@ import { SectionProvider } from "./context/panel/SectionContext";
 
 
 import { OverlayProvider } from "@/context/graphic/OverlayContext";
+import { IRProvider } from "./context/graphic/IRContext";
 import { ReactFlowProvider } from "@xyflow/react";
 import Canva from "./components/graphic/Canva/Canva";
+
 
 const App = () => {  
   return (
     <SectionProvider>
       <OperationProvider>
+      <IRProvider>
         <LinesProvider>
         <MemoryTableProvider>
           <RegistersTableProvider>
@@ -41,6 +44,7 @@ const App = () => {
           </RegistersTableProvider>
         </MemoryTableProvider>
         </LinesProvider>
+      </IRProvider>
       </OperationProvider>
       </SectionProvider>
   );

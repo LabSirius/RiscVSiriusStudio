@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-
 interface AddressLine{
   line: number;
   jump: number;
@@ -33,8 +32,6 @@ interface ReadInMemory {
   value: string;
   _length: number;
 }
-
-
 
 export interface MemoryTableContextProps {
   isCreatedMemoryTable: boolean;  
