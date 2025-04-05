@@ -26,7 +26,7 @@ const App = () => {
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <ReactFlowProvider>
             <OverlayProvider>
-              <div className="relative flex flex-col gap-2 min-w-dvh h-dvh overflow-hidden ">
+              <div className="relative flex flex-col min-w-dvh h-dvh overflow-hidden ">
                   <MessageListener />
                     <Canva />
                    <MainSectionContainer />
