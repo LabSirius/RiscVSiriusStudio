@@ -60,7 +60,7 @@ const MemoryTable = () => {
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
   const { isFirstStep } = useOperation();
-  const { clickInEditorLine, setClickInEditorLine} = useLines();
+  const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable} = useLines();
   const isFirstStepRef = useRef(isFirstStep);
 
   // Initialize the memory table regardless of dataMemoryTable so that the container is always rendered.
@@ -118,7 +118,8 @@ const MemoryTable = () => {
             if(intAdress * 4 < dataMemoryTable?.codeSize){
               const instruction = dataMemoryTable?.addressLine[intAdress];
               if (instruction) {
-                sendMessage({ event: "clickInInstruction", line: instruction.line });
+                setClickAddressInMemoryTable(instruction.line)
+                //sendMessage({ event: "clickInInstruction", line: instruction.line });
                 if(dataMemoryTable?.addressLine[intAdress].jump){
                   const intJump = Number(binaryToIntTwoComplement(String(dataMemoryTable?.addressLine[intAdress].jump)));
                   const jumpTo = intJump + intAdress*4;

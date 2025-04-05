@@ -234,17 +234,23 @@ a:hover{
 }
 
 .highlighted-line {
-  background-color: rgba(209, 227, 231, 0.5) !important;
+  background-color: rgba(58, 105, 115, 0.15) !important;
 }
 
-.highlighted-line-margin {
-  background-color: rgba(209, 227, 231, 0.3) !important;
+.address-margin-decoration {
+  background: rgba(255, 165, 0, 0.3);
   width: 5px !important;
-  margin-left: 3px;
 }
 
-
-
+.address-margin-decoration::after {
+  content: '';
+  color: #ffa500;
+  font-size: 12px;
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  left: 5px;  /* ajusta este valor para separarlo del número */
+}
 
 /* Graphic */
 

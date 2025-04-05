@@ -8,15 +8,22 @@ import type { editor } from 'monaco-editor';
 const ProgramSection = () => {
   const { textProgram } = useOperation();
   const { theme } = useTheme();
-  const { lineDecorationNumber,  setClickInEditorLine } = useLines();
-  const editorTheme = theme === 'dark' ? 'my-custom-dark' : 'my-custom-light';
+  const { 
+    lineDecorationNumber,  
+    setClickInEditorLine, 
+    clickAddressInMemoryTable, 
+    setClickAddressInMemoryTable 
+  } = useLines();
   
+  const editorTheme = theme === 'dark' ? 'my-custom-dark' : 'my-custom-light';
   const [editor, setEditor] = useState<editor.IStandaloneCodeEditor | null>(null);
   const monacoRef = useRef<Monaco | null>(null);
   const decorationsRef = useRef<string[]>([]);
+  const addressDecorationsRef = useRef<string[]>([]);
 
   useEffect(() => {
     if (!editor || lineDecorationNumber === -1 || !monacoRef.current) return;
+
     const range = new monacoRef.current.Range(
       lineDecorationNumber, 1,
       lineDecorationNumber, 1
@@ -27,7 +34,6 @@ const ProgramSection = () => {
       options: {
         isWholeLine: true,
         className: 'highlighted-line',
-        marginClassName: 'highlighted-line-margin'
       }
     }];
 
@@ -40,8 +46,39 @@ const ProgramSection = () => {
     };
   }, [lineDecorationNumber, editor]);
 
+  useEffect(() => {
+    if (!editor || clickAddressInMemoryTable === -1 || !monacoRef.current) return;
+
+    const lineNumber = clickAddressInMemoryTable;
+    const range = new monacoRef.current.Range(lineNumber, 1, lineNumber, 1);
+
+    const newAddressDecoration: editor.IModelDeltaDecoration[] = [{
+      range,
+      options: {
+        linesDecorationsClassName: 'address-margin-decoration',
+      }
+    }];
+
+    addressDecorationsRef.current = editor.deltaDecorations(
+      addressDecorationsRef.current, 
+      newAddressDecoration
+    );
+
+    const timer = setTimeout(() => {
+      addressDecorationsRef.current = editor.deltaDecorations(
+        addressDecorationsRef.current, 
+        []
+      );
+      setClickAddressInMemoryTable(-1);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+      editor.deltaDecorations(addressDecorationsRef.current, []);
+    };
+  }, [clickAddressInMemoryTable, editor, setClickAddressInMemoryTable]);
+
   const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor) => {
-    console.log("Editor mounted:", editor);
     setEditor(editor);
     
     editor.onMouseDown((e) => {
@@ -80,7 +117,7 @@ const ProgramSection = () => {
   };
 
   return (
-    <div className="min-w-[30rem] max-w-[30rem] overflow-hidden min-h-min">
+    <div className="min-w-[30rem] max-w-[30rem] overflow-hidden min-h-min relative left-[-3rem] mt-1">
       <Editor
         height="100%"
         defaultLanguage="python"
@@ -99,7 +136,8 @@ const ProgramSection = () => {
             horizontal: 'hidden',
             verticalScrollbarSize: 0
           },
-          wordWrap: 'off'
+          wordWrap: 'off',
+          glyphMargin: true 
         }}
       />
     </div>

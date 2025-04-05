@@ -6,6 +6,9 @@ interface LinesContextProps {
 
   clickInEditorLine: number;
   setClickInEditorLine: (lineNumber: number) => void;
+
+  clickAddressInMemoryTable: number;
+  setClickAddressInMemoryTable: (address: number) => void;
 }
 
 const LinesContext = createContext<LinesContextProps | undefined>(undefined);
@@ -13,10 +16,11 @@ const LinesContext = createContext<LinesContextProps | undefined>(undefined);
 export const LinesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [lineDecorationNumber, setLineDecorationNumber] = useState<number>(-1);
     const [clickInEditorLine, setClickInEditorLine] = useState<number>(-1);
+    const [clickAddressInMemoryTable, setClickAddressInMemoryTable] = useState<number>(-1);
   
 
   return (
-    <LinesContext.Provider value={{ lineDecorationNumber, setLineDecorationNumber, clickInEditorLine, setClickInEditorLine }}>
+    <LinesContext.Provider value={{ lineDecorationNumber, setLineDecorationNumber, clickInEditorLine, setClickInEditorLine, clickAddressInMemoryTable, setClickAddressInMemoryTable }}>
       {children}
     </LinesContext.Provider>
   );
