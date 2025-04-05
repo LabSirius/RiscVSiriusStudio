@@ -28,7 +28,7 @@ import {
 import { getColumnMemoryDefinitions } from "@/utils/tables/definitions/definitionsColumns";
 
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";
-import { sendMessage } from "@/components/panel/Message/sendMessage";
+import { sendMessage } from "@/components/Message/sendMessage";
 
 const MemoryTable = () => {
   const { theme } = useTheme();

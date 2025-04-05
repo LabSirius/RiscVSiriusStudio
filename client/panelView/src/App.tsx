@@ -7,7 +7,7 @@ import { ErrorProvider } from "./context/panel/ErrorContext";
 
 import MainSectionContainer from "@/components/panel/Sections/MainSection/MainSectionContainer";
 
-import MessageListener from "@/components/panel/Message/MessageListener";
+import MessageListener from "@/components/Message/MessageListener";
 import Error from "@/components/panel/Error";
 import { SectionProvider } from "./context/panel/SectionContext";
 

@@ -236,6 +236,17 @@ export class RVContext {
     this.simulator.sendTextProgramToView(this._currentDocument.getText());
   }
 
+  private step(){
+    if (!this._simulator) {
+      throw new Error("No simulator is running");
+    }
+    try{
+      this._simulator.step();
+    }catch{
+      this._simulator.stop();
+    }
+  }
+
   private animateLine(line: number) {
       this.simulator.animateLine(line);
   }
@@ -264,6 +275,9 @@ export class RVContext {
    */
   public dispatchMainViewEvent(message: any) {
     switch (message.event) {
+      case "step":
+        this.step();
+       break;
       case "clickInInstruction":
         this.animateLine(message.value);
       break;

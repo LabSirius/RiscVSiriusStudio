@@ -16,7 +16,7 @@ import { createViewTypeFormatter, handleGlobalKeyPress, updateRegisterValue, fil
 import { resetCellColors } from '@/utils/tables/handlersShared';
 
 import SkeletonRegisterTable from '@/components/panel/Skeleton/SkeletonRegisterTable';
-import { sendMessage } from '@/components/panel/Message/sendMessage';
+import { sendMessage } from '@/components/Message/sendMessage';
 
 const RegistersTable = () => {  
   const { theme } = useTheme()

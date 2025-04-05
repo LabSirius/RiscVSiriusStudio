@@ -7,6 +7,7 @@ import Sidebar from "@/components/panel/Sidebar/SideBar";
 import { useOperation } from "@/context/panel/OperationContext";
 import { useSection } from "@/context/panel/SectionContext";
 
+import ProgramSection from "../ProgramSection";
 import ConvertSection from "../ConvertSection";
 import Tables from "../Tables/Tables";
 import SettingsSection from "../SettingsSection";
@@ -51,16 +52,23 @@ const  MainSection = () => {
       <Sidebar />
       <SidebarTrigger />
 
-      {operation === "" && (section === "convert" ? <ConvertSection /> : <HelpSection />)}
 
       {(operation === "uploadMemory" || operation === "step") && (
         <div className="relative flex gap-5 px-4 overflow-x-scroll overflow-y-hidden">
           <Tables />
           {operation === "uploadMemory" &&
-            (section === "settings" ? <SettingsSection /> : <HelpSection />)}
+           (section === "settings" ? (
+             <SettingsSection />
+           ) : section === "program" ? (
+             <ProgramSection />
+           ) : (
+             <HelpSection />
+           ))}
 
           {operation === "step" &&
-            (section === "search" ? (
+            ( section === "program" ? (
+              <ProgramSection /> ) :
+              section === "search" ? (
               <SearchSection />
             ) : section === "convert" ? (
               <ConvertSection />

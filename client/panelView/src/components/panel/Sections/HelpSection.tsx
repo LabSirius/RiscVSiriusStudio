@@ -3,7 +3,7 @@ import FirstHelp from "@/components/panel/Help/FirstHelp"
 import SettingsHelp from "@/components/panel/Help/SettingsHelp/SettingsHelp"
 import LastHelp from "@/components/panel/Help/LastHelp"
 import { Link } from "lucide-react"
-import { sendMessage } from "@/components/panel/Message/sendMessage"
+import { sendMessage } from "@/components/Message/sendMessage"
 
 const HelpSection = () => {
   const { operation } = useOperation();

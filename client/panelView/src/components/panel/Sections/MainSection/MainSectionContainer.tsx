@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MainSection from './MainSection';
-import { useTheme } from '../../ui/theme/theme-provider';
 
 const MainSectionContainer: React.FC = () => {
-  const { theme } = useTheme();
   const [height, setHeight] = useState<number>(400); 
   const [isResizing, setIsResizing] = useState<boolean>(false);
   const [startY, setStartY] = useState<number>(0);
@@ -45,10 +43,10 @@ const MainSectionContainer: React.FC = () => {
   }, [isResizing, startHeight, startY]);
 
   return (
-    <div className={`flex  bg-${theme==="dark" ? "[#1a1a1a]" : "white"}`}>
+    <div className={`flex `}>
       <div style={{ height: `${height}px` }} className="relative overflow-y-hidden w-full">
         <div
-          className="flex absolute top-0 left-0 min-w-full h-[.1rem]  cursor-ns-resize bg-gray-500 z-1000"
+          className="flex absolute top-0 left-0 min-w-full h-[.3rem]  cursor-ns-resize bg-gray-500 z-1000"
           onMouseDown={handleMouseDown}
         />
         <div className="p-4 h-full ">

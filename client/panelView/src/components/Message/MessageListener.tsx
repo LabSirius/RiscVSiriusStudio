@@ -6,7 +6,7 @@ import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useError } from "@/context/panel/ErrorContext";
 
 const MessageListener = () => {
-  const { setOperation, isFirstStep, setIsFirstStep, setClickInLine } = useOperation();
+  const { setTextProgram, setOperation, isFirstStep, setIsFirstStep, setClickInLine } = useOperation();
   const { setSection } = useSection();
   const { setDataMemoryTable, setSizeMemory, setNewPc, setWriteInMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
   const { setWriteInRegister } = useRegistersTable();
@@ -18,7 +18,7 @@ const MessageListener = () => {
       if (message?.from === "UIManager") {
         switch (message.operation) {
           case "textProgram":
-              console.log("PROGRAM  TEXT IN VIEW", message.textProgram)
+            setTextProgram(message.textProgram);
           break
           case "uploadMemory":
             setIsCreatedMemoryTable(false);
@@ -31,7 +31,7 @@ const MessageListener = () => {
           case "step":
             setNewPc(message.pc);
             if (!isFirstStep) {
-              setSection("search");
+              setSection("program");
               setOperation("step");
               setIsFirstStep(true);
             }

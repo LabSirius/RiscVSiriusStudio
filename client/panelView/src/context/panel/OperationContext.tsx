@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface OperationContextProps {
+  textProgram: string;
+   setTextProgram: React.Dispatch<React.SetStateAction<string>>;
   operation: string;
   setOperation: React.Dispatch<React.SetStateAction<string>>;
   isFirstStep: boolean;
@@ -12,13 +14,14 @@ interface OperationContextProps {
 const OperationContext = createContext<OperationContextProps | undefined>(undefined);
 
 export const OperationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [textProgram, setTextProgram] = useState<string>('');
   const [operation, setOperation] = useState<string>('');
   const [isFirstStep, setIsFirstStep] = useState<boolean>(false);
   const [clickInLine, setClickInLine] = useState<number>(-1);
   
 
   return (
-    <OperationContext.Provider value={{ operation, setOperation, isFirstStep, setIsFirstStep, clickInLine, setClickInLine }}>
+    <OperationContext.Provider value={{textProgram, setTextProgram,  operation, setOperation, isFirstStep, setIsFirstStep, clickInLine, setClickInLine }}>
       {children}
     </OperationContext.Provider>
   );

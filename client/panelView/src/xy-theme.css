@@ -117,13 +117,19 @@
   }
   
 
-  .react-flow__controls-button-custom {
+  .react-flow__controls-button-custom,
+   .react-flow__controls-button-custom_green, 
+   .react-flow__controls-button-custom_red {
+     border: none; 
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+     padding: 8px; 
+     cursor: pointer; 
+     transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+   }
+
+   .react-flow__controls-button-custom{
     background-color: white;
-    border: none; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
-    padding: 8px; 
-    cursor: pointer; 
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+
   }
   
   .react-flow__controls-button-custom:hover {
@@ -135,4 +141,13 @@
     stroke: currentColor; 
     fill: none; 
     color: black;
+  }
+
+  .react-flow__controls-button-custom_green {
+    background-color: #7DC77A;
+  }
+
+
+  .react-flow__controls-button-custom_red {
+    background-color: #E28C8C;
   }
