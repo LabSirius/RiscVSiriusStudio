@@ -396,7 +396,7 @@ export const animateRow = (
     rowElement.classList.remove('animate-row');
   }, 500);
 
-  tableInstance.scrollToRow(hexAddress, 'center', true);
+  tableInstance.scrollToRow(hexAddress, 'top', true);
 };
 
 export function animateArrowBetweenCells(

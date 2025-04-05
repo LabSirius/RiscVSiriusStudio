@@ -7,8 +7,8 @@ import { useDialog } from "@/context/panel/DialogContext";
 import { useLines } from "@/context/panel/LinesContext";
 
 const MessageListener = () => {
-  const { setTextProgram, setOperation, isFirstStep, setIsFirstStep, setClickInLine } = useOperation();
-  const { setLineDecorationNumber } = useLines();
+  const { setTextProgram, setOperation, isFirstStep, setIsFirstStep } = useOperation();
+  const { setLineDecorationNumber, setClickInEditorLine } = useLines();
   const { setSection } = useSection();
   const { setDataMemoryTable, setSizeMemory, setNewPc, setWriteInMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
   const { setWriteInRegister } = useRegistersTable();
@@ -44,7 +44,7 @@ const MessageListener = () => {
             }
             break;
           case "clickInLine":
-            setClickInLine(message.lineNumber);
+            setClickInEditorLine(message.lineNumber);
             break;
           case "setRegister":
             setWriteInRegister({ registerName: message.register, value: message.value });

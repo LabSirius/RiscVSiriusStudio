@@ -8,7 +8,7 @@ import type { editor } from 'monaco-editor';
 const ProgramSection = () => {
   const { textProgram } = useOperation();
   const { theme } = useTheme();
-  const { lineDecorationNumber } = useLines();
+  const { lineDecorationNumber,  setClickInEditorLine } = useLines();
   const editorTheme = theme === 'dark' ? 'my-custom-dark' : 'my-custom-light';
   
   const [editor, setEditor] = useState<editor.IStandaloneCodeEditor | null>(null);
@@ -17,7 +17,6 @@ const ProgramSection = () => {
 
   useEffect(() => {
     if (!editor || lineDecorationNumber === -1 || !monacoRef.current) return;
-
     const range = new monacoRef.current.Range(
       lineDecorationNumber, 1,
       lineDecorationNumber, 1
@@ -42,7 +41,14 @@ const ProgramSection = () => {
   }, [lineDecorationNumber, editor]);
 
   const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor) => {
+    console.log("Editor mounted:", editor);
     setEditor(editor);
+    
+    editor.onMouseDown((e) => {
+      if (e.target.position?.lineNumber) {
+        setClickInEditorLine(e.target.position.lineNumber);
+      }
+    });
   };
 
   const handleEditorWillMount = (monaco: Monaco) => {

@@ -29,6 +29,7 @@ import { getColumnMemoryDefinitions } from "@/utils/tables/definitions/definitio
 
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";
 import { sendMessage } from "@/components/Message/sendMessage";
+import { useLines } from "@/context/panel/LinesContext";
 
 const MemoryTable = () => {
   const { theme } = useTheme();
@@ -58,7 +59,8 @@ const MemoryTable = () => {
   } = useMemoryTable();
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
-  const { isFirstStep, clickInLine, setClickInLine } = useOperation();
+  const { isFirstStep } = useOperation();
+  const { clickInEditorLine, setClickInEditorLine} = useLines();
   const isFirstStepRef = useRef(isFirstStep);
 
   // Initialize the memory table regardless of dataMemoryTable so that the container is always rendered.
@@ -268,10 +270,10 @@ const MemoryTable = () => {
   }, [locatePc, setLocatePc, isCreatedMemoryTable]);
 
 
-  // Animate the memory cell when clickInLine changes.
+  // Animate the memory cell when clickInEditorLine changes.
   useEffect(() =>  {
-    if(!isCreatedMemoryTable || clickInLine === -1) return;
-    const position = dataMemoryTable?.addressLine.findIndex(item => item.line === clickInLine);
+    if(!isCreatedMemoryTable || clickInEditorLine === -1) return;
+    const position = dataMemoryTable?.addressLine.findIndex(item => item.line === clickInEditorLine);
     if (position !== -1) {
       if(tableInstanceRef.current && (position || position === 0)){ 
         animateRow(tableInstanceRef.current, position*4);
@@ -284,11 +286,11 @@ const MemoryTable = () => {
           
         }
       }
-      setClickInLine(-1);
+      setClickInEditorLine(-1);
     } 
 
 
-  }, [clickInLine, setClickInLine, isCreatedMemoryTable]);
+  }, [clickInEditorLine, setClickInEditorLine, isCreatedMemoryTable]);
 
   return (
     <div className={`shadow-lg min-h-min min-w-[34.8rem] relative `}>
