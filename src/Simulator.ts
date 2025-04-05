@@ -297,13 +297,10 @@ export class TextSimulator extends Simulator {
 
     // Handle the visualization
     const mainView = this.context.mainWebviewView;
-    mainView.postMessage({ from: "extension", operation: "step", pc: this.cpu.getPC() });
-
     const currentInst = this.cpu.currentInstruction();
-    const lineNumber = this.rvDoc.getLineForIR(currentInst);
-
-    if (lineNumber !== undefined) {
-      this.highlightLine(lineNumber);
+    const lineDecorationNumber = this.rvDoc.getLineForIR(currentInst);
+    if(lineDecorationNumber !== undefined) {
+      mainView.postMessage({ from: "extension", operation: "step", pc: this.cpu.getPC(), lineDecorationNumber: lineDecorationNumber+1 });
     }
   }
 

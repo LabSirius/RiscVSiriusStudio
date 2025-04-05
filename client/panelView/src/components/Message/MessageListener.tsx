@@ -36,6 +36,7 @@ const MessageListener = () => {
           break
           case "step":
             setNewPc(message.pc);
+            setLineDecorationNumber(message.lineDecorationNumber);
             if (!isFirstStep) {
               setSection("program");
               setOperation("step");
