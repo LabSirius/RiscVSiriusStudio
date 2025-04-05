@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
-import { useError } from "@/context/panel/ErrorContext";
+import { useDialog } from "@/context/panel/DialogContext";
 import { registersNames } from "@/components/panel/Sections/constants/data";
 import { Button } from "@/components/panel/ui/button";
 import { FileDown } from "lucide-react";
@@ -8,7 +8,7 @@ import { sendMessage } from "../../../Message/sendMessage";
 
 const ImportRegister = () => {
   const { setImportRegister } = useRegistersTable();
-  const { setError } = useError();
+  const { setDialog } = useDialog();
   const fileInputRegisterRef = useRef<HTMLInputElement>(null);
 
   const handleRegisterImportClick = () => {
@@ -30,7 +30,7 @@ const ImportRegister = () => {
         .filter((line) => line !== "");
         
       if (lines.length !== 32) {
-        setError({
+        setDialog({
           title: "Error importing file",
           description: "The file must contain 32 registers.",
         });
@@ -39,7 +39,7 @@ const ImportRegister = () => {
       for (let i = 0; i < lines.length; i++) {
 
         if(lines[0] !== "00000000000000000000000000000000") {
-          setError({
+          setDialog({
             title: "Error importing file",
             description: "You cannot write to register x0.",
         })
@@ -47,7 +47,7 @@ const ImportRegister = () => {
     }
 
         if (lines[i].length !== 32) {
-          setError({
+          setDialog({
             title: "Error importing file",
             description: `Invalid length on the line ${i+1} or (x${[i]}).`,
           });
@@ -55,7 +55,7 @@ const ImportRegister = () => {
         }
 
         if (!/^[01]+$/.test(lines[i])) {
-          setError({
+          setDialog({
             title: "Error importing file",
             description: `Invalid characters on line ${i + 1}. Only '0' and '1' are allowed.`,
           });

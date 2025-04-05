@@ -3,12 +3,12 @@ import { ThemeProvider } from "@/components/panel/ui/theme/theme-provider";
 import { OperationProvider } from "./context/panel/OperationContext";
 import { MemoryTableProvider } from "./context/panel/MemoryTableContext";
 import { RegistersTableProvider } from "./context/panel/RegisterTableContext";
-import { ErrorProvider } from "./context/panel/ErrorContext";
+import { DialogProvider } from "./context/panel/DialogContext";
 
 import MainSectionContainer from "@/components/panel/Sections/MainSection/MainSectionContainer";
 
 import MessageListener from "@/components/Message/MessageListener";
-import Error from "@/components/panel/Error";
+import Error from "@/components/panel/Dialog";
 import { SectionProvider } from "./context/panel/SectionContext";
 
 
@@ -22,11 +22,11 @@ const App = () => {
       <OperationProvider>
         <MemoryTableProvider>
           <RegistersTableProvider>
-            <ErrorProvider>
+            <DialogProvider>
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <ReactFlowProvider>
             <OverlayProvider>
-              <div className="relative flex flex-col min-w-dvh h-dvh overflow-hidden ">
+              <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
                   <MessageListener />
                     <Canva />
                    <MainSectionContainer />
@@ -35,7 +35,7 @@ const App = () => {
               </OverlayProvider>
               </ReactFlowProvider>
             </ThemeProvider>
-            </ErrorProvider>
+            </DialogProvider>
           </RegistersTableProvider>
         </MemoryTableProvider>
       </OperationProvider>

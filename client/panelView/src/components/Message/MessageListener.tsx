@@ -3,14 +3,14 @@ import { useOperation } from "@/context/panel/OperationContext";
 import { useSection } from "@/context/panel/SectionContext";
 import { useMemoryTable } from "@/context/panel/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
-import { useError } from "@/context/panel/ErrorContext";
+import { useDialog } from "@/context/panel/DialogContext";
 
 const MessageListener = () => {
   const { setTextProgram, setOperation, isFirstStep, setIsFirstStep, setClickInLine } = useOperation();
   const { setSection } = useSection();
   const { setDataMemoryTable, setSizeMemory, setNewPc, setWriteInMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
   const { setWriteInRegister } = useRegistersTable();
-  const { setError} = useError();
+  const { setDialog} = useDialog();
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -21,7 +21,7 @@ const MessageListener = () => {
             setTextProgram(message.textProgram);
           break
           case "uploadMemory":
-            setError({ title: "Info", description: "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu." });
+            setDialog({ title: "Info", description: "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu." });
             setIsCreatedMemoryTable(false);
             setIsFirstStep(false);
             setOperation("uploadMemory");
@@ -50,7 +50,7 @@ const MessageListener = () => {
             setReadInMemory({ address: message.address, value: "1", _length: message._length });
             break;
           case "stop":
-            setError({ title: "Info", description: "The program has ended." });
+            setDialog({ title: "Info", description: "The program has ended." });
             
             break;
           default:
@@ -72,7 +72,7 @@ const MessageListener = () => {
     setSection,
     isFirstStep,
     setIsFirstStep,
-    setError,
+    setDialog,
     setIsCreatedMemoryTable,
   ]);
 

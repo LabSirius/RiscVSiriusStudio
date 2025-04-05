@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useError } from "@/context/panel/ErrorContext";
+import { useDialog } from "@/context/panel/DialogContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,32 +12,32 @@ import {
 
 import { Info} from "lucide-react";  
 
-const Error = () => {
-  const { error, setError } = useError();
+const Dialog = () => {
+  const { dialog, setDialog } = useDialog();
   const [open, setOpen] = useState(false);
 
  
   useEffect(() => {
-    if (error) {
+    if (dialog) {
       setOpen(true);
     }
-  }, [error]);
+  }, [dialog]);
 
   const handleAccept = () => {
     setOpen(false);
-    setError(undefined);
+    setDialog(undefined);
   };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogContent>
+      <AlertDialogContent className="z-1000000000">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-[#3A6973]">
             <Info className="w-6 h-6 mr-2" />
-            {error?.title}
+            {dialog?.title}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-[1rem] text-start">
-            {error?.description}
+            {dialog?.description}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -50,4 +50,4 @@ const Error = () => {
   );
 };
 
-export default Error;
+export default Dialog;

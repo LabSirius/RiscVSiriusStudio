@@ -1,12 +1,12 @@
 import React, { useRef } from "react";
 import { useMemoryTable } from "@/context/panel/MemoryTableContext";
-import { useError } from "@/context/panel/ErrorContext";
+import { useDialog } from "@/context/panel/DialogContext";
 import { Button } from "@/components/panel/ui/button";
 import { Save } from "lucide-react";
 
 const ImportMemory = () => {
   const { setImportMemory, dataMemoryTable, sizeMemory } = useMemoryTable();
-  const { setError } = useError();
+  const { setDialog } = useDialog();
   const fileInputMemoryRef = useRef<HTMLInputElement>(null);
 
   const handleMemoryImportClick = () => {
@@ -31,7 +31,7 @@ const ImportMemory = () => {
       for (const line of lines) {
         const parts = line.split(":");
         if (parts.length !== 2) {
-          setError({
+          setDialog({
             title: "Error importing memory",
             description: `Invalid format in line: ${line}`,
           });
@@ -41,14 +41,14 @@ const ImportMemory = () => {
         const address = parseInt(addressStr, 16);
         if(!dataMemoryTable) return
         if (address < dataMemoryTable.codeSize) {
-          setError({
+          setDialog({
             title: "Error importing memory",
             description: `Cannot import data into the instruction reserved area. Invalid address: ${addressStr.toUpperCase()}`,
           });
           return;
         }
         if (address > sizeMemory + (dataMemoryTable.codeSize - 4)) {
-            setError({
+            setDialog({
               title: "Error importing memory",
               description: `Memory overflow: address ${addressStr} exceeds the allowed limit)`,
             });
@@ -56,7 +56,7 @@ const ImportMemory = () => {
           }
         const binaryValue = parts[1].trim();
         if (binaryValue.length !== 32 || !/^[01]+$/.test(binaryValue)) {
-          setError({
+          setDialog({
             title: "Error importing memory",
             description: `Invalid value in line: ${line}`,
           });

@@ -3,7 +3,7 @@ import { RedoDot, Ban, ZoomIn, ZoomOut, Fullscreen, Map } from 'lucide-react';
 import DownloadButton from '../DownloadButton';
 
 import { sendMessage } from '@/components/Message/sendMessage';
-import { useError } from '@/context/panel/ErrorContext';
+import { useDialog } from '@/context/panel/DialogContext';
 import { useEffect, useState } from 'react';
 import { useOperation } from '@/context/panel/OperationContext';
 
@@ -22,16 +22,16 @@ export default function CustomControls({
   onZoomOut,
   // onToggleInteractive,
 }: CustomControlsProps) {
-  const { error } = useError();
+  const { dialog } = useDialog();
   const { operation} = useOperation();
   const [showControls, setShowControls] = useState(true);
 
 
   useEffect(() => {
-    if(error && !(operation === "uploadMemory")) {
+    if(dialog && !(operation === "uploadMemory")) {
       setShowControls(false);
     }
-  }, [error])
+  }, [dialog])
 
   return (
     <Controls
