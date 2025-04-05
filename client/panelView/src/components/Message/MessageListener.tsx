@@ -29,6 +29,9 @@ const MessageListener = () => {
             setDataMemoryTable(message.payload);
             setSizeMemory(message.payload.memory.length - message.payload.codeSize);
             break;
+          case 'decorateLine': 
+           console.log("Line decoration", message.lineDecorationNumber);
+          break
           case "step":
             setNewPc(message.pc);
             if (!isFirstStep) {

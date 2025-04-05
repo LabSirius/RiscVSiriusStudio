@@ -271,13 +271,13 @@ export class TextSimulator extends Simulator {
 
       // decorate the text editor
       const currentInst = this.cpu.currentInstruction();
-      const lineNumber = this.rvDoc.getLineForIR(currentInst);
+      const lineDecorationNumber = this.rvDoc.getLineForIR(currentInst);
 
-      if (lineNumber !== undefined) {
+      if (lineDecorationNumber !== undefined) {
         mainView.postMessage({
           from: "extension",
           operation: "decorateLine",
-          lineNumber: lineNumber+1,
+          lineDecorationNumber: lineDecorationNumber+1,
         });
         //this.highlightLine(lineNumber);
       } else {
@@ -285,7 +285,7 @@ export class TextSimulator extends Simulator {
         mainView.postMessage({
           from: "extension",
           operation: "decorateLine",
-          lineNumber: 0,
+          lineDecorationNumber: 0,
         });
       }
     }
