@@ -74,7 +74,7 @@ const ProgramSection = () => {
   };
 
   return (
-    <div className="min-w-[30rem] max-w-[30rem] overflow-scroll min-h-min">
+    <div className="min-w-[30rem] max-w-[30rem] overflow-hidden min-h-min">
       <Editor
         height="100%"
         defaultLanguage="python"

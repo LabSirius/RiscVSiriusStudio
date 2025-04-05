@@ -54,7 +54,7 @@ const  MainSection = () => {
 
 
       {(operation === "uploadMemory" || operation === "step") && (
-        <div className="relative flex gap-5 px-4 overflow-x-scroll overflow-y-hidden">
+        <div className="relative flex gap-5 p-4 overflow-x-auto overflow-y-hidden">
           <Tables />
           {operation === "uploadMemory" &&
            (section === "settings" ? (
