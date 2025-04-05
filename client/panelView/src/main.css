@@ -233,6 +233,16 @@ a:hover{
   }
 }
 
+.highlighted-line {
+  background-color: rgba(209, 227, 231, 0.5) !important;
+}
+
+.highlighted-line-margin {
+  background-color: rgba(209, 227, 231, 0.3) !important;
+  width: 5px !important;
+  margin-left: 3px;
+}
+
 
 
 

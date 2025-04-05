@@ -4,6 +4,7 @@ import { OperationProvider } from "./context/panel/OperationContext";
 import { MemoryTableProvider } from "./context/panel/MemoryTableContext";
 import { RegistersTableProvider } from "./context/panel/RegisterTableContext";
 import { DialogProvider } from "./context/panel/DialogContext";
+import { LinesProvider } from "./context/panel/LinesContext";
 
 import MainSectionContainer from "@/components/panel/Sections/MainSection/MainSectionContainer";
 
@@ -20,6 +21,7 @@ const App = () => {
   return (
     <SectionProvider>
       <OperationProvider>
+        <LinesProvider>
         <MemoryTableProvider>
           <RegistersTableProvider>
             <DialogProvider>
@@ -38,6 +40,7 @@ const App = () => {
             </DialogProvider>
           </RegistersTableProvider>
         </MemoryTableProvider>
+        </LinesProvider>
       </OperationProvider>
       </SectionProvider>
   );

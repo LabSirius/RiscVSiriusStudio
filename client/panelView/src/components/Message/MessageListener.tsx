@@ -4,9 +4,11 @@ import { useSection } from "@/context/panel/SectionContext";
 import { useMemoryTable } from "@/context/panel/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useDialog } from "@/context/panel/DialogContext";
+import { useLines } from "@/context/panel/LinesContext";
 
 const MessageListener = () => {
   const { setTextProgram, setOperation, isFirstStep, setIsFirstStep, setClickInLine } = useOperation();
+  const { setLineDecorationNumber } = useLines();
   const { setSection } = useSection();
   const { setDataMemoryTable, setSizeMemory, setNewPc, setWriteInMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
   const { setWriteInRegister } = useRegistersTable();
@@ -30,7 +32,7 @@ const MessageListener = () => {
             setSizeMemory(message.payload.memory.length - message.payload.codeSize);
             break;
           case 'decorateLine': 
-           console.log("Line decoration", message.lineDecorationNumber);
+           setLineDecorationNumber(message.lineDecorationNumber);
           break
           case "step":
             setNewPc(message.pc);
