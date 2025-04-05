@@ -274,9 +274,19 @@ export class TextSimulator extends Simulator {
       const lineNumber = this.rvDoc.getLineForIR(currentInst);
 
       if (lineNumber !== undefined) {
-        this.highlightLine(lineNumber);
+        mainView.postMessage({
+          from: "extension",
+          operation: "decorateLine",
+          lineNumber: lineNumber+1,
+        });
+        //this.highlightLine(lineNumber);
       } else {
-        this.highlightLine(0);
+        //this.highlightLine(0);
+        mainView.postMessage({
+          from: "extension",
+          operation: "decorateLine",
+          lineNumber: 0,
+        });
       }
     }
   }
