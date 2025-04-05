@@ -3,6 +3,8 @@ import { RedoDot, Ban, ZoomIn, ZoomOut, Fullscreen, Map } from 'lucide-react';
 import DownloadButton from '../DownloadButton';
 
 import { sendMessage } from '@/components/Message/sendMessage';
+import { useError } from '@/context/panel/ErrorContext';
+import { useEffect, useState } from 'react';
 
 interface CustomControlsProps {
   onToggleMinimap: () => void;
@@ -19,18 +21,32 @@ export default function CustomControls({
   onZoomOut,
   // onToggleInteractive,
 }: CustomControlsProps) {
+  const { error } = useError();
+  const [showControls, setShowControls] = useState(true);
+
+
+  useEffect(() => {
+    if(error){
+      setShowControls(false);
+    }
+  }, [error])
+
   return (
     <Controls
       showFitView={false}       
       showZoom={false}          
       showInteractive={false} 
     >
-       <button className="react-flow__controls-button-custom_green" onClick={() => sendMessage({event:"step"})}  title="Zoom In">
-       <RedoDot size={18}  />
-       </button>
-       <button className="react-flow__controls-button-custom_red "  title="Zoom In">
-       <Ban size={16}  />
-        </button>
+      { showControls && (
+        <>
+          <button className="react-flow__controls-button-custom_green" onClick={() => sendMessage({event:"step"})}  title="Zoom In">
+            <RedoDot size={18}  />
+          </button>
+          <button className="react-flow__controls-button-custom_red "  title="Zoom In">
+            <Ban size={16}  />
+          </button>
+        </>
+      )}
       <button className="react-flow__controls-button-custom" onClick={onZoomIn} title="Zoom In">
         <ZoomIn size={16} />
       </button>
