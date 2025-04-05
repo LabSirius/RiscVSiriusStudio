@@ -10,7 +10,6 @@ export const RU_BU: Edge[] = [
         target: 'branchUnit',
         targetHandle: 'RS1',
         type: 'smoothstep',
-        animated: true,
          markerEnd: {
                 type: MarkerType.ArrowClosed,
                 color: '#888888',
@@ -24,7 +23,6 @@ export const RU_BU: Edge[] = [
         target: 'branchUnit',
         targetHandle: 'RS2',
         type: 'smoothstep',
-        animated: true,
          markerEnd: {
                 type: MarkerType.ArrowClosed,
                 color: '#888888',

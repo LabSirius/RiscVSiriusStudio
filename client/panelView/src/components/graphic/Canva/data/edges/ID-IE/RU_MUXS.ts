@@ -8,15 +8,13 @@ export const RU_MUXS: Edge[] = [
         source: 'registersUnit',
         target: 'pivotJump4',
         type: 'default',
-        animated: true
     },
 
     {
       id: 'pivotJump4->pivot4',
       source: 'pivotJump4',
       target: 'pivot4',
-      type: 'default',
-      animated: true
+      type: 'default'
   },
   {
       id: 'pivot4->muxA',
@@ -25,7 +23,6 @@ export const RU_MUXS: Edge[] = [
       target: 'muxA',
       targetHandle: 'registersUnitA',
       type: 'smoothstep',
-      animated: true,
       markerEnd: {
         type: MarkerType.ArrowClosed,
         color: '#888888',
@@ -37,8 +34,7 @@ export const RU_MUXS: Edge[] = [
     source: 'registersUnit',
     sourceHandle: 'muxB',
     target: 'pivot2',
-    type: 'smoothstep',
-    animated: true,
+    type: 'smoothstep'
   },
 
   {
@@ -48,7 +44,6 @@ export const RU_MUXS: Edge[] = [
     target: 'muxB',
     targetHandle: 'registersUnitB',
     type: 'smoothstep',
-    animated: true,
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: '#888888',

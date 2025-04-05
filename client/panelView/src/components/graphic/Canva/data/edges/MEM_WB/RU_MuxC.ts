@@ -4,7 +4,7 @@ import { Edge, MarkerType  } from '@xyflow/react';
 
 export const RU_MuxC: Edge[] = [
 
-    { id: 'dataMemory->muxC',  source: 'dataMemory', target: 'muxC', targetHandle: 'dataMemory',  type: 'step', animated:true, markerEnd: {
+    { id: 'dataMemory->muxC',  source: 'dataMemory', target: 'muxC', targetHandle: 'dataMemory',  type: 'step', markerEnd: {
         type: MarkerType.ArrowClosed,
         color: '#888888',
      },},

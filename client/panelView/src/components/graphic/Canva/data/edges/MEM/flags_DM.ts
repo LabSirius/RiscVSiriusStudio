@@ -3,13 +3,13 @@
 import { Edge, MarkerType  } from '@xyflow/react';
 
 export const flags_DM: Edge[] = [
-     { id: 'dmWr->dataMemory',  source: 'dmWr', target: 'dataMemory', targetHandle: 'dmWr', type: 'step', animated: true,  markerEnd:
+     { id: 'dmWr->dataMemory',  source: 'dmWr', target: 'dataMemory', targetHandle: 'dmWr', type: 'step',  markerEnd:
       {
         type: MarkerType.ArrowClosed,
         color: '#888888',
       },
     },
-    { id: 'dmCtrl->dataMemory',  source: 'dmCtrl', target: 'dataMemory', targetHandle: 'dmCtrl', type: 'step', animated: true,  markerEnd:
+    { id: 'dmCtrl->dataMemory',  source: 'dmCtrl', target: 'dataMemory', targetHandle: 'dmCtrl', type: 'step',  markerEnd:
         {
           type: MarkerType.ArrowClosed,
           color: '#888888',

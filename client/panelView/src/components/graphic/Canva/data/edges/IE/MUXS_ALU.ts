@@ -5,7 +5,7 @@ import { Edge, MarkerType  } from '@xyflow/react';
 export const MUXS_ALU: Edge[] = [
    
 
-     { id: 'muxA->alu',  source: 'muxA', target: 'alu', targetHandle: 'muxA', type: 'smoothstep', animated: true,  markerEnd:
+     { id: 'muxA->alu',  source: 'muxA', target: 'alu', targetHandle: 'muxA', type: 'smoothstep',  markerEnd:
        {
          type: MarkerType.ArrowClosed,
          color: '#888888',
@@ -13,7 +13,7 @@ export const MUXS_ALU: Edge[] = [
      },
 
 
-     { id: 'muxB->alu',  source: 'muxB', target: 'alu', targetHandle: 'muxB', type: 'smoothstep', animated: true,  markerEnd:
+     { id: 'muxB->alu',  source: 'muxB', target: 'alu', targetHandle: 'muxB', type: 'smoothstep',  markerEnd:
       {
         type: MarkerType.ArrowClosed,
         color: '#888888',

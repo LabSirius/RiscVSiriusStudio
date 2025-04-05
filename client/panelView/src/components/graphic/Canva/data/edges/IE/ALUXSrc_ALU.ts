@@ -2,13 +2,13 @@
 import { Edge, MarkerType  } from '@xyflow/react';
 
 export const ALUXSrc: Edge[] = [
-      { id: 'aluASrc->muxA',  source: 'aluASrc', target: 'muxA', targetHandle: 'aluASrc', type: 'smoothstep', animated: true,  markerEnd:
+      { id: 'aluASrc->muxA',  source: 'aluASrc', target: 'muxA', targetHandle: 'aluASrc', type: 'smoothstep',  markerEnd:
       {
             type: MarkerType.ArrowClosed,
             color: '#888888',
       },
     },
-    { id: 'aluBSrc->muxB',  source: 'aluBSrc', target: 'muxB', targetHandle: 'aluBSrc', type: 'smoothstep', animated: true,  markerEnd:
+    { id: 'aluBSrc->muxB',  source: 'aluBSrc', target: 'muxB', targetHandle: 'aluBSrc', type: 'smoothstep',  markerEnd:
       {
             type: MarkerType.ArrowClosed,
             color: '#888888',

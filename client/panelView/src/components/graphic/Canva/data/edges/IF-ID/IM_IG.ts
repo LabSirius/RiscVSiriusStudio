@@ -10,7 +10,6 @@ export const IM_IG: Edge[] = [
        target: 'immGenerator',
        targetHandle: '[31:7]',
        type: 'smoothstep',
-       animated: true,
        markerEnd: {
        type: MarkerType.ArrowClosed,
        color: '#888888',

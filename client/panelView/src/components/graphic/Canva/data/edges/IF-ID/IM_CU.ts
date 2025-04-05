@@ -10,8 +10,7 @@ export const IM_CU: Edge[] = [
     source: 'pivot21',
     sourceHandle: 'pivot22',
     target: 'pivot22',
-    type: 'step',
-    animated: true
+    type: 'step'
   },
 
     {
@@ -21,7 +20,6 @@ export const IM_CU: Edge[] = [
         target: 'controlUnit',
         targetHandle: '[35:25]',
         type: 'step',
-        animated: true,
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: '#888888',
@@ -35,7 +33,6 @@ export const IM_CU: Edge[] = [
       sourceHandle: 'pivot23',
       target: 'pivot23',
       type: 'step',
-      animated: true
     },
       {
         id: 'pivot23->controlUnit[14:12]',
@@ -44,7 +41,6 @@ export const IM_CU: Edge[] = [
         target: 'controlUnit',
         targetHandle: '[14:12]',
         type: 'step',
-        animated: true,
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: '#888888',
@@ -57,7 +53,7 @@ export const IM_CU: Edge[] = [
         sourceHandle: 'pivot24',
         target: 'pivot24',
         type: 'step',
-        animated: true
+
       },
       {
         id: 'pivot24->controlUnit[6:0]',
@@ -65,7 +61,6 @@ export const IM_CU: Edge[] = [
         sourceHandle: '[6:0]',
         target: 'controlUnit',
         targetHandle: '[6:0]',
-        animated: true,
         type: 'step',
         markerEnd: {
           type: MarkerType.ArrowClosed,

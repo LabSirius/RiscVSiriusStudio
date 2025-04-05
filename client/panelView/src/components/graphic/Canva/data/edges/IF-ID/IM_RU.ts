@@ -8,8 +8,7 @@ export const IM_RU: Edge[] = [
     id: 'instructionMemory->pivot3',
     source: 'instructionMemory',
     target: 'pivot3',
-    type: 'smoothstep',
-    animated: true,
+    type: 'smoothstep'
   },
   {
     id: 'pivot3->RegistersUnit[11:7]',
@@ -18,7 +17,6 @@ export const IM_RU: Edge[] = [
     target: 'registersUnit',
     targetHandle: '[11:7]',
     type: 'step',
-    animated: true,
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: '#888888',
@@ -29,8 +27,7 @@ export const IM_RU: Edge[] = [
     source: 'pivot3',
     sourceHandle: '[24:20]',
     target: 'pivot20',
-    type: 'smoothstep',
-    animated: true,
+    type: 'smoothstep'
   },
 
   {
@@ -40,7 +37,6 @@ export const IM_RU: Edge[] = [
     target: 'registersUnit',
     targetHandle: '[24:20]',
     type: 'step',
-    animated: true,
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: '#888888',
@@ -53,7 +49,6 @@ export const IM_RU: Edge[] = [
     sourceHandle: '[19:15]',
     target: 'pivot21',
     type: 'step',
-    animated: true
   },
 
 
@@ -64,7 +59,6 @@ export const IM_RU: Edge[] = [
     target: 'registersUnit',
     targetHandle: '[19:15]',
     type: 'step',
-    animated: true,
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: '#888888',

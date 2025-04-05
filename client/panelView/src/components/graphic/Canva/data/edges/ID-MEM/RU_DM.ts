@@ -9,24 +9,21 @@ export const RU_DM: Edge[] = [
     source: 'pivot2',
     sourceHandle: 'dataMemory',
     target: 'pivot5',
-    type: 'step',
-    animated: true
+    type: 'step'
   },
   
   {
     id: 'pivot5->pivotJump5',
     source: 'pivot5',
     target: 'pivotJump5',
-    type: 'default',
-    animated: true
+    type: 'default'
   },
 
   {
     id: 'pivotJump5->pivot6',
     source: 'pivotJump5',
     target: 'pivot6',
-    type: 'step',
-    animated: true
+    type: 'step'
   },
 
   {
@@ -35,7 +32,6 @@ export const RU_DM: Edge[] = [
     target: 'dataMemory',
     targetHandle: 'rs2',
     type: 'smoothstep',
-    animated: true,
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: '#888888',

@@ -10,8 +10,7 @@ export const ALU_DM: Edge[] = [
     sourceHandle: 'dataMemory',
     target: 'pivot7', 
     targetHandle: 'alu', 
-    type: 'smoothstep', 
-    animated: true,  
+    type: 'smoothstep',
   },
   
   {
@@ -20,8 +19,7 @@ export const ALU_DM: Edge[] = [
     sourceHandle: 'dataMemory',
     target: 'dataMemory', 
     targetHandle: 'alu', 
-    type: 'smoothstep', 
-    animated: true,  
+    type: 'smoothstep',
     markerEnd:
     {
       type: MarkerType.ArrowClosed,

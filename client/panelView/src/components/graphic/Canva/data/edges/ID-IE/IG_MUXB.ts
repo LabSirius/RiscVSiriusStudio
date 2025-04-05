@@ -8,7 +8,6 @@ export const IG_MUXB: Edge[] = [
     source: 'immGenerator', 
     target: 'pivot10', 
     type: 'smoothstep', 
-    animated: true, 
   },
 
   {
@@ -16,8 +15,7 @@ export const IG_MUXB: Edge[] = [
     source: 'pivot10', 
     target: 'muxB', 
     targetHandle: 'immGenerator', 
-    type: 'smoothstep', 
-    animated: true,  
+    type: 'smoothstep',  
     markerEnd:
     {
       type: MarkerType.ArrowClosed,

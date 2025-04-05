@@ -4,7 +4,7 @@ import { Edge, MarkerType  } from '@xyflow/react';
 
 export const ALUOp_ALU: Edge[] = [
 
-    { id: 'aluOp->ALU',  source: 'aluOp', target: 'alu', targetHandle: 'aluOp',  type: 'smoothstep', animated:true, markerEnd: {
+    { id: 'aluOp->ALU',  source: 'aluOp', target: 'alu', targetHandle: 'aluOp',  type: 'smoothstep', markerEnd: {
         type: MarkerType.ArrowClosed,
         color: '#888888',
      },},

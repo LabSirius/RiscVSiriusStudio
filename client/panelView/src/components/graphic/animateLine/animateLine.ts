@@ -213,10 +213,7 @@ export const animateLine = (
 ): void => {
   console.log("edge", edge);
   const idsToUpdate = edgeGroups[edge.id];
-  const color = animated ? "#000000" : "#00008B";
-  const className = animated ? "" : "pulse-animation";
-  
   idsToUpdate.forEach((id) =>
-    updateEdge(id, { animated, style: { stroke: color }, className })
+    updateEdge(id, { animated})
   );
 };

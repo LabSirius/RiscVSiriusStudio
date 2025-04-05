@@ -12,7 +12,6 @@ export const IF_WB: Edge[] = [
       source: 'adder4',
       target: 'pivot18',
       type: 'step',
-      animated: true
     },
 
     {
@@ -21,7 +20,6 @@ export const IF_WB: Edge[] = [
       sourceHandle: 'muxC',
       target: 'pivotJump8',
       type: 'step',
-      animated: true
     },
    
 
@@ -30,7 +28,7 @@ export const IF_WB: Edge[] = [
         source: 'pivotJump8',
         target: 'pivotJump9',
         type: 'step',
-        animated: true
+
       },
 
       {
@@ -38,7 +36,7 @@ export const IF_WB: Edge[] = [
         source: 'pivotJump9',
         target: 'pivot13',
         type: 'step',
-        animated: true
+
       },
 
 
@@ -48,7 +46,6 @@ export const IF_WB: Edge[] = [
         target: 'muxC',
         targetHandle: 'adder4',
         type: 'step',
-        animated: true,
         markerEnd: {
           type: MarkerType.ArrowClosed,
           color: '#888888',
@@ -64,7 +61,6 @@ export const IF_WB: Edge[] = [
       sourceHandle: 'muxD',
       target: 'pivot19',
       type: 'step',
-      animated: true
     },
 
     {
@@ -73,7 +69,6 @@ export const IF_WB: Edge[] = [
       target: 'muxD',
       targetHandle: 'adder4',
       type: 'step',
-      animated: true,
       markerEnd: {
         type: MarkerType.ArrowClosed,
         color: '#888888',
