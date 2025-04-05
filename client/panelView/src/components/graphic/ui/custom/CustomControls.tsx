@@ -1,6 +1,6 @@
 import { Controls } from '@xyflow/react';
 import { RedoDot, Ban, ZoomIn, ZoomOut, Fullscreen, Map } from 'lucide-react';
-import DownloadButton from '../DownloadButton';
+import DownloadButton from '../../DownloadButton';
 
 import { sendMessage } from '@/components/Message/sendMessage';
 import { useDialog } from '@/context/panel/DialogContext';

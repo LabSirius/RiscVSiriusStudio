@@ -190,4 +190,22 @@ export const IF: Node[] = [
       },
     },
 
+    {
+      id: 'pivot25',
+      type: 'pivot25',
+      data: { label: '' },
+      position: { x: 440, y: 802.6 },
+      parentId: 'IF',
+      extent: 'parent',
+      style: {
+        width: 5,
+        height: 5,
+        backgroundColor: 'black',
+        border: 'none',
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: 'none',
+      },
+    },
+
   ];

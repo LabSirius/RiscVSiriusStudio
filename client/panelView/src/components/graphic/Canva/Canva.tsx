@@ -79,6 +79,7 @@ import Pivot21 from '../elements/ID/pivots/Pivot21';
 import Pivot22 from '../elements/ID/pivots/Pivot22';
 import Pivot23 from '../elements/ID/pivots/Pivot23';
 import Pivot24 from '../elements/ID/pivots/Pivot24';
+import Pivot25 from '../elements/IF/pivots/Pivot25';
 
 
 //jumps
@@ -94,8 +95,8 @@ import PivotJump9 from '../elements/MEM/pivots/PivotJum9';
 import PivotJump10 from '../elements/ID/pivots/PivotJump10';
 
 //Customs 
-import AnimatedSVGEdge from '../custom/AnimatedSVGEdge';
-import CustomControls from '../custom/CustomControls';
+import AnimatedSVGEdge from '../ui/custom/AnimatedSVGEdge';
+import CustomControls from '../ui/custom/CustomControls';
 
 
 import { animateLine } from '../animateLine/animateLine';
@@ -162,6 +163,7 @@ const nodeTypes = {
   pivot22: Pivot22,
   pivot23: Pivot23,
   pivot24: Pivot24,
+  pivot25: Pivot25,
 
   //PIVOTS Jumps
   pivotJump1: PivotJump1,
