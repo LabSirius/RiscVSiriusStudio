@@ -21,10 +21,11 @@ const MessageListener = () => {
             setTextProgram(message.textProgram);
           break
           case "uploadMemory":
+            setError({ title: "Info", description: "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu." });
             setIsCreatedMemoryTable(false);
             setIsFirstStep(false);
             setOperation("uploadMemory");
-            setSection("settings");
+            setSection("program");
             setDataMemoryTable(message.payload);
             setSizeMemory(message.payload.memory.length - message.payload.codeSize);
             break;

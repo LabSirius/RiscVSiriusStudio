@@ -10,7 +10,7 @@ import {
   AlertDialogTitle,
 } from "@/components/panel/ui/alert-dialog";
 
-import { Ban} from "lucide-react";  
+import { Info} from "lucide-react";  
 
 const Error = () => {
   const { error, setError } = useError();
@@ -33,7 +33,7 @@ const Error = () => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-[#3A6973]">
-            <Ban className="w-6 h-6 mr-2" />
+            <Info className="w-6 h-6 mr-2" />
             {error?.title}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-[1rem] text-start">
