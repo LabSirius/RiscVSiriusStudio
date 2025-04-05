@@ -7,7 +7,7 @@ const SkeletonRegisterTable = () => {
   const repeatedColCount = 3;
 
   return (
-    <div className="min-w-[22.3rem] max-h-[calc(100dvh-2.3rem)] overflow-hidden  z-100 absolute top-0 left-0">
+    <div className="min-w-[22.3rem] inset-0 overflow-hidden h-full  z-100 absolute top-0 left-0">
       <div className="flex flex-col gap-[0.5rem] items-center">
         <div className="flex gap-[.7rem]">
           {Array.from({ length: topRowCount }).map((_, i) => (

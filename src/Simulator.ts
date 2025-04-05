@@ -235,10 +235,6 @@ export class TextSimulator extends Simulator {
   public override start(): void {
     const mainView = this.context.mainWebviewView;
     if (!mainView) {
-      // If the view is not available this will trigger its construction. The
-      // first time the view is created the view becomes available and the flag
-      // isSimulating is set to true, the context will call this method again.
-      // The second time the view will be defined and thes case is not executed.
       return;
     } else {
       this.clickListener();

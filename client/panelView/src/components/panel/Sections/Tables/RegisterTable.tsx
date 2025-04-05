@@ -206,7 +206,7 @@ const RegistersTable = () => {
   }, []);
 
   return (
-    <div ref={tableContainerRef} className="shadow-lg min-h-min max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem] ">
+    <div ref={tableContainerRef} className="shadow-lg min-h-min max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem] relative ">
       {!tableBuilt && <SkeletonRegisterTable />}
       {isCreatedMemoryTable && (
         <div ref={tableRef} className={`w-full  h-full ${theme === "light" ? "theme-light" : "theme-dark"}`} />
