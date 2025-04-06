@@ -11,7 +11,7 @@ export default function Pivot22() {
       />
       <Handle
         type="source"
-        id="[35:25]"
+        id="[31:25]"
         position={Position.Right} />
 
     <Handle

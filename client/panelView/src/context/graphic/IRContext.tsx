@@ -4,6 +4,7 @@ interface IRState {
   instructions: [
     {
       type: string;
+      opcode: string
     }
   ];
   symbols: Record<string, Record<string, string>>;
@@ -22,6 +23,7 @@ const IRContext = createContext<IRContextType>({
     instructions: [
       {
         type: "",
+        opcode: "",
       },
     ],
     symbols: {
@@ -41,6 +43,7 @@ export const IRProvider = ({ children }: { children: ReactNode }) => {
     instructions: [
       {
         type: "",
+        opcode: ""
       },
     ],
     symbols: {

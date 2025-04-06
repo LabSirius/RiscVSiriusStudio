@@ -15,7 +15,7 @@ export default function ControlUnit() {
   const inputHandlers: InputHandlerConfig[] = [
     { id: '[6:0]', top: '2.7rem' },
     { id: '[14:12]', top: '7.9rem' },
-    { id: '[35:25]', top: '13.2rem' },
+    { id: '[31:25]', top: '13.2rem' },
   ];
 
   return (

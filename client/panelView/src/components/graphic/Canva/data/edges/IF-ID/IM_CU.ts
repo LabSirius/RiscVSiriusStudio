@@ -14,11 +14,11 @@ export const IM_CU: Edge[] = [
   },
 
     {
-        id: 'pivot22->controlUnit[35:25]',
+        id: 'pivot22->controlUnit[31:25]',
         source: 'pivot22',
-        sourceHandle: '[35:25]',
+        sourceHandle: '[31:25]',
         target: 'controlUnit',
-        targetHandle: '[35:25]',
+        targetHandle: '[31:25]',
         type: 'step',
         markerEnd: {
           type: MarkerType.ArrowClosed,
