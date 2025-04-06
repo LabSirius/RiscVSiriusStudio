@@ -12,6 +12,9 @@ interface IRState {
 interface IRContextType {
   ir: IRState;
   setIr: React.Dispatch<React.SetStateAction<IRState>>;
+
+  currentType: string;
+  setCurrentType: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const IRContext = createContext<IRContextType>({
@@ -27,6 +30,9 @@ const IRContext = createContext<IRContextType>({
     },
   },
   setIr: () => {},
+
+  currentType: "",
+  setCurrentType: () => {},
 });
 
 export const useIR = () => useContext(IRContext);
@@ -42,9 +48,10 @@ export const IRProvider = ({ children }: { children: ReactNode }) => {
       end: {},
     },
   });
+  const [currentType, setCurrentType] = useState<string>("");
 
   return (
-    <IRContext.Provider value={{ ir, setIr }}>
+    <IRContext.Provider value={{ ir, setIr, currentType, setCurrentType }}>
       {children}
     </IRContext.Provider>
   );

@@ -1,13 +1,15 @@
+import { useIR } from '@/context/graphic/IRContext';
 import { Handle, Position } from '@xyflow/react';
 import ContainerSVG from '../ContainerSVG';
 
 export default function DataMemory() {
+  const { currentType} = useIR()
   return (
     <div className='w-full'>
 
        <div className='relative w-full h-full'>
        <h2 className="titleInElement top-[15%] left-[50%]  -translate-x-[50%] -translate-y-[15%] ">Data Memory</h2>
-        <ContainerSVG height={18}  />
+        <ContainerSVG height={18}  active={currentType === "S"}  /> {/* AND L TYPE */}
        </div>
 
        <Handle  type="target"
