@@ -7,30 +7,38 @@ interface InstructionEffectProps {
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
 }
 
-// COMUN EDGES
-const MUX_A = [
+// Edge groups for MUX A route
+const muxARouteEdges = [
   'pivot1->pivotJump1',
   'pivotJump1->pivotJump2',
   'pivotJump2->pivotJump3',
   'pivotJump3->muxA'
 ];
 
-const NO_IMM = [
+// Edge groups for no immediate generation
+const noImmediateEdges = [
   'pivot3->immediateGenerator[31:7]',
   'immSrc->immGenerator',
   'immGenerator->pivot10'
 ];
 
-const MUX_B_R = ['pivot10->muxB'];
-const MUX_B_I = ['registersUnit->pivot2', 'pivot2->muxB'];
+// Edge groups for MUX B route for R-type instructions
+const muxBRouteEdges_R = ['pivot10->muxB'];
 
-const NO_BRANCH_UNIT = [
-  'pivot2->branchUnit',
-  'pivot4->branchUnit',
-  'ruDataWrSrc->muxC'
+// Edge groups for MUX B route for I-type instructions and others
+const muxBRouteEdges_I = [
+  'registersUnit->pivot2',
+  'pivot2->muxB'
 ];
 
-const NO_MEM_R = [
+// Edge groups for bypassing the branch unit
+const bypassBranchUnitEdges = [
+  'pivot2->branchUnit',
+  'pivot4->branchUnit',
+];
+
+// Edge groups for memory access (read) route
+const memoryReadEdges = [
   'pivot2->pivot5',
   'pivot5->pivotJump5',
   'pivotJump5->pivot6',
@@ -40,7 +48,8 @@ const NO_MEM_R = [
   'dmCtrl->dataMemory'
 ];
 
-const MUX_C_R = [
+// Edge groups for MUX C route for R-type instructions
+const muxCRouteEdges_R = [
   'dataMemory->muxC',
   'pivot18->pivotJump8',
   'pivotJump8->pivotJump9',
@@ -48,33 +57,43 @@ const MUX_C_R = [
   'pivot13->muxC'
 ];
 
-const MUX_D_R = [
+// Edge groups for MUX D route for R-type instructions
+const muxDRouteEdges_R = [
   'pivot7->pivot16',
   'pivot16->pivot17',
   'pivot17->muxD'
 ];
 
-// I
-const NO_FUNT7 = ['pivot22->controlUnit[31:25]'];
-const NO_RS2 = ['pivot20->RegistersUnit[24:20]'];
+// Edge groups for skipping the funct7 field
+const skipFunct7Edges = ['pivot22->controlUnit[31:25]'];
 
-const MUX_C_L_EXTRA = [
+// Edge groups for skipping RS2 register
+const skipRS2Edges = ['pivot20->RegistersUnit[24:20]'];
+
+// Additional edge groups for the MUX C route in load instructions (L-type)
+const muxCRouteExtraEdges_L = [
   'pivot7->pivot8',
   'pivot8->pivotJump6',
   'pivotJump6->pivot9',
   'pivot9->muxC'
 ];
 
-const NO_RS2_DM = [
+// Edge groups for skipping RS2 in data memory access
+const skipRS2MemoryEdges = [
   'pivot2->pivot5',
   'pivot5->pivotJump5',
   'pivotJump5->pivot6',
   'pivot6->dataMemory'
 ];
 
-const MUX_D_JALR = ['pivot18->pivot19', 'pivot19->muxD'];
+// Edge groups for the MUX D route in JALR instructions
+const muxDRouteEdges_JALR = [
+  'pivot18->pivot19',
+  'pivot19->muxD'
+];
 
-const MUX_C_JALR_EXTRA = [
+// Additional edge groups for the MUX C route in JALR instructions
+const muxCRouteExtraEdges_JALR = [
   'dataMemory->muxC',
   'pivot7->pivot8',
   'pivot8->pivotJump6',
@@ -82,97 +101,113 @@ const MUX_C_JALR_EXTRA = [
   'pivot9->muxC'
 ];
 
-const NO_WB = [
+// Edge groups for bypassing the write-back stage
+const bypassWriteBackEdges = [
+  'dataMemory->muxC',
+  'pivot7->pivot8',
+  'pivot8->pivotJump6',
+  'pivotJump6->pivot9',
+  'pivot9->muxC',
   'muxC->pivot11',
   'pivot11->pivotJump7',
   'pivotJump7->pivot12',
   'pivot12->registersUnit',
-  'ruWr->registersUni'
-]
+  'ruWr->registersUnit',
+  'ruDataWrSrc->muxC',
+  ...muxCRouteEdges_R
+];
 
-const NO_MEM_FULL = NO_MEM_R; // Assuming this is the same as NO_MEM_R
+// Complete memory access group reusing memory read edges
+const fullMemoryAccessEdges = memoryReadEdges;
 
 const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
   const { ir, setCurrentType } = useIR();
   const { newPc } = useMemoryTable();
-  
-  const prevTargetEdgesRef = useRef<string[]>([]);
+  const previousTargetEdgesRef = useRef<string[]>([]);
 
   useEffect(() => {
     let targetEdges: string[] = [];
     const currentInstruction = ir.instructions[newPc];
     console.log(currentInstruction.type, currentInstruction);
-    
+
     switch (currentInstruction.type) {
       case "R":
         setCurrentType("R");
         targetEdges = [
-          ...MUX_A,
-          ...NO_IMM,
-          ...MUX_B_R,
-          ...NO_BRANCH_UNIT,
-          ...NO_MEM_R,
-          ...MUX_C_R,
-          ...MUX_D_R,
+          ...muxARouteEdges,
+          ...noImmediateEdges,
+          ...muxBRouteEdges_R,
+          ...bypassBranchUnitEdges,
+          ...memoryReadEdges,
+          ...muxCRouteEdges_R,
+          ...muxDRouteEdges_R,
         ];
         break;
       case "I":
         if (currentInstruction.opcode === "0010011") {
           setCurrentType("I");
           targetEdges = [
-            ...NO_FUNT7,
-            ...NO_RS2,
-            ...MUX_A,
-            ...MUX_B_I,
-            ...MUX_C_R,
-            ...MUX_D_R,
-            ...NO_BRANCH_UNIT,
-            ...NO_MEM_R,
+            ...skipFunct7Edges,
+            ...skipRS2Edges,
+            ...muxARouteEdges,
+            ...muxBRouteEdges_I,
+            ...muxCRouteEdges_R,
+            ...muxDRouteEdges_R,
+            ...bypassBranchUnitEdges,
+            ...memoryReadEdges,
           ];
         } else if (currentInstruction.opcode === "0000011") {
           setCurrentType("L");
           targetEdges = [
-            ...NO_FUNT7,
-            ...NO_RS2,
-            ...MUX_A,
-            ...MUX_B_I,
-            ...MUX_C_R.slice(1),
-            ...MUX_C_L_EXTRA,
-            ...MUX_D_R,
-            ...NO_BRANCH_UNIT,
-            ...NO_RS2_DM,
+            ...skipFunct7Edges,
+            ...skipRS2Edges,
+            ...muxARouteEdges,
+            ...muxBRouteEdges_I,
+            ...muxCRouteEdges_R.slice(1),
+            ...muxCRouteExtraEdges_L,
+            ...muxDRouteEdges_R,
+            ...bypassBranchUnitEdges,
+            ...skipRS2MemoryEdges,
           ];
         } else if (currentInstruction.opcode === "1100111") {
           setCurrentType("JALR");
           targetEdges = [
-            ...NO_FUNT7,
-            ...NO_RS2,
-            ...MUX_A,
-            ...MUX_B_I,
-            ...MUX_C_JALR_EXTRA,
-            ...MUX_D_JALR,
-            ...NO_BRANCH_UNIT,
-            ...NO_MEM_FULL,
+            ...skipFunct7Edges,
+            ...skipRS2Edges,
+            ...muxARouteEdges,
+            ...muxBRouteEdges_I,
+            ...muxCRouteExtraEdges_JALR,
+            ...muxDRouteEdges_JALR,
+            ...bypassBranchUnitEdges,
+            ...fullMemoryAccessEdges,
           ];
         }
         break;
       case "S":
         setCurrentType("S");
         targetEdges = [
-            ...NO_FUNT7,
-            ...NO_RS2,
-            ...MUX_A,
-            ...MUX_B_I.slice(1),
-            ...MUX_C_R,
-            ...MUX_C_L_EXTRA,
-            ...MUX_D_R,
-            ...NO_BRANCH_UNIT,
-            ...NO_WB
+          ...skipFunct7Edges,
+          ...skipRS2Edges,
+          ...muxARouteEdges,
+          ...muxBRouteEdges_I.slice(1),
+          ...muxCRouteEdges_R,
+          ...muxCRouteExtraEdges_L,
+          ...muxDRouteEdges_R,
+          ...bypassBranchUnitEdges,
+          ...bypassWriteBackEdges
         ];
-        break;
         break;
       case "B":
         setCurrentType("B");
+        targetEdges = [
+          ...skipFunct7Edges,
+          'pivot3->RegistersUnit[11:7]',
+          // Modified MUX A route for branch instructions
+          'pivot4->muxA',
+          ...muxBRouteEdges_I.slice(1),
+          ...memoryReadEdges,
+          ...bypassWriteBackEdges
+        ];
         break;
       case "J":
         setCurrentType("J");
@@ -186,13 +221,16 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
 
     setEdges(prevEdges => {
       const resetEdges = prevEdges.map(edge => {
-        if (prevTargetEdgesRef.current.includes(edge.id) && !targetEdges.includes(edge.id)) {
+        if (
+          previousTargetEdgesRef.current.includes(edge.id) &&
+          !targetEdges.includes(edge.id)
+        ) {
           return {
             ...edge,
             disabled: false,
-            style: { 
+            style: {
               ...edge.style,
-              stroke: "#3B59B6" 
+              stroke: "#3B59B6"
             }
           };
         }
@@ -211,11 +249,10 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         }
         return edge;
       });
-
       return newEdges;
     });
 
-    prevTargetEdgesRef.current = targetEdges;
+    previousTargetEdgesRef.current = targetEdges;
   }, [newPc, ir, setCurrentType, setEdges]);
 
   return null;

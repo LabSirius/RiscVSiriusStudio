@@ -9,7 +9,7 @@ export default function PivotJump9() {
   return (
     <div className='w-full'>
 
-       <div className={`relative w-full h-full ${(currentType === 'R' || currentType === 'I' || currentType === 'L'  || currentType === 'S'  )&& 'opacity-20'}`}>
+       <div className={`relative w-full h-full ${(currentType === 'R' || currentType === 'I' || currentType === 'L'  || currentType === 'S' )&& 'opacity-20'}`}>
             <Brackets size={38} strokeWidth={1} color='#000' />
        </div>
 
