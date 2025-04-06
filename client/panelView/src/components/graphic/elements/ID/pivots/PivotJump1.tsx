@@ -18,7 +18,7 @@ export default function PivotJump1() {
         
        <Handle  type="source"
         position={Position.Right}
-        style={{ top: '1.6rem', right: '.8rem', }} />
+        style={{ top: '1.6rem', right: '.9rem', }} />
     </div>
     
   );
