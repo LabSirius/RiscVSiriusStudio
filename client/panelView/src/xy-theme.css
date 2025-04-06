@@ -75,7 +75,6 @@
 .react-flow__edge.selectable:hover .react-flow__edge-path,
 .react-flow__edge.selectable.selected .react-flow__edge-path {
     stroke: var(--xy-theme-edge-hover);
-    z-index: 1000000  !important;
 }
  
 .react-flow__handle {
@@ -113,7 +112,7 @@
   }
 
   .react-flow__edges {
-    z-index: 2 !important;
+    z-index: 9999 !important;
   }
   
 
