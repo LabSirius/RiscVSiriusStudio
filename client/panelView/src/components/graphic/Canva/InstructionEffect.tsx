@@ -26,7 +26,8 @@ const MUX_B_I = ['registersUnit->pivot2', 'pivot2->muxB'];
 
 const NO_BRANCH_UNIT = [
   'pivot2->branchUnit',
-  'pivot4->branchUnit'
+  'pivot4->branchUnit',
+  'ruDataWrSrc->muxC'
 ];
 
 const NO_MEM_R = [
@@ -80,6 +81,14 @@ const MUX_C_JALR_EXTRA = [
   'pivotJump6->pivot9',
   'pivot9->muxC'
 ];
+
+const NO_WB = [
+  'muxC->pivot11',
+  'pivot11->pivotJump7',
+  'pivotJump7->pivot12',
+  'pivot12->registersUnit',
+  'ruWr->registersUni'
+]
 
 const NO_MEM_FULL = NO_MEM_R; // Assuming this is the same as NO_MEM_R
 
@@ -149,6 +158,18 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         break;
       case "S":
         setCurrentType("S");
+        targetEdges = [
+            ...NO_FUNT7,
+            ...NO_RS2,
+            ...MUX_A,
+            ...MUX_B_I.slice(1),
+            ...MUX_C_R,
+            ...MUX_C_L_EXTRA,
+            ...MUX_D_R,
+            ...NO_BRANCH_UNIT,
+            ...NO_WB
+        ];
+        break;
         break;
       case "B":
         setCurrentType("B");
