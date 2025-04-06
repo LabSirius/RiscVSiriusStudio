@@ -9,7 +9,7 @@ export default function PivotJump3() {
   return (
     <div className='w-full'>
 
-      <div className={`relative w-full h-full ${(currentType === 'R' || currentType === 'I' ) && 'opacity-20'}`}>
+      <div className={`relative w-full h-full ${(currentType === 'R' || currentType === 'I' || currentType === 'L'  ) && 'opacity-20'}`}>
             <Brackets size={38} strokeWidth={1} color='#000' />
        </div>
 

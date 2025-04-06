@@ -142,7 +142,7 @@ export const ID: Node[] = [
       id: 'pivot2',
       type: 'pivot2',
       data: { label: '' },
-      position: { x: 640, y: 863 },
+      position: { x: 640, y: 862.5 },
       parentId: 'ID',
       extent: 'parent',
       style: {

@@ -60,7 +60,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         if(ir.instructions[newPc].opcode === "0010011"){
           setCurrentType("I");
           targetEdges = [
-            // NO OPCODE
+            // NO FUNT7
             'pivot22->controlUnit[31:25]',
             //NO RS2
             'pivot20->RegistersUnit[24:20]',
@@ -97,6 +97,50 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
             'pivot7->dataMemory',
             'dmWr->dataMemory',
             'dmCtrl->dataMemory',   
+          ];
+        }else if(ir.instructions[newPc].opcode === "0000011"){
+          setCurrentType('L');
+          targetEdges = [
+            // NO FUNT7
+            'pivot22->controlUnit[31:25]',
+            //NO RS2
+            'pivot20->RegistersUnit[24:20]',
+  
+            //MUXA
+            'pivot1->pivotJump1',
+            'pivotJump1->pivotJump2',
+            'pivotJump2->pivotJump3',
+            'pivotJump3->muxA',
+            //MUXB
+            'registersUnit->pivot2',
+            'pivot2->muxB',
+
+            // MUX C
+            'pivot18->pivotJump8',
+            'pivotJump8->pivotJump9',
+            'pivotJump9->pivot13',
+            'pivot13->muxC',
+
+            'pivot7->pivot8',
+            'pivot8->pivotJump6',
+            'pivotJump6->pivot9',
+            'pivot9->muxC',
+  
+            // MUX D
+            'pivot7->pivot16',
+            'pivot16->pivot17',
+            'pivot17->muxD',
+  
+             // No BranchUnit
+             'pivot2->branchUnit',
+             'pivot4->branchUnit',
+
+             //NO RS2-DM
+             'pivot2->pivot5',
+             'pivot5->pivotJump5',
+             'pivotJump5->pivot6',
+             'pivot6->dataMemory',
+  
           ];
         }
         

@@ -9,7 +9,7 @@ export default function DataMemory() {
 
        <div className='relative w-full h-full'>
        <h2 className="titleInElement top-[15%] left-[50%]  -translate-x-[50%] -translate-y-[15%] ">Data Memory</h2>
-        <ContainerSVG height={18}  active={currentType === "S"}  /> {/* AND L TYPE */}
+        <ContainerSVG height={18}  active={currentType === "L" || currentType === "S"}  /> 
        </div>
 
        <Handle  type="target"
