@@ -1,7 +1,11 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 interface IRState {
-  instructions: [];
+  instructions: [
+    {
+      type: string;
+    }
+  ];
   symbols: Record<string, Record<string, string>>;
 }
 
@@ -12,7 +16,11 @@ interface IRContextType {
 
 const IRContext = createContext<IRContextType>({
   ir: {
-    instructions: [],
+    instructions: [
+      {
+        type: "",
+      },
+    ],
     symbols: {
       loop: {},
       end: {},
@@ -24,7 +32,11 @@ const IRContext = createContext<IRContextType>({
 export const useIR = () => useContext(IRContext);
 export const IRProvider = ({ children }: { children: ReactNode }) => {
   const [ir, setIr] = useState<IRState>({
-    instructions: [],
+    instructions: [
+      {
+        type: "",
+      },
+    ],
     symbols: {
       loop: {},
       end: {},

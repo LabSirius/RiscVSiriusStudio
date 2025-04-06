@@ -22,6 +22,7 @@ import { initialEdges } from './data/edges/initialEdges'; //Conecctions between 
 import CustomControls from '../ui/custom/CustomControls';
 
 import { animateLine } from '../animateLine/animateLine';
+import InstructionEffect from './InstructionEffect';
 
 export default function Canva() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
@@ -98,6 +99,7 @@ export default function Canva() {
         onZoomOut={handleZoomOut}
         onToggleInteractive={handleToggleInteractive}
       />
+      <InstructionEffect />
     </ReactFlow>
   );
 }
