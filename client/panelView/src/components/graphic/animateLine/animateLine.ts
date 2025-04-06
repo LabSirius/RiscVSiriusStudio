@@ -214,6 +214,7 @@ export const animateLine = (
   edges: Edge[],
   animated: boolean = true
 ): void => {
+  console.log("edge", edge)
   const idsToUpdate = edgeGroups[edge.id];
   
   idsToUpdate.forEach((id) => {

@@ -69,10 +69,10 @@ import PivotJump2 from '../elements/ID/pivots/PivotJump2';
 import PivotJump3 from '../elements/IE/pivots/PivotJump3';
 import PivotJump4 from '../elements/ID/pivots/PivotJump4';
 import PivotJump5 from '../elements/IE/pivots/PivotJump5';
-import PivotJump6 from '../elements/MEM/pivots/PivotJum6';
+import PivotJump6 from '../elements/MEM/pivots/PivotJump6';
 import PivotJump7 from '../elements/IE/pivots/PivotJump7';
-import PivotJump8 from '../elements/MEM/pivots/PivotJum8';
-import PivotJump9 from '../elements/MEM/pivots/PivotJum9';
+import PivotJump8 from '../elements/MEM/pivots/PivotJump8';
+import PivotJump9 from '../elements/MEM/pivots/PivotJump9';
 import PivotJump10 from '../elements/ID/pivots/PivotJump10';
 
 //Customs 
