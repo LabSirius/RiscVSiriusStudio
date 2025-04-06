@@ -216,6 +216,7 @@ export const animateLine = (
   console.log("edge", edge);
   const idsToUpdate = edgeGroups[edge.id];
   idsToUpdate.forEach((id) =>
-    updateEdge(id, { animated})
+    updateEdge(id, { animated, style: { stroke: "#3B59B6" } })
   );
 };
+
