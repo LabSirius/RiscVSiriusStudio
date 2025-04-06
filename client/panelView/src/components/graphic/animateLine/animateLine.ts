@@ -211,12 +211,21 @@ const edgeGroups: Record<string, string[]> = {
 export const animateLine = (
   updateEdge: (id: string, newEdge: Partial<Edge>) => void,
   edge: Edge,
+  edges: Edge[],
   animated: boolean = true
 ): void => {
-  console.log("edge", edge);
   const idsToUpdate = edgeGroups[edge.id];
-  idsToUpdate.forEach((id) =>
-    updateEdge(id, { animated, style: { stroke: "#3B59B6" } })
-  );
+  
+  idsToUpdate.forEach((id) => {
+    const currentEdge = edges.find(e => e.id === id);
+    
+    if (currentEdge && 'disabled' in currentEdge && currentEdge.disabled) {
+      return;
+    }
+    
+    updateEdge(id, { 
+      animated, 
+      style: { stroke: "#3B59B6" } 
+    });
+  });
 };
-

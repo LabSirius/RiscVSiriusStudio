@@ -53,19 +53,20 @@ export default function Canva() {
     setIsInteractive((prev) => !prev);
   };
 
-
   const handleEdgeMouseEnter = (
     _event: MouseEvent<Element>, 
-    edge: Edge
+    edge: Edge & { disabled?: boolean }
   ): void => {
-    animateLine(updateEdge, edge, true);
+    if (edge.disabled) return;
+    animateLine(updateEdge, edge, edges, true); 
   };
   
   const handleEdgeMouseLeave = (
     _event: MouseEvent<Element>, 
-    edge: Edge
+    edge: Edge & { disabled?: boolean }
   ): void => {
-    animateLine(updateEdge, edge, false);
+    if (edge.disabled) return;
+    animateLine(updateEdge, edge, edges, false); 
   };
 
   return (
@@ -99,7 +100,7 @@ export default function Canva() {
         onZoomOut={handleZoomOut}
         onToggleInteractive={handleToggleInteractive}
       />
-      <InstructionEffect />
+      <InstructionEffect setEdges={setEdges}/>
     </ReactFlow>
   );
 }
