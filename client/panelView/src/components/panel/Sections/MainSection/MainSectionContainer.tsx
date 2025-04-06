@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MainSection from './MainSection';
 
 const MainSectionContainer: React.FC = () => {
-  const [height, setHeight] = useState<number>(400); 
+  const [height, setHeight] = useState<number>(() => window.innerHeight * 0.35);
   const [isResizing, setIsResizing] = useState<boolean>(false);
   const [startY, setStartY] = useState<number>(0);
   const [startHeight, setStartHeight] = useState<number>(200);

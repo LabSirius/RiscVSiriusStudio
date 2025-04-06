@@ -6,7 +6,7 @@ export function InstructionMemory() {
     <div className='w-full h-full'>
       <div className='relative w-full h-full'>
        <h2 className="titleInElement top-[15%] left-[50%]  -translate-x-[50%] -translate-y-[15%]">Instruction Memory</h2>
-        <ContainerSVG height={12.6} />
+        <ContainerSVG height={12.6}  active={true} />
         
         <div className='subtitleInElement top-[42%] left-[.8rem]'>
           <h3 className=''>Address: </h3>

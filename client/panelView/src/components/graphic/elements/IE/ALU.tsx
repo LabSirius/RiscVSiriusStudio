@@ -7,7 +7,7 @@ export default function ALU() {
 
        <div className='relative w-full h-full'>
        <h2 className=" titleInElement top-[70%] left-[50%]  -translate-x-[50%] -translate-y-[70%] ">ALU</h2>
-        <ContainerSVG height={19.9}  />
+        <ContainerSVG height={19.9}  active={true}  />
        </div>
 
        <Handle  type="target"

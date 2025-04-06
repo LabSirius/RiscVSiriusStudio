@@ -19,7 +19,7 @@ export default function ControlUnit() {
   ];
 
   return (
-    <div className="w-full relative">
+    <div className="relative w-full">
 
       <h2 className="titleInElement absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
         Control Unit
@@ -33,7 +33,7 @@ export default function ControlUnit() {
         <WBTunnel />
       </div>
 
-      <ContainerSVG height={16} />
+      <ContainerSVG height={16}  active={true} />
 
       {/* Render input handlers programmatically */}
       {inputHandlers.map((handler) => (

@@ -26,7 +26,7 @@ export default function RegistersUnit() {
 
       <div className='relative w-full h-full'>
         <h2 className=" titleInElement top-[33%] left-[50%]  -translate-x-[50%] -translate-y-[33%] ">Registers Unit</h2>
-        <ContainerSVG height={25} />
+        <ContainerSVG height={25}  active={true} />
         <Triangle size={24} className='absolute left-[50%]  transform -translate-x-[50%] text-[#404040] bottom-0 z-2' />
       </div>
 
