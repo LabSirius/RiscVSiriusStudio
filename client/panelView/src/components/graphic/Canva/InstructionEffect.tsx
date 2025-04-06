@@ -30,8 +30,6 @@ const InstructionEffect = () => {
             }
         }
             
-
-
     }, [newPc, ir])
   return null
 }
