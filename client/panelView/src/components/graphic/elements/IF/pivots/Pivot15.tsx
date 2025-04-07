@@ -8,12 +8,10 @@ export default function Pivot15() {
       <Handle
         type="target"
         position={Position.Right}
-        style={{ width: 10, height: 10 }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
-        style={{ width: 10, height: 10 }}
       />
     </div>
   );
