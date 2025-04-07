@@ -17,7 +17,7 @@ export const WB: Node[] = [
         zIndex: 4,
         style: {
           width: 300,
-          height: 1400,
+          height: 1365,
           backgroundColor: '#FFF2E0',
           border: '1px solid #FFF2E0',
           borderRadius: 8,

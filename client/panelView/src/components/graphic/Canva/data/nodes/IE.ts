@@ -17,7 +17,7 @@ export const IE: Node[] = [
         zIndex: 8,
         style: {
           width: 548,
-          height: 1400,
+          height: 1365,
           backgroundColor: '#E3F2FD',
           border: '1px solid #E3F2FD',
           borderRadius: 8,

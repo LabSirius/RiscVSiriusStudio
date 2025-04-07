@@ -17,7 +17,7 @@ export const ID: Node[] = [
       zIndex: 10,
       style: {
         width: 700,
-        height: 1400,
+        height: 1365,
         backgroundColor: '#FFF9C4',
         border: '1px solid #FFF9C4',
         borderRadius: 8,
