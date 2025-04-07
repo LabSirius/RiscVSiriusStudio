@@ -1,4 +1,5 @@
 import { Handle, Position } from '@xyflow/react';
+import { useIR } from '@/context/graphic/IRContext';
 import ContainerSVG from '../../ContainerSVG';
 import DecodeTunnel from './outputTunnels/DecodeTunnel';
 import ExecuteTunnel from './outputTunnels/ExecuteTunnel';
@@ -13,6 +14,8 @@ interface InputHandlerConfig {
 
 export default function ControlUnit() {
   // Define input handlers (all are targets on the left side)
+  const { currentType} = useIR();
+
   const inputHandlers: InputHandlerConfig[] = [
     { id: '[6:0]', top: '2.7rem' },
     { id: '[14:12]', top: '7.9rem' },
@@ -39,7 +42,7 @@ export default function ControlUnit() {
         <div className='absolute top-[1.1rem] left-[-8rem] flex flex-col gap-[3.7rem]'>
           <LabelSlash label='opcode' number={7} />
           <LabelSlash label='funct3' number={3} />
-          <LabelSlash label='funct7' number={7} />
+          <LabelSlash label='funct7' number={7} inactive={!(currentType === 'R')} />
         </div>
       </div>
 
