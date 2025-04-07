@@ -13,7 +13,7 @@ export default function InstructionMemory() {
           <ContainerSVG height={12.6}  active={true} />
 
 
-          <div className='absolute bottom-[4.1rem] right-[-2.5rem]'>
+          <div className='absolute bottom-[4.56rem] right-[-2.5rem]'>
               <LabelSlash number={32} />
           </div>
         </div>

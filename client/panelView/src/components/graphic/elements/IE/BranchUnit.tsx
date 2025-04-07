@@ -14,13 +14,13 @@ export default function BranchUnit() {
         id="RS2"
         position={Position.Left}
         className='input'
-        style={{ top: '4rem' }} />
+        style={{ top: '2.5rem' }} />
 
        <Handle  type="target"
         id="RS1"
         position={Position.Left}
         className='input'
-        style={{ top: '8rem' }} />    
+        style={{ top: '7rem' }} />    
 
        <Handle  type="target"
         id="brOp"

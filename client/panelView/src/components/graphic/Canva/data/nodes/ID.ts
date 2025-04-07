@@ -12,11 +12,11 @@ export const ID: Node[] = [
       id: 'ID',
       type: 'group',
       data: { label: 'Section 2' },
-      position: { x: 800, y: 0 },
+      position: { x: 920, y: 0 },
       draggable: false,
       zIndex: 10,
       style: {
-        width: 700,
+        width: 820,
         height: 1365,
         backgroundColor: '#FFF9C4',
         border: '1px solid #FFF9C4',
@@ -52,7 +52,7 @@ export const ID: Node[] = [
       parentId: 'ID',
       extent: 'parent',
       style: {
-        width: 240,
+        width: 250,
         height: 250,
         backgroundColor: 'transparent',
         border: 'none',
@@ -90,7 +90,7 @@ export const ID: Node[] = [
       parentId: 'ID',
       extent: 'parent',
       style: {
-        width: 330,
+        width: 360,
         height: 450,
         backgroundColor: 'transparent',
         border: 'none',
@@ -104,7 +104,7 @@ export const ID: Node[] = [
       id: 'immSrc',
       type: 'immSrc',
       data: { label: 'IMMSrc' },
-      position: { x: 100, y: 1281 },
+      position: { x: 100, y: 1293.5 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -126,8 +126,8 @@ export const ID: Node[] = [
       parentId: 'ID',
       extent: 'parent',
       style: {
-        width: 330,
-        height: 110,
+        width: 360,
+        height: 180,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,
@@ -143,7 +143,7 @@ export const ID: Node[] = [
       id: 'pivot2',
       type: 'pivot2',
       data: { label: '' },
-      position: { x: 640, y: 862.5 },
+      position: { x: 730, y: 862.5 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -180,7 +180,7 @@ export const ID: Node[] = [
       id: 'pivot5',
       type: 'pivot5',
       data: { label: '' },
-      position: { x: 640, y: 1097 },
+      position: { x: 730, y: 1097 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -362,7 +362,7 @@ export const ID: Node[] = [
       id: 'pivotJump2',
       type: 'pivotJump2',
       data: { label: 'pivotJump2' },
-      position: { x: 623, y: 583 },
+      position: { x: 713, y: 583 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -380,7 +380,7 @@ export const ID: Node[] = [
       id: 'pivotJump4',
       type: 'pivotJump4',
       data: { label: 'pivotJump4' },
-      position: { x: 623, y: 708 },
+      position: { x: 713, y: 708 },
       parentId: 'ID',
       extent: 'parent',
       style: {

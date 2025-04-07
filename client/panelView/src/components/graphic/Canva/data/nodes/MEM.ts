@@ -12,7 +12,7 @@ export const MEM: Node[] = [
         id: 'MEM',
         type: 'group',
         data: { label: 'Section 4' },
-        position: { x: 800 + 700 + 650  , y: 0 },
+        position: { x: 920 + 820 + 650  , y: 0 },
         draggable: false,
         zIndex: 6,
         style: {

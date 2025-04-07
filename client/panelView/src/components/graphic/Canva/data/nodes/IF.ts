@@ -17,7 +17,7 @@ export const IF: Node[] = [
       draggable: false, 
       zIndex: 25,
       style: {
-        width: 800,
+        width: 920,
         height: 1365,
         backgroundColor: '#FCE4EC',
         border: '1px solid #FCE4EC',
@@ -52,7 +52,7 @@ export const IF: Node[] = [
       parentId: 'IF',
       extent: 'parent',
       style: {
-        width: 160,
+        width: 180,
         height: 120,
         backgroundColor: 'transparent',
         border: 'none',
@@ -102,11 +102,11 @@ export const IF: Node[] = [
       id: 'instructionMemory',
       type: 'instructionMemory', 
       data: { label: 'Instruction Memory' },
-      position: { x: 520, y: 705 },
+      position: { x: 570, y: 705 },
       parentId: 'IF',
       extent: 'parent',
       style: {
-        width: 230,
+        width: 290,
         height: 200,
         backgroundColor: 'transparent',
         border: 'none',
@@ -141,7 +141,7 @@ export const IF: Node[] = [
       id: 'pivot1',
       type: 'pivot1',
       data: { label: '' },
-      position: { x: 470, y: 606 },
+      position: { x: 500, y: 606 },
       parentId: 'IF',
       extent: 'parent',
       style: {
@@ -195,7 +195,7 @@ export const IF: Node[] = [
       id: 'pivot25',
       type: 'pivot25',
       data: { label: '' },
-      position: { x: 470, y: 802.6 },
+      position: { x: 500, y: 802.6 },
       parentId: 'IF',
       extent: 'parent',
       style: {

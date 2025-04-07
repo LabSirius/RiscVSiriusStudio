@@ -12,7 +12,7 @@ export const IE: Node[] = [
         id: 'IE',
         type: 'group',
         data: { label: 'Section 3' },
-        position: { x: 800 + 700, y: 0 },
+        position: { x: 920 + 820, y: 0 },
         draggable: false,
         zIndex: 8,
         style: {
@@ -33,7 +33,7 @@ export const IE: Node[] = [
       extent: 'parent',
       draggable: false,
       style: {
-        width: 600,
+        width: 900,
         height: 50,
         backgroundColor: 'transparent',
         border: 'none',
@@ -155,12 +155,12 @@ export const IE: Node[] = [
       id: 'branchUnit',
       type: 'branchUnit',
       data: { label: 'Branch Unit' },
-      position: { x: 205, y: 300 },
+      position: { x: 205, y: 315 },
       parentId: 'IE',
       extent: 'parent',
       style: {
         width: 400,
-        height: 190,
+        height: 160,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,
@@ -173,7 +173,7 @@ export const IE: Node[] = [
       id: 'brOp',
       type: 'brOp',
       data: { label: 'BrOp' },
-      position: { x: 350, y: 520 },
+      position: { x: 360, y: 530 },
       parentId: 'IE',
       extent: 'parent',
       style: {
