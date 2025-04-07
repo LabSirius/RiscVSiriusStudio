@@ -7,20 +7,20 @@ export default function BranchUnit() {
 
        <div className='relative w-full h-full'>
        <h2 className=" titleInElement top-[50%] left-[50%]  -translate-x-[50%] -translate-y-[50%] ">Branch Unit</h2>
-        <ContainerSVG height={7.2} active={true}  />
+        <ContainerSVG height={10.2} active={true}  />
        </div>
 
        <Handle  type="target"
         id="RS2"
         position={Position.Left}
         className='input'
-        style={{ top: '2rem' }} />
+        style={{ top: '4rem' }} />
 
        <Handle  type="target"
         id="RS1"
         position={Position.Left}
         className='input'
-        style={{ top: '5rem' }} />    
+        style={{ top: '8rem' }} />    
 
        <Handle  type="target"
         id="brOp"

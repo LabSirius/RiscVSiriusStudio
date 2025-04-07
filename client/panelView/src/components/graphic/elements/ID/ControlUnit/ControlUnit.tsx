@@ -25,25 +25,22 @@ export default function ControlUnit() {
   return (
     <div className="relative w-full">
 
-      <h2 className="titleInElement absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
+      <h2 className="titleInElement absolute top-[50%] left-[80%] -translate-x-[80%] -translate-y-[50%]">
         Control Unit
       </h2>
-
-
-      <div className='absolute inset-0 z-10 left-[10.6rem] top-[1.3rem] flex flex-col gap-[0.9rem]'>
+      <div className='relative'>
+        <ContainerSVG height={16}  active={true} />
+        <div className='absolute top-[.7rem] left-[-9.2rem] flex flex-col gap-[3.1rem]'>
+          <LabelSlash label='opcode' number={7} />
+          <LabelSlash label='funct3' number={3} inactive={currentType === 'LUI'} />
+          <LabelSlash label='funct7' number={7} inactive={!(currentType === 'R')} />
+        </div>
+        <div className='absolute z-10 right-[-6.17rem] top-[1.3rem] flex flex-col gap-[0.9rem]'>
         <DecodeTunnel />
         <ExecuteTunnel />
         <MemoryTunnel />
         <WBTunnel />
       </div>
-
-      <div className='relative'>
-        <ContainerSVG height={16}  active={true} />
-        <div className='absolute top-[1.1rem] left-[-8rem] flex flex-col gap-[3.7rem]'>
-          <LabelSlash label='opcode' number={7} />
-          <LabelSlash label='funct3' number={3} inactive={currentType === 'LUI'} />
-          <LabelSlash label='funct7' number={7} inactive={!(currentType === 'R')} />
-        </div>
       </div>
 
       {/* Render input handlers programmatically */}

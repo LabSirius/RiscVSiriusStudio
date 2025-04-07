@@ -17,7 +17,7 @@ export default function RegistersUnit() {
     { id: '[24:20]', top: '7.2rem' },
     { id: '[11:7]', top: '12.2rem' },
     { id: 'dataWr', top: '17.8rem' },
-    { id: 'ruWr', top: '21.8rem' },
+    { id: 'ruWr', top: '23.7rem' },
   ];
 
   const outputHandlers: HandlerConfig[] = [
@@ -29,12 +29,12 @@ export default function RegistersUnit() {
     <div className='w-full'>
 
       <div className='relative w-full h-full'>
-        <h2 className=" titleInElement top-[33%] left-[50%]  -translate-x-[50%] -translate-y-[33%] ">Registers Unit</h2>
+        <h2 className=" titleInElement top-[90%] left-[82%]  -translate-x-[82%] -translate-y-[90%] ">Registers Unit</h2>
         <div className='relative'>
-          <ContainerSVG height={25}  active={true} />
+          <ContainerSVG height={28}  active={true} />
 
-          <div className='absolute top-[.68rem] left-[-6.85rem] flex flex-col gap-[4.1rem]'>
-            <div className='flex flex-col gap-[3.4rem]'>
+          <div className='absolute top-0 left-[-6.85rem] flex flex-col gap-[3.6rem]'>
+            <div className='flex flex-col gap-[2.9rem]'>
               <LabelSlash label='rs1' number={5}  inactive={(currentType === 'LUI')}/>
               <LabelSlash label='rs2' number={5} inactive={!(currentType === 'R' || currentType === 'B')} />
               <LabelSlash label='rd' number={5} inactive={(currentType === 'B')}/>
