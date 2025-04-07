@@ -1,14 +1,17 @@
 //  This pivot connects the pc with the MUXA
 
+import { useIR } from '@/context/graphic/IRContext';
 import { Handle, Position } from '@xyflow/react';
 import { Brackets } from 'lucide-react';
 
 export default function PivotJump4() {
+  const { currentType } = useIR()
   return (
     <div className='w-full'>
 
-       <div className='relative w-full h-full'>
-            <Brackets size={38} strokeWidth={1} color='#000' />
+      <div className={`relative w-full h-full ${(currentType === 'LUI' || currentType === 'AUIPC' )&& 'opacity-20'}`}>
+
+        <Brackets size={38} strokeWidth={1} color='#000' />
        </div>
 
        <Handle  type="target"

@@ -7,6 +7,17 @@ interface InstructionEffectProps {
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
 }
 
+// output edge groups for MUX A route
+const skipMuxAOutputEdges = [
+  'uxA->alu'
+]
+
+// Edge groups for skipping MUX A route
+const skipMuxA = [
+  'aluASrc->muxA',
+  'muxA->alu'
+]
+
 // Edge groups for MUX A route
 const muxARouteEdges = [
   'pivot1->pivotJump1',
@@ -67,7 +78,11 @@ const muxDRouteEdges_R = [
 // Edge groups for skipping the funct7 field
 const skipFunct7Edges = ['pivot22->controlUnit[31:25]'];
 
+// Edge groups for skipping the funct3 field
+const skipFunct3Edges = ['pivot23->controlUnit[14:12]'];
+
 // Edge groups for skipping RS2 register
+const skipRS1InputEdges = ['pivot21->RegistersUnit[19:15]'];
 const skipRS1Edges = ['pivot20->RegistersUnit[19:15]', 'registersUnit->pivotJump4', 'pivotJump4->pivot4', 'pivot4->muxA'];
 // Edge groups for skipping RS2 register
 const skipRS2Edges = ['pivot20->RegistersUnit[24:20]'];
@@ -225,7 +240,40 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         ];
         break;
       case "U":
-        setCurrentType("U");
+        if (currentInstruction.opcode === "0110111") {
+          setCurrentType("LUI");
+          targetEdges = [
+            ...skipFunct7Edges,
+            ...skipFunct3Edges,
+            ...skipRS2Edges,
+            ...skipRS1InputEdges,
+            ...skipRS1Edges,
+            ...muxARouteEdges,
+            ...skipMuxA,
+            ...skipMuxAOutputEdges,
+            ...muxBRouteEdges_I,
+            ...muxCRouteEdges_R,
+            ...muxDRouteEdges_R,
+            ...bypassBranchUnitEdges,
+            ...memoryReadEdges,
+          ];
+        } else if (currentInstruction.opcode === "0010111") {
+          setCurrentType("AUIPC");
+          targetEdges = [
+            ...skipFunct7Edges,
+            ...skipFunct3Edges,
+            ...skipRS2Edges,
+            ...skipRS1InputEdges,
+            ...skipRS1Edges,
+            ...skipMuxAOutputEdges,
+            ...muxBRouteEdges_I,
+            ...muxCRouteEdges_R,
+            ...muxDRouteEdges_R,
+            ...bypassBranchUnitEdges,
+            ...memoryReadEdges,
+          ];
+        }
+        
         break;
       default:
         break;

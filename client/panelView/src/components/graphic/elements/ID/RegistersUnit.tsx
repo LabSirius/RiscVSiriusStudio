@@ -35,7 +35,7 @@ export default function RegistersUnit() {
 
           <div className='absolute top-[.68rem] left-[-6.85rem] flex flex-col gap-[4.1rem]'>
             <div className='flex flex-col gap-[3.4rem]'>
-              <LabelSlash label='rs1' number={5} />
+              <LabelSlash label='rs1' number={5}  inactive={(currentType === 'LUI')}/>
               <LabelSlash label='rs2' number={5} inactive={!(currentType === 'R' || currentType === 'B')} />
               <LabelSlash label='rd' number={5} inactive={(currentType === 'B')}/>
             </div>
