@@ -4,6 +4,7 @@ import DecodeTunnel from './outputTunnels/DecodeTunnel';
 import ExecuteTunnel from './outputTunnels/ExecuteTunnel';
 import MemoryTunnel from './outputTunnels/MemoryTunnel';
 import WBTunnel from './outputTunnels/WBTunnel';
+import LabelSlash from '@/components/graphic/LabelSlash';
 
 interface InputHandlerConfig {
   id: string;
@@ -33,7 +34,14 @@ export default function ControlUnit() {
         <WBTunnel />
       </div>
 
-      <ContainerSVG height={16}  active={true} />
+      <div className='relative'>
+        <ContainerSVG height={16}  active={true} />
+        <div className='absolute top-[1.1rem] left-[-8rem] flex flex-col gap-[3.7rem]'>
+          <LabelSlash label='opcode' number={7} />
+          <LabelSlash label='funct3' number={3} />
+          <LabelSlash label='funct7' number={7} />
+        </div>
+      </div>
 
       {/* Render input handlers programmatically */}
       {inputHandlers.map((handler) => (
