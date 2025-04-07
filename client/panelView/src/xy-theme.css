@@ -150,3 +150,36 @@
   .react-flow__controls-button-custom_red {
     background-color: #E28C8C;
   }
+
+
+
+/*  ANIMATION CURRENT INSTRUCTION INFO */
+.animate-exit {
+  animation: slideOut 180ms forwards;
+}
+
+.animate-enter {
+  animation: slideIn 180ms forwards;
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

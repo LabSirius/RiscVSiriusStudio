@@ -5,6 +5,11 @@ interface IRState {
     {
       type: string;
       opcode: string
+      asm: string;
+      encoding: {
+        hexEncoding: string;
+        binaryEncoding: string;
+      }
     }
   ];
   symbols: Record<string, Record<string, string>>;
@@ -24,6 +29,11 @@ const IRContext = createContext<IRContextType>({
       {
         type: "",
         opcode: "",
+        asm: "",
+        encoding: {
+          hexEncoding: "",
+          binaryEncoding: "",
+        },
       },
     ],
     symbols: {
@@ -43,7 +53,12 @@ export const IRProvider = ({ children }: { children: ReactNode }) => {
     instructions: [
       {
         type: "",
-        opcode: ""
+        opcode: "",
+        asm: "",
+        encoding: {
+          hexEncoding: "",
+          binaryEncoding: "",
+        },
       },
     ],
     symbols: {

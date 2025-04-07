@@ -6,9 +6,11 @@ import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useDialog } from "@/context/panel/DialogContext";
 import { useLines } from "@/context/panel/LinesContext";
 import { useIR } from "@/context/graphic/IRContext";
+import { usePC } from "@/context/shared/PCCONTEXT";
 
 const MessageListener = () => {
-  const { setDataMemoryTable, setSizeMemory, setNewPc, setWriteInMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
+  const { setDataMemoryTable,  setWriteInMemory, setSizeMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
+  const { setNewPc } = usePC();
   const { setWriteInRegister } = useRegistersTable();
   const { setIr } = useIR();
 

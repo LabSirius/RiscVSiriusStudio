@@ -17,12 +17,15 @@ import { OverlayProvider } from "@/context/graphic/OverlayContext";
 import { IRProvider } from "./context/graphic/IRContext";
 import { ReactFlowProvider } from "@xyflow/react";
 import Canva from "./components/graphic/Canva/Canva";
+import CurrentInstructionInfo from "./components/graphic/CurrentInstructionInfo";
+import { PCProvider } from "./context/shared/PCCONTEXT";
 
 
 const App = () => {  
   return (
     <SectionProvider>
       <OperationProvider>
+        <PCProvider>
       <IRProvider>
         <LinesProvider>
         <MemoryTableProvider>
@@ -33,8 +36,14 @@ const App = () => {
             <OverlayProvider>
               <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
                   <MessageListener />
+                  
                     <Canva />
+             
+               
+                  <div className="relative">
+                  <CurrentInstructionInfo />
                    <MainSectionContainer />
+                  </div>
                   <Error />
               </div>
               </OverlayProvider>
@@ -45,6 +54,7 @@ const App = () => {
         </MemoryTableProvider>
         </LinesProvider>
       </IRProvider>
+      </PCProvider>
       </OperationProvider>
       </SectionProvider>
   );

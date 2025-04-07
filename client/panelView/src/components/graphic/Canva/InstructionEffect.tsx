@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Edge } from '@xyflow/react';
 import { useIR } from '@/context/graphic/IRContext';
-import { useMemoryTable } from '@/context/panel/MemoryTableContext';
+import { usePC } from '@/context/shared/PCCONTEXT';
 
 interface InstructionEffectProps {
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
@@ -122,7 +122,7 @@ const fullMemoryAccessEdges = memoryReadEdges;
 
 const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
   const { ir, setCurrentType } = useIR();
-  const { newPc } = useMemoryTable();
+  const { newPc } = usePC();
   const previousTargetEdgesRef = useRef<string[]>([]);
 
   useEffect(() => {

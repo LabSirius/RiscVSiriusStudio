@@ -100,6 +100,7 @@ export default function Canva() {
         onZoomOut={handleZoomOut}
         onToggleInteractive={handleToggleInteractive}
       />
+      
       <InstructionEffect setEdges={setEdges}/>
     </ReactFlow>
   );

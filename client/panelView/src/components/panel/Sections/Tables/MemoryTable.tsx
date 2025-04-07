@@ -30,6 +30,7 @@ import { getColumnMemoryDefinitions } from "@/utils/tables/definitions/definitio
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";
 import { sendMessage } from "@/components/Message/sendMessage";
 import { useLines } from "@/context/panel/LinesContext";
+import { usePC } from "@/context/shared/PCCONTEXT";
 
 const MemoryTable = () => {
   const { theme } = useTheme();
@@ -47,8 +48,6 @@ const MemoryTable = () => {
     setSp,
     importMemory,
     setImportMemory,
-    newPc,
-    setNewPc,
     searchInMemory,
     writeInMemory,
     setWriteInMemory,
@@ -57,6 +56,8 @@ const MemoryTable = () => {
     locatePc,
     setLocatePc,
   } = useMemoryTable();
+
+  const { newPc, setNewPc} = usePC();
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
   const { isFirstStep } = useOperation();
