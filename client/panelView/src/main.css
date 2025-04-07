@@ -263,7 +263,7 @@ a:hover{
   @apply text-[1.4rem] text-[#777777] transform z-2 italic;
 }
 .numberLabelInElement {
-  @apply text-[.9rem] text-orange-400 transform z-2 italic;
+  @apply text-[1.3rem] text-orange-400 transform z-2 italic;
 }
 .valueInElement {
   @apply text-[1.5rem] text-[#777777] absolute transform z-2;
