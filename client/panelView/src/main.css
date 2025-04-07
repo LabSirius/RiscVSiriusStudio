@@ -262,6 +262,9 @@ a:hover{
 .subtitleInElement {
   @apply text-[1.05rem] text-[#777777] absolute transform z-2 italic;
 }
+.valueInElement {
+  @apply text-[1.05rem] text-[#777777] absolute transform z-2;
+}
 
 .input {
   @apply !bg-[#9C27B0];
