@@ -52,7 +52,7 @@ export const IF: Node[] = [
       parentId: 'IF',
       extent: 'parent',
       style: {
-        width: 90,
+        width: 160,
         height: 120,
         backgroundColor: 'transparent',
         border: 'none',
@@ -141,7 +141,7 @@ export const IF: Node[] = [
       id: 'pivot1',
       type: 'pivot1',
       data: { label: '' },
-      position: { x: 440, y: 606 },
+      position: { x: 470, y: 606 },
       parentId: 'IF',
       extent: 'parent',
       style: {
@@ -195,7 +195,7 @@ export const IF: Node[] = [
       id: 'pivot25',
       type: 'pivot25',
       data: { label: '' },
-      position: { x: 440, y: 802.6 },
+      position: { x: 470, y: 802.6 },
       parentId: 'IF',
       extent: 'parent',
       style: {
