@@ -11,8 +11,8 @@ const LabelSlash = ({label, number, inactive=false}: LabelSlashProps) => {
     <div className="flex gap-3 relative">
       <h2 className='subtitleInElement'>{label}</h2>
       <div className='flex flex-col relative'>
-        <h3 className={`numberLabelInElement ${inactive && '!text-[#777777]'} absolute top-[-.4rem] left-[.7rem]`}>{number}</h3>
-        <Slash size={20} strokeWidth={3} color={inactive ? '#777777' : 'orange'} className='absolute top-[.9rem]'/>
+        <h3 className={`numberLabelInElement ${inactive && '!text-[#D3D3D3]'} absolute top-[-.4rem] left-[.7rem]`}>{number}</h3>
+        <Slash size={20} strokeWidth={3} color={inactive ? '#D3D3D3' : 'orange'} className='absolute top-[.9rem]'/>
 
       </div>
     </div>
