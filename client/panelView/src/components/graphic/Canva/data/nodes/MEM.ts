@@ -14,11 +14,12 @@ export const MEM: Node[] = [
         data: { label: 'Section 4' },
         position: { x: 800 + 700 + 548  , y: 0 },
         draggable: false,
+        zIndex: 6,
         style: {
           width: 550,
           height: 1400,
           backgroundColor: '#E8F5E9',
-          border: '1px solid #93c4e6',
+          border: '1px solid #E8F5E9',
           borderRadius: 8,
         },
     },

@@ -14,11 +14,12 @@ export const ID: Node[] = [
       data: { label: 'Section 2' },
       position: { x: 800, y: 0 },
       draggable: false,
+      zIndex: 10,
       style: {
         width: 700,
         height: 1400,
         backgroundColor: '#FFF9C4',
-        border: '1px solid #eed97f',
+        border: '1px solid #FFF9C4',
         borderRadius: 8,
       },
     },

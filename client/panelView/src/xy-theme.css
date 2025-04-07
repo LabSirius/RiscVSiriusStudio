@@ -57,10 +57,7 @@
 }
  
  
-.react-flow__node.selectable:hover, 
-.react-flow__node.draggable:hover {
-    border-color: var(--xy-theme-hover);
-}
+
  
 .react-flow__node.selectable.selected {
     border-color: var(--xy-theme-selected);
@@ -72,26 +69,14 @@
     border-color: #9E86ED;
 }
  
-.react-flow__edge.selectable:hover .react-flow__edge-path,
-.react-flow__edge.selectable.selected .react-flow__edge-path {
-    stroke: var(--xy-theme-edge-hover);
-}
+
  
 .react-flow__handle {
     background-color: var(--xy-handle-background-color-default);
 }
  
-.react-flow__handle.connectionindicator:hover {
-    pointer-events: all;
-    border-color: var(--xy-theme-edge-hover);
-    background-color: white;
-}
+
  
-.react-flow__handle.connectionindicator:focus , 
-.react-flow__handle.connectingfrom,
-.react-flow__handle.connectingto {
-    border-color: var(--xy-theme-edge-hover);
-}
  
 .react-flow__node-resizer {
     border-radius: 0;
@@ -130,6 +115,21 @@
     background-color: white;
 
   }
+
+  .react-flow {
+    --xy-node-boxshadow-hover-default: none;
+    --xy-node-boxshadow-selected-default: none;
+  }
+
+  .react-flow__node.dragging {
+    box-shadow: none !important;
+  }
+
+  
+  .react-flow__node {
+    box-shadow: none !important;
+  }
+  
   
   .react-flow__controls-button-custom:hover {
     background-color: #f0f0f0; 

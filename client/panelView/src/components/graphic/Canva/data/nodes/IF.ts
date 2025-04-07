@@ -20,7 +20,7 @@ export const IF: Node[] = [
         width: 800,
         height: 1400,
         backgroundColor: '#FCE4EC',
-        border: '1px solid #e3aaaa',
+        border: '1px solid #FCE4EC',
         borderRadius: 8,
       },
     },
