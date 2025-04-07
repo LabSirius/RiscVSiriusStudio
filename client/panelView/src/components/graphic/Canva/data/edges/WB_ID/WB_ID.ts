@@ -9,6 +9,8 @@ export const WB_ID: Edge[] = [
      { id: 'pivot12->registersUnit',  source: 'pivot12', target: 'registersUnit', targetHandle:'dataWr', type: 'step', markerEnd: {
              type: MarkerType.ArrowClosed,
              color: '#888888',
+             width: 9,
+                height: 9,
           }, }
 
   

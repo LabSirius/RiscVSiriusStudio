@@ -9,6 +9,8 @@ export const ALU_MUXD: Edge[] = [
     { id: 'pivot17->muxD',  source: 'pivot17', target: 'muxD', targetHandle:'alu',  type: 'smoothstep',  markerEnd: {
         type: MarkerType.ArrowClosed,
         color: '#888888',
+        width: 9,
+        height: 9,
     },}
    
 ];

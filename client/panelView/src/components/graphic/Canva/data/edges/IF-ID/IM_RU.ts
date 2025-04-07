@@ -20,6 +20,8 @@ export const IM_RU: Edge[] = [
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: '#888888',
+      width: 9,
+      height: 9,
     },
   },
   {
@@ -40,6 +42,8 @@ export const IM_RU: Edge[] = [
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: '#888888',
+      width: 9,
+      height: 9,
     },
   },
 
@@ -62,6 +66,8 @@ export const IM_RU: Edge[] = [
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: '#888888',
+      width: 9,
+       height: 9,
     },
   },
  

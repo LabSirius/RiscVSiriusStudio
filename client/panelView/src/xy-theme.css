@@ -93,7 +93,7 @@
 
 .react-flow__edge path {
     stroke: #3B59B6;
-    stroke-width: 3px !important; /* Ajusta el grosor */
+    stroke-width: 5.5px !important; /* Ajusta el grosor */
   }
 
   .react-flow__edges {

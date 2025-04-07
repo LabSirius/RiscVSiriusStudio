@@ -7,6 +7,8 @@ export const four_Addr4: Edge[] = [
       {
         type: MarkerType.ArrowClosed,
         color: '#888888',
+        width: 9,
+        height: 9,
       },
     },
 ];

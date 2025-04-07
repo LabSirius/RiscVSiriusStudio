@@ -9,6 +9,8 @@ export const MUXS_ALU: Edge[] = [
        {
          type: MarkerType.ArrowClosed,
          color: '#888888',
+         width: 9,
+         height: 9,
        }
      },
 
@@ -17,6 +19,8 @@ export const MUXS_ALU: Edge[] = [
       {
         type: MarkerType.ArrowClosed,
         color: '#888888',
+        width: 9,
+        height: 9,
       },
     },
 

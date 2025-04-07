@@ -10,6 +10,8 @@ export const BU_MUXD: Edge[] = [
     { id: 'pivot15->muxD',  source: 'pivot15', target: 'muxD', targetHandle:'bu',  type: 'smoothstep', markerEnd: {
         type: MarkerType.ArrowClosed,
         color: '#888888',
+        width: 9,
+        height: 9,
     },},
    
 ];

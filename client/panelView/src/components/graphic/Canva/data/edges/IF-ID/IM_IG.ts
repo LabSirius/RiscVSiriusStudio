@@ -12,6 +12,8 @@ export const IM_IG: Edge[] = [
        type: 'smoothstep',
        markerEnd: {
        type: MarkerType.ArrowClosed,
+       width: 9,
+        height: 9,
        color: '#888888',
       },
 },

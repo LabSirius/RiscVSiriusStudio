@@ -26,6 +26,8 @@ export const RU_MUXS: Edge[] = [
       markerEnd: {
         type: MarkerType.ArrowClosed,
         color: '#888888',
+        width: 9,
+        height: 9,
       },
   },
     
@@ -47,6 +49,8 @@ export const RU_MUXS: Edge[] = [
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: '#888888',
+      width: 9,
+      height: 9,
     },
   }
 ];

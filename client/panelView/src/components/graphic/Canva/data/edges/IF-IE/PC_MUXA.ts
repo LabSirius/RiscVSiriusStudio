@@ -10,6 +10,8 @@ export const PC_MUXA: Edge[] = [
     { id: 'pivotJump3->muxA',  source: 'pivotJump3', target: 'muxA', targetHandle: 'pc',  type: 'smoothstep', markerEnd: {
         type: MarkerType.ArrowClosed,
         color: '#888888',
+        width: 9,
+        height: 9,
      },},
    
 ];

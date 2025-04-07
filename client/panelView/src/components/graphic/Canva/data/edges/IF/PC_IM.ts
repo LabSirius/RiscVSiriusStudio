@@ -9,6 +9,8 @@ export const PC_IM: Edge[] = [
         {
          type: MarkerType.ArrowClosed,
          color: '#888888',
+         width: 9,
+         height: 9,
        },
      },
 ];
