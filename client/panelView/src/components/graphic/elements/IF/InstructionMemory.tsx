@@ -1,12 +1,22 @@
 import ContainerSVG from '../ContainerSVG';
 import { Handle , Position} from '@xyflow/react';
+import LabelSlash from '@/components/graphic/LabelSlash';
 
-export function InstructionMemory() {
+export default function InstructionMemory() {
+
   return (
     <div className='w-full h-full'>
       <div className='relative w-full h-full'>
        <h2 className="titleInElement top-[15%] left-[50%]  -translate-x-[50%] -translate-y-[15%]">Instruction Memory</h2>
-        <ContainerSVG height={12.6}  active={true} />
+
+        <div className='relative'>
+          <ContainerSVG height={12.6}  active={true} />
+
+
+          <div className='absolute bottom-[4.1rem] right-[-2.5rem]'>
+              <LabelSlash number={32} />
+          </div>
+        </div>
         
         <div className='subtitleInElement absolute top-[42%] left-[.8rem]'>
           <h3 className=''>Address: </h3>
@@ -25,22 +35,5 @@ export function InstructionMemory() {
         className='output'
         style={{ top: '10.03rem'}} />
       </div>
-  );
-}
-
-export function IMAddress() {
-  return (
-    <div>
-      <div>
-      <span>Address</span><br></br>
-      <span>0x777777</span>
-      </div>
-      <Handle  type="target"
-        position={Position.Left}
-      />
-      <Handle  type="source"
-        position={Position.Right}
-      />
-    </div>
   );
 }

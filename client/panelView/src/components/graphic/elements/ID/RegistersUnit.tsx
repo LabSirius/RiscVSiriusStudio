@@ -33,9 +33,16 @@ export default function RegistersUnit() {
         <div className='relative'>
           <ContainerSVG height={25}  active={true} />
 
-          <div className='absolute top-[.68rem] left-[-6.85rem] flex flex-col gap-[3.4rem]'>
-            <LabelSlash label='rs1' number={5} />
-            <LabelSlash label='rs2' number={5} inactive={!(currentType === 'R' || currentType === 'B')} />
+          <div className='absolute top-[.68rem] left-[-6.85rem] flex flex-col gap-[4.1rem]'>
+            <div className='flex flex-col gap-[3.4rem]'>
+              <LabelSlash label='rs1' number={5} />
+              <LabelSlash label='rs2' number={5} inactive={!(currentType === 'R' || currentType === 'B')} />
+              <LabelSlash label='rd' number={5} inactive={(currentType === 'B')}/>
+            </div>
+            <div className='ml-[.8rem]'>
+              <LabelSlash number={32} inactive={(currentType === 'S' || currentType === 'B')} />
+            </div>
+            
           </div>
         </div>
         <Triangle size={24} className='absolute left-[50%]  transform -translate-x-[50%] text-[#404040] bottom-0 z-2' />

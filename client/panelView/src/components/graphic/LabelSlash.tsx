@@ -1,12 +1,12 @@
 import { Slash } from 'lucide-react';
 
 interface LabelSlashProps {
-    label: string;
+    label?: string;
     number: number;
     inactive?: boolean;
 }
 
-const LabelSlash = ({label, number, inactive=false}: LabelSlashProps) => {
+const LabelSlash = ({label="", number, inactive=false}: LabelSlashProps) => {
   return (
     <div className="flex gap-3 relative">
       <h2 className='subtitleInElement'>{label}</h2>
