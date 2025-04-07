@@ -6,7 +6,7 @@ function Mux2_1() {
           points="70,55 70,161.4 0,220 0,0" 
           fill="none"
           stroke="black"
-          strokeWidth="2"
+          strokeWidth="6"
         />
       </svg>
     );

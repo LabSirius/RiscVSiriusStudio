@@ -12,7 +12,7 @@ const Container: FC<ContainerProps> = ({ height, active = false } : ContainerPro
       style={{ height: `${height}rem` }}
     >
       <div
-        className="absolute rounded-[20px] border-[3px]"
+        className="absolute rounded-[20px] border-[5.5px]"
         style={{
           borderColor: active ? '#555555' : '#D3D3D3',
           width: '100%',
