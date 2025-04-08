@@ -11,6 +11,13 @@ interface IRState {
         binaryEncoding: string;
         funct3: string;
         funct7: string;
+        
+      },
+      rs1: {
+        regenc: string;
+      },
+      rs2?:{
+        regenc: string;
       }
     }
   ];
@@ -38,6 +45,12 @@ const IRContext = createContext<IRContextType>({
           funct3: "",
           funct7: "",
         },
+        rs1: {
+          regenc: ""
+        },
+        rs2:{
+          regenc: ""
+        }
       },
     ],
     symbols: {
@@ -65,6 +78,12 @@ export const IRProvider = ({ children }: { children: ReactNode }) => {
           funct3: "",
           funct7: "",
         },
+        rs1: {
+          regenc: ""
+        },
+        rs2:{
+          regenc: ""
+        }
       },
     ],
     symbols: {

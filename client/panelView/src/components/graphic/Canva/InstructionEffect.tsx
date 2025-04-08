@@ -87,6 +87,8 @@ const skipRS1Edges = ['pivot20->RegistersUnit[19:15]', 'registersUnit->pivotJump
 // Edge groups for skipping RS2 register
 const skipRS2Edges = ['pivot20->RegistersUnit[24:20]'];
 
+const skipRDEdges = ['pivot3->RegistersUnit[11:7]'];
+
 // Additional edge groups for the MUX C route in load instructions (L-type)
 const muxCRouteExtraEdges_L = [
   'pivot7->pivot8',
@@ -204,7 +206,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         setCurrentType("S");
         targetEdges = [
           ...skipFunct7Edges,
-          ...skipRS2Edges,
+          ...skipRDEdges,
           ...muxARouteEdges,
           ...muxBRouteEdges_I.slice(1),
           ...muxCRouteEdges_R,
@@ -218,7 +220,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         setCurrentType("B");
         targetEdges = [
           ...skipFunct7Edges,
-          'pivot3->RegistersUnit[11:7]',
+          ...skipRDEdges,
           // Modified MUX A route for branch instructions
           'pivot4->muxA',
           ...muxBRouteEdges_I.slice(1),
