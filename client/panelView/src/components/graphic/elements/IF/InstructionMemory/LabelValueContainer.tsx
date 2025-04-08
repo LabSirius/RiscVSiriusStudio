@@ -5,7 +5,7 @@ import LabelValue from '../../../LabelValue';
 const LavelValueContainer = () => {
   return (
     <>
-        <div className='absolute top-[36%] left-[.8rem]'>
+        <div className='absolute top-[24%] left-[.8rem]'>
                   <LabelValue label="PC" value="h'00-00"/>
                 </div>
                 

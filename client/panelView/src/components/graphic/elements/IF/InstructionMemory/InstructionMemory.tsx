@@ -11,7 +11,7 @@ export default function InstructionMemory() {
        <h2 className="titleInElement top-[15%] left-[80%]  -translate-x-[80%] -translate-y-[15%]">Instruction Memory</h2>
 
         <div className='relative'>
-          <ContainerSVG height={13}  active={true} />
+          <ContainerSVG height={15}  active={true} />
 
 
           <div className='absolute bottom-[5.1rem] right-[-2.5rem]'>
@@ -25,7 +25,7 @@ export default function InstructionMemory() {
       <Handle  type="target"
         position={Position.Left}
         className='input'
-        style={{ top: '8.3rem'}} />
+        style={{ top: '7.25rem'}} />
          
       <Handle  type="source"
         position={Position.Right}

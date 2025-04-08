@@ -30,7 +30,7 @@ export default function PC() {
         <Handle  type="source"
         position={Position.Right}
         className='output' 
-        style={{ top: '5.75rem'}} />
+        style={{ top: '4.75rem'}} />
 
     </div>
     
