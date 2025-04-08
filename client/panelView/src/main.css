@@ -260,7 +260,7 @@ a:hover{
 }
 
 .subtitleInElement {
-  @apply text-[1.4rem] text-[#777777] transform z-2 italic;
+  @apply text-[1.5rem] text-[#777777] transform z-2 italic;
 }
 .numberLabelInElement {
   @apply text-[1.3rem] text-orange-400 transform z-2 italic;

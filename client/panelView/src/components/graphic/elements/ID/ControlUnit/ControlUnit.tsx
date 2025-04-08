@@ -30,7 +30,7 @@ export default function ControlUnit() {
       </h2>
       <div className='relative'>
         <ContainerSVG height={16}  active={true} />
-        <div className='absolute top-[.7rem] left-[-9.2rem] flex flex-col gap-[3.1rem]'>
+        <div className='absolute top-[.5rem] left-[-9.2rem] flex flex-col gap-[3rem]'>
           <LabelSlash label='opcode' number={7} />
           <LabelSlash label='funct3' number={3} inactive={currentType === 'LUI'} />
           <LabelSlash label='funct7' number={7} inactive={!(currentType === 'R')} />
