@@ -260,10 +260,10 @@ a:hover{
 }
 
 .subtitleLabelInElement {
-  @apply text-[1.6rem] text-[#777777] transform z-2 italic;
+  @apply text-[1.7rem] text-[#777777] transform z-2 italic;
 }
 .numberLabelInElement, .numberNumBitsInput  {
-  @apply text-[1.6rem] transform z-2 italic;
+  @apply text-[1.7rem] transform z-2 italic;
 }
 .numberLabelInElement {
   @apply  text-[#777777];
