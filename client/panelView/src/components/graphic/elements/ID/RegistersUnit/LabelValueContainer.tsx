@@ -14,8 +14,8 @@ const LabelValueContainer = () => {
   const [currentRs2, setCurrentRs2] = useState<string>('');
 
   useEffect(() => {
-      setCurrentRs1(binaryToHex(registerData[Number(ir.instructions[newPc].rs1.regenc)]));
-      setCurrentRs2(binaryToHex(registerData[Number(ir.instructions[newPc].rs2?.regenc)]));
+      setCurrentRs1(binaryToHex(registerData[Number(ir.instructions[newPc].rs1.regenc)]).toUpperCase());
+      setCurrentRs2(binaryToHex(registerData[Number(ir.instructions[newPc].rs2?.regenc)]).toUpperCase());
       
   }, [newPc, registerData, ir])
 
