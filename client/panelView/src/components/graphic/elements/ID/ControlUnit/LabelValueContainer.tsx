@@ -5,7 +5,6 @@ import { usePC } from '@/context/shared/PCCONTEXT';
 const LabelValueContainer = () => {
   const { currentType, ir } = useIR();
   const { newPc } = usePC();
-  console.log(currentType, )
 
   return (
     <>
@@ -14,11 +13,11 @@ const LabelValueContainer = () => {
         </div>
 
         <div className=' absolute top-[6.4rem] left-[.8rem]'>
-          <LabelValue label="" value="b'000"/>
+          {!(currentType === 'LUI') && <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.funct3}`}/>} 
         </div>
 
         <div className=' absolute top-[11.9rem] left-[.8rem]'>
-          <LabelValue label="" value="b'00000"/>
+         {(currentType === 'R') && <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.funct7}`}/>} 
         </div>
     </>
   )
