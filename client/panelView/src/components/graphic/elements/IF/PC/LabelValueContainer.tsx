@@ -1,6 +1,6 @@
 import LabelValue from '@/components/graphic/LabelValue';
 import { usePC } from '@/context/shared/PCCONTEXT';
-import { useFormattedPC } from '@/hooks/useFormattedPC'; 
+import { useFormattedPC } from '@/hooks/graphic/useFormattedPC'; 
 
 const LabelValueContainer = () => {
   const { newPc } = usePC();
