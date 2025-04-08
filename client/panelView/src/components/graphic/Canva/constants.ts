@@ -27,7 +27,7 @@ import BrOp from '../elements/IE/BrOp';
 
 
 //Section 4
-import DataMemory from '../elements/MEM/DataMemory';
+import DataMemory from '../elements/MEM/DataMemory/DataMemory';
 import DMWR from '../elements/MEM/DMWr';
 import DMCtrl from '../elements/MEM/DMCtrl';
 

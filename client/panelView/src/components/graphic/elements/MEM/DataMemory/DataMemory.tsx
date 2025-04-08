@@ -1,6 +1,7 @@
 import { useIR } from '@/context/graphic/IRContext';
 import { Handle, Position } from '@xyflow/react';
-import ContainerSVG from '../ContainerSVG';
+import ContainerSVG from '../../ContainerSVG';
+import LabelValueContainer from './LabelValueContainer';
 
 interface HandlerConfig {
   id?: string;
@@ -30,6 +31,7 @@ export default function DataMemory() {
           Data Memory
         </h2>
         <ContainerSVG height={19.9} active={currentType === "L" || currentType === "S"} />
+        <LabelValueContainer />
       </div>
 
       {inputHandlers.map((handler, index) => (
