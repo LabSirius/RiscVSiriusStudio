@@ -1,7 +1,7 @@
 
 import LabelValue from '@/components/graphic/LabelValue';
 import { useIR } from '@/context/graphic/IRContext';
-import { usePC } from '@/context/shared/PCCONTEXT';
+import { usePC } from '@/context/shared/PCContext';
 import { useFormattedPC } from '@/hooks/graphic/useFormattedPC';
 
 const LabelValueContainer = () => {

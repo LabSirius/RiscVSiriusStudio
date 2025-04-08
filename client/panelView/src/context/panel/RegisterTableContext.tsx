@@ -17,8 +17,6 @@ interface Register {
 }
 
 interface RegistersTableContextProps {
-  registerData: string[];
-  setRegisterData: React.Dispatch<React.SetStateAction<string[]>>;
   writeInRegister: WriteInRegister;
   setWriteInRegister: React.Dispatch<React.SetStateAction<WriteInRegister>>;
   importRegister: Register[];
@@ -34,7 +32,6 @@ interface RegistersTableContextProps {
 const RegistersTableContext = createContext<RegistersTableContextProps | undefined>(undefined);
 
 export const RegistersTableProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [registerData, setRegisterData] = useState<string[]>(Array(32).fill('0'.repeat(32)));
   const [writeInRegister, setWriteInRegister] = useState<WriteInRegister>({ registerName: '', value: '' });
   const [importRegister, setImportRegister] = useState<Register[]>([]);
   const [searchInRegisters, setSearchInRegisters] = useState<string>('');
@@ -42,7 +39,7 @@ export const RegistersTableProvider: React.FC<{ children: ReactNode }> = ({ chil
   const [fixedchangedRegisters, setFixedchangedRegisters] = useState<string[]>([]);
 
   return (
-    <RegistersTableContext.Provider value={{ registerData, setRegisterData, writeInRegister, setWriteInRegister, importRegister, setImportRegister, searchInRegisters, setSearchInRegisters, checkFixedRegisters, setCheckFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters}}>
+    <RegistersTableContext.Provider value={{  writeInRegister, setWriteInRegister, importRegister, setImportRegister, searchInRegisters, setSearchInRegisters, checkFixedRegisters, setCheckFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters}}>
       {children}
     </RegistersTableContext.Provider>
   );

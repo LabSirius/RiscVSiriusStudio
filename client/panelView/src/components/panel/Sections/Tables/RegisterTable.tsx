@@ -17,11 +17,13 @@ import { resetCellColors } from '@/utils/tables/handlersShared';
 
 import SkeletonRegisterTable from '@/components/panel/Skeleton/SkeletonRegisterTable';
 import { sendMessage } from '@/components/Message/sendMessage';
+import { useRegisterData } from '@/context/shared/RegisterData';
 
 const RegistersTable = () => {  
   const { theme } = useTheme()
   const { isCreatedMemoryTable } = useMemoryTable();
-  const { registerData, setRegisterData, writeInRegister, setWriteInRegister, importRegister, setImportRegister, searchInRegisters, checkFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters } = useRegistersTable();
+  const {registerData, setRegisterData} = useRegisterData();
+  const {  writeInRegister, setWriteInRegister, importRegister, setImportRegister, searchInRegisters, checkFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters } = useRegistersTable();
   
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);

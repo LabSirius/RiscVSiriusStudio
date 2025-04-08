@@ -18,7 +18,8 @@ import { IRProvider } from "./context/graphic/IRContext";
 import { ReactFlowProvider } from "@xyflow/react";
 import Canva from "./components/graphic/Canva/Canva";
 import CurrentInstructionInfo from "./components/graphic/CurrentInstructionInfo";
-import { PCProvider } from "./context/shared/PCCONTEXT";
+import { PCProvider } from "./context/shared/PCContext";
+import { RegisterDataProvider } from "./context/shared/RegisterData";
 
 
 const App = () => {  
@@ -29,17 +30,15 @@ const App = () => {
       <IRProvider>
         <LinesProvider>
         <MemoryTableProvider>
+          <RegisterDataProvider >
           <RegistersTableProvider>
             <DialogProvider>
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <ReactFlowProvider>
             <OverlayProvider>
               <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
-                  <MessageListener />
-                  
+                  <MessageListener />  
                     <Canva />
-             
-               
                   <div className="relative">
                   <CurrentInstructionInfo />
                    <MainSectionContainer />
@@ -51,6 +50,7 @@ const App = () => {
             </ThemeProvider>
             </DialogProvider>
           </RegistersTableProvider>
+          </RegisterDataProvider>
         </MemoryTableProvider>
         </LinesProvider>
       </IRProvider>

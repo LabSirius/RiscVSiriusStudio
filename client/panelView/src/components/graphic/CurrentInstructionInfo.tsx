@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useIR } from "@/context/graphic/IRContext";
-import { usePC } from "@/context/shared/PCCONTEXT";
+import { usePC } from "@/context/shared/PCContext";
 
 const CurrentInstructionInfo = () => {
   const { ir } = useIR();

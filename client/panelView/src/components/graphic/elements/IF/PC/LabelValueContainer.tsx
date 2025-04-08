@@ -1,5 +1,5 @@
 import LabelValue from '@/components/graphic/LabelValue';
-import { usePC } from '@/context/shared/PCCONTEXT';
+import { usePC } from '@/context/shared/PCContext';
 import { useFormattedPC } from '@/hooks/graphic/useFormattedPC'; 
 
 const LabelValueContainer = () => {

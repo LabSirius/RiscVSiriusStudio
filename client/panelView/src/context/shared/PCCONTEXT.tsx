@@ -5,7 +5,6 @@ export interface PCContextProps {
   setNewPc: React.Dispatch<React.SetStateAction<number>>;
 }
 
-
 const PCContext = createContext<PCContextProps | undefined>(undefined);
 
 export const PCProvider: React.FC<{ children: ReactNode }> = ({ children }) => {

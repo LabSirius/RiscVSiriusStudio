@@ -1,6 +1,6 @@
 import { useIR } from '@/context/graphic/IRContext';
 import LabelValue from '@/components/graphic/LabelValue';
-import { usePC } from '@/context/shared/PCCONTEXT';
+import { usePC } from '@/context/shared/PCContext';
 
 const LabelValueContainer = () => {
   const { currentType, ir } = useIR();

@@ -1,6 +1,6 @@
 import { useIR } from '@/context/graphic/IRContext';
 import LabelValue from '@/components/graphic/LabelValue';
-import { usePC } from '@/context/shared/PCCONTEXT';
+import { usePC } from '@/context/shared/PCContext';
 
 
 const LabelValueContainer = () => {
@@ -32,7 +32,7 @@ const LabelValueContainer = () => {
         </div>
 
         <div className=' absolute top-[9.2rem] right-[.8rem]'>
-          <LabelValue label="RU[rs2]" value="h'00-00-00-00" input={false}/>
+        {(currentType === 'R' || currentType === 'S'  || currentType === 'B' ) && <LabelValue label="RU[rs2]" value="h'00-00-00-00" input={false}/> }
         </div>
     </>
   )

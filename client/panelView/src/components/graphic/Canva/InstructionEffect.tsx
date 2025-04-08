@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Edge } from '@xyflow/react';
 import { useIR } from '@/context/graphic/IRContext';
-import { usePC } from '@/context/shared/PCCONTEXT';
+import { usePC } from '@/context/shared/PCContext';
 
 interface InstructionEffectProps {
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;

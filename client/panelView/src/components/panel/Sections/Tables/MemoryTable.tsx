@@ -30,7 +30,7 @@ import { getColumnMemoryDefinitions } from "@/utils/tables/definitions/definitio
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";
 import { sendMessage } from "@/components/Message/sendMessage";
 import { useLines } from "@/context/panel/LinesContext";
-import { usePC } from "@/context/shared/PCCONTEXT";
+import { usePC } from "@/context/shared/PCContext";
 
 const MemoryTable = () => {
   const { theme } = useTheme();
