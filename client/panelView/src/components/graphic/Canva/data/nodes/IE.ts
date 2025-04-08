@@ -16,7 +16,7 @@ export const IE: Node[] = [
         draggable: false,
         zIndex: 8,
         style: {
-          width: 650,
+          width: 680,
           height: 1375,
           backgroundColor: '#E3F2FD',
           border: '1px solid #E3F2FD',
@@ -123,7 +123,7 @@ export const IE: Node[] = [
       parentId: 'IE',
       extent: 'parent',
       style: {
-        width: 290,
+        width: 325,
         height: 320,
         backgroundColor: 'transparent',
         border: 'none',
@@ -137,11 +137,11 @@ export const IE: Node[] = [
       id: 'aluOp',
       type: 'aluOp',
       data: { label: 'ALU OPERATION' },
-      position: { x: 400, y: 1020 },
+      position: { x: 410, y: 1020 },
       parentId: 'IE',
       extent: 'parent',
       style: {
-        width: 90,
+        width: 105,
         height: 30,
         backgroundColor: 'transparent',
         border: 'none',
@@ -159,7 +159,7 @@ export const IE: Node[] = [
       parentId: 'IE',
       extent: 'parent',
       style: {
-        width: 400,
+        width: 420,
         height: 160,
         backgroundColor: 'transparent',
         border: 'none',
@@ -173,7 +173,7 @@ export const IE: Node[] = [
       id: 'brOp',
       type: 'brOp',
       data: { label: 'BrOp' },
-      position: { x: 360, y: 530 },
+      position: { x: 370, y: 530 },
       parentId: 'IE',
       extent: 'parent',
       style: {

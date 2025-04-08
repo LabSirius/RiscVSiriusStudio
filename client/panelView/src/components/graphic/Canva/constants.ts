@@ -20,7 +20,7 @@ import MuxA from '../elements/IE/MuxA';
 import ALUASrc from '../elements/IE/ALUASrc';
 import MuxB from '../elements/IE/MuxB';
 import ALUBSrc from '../elements/IE/ALUBSrc';
-import ALU from '../elements/IE/ALU';
+import ALU from '../elements/IE/ALU/ALU';
 import ALUOp from '../elements/IE/ALUOp';
 import BranchUnit from '../elements/IE/BranchUnit';
 import BrOp from '../elements/IE/BrOp';

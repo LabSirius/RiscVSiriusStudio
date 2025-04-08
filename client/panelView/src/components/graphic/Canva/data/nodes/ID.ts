@@ -16,7 +16,7 @@ export const ID: Node[] = [
       draggable: false,
       zIndex: 10,
       style: {
-        width: 730,
+        width: 740,
         height: 1375,
         backgroundColor: '#FFF9C4',
         border: '1px solid #FFF9C4',
@@ -48,7 +48,7 @@ export const ID: Node[] = [
       id: 'controlUnit',
       type: 'controlUnit',
       data: { label: 'Control Unit' },
-      position: { x: 245, y: 310 },
+      position: { x: 255, y: 310 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -66,7 +66,7 @@ export const ID: Node[] = [
       id: 'ruWr',
       type: 'ruWr',
       data: { label: 'RUWR' },
-      position: { x: 110, y: 1034 },
+      position: { x: 120, y: 1034 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -86,7 +86,7 @@ export const ID: Node[] = [
       id: 'registersUnit',
       type: 'registerUnit',
       data: { label: 'Registers Unit' },
-      position: { x: 245, y: 655 },
+      position: { x: 255, y: 655 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -104,7 +104,7 @@ export const ID: Node[] = [
       id: 'immSrc',
       type: 'immSrc',
       data: { label: 'IMMSrc' },
-      position: { x: 100, y: 1309 },
+      position: { x: 110, y: 1309 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -122,7 +122,7 @@ export const ID: Node[] = [
       id: 'immGenerator',
       type: 'immGenerator',
       data: { label: 'Immediate Generator' },
-      position: { x: 245, y: 1199.5 },
+      position: { x: 255, y: 1199.5 },
       parentId: 'ID',
       extent: 'parent',
       style: {

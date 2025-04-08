@@ -256,7 +256,7 @@ a:hover{
 
 
 .titleInElement {
-  @apply text-[1.7rem] text-[#555555] absolute transform z-2 leading-tight;
+  @apply text-[1.7rem] text-[#555555] font-semibold absolute transform z-2 leading-tight;
 }
 
 .subtitleLabelInElement {
