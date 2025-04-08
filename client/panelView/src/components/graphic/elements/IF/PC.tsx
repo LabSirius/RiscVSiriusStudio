@@ -12,7 +12,7 @@ export default function PC() {
        <div className='relative w-full h-full'>
        <h2 className="titleInElement top-[15%] left-[50%] -translate-x-[50%] -translate-y-[15%]">PC</h2>
        <div className='relative w-full h-full'>
-        <ContainerSVG  height={7.4} active={true} />
+        <ContainerSVG  height={9.2} active={true} />
         <div className='valueInElement top-[42%] right-[.8rem]'>
           <h3 className=''>{newPc*4}</h3>
         </div>
@@ -22,12 +22,16 @@ export default function PC() {
 
        <Handle type="target"
         position={Position.Left}
-        className='input' />
+        className='input' 
+        style={{ top: '3.75rem'}} />
+        
         
 
         <Handle  type="source"
         position={Position.Right}
-        className='output' />
+        className='output' 
+        style={{ top: '5.75rem'}} />
+
     </div>
     
   );

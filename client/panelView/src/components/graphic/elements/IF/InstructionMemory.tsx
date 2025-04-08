@@ -29,7 +29,9 @@ export default function InstructionMemory() {
        </div>
       <Handle  type="target"
         position={Position.Left}
-        className='input' />
+        className='input'
+        style={{ top: '8.3rem'}} />
+         
       <Handle  type="source"
         position={Position.Right}
         className='output'

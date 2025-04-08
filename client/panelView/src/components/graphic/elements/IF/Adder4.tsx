@@ -30,7 +30,7 @@ export default function Adder4() {
         type="source"
         position={Position.Right}
         className='output'
-        style={{ top: '2rem'}}
+        style={{ top: '1.96rem'}}
       />
 
 
