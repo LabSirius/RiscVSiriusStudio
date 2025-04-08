@@ -1,11 +1,9 @@
 import { Handle, Position } from '@xyflow/react';
 import { useIR } from '@/context/graphic/IRContext';
 import ContainerSVG from '../../ContainerSVG';
-import DecodeTunnel from './outputTunnels/DecodeTunnel';
-import ExecuteTunnel from './outputTunnels/ExecuteTunnel';
-import MemoryTunnel from './outputTunnels/MemoryTunnel';
-import WBTunnel from './outputTunnels/WBTunnel';
+
 import LabelSlash from '@/components/graphic/LabelSlash';
+import Tunels from './outputTunnels/Tunels';
 
 interface InputHandlerConfig {
   id: string;
@@ -35,12 +33,7 @@ export default function ControlUnit() {
           <LabelSlash label='funct3' number={3} inactive={currentType === 'LUI'} />
           <LabelSlash label='funct7' number={7} inactive={!(currentType === 'R')} />
         </div>
-        <div className='absolute z-10 right-[-6.17rem] top-[1.3rem] flex flex-col gap-[0.9rem]'>
-        <DecodeTunnel />
-        <ExecuteTunnel />
-        <MemoryTunnel />
-        <WBTunnel />
-      </div>
+        <Tunels />
       </div>
 
       {/* Render input handlers programmatically */}

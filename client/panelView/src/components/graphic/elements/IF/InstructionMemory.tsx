@@ -1,6 +1,7 @@
 import ContainerSVG from '../ContainerSVG';
 import { Handle , Position} from '@xyflow/react';
 import LabelSlash from '@/components/graphic/LabelSlash';
+import LabelValue from '../../LabelValue';
 
 export default function InstructionMemory() {
 
@@ -13,17 +14,17 @@ export default function InstructionMemory() {
           <ContainerSVG height={13}  active={true} />
 
 
-          <div className='absolute bottom-[4.96rem] right-[-2.5rem]'>
+          <div className='absolute bottom-[5rem] right-[-2.5rem]'>
               <LabelSlash number={32} />
           </div>
         </div>
         
-        <div className='subtitleInElement absolute top-[42%] left-[.8rem]'>
-          <h3 className=''>Address: </h3>
+        <div className='absolute top-[36%] left-[.8rem]'>
+          <LabelValue label="PC" value="00-00"/>
         </div>
         
-        <div className='subtitleInElement absolute top-[63%] right-[.8rem]'>
-          <h3 >Instruction</h3>
+        <div className=' absolute top-[50%] right-[.8rem]'>
+          <LabelValue label="Instruction" value="00-00-00-00" input={false}/>
         </div>
        
        </div>

@@ -33,8 +33,8 @@ export default function RegistersUnit() {
         <div className='relative'>
           <ContainerSVG height={28}  active={true} />
 
-          <div className='absolute top-[.9rem] left-[-6.85rem] flex flex-col gap-[4rem]'>
-            <div className='flex flex-col gap-[2.9rem]'>
+          <div className='absolute top-[.9rem] left-[-6.85rem] flex flex-col gap-[3.9rem]'>
+            <div className='flex flex-col gap-[2.7rem]'>
               <LabelSlash label='rs1' number={5}  inactive={(currentType === 'LUI')}/>
               <LabelSlash label='rs2' number={5} inactive={!(currentType === 'R' || currentType === 'B')} />
               <LabelSlash label='rd' number={5} inactive={(currentType === 'B')}/>

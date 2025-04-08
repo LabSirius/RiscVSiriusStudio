@@ -259,14 +259,17 @@ a:hover{
   @apply text-[1.6rem] text-[#555555] absolute transform z-2 leading-tight;
 }
 
-.subtitleInElement {
+.subtitleLabelInElement {
   @apply text-[1.5rem] text-[#777777] transform z-2 italic;
 }
-.numberLabelInElement {
-  @apply text-[1.3rem] text-orange-400 transform z-2 italic;
+.numberLabelInElement, .numberNumBitsInput  {
+  @apply text-[1.3rem] transform z-2 italic;
 }
-.valueInElement {
-  @apply text-[1.5rem] text-[#777777] absolute transform z-2;
+.numberLabelInElement {
+  @apply  text-[#777777];
+}
+.numberNumBitsInput {
+  @apply  text-orange-400;
 }
 
 .input {
