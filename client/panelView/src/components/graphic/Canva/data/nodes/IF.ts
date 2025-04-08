@@ -48,12 +48,12 @@ export const IF: Node[] = [
       id: 'pc',
       type: 'pc',
       data: { label: 'PC' },
-      position: { x: 280, y: 745 },
+      position: { x: 280, y: 705 },
       parentId: 'IF',
       extent: 'parent',
       style: {
         width: 180,
-        height: 146,
+        height: 239,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,
@@ -107,7 +107,7 @@ export const IF: Node[] = [
       extent: 'parent',
       style: {
         width: 290,
-        height: 250,
+        height: 339,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,
@@ -120,7 +120,7 @@ export const IF: Node[] = [
       id: 'muxD',
       type: 'muxD',
       data: { label: 'MUX D' },
-      position: { x: 158, y: 730 },
+      position: { x: 158, y: 800 },
       parentId: 'IF',
       extent: 'parent',
       style: {

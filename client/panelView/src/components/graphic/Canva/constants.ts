@@ -1,7 +1,7 @@
 import TitleText from '../elements/TittleText';
 
 //Section 1
-import PC from '../elements/IF/PC';
+import PC from '../elements/IF/PC/PC';
 import Adder4 from '../elements/IF/Adder4';
 import Four from '../elements/IF/Four';
 import InstructionMemory from '../elements/IF/InstructionMemory/InstructionMemory';
