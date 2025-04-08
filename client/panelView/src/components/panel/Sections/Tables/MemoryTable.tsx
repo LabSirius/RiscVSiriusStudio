@@ -24,7 +24,7 @@ import {
   binaryToInt,
   binaryToIntTwoComplement,
   hexToInt
-} from "@/utils/tables/handlerConversions";
+} from "@/utils/handlerConversions";
 import { getColumnMemoryDefinitions } from "@/utils/tables/definitions/definitionsColumns";
 
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";

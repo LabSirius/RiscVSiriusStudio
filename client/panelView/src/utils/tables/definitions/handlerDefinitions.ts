@@ -18,7 +18,7 @@ import {
     validBinary,
     validAscii,
     toBinary
-  } from '@/utils/tables/handlerConversions';
+  } from '@/utils/handlerConversions';
 
 
 

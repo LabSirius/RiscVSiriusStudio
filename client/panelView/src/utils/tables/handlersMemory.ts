@@ -1,5 +1,5 @@
 import { chunk } from 'lodash';
-import { intToHex, binaryToHex,  } from '@/utils/tables/handlerConversions';
+import { intToHex, binaryToHex,  } from '@/utils/handlerConversions';
 import { SymbolData } from '@/utils/tables/types';
 import { TabulatorFull as Tabulator, CellComponent, RowComponent } from 'tabulator-tables';
 import { MemoryRow } from '@/utils/tables/types';

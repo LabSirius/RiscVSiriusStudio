@@ -4,7 +4,7 @@ import ValueInput from "@/components/panel/Convert/ValueInput";
 import ResultOutput from "@/components/panel/Convert/ResultOutput";
 import SwapButton from "@/components/panel/Convert/SwapButton";
 import CopyButton from "@/components/panel/Convert/CopyButton";
-import { processTwoComplementInput, convertValue } from "@/utils/convert";
+import { processTwoComplementInput, convertValue } from "@/utils/tables/convert";
 
 const formatOptions: Option[] = [
   { label: "Two's complement", value: 'twoCompl' },
