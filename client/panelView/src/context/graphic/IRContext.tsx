@@ -14,8 +14,16 @@ interface IRState {
         rs1: string;
         rs2?: string;
         rd?: string;
-        
-      }
+      },
+      rd?:{
+        regenc: string;
+      },
+      rs1:{
+        regenc: string;
+      },
+      rs2?:{
+        regenc: string;
+      },
     }
   ];
   symbols: Record<string, Record<string, string>>;
@@ -44,7 +52,16 @@ const IRContext = createContext<IRContextType>({
           rs1: "",
           rs2: "",
           rd: "",
-        }
+        },
+        rd:{ 
+          regenc: "",
+        },
+        rs1:{
+          regenc: "",
+        },
+        rs2:{
+          regenc: "",
+        },
       },
     ],
     symbols: {
@@ -74,6 +91,15 @@ export const IRProvider = ({ children }: { children: ReactNode }) => {
           rs1: "",
           rs2: "",
           rd: "",
+        },
+        rd:{ 
+          regenc: "",
+        },
+        rs1:{
+          regenc: "",
+        },
+        rs2:{
+          regenc: "",
         },
         
       },
