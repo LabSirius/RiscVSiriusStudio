@@ -8,7 +8,7 @@ const LabelSlashContainer = () => {
   return (
     <div className='absolute top-[.5rem] left-[-6.85rem] flex flex-col gap-[3.4rem]'>
             <div className='flex flex-col gap-[2.3rem]'>
-              <LabelSlash label='rs1' number={5}  inactive={(currentType === 'LUI')}/>
+              <LabelSlash label='rs1' number={5}  inactive={(currentType === 'LUI' || currentType === 'J')}/>
               <LabelSlash label='rs2' number={5} inactive={!(currentType === 'R' || currentType === 'B' || currentType === 'S')} />
               <LabelSlash label='rd' number={5} inactive={(currentType === 'B' || currentType === 'S')}/>
             </div>

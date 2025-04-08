@@ -11,14 +11,14 @@ interface IRState {
         binaryEncoding: string;
         funct3: string;
         funct7: string;
-        rs1: string;
+        rs1?: string;
         rs2?: string;
         rd?: string;
       },
       rd?:{
         regenc: string;
       },
-      rs1:{
+      rs1?:{
         regenc: string;
       },
       rs2?:{

@@ -14,7 +14,7 @@ const LabelValueContainer = () => {
   const [currentRs2, setCurrentRs2] = useState<string>('');
 
   useEffect(() => {
-      setCurrentRs1(binaryToHex(registerData[Number(ir.instructions[newPc].rs1.regenc)]).toUpperCase());
+      setCurrentRs1(binaryToHex(registerData[Number(ir.instructions[newPc].rs1?.regenc)]).toUpperCase());
       setCurrentRs2(binaryToHex(registerData[Number(ir.instructions[newPc].rs2?.regenc)]).toUpperCase());
       
   }, [newPc, registerData, ir])
@@ -22,15 +22,15 @@ const LabelValueContainer = () => {
   return (
     <>
       <div className=' absolute top-[1.4rem] left-[.8rem]'>
-          <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.rs1}'`}/>
+      {!(currentType === 'J') && <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.rs1}`}/> }
         </div>
 
         <div className=' absolute top-[6.6rem] left-[.8rem]'>
-         {(currentType === 'R' || currentType === 'S'  || currentType === 'B' ) && <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.rs2}'`}/>}
+         {(currentType === 'R' || currentType === 'S'  || currentType === 'B' ) && <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.rs2}`}/>}
         </div>
 
         <div className=' absolute top-[12rem] left-[.8rem]'>
-        {!(currentType === 'S'  || currentType === 'B' ) && <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.rd}'`}/>}
+        {!(currentType === 'S'  || currentType === 'B' ) && <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.rd}`}/>}
         </div>
 
         <div className=' absolute top-[16rem] left-[.8rem]'>
@@ -38,11 +38,11 @@ const LabelValueContainer = () => {
         </div>
 
         <div className=' absolute top-[1rem] right-[.8rem]'>
-          <LabelValue label="RU[rs1]" value={`h'${currentRs1}'`} input={false}/>
+        {!(currentType === 'J') && <LabelValue label="RU[rs1]" value={`h'${currentRs1}`} input={false}/> }
         </div>
 
         <div className=' absolute top-[9.2rem] right-[.8rem]'>
-        {(currentType === 'R' || currentType === 'S'  || currentType === 'B' ) && <LabelValue label="RU[rs2]" value={`h'${currentRs2}'`}  input={false}/> }
+        {(currentType === 'R' || currentType === 'S'  || currentType === 'B' ) && <LabelValue label="RU[rs2]" value={`h'${currentRs2}`}  input={false}/> }
         </div>
     </>
   )

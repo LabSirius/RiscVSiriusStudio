@@ -233,6 +233,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         targetEdges = [
           ...skipFunct7Edges,
           ...skipRS1Edges,
+          ...skipRS1InputEdges,
           ...skipRS2Edges,
           ...muxBRouteEdges_I,
           ...muxCRouteExtraEdges_JALR,
