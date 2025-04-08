@@ -86,7 +86,7 @@ export const ID: Node[] = [
       id: 'registersUnit',
       type: 'registerUnit',
       data: { label: 'Registers Unit' },
-      position: { x: 245, y: 670 },
+      position: { x: 245, y: 655 },
       parentId: 'ID',
       extent: 'parent',
       style: {

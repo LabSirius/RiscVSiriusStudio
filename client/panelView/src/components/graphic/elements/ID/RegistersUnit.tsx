@@ -13,16 +13,16 @@ export default function RegistersUnit() {
   const { currentType } = useIR();
 
   const inputHandlers: HandlerConfig[] = [
-    { id: '[19:15]', top: '2.2rem' },
-    { id: '[24:20]', top: '7.2rem' },
-    { id: '[11:7]', top: '12.2rem' },
-    { id: 'dataWr', top: '17.8rem' },
-    { id: 'ruWr', top: '23.7rem' },
+    { id: '[19:15]', top: '3.15rem' },
+    { id: '[24:20]', top: '8.15rem' },
+    { id: '[11:7]', top: '13.15rem' },
+    { id: 'dataWr', top: '19.17rem' },
+    { id: 'ruWr', top: '24.62rem' },
   ];
 
   const outputHandlers: HandlerConfig[] = [
-    { id: 'muxA', top: '3.95rem' },
-    { id: 'muxB', top: '12.2rem' },
+    { id: 'muxA', top: '4.9rem' },
+    { id: 'muxB', top: '13.12rem' },
   ];
 
   return (
@@ -33,7 +33,7 @@ export default function RegistersUnit() {
         <div className='relative'>
           <ContainerSVG height={28}  active={true} />
 
-          <div className='absolute top-0 left-[-6.85rem] flex flex-col gap-[3.6rem]'>
+          <div className='absolute top-[1rem] left-[-6.85rem] flex flex-col gap-[4rem]'>
             <div className='flex flex-col gap-[2.9rem]'>
               <LabelSlash label='rs1' number={5}  inactive={(currentType === 'LUI')}/>
               <LabelSlash label='rs2' number={5} inactive={!(currentType === 'R' || currentType === 'B')} />
