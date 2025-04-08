@@ -1,19 +1,10 @@
 import LabelValue from '@/components/graphic/LabelValue';
 import { usePC } from '@/context/shared/PCCONTEXT';
-import { unsignedToHex } from '@/utils/handlerConversions';
-import { useEffect, useState } from 'react';
+import { useFormattedPC } from '@/hooks/useFormattedPC'; 
 
 const LabelValueContainer = () => {
   const { newPc } = usePC();
-
-  const [formattedPC, setFormattedPC] = useState("h'000");
-
-  useEffect(() => {
-    const pcHex = newPc * 4;
-    const hex = unsignedToHex(pcHex).padStart(3, '0');
-    const formattedHex = `h'${hex}`;
-    setFormattedPC(formattedHex);
-  }, [newPc]);
+  const formattedPC = useFormattedPC(newPc);
 
   return (
     <>
