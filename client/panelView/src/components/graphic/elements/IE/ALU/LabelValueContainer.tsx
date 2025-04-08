@@ -25,7 +25,7 @@ const LabelValueContainer = () => {
   return (
     <>
       <div className=' absolute top-[1.4rem] left-[.8rem]'>
-          <LabelValue label="A" value={(currentType === 'B' || currentType === 'J') ? 'PC'  : `h'${currentRs1}`}/>
+        {!( currentType === 'LUI' ) && <LabelValue label="A" value={(currentType === 'B' || currentType === 'J' || currentType === 'AUIPC') ? 'PC'  : `h'${currentRs1}`}/> }
         </div>
 
         <div className=' absolute top-[11.4rem] left-[.8rem]'>
