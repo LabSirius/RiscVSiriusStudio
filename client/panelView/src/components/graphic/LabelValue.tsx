@@ -7,8 +7,8 @@ interface LabelValueProps {
 
 const LabelValue = ({label, value, input=true} : LabelValueProps) => {
   return (
-    <div className="flex flex-col relative ">
-      <h2 className={`subtitleLabelInElement relative top-[.3rem]  ${input ? 'text-start' : 'text-end' }`}>{label}</h2>
+    <div className="relative flex flex-col ">
+      <h2 className={`subtitleLabelInElement relative top-[.7rem]  ${input ? 'text-start' : 'text-end' }`}>{label}</h2>
       <h2 className="numberLabelInElement">{value}</h2>
     </div>
   )

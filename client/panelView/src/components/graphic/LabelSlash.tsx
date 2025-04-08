@@ -8,10 +8,10 @@ interface LabelSlashProps {
 
 const LabelSlash = ({label="", number, inactive=false}: LabelSlashProps) => {
   return (
-    <div className="flex gap-3 relative">
+    <div className="relative flex gap-3">
       <h2 className='subtitleLabelInElement'>{label}</h2>
-      <div className='flex flex-col relative'>
-        <h3 className={`numberNumBitsInput ${inactive && '!text-[#D3D3D3]'} absolute top-[-.5rem] left-[.7rem]`}>{number}</h3>
+      <div className='relative flex flex-col'>
+        <h3 className={`numberNumBitsInput ${inactive && '!text-[#D3D3D3]'} absolute top-[-.7rem] left-[.7rem]`}>{number}</h3>
         <Slash size={20} strokeWidth={3} color={inactive ? '#D3D3D3' : 'orange'} className='absolute top-[1.5rem]'/>
 
       </div>
