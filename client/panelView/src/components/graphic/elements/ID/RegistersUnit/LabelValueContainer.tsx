@@ -1,30 +1,26 @@
 import { useIR } from '@/context/graphic/IRContext';
 import LabelValue from '@/components/graphic/LabelValue';
 import { usePC } from '@/context/shared/PCCONTEXT';
-import { useFormattedReg } from '@/hooks/graphic/useFormattedReg';
 
 
 const LabelValueContainer = () => {
   const { currentType, ir } = useIR();
    const { newPc } = usePC();
-   const formattedRS1 = useFormattedReg(newPc, ir.instructions[newPc].rs1.regenc);
-   const formattedRS2 = useFormattedReg(newPc, ir.instructions[newPc].rs2?.regenc || "");
-   
 
   console.log(currentType)
 
   return (
     <>
       <div className=' absolute top-[1.4rem] left-[.8rem]'>
-          <LabelValue label="" value={formattedRS1}/>
+          <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.rs1}'`}/>
         </div>
 
         <div className=' absolute top-[6.6rem] left-[.8rem]'>
-         {(currentType === 'R' || currentType === 'S'  || currentType === 'B' ) && <LabelValue label="" value={formattedRS2}/>}
+         {(currentType === 'R' || currentType === 'S'  || currentType === 'B' ) && <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.rs2}'`}/>}
         </div>
 
         <div className=' absolute top-[12rem] left-[.8rem]'>
-          <LabelValue label="" value="b'00000"/>
+        {!(currentType === 'S'  || currentType === 'B' ) && <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.rd}'`}/>}
         </div>
 
         <div className=' absolute top-[16rem] left-[.8rem]'>
