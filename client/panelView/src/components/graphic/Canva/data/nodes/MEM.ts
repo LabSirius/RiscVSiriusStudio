@@ -17,7 +17,7 @@ export const MEM: Node[] = [
         zIndex: 6,
         style: {
           width: 550,
-          height: 1365,
+          height: 1375,
           backgroundColor: '#E8F5E9',
           border: '1px solid #E8F5E9',
           borderRadius: 8,

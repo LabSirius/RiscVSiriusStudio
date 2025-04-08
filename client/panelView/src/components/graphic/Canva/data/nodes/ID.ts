@@ -17,7 +17,7 @@ export const ID: Node[] = [
       zIndex: 10,
       style: {
         width: 730,
-        height: 1365,
+        height: 1375,
         backgroundColor: '#FFF9C4',
         border: '1px solid #FFF9C4',
         borderRadius: 8,
@@ -104,7 +104,7 @@ export const ID: Node[] = [
       id: 'immSrc',
       type: 'immSrc',
       data: { label: 'IMMSrc' },
-      position: { x: 100, y: 1293.5 },
+      position: { x: 100, y: 1309 },
       parentId: 'ID',
       extent: 'parent',
       style: {
@@ -122,12 +122,12 @@ export const ID: Node[] = [
       id: 'immGenerator',
       type: 'immGenerator',
       data: { label: 'Immediate Generator' },
-      position: { x: 245, y: 1220 },
+      position: { x: 245, y: 1199.5 },
       parentId: 'ID',
       extent: 'parent',
       style: {
         width: 360,
-        height: 180,
+        height: 150,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,
