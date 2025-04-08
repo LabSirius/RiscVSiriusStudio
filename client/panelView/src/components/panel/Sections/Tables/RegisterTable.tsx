@@ -122,14 +122,20 @@ const RegistersTable = () => {
   */
   useEffect(() => {
     if (writeInRegister.value === '' || !tableBuilt) return;
-      
+
+    const index = Number(writeInRegister.registerName.replace('x', ''));
+    setRegisterData(prevData => {
+      const newRegisters = [...prevData];
+      newRegisters[index] = writeInRegister.value;
+      return newRegisters;
+    });
     updateRegisterValue(
       tabulatorInstance,
       writeInRegister.registerName,
       writeInRegister.value
     );
   
-    
+
     if (checkFixedRegisters) {
       const row = tabulatorInstance.current?.getRow(writeInRegister.registerName);
       if (row) {
@@ -140,7 +146,6 @@ const RegistersTable = () => {
         }
       }
     }
-  
     setFixedchangedRegisters((prev) => [
       ...prev,
       writeInRegister.registerName,
@@ -152,6 +157,7 @@ const RegistersTable = () => {
     tableBuilt,
     setFixedchangedRegisters,
     checkFixedRegisters,
+    setRegisterData,
   ]);
 
 
