@@ -3,6 +3,7 @@ import ContainerSVG from '../../ContainerSVG';
 
 import Tunels from './outputTunnels/Tunels';
 import LabelSlasConatiner from './LabelSlashContainer';
+import LabelValue from '@/components/graphic/LabelValue';
 
 interface InputHandlerConfig {
   id: string;
@@ -26,6 +27,18 @@ export default function ControlUnit() {
       <div className='relative'>
         <ContainerSVG height={16}  active={true} />
         <LabelSlasConatiner />
+
+        <div className=' absolute top-[1.2rem] left-[.8rem]'>
+          <LabelValue label="" value="0000000"/>
+        </div>
+
+        <div className=' absolute top-[6.4rem] left-[.8rem]'>
+          <LabelValue label="" value="000"/>
+        </div>
+
+        <div className=' absolute top-[11.9rem] left-[.8rem]'>
+          <LabelValue label="" value="00000"/>
+        </div>
 
         <Tunels />
       </div>

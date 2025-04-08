@@ -4,7 +4,7 @@ import TitleText from '../elements/TittleText';
 import PC from '../elements/IF/PC';
 import Adder4 from '../elements/IF/Adder4';
 import Four from '../elements/IF/Four';
-import InstructionMemory from '../elements/IF/InstructionMemory';
+import InstructionMemory from '../elements/IF/InstructionMemory/InstructionMemory';
 import MuxD from '../elements/IF/MuxD';
 
 
