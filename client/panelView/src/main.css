@@ -260,10 +260,10 @@ a:hover{
 }
 
 .subtitleLabelInElement {
-  @apply text-[1.7rem] text-[#777777] transform z-2 italic;
+  @apply text-[1.8rem] text-[#777777] transform z-2 italic;
 }
 .numberLabelInElement, .numberNumBitsInput  {
-  @apply text-[1.7rem] transform z-2 italic;
+  @apply text-[1.8rem] transform z-2 italic;
 }
 .numberLabelInElement {
   @apply  text-[#777777];
@@ -308,13 +308,13 @@ a:hover{
   content: "";
   position: absolute;
   inset: 1px; 
-  background: #FFFFAA; /* Mismo color de fondo */
+  background: #FFFFAA; 
   clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
   z-index: 0; 
 }
 
 .subtitleInTunnel {
-  @apply text-[1.2rem] text-[#000] absolute transform z-2 italic top-[50%] left-[.4rem] -translate-y-[50%];
+  @apply text-[1.4rem] text-[#000] absolute transform z-2 italic top-[50%] left-[.4rem] -translate-y-[50%];
 }
 
 

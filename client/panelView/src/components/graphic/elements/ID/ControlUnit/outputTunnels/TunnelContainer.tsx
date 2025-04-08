@@ -1,6 +1,6 @@
 const TunnelContainer = ({ color } : {color: string}) => {
   return (
-    <div className="relative w-[6.2rem] h-[2.6rem] left-[-.1rem]">
+    <div className="relative w-[7rem] h-[2.7rem] left-[-.1rem]">
       <div
         className="absolute inset-0 bg-black"
         style={{
