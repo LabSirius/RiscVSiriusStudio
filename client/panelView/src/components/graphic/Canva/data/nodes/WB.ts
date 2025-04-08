@@ -12,7 +12,7 @@ export const WB: Node[] = [
         id: 'WB',
         type: 'group',
         data: { label: 'Section 5' },
-        position: { x: 920 + 730 + 680 + 550, y: 0 },
+        position: { x: 920 + 730 + 680 + 565, y: 0 },
         draggable: false,
         zIndex: 4,
         style: {
@@ -48,7 +48,7 @@ export const WB: Node[] = [
       id: 'muxC',
       type: 'muxC',
       data: { label: 'MUX C' },
-      position: { x: 90, y: 820 },
+      position: { x: 90, y: 790 },
       parentId: 'WB',
       extent: 'parent',
       style: {
@@ -66,7 +66,7 @@ export const WB: Node[] = [
       id: 'ruDataWrSrc',
       type: 'ruDataWrSrc',
       data: { label: 'RUDataWrSrc' },
-      position: { x: 78, y: 1025 },
+      position: { x: 78, y: 980 },
       parentId: 'WB',
       extent: 'parent',
       style: {

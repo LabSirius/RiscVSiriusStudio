@@ -16,7 +16,7 @@ export const MEM: Node[] = [
         draggable: false,
         zIndex: 6,
         style: {
-          width: 550,
+          width: 565,
           height: 1375,
           backgroundColor: '#E8F5E9',
           border: '1px solid #E8F5E9',
@@ -47,11 +47,11 @@ export const MEM: Node[] = [
       id: 'dataMemory',
       type: 'dataMemory', 
       data: { label: 'Data Memory' },
-      position: { x: 210, y: 671 },
+      position: { x: 200, y: 655 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
-        width: 290,
+        width: 325,
         height: 320,
         backgroundColor: 'transparent',
         border: 'none',
@@ -65,7 +65,7 @@ export const MEM: Node[] = [
       id: 'dmWr',
       type: 'dmWr',
       data: { label: 'DMWR' },
-      position: { x: 237, y: 590 },
+      position: { x: 243, y: 575 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
@@ -83,7 +83,7 @@ export const MEM: Node[] = [
       id: 'dmCtrl',
       type: 'dmCtrl',
       data: { label: 'DMCtrl' },
-      position: { x: 347, y: 590 },
+      position: { x: 385, y: 575 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
