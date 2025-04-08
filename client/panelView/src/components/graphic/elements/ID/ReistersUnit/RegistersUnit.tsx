@@ -1,8 +1,7 @@
 import { Handle, Position } from '@xyflow/react';
-import ContainerSVG from '../ContainerSVG';
+import ContainerSVG from '../../ContainerSVG';
 import { Triangle } from 'lucide-react';
-import { useIR } from '@/context/graphic/IRContext';
-import LabelSlash from '@/components/graphic/LabelSlash';
+import LabelSlashes from './LabelSlashes';
 
 interface HandlerConfig {
   id: string;
@@ -10,7 +9,6 @@ interface HandlerConfig {
 }
 
 export default function RegistersUnit() {
-  const { currentType } = useIR();
 
   const inputHandlers: HandlerConfig[] = [
     { id: '[19:15]', top: '3.15rem' },
@@ -33,17 +31,7 @@ export default function RegistersUnit() {
         <div className='relative'>
           <ContainerSVG height={28}  active={true} />
 
-          <div className='absolute top-[.9rem] left-[-6.85rem] flex flex-col gap-[3.9rem]'>
-            <div className='flex flex-col gap-[2.7rem]'>
-              <LabelSlash label='rs1' number={5}  inactive={(currentType === 'LUI')}/>
-              <LabelSlash label='rs2' number={5} inactive={!(currentType === 'R' || currentType === 'B')} />
-              <LabelSlash label='rd' number={5} inactive={(currentType === 'B')}/>
-            </div>
-            <div className='ml-[.8rem]'>
-              <LabelSlash number={32} inactive={(currentType === 'S' || currentType === 'B')} />
-            </div>
-            
-          </div>
+          <LabelSlashes />
         </div>
         <Triangle size={24} className='absolute left-[50%]  transform -translate-x-[50%] text-[#404040] bottom-0 z-2' />
       </div>
