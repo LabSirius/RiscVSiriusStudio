@@ -2,7 +2,7 @@ import { Handle, Position } from '@xyflow/react';
 import ContainerSVG from '../../ContainerSVG';
 
 import Tunels from './outputTunnels/Tunels';
-import LabelSlashes from './LabelSlashes';
+import LabelSlasConatiner from './LabelSlashContainer';
 
 interface InputHandlerConfig {
   id: string;
@@ -25,7 +25,8 @@ export default function ControlUnit() {
       </h2>
       <div className='relative'>
         <ContainerSVG height={16}  active={true} />
-        <LabelSlashes />
+        <LabelSlasConatiner />
+
         <Tunels />
       </div>
 

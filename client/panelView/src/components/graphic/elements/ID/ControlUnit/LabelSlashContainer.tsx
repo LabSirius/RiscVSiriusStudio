@@ -2,7 +2,7 @@ import LabelSlash from '@/components/graphic/LabelSlash';
 import { useIR } from '@/context/graphic/IRContext';
 
 
-const LabelSlashes = () => {
+const LabelSlashContainer = () => {
   const { currentType } = useIR();
 
   return (
@@ -14,4 +14,4 @@ const LabelSlashes = () => {
   )
 }
 
-export default LabelSlashes
+export default LabelSlashContainer
