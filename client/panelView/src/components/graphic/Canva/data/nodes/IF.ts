@@ -107,7 +107,7 @@ export const IF: Node[] = [
       extent: 'parent',
       style: {
         width: 290,
-        height: 200,
+        height: 220,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,

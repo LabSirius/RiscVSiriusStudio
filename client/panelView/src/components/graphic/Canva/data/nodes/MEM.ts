@@ -47,12 +47,12 @@ export const MEM: Node[] = [
       id: 'dataMemory',
       type: 'dataMemory', 
       data: { label: 'Data Memory' },
-      position: { x: 210, y: 691 },
+      position: { x: 210, y: 671 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
-        width: 260,
-        height: 280,
+        width: 290,
+        height: 320,
         backgroundColor: 'transparent',
         border: 'none',
         borderRadius: 0,
@@ -65,7 +65,7 @@ export const MEM: Node[] = [
       id: 'dmWr',
       type: 'dmWr',
       data: { label: 'DMWR' },
-      position: { x: 237, y: 610 },
+      position: { x: 237, y: 590 },
       parentId: 'MEM',
       extent: 'parent',
       style: {
@@ -83,7 +83,7 @@ export const MEM: Node[] = [
       id: 'dmCtrl',
       type: 'dmCtrl',
       data: { label: 'DMCtrl' },
-      position: { x: 347, y: 610 },
+      position: { x: 347, y: 590 },
       parentId: 'MEM',
       extent: 'parent',
       style: {

@@ -10,7 +10,7 @@ export default function InstructionMemory() {
        <h2 className="titleInElement top-[15%] left-[80%]  -translate-x-[80%] -translate-y-[15%]">Instruction Memory</h2>
 
         <div className='relative'>
-          <ContainerSVG height={12.6}  active={true} />
+          <ContainerSVG height={13}  active={true} />
 
 
           <div className='absolute bottom-[4.56rem] right-[-2.5rem]'>

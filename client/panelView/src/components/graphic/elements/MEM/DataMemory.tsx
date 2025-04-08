@@ -9,7 +9,7 @@ export default function DataMemory() {
 
        <div className='relative w-full h-full'>
        <h2 className="titleInElement top-[15%] left-[50%]  -translate-x-[50%] -translate-y-[15%] ">Data Memory</h2>
-        <ContainerSVG height={18}  active={currentType === "L" || currentType === "S"}  /> 
+        <ContainerSVG height={19.2}  active={currentType === "L" || currentType === "S"}  /> 
        </div>
 
        <Handle  type="target"
@@ -28,14 +28,14 @@ export default function DataMemory() {
               id="alu"
               position={Position.Left}
               className='input'
-              style={{top:'7.75rem'}} />
+              style={{top:'9rem'}} />
               
 
         <Handle  type="target"
         id="rs2"
         position={Position.Left}
         className='input'
-        style={{top:'12.75rem'}} />
+        style={{top:'14.75rem'}} />
 
         <Handle  type="source"
         position={Position.Right}
