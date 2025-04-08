@@ -10,15 +10,15 @@ const LabelValueContainer = () => {
   return (
     <>
       <div className=' absolute top-[1.2rem] left-[.8rem]'>
-          <LabelValue label="" value="0000000"/>
+          <LabelValue label="" value="b'0000000"/>
         </div>
 
         <div className=' absolute top-[6.4rem] left-[.8rem]'>
-          <LabelValue label="" value="000"/>
+          <LabelValue label="" value="b'000"/>
         </div>
 
         <div className=' absolute top-[11.9rem] left-[.8rem]'>
-          <LabelValue label="" value="00000"/>
+          <LabelValue label="" value="b'00000"/>
         </div>
     </>
   )

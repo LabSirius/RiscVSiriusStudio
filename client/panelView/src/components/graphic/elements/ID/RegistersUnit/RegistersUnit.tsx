@@ -2,6 +2,7 @@ import { Handle, Position } from '@xyflow/react';
 import ContainerSVG from '../../ContainerSVG';
 import { Triangle } from 'lucide-react';
 import LabelSlashContainer from './LabelSlashContainer';
+import LabelValueContainer from './LabelValueContainer';
 
 interface HandlerConfig {
   id: string;
@@ -32,6 +33,7 @@ export default function RegistersUnit() {
           <ContainerSVG height={28}  active={true} />
 
           <LabelSlashContainer />
+          <LabelValueContainer />
         </div>
         <Triangle size={24} className='absolute left-[50%]  transform -translate-x-[50%] text-[#404040] bottom-0 z-2' />
       </div>
