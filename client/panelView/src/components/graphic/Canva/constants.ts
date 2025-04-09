@@ -12,7 +12,7 @@ import MuxD from '../elements/IF/MuxD';
 import RegistersUnit from '../elements/ID/RegistersUnit/RegistersUnit';
 import ControlUnit from '../elements/ID/ControlUnit/ControlUnit';
 import RUWr from '../elements/ID/RUWr';
-import ImmGenerator from '../elements/ID/ImmGenerator';
+import ImmGenerator from '../elements/ID/ImmGenerator/ImmGenerator';
 import ImmSrc from '../elements/ID/ImmSRC';
 
 //Section 3

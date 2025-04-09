@@ -38,6 +38,9 @@ interface IRContextType {
 
   currentType: string;
   setCurrentType: React.Dispatch<React.SetStateAction<string>>;
+
+  currentImm: string | number;
+  setCurrentImm: React.Dispatch<React.SetStateAction<string | number>>;
 }
 
 const IRContext = createContext<IRContextType>({
@@ -79,6 +82,9 @@ const IRContext = createContext<IRContextType>({
 
   currentType: "",
   setCurrentType: () => {},
+
+  currentImm: "",
+  setCurrentImm: () => {}
 });
 
 export const useIR = () => useContext(IRContext);
@@ -110,7 +116,6 @@ export const IRProvider = ({ children }: { children: ReactNode }) => {
         },
         imm12: 0,
         imm21: 0
-        
       },
     ],
     symbols: {
@@ -119,9 +124,10 @@ export const IRProvider = ({ children }: { children: ReactNode }) => {
     },
   });
   const [currentType, setCurrentType] = useState<string>("");
+  const [currentImm, setCurrentImm] = useState<string | number>("");
 
   return (
-    <IRContext.Provider value={{ ir, setIr, currentType, setCurrentType }}>
+    <IRContext.Provider value={{ ir, setIr, currentType, setCurrentType, currentImm, setCurrentImm }}>
       {children}
     </IRContext.Provider>
   );
