@@ -7,8 +7,8 @@ export const ALUOp_ALU: Edge[] = [
     { id: 'aluOp->ALU',  source: 'aluOp', target: 'alu', targetHandle: 'aluOp',  type: 'smoothstep', markerEnd: {
         type: MarkerType.ArrowClosed,
         color: '#888888',
-        width: 9,
-        height: 9,
+        width: 8,
+        height: 8,
      },},
    
 ];

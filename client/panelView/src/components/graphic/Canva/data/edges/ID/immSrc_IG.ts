@@ -8,8 +8,8 @@ export const immSrc_IG: Edge[] = [
         {
           type: MarkerType.ArrowClosed,
           color: '#888888',
-          width: 9,
-          height: 9,
+          width: 8,
+          height: 8,
         },
     },
 ]
