@@ -17,7 +17,7 @@ const LavelValueContainer = () => {
         </div>
                 
         <div className=' absolute top-[10.5rem] right-[.8rem]'>
-        {(currentType === 'S' || currentType === 'L' ) &&  <LabelValue label="DataRd" value="h'000" input={false}/> }
+        {(currentType === 'L' ) &&  <LabelValue label="DataRd" value="h'000" input={false}/> }
         </div>
     </>
   )
