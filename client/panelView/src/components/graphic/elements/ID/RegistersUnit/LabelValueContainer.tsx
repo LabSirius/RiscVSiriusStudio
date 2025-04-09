@@ -2,16 +2,14 @@ import { useIR } from '@/context/graphic/IRContext';
 import LabelValue from '@/components/graphic/LabelValue';
 import { usePC } from '@/context/shared/PCContext';
 import { useRegisterData } from '@/context/shared/RegisterData';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { binaryToHex } from '@/utils/handlerConversions';
 
 
 const LabelValueContainer = () => {
-  const { currentType, ir } = useIR();
+  const { currentType, ir, currentRs1, setCurrentRs1, currentRs2, setCurrentRs2 } = useIR();
    const { newPc } = usePC();
    const { registerData } = useRegisterData();
-   const [currentRs1, setCurrentRs1] = useState<string>('');
-  const [currentRs2, setCurrentRs2] = useState<string>('');
 
   useEffect(() => {
       setCurrentRs1(binaryToHex(registerData[Number(ir.instructions[newPc].rs1?.regenc)]).toUpperCase());

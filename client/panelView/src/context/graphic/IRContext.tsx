@@ -41,6 +41,12 @@ interface IRContextType {
 
   currentImm: string | number;
   setCurrentImm: React.Dispatch<React.SetStateAction<string | number>>;
+
+  currentRs1: string;
+  setCurrentRs1: React.Dispatch<React.SetStateAction<string>>;
+
+  currentRs2: string;
+  setCurrentRs2: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const IRContext = createContext<IRContextType>({
@@ -84,7 +90,13 @@ const IRContext = createContext<IRContextType>({
   setCurrentType: () => {},
 
   currentImm: "",
-  setCurrentImm: () => {}
+  setCurrentImm: () => {},
+
+  currentRs1: "",
+  setCurrentRs1: () => {},
+
+  currentRs2: "",
+  setCurrentRs2: () => {},
 });
 
 export const useIR = () => useContext(IRContext);
@@ -125,9 +137,11 @@ export const IRProvider = ({ children }: { children: ReactNode }) => {
   });
   const [currentType, setCurrentType] = useState<string>("");
   const [currentImm, setCurrentImm] = useState<string | number>("");
+  const [currentRs1, setCurrentRs1] = useState<string>("");
+  const [currentRs2, setCurrentRs2] = useState<string>("");
 
   return (
-    <IRContext.Provider value={{ ir, setIr, currentType, setCurrentType, currentImm, setCurrentImm }}>
+    <IRContext.Provider value={{ ir, setIr, currentType, setCurrentType, currentImm, setCurrentImm, currentRs1, setCurrentRs1, currentRs2, setCurrentRs2 }}>
       {children}
     </IRContext.Provider>
   );
