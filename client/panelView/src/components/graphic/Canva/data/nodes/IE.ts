@@ -155,11 +155,11 @@ export const IE: Node[] = [
       id: 'branchUnit',
       type: 'branchUnit',
       data: { label: 'Branch Unit' },
-      position: { x: 205, y: 315 },
+      position: { x: 300, y: 315 },
       parentId: 'IE',
       extent: 'parent',
       style: {
-        width: 420,
+        width: 325,
         height: 160,
         backgroundColor: 'transparent',
         border: 'none',
@@ -173,7 +173,7 @@ export const IE: Node[] = [
       id: 'brOp',
       type: 'brOp',
       data: { label: 'BrOp' },
-      position: { x: 370, y: 530 },
+      position: { x: 418, y: 530 },
       parentId: 'IE',
       extent: 'parent',
       style: {
