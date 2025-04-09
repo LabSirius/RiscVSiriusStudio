@@ -55,6 +55,13 @@ function dispatch(
           });
           break;
         }
+        case 'stop': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event }
+          });
+          break;
+        }
         case 'clickInInstruction': {
           UIManager.getInstance()._sendMessageToExtension({
             command: 'event',

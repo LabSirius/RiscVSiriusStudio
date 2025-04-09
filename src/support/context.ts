@@ -247,6 +247,16 @@ export class RVContext {
     }
   }
 
+  private stop() {
+    if (!this._simulator) {
+      throw new Error("No simulator is running");
+    }
+    this._simulator.stop();
+    this._isSimulating = false;
+    this._simulator = undefined;
+    const editor = window.activeTextEditor;
+  }
+
   private animateLine(line: number) {
       this.simulator.animateLine(line);
   }
@@ -277,6 +287,9 @@ export class RVContext {
     switch (message.event) {
       case "step":
         this.step();
+       break;
+       case "stop":
+        this.stop();
        break;
       case "clickInInstruction":
         this.animateLine(message.value);

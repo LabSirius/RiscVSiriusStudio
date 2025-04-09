@@ -44,7 +44,7 @@ export default function CustomControls({
           <button className="react-flow__controls-button-custom_green" onClick={() => sendMessage({event:"step"})}  title="Step">
             <RedoDot size={18}  />
           </button>
-          <button className="react-flow__controls-button-custom_red "  title="Stop">
+          <button className="react-flow__controls-button-custom_red " onClick={() => sendMessage({event:"stop"})}   title="Stop">
             <Ban size={16}  />
           </button>
         </>
