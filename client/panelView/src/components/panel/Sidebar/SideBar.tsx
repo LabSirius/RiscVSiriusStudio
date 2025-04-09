@@ -23,7 +23,7 @@ export function SideBar() {
   const { section, setSection } = useSection();
   return (
     <Sidebar >
-      <SidebarContent className="relative h-full overflow-auto">
+      <SidebarContent className="relative w-full h-full pr-10 overflow-x-hidden overflow-y-auto hide-scrollbar">
         <SidebarGroup className="flex flex-col flex-1">
           <SidebarGroupLabel>Options</SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-col">

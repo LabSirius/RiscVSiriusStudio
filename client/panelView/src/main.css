@@ -249,7 +249,17 @@ a:hover{
   font-weight: bold;
   position: absolute;
   top: 50%;
-  left: 5px;  /* ajusta este valor para separarlo del número */
+  left: 5px;  
+}
+
+@layer utilities {
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Graphic */
