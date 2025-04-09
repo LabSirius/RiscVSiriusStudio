@@ -5,7 +5,6 @@ import DownloadButton from '../../DownloadButton';
 import { sendMessage } from '@/components/Message/sendMessage';
 import { useDialog } from '@/context/panel/DialogContext';
 import { useEffect, useState } from 'react';
-import { useOperation } from '@/context/panel/OperationContext';
 
 interface CustomControlsProps {
   onToggleMinimap: () => void;
@@ -23,12 +22,11 @@ export default function CustomControls({
   // onToggleInteractive,
 }: CustomControlsProps) {
   const { dialog } = useDialog();
-  const { operation} = useOperation();
   const [showControls, setShowControls] = useState(true);
 
 
   useEffect(() => {
-    if(dialog && !(operation === "uploadMemory")) {
+    if(dialog && dialog.stop){
       setShowControls(false);
     }
   }, [dialog])

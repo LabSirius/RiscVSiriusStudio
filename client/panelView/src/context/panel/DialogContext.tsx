@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 interface DialogObject {
   title: string;
   description: string;
+  stop?: boolean;
 }
 
 interface DialogContextProps {

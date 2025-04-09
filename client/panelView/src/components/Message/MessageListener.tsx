@@ -29,7 +29,7 @@ const MessageListener = () => {
             setTextProgram(message.textProgram);
           break
           case "uploadMemory":
-            setDialog({ title: "Info", description: "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu." });
+            setDialog({ title: "Info", description: "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.", stop: false });
             
             setIsCreatedMemoryTable(false);
             setDataMemoryTable(message.payload);
@@ -67,7 +67,7 @@ const MessageListener = () => {
             setReadInMemory({ address: message.address, value: "1", _length: message._length });
             break;
           case "stop":
-            setDialog({ title: "Info", description: "The program has ended." });
+            setDialog({ title: "Info", description: "The program has ended.", stop: true });
             
             break;
           default:
