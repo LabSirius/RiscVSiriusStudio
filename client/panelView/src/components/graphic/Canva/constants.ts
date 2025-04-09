@@ -76,7 +76,7 @@ import PivotJump9 from '../elements/MEM/pivots/PivotJump9';
 import PivotJump10 from '../elements/ID/pivots/PivotJump10';
 
 //Customs 
-import AnimatedSVGEdge from '../ui/custom/AnimatedSVGEdge';
+import AnimatedSVGEdge from '../custom/AnimatedSVGEdge';
 
 export const nodeTypes = {
 

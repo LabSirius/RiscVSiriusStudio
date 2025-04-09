@@ -19,7 +19,7 @@ import { edgeTypes } from './constants';
 import { initialNodes } from './data/nodes/initialNodes'; // Nodes
 import { initialEdges } from './data/edges/initialEdges'; //Conecctions between npdes
 
-import CustomControls from '../ui/custom/CustomControls';
+import CustomControls from '../custom/CustomControls';
 
 import { animateLine } from '../animateLine/animateLine';
 import InstructionEffect from './InstructionEffect';
