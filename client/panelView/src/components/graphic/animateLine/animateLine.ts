@@ -59,6 +59,7 @@ const groupAluPivot7 = [
   "pivot7->pivot8",
   "pivot8->pivotJump6",
   "pivotJump6->pivot9",
+  "pivot9->muxC",
   "pivot7->pivot16",
   "pivot16->pivot17",
   "pivot17->muxD",
