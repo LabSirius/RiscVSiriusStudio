@@ -14,7 +14,7 @@ export const ID: Node[] = [
       data: { label: 'Section 2' },
       position: { x: 920, y: 0 },
       draggable: false,
-      zIndex: 10,
+      zIndex: 0,
       style: {
         width: 740,
         height: 1375,

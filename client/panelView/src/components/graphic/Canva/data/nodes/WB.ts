@@ -14,7 +14,7 @@ export const WB: Node[] = [
         data: { label: 'Section 5' },
         position: { x: 920 + 730 + 680 + 565, y: 0 },
         draggable: false,
-        zIndex: 4,
+        zIndex: 0,
         style: {
           width: 300,
           height: 1375,

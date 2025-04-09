@@ -72,7 +72,7 @@ function DownloadButton() {
       .filter(stylesheet => {
         try {
           return !stylesheet.href || stylesheet.href.startsWith(window.location.origin);
-        } catch (e) {
+        } catch  {
           return false;
         }
       })
@@ -102,7 +102,7 @@ function DownloadButton() {
           height: imageHeight.toString(),
           transform: `translate(${-x * zoom}px, ${-y * zoom}px) scale(${zoom})`,
         },
-        filter: (_node) => {
+        filter: () => {
           return true;
         },
         fontEmbedCSS: stylesheets,

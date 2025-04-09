@@ -35,6 +35,7 @@ const LabelValueContainer = () => {
     }, [newPc, registerData, ir, currentType])
 
   return (
+    
     <>
       <div className=' absolute top-[1.4rem] left-[.8rem]'>
         {!( currentType === 'LUI' ) && <LabelValue label="A" value={(currentType === 'B' || currentType === 'J' || currentType === 'AUIPC') ? `${formattedPC}`  : `h'${currentRs1}`}/> }

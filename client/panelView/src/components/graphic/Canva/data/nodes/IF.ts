@@ -15,7 +15,7 @@ export const IF: Node[] = [
       data: { label: 'Section 1' },
       position: { x: 0, y: 0 },
       draggable: false, 
-      zIndex: 25,
+      zIndex: 1,
       style: {
         width: 920,
         height: 1375,

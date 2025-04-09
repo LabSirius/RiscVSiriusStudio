@@ -14,7 +14,7 @@ export const MEM: Node[] = [
         data: { label: 'Section 4' },
         position: { x: 920 + 730 + 680  , y: 0 },
         draggable: false,
-        zIndex: 6,
+        zIndex: 0,
         style: {
           width: 565,
           height: 1375,

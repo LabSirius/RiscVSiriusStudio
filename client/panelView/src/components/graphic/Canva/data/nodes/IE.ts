@@ -14,7 +14,7 @@ export const IE: Node[] = [
         data: { label: 'Section 3' },
         position: { x: 920 + 730, y: 0 },
         draggable: false,
-        zIndex: 8,
+        zIndex: 0,
         style: {
           width: 680,
           height: 1375,
