@@ -2,6 +2,8 @@ import { useIR } from '@/context/graphic/IRContext';
 import LabelValue from '@/components/graphic/LabelValue';
 
 import { usePC } from '@/context/shared/PCContext';
+import { useFormattedPC } from '@/hooks/graphic/useFormattedPC'; 
+
 import { useRegisterData } from '@/context/shared/RegisterData';
 import { useEffect, useState } from 'react';
 import { binaryToHex } from '@/utils/handlerConversions';
@@ -10,8 +12,9 @@ import { binaryToHex } from '@/utils/handlerConversions';
 
 const LabelValueContainer = () => {
   const { currentType, ir } = useIR();
-  console.log(currentType)
   const { newPc } = usePC();
+  const formattedPC = useFormattedPC(newPc);
+
   const { registerData } = useRegisterData();
   const [currentRs1, setCurrentRs1] = useState<string>('');
   const [currentRs2, setCurrentRs2] = useState<string>('');
@@ -25,11 +28,11 @@ const LabelValueContainer = () => {
   return (
     <>
       <div className=' absolute top-[1.4rem] left-[.8rem]'>
-        {!( currentType === 'LUI' ) && <LabelValue label="A" value={(currentType === 'B' || currentType === 'J' || currentType === 'AUIPC') ? 'PC'  : `h'${currentRs1}`}/> }
+        {!( currentType === 'LUI' ) && <LabelValue label="A" value={(currentType === 'B' || currentType === 'J' || currentType === 'AUIPC') ? `${formattedPC}`  : `h'${currentRs1}`}/> }
         </div>
 
         <div className=' absolute top-[11.4rem] left-[.8rem]'>
-        <LabelValue label="B"  value={currentType === 'R' ? `h'${currentRs2}` : 'imm'}/>
+        <LabelValue label="B"  value={currentType === 'R' ? `h'${currentRs2}` : `imm`}/>
         </div>
 
         <div className=' absolute top-[6.8rem] right-[.8rem]'>
