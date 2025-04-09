@@ -36,11 +36,11 @@ const LabelValueContainer = () => {
         </div>
 
         <div className=' absolute top-[1rem] right-[.8rem]'>
-        {!(currentType === 'J' || currentType === 'LUI' || currentType === 'AUIPC') && <LabelValue label="RU[rs1]" value={`h'${currentRs1}`} input={false}/> }
+        {!(currentType === 'J' || currentType === 'LUI' || currentType === 'AUIPC') && <LabelValue label={`RU[x${[ir.instructions[newPc].rs1?.regenc]}]`} value={`h'${currentRs1}`} input={false}/> }
         </div>
 
         <div className=' absolute top-[9.2rem] right-[.8rem]'>
-        {(currentType === 'R' || currentType === 'S'  || currentType === 'B' ) && <LabelValue label="RU[rs2]" value={`h'${currentRs2}`}  input={false}/> }
+        {(currentType === 'R' || currentType === 'S'  || currentType === 'B' ) && <LabelValue label={`RU[x${[ir.instructions[newPc].rs2?.regenc]}]`} value={`h'${currentRs2}`}  input={false}/> }
         </div>
     </>
   )

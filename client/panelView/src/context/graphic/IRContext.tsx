@@ -18,6 +18,7 @@ interface IRState {
       },
       rd?:{
         regenc: string;
+        
       },
       rs1?:{
         regenc: string;
