@@ -1,13 +1,16 @@
 import { Handle, Position } from '@xyflow/react';
-import ContainerSVG from '../ContainerSVG';
+import ContainerSVG from '../../ContainerSVG';
+import LabelValueContainer from './LabelValueContainer';
 
 export default function BranchUnit() {
   return (
     <div className='w-full'>
 
        <div className='relative w-full h-full'>
-       <h2 className=" titleInElement top-[50%] left-[50%]  -translate-x-[50%] -translate-y-[50%] ">Branch Unit</h2>
+       <h2 className=" titleInElement  top-[50%] left-[75%]  -translate-x-[75%] -translate-y-[50%] ">Branch Unit</h2>
         <ContainerSVG height={10.2} active={true}  />
+        <LabelValueContainer />
+
        </div>
 
        <Handle  type="target"
