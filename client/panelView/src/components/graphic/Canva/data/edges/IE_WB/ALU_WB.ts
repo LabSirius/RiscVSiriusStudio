@@ -1,6 +1,6 @@
 // This file contains the connection between the ALU and the WB
 
-import { Edge  } from '@xyflow/react';
+import { Edge, MarkerType  } from '@xyflow/react';
 
 export const ALU_WB: Edge[] = [
   
@@ -32,6 +32,13 @@ export const ALU_WB: Edge[] = [
     target: 'muxC', 
     targetHandle: 'alu',
     type: 'smoothstep', 
+    markerEnd:
+        {
+          type: MarkerType.ArrowClosed,
+          color: '#888888',
+          width: 8,
+          height: 8,
+        },
   }
 
 
