@@ -41,7 +41,7 @@ export default function ImmGenerator() {
 
     </div>
     </HoverCardTrigger>
-      <HoverCardContent className="bg-black w-[45rem]">
+      <HoverCardContent className="p-0 w-[45rem]">
         {!(currentType === "R") &&  <ImmDecode /> }
     </HoverCardContent> 
     </HoverCard>

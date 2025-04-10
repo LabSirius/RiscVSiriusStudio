@@ -9,14 +9,14 @@ const TypeSImmDecode = () => {
     <div className="space-y-1  w-full max-h-[30rem] overflow-auto hide-scrollbar font-mono">
             <img src='immTypeSDecodeSvg.svg' alt="immDecode" height={100} width={100} className='w-full h-full rounded-md' /> 
 
-            <div className='absolute text-[.75rem] text-black flex gap-[.735rem] top-[3.65rem] left-[2.05rem]'>
+            <div className='absolute text-[.75rem] text-black flex gap-[.759rem] top-[2.8rem] left-[1.25rem]'>
             {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(0, 7).map((item, index) => (
                 <p key={index}>{item}</p>
                 ))
             }
             </div>   
 
-            <div className='absolute text-[.75rem] text-black flex gap-[.735rem] top-[3.65rem] right-[14rem]'>
+            <div className='absolute text-[.75rem] text-black flex gap-[.769rem] top-[2.8rem] right-[13.7rem]'>
             {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(20, 25).map((item, index) => (
                 <p key={index}>{item}</p>
                 ))
@@ -24,22 +24,22 @@ const TypeSImmDecode = () => {
             </div>
 
                 
-            <div className='absolute text-[.75rem] text-black flex gap-[.835rem] bottom-[2.7rem] right-[5.87rem]'>
+            <div className='absolute text-[.75rem] text-black flex gap-[.875rem] bottom-[2rem] right-[5.1rem]'>
 
-            <div className='flex gap-[.73rem]'>
+            <div className='flex gap-[.787rem]'>
               {Array.from({ length: 20 }).map((_, index) => (
                   <p key={index}>{ir.instructions[newPc].encoding.binEncoding[0]}</p>
               ))}
             </div>
 
-            <div className='flex gap-[.718rem]'>
+            <div className='flex gap-[.778rem]'>
                 {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(0, 7).map((item, index) => (
                     <p key={index}>{item}</p>
                   ))
                 }
               </div>
 
-              <div className='flex gap-[.715rem]'>
+              <div className='flex gap-[.755rem]'>
                 {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(20, 25).map((item, index) => (
                     <p key={index}>{item}</p>
                   ))
