@@ -1061,6 +1061,11 @@
 
   JumpInstName "jump instruction"
   = jalToken
+  / jrToken
+  / jToken
+  / retToken
+  / callToken
+  / tailToken
 
   UpperImmInstName "upper immediate instruction"
   = luiToken
@@ -1098,6 +1103,9 @@
   / snezToken
   / sltzToken
   / sgtzToken
+  / sgtToken
+  / laToken
+  / liToken
 
   StoreInstName "store type instruction name"
   = sbToken
