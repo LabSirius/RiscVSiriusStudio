@@ -50,6 +50,9 @@
 
   function getPosLabel(labelName) {
     const pointsTo = labelTable[labelName];
+    if (pointsTo === undefined){
+      return getConstantValue(labelName)
+    } 
     const value = pointsTo['memdef'];
     return value;
   }
@@ -57,7 +60,7 @@
   function getConstantValue(name: string): number {
     const value = constantTable[name];
     if (value === undefined){
-      return error(`Expecting a valid constant name. Got ${name}`);
+      return error(`Expecting a valid constant name or label name. Got ${name}`);
     }
     return value;
   }
@@ -391,6 +394,7 @@
 
 {
   instcounter = 0;
+  let needTextSection = false;
   const isFirstPass = options.firstPass;
   labelTable = options["symbols"];
   if(isFirstPass) {
@@ -412,25 +416,46 @@
     return programMemory;
   }
 
-  SourceElements = __ head:SourceElement tail:(__ SourceElement)* {
+  SourceElements 
+  = __ head:SourceElement tail:(__ SourceElement)* {
     if (isFirstPass){ return undefined; }
     return buildList(head, tail, 1);
   }
 
-  SourceElement 
+  SourceElement
+  = dir:Directive {
+    let ret = dir;
+    ret["kind"] = "SrcDirective"; 
+    ret["location"] = location();
+    return dir; 
+  }
+  / TextSection
+
+  TextSection 
+  = textToken __ inst:TextList{
+    return inst;
+  }
+  / inst:TextList{
+    if (needTextSection){
+      return error("Expected .text directive but none found");
+      
+    }
+    return inst;
+  }
+
+  TextList
+  = head:TextInstruction tail:(__ TextInstruction)*{
+    if (isFirstPass){ return undefined; }
+    return buildList(head, tail, 1);
+  }
+
+  TextInstruction
   = lbl:LabelDeclaration EOS 
   { 
     let ret = lbl;
     ret["kind"] = "SrcLabel";
     ret["location"] = location();
     return ret;
-  }
-  / dir:Directive EOS 
-  {
-    let ret = dir;
-    ret["kind"] = "SrcDirective"; 
-    ret["location"] = location();
-    return dir; 
   }
   / inst:Instruction EOS 
   {
@@ -478,6 +503,15 @@
       console.log(`equ ${name}: ${val}`);
     }
     return {identifier: name, value: val};
+  }
+  / dataToken {
+    needTextSection = true;
+  }
+  / rodataToken {
+    needTextSection = true;
+  }
+  / bssToken {
+    needTextSection = true;
   }
 
   Instruction "Instruction"
@@ -608,7 +642,7 @@
 
   // Parsing rule for branch instructions
   BInstruction "Branch instruction"
-    = name:BranchInstName _ rs1:RegisterName ___ rs2:RegisterName ___ target:OperandKindB
+    = name:BranchInstName _ rs1:RegisterName ___ rs2:RegisterName ___ target:BTarget
     { 
       if (isFirstPass) { return undefined; } 
       return handleBInstruction(name, rs1, rs2, target, location()); 
@@ -630,7 +664,7 @@
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, offset, location()); 
     }
-    /  name:jalToken _ rd:RegisterName ___ target:OperandKindJ 
+    /  name:jalToken _ rd:RegisterName ___ target:JTarget 
     {
       if (isFirstPass) { return undefined; }
       return handleJInstruction(name, rd, target, location()); 
@@ -664,12 +698,12 @@
     / StorePInstruction
 
   BPInstruction "Branch pseudo instruction"
-    = name:BPZInstName _ rs:RegisterName ___ offset:OperandKindB 
+    = name:BPZInstName _ rs:RegisterName ___ offset:BTarget 
     { 
       if (isFirstPass) { return undefined; }
       return handleBPInstruction(name, rs, null, offset, location()); 
     }
-    / name:BPInstName _ rs1:RegisterName ___ rs2:RegisterName ___ offset:OperandKindB 
+    / name:BPInstName _ rs1:RegisterName ___ rs2:RegisterName ___ offset:BTarget 
     { 
       if (isFirstPass) { return undefined; }
       return handleBPInstruction(name, rs1, rs2, offset, location()); 
@@ -704,7 +738,7 @@
       );
     }
 
-    / name:callToken _ offset:OperandKindOffset
+    / name:callToken _ offset:Offset
     {
       if (isFirstPass){
         verifySymbol(offset);
@@ -717,7 +751,7 @@
       return [complementInstruction, mainInstruction];
     }
     
-    / name:tailToken _ offset:OperandKindOffset
+    / name:tailToken _ offset:Offset
     {
       if (isFirstPass){
         verifySymbol(offset);
@@ -780,7 +814,7 @@
       return handleRInstruction('slt', rd, rs2, rs1, location(), true);
     }
 
-    / laToken _ rd:RegisterName ___ symbol:OperandKindOffset
+    / laToken _ rd:RegisterName ___ symbol:Offset
     {
       if (isFirstPass){
         verifySymbol(symbol);
@@ -949,18 +983,6 @@
   OperandKindSymbol "Symbol or ConstantName32"
   = Symbol
   / ConstantName32
-
-  OperandKindOffset "Offset or ConstantName32"
-  = Offset
-  / ConstantName32
-
-  OperandKindB "BTarget or ConstantName13"
-  = BTarget
-  / ConstantName13
-
-  OperandKindJ "JTarget or ConstantName13"
-  = JTarget
-  / ConstantName13
 
   BTarget "target address of a jump instruction"
   = imm:Imm13 { return imm; }
@@ -1349,7 +1371,15 @@
   = ascizToken
   
   ascizToken = ".asciz"
+
   equToken = ".equ"
+  sectionToken = ".section"
+  textToken = ".text"
+  dataToken = ".data"
+  rodataToken = ".rodata"
+  bssToken = ".bss"
+  commToken = ".comm"
+  commonToken = ".common"
 
   Integer "Integer"
   = _ "0x" digits:[0-9a-fA-F]+ { return parseInt(digits.join(""), 16); }
