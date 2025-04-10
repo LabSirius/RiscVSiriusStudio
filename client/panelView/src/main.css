@@ -11,6 +11,11 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+html {
+  font-size: 16px !important;
+}
+
+
 
 .monospace {
   font-family:  "Courier New";
