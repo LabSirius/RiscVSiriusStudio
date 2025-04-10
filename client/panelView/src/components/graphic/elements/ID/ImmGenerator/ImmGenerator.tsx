@@ -40,33 +40,11 @@ export default function ImmGenerator() {
 
     </div>
     </HoverCardTrigger>
-      <HoverCardContent className="bg-black w-80">
-      <div className="space-y-1  max-h-[20rem] overflow-auto hide-scrollbar">
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-            <h4 className="text-sm font-semibold">IMM DEC</h4>
-          
-
-           
-           
+     {!(currentType === 'R') && <HoverCardContent className="bg-black w-[45rem]">
+      <div className="space-y-1  w-full max-h-[30rem] overflow-auto hide-scrollbar">
+            <img src='immTypeIDecodeSvg.svg' alt="immDecode" height={100} width={100} className='w-full h-full rounded-md' />           
           </div>
-    </HoverCardContent>
+    </HoverCardContent> }
     </HoverCard>
     
   );
