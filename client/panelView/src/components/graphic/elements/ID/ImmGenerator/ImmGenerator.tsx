@@ -8,10 +8,11 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/graphic/ui/hover-card"
+import ImmDecode from './immDecode/ImmDecode';
 
 export default function ImmGenerator() {
-  const { currentType} = useIR()
-  
+  const { currentType } = useIR();
+
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
@@ -40,11 +41,9 @@ export default function ImmGenerator() {
 
     </div>
     </HoverCardTrigger>
-     {!(currentType === 'R') && <HoverCardContent className="bg-black w-[45rem]">
-      <div className="space-y-1  w-full max-h-[30rem] overflow-auto hide-scrollbar">
-            <img src='immTypeIDecodeSvg.svg' alt="immDecode" height={100} width={100} className='w-full h-full rounded-md' />           
-          </div>
-    </HoverCardContent> }
+      <HoverCardContent className="bg-black w-[45rem]">
+        {!(currentType === "R") &&  <ImmDecode /> }
+    </HoverCardContent> 
     </HoverCard>
     
   );

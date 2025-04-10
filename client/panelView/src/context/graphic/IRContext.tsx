@@ -8,7 +8,7 @@ interface IRState {
       asm: string;
       encoding: {
         hexEncoding: string;
-        binaryEncoding: string;
+        binEncoding: string;
         funct3: string;
         funct7: string;
         rs1?: string;
@@ -59,7 +59,7 @@ const IRContext = createContext<IRContextType>({
         asm: "",
         encoding: {
           hexEncoding: "",
-          binaryEncoding: "",
+          binEncoding: "",
           funct3: "",
           funct7: "",
           rs1: "",
@@ -110,7 +110,7 @@ export const IRProvider = ({ children }: { children: ReactNode }) => {
         asm: "",
         encoding: {
           hexEncoding: "",
-          binaryEncoding: "",
+          binEncoding: "",
           funct3: "",
           funct7: "",
           rs1: "",
