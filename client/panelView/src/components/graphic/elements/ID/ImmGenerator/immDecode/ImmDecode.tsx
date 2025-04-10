@@ -7,7 +7,7 @@ const ImmDecode = () => {
   const { currentType } = useIR();
   return (
     <>
-      {(currentType === "I" || currentType === "L" || currentType === "JALR"  ) && ( <TypeIImmDecode />) }
+      {!(currentType === "I" || currentType === "L" || currentType === "JALR"  ) && ( <TypeIImmDecode />) }
       {(currentType === "S") && ( <TypeSImmDecode />) }
       {(currentType === "B") && ( <TypeBImmDecode />) }
 
