@@ -2,61 +2,79 @@ import { usePC } from '@/context/shared/PCContext';
 import { useIR } from '@/context/graphic/IRContext';
 
 const TypeBImmDecode = () => {
-    const { ir } = useIR();
-    const { newPc} = usePC()
+  const { ir } = useIR();
+  const { newPc } = usePC();
+  
 
+  const topBlocks = [
+    { left: "1.15rem", slice: [0, 4] },
+    { left: "6.1rem", slice: [4, 7] },
+    { left: "25.9rem", slice: [20, 25] },
+  ];
+
+  const bottomRepeatedBlocks = [
+    { right: "39.7rem" },
+    { right: "34.7rem" },
+    { right: "29.75rem" },
+    { right: "24.8rem" },
+    { right: "19.8rem" },
+  ];
+
+  const bottomDataBlocks = [
+    { right: "14.85rem", slice: [1, 4] },
+    { right: "11.2rem", slice: [4, 7] },
+    { right: "6.22rem", slice: [20, 24] },
+  ];
 
   return (
-    <div className="space-y-1  w-full max-h-[30rem] overflow-auto hide-scrollbar font-mono">
-            <img src='immTypeBDecodeSvg.svg' alt="immDecode" height={100} width={100} className='w-full h-full rounded-md' /> 
+    <div className="w-full max-h-[30rem] text-[.75rem] text-black overflow-hidden font-mono relative">
+      <img
+        src="immTypeBDecodeSvg.svg"
+        alt="immDecode"
+        className="w-full h-full rounded-md"
+      />
 
-            <div className='absolute text-[.75rem] text-black flex gap-[.759rem] top-[2.8rem] left-[1.25rem]'>
-            {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(0, 7).map((item, index) => (
-                <p key={index}>{item}</p>
-                ))
-            }
-            </div>   
+      {topBlocks.map((block, idx) => (
+        <div
+          key={`top-${idx}`}
+          className="absolute flex gap-[.82rem]"
+          style={{ top: "2.7rem", left: block.left }}
+        >
+          {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(...block.slice).map((item, index) => (
+            <p key={index}>{item}</p>
+          ))}
+        </div>
+      ))}
 
-            <div className='absolute text-[.75rem] text-black flex gap-[.769rem] top-[2.8rem] right-[13.7rem]'>
-            {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(20, 25).map((item, index) => (
-                <p key={index}>{item}</p>
-                ))
-            }
-            </div>
+      {bottomRepeatedBlocks.map((block, idx) => (
+        <div
+          key={`bottom-repeated-${idx}`}
+          className="absolute flex gap-[.83rem]"
+          style={{ bottom: "1.6rem", right: block.right }}
+        >
+          {Array.from({ length: 4 }).map((_, index) => (
+            <p key={index}>{ir.instructions[newPc].encoding.binEncoding[0]}</p>
+          ))}
+        </div>
+      ))}
 
-                
-            <div className='absolute text-[.75rem] text-black flex gap-[.81rem] bottom-[2rem] right-[5.05rem]'>
+      <p className='absolute bottom-[1.6rem] right-[18.59rem]'>{ir.instructions[newPc].encoding.binEncoding[24]}</p>
 
-              <div className='flex gap-[.79rem]'>
-                {Array.from({ length: 20 }).map((_, index) => (
-                    <p key={index}>{ir.instructions[newPc].encoding.binEncoding[0]}</p>
-                ))}
-              </div>
+      {bottomDataBlocks.map((block, idx) => (
+        <div
+          key={`bottom-ir.instructions[newPc].encoding.binEncoding-${idx}`}
+          className="flex absolute gap-[.83rem]"
+          style={{ bottom: "1.6rem", right: block.right }}
+        >
+          {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(...block.slice).map((item, index) => (
+            <p key={index}>{item}</p>
+          ))}
+        </div>
+      ))}
 
-              <p>{ir.instructions[newPc].encoding.binEncoding[24]}</p>
+      <p className='absolute bottom-[1.6rem] right-[4.98rem]'>0</p>
+    </div>
+  );
+};
 
-              <div className='flex gap-[.76rem]'>
-                  {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(1, 7).map((item, index) => (
-                      <p key={index}>{item}</p>
-                    ))
-                  }
-              </div>
-
-
-              <div className='flex gap-[.755rem]'>
-                <div className='flex gap-[.79rem]'>
-                  {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(20, 24).map((item, index) => (
-                      <p key={index}>{item}</p>
-                    ))
-                  }
-                </div>
-                <p>0</p>
-
-              </div>
-             
-            </div>    
-      </div>
-  )
-}
-
-export default TypeBImmDecode
+export default TypeBImmDecode;
