@@ -22,6 +22,10 @@ export type SimulationParameters = {
   memorySize: number;
 };
 
+export interface StepResult {
+  instruction: any;
+  result: SCCPUResult;
+}
 export class Simulator {
   protected _context: RVContext;
 
@@ -66,7 +70,7 @@ export class Simulator {
     console.log("Simulator start");
   }
 
-  step(): SCCPUResult {
+  step(): StepResult {
     if (!this.configured) {
       // Prevent any further changes to configuration
       this._configured = true;
@@ -74,8 +78,6 @@ export class Simulator {
 
     const instruction = this.cpu.currentInstruction();
     const result = this.cpu.executeInstruction();
-    console.log("CORRESPONDIENTE INSTRUCTION", instruction)
-    console.log("CORRESPONDIENTE RESULT", result)
 
     // Send messages to update the registers view.
     if (writesRU(instruction.type, instruction.opcode)) {
@@ -95,7 +97,11 @@ export class Simulator {
       this.cpu.nextInstruction();
     }
     this.didStep.fire(result);
-    return result;
+
+    return {
+      instruction: instruction,
+      result: result
+    };
   }
 
   stop(): void {
@@ -269,17 +275,16 @@ export class TextSimulator extends Simulator {
     }
   }
 
-  public override step(): SCCPUResult {
+  public override step(): StepResult {
     console.log(`%c[Simulator] step\n`, "color:pink");
     const result = super.step();
 
     // Handle the visualization
     const mainView = this.context.mainWebviewView;
     const currentInst = this.cpu.currentInstruction();
-    console.log("DESDE EL STEP QUE HEREDA EL CURRENT INSTRUCTION ES", currentInst)
     const lineDecorationNumber = this.rvDoc.getLineForIR(currentInst);
     if (lineDecorationNumber !== undefined) {
-      mainView.postMessage({ from: "extension", operation: "step", currentInst: currentInst, result: result, lineDecorationNumber: lineDecorationNumber + 1 });
+      mainView.postMessage({ from: "extension", operation: "step", currentInst: result.instruction, result: result.result, lineDecorationNumber: lineDecorationNumber + 1 });
     }
     return result;
   }
