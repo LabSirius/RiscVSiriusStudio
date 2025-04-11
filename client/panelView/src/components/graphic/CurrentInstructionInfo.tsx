@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useIR } from "@/context/graphic/IRContext";
+import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { usePC } from "@/context/shared/PCContext";
 
 const CurrentInstructionInfo = () => {
-  const { ir } = useIR();
+  const { currentInst } = useCurrentInst();
   const { newPc } = usePC();
   const [animationClass, setAnimationClass] = useState("");
 
@@ -27,13 +27,13 @@ const CurrentInstructionInfo = () => {
   return (
     <div className={`absolute flex gap-4 items-center top-[-3.7rem] right-[1rem] pr-[1.2rem] ${animationClass}`}>
       <div className="bg-[#66939E] px-[.8rem] py-[.3rem] rounded-[.3rem]">
-        <h2 className="text-white text-center text-[.9rem]">{ir.instructions[newPc].asm}</h2>
+        <h2 className="text-white text-center text-[.9rem]">{currentInst.asm}</h2>
       </div>
       <div className="bg-[#66939E] px-[.8rem] py-[.4rem] rounded-[.3rem]">
-        <h2 className="text-white text-center text-[.8rem]">{ir.instructions[newPc].encoding.hexEncoding}</h2>
+        <h2 className="text-white text-center text-[.8rem]">{currentInst.encoding.hexEncoding}</h2>
       </div>
       <div className="bg-[#66939E] px-[.7rem] py-[.3rem] rounded-[.3rem]">
-        <h2 className="text-white text-center text-[.9rem]">{ir.instructions[newPc].type}</h2>
+        <h2 className="text-white text-center text-[.9rem]">{currentInst.type}</h2>
       </div>
     </div>
   );

@@ -1,15 +1,15 @@
 //  This pivot connects the pc with the MUXA
 
-import { useIR } from '@/context/graphic/IRContext';
+import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 import { Handle, Position } from '@xyflow/react';
 import { Brackets } from 'lucide-react';
 
 export default function PivotJump6() {
-  const { currentType } = useIR();
+  const { currentInst } = useCurrentInst();
   return (
     <div className='w-full'>
 
-      <div className={`relative w-full h-full ${( currentType === 'L' || currentType === 'JALR' || currentType === 'B'  )&& 'opacity-20'}`}>
+      <div className={`relative w-full h-full ${( currentInst.type === 'L' || currentInst.type === 'JALR' || currentInst.type === 'B'  )&& 'opacity-20'}`}>
             <Brackets size={38} strokeWidth={1} color='#000' />
        </div>
 

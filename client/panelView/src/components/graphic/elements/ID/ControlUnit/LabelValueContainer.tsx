@@ -1,23 +1,21 @@
-import { useIR } from '@/context/graphic/IRContext';
+import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 import LabelValue from '@/components/graphic/LabelValue';
-import { usePC } from '@/context/shared/PCContext';
 
 const LabelValueContainer = () => {
-  const { currentType, ir } = useIR();
-  const { newPc } = usePC();
+  const { currentType, currentInst } = useCurrentInst();
 
   return (
     <>
       <div className=' absolute top-[1.2rem] left-[.8rem]'>
-          <LabelValue label='' value={`b'${ir.instructions[newPc].opcode}`}/>
+          <LabelValue label='' value={`b'${currentInst.opcode}`}/>
         </div>
 
         <div className=' absolute top-[6.4rem] left-[.8rem]'>
-          {!(currentType === 'LUI' || currentType === 'AUIPC' ) && <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.funct3}`}/>} 
+          {!(currentType === 'LUI' || currentType === 'AUIPC' ) && <LabelValue label="" value={`b'${currentInst.encoding.funct3}`}/>} 
         </div>
 
         <div className=' absolute top-[11.9rem] left-[.8rem]'>
-         {(currentType === 'R') && <LabelValue label="" value={`b'${ir.instructions[newPc].encoding.funct7}`}/>} 
+         {(currentType === 'R') && <LabelValue label="" value={`b'${currentInst.encoding.funct7}`}/>} 
         </div>
     </>
   )

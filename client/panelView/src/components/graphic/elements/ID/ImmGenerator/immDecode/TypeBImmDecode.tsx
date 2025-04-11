@@ -1,9 +1,7 @@
-import { usePC } from '@/context/shared/PCContext';
-import { useIR } from '@/context/graphic/IRContext';
+import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 
 const TypeBImmDecode = () => {
-  const { ir } = useIR();
-  const { newPc } = usePC();
+  const { currentInst } = useCurrentInst();
   
 
   const topBlocks = [
@@ -40,7 +38,7 @@ const TypeBImmDecode = () => {
           className="absolute flex gap-[.82rem]"
           style={{ top: "2.7rem", left: block.left }}
         >
-          {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(currentInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>
@@ -53,12 +51,12 @@ const TypeBImmDecode = () => {
           style={{ bottom: "1.6rem", right: block.right }}
         >
           {Array.from({ length: 4 }).map((_, index) => (
-            <p key={index}>{ir.instructions[newPc].encoding.binEncoding[0]}</p>
+            <p key={index}>{currentInst.encoding.binEncoding[0]}</p>
           ))}
         </div>
       ))}
 
-      <p className='absolute bottom-[1.6rem] right-[18.59rem]'>{ir.instructions[newPc].encoding.binEncoding[24]}</p>
+      <p className='absolute bottom-[1.6rem] right-[18.59rem]'>{currentInst.encoding.binEncoding[24]}</p>
 
       {bottomDataBlocks.map((block, idx) => (
         <div
@@ -66,7 +64,7 @@ const TypeBImmDecode = () => {
           className="flex absolute gap-[.83rem]"
           style={{ bottom: "1.6rem", right: block.right }}
         >
-          {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(currentInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>
