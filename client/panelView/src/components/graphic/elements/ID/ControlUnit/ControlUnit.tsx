@@ -1,9 +1,10 @@
-import { Handle, Position } from '@xyflow/react';
-import ContainerSVG from '../../ContainerSVG';
+import { Handle, Position } from "@xyflow/react";
+import ContainerSVG from "../../ContainerSVG";
 
-import Tunels from './outputTunnels/Tunels';
-import LabelSlashConatiner from './LabelSlashContainer';
-import LabelValueContainer from './LabelValueContainer';
+import Tunels from "./outputTunnels/Tunels";
+import LabelSlashConatiner from "./LabelSlashContainer";
+import LabelValueContainer from "./LabelValueContainer";
+import { useOperation } from "@/context/panel/OperationContext";
 
 interface InputHandlerConfig {
   id: string;
@@ -11,24 +12,28 @@ interface InputHandlerConfig {
 }
 
 export default function ControlUnit() {
+  const { operation } = useOperation();
 
   const inputHandlers: InputHandlerConfig[] = [
-    { id: '[6:0]', top: '2.7rem' },
-    { id: '[14:12]', top: '7.9rem' },
-    { id: '[31:25]', top: '13.2rem' },
+    { id: "[6:0]", top: "2.7rem" },
+    { id: "[14:12]", top: "7.9rem" },
+    { id: "[31:25]", top: "13.2rem" },
   ];
 
   return (
     <div className="relative w-full">
-
       <h2 className="titleInElement absolute top-[50%] left-[80%] -translate-x-[80%] -translate-y-[50%]">
         Control Unit
       </h2>
-      <div className='relative'>
-        <ContainerSVG height={16}  active={true} />
-        <LabelSlashConatiner />
+      <div className="relative">
+        <ContainerSVG height={16} active={true} />
 
-        <LabelValueContainer />
+        {operation !== "uploadMemory" && (
+          <>
+            <LabelSlashConatiner />
+            <LabelValueContainer />
+          </>
+        )}
 
         <Tunels />
       </div>

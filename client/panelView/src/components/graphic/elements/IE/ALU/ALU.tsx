@@ -1,6 +1,7 @@
-import { Handle, Position } from '@xyflow/react';
-import ContainerSVG from '../../ContainerSVG';
-import LabelValueContainer from './LabelValueContainer';
+import { Handle, Position } from "@xyflow/react";
+import ContainerSVG from "../../ContainerSVG";
+import LabelValueContainer from "./LabelValueContainer";
+import { useOperation } from "@/context/panel/OperationContext";
 
 interface HandlerConfig {
   id: string;
@@ -10,19 +11,21 @@ interface HandlerConfig {
 }
 
 export default function ALU() {
+  const { operation } = useOperation();
+
   const leftInputHandlers: HandlerConfig[] = [
-    { id: 'muxA', position: Position.Left, className: 'input', style: { top: '4.7rem' } },
-    { id: 'muxB', position: Position.Left, className: 'input', style: { top: '15rem' } },
+    { id: "muxA", position: Position.Left, className: "input", style: { top: "4.7rem" } },
+    { id: "muxB", position: Position.Left, className: "input", style: { top: "15rem" } },
   ];
 
   const bottomInputHandler: HandlerConfig = {
-    id: 'aluOp',
+    id: "aluOp",
     position: Position.Bottom,
-    className: 'input',
+    className: "input",
   };
 
   const outputHandlers: HandlerConfig[] = [
-    { id: 'dataMemory', position: Position.Right, className: 'output' },
+    { id: "dataMemory", position: Position.Right, className: "output" },
   ];
 
   return (
@@ -32,7 +35,7 @@ export default function ALU() {
           ALU
         </h2>
         <ContainerSVG height={19.9} active={true} />
-        <LabelValueContainer />
+        {operation !== "uploadMemory" && <LabelValueContainer />}
       </div>
 
       {leftInputHandlers.map((handler) => (
