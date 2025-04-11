@@ -408,3 +408,17 @@ h2 {
   animation: moveX 1s ease-in-out infinite;
   margin-top: -1.2rem;
 }
+
+
+@keyframes pulse-border {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.animate-border-pulse {
+  animation: pulse-border 1.5s infinite ease-in-out;
+}
