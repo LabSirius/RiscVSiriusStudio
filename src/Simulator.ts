@@ -46,8 +46,8 @@ export class Simulator {
 
   protected cpu: SCCPU;
 
-  private didStep: EventEmitter<void> = new EventEmitter<void>();
-  public readonly onDidStep: Event<void> = this.didStep.event;
+  private didStep: EventEmitter<SCCPUResult> = new EventEmitter<SCCPUResult>();
+  public readonly onDidStep: Event<SCCPUResult> = this.didStep.event;
 
   private didStop: EventEmitter<void> = new EventEmitter<void>();
   public readonly onDidStop: Event<void> = this.didStop.event;
@@ -66,12 +66,12 @@ export class Simulator {
     console.log("Simulator start");
   }
 
-  step(): void {
+  step(): SCCPUResult {
     if (!this.configured) {
       // Prevent any further changes to configuration
       this._configured = true;
     }
-    
+
     const instruction = this.cpu.currentInstruction();
     const result = this.cpu.executeInstruction();
 
@@ -87,23 +87,13 @@ export class Simulator {
     if (writesDM(instruction.type, instruction.opcode)) {
       this.writeResult(result);
     }
-    // Send message to update the simulator components.
-    // this.sendToSimulator({
-    //   operation: 'setInstruction',
-    //   instruction: instruction,
-    //   result: result
-    // });
-
     if (branchesOrJumps(instruction.type, instruction.opcode)) {
       this.cpu.jumpToInstruction(result.buMux.result);
     } else {
       this.cpu.nextInstruction();
     }
-    this.didStep.fire();
-
-    if (this.cpu.finished()) {
-      return;
-    }
+    this.didStep.fire(result);
+    return result;
   }
 
   stop(): void {
@@ -115,7 +105,7 @@ export class Simulator {
     this.stop();
   }
 
-  public sendTextProgramToView(textProgram: string){
+  public sendTextProgramToView(textProgram: string) {
     // do nothing. Must be implemented by the subclass.
   }
   public notifyRegisterWrite(register: string, value: string) {
@@ -187,16 +177,6 @@ export class Simulator {
          last address is ${this.cpu.getDataMemory().lastAddress().toString(16)} `
       );
     }
-    // console.log(
-    //   'Writing result to DM address: ',
-    //   result.dm.address,
-    //   ' value to write ',
-    //   result.dm.dataWr,
-    //   ' section to write ',
-    //   bytesToWrite,
-    //   ' can Write ',
-    //   this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)
-    // );
     this.notifyMemoryWrite(parseInt(result.dm.address, 2), result.dm.dataWr, bytesToWrite);
     const chunks = result.dm.dataWr.match(/.{1,8}/g) as Array<string>;
     this.cpu.getDataMemory().write(chunks.reverse(), addressNum);
@@ -274,7 +254,7 @@ export class TextSimulator extends Simulator {
         mainView.postMessage({
           from: "extension",
           operation: "decorateLine",
-          lineDecorationNumber: lineDecorationNumber+1,
+          lineDecorationNumber: lineDecorationNumber + 1,
         });
         //this.highlightLine(lineNumber);
       } else {
@@ -288,17 +268,18 @@ export class TextSimulator extends Simulator {
     }
   }
 
-  public override step(): void {
+  public override step(): SCCPUResult {
     console.log(`%c[Simulator] step\n`, "color:pink");
-    super.step();
+    const result = super.step();
 
     // Handle the visualization
     const mainView = this.context.mainWebviewView;
     const currentInst = this.cpu.currentInstruction();
     const lineDecorationNumber = this.rvDoc.getLineForIR(currentInst);
-    if(lineDecorationNumber !== undefined) {
-      mainView.postMessage({ from: "extension", operation: "step", pc: this.cpu.getPC(), lineDecorationNumber: lineDecorationNumber+1 });
+    if (lineDecorationNumber !== undefined) {
+      mainView.postMessage({ from: "extension", operation: "step", pc: this.cpu.getPC(), result: result, lineDecorationNumber: lineDecorationNumber + 1 });
     }
+    return result;
   }
 
   public override animateLine(line: number): void {
@@ -306,15 +287,15 @@ export class TextSimulator extends Simulator {
     if (!editor) {
       return;
     }
-  
+
     const blinkDecoration = window.createTextEditorDecorationType({
       isWholeLine: true,
-      backgroundColor: 'rgba(58, 108, 115, 0.3)'  
+      backgroundColor: 'rgba(58, 108, 115, 0.3)'
     });
-  
-    const range = editor.document.lineAt(line-1).range;
+
+    const range = editor.document.lineAt(line - 1).range;
     let show = true;
-  
+
     const intervalId = setInterval(() => {
       if (show) {
         editor.setDecorations(blinkDecoration, [range]);
@@ -323,16 +304,16 @@ export class TextSimulator extends Simulator {
       }
       show = !show;
     }, 250);
-  
+
     setTimeout(() => {
       clearInterval(intervalId);
       editor.setDecorations(blinkDecoration, []); +
-      blinkDecoration.dispose();
+        blinkDecoration.dispose();
     }, 1000);
   }
-  
 
-  
+
+
   private clickListener() {
     if (this.selectionListenerDisposable) {
       return;
@@ -349,7 +330,7 @@ export class TextSimulator extends Simulator {
       mainView.postMessage({
         from: "extension",
         operation: "clickInLine",
-        lineNumber: lineNumber+1,
+        lineNumber: lineNumber + 1,
       });
     });
   }
@@ -361,16 +342,16 @@ export class TextSimulator extends Simulator {
       this.currentHighlight.dispose();
     }
     const editor = window.activeTextEditor;
-  if (editor) {
-    this.context.resetEncoderDecorator(editor);
-  }
+    if (editor) {
+      this.context.resetEncoderDecorator(editor);
+    }
     this.makeEditorWritable();
     const mainView = this.context.mainWebviewView;
-      commands.executeCommand("setContext", "ext.isSimulating", false);
-      mainView.postMessage({
-        from: "extension",
-        operation: "stop",
-      });
+    commands.executeCommand("setContext", "ext.isSimulating", false);
+    mainView.postMessage({
+      from: "extension",
+      operation: "stop",
+    });
 
   }
 
@@ -387,7 +368,7 @@ export class TextSimulator extends Simulator {
   }
 
   public override notifyRegisterWrite(register: string, value: string) {
-    
+
 
     this.sendToMainView({
       from: "extension",
