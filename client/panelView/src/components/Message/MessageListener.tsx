@@ -44,6 +44,7 @@ const MessageListener = () => {
            setLineDecorationNumber(message.lineDecorationNumber);
           break
           case "step":
+            console.log("APARECE INFORMACION DE ", message.currentInst )
             setCurrentInst(message.currentInst);
             setLineDecorationNumber(message.lineDecorationNumber);
             if (!isFirstStep) {

@@ -15,7 +15,7 @@ const LabelValueContainer = () => {
       setCurrentRs1(binaryToHex(registerData[Number(currentInst.rs1?.regenc)]).toUpperCase());
       setCurrentRs2(binaryToHex(registerData[Number(currentInst.rs2?.regenc)]).toUpperCase());
       
-  }, [newPc, registerData, currentInst])
+  }, [newPc, registerData, currentInst, currentType, setCurrentRs1, setCurrentRs2])
 
   return (
     <>

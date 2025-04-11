@@ -74,6 +74,8 @@ export class Simulator {
     
     const instruction = this.cpu.currentInstruction();
     const result = this.cpu.executeInstruction();
+    console.log("CORRESPONDIENTE INSTRUCTION", instruction)
+    console.log("CORRESPONDIENTE RESULT", result)
 
     // Send messages to update the registers view.
     if (writesRU(instruction.type, instruction.opcode)) {
@@ -294,6 +296,7 @@ export class TextSimulator extends Simulator {
     // Handle the visualization
     const mainView = this.context.mainWebviewView;
     const currentInst = this.cpu.currentInstruction();
+    console.log("DESDE EL STEP QUE HEREDA EL CURRENT INSTRUCTION ES", currentInst)
     const lineDecorationNumber = this.rvDoc.getLineForIR(currentInst);
     if(lineDecorationNumber !== undefined) {
       mainView.postMessage({ from: "extension", operation: "step", currentInst: currentInst, lineDecorationNumber: lineDecorationNumber+1 });
