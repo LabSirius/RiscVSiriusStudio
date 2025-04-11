@@ -1,13 +1,13 @@
 
 import LabelValue from '../../../LabelValue';
-import { useIR } from '@/context/graphic/IRContext';
+import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 
 
 const LavelValueContainer = () => {
-    const { currentType, currentRs1,  currentRs2 } = useIR();
+    const { currentInst, currentRs1,  currentRs2 } = useCurrentInst();
   
   return (
-    (currentType === 'B') &&
+    (currentInst.type === 'B') &&
     <> 
      <div className='absolute top-[1.2rem] left-[.8rem]'>
         <LabelValue label="" value={`h'${currentRs2}`}/> 

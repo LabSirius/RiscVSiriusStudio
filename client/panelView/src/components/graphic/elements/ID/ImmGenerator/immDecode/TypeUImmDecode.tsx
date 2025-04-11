@@ -1,9 +1,7 @@
-import { usePC } from '@/context/shared/PCContext';
-import { useIR } from '@/context/graphic/IRContext';
+import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 
 const TypeUImmDecode = () => {
-  const { ir } = useIR();
-  const { newPc } = usePC();
+  const { currentInst } = useCurrentInst();
   
 
   const topBlocks = [
@@ -45,7 +43,7 @@ const TypeUImmDecode = () => {
           className="absolute flex gap-[.82rem]"
           style={{ top: "2.7rem", left: block.left }}
         >
-          {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(currentInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>
@@ -57,7 +55,7 @@ const TypeUImmDecode = () => {
           className="flex absolute gap-[.83rem]"
           style={{ bottom: "1.6rem", right: block.right }}
         >
-          {Array.from(ir.instructions[newPc].encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(currentInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>

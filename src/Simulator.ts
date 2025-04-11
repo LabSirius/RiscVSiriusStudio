@@ -252,7 +252,6 @@ export class TextSimulator extends Simulator {
           codeSize: this.cpu.getDataMemory().codeSize,
           addressLine,
           symbols: this.rvDoc.ir?.symbols,
-          ir: this.rvDoc.ir,
         }
       });
       this.makeEditorReadOnly();
@@ -297,7 +296,7 @@ export class TextSimulator extends Simulator {
     const currentInst = this.cpu.currentInstruction();
     const lineDecorationNumber = this.rvDoc.getLineForIR(currentInst);
     if(lineDecorationNumber !== undefined) {
-      mainView.postMessage({ from: "extension", operation: "step", pc: this.cpu.getPC(), lineDecorationNumber: lineDecorationNumber+1 });
+      mainView.postMessage({ from: "extension", operation: "step", currentInst: currentInst, lineDecorationNumber: lineDecorationNumber+1 });
     }
   }
 

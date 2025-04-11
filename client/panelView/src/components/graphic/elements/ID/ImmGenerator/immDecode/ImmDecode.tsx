@@ -1,4 +1,4 @@
-import { useIR } from '@/context/graphic/IRContext';
+import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 import TypeIImmDecode from './TypeIImmDecode';
 import TypeSImmDecode from './TypeSImmDecode';
 import TypeBImmDecode from './TypeBImmDecode';
@@ -6,7 +6,7 @@ import TypeUImmDecode from './TypeUImmDecode';
 import TypeJImmDecode from './TypeJImmDecode';
 
 const ImmDecode = () => {
-  const { currentType } = useIR();
+  const { currentType } = useCurrentInst();
   return (
     <>
       {(currentType === "I" || currentType === "L" || currentType === "JALR"  ) && ( <TypeIImmDecode />) }

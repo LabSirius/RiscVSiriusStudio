@@ -5,14 +5,14 @@ import { useMemoryTable } from "@/context/panel/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useDialog } from "@/context/panel/DialogContext";
 import { useLines } from "@/context/panel/LinesContext";
-import { useIR } from "@/context/graphic/IRContext";
+import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { usePC } from "@/context/shared/PCContext";
 
 const MessageListener = () => {
   const { setDataMemoryTable,  setWriteInMemory, setSizeMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
   const { setNewPc } = usePC();
   const { setWriteInRegister } = useRegistersTable();
-  const { setIr } = useIR();
+  const { setCurrentInst } = useCurrentInst();
 
   const { setTextProgram, setOperation, isFirstStep, setIsFirstStep } = useOperation();
   const { setLineDecorationNumber, setClickInEditorLine } = useLines();
@@ -35,8 +35,6 @@ const MessageListener = () => {
             setDataMemoryTable(message.payload);
             setSizeMemory(message.payload.memory.length - message.payload.codeSize);
 
-            setIr(message.payload.ir);
-
             setIsFirstStep(false);
             setOperation("uploadMemory");
             setSection("program");
@@ -46,7 +44,7 @@ const MessageListener = () => {
            setLineDecorationNumber(message.lineDecorationNumber);
           break
           case "step":
-            setNewPc(message.pc);
+            setCurrentInst(message.currentInst);
             setLineDecorationNumber(message.lineDecorationNumber);
             if (!isFirstStep) {
               setSection("program");

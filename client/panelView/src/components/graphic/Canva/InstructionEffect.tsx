@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Edge } from '@xyflow/react';
-import { useIR } from '@/context/graphic/IRContext';
-import { usePC } from '@/context/shared/PCContext';
+import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 
 interface InstructionEffectProps {
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
@@ -140,13 +139,12 @@ const bypassWriteBackEdges = [
 const fullMemoryAccessEdges = memoryReadEdges;
 
 const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
-  const { ir, setCurrentType } = useIR();
-  const { newPc } = usePC();
+  const { currentInst, setCurrentType } = useCurrentInst();
   const previousTargetEdgesRef = useRef<string[]>([]);
 
   useEffect(() => {
     let targetEdges: string[] = [];
-    const currentInstruction = ir.instructions[newPc];
+    const currentInstruction =  currentInst;
     console.log(currentInstruction.type, currentInstruction);
 
     switch (currentInstruction.type) {
@@ -316,7 +314,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
     });
 
     previousTargetEdgesRef.current = targetEdges;
-  }, [newPc, ir, setCurrentType, setEdges]);
+  }, [currentInst, setCurrentType, setEdges]);
 
   return null;
 };

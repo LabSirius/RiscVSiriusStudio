@@ -14,7 +14,7 @@ import { SectionProvider } from "./context/panel/SectionContext";
 
 
 import { OverlayProvider } from "@/context/graphic/OverlayContext";
-import { IRProvider } from "./context/graphic/IRContext";
+import { CurrentInstProvider } from "./context/graphic/CurrentInstContext";
 import { ReactFlowProvider } from "@xyflow/react";
 import Canva from "./components/graphic/Canva/Canva";
 import CurrentInstructionInfo from "./components/graphic/CurrentInstructionInfo";
@@ -27,7 +27,7 @@ const App = () => {
     <SectionProvider>
       <OperationProvider>
         <PCProvider>
-      <IRProvider>
+      <CurrentInstProvider>
         <LinesProvider>
         <MemoryTableProvider>
           <RegisterDataProvider >
@@ -53,7 +53,7 @@ const App = () => {
           </RegisterDataProvider>
         </MemoryTableProvider>
         </LinesProvider>
-      </IRProvider>
+      </CurrentInstProvider>
       </PCProvider>
       </OperationProvider>
       </SectionProvider>

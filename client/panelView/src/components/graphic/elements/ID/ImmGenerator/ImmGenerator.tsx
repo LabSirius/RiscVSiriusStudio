@@ -1,4 +1,4 @@
-import { useIR } from '@/context/graphic/IRContext';
+import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 import ContainerSVG from '../../ContainerSVG';
 import { Handle, Position } from '@xyflow/react';
 import LabelValueContainer from './LabelValueContainer';
@@ -11,7 +11,7 @@ import {
 import ImmDecode from './immDecode/ImmDecode';
 
 export default function ImmGenerator() {
-  const { currentType } = useIR();
+  const { currentInst } = useCurrentInst();
 
   return (
     <HoverCard>
@@ -20,7 +20,7 @@ export default function ImmGenerator() {
 
        <div className='relative w-full h-full'>
        <h2 className=" titleInElement top-[30%] left-[15%]  -translate-x-[15%] -translate-y-[30%] ">Imm Generator</h2>
-       <ContainerSVG height={9.6} active={currentType !== "R"} />
+       <ContainerSVG height={9.6} active={currentInst.type !== "R"} />
        <LabelValueContainer />
        </div>
 
@@ -42,7 +42,7 @@ export default function ImmGenerator() {
     </div>
     </HoverCardTrigger>
       <HoverCardContent className="p-0 w-[45rem]">
-        {!(currentType === "R") &&  <ImmDecode /> }
+        {!(currentInst.type === "R") &&  <ImmDecode /> }
     </HoverCardContent> 
     </HoverCard>
     

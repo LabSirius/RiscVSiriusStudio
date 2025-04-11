@@ -1,8 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
-interface IRState {
-  instructions: [
-    {
+interface CurrentInstState {
       type: string;
       opcode: string
       asm: string;
@@ -28,14 +26,12 @@ interface IRState {
       },
       imm12?: number,
       imm21?: number
-    }
-  ];
-  symbols: Record<string, Record<string, string>>;
-}
+  }
 
-interface IRContextType {
-  ir: IRState;
-  setIr: React.Dispatch<React.SetStateAction<IRState>>;
+
+interface CurrentInstContextType {
+  currentInst: CurrentInstState;
+  setCurrentInst: React.Dispatch<React.SetStateAction<CurrentInstState>>;
 
   currentType: string;
   setCurrentType: React.Dispatch<React.SetStateAction<string>>;
@@ -50,10 +46,9 @@ interface IRContextType {
   setCurrentRs2: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const IRContext = createContext<IRContextType>({
-  ir: {
-    instructions: [
-      {
+const CurrentInstContext = createContext<CurrentInstContextType>({
+  currentInst: {
+      
         type: "",
         opcode: "",
         asm: "",
@@ -78,14 +73,11 @@ const IRContext = createContext<IRContextType>({
         },
         imm12: 0,
         imm21: 0
-      },
-    ],
-    symbols: {
-      loop: {},
-      end: {},
-    },
   },
-  setIr: () => {},
+    
+
+
+  setCurrentInst: () => {},
 
   currentType: "",
   setCurrentType: () => {},
@@ -100,11 +92,9 @@ const IRContext = createContext<IRContextType>({
   setCurrentRs2: () => {},
 });
 
-export const useIR = () => useContext(IRContext);
-export const IRProvider = ({ children }: { children: ReactNode }) => {
-  const [ir, setIr] = useState<IRState>({
-    instructions: [
-      {
+export const useCurrentInst = () => useContext(CurrentInstContext);
+export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
+  const [currentInst, setCurrentInst] = useState<CurrentInstState>({
         type: "",
         opcode: "",
         asm: "",
@@ -130,20 +120,15 @@ export const IRProvider = ({ children }: { children: ReactNode }) => {
         imm12: 0,
         imm21: 0
       },
-    ],
-    symbols: {
-      loop: {},
-      end: {},
-    },
-  });
+);
   const [currentType, setCurrentType] = useState<string>("");
   const [currentImm, setCurrentImm] = useState<string | number>("");
   const [currentRs1, setCurrentRs1] = useState<string>("");
   const [currentRs2, setCurrentRs2] = useState<string>("");
 
   return (
-    <IRContext.Provider value={{ ir, setIr, currentType, setCurrentType, currentImm, setCurrentImm, currentRs1, setCurrentRs1, currentRs2, setCurrentRs2 }}>
+    <CurrentInstContext.Provider value={{ currentInst, setCurrentInst, currentType, setCurrentType, currentImm, setCurrentImm, currentRs1, setCurrentRs1, currentRs2, setCurrentRs2 }}>
       {children}
-    </IRContext.Provider>
+    </CurrentInstContext.Provider>
   );
 };
