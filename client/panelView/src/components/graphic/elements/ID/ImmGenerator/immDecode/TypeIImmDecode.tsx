@@ -28,7 +28,7 @@ const TypeIImmDecode = () => {
   return (
     <div className="w-full max-h-[30rem] text-[.75rem] text-black overflow-hidden font-mono relative">
       <img
-        src="immTypeIDecodeSvg.svg"
+        src="immTypeIDecode.svg"
         alt="immDecode"
         className="w-full h-full rounded-md"
       />
