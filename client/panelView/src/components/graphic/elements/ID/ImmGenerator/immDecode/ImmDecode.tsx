@@ -3,6 +3,7 @@ import TypeIImmDecode from './TypeIImmDecode';
 import TypeSImmDecode from './TypeSImmDecode';
 import TypeBImmDecode from './TypeBImmDecode';
 import TypeUImmDecode from './TypeUImmDecode';
+import TypeJImmDecode from './TypejImmDecode';
 
 const ImmDecode = () => {
   const { currentType } = useIR();
@@ -12,7 +13,7 @@ const ImmDecode = () => {
       {(currentType === "S") && ( <TypeSImmDecode />) }
       {(currentType === "B") && ( <TypeBImmDecode />) }
       {(currentType === "LUI" || currentType === "AUIPC" ) && ( <TypeUImmDecode />) }
-
+      {!(currentType === "J") && ( <TypeJImmDecode />) }
 
     </>
   );
