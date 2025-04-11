@@ -59,7 +59,7 @@ const TypeIImmDecode = () => {
 
       {bottomDataBlocks.map((block, idx) => (
         <div
-          key={`bottom-ir.instructions[newPc].encoding.binEncoding-${idx}`}
+          key={`bottom--${idx}`}
           className="flex absolute gap-[.84rem]"
           style={{ bottom: "1.6rem", right: block.right }}
         >
