@@ -11,7 +11,7 @@ const ImmDecode = () => {
       {(currentType === "I" || currentType === "L" || currentType === "JALR"  ) && ( <TypeIImmDecode />) }
       {(currentType === "S") && ( <TypeSImmDecode />) }
       {(currentType === "B") && ( <TypeBImmDecode />) }
-      {(currentType === "LUI" || currentType === "LUI" ) && ( <TypeUImmDecode />) }
+      {(currentType === "LUI" || currentType === "AUIPC" ) && ( <TypeUImmDecode />) }
 
 
     </>
