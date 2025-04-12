@@ -73,7 +73,6 @@ export class Simulator {
     const instruction = this.cpu.currentInstruction();
     instruction.currentPc = this.cpu.getPC();
     const result = this.cpu.executeInstruction();
-
     // Send messages to update the registers view.
     if (writesRU(instruction.type, instruction.opcode)) {
       this.cpu.getRegisterFile().writeRegister(instruction.rd.regeq, result.wb.result);

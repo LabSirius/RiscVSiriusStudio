@@ -52,6 +52,8 @@ const ProgramSection = () => {
     const lineNumber = clickAddressInMemoryTable;
     const range = new monacoRef.current.Range(lineNumber, 1, lineNumber, 1);
 
+    editor.revealLineInCenterIfOutsideViewport(lineNumber);
+
     const newAddressDecoration: editor.IModelDeltaDecoration[] = [{
       range,
       options: {
