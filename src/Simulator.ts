@@ -93,8 +93,6 @@ export class Simulator {
     }
     this.didStep.fire(result);
 
-    console.log("JUATO VA A MANDAR EL MENSAJE EN EL SUPER", instruction, result);
-
     return {
       instruction: instruction,
       result: result,
@@ -276,7 +274,6 @@ export class TextSimulator extends Simulator {
   public override step(): StepResult {
     console.log(`%c[Simulator] step\n`, "color:pink");
     const result = super.step();
-    console.log("JUATO VA A MANDAR EL MENSAJE ABAJO", result.instruction);
 
     // Handle the visualization
     const mainView = this.context.mainWebviewView;
