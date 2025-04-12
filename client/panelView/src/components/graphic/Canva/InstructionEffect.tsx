@@ -139,7 +139,8 @@ const bypassWriteBackEdges = [
 const fullMemoryAccessEdges = memoryReadEdges;
 
 const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
-  const { currentInst, setCurrentType } = useCurrentInst();
+  const { currentInst, setCurrentType, currentResult } = useCurrentInst();
+
   const previousTargetEdgesRef = useRef<string[]>([]);
 
   useEffect(() => {
@@ -216,6 +217,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         break;
       case "B":
         setCurrentType("B");
+
         targetEdges = [
           ...skipFunct7Edges,
           ...skipRDEdges,
@@ -225,6 +227,18 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
           ...memoryReadEdges,
           ...bypassWriteBackEdges
         ];
+
+        if(currentResult.buMux.signal === '0'){
+          targetEdges = [
+            ...targetEdges,
+            ...muxDRouteEdges_R,
+          ]
+        }else{
+          targetEdges = [
+            ...targetEdges,
+            ...muxDRouteEdges_JALR,
+          ]
+        }
         break;
       case "J":
         setCurrentType("J");
@@ -279,6 +293,9 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
       default:
         break;
     }
+
+
+   
 
     setEdges(prevEdges => {
       const resetEdges = prevEdges.map(edge => {
