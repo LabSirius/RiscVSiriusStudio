@@ -244,6 +244,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         setCurrentType("J");
         targetEdges = [
           ...skipFunct7Edges,
+          ...skipFunct3Edges,
           ...skipRS1Edges,
           ...skipRS1InputEdges,
           ...skipRS2Edges,

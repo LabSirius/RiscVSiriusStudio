@@ -11,7 +11,7 @@ const LabelValueContainer = () => {
         </div>
 
         <div className=' absolute top-[6.4rem] left-[.8rem]'>
-          {!(currentType === 'LUI' || currentType === 'AUIPC' ) && <LabelValue label="" value={`b'${currentInst.encoding.funct3}`}/>} 
+          {!(currentType === 'LUI' || currentType === 'AUIPC' || currentType === 'J' ) && <LabelValue label="" value={`b'${currentInst.encoding.funct3}`}/>} 
         </div>
 
         <div className=' absolute top-[11.9rem] left-[.8rem]'>

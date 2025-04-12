@@ -735,6 +735,7 @@ export class SCCPU {
 
     const imm21Val = this.currentInstruction().encoding.imm21;
     const imm32Val = imm21Val.padEnd(32, "0");
+    
 
     let aVal = "0".padStart(32, "0");
     let aluASrcVal = "0";
