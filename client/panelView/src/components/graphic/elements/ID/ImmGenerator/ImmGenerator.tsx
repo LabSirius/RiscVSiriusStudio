@@ -9,7 +9,7 @@ import { useOperation } from "@/context/panel/OperationContext";
 
 export default function ImmGenerator() {
   const { operation } = useOperation();
-  const { currentInst } = useCurrentInst();
+  const { currentType } = useCurrentInst();
 
   return (
     <HoverCard>
@@ -19,7 +19,7 @@ export default function ImmGenerator() {
             <h2 className=" titleInElement top-[25%] left-[15%]  -translate-x-[15%] -translate-y-[25%] ">
               Imm Generator
             </h2>
-            <ContainerSVG height={9.6} active={currentInst.type !== "R"} />
+            <ContainerSVG height={9.6} active={currentType !== "R"} />
             {operation !== "uploadMemory" && <LabelValueContainer />}
           </div>
 
@@ -42,7 +42,7 @@ export default function ImmGenerator() {
           <Handle type="source" position={Position.Right} className="output" />
         </div>
       </HoverCardTrigger>
-      {!(currentInst.type === "R") && operation !== "uploadMemory" && (
+      {!(currentType === "R") && operation !== "uploadMemory" && (
         <HoverCardContent className="p-0 w-[45rem]">
           <ImmDecode />
         </HoverCardContent>

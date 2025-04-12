@@ -10,7 +10,7 @@ interface HandlerConfig {
 }
 
 export default function DataMemory() {
-  const { currentInst } = useCurrentInst();
+  const { currentType } = useCurrentInst();
 
   const inputHandlers: HandlerConfig[] = [
     { id: 'dmWr', left: '5.5rem' },
@@ -30,7 +30,7 @@ export default function DataMemory() {
         <h2 className="titleInElement top-[15%] left-[50%] -translate-x-[50%] -translate-y-[15%]">
           Data Memory
         </h2>
-        <ContainerSVG height={19.9} active={currentInst.type === "L" || currentInst.type === "S"} />
+        <ContainerSVG height={19.9} active={currentType === "L" || currentType === "S"} />
         <LabelValueContainer />
       </div>
 

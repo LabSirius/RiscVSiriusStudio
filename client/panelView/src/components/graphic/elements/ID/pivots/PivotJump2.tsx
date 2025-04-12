@@ -5,11 +5,11 @@ import { Handle, Position } from '@xyflow/react';
 import { Brackets } from 'lucide-react';
 
 export default function PivotJump3() {
-  const { currentInst} = useCurrentInst()
+  const { currentType} = useCurrentInst()
   return (
     <div className='w-full'>
 
-       <div className={`relative w-full h-full ${(currentInst.type === 'R' || currentInst.type === 'I' || currentInst.type === 'L' || currentInst.type === 'JALR' || currentInst.type === 'S'  || currentInst.type === 'LUI' ) && 'opacity-20'}`}>
+       <div className={`relative w-full h-full ${(currentType === 'R' || currentType === 'I' || currentType === 'L' || currentType === 'JALR' || currentType === 'S'  || currentType === 'LUI' ) && 'opacity-20'}`}>
             <Brackets size={38} strokeWidth={1} color='#000' />
        </div>
 

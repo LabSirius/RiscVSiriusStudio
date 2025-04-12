@@ -4,7 +4,7 @@ import LabelValue from '@/components/graphic/LabelValue';
 import { binaryToHex } from '@/utils/handlerConversions';
 
 const LabelValueContainer = () => {
-  const { currentInst, currentResult } = useCurrentInst();
+  const { currentType, currentResult } = useCurrentInst();
   
   const [hexImm, setHexImm] = useState('');
 
@@ -17,7 +17,7 @@ const LabelValueContainer = () => {
   return (
     <>
       <div className="absolute top-[1.5rem] right-[.8rem]">
-        {!(currentInst.type === 'R') && (
+        {!(currentType === 'R') && (
           <LabelValue label="Imm" value={`h'${hexImm}`} input={false} />
         )}
       </div>

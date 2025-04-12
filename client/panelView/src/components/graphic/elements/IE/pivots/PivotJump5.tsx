@@ -5,11 +5,11 @@ import { Handle, Position } from '@xyflow/react';
 import { Brackets } from 'lucide-react';
 
 export default function PivotJump5() {
-  const { currentInst} = useCurrentInst();
+  const { currentType} = useCurrentInst();
   return (
     <div className='w-full'>
 
-       <div className={`relative w-full h-full ${currentInst.type === 'R' && 'opacity-20'}`}>
+       <div className={`relative w-full h-full ${currentType === 'R' && 'opacity-20'}`}>
             <Brackets size={38} strokeWidth={1} color='#000' />
        </div>
 

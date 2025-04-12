@@ -4,7 +4,7 @@ import LabelValue from "@/components/graphic/LabelValue";
 import { binaryToHex } from "@/utils/handlerConversions";
 
 const LabelValueContainer = () => {
-  const { currentInst, currentResult } = useCurrentInst();
+  const { currentType, currentResult } = useCurrentInst();
 
   const [hexA, setHexA] = useState("");
   const [hexB, setHexB] = useState("");
@@ -16,12 +16,12 @@ const LabelValueContainer = () => {
       setHexB(binaryToHex(currentResult.alu.b).toUpperCase());
       setHexRes(binaryToHex(currentResult.alu.result).toUpperCase());
     }
-  }, [currentInst, currentResult]);
+  }, [ currentResult]);
 
   return (
     <>
       <div className="absolute top-[1.4rem] left-[.8rem]">
-        {!(currentInst.type === "LUI") && <LabelValue label="A" value={`h'${hexA}`} />}
+        {!(currentType === "LUI") && <LabelValue label="A" value={`h'${hexA}`} />}
       </div>
 
       <div className="absolute top-[11.4rem] left-[.8rem]">

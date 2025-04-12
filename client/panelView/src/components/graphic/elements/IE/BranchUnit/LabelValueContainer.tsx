@@ -4,10 +4,10 @@ import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 
 
 const LavelValueContainer = () => {
-    const { currentInst  } = useCurrentInst();
+    const { currentType  } = useCurrentInst();
   
   return (
-    (currentInst.type === 'B') &&
+    (currentType === 'B') &&
     <> 
      <div className='absolute top-[1.2rem] left-[.8rem]'>
         <LabelValue label="" value={`h'`}/> 

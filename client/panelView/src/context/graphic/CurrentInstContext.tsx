@@ -13,9 +13,6 @@ interface CurrentInstState {
         rs2?: string;
         rd?: string;
       },
-      rd?:{
-        regenc: string;
-      },
       rs1?:{
         regenc: string;
       },
@@ -71,9 +68,6 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
           rs2: "",
           rd: "",
         },
-        rd:{ 
-          regenc: "",
-        },
         rs1:{
           regenc: "",
         },
@@ -123,9 +117,6 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
           rs1: "",
           rs2: "",
           rd: "",
-        },
-        rd:{ 
-          regenc: "",
         },
         rs1:{
           regenc: "",
