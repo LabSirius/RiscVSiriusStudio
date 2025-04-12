@@ -50,9 +50,11 @@ const LabelValueContainer = () => {
         )}
       </div>
 
+      {!(currentType === 'S' || currentType === 'B') && (
       <div className="absolute top-[16rem] left-[.8rem]">
         <LabelValue label="DataWr" value={`h'${hexRU_DataWrite}`} />
       </div>
+      )}
 
       <div className="absolute bottom-[2.2rem] left-[.8rem]">
         <LabelValue label="" value={`b'${currentResult.ru.writeSignal}`} />
