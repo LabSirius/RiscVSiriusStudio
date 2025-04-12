@@ -30,6 +30,12 @@ interface ResultState{
     operation: string;
     result: string;
   },
+  alua: {
+    signal: string;
+  },
+  alub: {
+    signal: string;
+  },
   ru: {
     rs1: string;
     rs2: string;
@@ -57,6 +63,9 @@ interface ResultState{
     result: string;
     signal: string;
   },
+  wb: {
+    signal: string;
+  }
 
 }
 
@@ -109,6 +118,12 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
       operation: "",
       result: ""
     },
+    alua: {
+      signal: "",
+    },
+    alub: {
+      signal: "",
+    },
     ru: {
       rs1: "",
       rs2: "",
@@ -135,6 +150,9 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
     buMux: {
       result: "",
       signal: ""
+    },
+    wb: {
+      signal: "",
     }
   },
   setCurrentResult: () => {}
@@ -175,6 +193,12 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
       operation: "",
       result: ""
     },
+    alua: {
+      signal: "",
+    },
+    alub: {
+      signal: "",
+    },
     ru: {
       rs1: "",
       rs2: "",
@@ -202,6 +226,9 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
       result: "",
       signal: ""
     },
+    wb: {
+      signal: "",
+    }
   });
 
   return (
