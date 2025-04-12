@@ -215,12 +215,12 @@ a:hover{
 }
 
 .written-cell{
-  font-weight: 500;
+  font-weight: 550;
   color: #3A6973;
 }
 .written-cell-dark{
-  font-weight: 600;
-  color: #D1E3E7;
+  font-weight: 570 !important;
+  color: #ABC5CA;
 }
 
 .animate-row{
