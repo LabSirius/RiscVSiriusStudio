@@ -367,11 +367,17 @@ export const animateMemoryCell = (
     rowElement.querySelectorAll('div[tabulator-field^="value"]')
   );
   const cellsToAnimate = leng === 4 ? binaryCells : binaryCells.slice(-leng);
+
+  
   cellsToAnimate.forEach(cell => {
-    if(theme === 'light') cell.classList.add('animate-cell', 'written-cell')
-    else cell.classList.add('animate-cell', 'written-cell-dark')
+
+    if(onlyRead) {
+      cell.classList.add('animate-cell');
+    }else{
+      if(theme === 'light') cell.classList.add('animate-cell', 'written-cell')
+        else cell.classList.add('animate-cell', 'written-cell-dark')
+    }
     
-    if(onlyRead) cell.classList.add('animate-cell');
   });
   setTimeout(() => {
     cellsToAnimate.forEach(cell => cell.classList.remove('animate-cell'));

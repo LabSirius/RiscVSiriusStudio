@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { commands, Disposable, ExtensionContext, Webview, window, TextEditor, ViewColumn, Uri   } from "vscode";
+import { commands, Disposable, ExtensionContext, Webview, window, TextEditor, ViewColumn, Uri , WebviewPanel  } from "vscode";
 import {
   getHtmlForRegistersWebview,
   activateMessageListenerForRegistersView
@@ -23,6 +23,8 @@ export class RVContext {
   get configurationManager(): ConfigurationManager {
     return this._configurationManager;
   }
+  private _mainPanel: WebviewPanel | undefined;
+
   // Reference to the decorator
   private _encoderDecorator: EncoderDecorator | undefined;
   get encoderDecorator(): EncoderDecorator  | undefined {
@@ -94,6 +96,11 @@ export class RVContext {
           return;
         }
 
+        // Clear the previous context and cache
+        if (this._mainPanel) {
+          this._mainPanel.dispose();
+        }
+
 
         // Create the webview panel
         const panel = window.createWebviewPanel(
@@ -110,6 +117,8 @@ export class RVContext {
             ]
           }
         );
+
+        this._mainPanel = panel;
     
         panel.webview.html = await getHtmlForRegistersWebview(panel.webview, this.extensionContext.extensionUri);
     
