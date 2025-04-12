@@ -12,7 +12,7 @@ const MessageListener = () => {
   const { setDataMemoryTable,  setWriteInMemory, setSizeMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
   const { setNewPc } = usePC();
   const { setWriteInRegister } = useRegistersTable();
-  const { setCurrentInst } = useCurrentInst();
+  const { setCurrentInst, setCurrentResult } = useCurrentInst();
 
   const { setTextProgram, setOperation, isFirstStep, setIsFirstStep } = useOperation();
   const { setLineDecorationNumber, setClickInEditorLine } = useLines();
@@ -44,8 +44,8 @@ const MessageListener = () => {
            setLineDecorationNumber(message.lineDecorationNumber);
           break
           case "step":
-            console.log("APARECE INFORMACION DE ", message.currentInst )
             setCurrentInst(message.currentInst);
+            setCurrentResult(message.result )
             setLineDecorationNumber(message.lineDecorationNumber);
             if (!isFirstStep) {
               setSection("program");

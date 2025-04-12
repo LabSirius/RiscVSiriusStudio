@@ -26,7 +26,17 @@ interface CurrentInstState {
       },
       imm12?: number,
       imm21?: number
+}
+
+
+interface ResultState{
+  alu: {
+    a: string;
+    b: string;
+    operation: string;
+    result: string;
   }
+}
 
 
 interface CurrentInstContextType {
@@ -44,6 +54,9 @@ interface CurrentInstContextType {
 
   currentRs2: string;
   setCurrentRs2: React.Dispatch<React.SetStateAction<string>>;
+
+  currentResult: ResultState;
+  setCurrentResult: React.Dispatch<React.SetStateAction<ResultState>>;
 }
 
 const CurrentInstContext = createContext<CurrentInstContextType>({
@@ -75,8 +88,6 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
         imm21: 0
   },
     
-
-
   setCurrentInst: () => {},
 
   currentType: "",
@@ -90,6 +101,16 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
 
   currentRs2: "",
   setCurrentRs2: () => {},
+
+  currentResult: {
+    alu: {
+      a: "",
+      b: "",
+      operation: "",
+      result: ""
+    }
+  },
+  setCurrentResult: () => {}
 });
 
 export const useCurrentInst = () => useContext(CurrentInstContext);
@@ -120,14 +141,25 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
         imm12: 0,
         imm21: 0
       },
+
+
 );
   const [currentType, setCurrentType] = useState<string>("");
   const [currentImm, setCurrentImm] = useState<string | number>("");
   const [currentRs1, setCurrentRs1] = useState<string>("");
   const [currentRs2, setCurrentRs2] = useState<string>("");
 
+  const [currentResult, setCurrentResult] = useState<ResultState>({
+    alu: {
+      a: "",
+      b: "",
+      operation: "",
+      result: ""
+    }
+  });
+
   return (
-    <CurrentInstContext.Provider value={{ currentInst, setCurrentInst, currentType, setCurrentType, currentImm, setCurrentImm, currentRs1, setCurrentRs1, currentRs2, setCurrentRs2 }}>
+    <CurrentInstContext.Provider value={{ currentInst, setCurrentInst, currentType, setCurrentType, currentImm, setCurrentImm, currentRs1, setCurrentRs1, currentRs2, setCurrentRs2, currentResult, setCurrentResult }}>
       {children}
     </CurrentInstContext.Provider>
   );
