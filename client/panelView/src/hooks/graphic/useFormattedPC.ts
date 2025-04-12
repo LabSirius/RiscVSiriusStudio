@@ -6,7 +6,7 @@ export const useFormattedPC = (newPc: number) => {
 
   useEffect(() => {
     const pcHex = newPc * 4;
-    const hex = unsignedToHex(pcHex).padStart(3, '0');
+    const hex = unsignedToHex(pcHex).toUpperCase()
     const formattedHex = `h'${hex}`;
     setFormattedPC(formattedHex);
   }, [newPc]);

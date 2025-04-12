@@ -45,6 +45,7 @@ const MessageListener = () => {
           break
           case "step":
             console.log("response step", message.result);
+            setNewPc(message.newPc);
             setCurrentInst(message.currentInst);
             setCurrentResult(message.result )
             setLineDecorationNumber(message.lineDecorationNumber);

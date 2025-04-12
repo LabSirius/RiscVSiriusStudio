@@ -19,6 +19,7 @@ interface CurrentInstState {
       rs2?:{
         regenc: string;
       },
+      currentPc: number;
 }
 
 
@@ -51,7 +52,12 @@ interface ResultState{
     dataWr: string;
     controlSignal: string;
     writeSignal: string;
-  }
+  },  
+  buMux: {
+    result: string;
+    signal: string;
+  },
+
 }
 
 
@@ -87,6 +93,7 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
         rs2:{
           regenc: "",
         },
+        currentPc: 0
   },
     
   setCurrentInst: () => {},
@@ -124,6 +131,10 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
       dataWr: "",
       controlSignal: "",
       writeSignal: ""
+    },
+    buMux: {
+      result: "",
+      signal: ""
     }
   },
   setCurrentResult: () => {}
@@ -150,6 +161,7 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
         rs2:{
           regenc: "",
         },
+        currentPc: 0
       },
 
 
@@ -185,7 +197,11 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
       dataWr: "",
       controlSignal: "",
       writeSignal: ""
-    }
+    },
+    buMux: {
+      result: "",
+      signal: ""
+    },
   });
 
   return (

@@ -77,7 +77,9 @@ export class Simulator {
     }
 
     const instruction = this.cpu.currentInstruction();
+    instruction.currentPc = this.cpu.getPC();
     const result = this.cpu.executeInstruction();
+    
 
     // Send messages to update the registers view.
     if (writesRU(instruction.type, instruction.opcode)) {
@@ -284,7 +286,7 @@ export class TextSimulator extends Simulator {
     const currentInst = this.cpu.currentInstruction();
     const lineDecorationNumber = this.rvDoc.getLineForIR(currentInst);
     if (lineDecorationNumber !== undefined) {
-      mainView.postMessage({ from: "extension", operation: "step", currentInst: result.instruction, result: result.result, lineDecorationNumber: lineDecorationNumber + 1 });
+      mainView.postMessage({ from: "extension", operation: "step", newPc: this.cpu.getPC(),  currentInst: result.instruction, result: result.result, lineDecorationNumber: lineDecorationNumber + 1 });
     }
     return result;
   }
