@@ -16,7 +16,7 @@ export default function ImmGenerator() {
       <HoverCardTrigger asChild>
         <div className="w-full ">
           <div className="relative w-full h-full">
-            <h2 className=" titleInElement top-[30%] left-[15%]  -translate-x-[15%] -translate-y-[30%] ">
+            <h2 className=" titleInElement top-[25%] left-[15%]  -translate-x-[15%] -translate-y-[25%] ">
               Imm Generator
             </h2>
             <ContainerSVG height={9.6} active={currentInst.type !== "R"} />
@@ -28,7 +28,7 @@ export default function ImmGenerator() {
             id="[31:7]"
             position={Position.Left}
             className="input"
-            style={{ top: "3.5rem" }}
+            style={{ top: "2.7rem" }}
           />
 
           <Handle
@@ -36,7 +36,7 @@ export default function ImmGenerator() {
             id="immSrc"
             position={Position.Left}
             className="input"
-            style={{ top: "8rem" }}
+            style={{ top: "7rem" }}
           />
 
           <Handle type="source" position={Position.Right} className="output" />

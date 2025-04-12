@@ -12,11 +12,9 @@ interface CurrentInstState {
         rs1?: string;
         rs2?: string;
         rd?: string;
-        imm13?: string;
       },
       rd?:{
         regenc: string;
-        
       },
       rs1?:{
         regenc: string;
@@ -24,8 +22,6 @@ interface CurrentInstState {
       rs2?:{
         regenc: string;
       },
-      imm12?: number,
-      imm21?: number
 }
 
 
@@ -35,12 +31,16 @@ interface ResultState{
     b: string;
     operation: string;
     result: string;
-  }
+  },
   ru: {
     rs1: string;
     rs2: string;
     dataWrite: string;
     writeSignal: string;
+  },
+  imm: {
+    output : string;
+    signal: string;
   }
 }
 
@@ -51,9 +51,6 @@ interface CurrentInstContextType {
 
   currentType: string;
   setCurrentType: React.Dispatch<React.SetStateAction<string>>;
-
-  currentImm: string | number;
-  setCurrentImm: React.Dispatch<React.SetStateAction<string | number>>;
 
   currentResult: ResultState;
   setCurrentResult: React.Dispatch<React.SetStateAction<ResultState>>;
@@ -73,7 +70,6 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
           rs1: "",
           rs2: "",
           rd: "",
-          imm13: ""
         },
         rd:{ 
           regenc: "",
@@ -84,8 +80,6 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
         rs2:{
           regenc: "",
         },
-        imm12: 0,
-        imm21: 0
   },
     
   setCurrentInst: () => {},
@@ -93,8 +87,6 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
   currentType: "",
   setCurrentType: () => {},
 
-  currentImm: "",
-  setCurrentImm: () => {},
 
   currentResult: {
     alu: {
@@ -108,6 +100,10 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
       rs2: "",
       dataWrite: "",
       writeSignal: ""
+    },
+    imm: {
+      output : "",
+      signal: ""
     }
   },
   setCurrentResult: () => {}
@@ -127,7 +123,6 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
           rs1: "",
           rs2: "",
           rd: "",
-          imm13: ""
         },
         rd:{ 
           regenc: "",
@@ -138,14 +133,11 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
         rs2:{
           regenc: "",
         },
-        imm12: 0,
-        imm21: 0
       },
 
 
 );
   const [currentType, setCurrentType] = useState<string>("");
-  const [currentImm, setCurrentImm] = useState<string | number>("");
 
   const [currentResult, setCurrentResult] = useState<ResultState>({
     alu: {
@@ -159,11 +151,15 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
       rs2: "",
       dataWrite: "",
       writeSignal: ""
+    },
+    imm: {
+      output : "",
+      signal: ""
     }
   });
 
   return (
-    <CurrentInstContext.Provider value={{ currentInst, setCurrentInst, currentType, setCurrentType, currentImm, setCurrentImm, currentResult, setCurrentResult }}>
+    <CurrentInstContext.Provider value={{ currentInst, setCurrentInst, currentType, setCurrentType, currentResult, setCurrentResult }}>
       {children}
     </CurrentInstContext.Provider>
   );
