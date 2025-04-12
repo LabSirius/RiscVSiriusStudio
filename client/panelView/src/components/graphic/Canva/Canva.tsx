@@ -24,6 +24,8 @@ import CustomControls from '../custom/CustomControls';
 import { animateLine } from '../animateLine/animateLine';
 import InstructionEffect from './InstructionEffect';
 
+const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
+
 export default function Canva() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -73,6 +75,7 @@ export default function Canva() {
     <ReactFlow
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
+      defaultViewport={defaultViewport}
       onEdgeMouseEnter={handleEdgeMouseEnter}
       onEdgeMouseLeave={handleEdgeMouseLeave}
       nodes={nodes}
