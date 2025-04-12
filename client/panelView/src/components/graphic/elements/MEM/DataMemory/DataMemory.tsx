@@ -2,6 +2,7 @@ import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 import { Handle, Position } from '@xyflow/react';
 import ContainerSVG from '../../ContainerSVG';
 import LabelValueContainer from './LabelValueContainer';
+import { useOperation } from '@/context/panel/OperationContext';
 
 interface HandlerConfig {
   id?: string;
@@ -11,6 +12,7 @@ interface HandlerConfig {
 
 export default function DataMemory() {
   const { currentType } = useCurrentInst();
+  const { operation} = useOperation();
 
   const inputHandlers: HandlerConfig[] = [
     { id: 'dmWr', left: '5.5rem' },
@@ -31,7 +33,7 @@ export default function DataMemory() {
           Data Memory
         </h2>
         <ContainerSVG height={19.9} active={currentType === "L" || currentType === "S"} />
-        <LabelValueContainer />
+        {(operation !== "uploadMemory") && <LabelValueContainer /> }
       </div>
 
       {inputHandlers.map((handler, index) => (

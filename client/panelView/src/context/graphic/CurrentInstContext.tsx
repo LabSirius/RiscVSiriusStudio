@@ -44,6 +44,13 @@ interface ResultState{
     b: string;
     operation: string;
     result: string;
+  },
+  dm: {
+    address: string;
+    dataRd: string;
+    dataWr: string;
+    controlSignal: string;
+    writeSignal: string;
   }
 }
 
@@ -110,6 +117,13 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
       b: "",
       operation: "",
       result: ""
+    },
+    dm: {
+      address: "",
+      dataRd: "",
+      dataWr: "",
+      controlSignal: "",
+      writeSignal: ""
     }
   },
   setCurrentResult: () => {}
@@ -164,6 +178,13 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
       b: "",
       operation: "",
       result: ""
+    },
+    dm: {
+      address: "",
+      dataRd: "",
+      dataWr: "",
+      controlSignal: "",
+      writeSignal: ""
     }
   });
 
