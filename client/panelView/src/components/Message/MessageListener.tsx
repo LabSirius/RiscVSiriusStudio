@@ -29,7 +29,7 @@ const MessageListener = () => {
             setTextProgram(message.textProgram);
           break
           case "uploadMemory":
-            setDialog({ title: "Info", description: "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.", stop: false });
+            setDialog({ title: "Configuration Info", description: "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.", stop: false });
             
             setIsCreatedMemoryTable(false);
             setDataMemoryTable(message.payload);

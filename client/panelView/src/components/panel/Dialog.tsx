@@ -10,9 +10,11 @@ import {
   AlertDialogTitle,
 } from "@/components/panel/ui/alert-dialog";
 
-import { Info} from "lucide-react";  
+import { Info, Settings} from "lucide-react";  
 
-const Dialog = () => {
+
+
+const Dialog = ( ) => {
   const { dialog, setDialog } = useDialog();
   const [open, setOpen] = useState(false);
 
@@ -33,7 +35,8 @@ const Dialog = () => {
       <AlertDialogContent className="z-1000000000">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-[#3A6973]">
-            <Info className="w-6 h-6 mr-2" />
+           
+            {dialog?.stop ? <Info className="w-6 h-6 mr-2" /> : <Settings className="w-6 h-6 mr-2" />}
             {dialog?.title}
           </AlertDialogTitle>
           <AlertDialogDescription className="text-[1rem] text-start">
