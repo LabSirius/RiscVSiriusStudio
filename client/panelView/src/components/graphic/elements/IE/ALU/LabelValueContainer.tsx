@@ -32,7 +32,7 @@ const LabelValueContainer = () => {
         <LabelValue label="ALURes" input={false} value={`h'${hexRes}`} />
       </div>
 
-      <div className="absolute bottom-[-6rem] right-[1.3rem]">
+      <div className="absolute bottom-[-6rem] right-[0]">
         <LabelValue label="" input={false} value={`b'${currentResult.alu.operation}`} />
       </div>
     </>

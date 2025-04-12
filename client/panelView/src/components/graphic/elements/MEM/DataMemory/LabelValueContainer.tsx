@@ -4,7 +4,7 @@ import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 
 
 const LavelValueContainer = () => {
-    const { currentInst,  currentRs2 } = useCurrentInst();
+    const { currentInst } = useCurrentInst();
   
   return (
     <>
@@ -13,7 +13,7 @@ const LavelValueContainer = () => {
         </div>
 
         <div className='absolute top-[13.5rem] left-[.8rem]'>
-        {(currentInst.type === 'S' ) &&  <LabelValue label="DataWr" value={`h'${currentRs2}`}/> }
+        {(currentInst.type === 'S' ) &&  <LabelValue label="DataWr" value={`h'`}/> }
         </div>
                 
         <div className=' absolute top-[10.5rem] right-[.8rem]'>

@@ -36,6 +36,12 @@ interface ResultState{
     operation: string;
     result: string;
   }
+  ru: {
+    rs1: string;
+    rs2: string;
+    dataWrite: string;
+    writeSignal: string;
+  }
 }
 
 
@@ -48,12 +54,6 @@ interface CurrentInstContextType {
 
   currentImm: string | number;
   setCurrentImm: React.Dispatch<React.SetStateAction<string | number>>;
-
-  currentRs1: string;
-  setCurrentRs1: React.Dispatch<React.SetStateAction<string>>;
-
-  currentRs2: string;
-  setCurrentRs2: React.Dispatch<React.SetStateAction<string>>;
 
   currentResult: ResultState;
   setCurrentResult: React.Dispatch<React.SetStateAction<ResultState>>;
@@ -96,18 +96,18 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
   currentImm: "",
   setCurrentImm: () => {},
 
-  currentRs1: "",
-  setCurrentRs1: () => {},
-
-  currentRs2: "",
-  setCurrentRs2: () => {},
-
   currentResult: {
     alu: {
       a: "",
       b: "",
       operation: "",
       result: ""
+    },
+    ru: {
+      rs1: "",
+      rs2: "",
+      dataWrite: "",
+      writeSignal: ""
     }
   },
   setCurrentResult: () => {}
@@ -146,8 +146,6 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
 );
   const [currentType, setCurrentType] = useState<string>("");
   const [currentImm, setCurrentImm] = useState<string | number>("");
-  const [currentRs1, setCurrentRs1] = useState<string>("");
-  const [currentRs2, setCurrentRs2] = useState<string>("");
 
   const [currentResult, setCurrentResult] = useState<ResultState>({
     alu: {
@@ -155,11 +153,17 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
       b: "",
       operation: "",
       result: ""
+    },
+    ru: {
+      rs1: "",
+      rs2: "",
+      dataWrite: "",
+      writeSignal: ""
     }
   });
 
   return (
-    <CurrentInstContext.Provider value={{ currentInst, setCurrentInst, currentType, setCurrentType, currentImm, setCurrentImm, currentRs1, setCurrentRs1, currentRs2, setCurrentRs2, currentResult, setCurrentResult }}>
+    <CurrentInstContext.Provider value={{ currentInst, setCurrentInst, currentType, setCurrentType, currentImm, setCurrentImm, currentResult, setCurrentResult }}>
       {children}
     </CurrentInstContext.Provider>
   );
