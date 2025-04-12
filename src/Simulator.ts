@@ -9,13 +9,7 @@ import {
 import { RVDocument } from "./rvDocument";
 import { RVContext } from "./support/context";
 import { SCCPU, SCCPUResult } from "./vcpu/singlecycle";
-import {
-  branchesOrJumps,
-  getFunct3,
-  readsDM,
-  writesDM,
-  writesRU,
-} from "./utilities/instructions";
+import { branchesOrJumps, getFunct3, readsDM, writesDM, writesRU } from "./utilities/instructions";
 import { intToBinary } from "./utilities/conversions";
 
 export type SimulationParameters = {
@@ -79,7 +73,6 @@ export class Simulator {
     const instruction = this.cpu.currentInstruction();
     instruction.currentPc = this.cpu.getPC();
     const result = this.cpu.executeInstruction();
-    
 
     // Send messages to update the registers view.
     if (writesRU(instruction.type, instruction.opcode)) {
@@ -100,9 +93,11 @@ export class Simulator {
     }
     this.didStep.fire(result);
 
+    console.log("JUATO VA A MANDAR EL MENSAJE EN EL SUPER", instruction, result);
+
     return {
       instruction: instruction,
-      result: result
+      result: result,
     };
   }
 
@@ -228,11 +223,12 @@ export class TextSimulator extends Simulator {
       return;
     } else {
       this.clickListener();
-      const addressLine = this.rvDoc.ir?.instructions.map(instr => {
-        const line = instr.location.start.line;
-        const jump = branchesOrJumps(instr.type, instr.opcode) ? instr.encoding.imm13 : null;
-        return { line, jump };
-      }) || [];
+      const addressLine =
+        this.rvDoc.ir?.instructions.map((instr) => {
+          const line = instr.location.start.line;
+          const jump = branchesOrJumps(instr.type, instr.opcode) ? instr.encoding.imm13 : null;
+          return { line, jump };
+        }) || [];
       // Upload memory to webview
       mainView.postMessage({
         from: "extension",
@@ -242,7 +238,7 @@ export class TextSimulator extends Simulator {
           codeSize: this.cpu.getDataMemory().codeSize,
           addressLine,
           symbols: this.rvDoc.ir?.symbols,
-        }
+        },
       });
       this.makeEditorReadOnly();
       super.start();
@@ -280,14 +276,35 @@ export class TextSimulator extends Simulator {
   public override step(): StepResult {
     console.log(`%c[Simulator] step\n`, "color:pink");
     const result = super.step();
+    console.log("JUATO VA A MANDAR EL MENSAJE ABAJO", result.instruction);
 
     // Handle the visualization
     const mainView = this.context.mainWebviewView;
+
     const currentInst = this.cpu.currentInstruction();
-    const lineDecorationNumber = this.rvDoc.getLineForIR(currentInst);
-    if (lineDecorationNumber !== undefined) {
-      mainView.postMessage({ from: "extension", operation: "step", newPc: this.cpu.getPC(),  currentInst: result.instruction, result: result.result, lineDecorationNumber: lineDecorationNumber + 1 });
+
+    try {
+      const lineDecorationNumber = this.rvDoc.getLineForIR(currentInst);
+      if (lineDecorationNumber !== undefined) {
+        mainView.postMessage({
+          from: "extension",
+          operation: "step",
+          newPc: this.cpu.getPC(),
+          currentInst: result.instruction,
+          result: result.result,
+          lineDecorationNumber: lineDecorationNumber + 1,
+        });
+      }
+    } catch {
+      mainView.postMessage({
+        from: "extension",
+        operation: "step",
+        newPc: this.cpu.getPC(),
+        currentInst: result.instruction,
+        result: result.result,
+      });
     }
+
     return result;
   }
 
@@ -299,7 +316,7 @@ export class TextSimulator extends Simulator {
 
     const blinkDecoration = window.createTextEditorDecorationType({
       isWholeLine: true,
-      backgroundColor: 'rgba(58, 108, 115, 0.3)'
+      backgroundColor: "rgba(58, 108, 115, 0.3)",
     });
 
     const range = editor.document.lineAt(line - 1).range;
@@ -316,18 +333,16 @@ export class TextSimulator extends Simulator {
 
     setTimeout(() => {
       clearInterval(intervalId);
-      editor.setDecorations(blinkDecoration, []); +
-        blinkDecoration.dispose();
+      editor.setDecorations(blinkDecoration, []);
+      +blinkDecoration.dispose();
     }, 1000);
   }
-
-
 
   private clickListener() {
     if (this.selectionListenerDisposable) {
       return;
     }
-    this.selectionListenerDisposable = window.onDidChangeTextEditorSelection(event => {
+    this.selectionListenerDisposable = window.onDidChangeTextEditorSelection((event) => {
       if (!event.selections || event.selections.length === 0) {
         return;
       }
@@ -343,7 +358,6 @@ export class TextSimulator extends Simulator {
       });
     });
   }
-
 
   public override stop(): void {
     super.stop();
@@ -361,7 +375,6 @@ export class TextSimulator extends Simulator {
       from: "extension",
       operation: "stop",
     });
-
   }
 
   public override sendTextProgramToView(textProgram: string) {
@@ -377,8 +390,6 @@ export class TextSimulator extends Simulator {
   }
 
   public override notifyRegisterWrite(register: string, value: string) {
-
-
     this.sendToMainView({
       from: "extension",
       operation: "setRegister",
@@ -405,7 +416,6 @@ export class TextSimulator extends Simulator {
       _length: length,
     });
   }
-
 
   private highlightLine(lineNumber: number): void {
     const editor = this.rvDoc.editor;

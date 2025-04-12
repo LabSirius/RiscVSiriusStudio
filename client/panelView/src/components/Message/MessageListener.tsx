@@ -48,7 +48,11 @@ const MessageListener = () => {
             setNewPc(message.newPc);
             setCurrentInst(message.currentInst);
             setCurrentResult(message.result )
-            setLineDecorationNumber(message.lineDecorationNumber);
+            if(message.lineDecorationNumber !== undefined){
+              setLineDecorationNumber(message.lineDecorationNumber);
+            }else{
+              setLineDecorationNumber(-1);
+            }
             if (!isFirstStep) {
               setSection("program");
               setOperation("step");
