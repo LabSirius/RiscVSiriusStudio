@@ -1,15 +1,17 @@
 import { Handle, Position } from '@xyflow/react';
 import ContainerSVG from '../../ContainerSVG';
 import LabelValueContainer from './LabelValueContainer';
+import { useOperation } from '@/context/panel/OperationContext';
 
 export default function BranchUnit() {
+  const { operation} = useOperation();
   return (
     <div className='w-full'>
 
        <div className='relative w-full h-full'>
-       <h2 className=" titleInElement  top-[50%] left-[75%]  -translate-x-[75%] -translate-y-[50%] ">Branch Unit</h2>
+       <h2 className=" titleInElement  top-[50%] left-[73.5%]  -translate-x-[73.5%] -translate-y-[50%] ">Branch Unit</h2>
         <ContainerSVG height={10.2} active={true}  />
-        <LabelValueContainer />
+        {(operation !== "uploadMemory") && <LabelValueContainer />}
 
        </div>
 

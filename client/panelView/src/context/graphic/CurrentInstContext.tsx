@@ -38,6 +38,12 @@ interface ResultState{
   imm: {
     output : string;
     signal: string;
+  },
+  bu: {
+    a: string;
+    b: string;
+    operation: string;
+    result: string;
   }
 }
 
@@ -98,6 +104,12 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
     imm: {
       output : "",
       signal: ""
+    },
+    bu: {
+      a: "",
+      b: "",
+      operation: "",
+      result: ""
     }
   },
   setCurrentResult: () => {}
@@ -146,6 +158,12 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
     imm: {
       output : "",
       signal: ""
+    },
+    bu: {
+      a: "",
+      b: "",
+      operation: "",
+      result: ""
     }
   });
 
