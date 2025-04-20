@@ -1,30 +1,50 @@
-import { useEffect, useState } from 'react';
-import LabelValue from '@/components/graphic/LabelValue';
-import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
-import { binaryToHex } from '@/utils/handlerConversions';
-import { useFormattedPC } from '@/hooks/graphic/useFormattedPC';
+import { useEffect, useState } from "react";
+import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
+import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
+import { useFormattedPC } from "@/hooks/graphic/useFormattedPC";
+import LabelValueWithHover from "../../LabelValueWithHover";
 
 const LabelValueContainer = () => {
   const { currentResult, currentInst } = useCurrentInst();
   const formattedPC = useFormattedPC(currentInst.currentPc);
 
-  const [hexNextPC, setHexNextPC] = useState('');
+  const [hexNextPC, setHexNextPC] = useState("");
+  const [decNextPC, setDecNextPC] = useState("");
+  const [binNextPC, setBinNextPC] = useState("");
 
   useEffect(() => {
-    if (currentResult && currentResult.buMux) {
-      setHexNextPC(binaryToHex(currentResult.buMux.result).toUpperCase());
+    if (currentResult?.buMux?.result) {
+      const bin = currentResult.buMux.result;
+      setHexNextPC(binaryToHex(bin).toUpperCase());
+      setDecNextPC(binaryToInt(bin));
+      setBinNextPC(bin.padStart(32, "0"));
     }
   }, [currentResult]);
 
+  const pcBin = String(currentInst.currentPc).padStart(32, "0");
+  const pcDec = binaryToInt(pcBin);
+  const pcHex = binaryToHex(pcBin).toUpperCase();
+
   return (
     <>
-      <div className="absolute top-[8rem] left-[.8rem]">
-        <LabelValue label="NextPc" value={`h'${hexNextPC}`} />
-      </div>
+      <LabelValueWithHover
+        label="NextPc"
+        value={`h'${hexNextPC}`}
+        decimal={decNextPC}
+        binary={binNextPC}
+        hex={hexNextPC}
+        positionClassName="top-[8rem] left-[.8rem]"
+      />
 
-      <div className="absolute top-[3.2rem] right-[.8rem]">
-        <LabelValue label="PC" value={formattedPC} input={false} />
-      </div>
+      <LabelValueWithHover
+        label="PC"
+        value={formattedPC}
+        decimal={pcDec}
+        binary={pcBin}
+        hex={pcHex}
+        positionClassName="top-[3.2rem] right-[.8rem]"
+        input={false}
+      />
     </>
   );
 };
