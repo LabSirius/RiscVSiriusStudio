@@ -35,9 +35,15 @@ const LabelValueContainer = () => {
       setBinA(a);
       setBinB(b);
 
-      setOpHex(binaryToHex(op).toUpperCase());
       setOpBin(op);
-      setOpDec(binaryToInt(op));
+
+      if (op.includes('X')) {
+        setOpHex(op);
+        setOpDec(op);
+      } else {
+        setOpHex(binaryToHex(op).toUpperCase());
+        setOpDec(binaryToInt(op));
+      }
 
       setResHex(binaryToHex(res).toUpperCase());
       setResBin(res);
@@ -71,13 +77,13 @@ const LabelValueContainer = () => {
         </>
       )}
 
-      {/* Operation */}
+      {/* Operation (brOp) */}
       <LabelValueWithHover
         label=""
         value={`b'${opBin}`}
-        decimal={opDec}
+        decimal={`${opDec}`}
         binary={opBin}
-        hex={opHex}
+        hex={`${opHex}`}
         positionClassName="absolute bottom-[-6.43rem] right-[-.8rem]"
         input={false}
       />

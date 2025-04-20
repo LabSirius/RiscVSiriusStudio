@@ -1,12 +1,14 @@
 import MuxContainer from "../MUXContainer";
 import { Handle, Position } from "@xyflow/react";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
-import LabelValue from "@/components/graphic/LabelValue";
+import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHover";
 import { useOperation } from "@/context/panel/OperationContext";
 
 function MuxD() {
   const { currentResult } = useCurrentInst();
   const { operation } = useOperation();
+
+  const signal = currentResult.buMux.signal;
 
   return (
     <div className="relative w-full h-full">
@@ -14,7 +16,15 @@ function MuxD() {
         <MuxContainer />
         {operation !== "uploadMemory" && (
           <div className="absolute top-[-3rem] left-[3rem]">
-            <LabelValue label="" value={`b'${currentResult.buMux.signal}`} input={false} />
+            <LabelValueWithHover
+              label=""
+              value={`b'${signal}`}
+              decimal={signal}
+              binary={signal}
+              hex={signal}
+              input={false}
+              positionClassName=""
+            />
           </div>
         )}
       </div>

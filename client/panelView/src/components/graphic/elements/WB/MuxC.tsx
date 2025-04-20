@@ -1,8 +1,9 @@
 import MuxContainer from "../MUXContainer";
 import { Handle, Position } from "@xyflow/react";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
-import LabelValue from "@/components/graphic/LabelValue";
 import { useOperation } from "@/context/panel/OperationContext";
+import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHover";
+import {  binaryToInt } from "@/utils/handlerConversions";
 
 interface HandlerConfig {
   id?: string;
@@ -13,6 +14,12 @@ interface HandlerConfig {
 export default function MuxC() {
   const { currentResult } = useCurrentInst();
   const { operation } = useOperation();
+
+  const signal = currentResult.wb.signal;
+  const hasX = signal.includes('X');
+
+  const signalDec = hasX ? `${signal}` : binaryToInt(signal);
+  const signalHex = hasX ? `${signal}` : parseInt(signal, 2).toString(16).toUpperCase();
 
   const inputHandlers: HandlerConfig[] = [
     { id: "adder4", style: { top: "1.8rem" }, position: Position.Left },
@@ -28,8 +35,16 @@ export default function MuxC() {
       <div className="relative w-full h-full">
         <MuxContainer />
         {operation !== "uploadMemory" && (
-          <div className="absolute bottom-[-2.3rem] left-[3.5rem]">
-            <LabelValue label="" value={`b'${currentResult.wb.signal}`} input={false} />
+          <div className="absolute bottom-[.3rem] left-[3.5rem]">
+            <LabelValueWithHover
+              label=""
+              value={`b'${signal}`}
+              decimal={signalDec}
+              binary={signal}
+              hex={signalHex}
+              input={false}
+              positionClassName=""
+            />
           </div>
         )}
       </div>
