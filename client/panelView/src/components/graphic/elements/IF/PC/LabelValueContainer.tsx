@@ -21,8 +21,9 @@ const LabelValueContainer = () => {
     }
   }, [currentResult]);
 
-  const pcBin = String(currentInst.currentPc).padStart(32, "0");
-  const pcDec = binaryToInt(pcBin);
+  const pcValue = parseInt(String(currentInst.currentPc), 2) * 4;
+  const pcBin = pcValue.toString(2).padStart(32, "0");
+  const pcDec = pcValue.toString();
   const pcHex = binaryToHex(pcBin).toUpperCase();
 
   return (
