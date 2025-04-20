@@ -4,11 +4,45 @@ import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { useOperation } from "@/context/panel/OperationContext";
 import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHover";
 
+interface HandlerConfig {
+  id: string;
+  type: "source" | "target";
+  position: Position;
+  style: React.CSSProperties;
+}
+
 function MuxB() {
   const { currentResult } = useCurrentInst();
   const { operation } = useOperation();
 
   const signal = currentResult.alub.signal;
+
+  const handlers: HandlerConfig[] = [
+    {
+      id: "registersUnitB",
+      type: "target",
+      position: Position.Left,
+      style: { top: "2.8rem" },
+    },
+    {
+      id: "immGenerator",
+      type: "target",
+      position: Position.Left,
+      style: { top: "6.8rem" },
+    },
+    {
+      id: "aluBSrc",
+      type: "target",
+      position: Position.Bottom,
+      style: { top: "7rem" },
+    },
+    {
+      id: "muxB_output",
+      type: "source",
+      position: Position.Right,
+      style: { right: ".8rem" },
+    },
+  ];
 
   return (
     <div className="relative w-full h-full">
@@ -29,36 +63,16 @@ function MuxB() {
         )}
       </div>
 
-      <Handle
-        type="target"
-        id="registersUnitB"
-        position={Position.Left}
-        className="input"
-        style={{ top: "2.8rem" }}
-      />
-
-      <Handle
-        type="target"
-        id="immGenerator"
-        position={Position.Left}
-        className="input"
-        style={{ top: "6.8rem" }}
-      />
-
-      <Handle
-        type="target"
-        id="aluBSrc"
-        position={Position.Bottom}
-        className="input"
-        style={{ top: "7rem" }}
-      />
-
-      <Handle
-        type="source"
-        position={Position.Right}
-        className="output"
-        style={{ right: ".8rem" }}
-      />
+      {handlers.map((h) => (
+        <Handle
+          key={h.id}
+          id={h.id}
+          type={h.type}
+          position={h.position}
+          className={h.type === "source" ? "output" : "input"}
+          style={h.style}
+        />
+      ))}
     </div>
   );
 }
