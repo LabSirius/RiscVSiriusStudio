@@ -1,52 +1,113 @@
 import { useEffect, useState } from 'react';
-import LabelValue from '../../../LabelValue';
 import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
-import { binaryToHex } from '@/utils/handlerConversions';
+import { binaryToHex, binaryToInt } from '@/utils/handlerConversions';
+import LabelValueWithHover from '@/components/graphic/elements/LabelValueWithHover';
 
-const LavelValueContainer = () => {
+const LabelValueContainer = () => {
   const { currentType, currentResult } = useCurrentInst();
 
-  const [hexAddress, setHexAddress] = useState('');
-  const [hexDataWr, setHexDataWr] = useState('');
-  const [hexDataRd, setHexDataRd] = useState('');
+  const [addressHex, setAddressHex] = useState('');
+  const [addressBin, setAddressBin] = useState('');
+  const [addressDec, setAddressDec] = useState('');
+
+  const [dataWrHex, setDataWrHex] = useState('');
+  const [dataWrBin, setDataWrBin] = useState('');
+  const [dataWrDec, setDataWrDec] = useState('');
+
+  const [dataRdHex, setDataRdHex] = useState('');
+  const [dataRdBin, setDataRdBin] = useState('');
+  const [dataRdDec, setDataRdDec] = useState('');
+
+  const [writeSignal, setWriteSignal] = useState('');
+  const [controlSignal, setControlSignal] = useState('');
 
   useEffect(() => {
-    if (currentResult && currentResult.dm) {
-      setHexAddress(binaryToHex(currentResult.dm.address).toLocaleUpperCase());
-      setHexDataWr(binaryToHex(currentResult.dm.dataWr).toLocaleUpperCase());
-      setHexDataRd(binaryToHex(currentResult.dm.dataRd).toUpperCase());
+    if (currentResult?.dm) {
+      const addr = currentResult.dm.address;
+      const wr = currentResult.dm.dataWr;
+      const rd = currentResult.dm.dataRd;
+      const writeSig = currentResult.dm.writeSignal;
+      const controlSig = currentResult.dm.controlSignal;
+
+      setAddressHex(binaryToHex(addr).toUpperCase());
+      setAddressBin(addr);
+      setAddressDec(binaryToInt(addr));
+
+      setDataWrHex(binaryToHex(wr).toUpperCase());
+      setDataWrBin(wr);
+      setDataWrDec(binaryToInt(wr));
+
+      setDataRdHex(binaryToHex(rd).toUpperCase());
+      setDataRdBin(rd);
+      setDataRdDec(binaryToInt(rd));
+
+      setWriteSignal(writeSig);
+      setControlSignal(controlSig);
     }
   }, [currentResult]);
 
   return (
     <>
-      <div className="absolute top-[6rem] left-[.8rem]">
-        {(currentType === 'S' || currentType === 'L') && (
-          <LabelValue label="Address" value={`h'${hexAddress}`} />
-        )}
-      </div>
+      {/* Address */}
+      {['S', 'L'].includes(currentType) && (
+        <LabelValueWithHover
+          label="Address"
+          value={`h'${addressHex}`}
+          decimal={addressDec}
+          binary={addressBin}
+          hex={addressHex}
+          positionClassName="absolute top-[6rem] left-[.8rem]"
+        />
+      )}
 
-      <div className="absolute top-[13.5rem] left-[.8rem]">
-        {currentType === 'S' && (
-          <LabelValue label="DataWr" value={`h'${hexDataWr}`} />
-        )}
-      </div>
+      {/* Data Write */}
+      {currentType === 'S' && (
+        <LabelValueWithHover
+          label="DataWr"
+          value={`h'${dataWrHex}`}
+          decimal={dataWrDec}
+          binary={dataWrBin}
+          hex={dataWrHex}
+          positionClassName="absolute top-[13.5rem] left-[.8rem]"
+        />
+      )}
 
-      <div className="absolute top-[10.5rem] right-[.8rem]">
-        {currentType === 'L' && (
-          <LabelValue label="DataRd" value={`h'${hexDataRd}`} input={false} />
-        )}
-      </div>
+      {/* Data Read */}
+      {currentType === 'L' && (
+        <LabelValueWithHover
+          label="DataRd"
+          value={`h'${dataRdHex}`}
+          decimal={dataRdDec}
+          binary={dataRdBin}
+          hex={dataRdHex}
+          positionClassName="absolute top-[10.5rem] right-[.8rem]"
+          input={false}
+        />
+      )}
 
-      <div className="absolute top-[-8.55rem] left-[4.2rem]">
-          <LabelValue label="" value={`b'${currentResult.dm.writeSignal}`} input={false} />
-      </div>
+      {/* Write Signal */}
+      <LabelValueWithHover
+        label=""
+        value={`b'${writeSignal}`}
+        decimal={binaryToInt(writeSignal)}
+        binary={writeSignal}
+        hex={parseInt(writeSignal, 2).toString(16).toUpperCase()}
+        positionClassName="absolute top-[-8.55rem] left-[4.2rem]"
+        input={false}
+      />
 
-      <div className="absolute top-[-8.55rem] right-[3.6rem]">
-          <LabelValue label="" value={`b'${currentResult.dm.controlSignal}`} input={false} />
-      </div>
+      {/* Control Signal */}
+      <LabelValueWithHover
+        label=""
+        value={`b'${controlSignal}`}
+        decimal={binaryToInt(controlSignal)}
+        binary={controlSignal}
+        hex={parseInt(controlSignal, 2).toString(16).toUpperCase()}
+        positionClassName="absolute top-[-8.55rem] right-[3.6rem]"
+        input={false}
+      />
     </>
   );
 };
 
-export default LavelValueContainer;
+export default LabelValueContainer;
