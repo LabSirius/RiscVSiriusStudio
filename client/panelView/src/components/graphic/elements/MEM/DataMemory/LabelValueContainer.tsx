@@ -26,8 +26,6 @@ const LabelValueContainer = () => {
       const addr = currentResult.dm.address;
       const wr = currentResult.dm.dataWr;
       const rd = currentResult.dm.dataRd;
-      const writeSig = currentResult.dm.writeSignal;
-      const controlSig = currentResult.dm.controlSignal;
 
       setAddressHex(binaryToHex(addr).toUpperCase());
       setAddressBin(addr);
@@ -41,10 +39,13 @@ const LabelValueContainer = () => {
       setDataRdBin(rd);
       setDataRdDec(binaryToInt(rd));
 
-      setWriteSignal(writeSig);
-      setControlSignal(controlSig);
+      setWriteSignal(currentResult.dm.writeSignal);
+      setControlSignal(currentResult.dm.controlSignal);
     }
   }, [currentResult]);
+
+  const isX = (val: string) => val.toUpperCase() === 'X';
+  const isXXX = (val: string) => val.toUpperCase() === 'XXX';
 
   return (
     <>
@@ -89,9 +90,9 @@ const LabelValueContainer = () => {
       <LabelValueWithHover
         label=""
         value={`b'${writeSignal}`}
-        decimal={binaryToInt(writeSignal)}
+        decimal={isX(writeSignal) ? `${writeSignal}` : binaryToInt(writeSignal)}
         binary={writeSignal}
-        hex={parseInt(writeSignal, 2).toString(16).toUpperCase()}
+        hex={isX(writeSignal) ? `${writeSignal}` : parseInt(writeSignal, 2).toString(16).toUpperCase()}
         positionClassName="absolute top-[-8.55rem] left-[4.2rem]"
         input={false}
       />
@@ -100,9 +101,9 @@ const LabelValueContainer = () => {
       <LabelValueWithHover
         label=""
         value={`b'${controlSignal}`}
-        decimal={binaryToInt(controlSignal)}
+        decimal={isXXX(controlSignal) ? `${controlSignal}` : binaryToInt(controlSignal)}
         binary={controlSignal}
-        hex={parseInt(controlSignal, 2).toString(16).toUpperCase()}
+        hex={isXXX(controlSignal) ? `${controlSignal}` : parseInt(controlSignal, 2).toString(16).toUpperCase()}
         positionClassName="absolute top-[-8.55rem] right-[3.6rem]"
         input={false}
       />
