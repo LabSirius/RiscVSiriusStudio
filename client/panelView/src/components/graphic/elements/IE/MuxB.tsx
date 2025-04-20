@@ -49,7 +49,7 @@ function MuxB() {
       <div className="relative w-full h-full">
         <MuxContainer />
         {operation !== "uploadMemory" && (
-          <div className="absolute bottom-[-2.3rem] left-[3.5rem]">
+          <div className="absolute bottom-[.8rem] left-[3.5rem]">
             <LabelValueWithHover
               label=""
               value={`b'${signal}`}
