@@ -1,40 +1,88 @@
 import { useEffect, useState } from "react";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
-import LabelValue from "@/components/graphic/LabelValue";
-import { binaryToHex } from "@/utils/handlerConversions";
+import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHover";
+import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
 
 const LabelValueContainer = () => {
   const { currentType, currentResult } = useCurrentInst();
 
-  const [hexA, setHexA] = useState("");
-  const [hexB, setHexB] = useState("");
-  const [hexRes, setHexRes] = useState("");
+  const [aHex, setAHex] = useState("");
+  const [aBin, setABin] = useState("");
+  const [aDec, setADec] = useState("");
+
+  const [bHex, setBHex] = useState("");
+  const [bBin, setBBin] = useState("");
+  const [bDec, setBDec] = useState("");
+
+  const [resHex, setResHex] = useState("");
+  const [resBin, setResBin] = useState("");
+  const [resDec, setResDec] = useState("");
 
   useEffect(() => {
-    if (currentResult && currentResult.alu) {
-      setHexA(binaryToHex(currentResult.alu.a).toUpperCase());
-      setHexB(binaryToHex(currentResult.alu.b).toUpperCase());
-      setHexRes(binaryToHex(currentResult.alu.result).toUpperCase());
+    if (currentResult?.alu) {
+      const a = currentResult.alu.a;
+      const b = currentResult.alu.b;
+      const res = currentResult.alu.result;
+
+      setAHex(binaryToHex(a).toUpperCase());
+      setABin(a);
+      setADec(binaryToInt(a));
+
+      setBHex(binaryToHex(b).toUpperCase());
+      setBBin(b);
+      setBDec(binaryToInt(b));
+
+      setResHex(binaryToHex(res).toUpperCase());
+      setResBin(res);
+      setResDec(binaryToInt(res));
     }
-  }, [ currentResult]);
+  }, [currentResult]);
 
   return (
     <>
-      <div className="absolute top-[1.4rem] left-[.8rem]">
-        {!(currentType === "LUI") && <LabelValue label="A" value={`h'${hexA}`} />}
-      </div>
+      {/* A */}
+      {!(currentType === "LUI") && (
+        <LabelValueWithHover
+          label="A"
+          value={`h'${aHex}`}
+          decimal={aDec}
+          binary={aBin}
+          hex={aHex}
+          positionClassName="top-[1.4rem] left-[.8rem]"
+        />
+      )}
 
-      <div className="absolute top-[11.4rem] left-[.8rem]">
-        <LabelValue label="B" value={`h'${hexB}`} />
-      </div>
+      {/* B */}
+      <LabelValueWithHover
+        label="B"
+        value={`h'${bHex}`}
+        decimal={bDec}
+        binary={bBin}
+        hex={bHex}
+        positionClassName="top-[11.4rem] left-[.8rem]"
+      />
 
-      <div className="absolute top-[6.8rem] right-[.8rem]">
-        <LabelValue label="ALURes" input={false} value={`h'${hexRes}`} />
-      </div>
+      {/* ALU Result */}
+      <LabelValueWithHover
+        label="ALURes"
+        value={`h'${resHex}`}
+        decimal={resDec}
+        binary={resBin}
+        hex={resHex}
+        input={false}
+        positionClassName="top-[6.8rem] right-[.8rem]"
+      />
 
-      <div className="absolute bottom-[-6rem] right-[0]">
-        <LabelValue label="" input={false} value={`b'${currentResult.alu.operation}`} />
-      </div>
+      {/* ALU operation code (raw binary) */}
+      <LabelValueWithHover
+        label=""
+        value={`b'${currentResult.alu.operation}`}
+        decimal={binaryToInt(currentResult.alu.operation)}
+        binary={currentResult.alu.operation}
+        hex={parseInt(currentResult.alu.operation, 2).toString(16).toUpperCase()}
+        input={false}
+        positionClassName="bottom-[-6rem] right-[0]"
+      />
     </>
   );
 };
