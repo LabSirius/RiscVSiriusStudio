@@ -3,6 +3,13 @@ import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 import LabelValueWithHover from '@/components/graphic/elements/LabelValueWithHover';
 import { binaryToHex, binaryToInt } from '@/utils/handlerConversions';
 
+const branchOperations: Record<string, string> = {
+  "01000": "A == B",
+  "01001": "A != B",
+  "01100": "A < B",
+  "01101": "A >= B",
+};
+
 const LabelValueContainer = () => {
   const { currentType, currentResult } = useCurrentInst();
 
@@ -20,6 +27,8 @@ const LabelValueContainer = () => {
   const [resHex, setResHex] = useState('');
   const [resBin, setResBin] = useState('');
   const [resDec, setResDec] = useState('');
+
+  const [operationDesc, setOperationDesc] = useState<string | undefined>(undefined); // NUEVO
 
   useEffect(() => {
     if (currentResult?.bu) {
@@ -40,9 +49,11 @@ const LabelValueContainer = () => {
       if (op.includes('X')) {
         setOpHex(op);
         setOpDec(op);
+        setOperationDesc(undefined); // para cuando no es un valor válido
       } else {
         setOpHex(binaryToHex(op).toUpperCase());
         setOpDec(binaryToInt(op));
+        setOperationDesc(branchOperations[op]); // NUEVO
       }
 
       setResHex(binaryToHex(res).toUpperCase());
@@ -86,6 +97,7 @@ const LabelValueContainer = () => {
         hex={`${opHex}`}
         positionClassName="absolute bottom-[-6.43rem] right-[-.8rem]"
         input={false}
+        operation={operationDesc} 
       />
 
       {/* Result */}
