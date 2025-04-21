@@ -82,6 +82,7 @@ const LabelValueContainer = () => {
         hex={parseInt(currentResult.alu.operation, 2).toString(16).toUpperCase()}
         input={false}
         positionClassName="bottom-[-6rem] right-[0]"
+        aluOp={currentResult.alu.operation}
       />
     </>
   );
