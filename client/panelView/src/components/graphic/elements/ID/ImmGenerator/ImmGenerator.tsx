@@ -20,7 +20,7 @@ export default function ImmGenerator() {
       <HoverCardTrigger asChild>
         <div className="w-full ">
           <div className="relative w-full h-full">
-            <h2 className=" titleInElement top-[25%] left-[30%]  -translate-x-[15%] -translate-y-[25%] ">
+            <h2 className={` titleInElement top-[25%] left-[30%]  -translate-x-[15%] -translate-y-[25%] ${!(currentType !== "R")  &&  '!text-[#D3D3D3]'  }`}>
               Imm Generator
             </h2>
             <ContainerSVG height={9.6} active={currentType !== "R"} />
@@ -49,7 +49,7 @@ export default function ImmGenerator() {
       {!(currentType === "R") && operation !== "uploadMemory" && (
         <HoverCardContent onMouseLeave={() => setShowImmDecode(false)} className={`${showImmDecode ? 'p-0 w-[45rem]' : 'px-2 py-1 w-min flex justify-end bg-[#404040]'}`} side="top">
          
-          {!showImmDecode &&  <PanelTopClose size={20} className="cursor-pointer" onClick={() =>  setShowImmDecode(true)}/>}
+          {!showImmDecode &&  <PanelTopClose size={20} className="cursor-pointer trasnform hover:scale-[0.9] transition-transform ease-in-out" onClick={() =>  setShowImmDecode(true)}/>}
           {showImmDecode &&  <ImmDecode /> }
         
         </HoverCardContent>

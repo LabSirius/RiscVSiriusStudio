@@ -1,32 +1,60 @@
-import { useEffect, useState } from 'react';
-import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
-import LabelValue from '@/components/graphic/LabelValue';
-import { binaryToHex } from '@/utils/handlerConversions';
+import { useEffect, useState } from "react";
+import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
+import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHover";
+import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
 
 const LabelValueContainer = () => {
   const { currentType, currentResult } = useCurrentInst();
-  
-  const [hexImm, setHexImm] = useState('');
+
+  const [immHex, setImmHex] = useState("");
+  const [immBin, setImmBin] = useState("");
+  const [immDec, setImmDec] = useState("");
+
+  const [signalHex, setSignalHex] = useState("");
+  const [signalBin, setSignalBin] = useState("");
+  const [signalDec, setSignalDec] = useState("");
 
   useEffect(() => {
     if (currentResult && currentResult.imm) {
-      setHexImm(binaryToHex(currentResult.imm.output).toUpperCase());
+      const output = currentResult.imm.output;
+      const signal = currentResult.imm.signal;
+
+      setImmBin(output);
+      setImmHex(binaryToHex(output).toUpperCase());
+      setImmDec(binaryToInt(output));
+
+      setSignalBin(signal);
+      setSignalHex(binaryToHex(signal).toUpperCase());
+      setSignalDec(binaryToInt(signal));
     }
   }, [currentResult]);
 
   return (
     <>
-      <div className="absolute top-[1.5rem] right-[.8rem]">
-        {!(currentType === 'R') && (
-          <LabelValue label="Imm" value={`h'${hexImm}`} input={false} />
-        )}
-      </div>
+      {/* IMM OUTPUT */}
+      {currentType !== "R" && (
+        <>
+          <LabelValueWithHover
+            label="Imm"
+            value={`h'${immHex}`}
+            decimal={immDec}
+            binary={immBin}
+            hex={immHex}
+            positionClassName="top-[1.5rem] right-[.8rem]"
+            input={false}
+          />
 
-      <div className="absolute bottom-[1.2rem] left-[.8rem]">
-        {(
-          <LabelValue label="" value={`b'${currentResult.imm.signal}`} input={false} />
-        )}
-      </div>
+          {/* IMM SIGNAL */}
+          <LabelValueWithHover
+            label=""
+            value={`b'${signalBin}`}
+            decimal={signalDec}
+            binary={signalBin}
+            hex={signalHex}
+            positionClassName="bottom-[1.2rem] left-[.8rem]"
+          />
+        </>
+      )}
     </>
   );
 };
