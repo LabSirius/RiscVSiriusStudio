@@ -1,4 +1,5 @@
 @import url("./xy-theme.css");
+@import url("./variables.css");
 
 @import "tailwindcss";
 
@@ -266,7 +267,9 @@ a:hover{
 
 
 .titleInElement {
-  @apply text-[1.7rem] text-[#555555] font-semibold absolute transform z-2 leading-tight;
+  @apply font-semibold absolute transform z-2 leading-tight;
+  font-size: var(--title-section-font-size);
+  color: var(--title-section-color);
 }
 
 .subtitleLabelInElement {

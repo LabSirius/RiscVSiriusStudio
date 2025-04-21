@@ -92,8 +92,8 @@
 }
 
 .react-flow__edge path {
-    stroke: #3B59B6;
-    stroke-width: 6.5px !important; /* Ajusta el grosor */
+    stroke: var( --line-color);
+    stroke-width: var( --line-thickness) !important; /* Ajusta el grosor */
   }
 
   .react-flow__edges {
