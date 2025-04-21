@@ -12,7 +12,7 @@ interface HandlerConfig {
 }
 
 export default function MuxC() {
-  const { currentResult } = useCurrentInst();
+  const { currentResult, currentType } = useCurrentInst();
   const { operation } = useOperation();
 
   const signal = currentResult.wb.signal;
@@ -34,7 +34,7 @@ export default function MuxC() {
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
         <MuxContainer />
-        {operation !== "uploadMemory" && (
+        {(operation !== "uploadMemory" && !(currentType === "S" || currentType === "B" )) && 
           <div className="absolute bottom-[.3rem] left-[3.5rem]">
             <LabelValueWithHover
               label=""
@@ -46,7 +46,7 @@ export default function MuxC() {
               positionClassName=""
             />
           </div>
-        )}
+        }
       </div>
 
       {inputHandlers.map((handler, index) => (
