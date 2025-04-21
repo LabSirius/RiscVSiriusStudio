@@ -11,6 +11,7 @@ interface Props {
   input?: boolean;
   operation?: string;
   showMsbNote?: boolean;
+  dmCtrl?: boolean;
 }
 
 const LabelValueWithHover = ({
@@ -23,6 +24,7 @@ const LabelValueWithHover = ({
   input = true,
   operation,
   showMsbNote = false,
+  dmCtrl = false,
 }: Props) => {
   return (
     <div className={`absolute ${positionClassName}`}>
@@ -41,7 +43,7 @@ const LabelValueWithHover = ({
 
             {operation && (
               <div>
-                <p className="text-xs font-semibold text-gray-200">operation:</p>
+                <p className="text-xs font-semibold text-gray-200">operation{dmCtrl && ' with'}:</p>
                 <h2 className="!text-[.7rem]">{operation}</h2>
                 {showMsbNote && (
                   <p className="text-[.6rem] text-gray-400">msb-extends</p>

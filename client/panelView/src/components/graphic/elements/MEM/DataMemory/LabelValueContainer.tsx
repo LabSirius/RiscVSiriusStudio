@@ -3,6 +3,12 @@ import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 import { binaryToHex, binaryToInt } from '@/utils/handlerConversions';
 import LabelValueWithHover from '@/components/graphic/elements/LabelValueWithHover';
 
+const DMCtrol: Record<string, string> = {
+  "000": "8 bits",
+  "001": "16 bits",
+  "010": "32 bits",
+};
+
 const LabelValueContainer = () => {
   const { currentType, currentResult } = useCurrentInst();
 
@@ -46,6 +52,8 @@ const LabelValueContainer = () => {
 
   const isX = (val: string) => val.toUpperCase() === 'X';
   const isXXX = (val: string) => val.toUpperCase() === 'XXX';
+
+  const controlSignalDesc = DMCtrol[controlSignal];
 
   return (
     <>
@@ -95,7 +103,7 @@ const LabelValueContainer = () => {
         hex={isX(writeSignal) ? `${writeSignal}` : parseInt(writeSignal, 2).toString(16).toUpperCase()}
         positionClassName="absolute top-[-8.55rem] left-[4.2rem]"
         input={false}
-        operation={writeSignal === '1' ? 'Write ✅  ' : 'No Write ❌'}
+        operation={writeSignal === '1' ? 'Write ✅' : 'No Write ❌'}
       />
 
       {/* Control Signal */}
@@ -107,6 +115,8 @@ const LabelValueContainer = () => {
         hex={isXXX(controlSignal) ? `${controlSignal}` : parseInt(controlSignal, 2).toString(16).toUpperCase()}
         positionClassName="absolute top-[-8.55rem] right-[3.6rem]"
         input={false}
+        operation={controlSignalDesc}
+        dmCtrl={true}
       />
     </>
   );
