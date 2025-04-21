@@ -1,9 +1,9 @@
 import { Handle, Position } from "@xyflow/react";
 import ContainerSVG from "../../ContainerSVG";
-import { Triangle } from "lucide-react";
 import LabelSlashContainer from "./LabelSlashContainer";
 import LabelValueContainer from "./LabelValueContainer";
 import { useOperation } from "@/context/panel/OperationContext";
+import ClockTriangle from "@/components/graphic/ClockTriangle";
 
 interface HandlerConfig {
   id: string;
@@ -42,10 +42,7 @@ export default function RegistersUnit() {
             </>
           )}
         </div>
-        <Triangle
-          size={24}
-          className="absolute left-[50%]  transform -translate-x-[50%] text-[#404040] bottom-0 z-2"
-        />
+        <ClockTriangle />
       </div>
 
       {inputHandlers.map((handler) => (

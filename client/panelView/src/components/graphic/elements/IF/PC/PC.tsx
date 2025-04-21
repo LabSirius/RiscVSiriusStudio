@@ -1,8 +1,8 @@
 import { Handle, Position } from "@xyflow/react";
 import ContainerSVG from "../../ContainerSVG";
-import { Triangle } from "lucide-react";
 import LabelValueContainer from "./LabelValueContainer";
 import { useOperation } from "@/context/panel/OperationContext";
+import ClockTriangle from "@/components/graphic/ClockTriangle";
 
 export default function PC() {
   const { operation } = useOperation();
@@ -17,10 +17,7 @@ export default function PC() {
           <ContainerSVG height={15} active={true} />
           {operation !== "uploadMemory" && <LabelValueContainer />}
         </div>
-        <Triangle
-          size={20}
-          className="absolute left-[50%]  transform -translate-x-[50%] text-[#404040] bottom-0 z-2 "
-        />
+        <ClockTriangle  />
       </div>
 
       <Handle type="target" position={Position.Left} className="input" style={{ top: "10.6rem" }} />

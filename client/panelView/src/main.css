@@ -373,6 +373,24 @@ h2 {
 }
 
 
+@keyframes triangle-jump {
+  0% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.pc-change-anim {
+  animation: triangle-jump 0.25s ease-out;
+}
+
+
+
 @keyframes moveY {
   0%, 100% {
     transform: translateY(0);

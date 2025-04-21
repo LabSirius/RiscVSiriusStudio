@@ -10,11 +10,10 @@ const PCContext = createContext<PCContextProps | undefined>(undefined);
 export const PCProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [newPc, setNewPc] = useState<number>(0);
 
-
   return (
     <PCContext.Provider
       value={{
-        newPc, 
+        newPc,
         setNewPc,
       }}>
       {children}
