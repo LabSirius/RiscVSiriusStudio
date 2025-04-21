@@ -34,7 +34,7 @@ const LabelValueWithHover = ({
             <LabelValue label={label} value={value} input={input} />
           </div>
         </HoverCardTrigger>
-        <HoverCardContent className="!text-[.65rem] flex flex-col gap-2 bg-[#1B1B1B]">
+        <HoverCardContent className="!text-[.65rem] flex flex-col gap-2 bg-[#404040]">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-xs font-semibold text-gray-200">decimal:</p>

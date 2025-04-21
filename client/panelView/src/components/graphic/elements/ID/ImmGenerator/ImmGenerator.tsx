@@ -2,6 +2,8 @@ import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import ContainerSVG from "../../ContainerSVG";
 import { Handle, Position } from "@xyflow/react";
 import LabelValueContainer from "./LabelValueContainer";
+import { PanelTopClose } from "lucide-react";
+import { useState } from "react";
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/graphic/ui/hover-card";
 import ImmDecode from "./immDecode/ImmDecode";
@@ -10,6 +12,8 @@ import { useOperation } from "@/context/panel/OperationContext";
 export default function ImmGenerator() {
   const { operation } = useOperation();
   const { currentType } = useCurrentInst();
+
+  const [showImmDecode, setShowImmDecode] = useState(false);
 
   return (
     <HoverCard>
@@ -43,10 +47,13 @@ export default function ImmGenerator() {
         </div>
       </HoverCardTrigger>
       {!(currentType === "R") && operation !== "uploadMemory" && (
-        <HoverCardContent className="p-0 w-[45rem]">
-          <ImmDecode />
+        <HoverCardContent onMouseLeave={() => setShowImmDecode(false)} className={`${showImmDecode ? 'p-0 w-[45rem]' : 'px-2 py-1 w-min flex justify-end bg-[#404040]'}`} side="top">
+         
+          {!showImmDecode &&  <PanelTopClose size={20} className="cursor-pointer" onClick={() =>  setShowImmDecode(true)}/>}
+          {showImmDecode &&  <ImmDecode /> }
+        
         </HoverCardContent>
-      )}
+      )} 
     </HoverCard>
   );
 }
