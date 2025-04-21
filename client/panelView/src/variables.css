@@ -6,6 +6,8 @@
     --line-thickness : 6.5px;
     --line-color: #3B59B6;
 
+    --border-width-element-container: 5.5px;
+
     --title-in-element-font-size: 1.7rem;
     --title-in-element-color: #555555;
 
@@ -15,9 +17,16 @@
     --number-label-in-element-font-size: 1.8rem;
     --number-label-in-element-color: #777777;
 
-    --number-num-bits-input-font-size: 1.8rem;
-    --number-num-bits-input-color: #FFAA00;
+    --num-bits-input-font-size: 1.8rem;
+    --num-bits-input-color: #FFAA00;
+
+    --subtitle-in-tunnel-font-size: 1.4rem;
+    --subtitle-in-tunnel-color: #000000;
 
     --input-color: #9C27B0;
     --output-color: #E91E63;
+
+    --input-output-tunnel-size: 0.8rem;
+
+    --output-tunnel-color: #FF5722;
 }

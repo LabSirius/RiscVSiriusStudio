@@ -270,6 +270,10 @@ a:hover{
   color: var( --title-section-color);
 }
 
+.borderElementContainer{
+  border-width: var(--border-width-element-container);
+}
+
 .titleInElement {
   @apply font-semibold absolute transform z-2 leading-tight;
   font-size: var(--title-in-element-font-size);
@@ -281,7 +285,7 @@ a:hover{
   font-size: var(--subtitle-label-in-element-font-size);
   color: var(--subtitle-labal-in-element-color);
 }
-.numberLabelInElement, .numberNumBitsInput  {
+.numberLabelInElement, .numBitsInput  {
   @apply transform z-2 italic;
 }
 .numberLabelInElement {
@@ -289,9 +293,15 @@ a:hover{
   color: var(--number-label-in-element-color);
 }
 
-.numberNumBitsInput {
-  font-size: var(--number-num-bits-input-font-size);
-  color: var(--number-num-bits-input-color);
+.subtitleInTunnel {
+  @apply  absolute transform z-2 italic top-[50%] left-[.4rem] -translate-y-[50%];
+  font-size: var(--subtitle-in-tunnel-font-size);
+  color: var(--subtitle-in-tunnel-color);
+}
+
+.numBitsInput {
+  font-size: var(--num-bits-input-font-size);
+  color: var(--num-bits-input-color);
 }
 
 .input {
@@ -303,17 +313,18 @@ a:hover{
 }
 
 .input, .output, .output-tunnel{
-  @apply !w-[0.8rem] !h-[0.8rem];
+  width: var(--input-output-tunnel-size) !important;
+  height: var(--input-output-tunnel-size) !important;
 }
 
 .input,
 .output {
-  @apply !w-[0.8rem] !h-[0.8rem];
   clip-path: inset(5% 20% 15% 10%);
 }
 
 .output-tunnel {
-  @apply bg-[#FFFFAA] relative;
+  @apply relative;
+  background-color: var(--output-tunnel-color) ;
   clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
 }
 
@@ -335,9 +346,7 @@ a:hover{
   z-index: 0; 
 }
 
-.subtitleInTunnel {
-  @apply text-[1.4rem] text-[#000] absolute transform z-2 italic top-[50%] left-[.4rem] -translate-y-[50%];
-}
+
 
 
 h2 {

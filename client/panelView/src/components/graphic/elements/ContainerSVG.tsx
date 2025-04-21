@@ -18,7 +18,7 @@ const Container: FC<ContainerProps> = ({ height, active = false }: ContainerProp
       style={{ height: `${height}rem` }}
     >
       <div
-        className={`absolute rounded-[20px] border-[5.5px] ${isUploadMemory ? 'animate-border-pulse' : ''}`}
+        className={`absolute rounded-[20px] borderElementContainer ${isUploadMemory ? 'animate-border-pulse' : ''}`}
         style={{
           borderColor,
           width: '100%',
