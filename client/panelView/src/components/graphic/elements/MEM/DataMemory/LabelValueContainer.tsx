@@ -95,6 +95,7 @@ const LabelValueContainer = () => {
         hex={isX(writeSignal) ? `${writeSignal}` : parseInt(writeSignal, 2).toString(16).toUpperCase()}
         positionClassName="absolute top-[-8.55rem] left-[4.2rem]"
         input={false}
+        operation={writeSignal === '1' ? 'Write ✅  ' : 'No Write ❌'}
       />
 
       {/* Control Signal */}
