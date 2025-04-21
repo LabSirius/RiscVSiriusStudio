@@ -3,6 +3,18 @@ import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHover";
 import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
 
+const aluOperations: Record<string, string> = {
+  "0000": "A + B",
+  "1000": "A - B",
+  "0100": "A ⊕ B",
+  "0110": "A | B",
+  "0111": "A & B",
+  "0001": "A << B",
+  "0101": "A >> B",
+  "1101": "A >> B",
+  "0010": "A < B",
+};
+
 const LabelValueContainer = () => {
   const { currentType, currentResult } = useCurrentInst();
 
@@ -37,6 +49,10 @@ const LabelValueContainer = () => {
       setResDec(binaryToInt(res));
     }
   }, [currentResult]);
+
+  const aluOp = currentResult?.alu?.operation ?? "";
+  const operationDescription = aluOperations[aluOp];
+  const showMsbNote = aluOp === "1101";
 
   return (
     <>
@@ -73,16 +89,17 @@ const LabelValueContainer = () => {
         positionClassName="top-[6.8rem] right-[.8rem]"
       />
 
-      {/* ALU operation code (raw binary) */}
+      {/* ALU operation code (with description) */}
       <LabelValueWithHover
         label=""
-        value={`b'${currentResult.alu.operation}`}
-        decimal={binaryToInt(currentResult.alu.operation)}
-        binary={currentResult.alu.operation}
-        hex={parseInt(currentResult.alu.operation, 2).toString(16).toUpperCase()}
+        value={`b'${aluOp}`}
+        decimal={binaryToInt(aluOp)}
+        binary={aluOp}
+        hex={parseInt(aluOp, 2).toString(16).toUpperCase()}
         input={false}
         positionClassName="bottom-[-6rem] right-[0]"
-        aluOp={currentResult.alu.operation}
+        operation={operationDescription}
+        showMsbNote={showMsbNote}
       />
     </>
   );

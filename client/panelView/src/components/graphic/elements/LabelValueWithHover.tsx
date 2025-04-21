@@ -1,18 +1,6 @@
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/graphic/ui/hover-card";
 import LabelValue from "@/components/graphic/LabelValue";
 
-const aluOperations: Record<string, string> = {
-  "0000": "A + B",
-  "1000": "A - B",
-  "0100": "A ⊕ B",
-  "0110": "A | B",
-  "0111": "A & B",
-  "0001": "A << B",
-  "0101": "A >> B",
-  "1101": "A >> B", // with MSB extension
-  "0010": "A < B",
-};
-
 interface Props {
   label: string;
   value: string;
@@ -21,7 +9,8 @@ interface Props {
   hex: string;
   positionClassName: string;
   input?: boolean;
-  aluOp?: string;
+  operation?: string;
+  showMsbNote?: boolean;
 }
 
 const LabelValueWithHover = ({
@@ -32,11 +21,9 @@ const LabelValueWithHover = ({
   hex,
   positionClassName,
   input = true,
-  aluOp,
+  operation,
+  showMsbNote = false,
 }: Props) => {
-  const operation = aluOp ? aluOperations[aluOp] : undefined;
-  const showMsbNote = aluOp === "1101";
-
   return (
     <div className={`absolute ${positionClassName}`}>
       <HoverCard>
@@ -65,7 +52,7 @@ const LabelValueWithHover = ({
 
           <div>
             <p className="text-xs font-semibold text-gray-200">binary:</p>
-            <p className="">b'{binary}</p>
+            <p>b'{binary}</p>
           </div>
           <div>
             <p className="text-xs font-semibold text-gray-200">hexadecimal:</p>
