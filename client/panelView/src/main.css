@@ -265,32 +265,41 @@ a:hover{
 
 /* Graphic */
 
+.titleSection{
+  font-size: var(--title-section-font-size);
+  color: var( --title-section-color);
+}
 
 .titleInElement {
   @apply font-semibold absolute transform z-2 leading-tight;
-  font-size: var(--title-section-font-size);
-  color: var(--title-section-color);
+  font-size: var(--title-in-element-font-size);
+  color: var(--title-in-element-color);
 }
 
 .subtitleLabelInElement {
-  @apply text-[1.8rem] text-[#777777] transform z-2 italic;
+  @apply transform z-2 italic;
+  font-size: var(--subtitle-label-in-element-font-size);
+  color: var(--subtitle-labal-in-element-color);
 }
 .numberLabelInElement, .numberNumBitsInput  {
-  @apply text-[1.8rem] transform z-2 italic;
+  @apply transform z-2 italic;
 }
 .numberLabelInElement {
-  @apply  text-[#777777];
+  font-size: var(--number-label-in-element-font-size);
+  color: var(--number-label-in-element-color);
 }
+
 .numberNumBitsInput {
-  @apply  text-orange-400;
+  font-size: var(--number-num-bits-input-font-size);
+  color: var(--number-num-bits-input-color);
 }
 
 .input {
-  @apply !bg-[#9C27B0];
+  background-color: var(--input-color) !important
 }
 
 .output {
-  @apply !bg-[#E91E63];
+  background-color: var(--output-color) !important
 }
 
 .input, .output, .output-tunnel{
