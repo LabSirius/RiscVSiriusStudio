@@ -94,7 +94,7 @@ export default function Canva() {
       panOnDrag={isInteractive} 
       elementsSelectable={isInteractive} 
     >
-      <Background color="#FF0000" gap={20} size={2} />
+      <Background color="#000000" gap={20} size={2} />
       {showMinimap && <MiniMap />}
       <CustomControls
         onFitView={handleFitView}
