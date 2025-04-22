@@ -22,6 +22,9 @@
 
   function buildList(head, tail: Array, index: Number) {
     if (Array.isArray(head)){
+      if (tail.length === 0){
+        return head;
+      }
       tail.unshift([[], head[1]]);
       head = head[0];
     }
@@ -496,22 +499,28 @@
   // {
   //   return {"name":id, "value":{val}};
   // }
-  = equToken _ name:IdentifierString ___ val:Imm32
+  = equToken _ name:Identifier ___ val:Imm32
   {
     if (isFirstPass){
-      constantTable[name] = val;
+      constantTable[name.name] = val;
       console.log(`equ ${name}: ${val}`);
     }
-    return {identifier: name, value: val};
+    return {directive: ".equ", identifier: name.name, value: val};
   }
   / dataToken {
     needTextSection = true;
+    return {directive: ".data"};
+
   }
   / rodataToken {
     needTextSection = true;
+    return {directive: ".rodata"};
+
   }
   / bssToken {
     needTextSection = true;
+    return {directive: ".bss"};
+
   }
 
   Instruction "Instruction"
@@ -652,18 +661,18 @@
   // TODO: still missing the ripes format for JALR
   JInstruction "Jump instruction"
     // This is the jalr format described in riscv-asm-manual.pdf
-    = name:jalrToken _ rd:RegisterName ___ offset:OperandKind12 _ "(" _ rs1:RegisterName _ ")" 
+    = name:jalrToken _ rd:RegisterName ___  rs1:RegisterName ___ offset:OperandKindJALR 
+    { 
+      if (isFirstPass) { return undefined; }
+      return handleIInstruction(name, rd, rs1, offset, location()); 
+    }
+    / name:jalrToken _ rd:RegisterName ___ offset:OperandKindJALR _ "(" _ rs1:RegisterName _ ")" 
     { 
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, offset, location()); 
     }
     // This is the JALR format supported by rars.
     // https://github.com/TheThirdOne/rars/wiki/Supported-Instructions
-    / name:jalrToken _ rd:RegisterName ___  rs1:RegisterName ___ offset:OperandKind12 
-    { 
-      if (isFirstPass) { return undefined; }
-      return handleIInstruction(name, rd, rs1, offset, location()); 
-    }
     /  name:jalToken _ rd:RegisterName ___ target:JTarget 
     {
       if (isFirstPass) { return undefined; }
@@ -935,7 +944,7 @@
   }
 
   ConstantName32 "Constant name for 32 bit representable value loaded from .equ directive"
-  = name:IdentifierString
+  = name:Identifier
   {
     // if (isFirstPass) { return undefined; }
     const value = getConstantValue(name);
@@ -944,7 +953,7 @@
   }
 
   ConstantName12 "Constant name for 12 bit representable value loaded from .equ directive"
-  = name:IdentifierString
+  = name:Identifier
   {
     // if (isFirstPass) { return undefined; }
     const value = getConstantValue(name);
@@ -953,7 +962,7 @@
   }
 
   ConstantName13 "Constant name for 13 bit representable value loaded from .equ directive"
-  = name:IdentifierString
+  = name:Identifier
   {
     // if (isFirstPass) { return undefined; }
     const value = getConstantValue(name);
@@ -962,7 +971,7 @@
   }
 
   ConstantName21 "Constant name for 21 bit representable value loaded from .equ directive"
-  = name:IdentifierString
+  = name:Identifier
   {
     // if (isFirstPass) { return undefined; }
     const value = getConstantValue(name);
@@ -974,6 +983,11 @@
   = Imm12
   / AsmModifierLow
   / ConstantName12
+
+  OperandKindJALR "Imm13, Asm modifier low or ConstantName13"
+  = JALRTarget
+  / AsmModifier
+  / ConstantName13
 
   OperandKind21 "Imm21, Asm modifier high or ConstantName21"
   = Imm21
@@ -1074,10 +1088,10 @@
   BranchInstName "branch type instruction name"
   = beqToken
   / bneToken
-  / bltToken
-  / bgeToken
   / bltuToken
   / bgeuToken
+  / bltToken
+  / bgeToken
   
   BPZInstName "branch zero pseudo instruction name"
   = beqzToken 
@@ -1132,8 +1146,8 @@
   / sllToken
   / srlToken
   / sraToken
-  / sltToken
   / sltuToken
+  / sltToken
   
   IInstName "i-type instruction name"
   = addiToken
