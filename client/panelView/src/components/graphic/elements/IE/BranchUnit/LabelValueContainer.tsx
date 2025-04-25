@@ -8,6 +8,8 @@ const branchOperations: Record<string, string> = {
   "01001": "A != B",
   "01100": "A < B",
   "01101": "A >= B",
+  "01110": "A < B",
+  "01111": "A >= B",
 };
 
 const LabelValueContainer = () => {
@@ -62,6 +64,8 @@ const LabelValueContainer = () => {
     }
   }, [currentResult]);
 
+  const showZeroExtend = operationDesc === '01110' || operationDesc === '01111';
+
   return (
     <>
       {currentType === 'B' && (
@@ -98,6 +102,7 @@ const LabelValueContainer = () => {
         positionClassName="absolute bottom-[-6.43rem] right-[-.8rem]"
         input={false}
         operation={operationDesc} 
+        showZeroExtend={showZeroExtend} 
       />
 
       {/* Result */}

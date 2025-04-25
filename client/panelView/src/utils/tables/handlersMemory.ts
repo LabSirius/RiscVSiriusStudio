@@ -30,8 +30,8 @@ export const uploadMemory = (
     return {
       address,
       value0: word[0] || '00000000',
-      value1: word[2] || '00000000',
-      value2: word[1] || '00000000',
+      value1: word[1] || '00000000',
+      value2: word[2] || '00000000',
       value3: word[3] || '00000000',
       hex: word
         .slice()

@@ -11,6 +11,7 @@ interface Props {
   input?: boolean;
   operation?: string;
   showMsbNote?: boolean;
+  showZeroExtend?: boolean;
   dmCtrl?: boolean;
 }
 
@@ -24,6 +25,7 @@ const LabelValueWithHover = ({
   input = true,
   operation,
   showMsbNote = false,
+  showZeroExtend = false,
   dmCtrl = false,
 }: Props) => {
   return (
@@ -47,6 +49,9 @@ const LabelValueWithHover = ({
                 <h2 className="!text-[.7rem]">{operation}</h2>
                 {showMsbNote && (
                   <p className="text-[.6rem] text-gray-400">msb-extends</p>
+                )}
+                {showZeroExtend && (
+                  <p className="text-[.6rem] text-gray-400">zero-extends</p>
                 )}
               </div>
             )}
