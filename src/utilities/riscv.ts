@@ -10,6 +10,7 @@
   var instEncoding = {};
   let labelTable = {};
   let constantTable = {};
+  let directives = {};
 /* Support functions */
 
   function getInstMemPosition() {
@@ -18,6 +19,17 @@
     return memIndex;
   }
 
+  function appendElement(arr: any[], element: any): void {
+    if (!arr.includes(element)){
+      arr.push(element);
+    }
+  }
+
+  function createKey(obj: {}, key: string): void {
+    if (!(key in obj)){
+      obj[key] = [];
+    }
+  }
 
   function extractList(list, index) {
     return list.flatMap(t => t[index] );
@@ -972,6 +984,11 @@ function peg$parse(input, options) {
     let ret = dir;
     ret["kind"] = "SrcDirective"; 
     ret["location"] = location();
+    if (isFirstPass){
+      createKey(directives, dir.directive);
+      appendElement(directives[dir.directive], ret);
+    }
+    // directives.push(dir.directive)
     return dir; 
   };
   var peg$f3 = function(lbl) { 
@@ -1019,7 +1036,7 @@ function peg$parse(input, options) {
     return {directive: ".equ", identifier: name.name, value: val};
   };
   var peg$f8 = function() {
-    return {directive: ".text", location: location()};
+    return {directive: ".text"};
   };
   var peg$f9 = function() {
     return {directive: ".data"};
@@ -7260,6 +7277,8 @@ function peg$parse(input, options) {
   instcounter = 0;
   const isFirstPass = options.firstPass;
   labelTable = options["symbols"];
+  directives = options.directives
+  constantTable = options.constantTable
   if(isFirstPass) {
     console.log("First pass of the parser.");
   } else {
