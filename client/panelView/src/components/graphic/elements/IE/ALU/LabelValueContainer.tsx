@@ -13,6 +13,7 @@ const aluOperations: Record<string, string> = {
   "0101": "A >> B",
   "1101": "A >> B",
   "0010": "A < B",
+  "0011": "A < B",
 };
 
 const LabelValueContainer = () => {
@@ -53,6 +54,7 @@ const LabelValueContainer = () => {
   const aluOp = currentResult?.alu?.operation ?? "";
   const operationDescription = aluOperations[aluOp];
   const showMsbNote = aluOp === "1101";
+  const showZeroExtend = aluOp === '0011'
 
   return (
     <>
@@ -100,6 +102,7 @@ const LabelValueContainer = () => {
         positionClassName="bottom-[-6rem] right-[0]"
         operation={operationDescription}
         showMsbNote={showMsbNote}
+        showZeroExtend={showZeroExtend}
       />
     </>
   );
