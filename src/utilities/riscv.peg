@@ -397,7 +397,6 @@
 
 {
   instcounter = 0;
-  let needTextSection = false;
   const isFirstPass = options.firstPass;
   labelTable = options["symbols"];
   if(isFirstPass) {
@@ -432,28 +431,7 @@
     ret["location"] = location();
     return dir; 
   }
-  / TextSection
-
-  TextSection 
-  = textToken __ inst:TextList{
-    return inst;
-  }
-  / inst:TextList{
-    if (needTextSection){
-      return error("Expected .text directive but none found");
-      
-    }
-    return inst;
-  }
-
-  TextList
-  = head:TextInstruction tail:(__ TextInstruction)*{
-    if (isFirstPass){ return undefined; }
-    return buildList(head, tail, 1);
-  }
-
-  TextInstruction
-  = lbl:LabelDeclaration EOS 
+  / lbl:LabelDeclaration EOS 
   { 
     let ret = lbl;
     ret["kind"] = "SrcLabel";
@@ -475,6 +453,10 @@
     }
     return ret; 
   }
+  / a:. .* {
+      return error('Expecting a valid instruction, directive or label, Got:"' + text() +'"');
+  }
+
 
   LabelDeclaration
   = id:IdentifierName _ ":"
@@ -495,30 +477,27 @@
 
   Directive
   // https://michaeljclark.github.io/asm.html
-  // = id:DirectiveName _ val:QuotedString
-  // {
-  //   return {"name":id, "value":{val}};
-  // }
+
   = equToken _ name:Identifier ___ val:Imm32
   {
     if (isFirstPass){
       constantTable[name.name] = val;
-      console.log(`equ ${name}: ${val}`);
+      // console.log(`equ ${name.name}: ${val}`);
     }
     return {directive: ".equ", identifier: name.name, value: val};
   }
+  / textToken {
+    return {directive: ".text", location: location()};
+  }
   / dataToken {
-    needTextSection = true;
     return {directive: ".data"};
 
   }
   / rodataToken {
-    needTextSection = true;
     return {directive: ".rodata"};
 
   }
   / bssToken {
-    needTextSection = true;
     return {directive: ".bss"};
 
   }
@@ -605,9 +584,7 @@
       inst["asm"] = text();
       return inst;
     }
-    / a:. .* {
-      return error('Expecting a valid instruction, Got:"' + text() +'"');
-    }
+    
       
   // Parsing rule for R type instructions
   RInstruction "R-type instruction"
