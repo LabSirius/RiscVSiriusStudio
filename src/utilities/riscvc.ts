@@ -1,7 +1,11 @@
 import { parse } from './riscv';
 
+function anyCommonElement(arr1: any[], arr2: any[]): boolean {
+  return arr1.some((element) => arr2.includes(element));
+}
+
 function needTextSection(directives: string[]): boolean {
-  return [".data", ".rodata", ".bss"].some((element) => directives.includes(element));
+  return anyCommonElement([".data", ".rodata", ".bss"], directives);
 }
 
 function checkTextSection(directives: {}): boolean {
@@ -26,6 +30,14 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
   let labelTable = {};
   let constantTable = {};
   let directives = {};
+
+  const retError = {
+    success: false,
+    ir: undefined,
+    info: 'First pass failure',
+    extra: undefined
+  };
+
   try {
     parse(inputSrc, {
       grammarSource: inputName,
@@ -47,13 +59,13 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
   if (needTextSection(Object.keys(directives))){
     if (!checkTextSection(directives)){
       console.error("Need .text directive, but not found");
-      return {
-        success: false,
-        ir: undefined,
-        info: 'First pass failure',
-        extra: undefined
-      };
+      return retError;
     }
+  }
+
+  if (anyCommonElement(Object.keys(labelTable), Object.keys(constantTable))){
+    console.error("Identifier names must be unique");
+    return retError;
   }
 
   console.log('Second pass!.');
@@ -68,12 +80,7 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     });
   } catch (obj) {
     console.error('Assembler error: ', obj);
-    return {
-      success: false,
-      ir: undefined,
-      info: 'Second pass failure',
-      extra: obj
-    };
+    return retError;
   }
   console.log('Success!.');
   const result = {
