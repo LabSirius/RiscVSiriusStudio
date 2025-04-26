@@ -3,6 +3,7 @@ import {
   allComponents
 } from '@vscode/webview-ui-toolkit';
 
+
 import { UIManager } from './uiManager';
 
 provideVSCodeDesignSystem().register(allComponents);
@@ -24,11 +25,12 @@ function log(object: any = {}, level: string = 'info') {
 
 function main() {
 
-  UIManager.createInstance(sendMessageToExtension);
+  UIManager.createInstance(sendMessageToExtension, sendMessageToReact);
 
   window.addEventListener('message', (event) => {
     dispatch(event);
   });
+
 
 }
 
@@ -37,35 +39,73 @@ function dispatch(
 ) {
   log({ msg: 'Dispatching message', data: event.data });
   const data = event.data;
-  switch (data.operation) {
-    case 'uploadMemory':
-      UIManager.getInstance().uploadMemory(data.memory, data.codeSize, data.symbols);
+
+  switch (data.from) {
+    case 'extension': {
+      const { from, ...newData } = data;
+      UIManager.getInstance()._sendMessageToReact(newData);
       break;
-    case 'step':
-      UIManager.getInstance().step(data.pc, log);
-      break;
-    case 'setRegister':
-      UIManager.getInstance().registersTable.setRegister(data.register, data.value);
-      if (data.register === 'x2') {
-        
-        UIManager.getInstance().memoryTable.setSP(data.value);
+    }
+    case 'react': {
+      switch (data.event) {
+        case 'step': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event }
+          });
+          break;
+        }
+        case 'stop': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event }
+          });
+          break;
+        }
+        case 'clickInInstruction': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event, value: data.line }
+          });
+          break;
+        }
+        case 'memorySizeChanged': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event, value: data.sizeMemory }
+          });
+          break;
+        }
+        case 'registersChanged': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event, value: data.registers }
+          });
+          break;
+        }
+        case 'memoryChanged': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event, value: data.memory }
+          });
+          break;
+        }
+        case 'clickOpenRISCVCard': {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: 'event',
+            object: { event: data.event }
+          });
+          break;
+        }
+        default: {
+          log({ msg: 'Unknown operation', data: data });
+          break;
+        }
       }
       break;
-      case 'readMemory':
-        UIManager.getInstance().animateMemorycell( data.address, data._length);
-        break;
-      case 'writeMemory':
-        UIManager.getInstance().setMemoryCell( data.address, data._length, data.value);
-        break;
-    case 'stop':
-      UIManager.getInstance().resetUI();
-      break;
-    default:
-      log({ msg: 'No handler for message', data: data.operation });
-      break;
+    }
   }
 }
-
 
 /**
  * View extension communication.
@@ -75,9 +115,7 @@ function sendMessageToExtension(messageObject: any) {
   vscode.postMessage(messageObject);
 }
 
-
-
-
-
-
+function sendMessageToReact(data: any) {
+  window.postMessage({ from: 'UIManager', ...data }, '*');
+}
 

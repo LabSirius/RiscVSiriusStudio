@@ -1,0 +1,17 @@
+import { useMemoryTable } from '@/context/panel/MemoryTableContext';
+import { Button } from '@/components/panel/ui/button';
+import { Locate } from 'lucide-react';
+
+const LocatePc = () => {
+    const { setLocatePc } = useMemoryTable();
+  return (
+    <div className='flex items-center gap-2'>
+              <Button  variant='outline' size='icon'  onClick={() => setLocatePc(true)}>
+                <Locate size={20} />
+              </Button>
+              <p className='font-medium'>Locate PC</p>
+          </div>
+  )
+}
+
+export default LocatePc

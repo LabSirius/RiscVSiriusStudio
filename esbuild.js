@@ -51,7 +51,8 @@ const extensionConfig = {
         // watch: true
       ],
     }),
-    clean({ patterns: ["./out/*"], verbose: true }),
+    clean({ patterns: ["!./out/webview"], verbose: true }),
+
   ],
   external: ["vscode"],
 };

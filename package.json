@@ -2,7 +2,7 @@
   "name": "rv-simulator",
   "displayName": "RISCV simulator",
   "description": "An interactive RISC-V assembly simulator with memory views, step execution, and code visualization.",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "repository": "https://github.com/utpgustavogutierrez/vsc-riscv.git",
   "engines": {
     "vscode": "^1.75.0"
@@ -53,24 +53,6 @@
         "title": "RISCV simuator: synchronize code with program memory"
       }
     ],
-    "viewsContainers": {
-      "panel": [
-        {
-          "id": "riscv",
-          "title": "RISCV",
-          "icon": "media/cpu-chip-svgrepo-com.svg"
-        }
-      ]
-    },
-    "views": {
-      "riscv": [
-        {
-          "type": "webview",
-          "id": "rv-simulator.riscv",
-          "name": "RiscV simulator"
-        }
-      ]
-    },
     "configuration": {
       "title": "RISCV Simulator",
       "properties": {
@@ -225,6 +207,7 @@
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "node ./esbuild.js",
+    "package2": "vsce package",
     "package": "cross-env NODE_ENV=production node ./esbuild.js",
     "watch": "node ./esbuild.js --watch",
     "lint": "eslint src --ext ts",
@@ -246,6 +229,7 @@
     "@types/vscode-webview": "^1.57.0",
     "@typescript-eslint/eslint-plugin": "^5.42.0",
     "@typescript-eslint/parser": "^5.42.0",
+    "@vscode/vsce": "^3.3.0",
     "bootstrap": "^5.3.3",
     "commander": "^12.1.0",
     "cross-env": "^7.0.3",
@@ -262,10 +246,11 @@
     "rimraf": "^6.0.1",
     "tabulator-tables": "^6.2.1",
     "tailwindcss": "^3.4.15",
-    "typescript": "^4.9.5"
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "@vscode/codicons": "^0.0.36",
+    "@vscode/vsce": "^3.3.0",
     "@vscode/webview-ui-toolkit": "^1.2.2",
     "jspdf": "^2.5.1",
     "lodash-es": "^4.17.21",
