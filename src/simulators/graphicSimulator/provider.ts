@@ -13,7 +13,7 @@ export async function getHtmlForGraphicSimulator(webview: Webview, extensionUri:
   );
   html = html.replace("<head>", `<head><base href="${baseUri}/">`);
   const nonce = getNonce();
-  const panelviewUri = webview.asWebviewUri(Uri.joinPath(extensionUri, "out", "panelview.js"));
+  const panelviewUri = webview.asWebviewUri(Uri.joinPath(extensionUri, "out", "graphicSimulator.js"));
 
   html = html.replace(
     "</body>",

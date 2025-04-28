@@ -29,15 +29,7 @@ const extensionConfig = {
       // verbose:true,
       assets: [
         {
-          from: ["./src/simulatorview/styles.css"],
-          to: ["./out"],
-        },
-        {
           from: "./media/RobotoMono.ttf",
-          to: "./out",
-        },
-        {
-          from: "./src/panels/panels.css",
           to: "./out",
         },
         // watch: true
@@ -50,13 +42,6 @@ const extensionConfig = {
 };
 
 
-// const textSimulatorsimulatorviewConfig = {
-//   ...baseConfig,
-//   target: "es2020",
-//   format: "esm",
-//   entryPoints: ["./src/textSimulatorSimulatorview/main.ts"],
-//   outfile: "./out/textSimulatorview.js",
-// };
 
 
 const graphicSimulatorConfig = {
@@ -64,7 +49,7 @@ const graphicSimulatorConfig = {
   target: "es2020",
   format: "esm",
   entryPoints: ["./src/simulators/graphicSimulator/graphicSimulator.ts"],
-  outfile: "./out/panelview.js",
+  outfile: "./out/graphicSimulator.js",
   plugins: [
     copy({
       resolveFrom: "cwd",
@@ -84,7 +69,7 @@ const textSimulatorSimulator = {
   target: "es2020",
   format: "esm",
   entryPoints: ["./src/simulators/textSimulator/textSimulator.ts"],
-  outfile: "./out/panelviewTextSimulator.js",
+  outfile: "./out/textSimulator.js",
   plugins: [
     copy({
       resolveFrom: "cwd",
