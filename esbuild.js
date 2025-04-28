@@ -67,12 +67,41 @@ const simulatorviewConfig = {
   outfile: "./out/simulatorview.js",
 };
 
+// const textSimulatorsimulatorviewConfig = {
+//   ...baseConfig,
+//   target: "es2020",
+//   format: "esm",
+//   entryPoints: ["./src/textSimulatorSimulatorview/main.ts"],
+//   outfile: "./out/textSimulatorview.js",
+// };
+
+
 const registersviewConfig = {
   ...baseConfig,
   target: "es2020",
   format: "esm",
   entryPoints: ["./src/panelview/panelView.ts"],
   outfile: "./out/panelview.js",
+  plugins: [
+    copy({
+      resolveFrom: "cwd",
+      assets: [
+        {
+          from: "./media/binary-svgrepo-com.svg",
+          to: "./out",
+        },
+      ],
+      // watch: true
+    }),
+  ],
+};
+
+const registersviewConfigTextSimulator = {
+  ...baseConfig,
+  target: "es2020",
+  format: "esm",
+  entryPoints: ["./src/panelviewTextSimulator/panelView.ts"],
+  outfile: "./out/panelviewTextSimulator.js",
   plugins: [
     copy({
       resolveFrom: "cwd",
@@ -126,12 +155,17 @@ const watchConfig = {
         ...registersviewConfig,
         ...watchConfig,
       });
+      await build({
+        ...registersviewConfigTextSimulator,
+        ...watchConfig,
+      });
       console.log("[watch] build finished");
     } else {
       // Build extension and webview code
       await build(extensionConfig);
       await build(simulatorviewConfig);
       await build(registersviewConfig);
+      await build(registersviewConfigTextSimulator);
       console.log("build complete");
     }
   } catch (err) {

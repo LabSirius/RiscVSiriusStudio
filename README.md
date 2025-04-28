@@ -1,6 +1,6 @@
 # RISC-V Simulator for VS Code
 
-[![Download extension](https://img.shields.io/badge/Download-.vsix-blue?style=for-the-badge&logo=visualstudiocode)](https://github.com/LabSirius/RiscVSiriusStudio/releases/download/v0.0.2/rv-simulator-0.0.2.vsix)
+[![Download extension](https://img.shields.io/badge/Download-.vsix-blue?style=for-the-badge&logo=visualstudiocode)](https://github.com/LabSirius/RiscVSiriusStudio/releases/download/v0.0.4/rv-simulator-0.0.4.vsix)
 [![Version](https://img.shields.io/badge/version-0.0.2-green?style=for-the-badge)](https://github.com/LabSirius/RiscVSiriusStudio/releases)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](LICENSE.md)
 

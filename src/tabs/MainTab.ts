@@ -22,6 +22,20 @@ export async function getHtmlForRegistersWebview(webview: Webview, extensionUri:
   return html;
 }
 
+export async function getHtmlForRegistersWebviewTextSimulator(webview: Webview, extensionUri: Uri) {
+  const indexHtmlPath = join(extensionUri.fsPath, "src", "templates", "panelViewTextSimulator", "index.html");
+  let html = readFileSync(indexHtmlPath, "utf8");
+
+  const baseUri = webview.asWebviewUri(Uri.file(join(extensionUri.fsPath, "src", "templates", "panelViewTextSimulator")));
+  html = html.replace("<head>", `<head><base href="${baseUri}/">`);
+  const nonce = getNonce();
+  const panelviewUri = webview.asWebviewUri(Uri.joinPath(extensionUri, "out", "panelviewTextSimulator.js"));
+
+  html = html.replace("</body>", `<script type="module" nonce="${nonce}" src="${panelviewUri}"></script></body>`);
+
+  return html;
+}
+
 
 export async function activateMessageListenerForRegistersView(
   webview: Webview,

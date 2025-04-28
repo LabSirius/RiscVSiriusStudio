@@ -3,13 +3,16 @@
 import { commands, Disposable, ExtensionContext, Webview, window, TextEditor, ViewColumn, Uri , WebviewPanel  } from "vscode";
 import {
   getHtmlForRegistersWebview,
-  activateMessageListenerForRegistersView
+  activateMessageListenerForRegistersView,
+  getHtmlForRegistersWebviewTextSimulator
 } from "../tabs/MainTab";
 import { RiscCardPanel } from "../tabs/RiscCardTab";
 import { RVDocument } from "../rvDocument";
 import { EncoderDecorator } from "../encoderDecorator";
 import { ConfigurationManager } from "./configurationManager";
-import { SimulationParameters, Simulator, TextSimulator } from "../Simulator";
+import { SimulationParameters, Simulator, BasicSimulator, TextSimulator, BasicTextSimulator } from "../Simulator";
+import { intToBinary } from "../utilities/conversions";
+
 
 export class RVContext {
   // For the singleton pattern
@@ -43,13 +46,15 @@ export class RVContext {
 
   // Simulation attributes
   private _isSimulating: boolean;
-  private _simulator: Simulator | undefined;
-  get simulator(): Simulator {
+  private _simulator: Simulator | BasicSimulator | undefined;
+  // private _basicSimulator: BasicSimulator | undefined;
+  get simulator(): Simulator | BasicSimulator {
     if (!this._simulator) {
       throw new Error("Error in the program to be simulated.");
     }
     return this._simulator;
   }
+
   
   static create(context: ExtensionContext): RVContext {
     if (!RVContext.#instance) {
@@ -76,7 +81,46 @@ export class RVContext {
     /**
      * Main webview initialization
      */
+
     this.disposables.push(
+      window.registerWebviewViewProvider(
+        "rv-simulator.riscv",
+        {
+          resolveWebviewView: async (webviewView, context, token) => {
+            console.log("Creating main webview");
+            webviewView.webview.options = {
+              enableScripts: true,
+              localResourceRoots: [this.extensionContext.extensionUri],
+            };
+
+            webviewView.title = "Registers and memory view";
+            webviewView.webview.html = await getHtmlForRegistersWebviewTextSimulator(
+              webviewView.webview,
+              this.extensionContext.extensionUri
+            );
+            await activateMessageListenerForRegistersView(webviewView.webview, this);
+            this._mainWebviewView = webviewView.webview;
+            if (webviewView.visible) {
+              this.onMainViewVisible();
+            }
+
+            webviewView.onDidChangeVisibility(() => {
+              if (webviewView.visible) {
+                // The webview is now visible
+                this.onMainViewVisible();
+              }
+            });
+          },
+        },
+        {
+          webviewOptions: { retainContextWhenHidden: true },
+        }
+      )
+    );
+
+
+    this.disposables.push(
+
       commands.registerCommand('rv-simulator.simulate', async () => {
 
         const editor = window.activeTextEditor;
@@ -139,6 +183,27 @@ export class RVContext {
         this.sendTextProgramToView(); //Send the text program to the view
     
         
+      })
+    );
+
+    // Text Simulator
+    this.disposables.push(
+      commands.registerCommand("rv-simulator.textSimulate", () => {
+        const editor = window.activeTextEditor;
+        commands.executeCommand(`rv-simulator.riscv.focus`);
+        if (editor && RVDocument.isValid(editor.document)) {
+          // We have an editor with a valid RiscV document open
+          this._encoderDecorator = new EncoderDecorator();
+          this.buildCurrentDocument();
+          if (!this._currentDocument) {
+            throw new Error("There is no valid program to simulate");
+          }
+
+          this.textSimulateProgram(this._currentDocument);
+        } else {
+          // In case the command is invoked via the command palette
+          window.showErrorMessage("There is no a valid RiscV document open");
+        }
       })
     );
     
@@ -212,7 +277,17 @@ export class RVContext {
     console.log("Context constructor done");
   }
 
- 
+  private onMainViewVisible() {
+    if (this._mainViewIsFirstTimeVisible) {
+      console.log("Main view is visible for the first time", this.mainWebviewView);
+      if (this._isSimulating) {
+        this._simulator?.start();
+      }
+      this._mainViewIsFirstTimeVisible = false;
+    } else {
+      console.log("Main view is visible again");
+    }
+  }
 
   private buildCurrentDocument() {
     const editor = window.activeTextEditor;
@@ -236,7 +311,25 @@ export class RVContext {
     // From now on the editor must be read only
     const simulator: Simulator = new TextSimulator(settings, rvDoc, this);
 
-   
+    // This tells vscode that the extension is simulating and in turn some
+    // commands get enabled.
+    this._isSimulating = true;
+    commands.executeCommand("setContext", "ext.isSimulating", true);
+    commands.executeCommand('workbench.action.closePanel');
+    this._simulator = simulator;
+    simulator.start();
+  }
+
+  private textSimulateProgram(rvDoc: RVDocument) {
+    console.log("Simulating program");
+    if (!rvDoc.ir) {
+      return;
+    }
+    const settings: SimulationParameters = {
+      memorySize: 40,
+    };
+    // From now on the editor must be read only
+    const simulator: BasicSimulator = new BasicTextSimulator(settings, rvDoc, this);
 
     // This tells vscode that the extension is simulating and in turn some
     // commands get enabled.
@@ -245,7 +338,6 @@ export class RVContext {
     this._simulator = simulator;
     simulator.start();
   }
-
 
   // This method is in charge of sending the text program to the view when start the  simulation
   private sendTextProgramToView(){
@@ -282,6 +374,13 @@ export class RVContext {
 
   private memorySizeChanged(newSize: number) {
     this.simulator.resizeMemory(newSize);
+    if (this.simulator instanceof BasicTextSimulator){
+      this.mainWebviewView.postMessage({
+        operation: "setRegister",
+        register: "x2",
+        value: intToBinary(newSize),
+      });
+    }
   }
 
   private registersChanged(newRegisters: string[]) {
@@ -291,6 +390,8 @@ export class RVContext {
   private memoryChanged(newMemory: []) {
     this.simulator.replaceMemory(newMemory);
   }
+
+  
 
   public resetEncoderDecorator(editor: TextEditor): void {
     if (this._encoderDecorator) {

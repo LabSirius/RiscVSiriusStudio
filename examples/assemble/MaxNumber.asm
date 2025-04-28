@@ -13,7 +13,7 @@ max(int, int):
 .LBB0_1:
         lw      a0, -16(s0)
         sw      a0, -12(s0)
-        j       .LBB0_3
+        j       .LBB0_3         
 .LBB0_2:
         lw      a0, -20(s0)
         sw      a0, -12(s0)
