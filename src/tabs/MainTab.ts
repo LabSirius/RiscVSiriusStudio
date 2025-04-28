@@ -5,7 +5,6 @@ import { readFileSync } from "fs";
 import { join } from "path";
 import { logger } from "../utilities/logger";
 import { RVContext } from "../support/context";
-import { RVDocument } from "../rvDocument";
 
 
 export async function getHtmlForRegistersWebview(webview: Webview, extensionUri: Uri) {

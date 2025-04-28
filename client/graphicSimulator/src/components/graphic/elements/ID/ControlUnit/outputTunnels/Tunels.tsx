@@ -1,7 +1,7 @@
-import DecodeTunnel from '../outputTunnels/DecodeTunnel';
-import ExecuteTunnel from '../outputTunnels/ExecuteTunnel';
-import MemoryTunnel from '../outputTunnels/MemoryTunnel';
-import WBTunnel from '../outputTunnels/WBTunnel';
+import DecodeTunnel from './DecodeTunnel';
+import ExecuteTunnel from './ExecuteTunnel';
+import MemoryTunnel from './MemoryTunnel';
+import WBTunnel from './WBTunnel';
 
 const Tunels = () => {
   return (
