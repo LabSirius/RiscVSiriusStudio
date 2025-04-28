@@ -180,6 +180,7 @@ export class RVContext {
     this.disposables.push(
       commands.registerCommand("rv-simulator.textSimulate", () => {
         const editor = window.activeTextEditor;
+        commands.executeCommand(`rv-simulator.riscv.focus`);
         if (editor && RVDocument.isValid(editor.document)) {
           // We have an editor with a valid RiscV document open
           this._encoderDecorator = new EncoderDecorator();
@@ -304,6 +305,7 @@ export class RVContext {
     // commands get enabled.
     this._isSimulating = true;
     commands.executeCommand("setContext", "ext.isSimulating", true);
+    commands.executeCommand('workbench.action.closePanel');
     this._simulator = simulator;
     simulator.start();
   }

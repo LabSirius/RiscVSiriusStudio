@@ -622,6 +622,9 @@ export class BasicSimulator {
     view.postMessage(message);
   }
 
+  public sendTextProgramToView(textProgram: string) {
+  }
+
 }
 
 export class BasicTextSimulator extends BasicSimulator {
@@ -836,6 +839,8 @@ export class BasicTextSimulator extends BasicSimulator {
     });
   }
 
+  public override sendTextProgramToView(textProgram: string) {
+  }
 
   private highlightLine(lineNumber: number): void {
     const editor = this.rvDoc.editor;
