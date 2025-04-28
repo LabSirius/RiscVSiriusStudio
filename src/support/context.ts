@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { commands, Disposable, ExtensionContext, Webview, window, TextEditor, ViewColumn, Uri , WebviewPanel  } from "vscode";
-import {
-  activateMessageListenerForRegistersView,
-} from "../tabs/MainTab";
 
 import { getHtmlForGraphicSimulator } from "../simulators/graphicSimulator/provider";
 import { getHtmlForTextSimulator } from "../simulators/textSimulator/provider";
 import { RiscCardPanel } from "../simulators/instructionSet/provider";
+import { activateMessageListenerForRegistersView } from "../utilities/activateMessageListener";
 
 import { RVDocument } from "../rvDocument";
 import { EncoderDecorator } from "../encoderDecorator";

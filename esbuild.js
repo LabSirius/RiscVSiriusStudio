@@ -37,14 +37,6 @@ const extensionConfig = {
           to: "./out",
         },
         {
-          from: ["./src/utilities/tailwind-output.css"],
-          to: ["./out"],
-        },
-        {
-          from: "./media/tabulator.min.css",
-          to: "./out",
-        },
-        {
           from: "./src/panels/panels.css",
           to: "./out",
         },
