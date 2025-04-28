@@ -67,11 +67,11 @@ const extensionConfig = {
 // };
 
 
-const registersviewConfig = {
+const graphicSimulatorConfig = {
   ...baseConfig,
   target: "es2020",
   format: "esm",
-  entryPoints: ["./src/panelview/panelView.ts"],
+  entryPoints: ["./src/simulators/graphicSimulator/graphicSimulator.ts"],
   outfile: "./out/panelview.js",
   plugins: [
     copy({
@@ -87,11 +87,11 @@ const registersviewConfig = {
   ],
 };
 
-const registersviewConfigTextSimulator = {
+const textSimulatorSimulator = {
   ...baseConfig,
   target: "es2020",
   format: "esm",
-  entryPoints: ["./src/panelviewTextSimulator/panelView.ts"],
+  entryPoints: ["./src/simulators/textSimulator/textSimulator.ts"],
   outfile: "./out/panelviewTextSimulator.js",
   plugins: [
     copy({
@@ -154,8 +154,8 @@ const watchConfig = {
     } else {
       // Build extension and webview code
       await build(extensionConfig);
-      await build(registersviewConfig);
-      await build(registersviewConfigTextSimulator);
+      await build(graphicSimulatorConfig);
+      await build(textSimulatorSimulator);
       console.log("build complete");
     }
   } catch (err) {
