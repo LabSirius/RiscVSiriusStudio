@@ -16,7 +16,7 @@ const ManualConfig = () => {
         to execute the first instruction
       </p>
 
-      <div className="flex flex-col gap-2 mt-1">
+      <div className="flex flex-col gap-2">
         <p>Import data</p>
         <div className="flex items-center gap-3 mt-2">
 
