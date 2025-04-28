@@ -2,11 +2,13 @@
 
 import { commands, Disposable, ExtensionContext, Webview, window, TextEditor, ViewColumn, Uri , WebviewPanel  } from "vscode";
 import {
-  getHtmlForRegistersWebview,
   activateMessageListenerForRegistersView,
-  getHtmlForRegistersWebviewTextSimulator
 } from "../tabs/MainTab";
-import { RiscCardPanel } from "../tabs/RiscCardTab";
+
+import { getHtmlForGraphicSimulator } from "../simulators/graphicSimulator/provider";
+import { getHtmlForTextSimulator } from "../simulators/textSimulator/provider";
+import { RiscCardPanel } from "../simulators/instructionSet/provider";
+
 import { RVDocument } from "../rvDocument";
 import { EncoderDecorator } from "../encoderDecorator";
 import { ConfigurationManager } from "./configurationManager";
@@ -94,7 +96,7 @@ export class RVContext {
             };
 
             webviewView.title = "Registers and memory view";
-            webviewView.webview.html = await getHtmlForRegistersWebviewTextSimulator(
+            webviewView.webview.html = await getHtmlForTextSimulator(
               webviewView.webview,
               this.extensionContext.extensionUri
             );
@@ -174,7 +176,7 @@ export class RVContext {
 
       });
     
-        panel.webview.html = await getHtmlForRegistersWebview(panel.webview, this.extensionContext.extensionUri);
+        panel.webview.html = await getHtmlForGraphicSimulator(panel.webview, this.extensionContext.extensionUri);
     
         // Message listener
         await activateMessageListenerForRegistersView(panel.webview, this);

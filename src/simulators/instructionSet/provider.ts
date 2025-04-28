@@ -1,8 +1,8 @@
 import { WebviewPanel, window, ViewColumn, Uri, Webview } from "vscode";
-import { getUri } from "../utilities/getUri";
+import { getUri } from "../../utilities/getUri";
 import { readFileSync } from "fs";
 import { join } from "path";
-import { getNonce } from "../utilities/getNonce"; 
+import { getNonce } from "../../utilities/getNonce"; 
 
 export class RiscCardPanel {
   public static currentPanel: WebviewPanel | undefined;
