@@ -57,15 +57,6 @@ const extensionConfig = {
   external: ["vscode"],
 };
 
-// Config for webview source code (to be run in a web-based context)
-/** @type BuildOptions */
-const simulatorviewConfig = {
-  ...baseConfig,
-  target: "es2020",
-  format: "esm",
-  entryPoints: ["./src/simulatorview/main.ts"],
-  outfile: "./out/simulatorview.js",
-};
 
 // const textSimulatorsimulatorviewConfig = {
 //   ...baseConfig,
@@ -163,7 +154,6 @@ const watchConfig = {
     } else {
       // Build extension and webview code
       await build(extensionConfig);
-      await build(simulatorviewConfig);
       await build(registersviewConfig);
       await build(registersviewConfigTextSimulator);
       console.log("build complete");
