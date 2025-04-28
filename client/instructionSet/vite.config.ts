@@ -7,7 +7,7 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [react(),  tailwindcss(),],
   build: {
-    outDir: resolve(__dirname, '../../src/templates/riscCard'),
+    outDir: resolve(__dirname, '../../src/templates/instructionSet'),
     emptyOutDir: true,
   },
   resolve: {

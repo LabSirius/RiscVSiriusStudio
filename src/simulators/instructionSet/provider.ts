@@ -21,7 +21,7 @@ export class RiscCardPanel {
         enableScripts: true,
         localResourceRoots: [
           Uri.joinPath(extensionUri, "node_modules"),
-          Uri.joinPath(extensionUri, "src", "templates", "riscCard") 
+          Uri.joinPath(extensionUri, "src", "templates", "instructionSet") 
         ],
       }
     );
@@ -31,10 +31,10 @@ export class RiscCardPanel {
   }
 
   private static async setHtmlContent(webview: Webview, extensionUri: Uri) {
-    const indexHtmlPath = join(extensionUri.fsPath, "src", "templates", "riscCard", "index.html");
+    const indexHtmlPath = join(extensionUri.fsPath, "src", "templates", "instructionSet", "index.html");
     let html = readFileSync(indexHtmlPath, "utf8");
   
-    const baseUri = webview.asWebviewUri(Uri.file(join(extensionUri.fsPath, "src", "templates", "riscCard")));
+    const baseUri = webview.asWebviewUri(Uri.file(join(extensionUri.fsPath, "src", "templates", "instructionSet")));
     html = html.replace("<head>", `<head><base href="${baseUri}/">`);
   
     const nonce = getNonce();

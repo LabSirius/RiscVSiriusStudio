@@ -7,7 +7,7 @@ import { resolve } from 'path'
 export default defineConfig({
   plugins: [react(),  tailwindcss(),],
   build: {
-    outDir: resolve(__dirname, '../../src/templates/panelViewTextSimulator'),
+    outDir: resolve(__dirname, '../../src/templates/textSimulator'),
     emptyOutDir: true,
   },
   resolve: {

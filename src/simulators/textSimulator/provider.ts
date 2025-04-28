@@ -9,13 +9,13 @@ export async function getHtmlForTextSimulator(webview: Webview, extensionUri: Ur
     extensionUri.fsPath,
     "src",
     "templates",
-    "panelViewTextSimulator",
+    "textSimulator",
     "index.html"
   );
   let html = readFileSync(indexHtmlPath, "utf8");
 
   const baseUri = webview.asWebviewUri(
-    Uri.file(join(extensionUri.fsPath, "src", "templates", "panelViewTextSimulator"))
+    Uri.file(join(extensionUri.fsPath, "src", "templates", "textSimulator"))
   );
   html = html.replace("<head>", `<head><base href="${baseUri}/">`);
   const nonce = getNonce();
