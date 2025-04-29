@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@/components/panel/ui/theme/theme-provider";
 
+import {  useSimulator } from "./context/shared/SimulatorContext";
 import { OperationProvider } from "./context/panel/OperationContext";
 import { MemoryTableProvider } from "./context/panel/MemoryTableContext";
 import { RegistersTableProvider } from "./context/panel/RegisterTableContext";
@@ -7,6 +8,7 @@ import { DialogProvider } from "./context/panel/DialogContext";
 import { LinesProvider } from "./context/panel/LinesContext";
 
 import MainSectionContainer from "@/components/panel/Sections/MainSection/MainSectionContainer";
+import MainSection from "@/components/panel/Sections/MainSection/MainSection";
 
 import MessageListener from "@/components/Message/MessageListener";
 import Error from "@/components/panel/Dialog";
@@ -21,6 +23,8 @@ import { PCProvider } from "./context/shared/PCContext";
 import { RegisterDataProvider } from "./context/shared/RegisterData";
 
 const App = () => {
+  const { typeSimulator} = useSimulator();
+
   return (
     <SectionProvider>
       <OperationProvider>
@@ -36,10 +40,16 @@ const App = () => {
                           <OverlayProvider>
                             <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
                               <MessageListener />
-                              <Canva />
+                              {typeSimulator === "graphic" && (<Canva />)}
+                              
                               <div className="relative">
                                 <CurrentInstructionInfo />
-                                <MainSectionContainer />
+                                {typeSimulator === "graphic" ? <MainSectionContainer /> : (
+                                  <div className="relative flex w-full h-screen overflow-hidden ">
+                                   <MainSection />
+                              </div>
+                                ) }
+                                
                               </div>
                               <Error />
                             </div>

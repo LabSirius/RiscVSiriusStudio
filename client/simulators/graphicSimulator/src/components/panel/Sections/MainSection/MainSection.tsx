@@ -13,9 +13,9 @@ import Tables from "../Tables/Tables";
 import SettingsSection from "../SettingsSection";
 import SearchSection from "../SearchSection";
 import HelpSection from "../HelpSection";
-import { useTheme } from "@/components/panel/ui/theme/theme-provider"
+import { useTheme } from "@/components/panel/ui/theme/theme-provider";
 
-const  MainSection = () => {
+const MainSection = () => {
   const { setTheme } = useTheme();
   const { operation } = useOperation();
   const { section } = useSection();
@@ -23,24 +23,26 @@ const  MainSection = () => {
   const BASE_WIDTH = 1296;
 
   useEffect(() => {
-    if (document.body.classList.contains('vscode-light')) {
-      setTheme('light');
+    if (document.body.classList.contains("vscode-light")) {
+      setTheme("light");
     } else {
-      setTheme('dark');
+      setTheme("dark");
     }
   }, [setTheme]);
 
   useEffect(() => {
     const handleResize = () => {
-
-      if (window.innerWidth < BASE_WIDTH &&  (operation === "uploadMemory" || operation === "step")) {
+      if (
+        window.innerWidth < BASE_WIDTH &&
+        (operation === "uploadMemory" || operation === "step")
+      ) {
         setShowScrollIcon(true);
         const timer = setTimeout(() => {
           setShowScrollIcon(false);
-        }, 1000); 
+        }, 1000);
         return () => clearTimeout(timer);
       }
-    }
+    };
 
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -48,27 +50,26 @@ const  MainSection = () => {
   }, [operation]);
 
   return (
-    <SidebarProvider  className="h-full overflow-hidden">
+    <SidebarProvider className="h-full overflow-hidden">
       <Sidebar />
       <SidebarTrigger />
 
-
-      {(operation === "uploadMemory" || operation === "step") && (
-        <div className="relative flex gap-5 p-4 overflow-x-auto overflow-y-hidden">
+      {operation === "uploadMemory" || operation === "step" ? (
+        <div className="relative flex gap-5 p-4 overflow-x-auto overflow-y-hidden h-screen ">
           <Tables />
           {operation === "uploadMemory" &&
-           (section === "settings" ? (
-             <SettingsSection />
-           ) : section === "program" ? (
-             <ProgramSection />
-           ) : (
-             <HelpSection />
-           ))}
+            (section === "settings" ? (
+              <SettingsSection />
+            ) : section === "program" ? (
+              <ProgramSection />
+            ) : (
+              <HelpSection />
+            ))}
 
           {operation === "step" &&
-            ( section === "program" ? (
-              <ProgramSection /> ) :
-              section === "search" ? (
+            (section === "program" ? (
+              <ProgramSection />
+            ) : section === "search" ? (
               <SearchSection />
             ) : section === "convert" ? (
               <ConvertSection />
@@ -78,6 +79,10 @@ const  MainSection = () => {
               <HelpSection />
             ))}
         </div>
+      ) : section === "convert" ? (
+        <ConvertSection />
+      ) : (
+        <HelpSection />
       )}
 
       {operation !== "" && showScrollIcon && (

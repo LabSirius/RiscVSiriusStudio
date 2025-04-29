@@ -344,7 +344,7 @@ export class RVContext {
     if (!this._currentDocument) {
       throw new Error("No current document");
     }
-    this.simulator.sendSimulatorTypeToView('graphicSimulator');
+    this.simulator.sendSimulatorTypeToView('graphic');
   }
 
   // This method is in charge of sending the text program to the view when start the  simulation

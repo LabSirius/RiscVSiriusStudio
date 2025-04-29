@@ -7,6 +7,7 @@ import { useDialog } from "@/context/panel/DialogContext";
 import { useLines } from "@/context/panel/LinesContext";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { usePC } from "@/context/shared/PCContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 const MessageListener = () => {
   const {
@@ -16,6 +17,8 @@ const MessageListener = () => {
     setReadInMemory,
     setIsCreatedMemoryTable,
   } = useMemoryTable();
+
+  const { setTypeSimulator } = useSimulator();
   const { setNewPc } = usePC();
   const { setWriteInRegister } = useRegistersTable();
   const { setCurrentInst, setCurrentResult } = useCurrentInst();
@@ -31,7 +34,7 @@ const MessageListener = () => {
       if (message?.from === "UIManager") {
         switch (message.operation) {
           case "simulatorType":
-            console.log("EL TIPO DE SIMULADOR ESSS AQUIIIIII ", message.simulatorType);
+            setTypeSimulator(message.simulatorType);
             break;
           case "textProgram":
             setTextProgram(message.textProgram);

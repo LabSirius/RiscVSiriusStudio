@@ -4,6 +4,8 @@ import { useSection } from "@/context/panel/SectionContext";
 
 import { Button } from "@/components/panel/ui/button";
 
+import { useSimulator } from "@/context/shared/SimulatorContext";
+
 import CircleActive from "./CircleActive";
 
 import {
@@ -21,6 +23,7 @@ import { Text, Search, Calculator, Info, Settings } from "lucide-react";
 export function SideBar() {
   const { operation } = useOperation();
   const { section, setSection } = useSection();
+  const { typeSimulator } = useSimulator();
   return (
     <Sidebar >
       <SidebarContent className="relative w-full h-full pr-10 overflow-x-hidden overflow-y-auto hide-scrollbar">
@@ -30,7 +33,7 @@ export function SideBar() {
             <SidebarMenu className="flex flex-col justify-between h-auto pl-3 mt-1">
 
             <div className="flex flex-col items-start gap-3">
-            {(operation === "uploadMemory" || operation === "step") && (
+            {((operation === "uploadMemory" || operation === "step") && typeSimulator === "graphic") && (
                 <SidebarMenuItem className="flex items-center gap-1">
                  <a onClick={() =>  setSection('program')} className="curser-pointer">
                   
