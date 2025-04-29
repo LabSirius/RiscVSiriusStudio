@@ -121,7 +121,7 @@ const RegistersTable = () => {
     * This useEffect updates the value of a register when the user writes a new value and if checkFixedRegisters is true, updates the watched property of the register.
   */
   useEffect(() => {
-    if (writeInRegister.value === '' || !tableBuilt) return;
+    if (writeInRegister.value === '' || writeInRegister.registerName === 'x0' || !tableBuilt) return;
 
     const index = Number(writeInRegister.registerName.replace('x', ''));
     setRegisterData(prevData => {
