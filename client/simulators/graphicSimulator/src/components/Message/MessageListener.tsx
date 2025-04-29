@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useOperation } from "@/context/panel/OperationContext";
 import { useSection } from "@/context/panel/SectionContext";
 import { useMemoryTable } from "@/context/panel/MemoryTableContext";
@@ -7,7 +8,6 @@ import { useDialog } from "@/context/panel/DialogContext";
 import { useLines } from "@/context/panel/LinesContext";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { usePC } from "@/context/shared/PCContext";
-import { useSimulator } from "@/context/shared/SimulatorContext";
 
 const MessageListener = () => {
   const {
@@ -18,7 +18,7 @@ const MessageListener = () => {
     setIsCreatedMemoryTable,
   } = useMemoryTable();
 
-  const { setTypeSimulator } = useSimulator();
+  const { typeSimulator, setTypeSimulator } = useSimulator();
   const { setNewPc } = usePC();
   const { setWriteInRegister } = useRegistersTable();
   const { setCurrentInst, setCurrentResult } = useCurrentInst();
@@ -34,27 +34,18 @@ const MessageListener = () => {
       if (message?.from === "UIManager") {
         switch (message.operation) {
           case "simulatorType":
+            console.log("SE GUARDA", message.simulatorType);
             setTypeSimulator(message.simulatorType);
             break;
           case "textProgram":
             setTextProgram(message.textProgram);
             break;
           case "uploadMemory":
-            setDialog({
-              title: "Configuration Info",
-              description:
-                "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.",
-              stop: false,
-            });
-
             setIsCreatedMemoryTable(false);
             setDataMemoryTable(message.payload);
             setSizeMemory(message.payload.memory.length - message.payload.codeSize);
-
             setIsFirstStep(false);
             setOperation("uploadMemory");
-            setSection("program");
-
             break;
           case "decorateLine":
             setLineDecorationNumber(message.lineDecorationNumber);
@@ -69,7 +60,7 @@ const MessageListener = () => {
               setLineDecorationNumber(-1);
             }
             if (!isFirstStep) {
-              setSection("program");
+              if (typeSimulator === "graphic") setSection("program");
               setOperation("step");
               setIsFirstStep(true);
             }
@@ -116,6 +107,34 @@ const MessageListener = () => {
     setDialog,
     setIsCreatedMemoryTable,
   ]);
+
+
+  useEffect(() => {
+
+    if(isFirstStep){
+      setDialog({
+        title: "Configuration Info",
+        description:
+          "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.",
+        stop: false,
+      });
+    }
+
+  }, [isFirstStep, setDialog]);
+
+  useEffect(() => {
+    if (typeSimulator == "graphic"){
+      setDialog({
+        title: "Configuration Info",
+        description:
+          "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.",
+        stop: false,
+      });
+      setSection("program");
+    } 
+  }, [typeSimulator, setSection, setOperation, setDialog]);
+
+
 
   return null;
 };
