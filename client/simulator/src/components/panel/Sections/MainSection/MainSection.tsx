@@ -14,8 +14,10 @@ import SettingsSection from "../SettingsSection";
 import SearchSection from "../SearchSection";
 import HelpSection from "../HelpSection";
 import { useTheme } from "@/components/panel/ui/theme/theme-provider";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 const MainSection = () => {
+  const {typeSimulator} = useSimulator();
   const { setTheme } = useTheme();
   const { operation } = useOperation();
   const { section } = useSection();
@@ -55,7 +57,7 @@ const MainSection = () => {
       <SidebarTrigger />
 
       {operation === "uploadMemory" || operation === "step" ? (
-        <div className="relative flex gap-5 p-4 overflow-x-auto overflow-y-hidden h-screen ">
+        <div className={`relative flex gap-5 p-4 overflow-x-auto overflow-y-hidden  ${!(typeSimulator === "graphic") && 'h-screen'} `}>
           <Tables />
           {operation === "uploadMemory" &&
             (section === "settings" ? (

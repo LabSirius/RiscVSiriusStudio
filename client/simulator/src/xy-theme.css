@@ -111,6 +111,11 @@
      transition: background-color 0.3s ease, box-shadow 0.3s ease; 
    }
 
+   .react-flow__controls-button-custom_green, 
+   .react-flow__controls-button-custom_red{
+    color: white !important
+   }
+
    .react-flow__controls-button-custom{
     background-color: white;
 

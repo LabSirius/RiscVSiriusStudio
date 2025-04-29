@@ -295,7 +295,7 @@ const MemoryTable = () => {
   }, [clickInEditorLine, setClickInEditorLine, isCreatedMemoryTable]);
 
   return (
-    <div className={`shadow-lg min-h-min min-w-[34.8rem] relative `}>
+    <div className={`shadow-lg !min-h-min min-w-[34.8rem] relative `}>
  
       <div className= {`h-full  w-full transition-opacity overflow-y-scroll ease-in 9000  ${isCreatedMemoryTable ? 'opacity-100' : 'opacity-0'}`}> 
       <div

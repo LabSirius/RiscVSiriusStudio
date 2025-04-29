@@ -40,22 +40,20 @@ const App = () => {
                           <OverlayProvider>
                             <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
                               <MessageListener />
-                              {typeSimulator === "graphic" && (
+                              {typeSimulator === "graphic" ? (
                                 <>
                                   <Canva />
                                   <CurrentInstructionInfo />
+                                  <MainSectionContainer />
                                 </>
+                              ) : 
+                              (
+                                <div className="relative flex w-full h-screen overflow-hidden ">
+                                    <MainSection />
+                                </div>
                               )}
 
-                              <div className="relative">
-                                {typeSimulator === "graphic" ? (
-                                  <MainSectionContainer />
-                                ) : (
-                                  <div className="relative flex w-full h-screen overflow-hidden ">
-                                    <MainSection />
-                                  </div>
-                                )}
-                              </div>
+        
                               <Error />
                             </div>
                           </OverlayProvider>
