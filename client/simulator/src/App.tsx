@@ -11,7 +11,6 @@ import MainSection from "@/components/panel/Sections/MainSection/MainSection";
 
 import MessageListener from "@/components/Message/MessageListener";
 import Error from "@/components/panel/Dialog";
-import { SectionProvider } from "./context/panel/SectionContext";
 
 import { OverlayProvider } from "@/context/graphic/OverlayContext";
 import { CurrentInstProvider } from "./context/graphic/CurrentInstContext";
@@ -25,46 +24,42 @@ const App = () => {
   const { typeSimulator } = useSimulator();
 
   return (
-    <SectionProvider>
-        <PCProvider>
-          <CurrentInstProvider>
-            <LinesProvider>
-              <MemoryTableProvider>
-                <RegisterDataProvider>
-                  <RegistersTableProvider>
-                    <DialogProvider>
-                      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-                        <ReactFlowProvider>
-                          <OverlayProvider>
-                            <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
-                              <MessageListener />
-                              {typeSimulator === "graphic" ? (
-                                <>
-                                  <Canva />
-                                  <CurrentInstructionInfo />
-                                  <MainSectionContainer />
-                                </>
-                              ) : 
-                              (
-                                <div className="relative flex w-full h-screen overflow-hidden ">
-                                    <MainSection />
-                                </div>
-                              )}
-
-        
-                              <Error />
+    <PCProvider>
+      <CurrentInstProvider>
+        <LinesProvider>
+          <MemoryTableProvider>
+            <RegisterDataProvider>
+              <RegistersTableProvider>
+                <DialogProvider>
+                  <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+                    <ReactFlowProvider>
+                      <OverlayProvider>
+                        <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
+                          <MessageListener />
+                          {typeSimulator === "graphic" ? (
+                            <>
+                              <Canva />
+                              <CurrentInstructionInfo />
+                              <MainSectionContainer />
+                            </>
+                          ) : (
+                            <div className="relative flex w-full h-screen overflow-hidden ">
+                              <MainSection />
                             </div>
-                          </OverlayProvider>
-                        </ReactFlowProvider>
-                      </ThemeProvider>
-                    </DialogProvider>
-                  </RegistersTableProvider>
-                </RegisterDataProvider>
-              </MemoryTableProvider>
-            </LinesProvider>
-          </CurrentInstProvider>
-        </PCProvider>
-    </SectionProvider>
+                          )}
+
+                          <Error />
+                        </div>
+                      </OverlayProvider>
+                    </ReactFlowProvider>
+                  </ThemeProvider>
+                </DialogProvider>
+              </RegistersTableProvider>
+            </RegisterDataProvider>
+          </MemoryTableProvider>
+        </LinesProvider>
+      </CurrentInstProvider>
+    </PCProvider>
   );
 };
 

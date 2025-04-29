@@ -5,7 +5,6 @@ import { SidebarProvider, SidebarTrigger } from "@/components/panel/ui/sideBar";
 import Sidebar from "@/components/panel/Sidebar/SideBar";
 
 import { useSimulator } from "@/context/shared/SimulatorContext";
-import { useSection } from "@/context/panel/SectionContext";
 
 import ProgramSection from "../ProgramSection";
 import ConvertSection from "../ConvertSection";
@@ -16,9 +15,8 @@ import HelpSection from "../HelpSection";
 import { useTheme } from "@/components/panel/ui/theme/theme-provider";
 
 const MainSection = () => {
-  const {typeSimulator, operation} = useSimulator();
+  const {typeSimulator, operation, section} = useSimulator();
   const { setTheme } = useTheme();
-  const { section } = useSection();
   const [showScrollIcon, setShowScrollIcon] = useState(false);
   const BASE_WIDTH = 1296;
 

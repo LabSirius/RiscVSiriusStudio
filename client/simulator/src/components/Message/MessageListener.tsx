@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useSimulator } from "@/context/shared/SimulatorContext";
-import { useSection } from "@/context/panel/SectionContext";
 import { useMemoryTable } from "@/context/panel/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useDialog } from "@/context/panel/DialogContext";
@@ -17,13 +16,12 @@ const MessageListener = () => {
     setIsCreatedMemoryTable,
   } = useMemoryTable();
 
-  const { typeSimulator, setTypeSimulator, setTextProgram, setOperation, isFirstStep, setIsFirstStep } = useSimulator();
+  const { typeSimulator, setTypeSimulator, setTextProgram, setOperation, isFirstStep, setIsFirstStep, setSection } = useSimulator();
   const { setNewPc } = usePC();
   const { setWriteInRegister } = useRegistersTable();
   const { setCurrentInst, setCurrentResult } = useCurrentInst();
 
   const { setLineDecorationNumber, setClickInEditorLine } = useLines();
-  const { setSection } = useSection();
   const { setDialog } = useDialog();
 
   useEffect(() => {
