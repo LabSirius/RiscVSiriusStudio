@@ -1,9 +1,9 @@
-import { usePC } from "@/context/shared/PCContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 import { Triangle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const ClockTriangle = () => {
-  const { newPc } = usePC();
+  const { newPc } = useSimulator();
   const [animate, setAnimate] = useState(false);
 
   useEffect(() => {

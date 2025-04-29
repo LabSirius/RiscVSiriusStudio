@@ -12,6 +12,9 @@ export interface SimulatorContextProps {
   setIsFirstStep: React.Dispatch<React.SetStateAction<boolean>>;
   section: string;
   setSection: React.Dispatch<React.SetStateAction<string>>;
+
+  newPc: number;
+  setNewPc: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const SimulatorContext = createContext<SimulatorContextProps | undefined>(undefined);
@@ -22,6 +25,7 @@ export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [operation, setOperation] = useState<string>("");
   const [isFirstStep, setIsFirstStep] = useState<boolean>(false);
   const [section, setSection] = useState<string>("convert");
+  const [newPc, setNewPc] = useState<number>(0);
 
   return (
     <SimulatorContext.Provider
@@ -36,6 +40,8 @@ export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children 
         setIsFirstStep,
         section,
         setSection,
+        newPc,
+        setNewPc,
       }}>
       {children}
     </SimulatorContext.Provider>

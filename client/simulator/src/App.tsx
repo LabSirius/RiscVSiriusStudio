@@ -17,14 +17,12 @@ import { CurrentInstProvider } from "./context/graphic/CurrentInstContext";
 import { ReactFlowProvider } from "@xyflow/react";
 import Canva from "./components/graphic/Canva/Canva";
 import CurrentInstructionInfo from "./components/graphic/CurrentInstructionInfo";
-import { PCProvider } from "./context/shared/PCContext";
 import { RegisterDataProvider } from "./context/shared/RegisterData";
 
 const App = () => {
   const { typeSimulator } = useSimulator();
 
   return (
-    <PCProvider>
       <CurrentInstProvider>
         <LinesProvider>
           <MemoryTableProvider>
@@ -59,7 +57,6 @@ const App = () => {
           </MemoryTableProvider>
         </LinesProvider>
       </CurrentInstProvider>
-    </PCProvider>
   );
 };
 

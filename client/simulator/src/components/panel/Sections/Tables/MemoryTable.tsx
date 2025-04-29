@@ -16,27 +16,25 @@ import {
   writeInMemoryCell,
   animateMemoryCell,
   animateRow,
-  animateArrowBetweenCells
+  animateArrowBetweenCells,
 } from "@/utils/tables/handlersMemory";
 import {
   intTo32BitBinary,
   intToHex,
   binaryToInt,
   binaryToIntTwoComplement,
-  hexToInt
+  hexToInt,
 } from "@/utils/handlerConversions";
 import { getColumnMemoryDefinitions } from "@/utils/tables/definitions/definitionsColumns";
 
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";
 import { sendMessage } from "@/components/Message/sendMessage";
 import { useLines } from "@/context/panel/LinesContext";
-import { usePC } from "@/context/shared/PCContext";
 
 const MemoryTable = () => {
   const { theme } = useTheme();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
-  
 
   const {
     isCreatedMemoryTable,
@@ -57,11 +55,10 @@ const MemoryTable = () => {
     setLocatePc,
   } = useMemoryTable();
 
-  const { newPc, setNewPc} = usePC();
+  const { newPc, setNewPc, isFirstStep } = useSimulator();
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
-  const { isFirstStep } = useSimulator();
-  const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable} = useLines();
+  const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable } = useLines();
   const isFirstStepRef = useRef(isFirstStep);
 
   // Initialize the memory table regardless of dataMemoryTable so that the container is always rendered.
@@ -79,15 +76,15 @@ const MemoryTable = () => {
       index: "address",
       data: [],
       columns: getColumnMemoryDefinitions(isFirstStepRef),
-      rowFormatter: function(row) {
+      rowFormatter: function (row) {
         const data = row.getData();
-        if(!dataMemoryTable) return;
+        if (!dataMemoryTable) return;
         const spAddress = intToHex(dataMemoryTable?.memory.length - 4).toUpperCase();
         if (data.isCode && data.address !== spAddress) {
-          row.getElement().style.backgroundColor ='#D1E3E7';
-          row.getElement().style.color =  '#000';
+          row.getElement().style.backgroundColor = "#D1E3E7";
+          row.getElement().style.color = "#000";
         } else {
-          row.getElement().style.backgroundColor = '';
+          row.getElement().style.backgroundColor = "";
         }
       },
       initialSort: [{ column: "address", dir: "desc" }],
@@ -111,30 +108,30 @@ const MemoryTable = () => {
         );
       }
 
-    tableInstanceRef.current?.on("cellClick", (_, cell) => {
+      tableInstanceRef.current?.on("cellClick", (_, cell) => {
         if (cell.getField() === "address") {
           const address = cell.getValue();
-          const intAdress = Number(hexToInt(address)) / 4; 
-          if(dataMemoryTable?.codeSize){
-            if(intAdress * 4 < dataMemoryTable?.codeSize){
+          const intAdress = Number(hexToInt(address)) / 4;
+          if (dataMemoryTable?.codeSize) {
+            if (intAdress * 4 < dataMemoryTable?.codeSize) {
               const instruction = dataMemoryTable?.addressLine[intAdress];
               if (instruction) {
-                setClickAddressInMemoryTable(instruction.line)
+                setClickAddressInMemoryTable(instruction.line);
                 sendMessage({ event: "clickInInstruction", line: instruction.line });
-                if(dataMemoryTable?.addressLine[intAdress].jump){
-                  const intJump = Number(binaryToIntTwoComplement(String(dataMemoryTable?.addressLine[intAdress].jump)));
-                  const jumpTo = intJump + intAdress*4;
+                if (dataMemoryTable?.addressLine[intAdress].jump) {
+                  const intJump = Number(
+                    binaryToIntTwoComplement(String(dataMemoryTable?.addressLine[intAdress].jump))
+                  );
+                  const jumpTo = intJump + intAdress * 4;
                   if (tableInstanceRef.current) {
                     animateArrowBetweenCells(tableInstanceRef.current, intAdress * 4, jumpTo);
                   }
-                  
                 }
               }
             }
           }
         }
       });
-      
 
       setupEventListeners(tableInstanceRef.current!);
     });
@@ -187,7 +184,6 @@ const MemoryTable = () => {
     }
   }, [sizeMemory]);
 
-
   // Update the table when importMemory state changes.
   useEffect(() => {
     if (importMemory.length === 0 || !isCreatedMemoryTable) return;
@@ -200,12 +196,11 @@ const MemoryTable = () => {
     sendMessage({ event: "memoryChanged", memory: tableInstanceRef.current?.getData() });
   }, [importMemory, setImportMemory, isCreatedMemoryTable]);
 
-
   // This useEffect disable editor in the first step
   useEffect(() => {
-    if(!isCreatedMemoryTable) return;
+    if (!isCreatedMemoryTable) return;
     isFirstStepRef.current = isFirstStep;
-  },[isFirstStep, isCreatedMemoryTable]);
+  }, [isFirstStep, isCreatedMemoryTable]);
 
   // Update the program counter value in the table and show an error if the program has finished.
   useEffect(() => {
@@ -214,8 +209,6 @@ const MemoryTable = () => {
       if (!(newPc * 4 >= dataMemoryTable?.codeSize)) {
         updatePC(newPc, { current: tableInstanceRef.current });
       }
-        
-      
     }
   }, [newPc, isCreatedMemoryTable]);
 
@@ -271,39 +264,42 @@ const MemoryTable = () => {
     setLocatePc(false);
   }, [locatePc, setLocatePc, isCreatedMemoryTable]);
 
-
   // Animate the memory cell when clickInEditorLine changes.
-  useEffect(() =>  {
-    if(!isCreatedMemoryTable || clickInEditorLine === -1) return;
-    const position = dataMemoryTable?.addressLine.findIndex(item => item.line === clickInEditorLine);
+  useEffect(() => {
+    if (!isCreatedMemoryTable || clickInEditorLine === -1) return;
+    const position = dataMemoryTable?.addressLine.findIndex(
+      (item) => item.line === clickInEditorLine
+    );
     if (position !== -1) {
-      if(tableInstanceRef.current && (position || position === 0)){ 
-        animateRow(tableInstanceRef.current, position*4);
-        if(dataMemoryTable?.addressLine[position].jump){
-          const intJump = Number(binaryToIntTwoComplement(String(dataMemoryTable?.addressLine[position].jump)));
-          const jumpTo = intJump + position*4;
+      if (tableInstanceRef.current && (position || position === 0)) {
+        animateRow(tableInstanceRef.current, position * 4);
+        if (dataMemoryTable?.addressLine[position].jump) {
+          const intJump = Number(
+            binaryToIntTwoComplement(String(dataMemoryTable?.addressLine[position].jump))
+          );
+          const jumpTo = intJump + position * 4;
           if (tableInstanceRef.current) {
             animateArrowBetweenCells(tableInstanceRef.current, position * 4, jumpTo);
           }
-          
         }
       }
       setClickInEditorLine(-1);
-    } 
-
-
+    }
   }, [clickInEditorLine, setClickInEditorLine, isCreatedMemoryTable]);
 
   return (
     <div className={`shadow-lg !min-h-min min-w-[34.8rem] relative `}>
- 
-      <div className= {`h-full  w-full transition-opacity overflow-y-scroll ease-in 9000  ${isCreatedMemoryTable ? 'opacity-100' : 'opacity-0'}`}> 
       <div
-        ref={tableContainerRef}
-        className={`w-full h-full overflow-x-hidden ${
-          theme === "light" ? "theme-light" : "theme-dark"
-        }`}
-      /></div>
+        className={`h-full  w-full transition-opacity overflow-y-scroll ease-in 9000  ${
+          isCreatedMemoryTable ? "opacity-100" : "opacity-0"
+        }`}>
+        <div
+          ref={tableContainerRef}
+          className={`w-full h-full overflow-x-hidden ${
+            theme === "light" ? "theme-light" : "theme-dark"
+          }`}
+        />
+      </div>
       {!isCreatedMemoryTable && (
         <div className="absolute inset-0">
           <SkeletonMemoryTable />

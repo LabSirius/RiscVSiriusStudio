@@ -5,7 +5,6 @@ import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useDialog } from "@/context/panel/DialogContext";
 import { useLines } from "@/context/panel/LinesContext";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
-import { usePC } from "@/context/shared/PCContext";
 
 const MessageListener = () => {
   const {
@@ -16,8 +15,7 @@ const MessageListener = () => {
     setIsCreatedMemoryTable,
   } = useMemoryTable();
 
-  const { typeSimulator, setTypeSimulator, setTextProgram, setOperation, isFirstStep, setIsFirstStep, setSection } = useSimulator();
-  const { setNewPc } = usePC();
+  const { typeSimulator, setTypeSimulator, setTextProgram, setOperation, isFirstStep, setIsFirstStep, setSection, setNewPc } = useSimulator();
   const { setWriteInRegister } = useRegistersTable();
   const { setCurrentInst, setCurrentResult } = useCurrentInst();
 
