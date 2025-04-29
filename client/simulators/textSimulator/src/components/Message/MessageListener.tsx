@@ -18,6 +18,7 @@ const MessageListener = () => {
       if (message?.from === "UIManager") {
         switch (message.operation) {
           case "uploadMemory":
+            
             setIsCreatedMemoryTable(false);
             setIsFirstStep(false);
             setOperation("uploadMemory");
