@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useMemoryTable } from "@/context/panel/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
-import { useOperation } from "@/context/panel/OperationContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "./tabulator.css";
 
@@ -60,7 +60,7 @@ const MemoryTable = () => {
   const { newPc, setNewPc} = usePC();
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
-  const { isFirstStep } = useOperation();
+  const { isFirstStep } = useSimulator();
   const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable} = useLines();
   const isFirstStepRef = useRef(isFirstStep);
 

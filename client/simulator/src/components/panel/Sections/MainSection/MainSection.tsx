@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/panel/ui/sideBar";
 import Sidebar from "@/components/panel/Sidebar/SideBar";
 
-import { useOperation } from "@/context/panel/OperationContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useSection } from "@/context/panel/SectionContext";
 
 import ProgramSection from "../ProgramSection";
@@ -14,12 +14,10 @@ import SettingsSection from "../SettingsSection";
 import SearchSection from "../SearchSection";
 import HelpSection from "../HelpSection";
 import { useTheme } from "@/components/panel/ui/theme/theme-provider";
-import { useSimulator } from "@/context/shared/SimulatorContext";
 
 const MainSection = () => {
-  const {typeSimulator} = useSimulator();
+  const {typeSimulator, operation} = useSimulator();
   const { setTheme } = useTheme();
-  const { operation } = useOperation();
   const { section } = useSection();
   const [showScrollIcon, setShowScrollIcon] = useState(false);
   const BASE_WIDTH = 1296;

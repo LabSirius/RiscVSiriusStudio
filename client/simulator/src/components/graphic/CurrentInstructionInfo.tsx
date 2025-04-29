@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { usePC } from "@/context/shared/PCContext";
-import { useOperation } from "@/context/panel/OperationContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 const CurrentInstructionInfo = () => {
   const { currentInst } = useCurrentInst();
   const { newPc } = usePC();
   const [animationClass, setAnimationClass] = useState("");
-  const { operation } = useOperation();
+  const { operation } = useSimulator();
 
   useEffect(() => {
     setAnimationClass("animate-exit");

@@ -1,4 +1,4 @@
-import { useOperation } from "@/context/panel/OperationContext"
+import { useSimulator } from "@/context/shared/SimulatorContext"
 import FirstHelp from "@/components/panel/Help/FirstHelp"
 import SettingsHelp from "@/components/panel/Help/SettingsHelp/SettingsHelp"
 import LastHelp from "@/components/panel/Help/LastHelp"
@@ -6,7 +6,7 @@ import { Link } from "lucide-react"
 import { sendMessage } from "@/components/Message/sendMessage"
 
 const HelpSection = () => {
-  const { operation } = useOperation();
+  const { operation } = useSimulator();
 
   const handleLinkClick = () => {
     sendMessage({event:"clickOpenRISCVCard" });

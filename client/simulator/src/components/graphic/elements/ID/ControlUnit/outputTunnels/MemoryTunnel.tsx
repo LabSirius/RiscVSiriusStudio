@@ -1,13 +1,13 @@
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import TunnelContainer from "./TunnelContainer"
 import { useOverlay } from "@/context/graphic/OverlayContext";
-import { useOperation } from "@/context/panel/OperationContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 
 const MemoryTunnel = () => {
   const { setOverlayMemoryActive } = useOverlay();
   const { currentType } = useCurrentInst();
-  const { isFirstStep} = useOperation();
+  const { isFirstStep} = useSimulator();
 
   return (
     <div className="relative w-full"

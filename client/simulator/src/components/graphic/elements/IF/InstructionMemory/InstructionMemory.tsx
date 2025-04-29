@@ -2,10 +2,10 @@ import ContainerSVG from "../../ContainerSVG";
 import { Handle, Position } from "@xyflow/react";
 import LabelSlash from "@/components/graphic/LabelSlash";
 import LabelValueContainer from "./LabelValueContainer";
-import { useOperation } from "@/context/panel/OperationContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 export default function InstructionMemory() {
-    const { operation } = useOperation();
+    const { operation } = useSimulator();
   
   return (
     <div className="w-full h-full">

@@ -1,7 +1,7 @@
 import { Handle, Position } from "@xyflow/react";
 import ContainerSVG from "../../ContainerSVG";
 import LabelValueContainer from "./LabelValueContainer";
-import { useOperation } from "@/context/panel/OperationContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 interface HandlerConfig {
   id: string;
@@ -11,7 +11,7 @@ interface HandlerConfig {
 }
 
 export default function ALU() {
-  const { operation } = useOperation();
+  const { operation } = useSimulator();
 
   const leftInputHandlers: HandlerConfig[] = [
     { id: "muxA", position: Position.Left, className: "input", style: { top: "4.7rem" } },

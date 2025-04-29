@@ -7,10 +7,10 @@ import { useState } from "react";
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/graphic/ui/hover-card";
 import ImmDecode from "./immDecode/ImmDecode";
-import { useOperation } from "@/context/panel/OperationContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 export default function ImmGenerator() {
-  const { operation } = useOperation();
+  const { operation } = useSimulator();
   const { currentType } = useCurrentInst();
 
   const [showImmDecode, setShowImmDecode] = useState(false);

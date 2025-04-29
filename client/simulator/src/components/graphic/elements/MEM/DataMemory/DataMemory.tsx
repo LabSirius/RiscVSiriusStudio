@@ -2,7 +2,7 @@ import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 import { Handle, Position } from '@xyflow/react';
 import ContainerSVG from '../../ContainerSVG';
 import LabelValueContainer from './LabelValueContainer';
-import { useOperation } from '@/context/panel/OperationContext';
+import { useSimulator } from '@/context/shared/SimulatorContext';
 
 interface HandlerConfig {
   id?: string;
@@ -12,7 +12,7 @@ interface HandlerConfig {
 
 export default function DataMemory() {
   const { currentType } = useCurrentInst();
-  const { operation, isFirstStep} = useOperation();
+  const { operation, isFirstStep} = useSimulator();
 
   const inputHandlers: HandlerConfig[] = [
     { id: 'dmWr', left: '5.5rem' },

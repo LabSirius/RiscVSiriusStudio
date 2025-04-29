@@ -1,7 +1,6 @@
 import { ThemeProvider } from "@/components/panel/ui/theme/theme-provider";
 
 import { useSimulator } from "./context/shared/SimulatorContext";
-import { OperationProvider } from "./context/panel/OperationContext";
 import { MemoryTableProvider } from "./context/panel/MemoryTableContext";
 import { RegistersTableProvider } from "./context/panel/RegisterTableContext";
 import { DialogProvider } from "./context/panel/DialogContext";
@@ -27,7 +26,6 @@ const App = () => {
 
   return (
     <SectionProvider>
-      <OperationProvider>
         <PCProvider>
           <CurrentInstProvider>
             <LinesProvider>
@@ -66,7 +64,6 @@ const App = () => {
             </LinesProvider>
           </CurrentInstProvider>
         </PCProvider>
-      </OperationProvider>
     </SectionProvider>
   );
 };

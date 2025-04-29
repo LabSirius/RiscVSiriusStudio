@@ -4,7 +4,7 @@ import './tabulator.css';
 
 import { useMemoryTable } from '@/context/panel/MemoryTableContext';
 import { useRegistersTable } from '@/context/panel/RegisterTableContext';
-import { useOperation } from '@/context/panel/OperationContext';
+import { useSimulator } from '@/context/shared/SimulatorContext';
 import { useTheme } from "@/components/panel/ui/theme/theme-provider"
 
 import { getColumnsRegisterDefinitions } from '@/utils/tables/definitions/definitionsColumns';
@@ -33,7 +33,7 @@ const RegistersTable = () => {
   const currentHoveredViewTypeCell = useRef<CellComponent | null>(null);
   const [tableBuilt, setTableBuilt] = useState(false);
 
-  const { isFirstStep } = useOperation();
+  const { isFirstStep } = useSimulator();
 
   const viewTypeFormatterCustom = useMemo(
     () =>

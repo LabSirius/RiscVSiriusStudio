@@ -1,4 +1,4 @@
-import { useOperation } from '@/context/panel/OperationContext';
+import { useSimulator } from '@/context/shared/SimulatorContext';
 import { useLines } from '@/context/panel/LinesContext';
 import Editor, { Monaco } from '@monaco-editor/react';
 import { useTheme } from '../ui/theme/theme-provider';
@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { editor } from 'monaco-editor';
 
 const ProgramSection = () => {
-  const { textProgram } = useOperation();
+  const { textProgram } = useSimulator();
   const { theme } = useTheme();
   const { 
     lineDecorationNumber,  

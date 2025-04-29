@@ -1,7 +1,7 @@
 import MuxContainer from "../MUXContainer";
 import { Handle, Position } from "@xyflow/react";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
-import { useOperation } from "@/context/panel/OperationContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHover";
 import {  binaryToInt } from "@/utils/handlerConversions";
 
@@ -13,7 +13,7 @@ interface HandlerConfig {
 
 export default function MuxC() {
   const { currentResult, currentType } = useCurrentInst();
-  const { operation } = useOperation();
+  const { operation } = useSimulator();
 
   const signal = currentResult.wb.signal;
   const hasX = signal.includes('X');

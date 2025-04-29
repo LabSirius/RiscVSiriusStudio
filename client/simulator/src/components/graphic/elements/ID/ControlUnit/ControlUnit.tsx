@@ -4,7 +4,7 @@ import ContainerSVG from "../../ContainerSVG";
 import Tunels from "./outputTunnels/Tunels";
 import LabelSlashConatiner from "./LabelSlashContainer";
 import LabelValueContainer from "./LabelValueContainer";
-import { useOperation } from "@/context/panel/OperationContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 interface InputHandlerConfig {
   id: string;
@@ -12,7 +12,7 @@ interface InputHandlerConfig {
 }
 
 export default function ControlUnit() {
-  const { operation } = useOperation();
+  const { operation } = useSimulator();
 
   const inputHandlers: InputHandlerConfig[] = [
     { id: "[6:0]", top: "2.7rem" },

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { useOperation } from '@/context/panel/OperationContext';
+import { useSimulator } from '@/context/shared/SimulatorContext';
 
 interface ContainerProps {
   height: number;
@@ -7,7 +7,7 @@ interface ContainerProps {
 }
 
 const Container: FC<ContainerProps> = ({ height, active = false }: ContainerProps) => {
-  const { operation } = useOperation();
+  const { operation } = useSimulator();
 
   const isUploadMemory = operation === "uploadMemory";
   const borderColor = active ? '#555555' : isUploadMemory ? '#AAAAAA' : '#D3D3D3';

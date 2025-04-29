@@ -2,11 +2,11 @@ import MuxContainer from "../MUXContainer";
 import { Handle, Position } from "@xyflow/react";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHover";
-import { useOperation } from "@/context/panel/OperationContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 function MuxD() {
   const { currentResult } = useCurrentInst();
-  const { operation } = useOperation();
+  const { operation } = useSimulator();
 
   const signal = currentResult.buMux.signal;
 

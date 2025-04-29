@@ -3,18 +3,34 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 export interface SimulatorContextProps {
   typeSimulator: string;
   setTypeSimulator: React.Dispatch<React.SetStateAction<string>>;
+
+  textProgram: string;
+  setTextProgram: React.Dispatch<React.SetStateAction<string>>;
+  operation: string;
+  setOperation: React.Dispatch<React.SetStateAction<string>>;
+  isFirstStep: boolean;
+  setIsFirstStep: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SimulatorContext = createContext<SimulatorContextProps | undefined>(undefined);
 
 export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [typeSimulator, setTypeSimulator] = useState<string>("");
+  const [textProgram, setTextProgram] = useState<string>("");
+  const [operation, setOperation] = useState<string>("");
+  const [isFirstStep, setIsFirstStep] = useState<boolean>(false);
 
   return (
     <SimulatorContext.Provider
       value={{
         typeSimulator,
         setTypeSimulator,
+        textProgram,
+        setTextProgram,
+        operation,
+        setOperation,
+        isFirstStep,
+        setIsFirstStep,
       }}>
       {children}
     </SimulatorContext.Provider>

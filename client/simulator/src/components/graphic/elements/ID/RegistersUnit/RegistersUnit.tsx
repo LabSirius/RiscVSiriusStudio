@@ -2,7 +2,7 @@ import { Handle, Position } from "@xyflow/react";
 import ContainerSVG from "../../ContainerSVG";
 import LabelSlashContainer from "./LabelSlashContainer";
 import LabelValueContainer from "./LabelValueContainer";
-import { useOperation } from "@/context/panel/OperationContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 import ClockTriangle from "@/components/graphic/ClockTriangle";
 
 interface HandlerConfig {
@@ -11,7 +11,7 @@ interface HandlerConfig {
 }
 
 export default function RegistersUnit() {
-  const { operation } = useOperation();
+  const { operation } = useSimulator();
 
   const inputHandlers: HandlerConfig[] = [
     { id: "[19:15]", top: "3.15rem" },

@@ -1,4 +1,3 @@
-import { useOperation } from "@/context/panel/OperationContext";
 
 import { useSection } from "@/context/panel/SectionContext";
 
@@ -21,9 +20,8 @@ import {
 import { Text, Search, Calculator, Info, Settings } from "lucide-react";
 
 export function SideBar() {
-  const { operation } = useOperation();
+  const { operation, typeSimulator } = useSimulator();
   const { section, setSection } = useSection();
-  const { typeSimulator } = useSimulator();
   return (
     <Sidebar>
       <SidebarContent className="relative w-full h-full pr-10 overflow-x-hidden overflow-y-auto hide-scrollbar">

@@ -1,14 +1,14 @@
 import { Handle, Position } from '@xyflow/react';
 import { useOverlay } from '@/context/graphic/OverlayContext';
 import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
-import { useOperation } from '@/context/panel/OperationContext';
+import { useSimulator } from '@/context/shared/SimulatorContext';
 
 
 
 export default function DMWR() {
   const { overlayMemoryActive} = useOverlay();
   const { currentType} = useCurrentInst();
-  const { isFirstStep } = useOperation();
+  const { isFirstStep } = useSimulator();
 
   return (
     <div className='w-full'>

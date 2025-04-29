@@ -1,7 +1,7 @@
-import { useOperation } from '@/context/panel/OperationContext';
+import { useSimulator } from '@/context/shared/SimulatorContext';
 
 function Mux2_1() {
-  const { operation } = useOperation();
+  const { operation } = useSimulator();
   const isUploadMemory = operation === "uploadMemory";
 
   return (
