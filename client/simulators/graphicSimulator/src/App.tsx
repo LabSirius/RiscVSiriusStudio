@@ -1,6 +1,6 @@
 import { ThemeProvider } from "@/components/panel/ui/theme/theme-provider";
 
-import {  useSimulator } from "./context/shared/SimulatorContext";
+import { useSimulator } from "./context/shared/SimulatorContext";
 import { OperationProvider } from "./context/panel/OperationContext";
 import { MemoryTableProvider } from "./context/panel/MemoryTableContext";
 import { RegistersTableProvider } from "./context/panel/RegisterTableContext";
@@ -23,7 +23,7 @@ import { PCProvider } from "./context/shared/PCContext";
 import { RegisterDataProvider } from "./context/shared/RegisterData";
 
 const App = () => {
-  const { typeSimulator} = useSimulator();
+  const { typeSimulator } = useSimulator();
 
   return (
     <SectionProvider>
@@ -40,16 +40,21 @@ const App = () => {
                           <OverlayProvider>
                             <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
                               <MessageListener />
-                              {typeSimulator === "graphic" && (<Canva />)}
-                              
+                              {typeSimulator === "graphic" && (
+                                <>
+                                  <Canva />
+                                  <CurrentInstructionInfo />
+                                </>
+                              )}
+
                               <div className="relative">
-                                <CurrentInstructionInfo />
-                                {typeSimulator === "graphic" ? <MainSectionContainer /> : (
+                                {typeSimulator === "graphic" ? (
+                                  <MainSectionContainer />
+                                ) : (
                                   <div className="relative flex w-full h-screen overflow-hidden ">
-                                   <MainSection />
-                              </div>
-                                ) }
-                                
+                                    <MainSection />
+                                  </div>
+                                )}
                               </div>
                               <Error />
                             </div>

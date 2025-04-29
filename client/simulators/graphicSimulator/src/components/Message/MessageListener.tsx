@@ -34,13 +34,20 @@ const MessageListener = () => {
       if (message?.from === "UIManager") {
         switch (message.operation) {
           case "simulatorType":
-            console.log("SE GUARDA", message.simulatorType);
             setTypeSimulator(message.simulatorType);
             break;
           case "textProgram":
             setTextProgram(message.textProgram);
             break;
           case "uploadMemory":
+            if(!(typeSimulator === "graphic")){
+              setDialog({
+                title: "Configuration Info",
+                description:
+                  "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.",
+                stop: false,
+              });
+            }
             setIsCreatedMemoryTable(false);
             setDataMemoryTable(message.payload);
             setSizeMemory(message.payload.memory.length - message.payload.codeSize);
@@ -110,19 +117,6 @@ const MessageListener = () => {
 
 
   useEffect(() => {
-
-    if(isFirstStep){
-      setDialog({
-        title: "Configuration Info",
-        description:
-          "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.",
-        stop: false,
-      });
-    }
-
-  }, [isFirstStep, setDialog]);
-
-  useEffect(() => {
     if (typeSimulator == "graphic"){
       setDialog({
         title: "Configuration Info",
@@ -131,7 +125,7 @@ const MessageListener = () => {
         stop: false,
       });
       setSection("program");
-    } 
+    }
   }, [typeSimulator, setSection, setOperation, setDialog]);
 
 
