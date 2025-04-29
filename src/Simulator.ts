@@ -107,6 +107,11 @@ export class Simulator {
     this.stop();
   }
 
+  //TODO : this function should be moved to the graphic class
+  public sendSimulatorTypeToView(simulatorType: string) {
+    // do nothing. Must be implemented by the subclass.
+  }
+
   public sendTextProgramToView(textProgram: string) {
     // do nothing. Must be implemented by the subclass.
   }
@@ -385,6 +390,18 @@ export class TextSimulator extends Simulator {
     });
   }
 
+  public override sendSimulatorTypeToView(simulatorType: string) {
+    const mainView = this.context.mainWebviewView;
+    if (!mainView) {
+      throw new Error("Main view not found");
+    }
+    mainView.postMessage({
+      from: "extension",
+      operation: "simulatorType",
+      simulatorType: simulatorType,
+    });
+  }
+
   public override notifyRegisterWrite(register: string, value: string) {
     this.sendToMainView({
       from: "extension",
@@ -530,6 +547,12 @@ export class BasicSimulator {
   finished(): void {
     this.stop();
   }
+
+  //TODO : this function should be moved to the graphic class
+  public sendSimulatorTypeToView(simulatorType: string) {
+    // do nothing. Must be implemented by the subclass.
+  }
+  
 
   public notifyRegisterWrite(register: string, value: string) {
     // do nothing. Must be implemented by the subclass.

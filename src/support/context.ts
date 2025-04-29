@@ -145,7 +145,6 @@ export class RVContext {
           this._mainPanel.dispose();
         }
 
-
         // Create the webview panel
         const panel = window.createWebviewPanel(
           'riscCard',
@@ -180,8 +179,9 @@ export class RVContext {
         await activateMessageListenerForRegistersView(panel.webview, this);
         this._mainWebviewView = panel.webview;
         this.simulateProgram(this._currentDocument);
-        this.sendTextProgramToView(); //Send the text program to the view
-    
+        this.sendTextProgramToView(); 
+        this.sendSimulatorTypeToView();
+
         
       })
     );
@@ -337,6 +337,14 @@ export class RVContext {
     commands.executeCommand("setContext", "ext.isSimulating", true);
     this._simulator = simulator;
     simulator.start();
+  }
+
+  // This method is in charge of sending the simulator type to the view when start the simulation
+  private sendSimulatorTypeToView(){
+    if (!this._currentDocument) {
+      throw new Error("No current document");
+    }
+    this.simulator.sendSimulatorTypeToView('graphicSimulator');
   }
 
   // This method is in charge of sending the text program to the view when start the  simulation

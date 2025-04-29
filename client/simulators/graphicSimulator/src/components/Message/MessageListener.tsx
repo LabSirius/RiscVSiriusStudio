@@ -9,7 +9,13 @@ import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { usePC } from "@/context/shared/PCContext";
 
 const MessageListener = () => {
-  const { setDataMemoryTable,  setWriteInMemory, setSizeMemory, setReadInMemory, setIsCreatedMemoryTable } = useMemoryTable();
+  const {
+    setDataMemoryTable,
+    setWriteInMemory,
+    setSizeMemory,
+    setReadInMemory,
+    setIsCreatedMemoryTable,
+  } = useMemoryTable();
   const { setNewPc } = usePC();
   const { setWriteInRegister } = useRegistersTable();
   const { setCurrentInst, setCurrentResult } = useCurrentInst();
@@ -17,20 +23,27 @@ const MessageListener = () => {
   const { setTextProgram, setOperation, isFirstStep, setIsFirstStep } = useOperation();
   const { setLineDecorationNumber, setClickInEditorLine } = useLines();
   const { setSection } = useSection();
-  const { setDialog} = useDialog();
-
+  const { setDialog } = useDialog();
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
       if (message?.from === "UIManager") {
         switch (message.operation) {
+          case "simulatorType":
+            console.log("EL TIPO DE SIMULADOR ESSS AQUIIIIII ", message.simulatorType);
+            break;
           case "textProgram":
             setTextProgram(message.textProgram);
-          break
+            break;
           case "uploadMemory":
-            setDialog({ title: "Configuration Info", description: "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.", stop: false });
-            
+            setDialog({
+              title: "Configuration Info",
+              description:
+                "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.",
+              stop: false,
+            });
+
             setIsCreatedMemoryTable(false);
             setDataMemoryTable(message.payload);
             setSizeMemory(message.payload.memory.length - message.payload.codeSize);
@@ -38,18 +51,18 @@ const MessageListener = () => {
             setIsFirstStep(false);
             setOperation("uploadMemory");
             setSection("program");
-           
+
             break;
-          case 'decorateLine': 
-           setLineDecorationNumber(message.lineDecorationNumber);
-          break
+          case "decorateLine":
+            setLineDecorationNumber(message.lineDecorationNumber);
+            break;
           case "step":
             setNewPc(message.newPc);
             setCurrentInst(message.currentInst);
-            setCurrentResult(message.result )
-            if(message.lineDecorationNumber !== undefined){
+            setCurrentResult(message.result);
+            if (message.lineDecorationNumber !== undefined) {
               setLineDecorationNumber(message.lineDecorationNumber);
-            }else{
+            } else {
               setLineDecorationNumber(-1);
             }
             if (!isFirstStep) {
@@ -65,14 +78,18 @@ const MessageListener = () => {
             setWriteInRegister({ registerName: message.register, value: message.value });
             break;
           case "writeMemory":
-            setWriteInMemory({ address: message.address, value: message.value, _length: message._length });
+            setWriteInMemory({
+              address: message.address,
+              value: message.value,
+              _length: message._length,
+            });
             break;
           case "readMemory":
             setReadInMemory({ address: message.address, value: "1", _length: message._length });
             break;
           case "stop":
             setDialog({ title: "Info", description: "The program has ended.", stop: true });
-            
+
             break;
           default:
             break;
