@@ -91,7 +91,6 @@ export class RVContext {
             );
             await activateMessageListenerForRegistersView(webviewView.webview, this);
 
-            // ✅ Set the main webview view (especially after closing the graphic one)
             this._mainWebviewView = webviewView.webview;
 
             if (webviewView.visible) this.onMainViewVisible();
@@ -242,7 +241,6 @@ export class RVContext {
     this._isSimulating = false;
     this._encoderDecorator = undefined;
 
-    // ✅ Ensure main panel view is restored after closing graphic panel
     commands.executeCommand("rv-simulator.riscv.focus");
 
     commands.executeCommand("setContext", "ext.isSimulating", false);
