@@ -30,6 +30,11 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
   let labelTable = {};
   let constantTable = {};
   let directives = {};
+  let dataTable = {};
+  let counters = {
+    instcounter: 0,
+    instCountData: 0
+  };
 
   const retError = {
     success: false,
@@ -44,6 +49,8 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
       symbols: labelTable,
       constantTable: constantTable,
       directives: directives,
+      dataTable: dataTable,
+      counters: counters,
       firstPass: true
     });
   } catch (obj) {
@@ -67,7 +74,8 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     console.error("Identifier names must be unique");
     return retError;
   }
-
+  counters.instCountData = counters.instcounter;
+  counters.instcounter = 0;
   console.log('Second pass!.');
   let parserOutput;
   try {
@@ -76,6 +84,8 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
       symbols: labelTable,
       constantTable: constantTable,
       directives: directives,
+      dataTable: dataTable,
+      counters: counters,
       firstPass: false
     });
   } catch (obj) {
@@ -88,7 +98,8 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     ir: { instructions: parserOutput as any[], 
           symbols: labelTable as any[],
           constants: constantTable as any[],
-          directives: directives as any[] 
+          directives: directives as any[],
+          dataTable: dataTable as any[]
         },
     info: 'Success',
     extra: undefined

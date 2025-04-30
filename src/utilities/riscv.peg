@@ -1,9 +1,13 @@
 {{
-  var instcounter = 0;
-  var instEncoding = {};
+  let instcounter: number;
+  let instEncoding = {};
   let labelTable = {};
   let constantTable = {};
   let directives = {};
+  let dataTable = {};
+  let isData = false;
+  let instCountData: number;
+  let counters = {};
 /* Support functions */
 
   function getInstMemPosition() {
@@ -74,9 +78,68 @@
 
   function getConstantValue(name: string): number {
     const value = constantTable[name];
-    if (value === undefined){
-      return error(`Expecting a valid constant name or label name. Got ${name}`);
+    return value;
+  }
+
+  function stringToAsciiList(text: string): number[] {
+    const asciiList = Array.from(text).map(char => char.charCodeAt(0));
+    asciiList.push(0)
+    return asciiList;
+  }
+
+  function resolveAlignString(ascii: number[]): number {
+    const len = ascii.length;
+    const div = Math.ceil(len / 4);
+    return div;
+  }
+
+  function setInstCountData(end: number): void {
+    instCountData += end; 
+  }
+
+  function resolveAlign(align: string, value: any): Object {
+    let end;
+    let start = instCountData;
+    let sum;
+    switch (align) {
+      case ".word":
+        end = (start + 1)*4 - 1;
+        setInstCountData(1);
+        break;
+
+      case ".string":
+        sum = resolveAlignString(value);
+        end = (start + sum)*4 - 1;
+        setInstCountData(sum);
+        break;
+
+      default:
+        break;
     }
+
+    return  {
+          start: start*4,
+          end: end,
+          type: align
+        }
+  }
+
+  function setValueData(name: string, dir: number, align: string, value: any): void {
+    const data = dataTable[name];
+    data["align"] = resolveAlign(align, data["value"]);
+    data["memdef"] = dir*4;
+  }
+
+  function setData(name: string, value: number | number[]): void {
+    dataTable[name] = {
+      memdef: 0,
+      value: value,
+      align: undefined
+    };
+  }
+
+  function getDirFromData(name: string): number {
+    const value = dataTable[name].memdef;
     return value;
   }
 
@@ -408,11 +471,14 @@
 }}
 
 {
-  instcounter = 0;
+  counters = options.counters;
+  instcounter = counters.instcounter;
+  instCountData = counters.instCountData;
   const isFirstPass = options.firstPass;
   labelTable = options["symbols"];
-  directives = options.directives
-  constantTable = options.constantTable
+  directives = options.directives;
+  constantTable = options.constantTable;
+  dataTable = options.dataTable;
   if(isFirstPass) {
     console.log("First pass of the parser.");
   } else {
@@ -424,8 +490,12 @@
   
   Program = root:SourceElements?
   {
-    if(isFirstPass) { return undefined; }
-    instcounter = 0;
+    if(isFirstPass) { 
+      counters.instcounter = instcounter;
+      counters.instCountData = instCountData;
+      return undefined; 
+      }
+    // instcounter = 0;
     const programMemory = root.filter((sourceElement) => {
       return sourceElement.kind === "SrcInstruction";
     });
@@ -450,6 +520,13 @@
     // directives.push(dir.directive)
     return dir; 
   }
+  / data: DataDeclaration EOS {
+    if (!isData){
+      return error("Invalid instruction; must be included in the .data, .rodata, or .bss directive");    
+    }
+    return data;
+  }
+
   / lbl:LabelDeclaration EOS 
   { 
     let ret = lbl;
@@ -472,6 +549,7 @@
     }
     return ret; 
   }
+
   / a:. .* {
       return error('Expecting a valid instruction, directive or label, Got:"' + text() +'"');
   }
@@ -494,6 +572,26 @@
     return {identifier:id, targetInstruction:instcounter*4};
   }
 
+  DataDeclaration
+  = id: IdentifierName _ ":" __ align: AlignDirectives _ value: Integer
+  {
+    if (isFirstPass){
+      setData(id.name, value);
+    }    
+    else{
+      setValueData(id.name, instCountData, align);
+    }
+  }
+  / id: IdentifierName _ ":" __ align: AlignDirectivesString _ value: String
+  {
+    if (isFirstPass){
+      setData(id.name, stringToAsciiList(value));
+    }
+    else{
+      setValueData(id.name, instCountData, align);
+    }
+  }
+
   Directive
   // https://michaeljclark.github.io/asm.html
 
@@ -506,9 +604,11 @@
     return {directive: ".equ", identifier: name.name, value: val};
   }
   / textToken {
+    isData = false;
     return {directive: ".text"};
   }
   / dataToken {
+    isData = true;
     return {directive: ".data"};
 
   }
@@ -532,6 +632,15 @@
       return inst;
     }
     / inst:IInstruction
+    {
+      if (isFirstPass) { 
+        getInstMemPosition();
+        return undefined; 
+      }
+      inst["asm"] = text();
+      return inst;
+    }
+    / inst:JInstruction
     {
       if (isFirstPass) { 
         getInstMemPosition();
@@ -567,15 +676,6 @@
       inst["asm"] = text();
       return inst;
     }
-    / inst:JInstruction
-    {
-      if (isFirstPass) { 
-        getInstMemPosition();
-        return undefined; 
-      }
-      inst["asm"] = text();
-      return inst;
-    }
     / inst:UInstruction
     {
       if (isFirstPass) { 
@@ -603,7 +703,6 @@
       inst["asm"] = text();
       return inst;
     }
-    
       
   // Parsing rule for R type instructions
   RInstruction "R-type instruction"
@@ -626,12 +725,13 @@
    * need a different rule.
    */
   LInstruction "Load instruction"
-    = name:LoadInstName _ rd:RegisterName ___ offset:OperandKind12 _"("_ rs1:RegisterName _")"
+  // TODO: Cambiar el operand kind en estos casos para que mire si es un address
+    = name:LoadInstName _ rd:RegisterName ___ offset:LIOperandKind12 _"("_ rs1:RegisterName _")"
     { 
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, offset, location()); 
     }
-    / name:LoadUInstName _ rd:RegisterName ___ offset:OperandKind12 _"("_ rs1:RegisterName _")" 
+    / name:LoadUInstName _ rd:RegisterName ___ offset:LIOperandKind12 _"("_ rs1:RegisterName _")" 
     { 
       if (isFirstPass) { return undefined; }
       return handleIInstruction(name, rd, rs1, offset, location()); 
@@ -819,7 +919,7 @@
       return handleRInstruction('slt', rd, rs2, rs1, location(), true);
     }
 
-    / laToken _ rd:RegisterName ___ symbol:Offset
+    / laToken _ rd:RegisterName ___ symbol:LaOffset
     {
       if (isFirstPass){
         verifySymbol(symbol);
@@ -845,7 +945,7 @@
     }
 
   LoadPInstruction "Load pseudo instructions"
-  = name:LoadInstName _ rd:RegisterName ___ symbol:OperandKindSymbol 
+  = name:LoadInstName _ rd:RegisterName ___ symbol:LIPOperand 
   { 
     if (isFirstPass){
       verifySymbol(symbol);
@@ -939,11 +1039,19 @@
     return {"value": value, "double": !isImm12(value)};
   }
 
+  LaOffset "Address or symbols"
+  = imm:Symbol { return imm; }
+  / address:Identifier
+  {
+    if (isFirstPass) { return {}; }
+    const value = getDirFromData(address["name"])
+    return {"value": value, "double": !isImm12(value)};
+  }
+
   ConstantName32 "Constant name for 32 bit representable value loaded from .equ directive"
   = name:Identifier
   {
-    // if (isFirstPass) { return undefined; }
-    const value = getConstantValue(name);
+    const value = getConstantValue(name.name);
     if (isImm32(value)) { return value; }
     else { return error("Constant value most be 32 bit representable value"); }
   }
@@ -951,8 +1059,7 @@
   ConstantName12 "Constant name for 12 bit representable value loaded from .equ directive"
   = name:Identifier
   {
-    // if (isFirstPass) { return undefined; }
-    const value = getConstantValue(name);
+    const value = getConstantValue(name.name);
     if (isImm12(value)) { return value; }
     else { return error("Constant value most be 12 bit representable value"); }
   }
@@ -960,8 +1067,7 @@
   ConstantName13 "Constant name for 13 bit representable value loaded from .equ directive"
   = name:Identifier
   {
-    // if (isFirstPass) { return undefined; }
-    const value = getConstantValue(name);
+    const value = getConstantValue(name.name);
     if (isImm13(value)) { return value; }
     else { return error("Constant value most be 13 bit representable value"); }
   }
@@ -969,11 +1075,14 @@
   ConstantName21 "Constant name for 21 bit representable value loaded from .equ directive"
   = name:Identifier
   {
-    // if (isFirstPass) { return undefined; }
-    const value = getConstantValue(name);
+    const value = getConstantValue(name.name);
     if (isImm21(value)) { return value; }
     else { return error("Constant value most be 21 bit representable value"); }
   }
+
+  LIOperandKind12
+  = Imm12
+  / AsmModifierLow
 
   OperandKind12 "Imm12, Asm modifier low or ConstantName12"
   = Imm12
@@ -993,6 +1102,25 @@
   OperandKindSymbol "Symbol or ConstantName32"
   = Symbol
   / ConstantName32
+
+  LIPOperand
+  = Symbol
+  / Address
+
+  Address
+  = name: Identifier {
+    let value = getDirFromData(name.name);
+    if (value === undefined){
+      value = getConstantValue(name.name);
+    }
+    if (!isImm32) { return error("Constant value most be 32 bit representable value"); }
+    const data = {
+      value: value,
+      double: !isImm12
+    }
+    return data;
+  }
+
 
   BTarget "target address of a jump instruction"
   = imm:Imm13 { return imm; }
@@ -1387,7 +1515,28 @@
   // Directive names
   DirectiveName
   = ascizToken
+  / equToken
+  / sectionToken
+  / textToken
+  / dataToken
+  / rodataToken
+  / bssToken
+  / commonToken
+  / commToken
+  / AlignDirectives
+  / AlignDirectivesString
   
+  AlignDirectivesString
+  = stringToken
+
+  AlignDirectives
+  = twoByteToken
+  / fourByteToken
+  / halfToken
+  / wordToken
+  / byteToken
+  / zeroDToken
+
   ascizToken = ".asciz"
 
   equToken = ".equ"
@@ -1398,6 +1547,13 @@
   bssToken = ".bss"
   commToken = ".comm"
   commonToken = ".common"
+  twoByteToken = ".2byte"
+  fourByteToken = ".4byte"
+  halfToken = ".half"
+  wordToken = ".word"
+  byteToken = ".byte"
+  stringToken = ".string"
+  zeroDToken = ".zero"
 
   Integer "Integer"
   = _ "0x" digits:[0-9a-fA-F]+ { return parseInt(digits.join(""), 16); }
@@ -1416,6 +1572,7 @@
   / BPInstName
   / BPZInstName
   / MiscInstName
+  / DirectiveName
 
   Identifier
   = !ReservedWord name:IdentifierName { return name; }
@@ -1426,6 +1583,17 @@
 
   IdentifierString
     = [a-zA-Z_.][a-zA-Z0-9_]* { return text(); }
+
+  String
+  = '"' StringChar* '"' { return text().replace(/"/g, ""); }
+
+  StringChar
+  = "\\\"" { return "\"" }
+  / "\\n"  { return "\n" }
+  / "\\t"  { return "\t" }
+  / "\\\\" { return "\\" }
+  / !["\\"] .
+
 
   QuotedString "quoted string"
   = "\"" (!"\"" SourceCharacter)* "\""
