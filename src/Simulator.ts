@@ -173,6 +173,9 @@ export class TextSimulator extends BaseSimulator {
     }
 
     this.listenToEditorClicks();
+    const inst = this.cpu.currentInstruction();
+    const line = this.rvDoc.getLineForIR(inst);
+    if (line !== undefined) this.highlightLine(line);
 
     const addressLine =
       this.rvDoc.ir?.instructions.map((instr) => {
@@ -216,6 +219,8 @@ export class TextSimulator extends BaseSimulator {
 
     const inst = this.cpu.currentInstruction();
     const line = this.rvDoc.getLineForIR(inst);
+
+    if (line !== undefined) this.highlightLine(line);
 
     mainView.postMessage({
       from: "extension",
@@ -340,6 +345,27 @@ export class TextSimulator extends BaseSimulator {
       lineDecorationNumber: line !== undefined ? line + 1 : 0,
     });
   }
+
+  private highlightLine(lineNumber: number): void {
+    const editor = this.rvDoc.editor;
+    if (editor) {
+      if (this.currentHighlight) {
+        this.currentHighlight.dispose();
+      }
+  
+      this.currentHighlight = window.createTextEditorDecorationType({
+        backgroundColor: "rgba(209, 227, 231, 0.5)", // Azul pastel
+        isWholeLine: true,
+      });
+  
+      const range = editor.document.lineAt(lineNumber).range;
+      editor.revealRange(range);
+      editor.setDecorations(this.currentHighlight, [
+        { range, hoverMessage: "Selected line" },
+      ]);
+    }
+  }
+  
 
   private clearHighlight() {
     if (this.currentHighlight) {
