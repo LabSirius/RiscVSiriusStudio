@@ -54,6 +54,7 @@ const MessageListener = () => {
             break;
           case "step":
             setNewPc(message.newPc);
+            console.log("INSTRUCTION", message.currentInst);
             setCurrentInst(message.currentInst);
             setCurrentResult(message.result);
             if (message.lineDecorationNumber !== undefined) {

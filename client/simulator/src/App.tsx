@@ -14,11 +14,13 @@ const App = () => {
     <Providers>
       <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
         {typeSimulator === "graphic" ? (
-          <>
+          <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh">
             <Canva />
-            <CurrentInstructionInfo />
-            <MainSectionContainer />
-          </>
+            <div className="relative">
+              <CurrentInstructionInfo />
+              <MainSectionContainer />
+            </div>
+          </div>
         ) : (
           <div className="relative flex w-full h-screen overflow-hidden ">
             <MainSection />
