@@ -228,6 +228,9 @@ export class RVContext {
     }
   
     this._simulator.start();
+    if (!isGraphic && this._encoderDecorator) {
+      this._currentDocument?.buildAndDecorate(this);
+    }
   }
   
 
