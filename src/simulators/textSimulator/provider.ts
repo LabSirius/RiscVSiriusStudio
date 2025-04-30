@@ -20,7 +20,7 @@ export async function getHtmlForTextSimulator(webview: Webview, extensionUri: Ur
   html = html.replace("<head>", `<head><base href="${baseUri}/">`);
   const nonce = getNonce();
   const panelviewUri = webview.asWebviewUri(
-    Uri.joinPath(extensionUri, "out", "graphicSimulator.js")
+    Uri.joinPath(extensionUri, "out", "textSimulator.js")
   );
 
   html = html.replace(
