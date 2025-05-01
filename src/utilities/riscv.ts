@@ -127,6 +127,12 @@
         setInstCountData(sum);
         break;
 
+      case ".asciz":
+        sum = resolveAlignString(value);
+        end = start + sum - 1;
+        setInstCountData(sum);
+        break;
+
       case ".half":
         start = alignAddress(start, 2);
         end = start + 1;
@@ -1274,8 +1280,6 @@ function peg$parse(input, options) {
         return undefined; 
       }
       setAsmList(inst, text());
-      console.log(inst);
-      // inst["asm"] = text();
       return inst;
     };
   var peg$f24 = function(name, rd, rs1, rs2) { 
@@ -2063,7 +2067,7 @@ function peg$parse(input, options) {
         }
         if (s3 !== peg$FAILED) {
           s4 = peg$parse__();
-          s5 = peg$parsestringToken();
+          s5 = peg$parseAlignDirectivesString();
           if (s5 !== peg$FAILED) {
             s6 = peg$parse_();
             s7 = peg$parseString();
@@ -6791,28 +6795,25 @@ function peg$parse(input, options) {
   function peg$parseDirectiveName() {
     var s0;
 
-    s0 = peg$parseascizToken();
+    s0 = peg$parseequToken();
     if (s0 === peg$FAILED) {
-      s0 = peg$parseequToken();
+      s0 = peg$parsesectionToken();
       if (s0 === peg$FAILED) {
-        s0 = peg$parsesectionToken();
+        s0 = peg$parsetextToken();
         if (s0 === peg$FAILED) {
-          s0 = peg$parsetextToken();
+          s0 = peg$parsedataToken();
           if (s0 === peg$FAILED) {
-            s0 = peg$parsedataToken();
+            s0 = peg$parserodataToken();
             if (s0 === peg$FAILED) {
-              s0 = peg$parserodataToken();
+              s0 = peg$parsebssToken();
               if (s0 === peg$FAILED) {
-                s0 = peg$parsebssToken();
+                s0 = peg$parsecommonToken();
                 if (s0 === peg$FAILED) {
-                  s0 = peg$parsecommonToken();
+                  s0 = peg$parsecommToken();
                   if (s0 === peg$FAILED) {
-                    s0 = peg$parsecommToken();
+                    s0 = peg$parseAlignDirectives();
                     if (s0 === peg$FAILED) {
-                      s0 = peg$parseAlignDirectives();
-                      if (s0 === peg$FAILED) {
-                        s0 = peg$parsestringToken();
-                      }
+                      s0 = peg$parseAlignDirectivesString();
                     }
                   }
                 }
@@ -6821,6 +6822,17 @@ function peg$parse(input, options) {
           }
         }
       }
+    }
+
+    return s0;
+  }
+
+  function peg$parseAlignDirectivesString() {
+    var s0;
+
+    s0 = peg$parsestringToken();
+    if (s0 === peg$FAILED) {
+      s0 = peg$parseascizToken();
     }
 
     return s0;

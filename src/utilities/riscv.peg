@@ -120,6 +120,12 @@
         setInstCountData(sum);
         break;
 
+      case ".asciz":
+        sum = resolveAlignString(value);
+        end = start + sum - 1;
+        setInstCountData(sum);
+        break;
+
       case ".half":
         start = alignAddress(start, 2);
         end = start + 1;
@@ -739,8 +745,6 @@
         return undefined; 
       }
       setAsmList(inst, text());
-      console.log(inst);
-      // inst["asm"] = text();
       return inst;
     }
       
@@ -1554,8 +1558,7 @@
 
   // Directive names
   DirectiveName
-  = ascizToken
-  / equToken
+  = equToken
   / sectionToken
   / textToken
   / dataToken
@@ -1568,6 +1571,7 @@
   
   AlignDirectivesString
   = stringToken
+  / ascizToken
 
   AlignDirectives
   = twoByteToken
@@ -1577,7 +1581,6 @@
   / byteToken
 
   ascizToken = ".asciz"
-
   equToken = ".equ"
   sectionToken = ".section"
   textToken = ".text"
