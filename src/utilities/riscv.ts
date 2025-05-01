@@ -96,12 +96,18 @@
 
   function resolveAlignString(ascii: number[]): number {
     const len = ascii.length;
-    const div = Math.ceil(len / 4);
-    return div;
+    return len;
   }
 
   function setInstCountData(end: number): void {
     instCountData += end; 
+  }
+
+  function alignAddress(addr: number, alignment: number): number {
+    if (addr % alignment === 0){
+        return addr;
+    }
+    return addr + (alignment - addr % alignment);
   }
 
   function resolveAlign(align: string, value: any): Object {
@@ -110,14 +116,36 @@
     let sum;
     switch (align) {
       case ".word":
-        end = (start + 1)*4 - 1;
-        setInstCountData(1);
+        start = alignAddress(start, 4);
+        end = (start + 3);
+        setInstCountData(4);
         break;
 
       case ".string":
         sum = resolveAlignString(value);
-        end = (start + sum)*4 - 1;
+        end = start + sum - 1;
         setInstCountData(sum);
+        break;
+
+      case ".half":
+        start = alignAddress(start, 2);
+        end = start + 1;
+        setInstCountData(3);
+        break;
+      
+      case ".2byte":
+        end = start + 1;
+        setInstCountData(3);
+        break;
+      
+      case ".4byte":
+        end = start + 3;
+        setInstCountData(4);
+        break;
+      
+      case ".byte":
+        end = start + 1;
+        setInstCountData(2);
         break;
 
       default:
@@ -125,7 +153,7 @@
     }
 
     return  {
-          start: start*4,
+          start: start,
           end: end,
           type: align
         }
@@ -133,8 +161,9 @@
 
   function setValueData(name: string, dir: number, align: string, value: any): void {
     const data = dataTable[name];
-    data["align"] = resolveAlign(align, data["value"]);
-    data["memdef"] = dir*4;
+    const valueAlign = resolveAlign(align, data["value"]);
+    data["align"] = valueAlign;
+    data["memdef"] = valueAlign.start;
   }
 
   function setData(name: string, value: number | number[]): void {
@@ -6798,9 +6827,6 @@ function peg$parse(input, options) {
           s0 = peg$parsewordToken();
           if (s0 === peg$FAILED) {
             s0 = peg$parsebyteToken();
-            if (s0 === peg$FAILED) {
-              s0 = peg$parsezeroDToken();
-            }
           }
         }
       }

@@ -74,7 +74,7 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     console.error("Identifier names must be unique");
     return retError;
   }
-  counters.instCountData = counters.instcounter;
+  counters.instCountData = counters.instcounter * 4;
   counters.instcounter = 0;
   console.log('Second pass!.');
   let parserOutput;
