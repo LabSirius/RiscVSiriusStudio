@@ -163,6 +163,7 @@
     const valueAlign = resolveAlign(align, data["value"]);
     data["align"] = valueAlign;
     data["memdef"] = valueAlign.start;
+    return data;
   }
 
   function setData(name: string, value: number | number[]): void {
@@ -171,6 +172,11 @@
       value: value,
       align: undefined
     };
+    return dataTable[name];
+  }
+
+  function setWritable(list: any[], writable: boolean): void {
+    list.forEach(element => element.writable = writable);
   }
 
   function getDirFromData(name: string): number {
@@ -232,7 +238,7 @@
     return { regname: 'x'+r, regeq: 'x'+r, regenc: r}; 
   }
 
-  function setAsmList(insts: any[] | Object, text: string): any[] | Object {
+  function setAsmList(insts: any[] | Object, text: string): void{
     if (Array.isArray(insts)){
       insts.forEach((element) => element? element.asm = text: element);
     }
@@ -564,13 +570,6 @@
     // directives.push(dir.directive)
     return dir; 
   }
-  / data: DataDeclaration EOS {
-    if (!isData){
-      return error("Invalid instruction; must be included in the .data, .rodata, or .bss directive");    
-    }
-    return data;
-  }
-
   / lbl:LabelDeclaration EOS 
   { 
     let ret = lbl;
@@ -620,22 +619,42 @@
   = id: IdentifierName _ ":" __ align: AlignDirectives _ value: Integer
   {
     if (isFirstPass){
-      setData(id.name, value);
+      return setData(id.name, value);
     }    
     else{
-      setValueData(id.name, instCountData, align);
+      return setValueData(id.name, instCountData, align);
     }
   }
   / id: IdentifierName _ ":" __ align: AlignDirectivesString _ value: String
   {
     if (isFirstPass){
-      setData(id.name, stringToAsciiList(value));
+      return setData(id.name, stringToAsciiList(value));
     }
     else{
-      setValueData(id.name, instCountData, align);
+      return setValueData(id.name, instCountData, align);
     }
   }
 
+  // BssDataDeclaration
+  // = id: IdentifierName _ ":" __ align: AlignDirectives _ value: Integer
+  // {
+  //   if (isFirstPass){
+  //     return setData(id.name, value);
+  //   }    
+  //   else{
+  //     return setValueData(id.name, instCountData, align);
+  //   }
+  // }
+  // / id: IdentifierName _ ":" __ align: AlignDirectivesString _ value: String
+  // {
+  //   if (isFirstPass){
+  //     return setData(id.name, stringToAsciiList(value));
+  //   }
+  //   else{
+  //     return setValueData(id.name, instCountData, align);
+  //   }
+  // }
+  
   Directive
   // https://michaeljclark.github.io/asm.html
 
@@ -651,18 +670,28 @@
     isData = false;
     return {directive: ".text"};
   }
-  / dataToken {
-    isData = true;
+  / dataToken __ head:DataDeclaration tail:(__ DataDeclaration)* {
+    if (isFirstPass){
+      const fullData = buildList(head, tail, 1);
+      setWritable(fullData, true);
+    }
     return {directive: ".data"};
 
   }
-  / rodataToken {
+  / rodataToken __ head:DataDeclaration tail:(__ DataDeclaration)* {
+    if (isFirstPass){
+      const fullData = buildList(head, tail, 1);
+      setWritable(fullData, false);
+    }
     return {directive: ".rodata"};
 
   }
-  / bssToken {
+  / bssToken __ head:DataDeclaration tail:(__ DataDeclaration)* {
+    if (isFirstPass){
+      const fullData = buildList(head, tail, 1);
+      setWritable(fullData, true);
+    }
     return {directive: ".bss"};
-
   }
 
   Instruction "Instruction"
@@ -769,7 +798,6 @@
    * need a different rule.
    */
   LInstruction "Load instruction"
-  // TODO: Cambiar el operand kind en estos casos para que mire si es un address
     = name:LoadInstName _ rd:RegisterName ___ offset:LIOperandKind12 _"("_ rs1:RegisterName _")"
     { 
       if (isFirstPass) { return undefined; }
