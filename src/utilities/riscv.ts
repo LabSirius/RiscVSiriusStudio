@@ -168,7 +168,7 @@
 
   function setData(name: string, value: number | number[]): void {
     dataTable[name] = {
-      memdef: 0,
+      memdef: undefined,
       value: value,
       align: undefined
     };
@@ -231,6 +231,15 @@
 
   function regEnc(r) {
     return { regname: 'x'+r, regeq: 'x'+r, regenc: r}; 
+  }
+
+  function setAsmList(insts: any[] | Object, text: string): any[] | Object {
+    if (Array.isArray(insts)){
+      insts.forEach((element) => element? element.asm = text: element);
+    }
+    else {
+      insts.asm = text;
+    }
   }
 
   function handleRInstruction(name, rd, rs1, rs2, location, pseudo=false) {
@@ -1264,7 +1273,9 @@ function peg$parse(input, options) {
         getInstMemPosition();
         return undefined; 
       }
-      inst["asm"] = text();
+      setAsmList(inst, text());
+      console.log(inst);
+      // inst["asm"] = text();
       return inst;
     };
   var peg$f24 = function(name, rd, rs1, rs2) { 

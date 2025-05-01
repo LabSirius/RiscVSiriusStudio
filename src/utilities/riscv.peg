@@ -226,6 +226,15 @@
     return { regname: 'x'+r, regeq: 'x'+r, regenc: r}; 
   }
 
+  function setAsmList(insts: any[] | Object, text: string): any[] | Object {
+    if (Array.isArray(insts)){
+      insts.forEach((element) => element? element.asm = text: element);
+    }
+    else {
+      insts.asm = text;
+    }
+  }
+
   function handleRInstruction(name, rd, rs1, rs2, location, pseudo=false) {
     var funct3;
     var funct7;
@@ -729,7 +738,9 @@
         getInstMemPosition();
         return undefined; 
       }
-      inst["asm"] = text();
+      setAsmList(inst, text());
+      console.log(inst);
+      // inst["asm"] = text();
       return inst;
     }
       
