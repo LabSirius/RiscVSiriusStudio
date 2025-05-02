@@ -9,18 +9,18 @@ export async function getHtmlForTextSimulator(webview: Webview, extensionUri: Ur
     extensionUri.fsPath,
     "src",
     "templates",
-    "textSimulator",
+    "simulator",
     "index.html"
   );
   let html = readFileSync(indexHtmlPath, "utf8");
 
   const baseUri = webview.asWebviewUri(
-    Uri.file(join(extensionUri.fsPath, "src", "templates", "textSimulator"))
+    Uri.file(join(extensionUri.fsPath, "src", "templates", "simulator"))
   );
   html = html.replace("<head>", `<head><base href="${baseUri}/">`);
   const nonce = getNonce();
   const panelviewUri = webview.asWebviewUri(
-    Uri.joinPath(extensionUri, "out", "textSimulator.js")
+    Uri.joinPath(extensionUri, "out", "graphicSimulator.js")
   );
 
   html = html.replace(
