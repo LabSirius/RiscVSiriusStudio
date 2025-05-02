@@ -20,7 +20,7 @@ import { activateMessageListenerForRegistersView } from "../utilities/activateMe
 import { RVDocument } from "../rvDocument";
 import { EncoderDecorator } from "../encoderDecorator";
 import { ConfigurationManager } from "./configurationManager";
-import { SimulationParameters, BaseSimulator, TextSimulator, GraphicSimulator } from "../Simulator";
+import { SimulationParameters, Simulator, TextSimulator, GraphicSimulator } from "../Simulator";
 
 export class RVContext {
   static #instance: RVContext | null;
@@ -34,7 +34,7 @@ export class RVContext {
   private _mainViewIsFirstTimeVisible = true;
   private _currentDocument: RVDocument | undefined;
   private _isSimulating = false;
-  private _simulator: BaseSimulator | undefined;
+  private _simulator: Simulator | undefined;
 
   get configurationManager(): ConfigurationManager {
     return this._configurationManager;
@@ -48,7 +48,7 @@ export class RVContext {
     return this._mainWebviewView as Webview;
   }
 
-  get simulator(): BaseSimulator {
+  get simulator(): Simulator {
     if (!this._simulator) throw new Error("Simulator not initialized.");
     return this._simulator;
   }

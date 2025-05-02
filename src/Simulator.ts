@@ -1,4 +1,3 @@
-// BaseSimulator.ts
 import { RVDocument } from "./rvDocument";
 import { RVContext } from "./support/context";
 import { SCCPU, SCCPUResult } from "./vcpu/singlecycle";
@@ -20,7 +19,7 @@ export interface StepResult {
  * Base class for all simulators: contains common logic
  * related to execution, memory, and registers.
  */
-export abstract class BaseSimulator {
+export abstract class Simulator {
   protected readonly context: RVContext;
   protected readonly rvDoc: RVDocument;
   protected readonly cpu: SCCPU;
@@ -158,7 +157,7 @@ export abstract class BaseSimulator {
  * Text simulator: handles all the visual logic
  * based on the editor and textual webview.
  */
-export class TextSimulator extends BaseSimulator {
+export class TextSimulator extends Simulator {
   private currentHighlight: TextEditorDecorationType | undefined;
   private selectionListenerDisposable: any;
 
