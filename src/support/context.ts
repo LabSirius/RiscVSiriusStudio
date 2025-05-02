@@ -119,6 +119,16 @@ export class RVContext {
         );
 
         this._mainPanel = panel;
+
+        //Listen for the window to close
+        panel.onDidDispose(() => {
+          this._mainPanel = undefined; 
+          commands.executeCommand("setContext", "ext.isSimulating", false);
+          this._simulator?.stop();
+          this._encoderDecorator = undefined;
+
+
+      });
     
         panel.webview.html = await getHtmlForRegistersWebview(panel.webview, this.extensionContext.extensionUri);
     
