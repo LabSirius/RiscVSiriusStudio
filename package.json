@@ -20,6 +20,12 @@
         "when": "!ext.isSimulating"
       },
       {
+        "command": "rv-simulator.textSimulate",
+        "title": "RISCV simulator: text-simulate program execution",
+        "icon": "$(symbol-parameter)",
+        "when": "!ext.isSimulating"
+      },
+      {
         "command": "rv-simulator.simulateStep",
         "title": "RISCV simulator: step simulation",
         "icon": "$(debug-step-over)",
@@ -53,6 +59,24 @@
         "title": "RISCV simuator: synchronize code with program memory"
       }
     ],
+    "viewsContainers": {
+      "panel": [
+        {
+          "id": "riscv",
+          "title": "RISCV",
+          "icon": "media/cpu-chip-svgrepo-com.svg"
+        }
+      ]
+    },
+    "views": {
+      "riscv": [
+        {
+          "type": "webview",
+          "id": "rv-simulator.riscv",
+          "name": "RiscV simulator"
+        }
+      ]
+    },
     "configuration": {
       "title": "RISCV Simulator",
       "properties": {
@@ -135,6 +159,11 @@
         },
         {
           "command": "rv-simulator.simulate",
+          "group": "navigation",
+          "when": "editorLangId == riscvasm && !ext.isSimulating"
+        },
+        {
+          "command": "rv-simulator.textSimulate",
           "group": "navigation",
           "when": "editorLangId == riscvasm && !ext.isSimulating"
         },

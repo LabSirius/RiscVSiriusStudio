@@ -29,23 +29,7 @@ const extensionConfig = {
       // verbose:true,
       assets: [
         {
-          from: ["./src/simulatorview/styles.css"],
-          to: ["./out"],
-        },
-        {
           from: "./media/RobotoMono.ttf",
-          to: "./out",
-        },
-        {
-          from: ["./src/utilities/tailwind-output.css"],
-          to: ["./out"],
-        },
-        {
-          from: "./media/tabulator.min.css",
-          to: "./out",
-        },
-        {
-          from: "./src/panels/panels.css",
           to: "./out",
         },
         // watch: true
@@ -57,22 +41,35 @@ const extensionConfig = {
   external: ["vscode"],
 };
 
-// Config for webview source code (to be run in a web-based context)
-/** @type BuildOptions */
-const simulatorviewConfig = {
+
+
+
+const graphicSimulatorConfig = {
   ...baseConfig,
   target: "es2020",
   format: "esm",
-  entryPoints: ["./src/simulatorview/main.ts"],
-  outfile: "./out/simulatorview.js",
+  entryPoints: ["./src/simulators/graphicSimulator/graphicSimulator.ts"],
+  outfile: "./out/graphicSimulator.js",
+  plugins: [
+    copy({
+      resolveFrom: "cwd",
+      assets: [
+        {
+          from: "./media/binary-svgrepo-com.svg",
+          to: "./out",
+        },
+      ],
+      // watch: true
+    }),
+  ],
 };
 
-const registersviewConfig = {
+const textSimulatorSimulator = {
   ...baseConfig,
   target: "es2020",
   format: "esm",
-  entryPoints: ["./src/panelview/panelView.ts"],
-  outfile: "./out/panelview.js",
+  entryPoints: ["./src/simulators/textSimulator/textSimulator.ts"],
+  outfile: "./out/textSimulator.js",
   plugins: [
     copy({
       resolveFrom: "cwd",
@@ -126,12 +123,16 @@ const watchConfig = {
         ...registersviewConfig,
         ...watchConfig,
       });
+      await build({
+        ...registersviewConfigTextSimulator,
+        ...watchConfig,
+      });
       console.log("[watch] build finished");
     } else {
       // Build extension and webview code
       await build(extensionConfig);
-      await build(simulatorviewConfig);
-      await build(registersviewConfig);
+      await build(graphicSimulatorConfig);
+      await build(textSimulatorSimulator);
       console.log("build complete");
     }
   } catch (err) {
