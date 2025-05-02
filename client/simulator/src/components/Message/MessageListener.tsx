@@ -15,7 +15,16 @@ const MessageListener = () => {
     setIsCreatedMemoryTable,
   } = useMemoryTable();
 
-  const { typeSimulator, setTypeSimulator, setTextProgram, setOperation, isFirstStep, setIsFirstStep, setSection, setNewPc } = useSimulator();
+  const {
+    typeSimulator,
+    setTypeSimulator,
+    setTextProgram,
+    setOperation,
+    isFirstStep,
+    setIsFirstStep,
+    setSection,
+    setNewPc,
+  } = useSimulator();
   const { setWriteInRegister } = useRegistersTable();
   const { setCurrentInst, setCurrentResult } = useCurrentInst();
 
@@ -34,7 +43,7 @@ const MessageListener = () => {
             setTextProgram(message.textProgram);
             break;
           case "uploadMemory":
-            if(!(typeSimulator === "graphic")){
+            if (!(typeSimulator === "graphic")) {
               setDialog({
                 title: "Configuration Info",
                 description:
@@ -63,7 +72,11 @@ const MessageListener = () => {
               setLineDecorationNumber(-1);
             }
             if (!isFirstStep) {
-              if (typeSimulator === "graphic") setSection("program");
+              if (typeSimulator === "graphic") {
+                setSection("program");
+              } else {
+                setSection("search");
+              }
               setOperation("step");
               setIsFirstStep(true);
             }
@@ -111,9 +124,8 @@ const MessageListener = () => {
     setIsCreatedMemoryTable,
   ]);
 
-
   useEffect(() => {
-    if (typeSimulator == "graphic"){
+    if (typeSimulator == "graphic") {
       setDialog({
         title: "Configuration Info",
         description:
@@ -123,8 +135,6 @@ const MessageListener = () => {
       setSection("program");
     }
   }, [typeSimulator, setSection, setOperation, setDialog]);
-
-
 
   return null;
 };

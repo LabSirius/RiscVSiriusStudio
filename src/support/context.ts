@@ -20,7 +20,7 @@ import { activateMessageListenerForRegistersView } from "../utilities/activateMe
 import { RVDocument } from "../rvDocument";
 import { EncoderDecorator } from "../encoderDecorator";
 import { ConfigurationManager } from "./configurationManager";
-import { SimulationParameters, BaseSimulator, TextSimulator, GraphicSimulator } from "../Simulator";
+import { SimulationParameters, Simulator, TextSimulator, GraphicSimulator } from "../Simulator";
 
 export class RVContext {
   static #instance: RVContext | null;
@@ -34,7 +34,7 @@ export class RVContext {
   private _mainViewIsFirstTimeVisible = true;
   private _currentDocument: RVDocument | undefined;
   private _isSimulating = false;
-  private _simulator: BaseSimulator | undefined;
+  private _simulator: Simulator | undefined;
 
   get configurationManager(): ConfigurationManager {
     return this._configurationManager;
@@ -48,7 +48,7 @@ export class RVContext {
     return this._mainWebviewView as Webview;
   }
 
-  get simulator(): BaseSimulator {
+  get simulator(): Simulator {
     if (!this._simulator) throw new Error("Simulator not initialized.");
     return this._simulator;
   }
@@ -90,11 +90,15 @@ export class RVContext {
               this.extensionContext.extensionUri
             );
             await activateMessageListenerForRegistersView(webviewView.webview, this);
+
             this._mainWebviewView = webviewView.webview;
 
             if (webviewView.visible) this.onMainViewVisible();
             webviewView.onDidChangeVisibility(() => {
-              if (webviewView.visible) this.onMainViewVisible();
+              if (webviewView.visible) {
+                this._mainWebviewView = webviewView.webview;
+                this.onMainViewVisible();
+              }
             });
           },
         },
@@ -132,9 +136,7 @@ export class RVContext {
         this._mainPanel = panel;
         panel.onDidDispose(() => {
           this._mainPanel = undefined;
-          commands.executeCommand("setContext", "ext.isSimulating", false);
-          this._simulator?.stop();
-          this._encoderDecorator = undefined;
+          this.cleanupAfterSimulation();
         });
 
         panel.webview.html = await getHtmlForGraphicSimulator(
@@ -213,26 +215,36 @@ export class RVContext {
 
   private simulateProgram(rvDoc: RVDocument, isGraphic: boolean) {
     if (!rvDoc.ir) return;
-  
+
     const settings: SimulationParameters = { memorySize: 40 };
     this._simulator = isGraphic
       ? new GraphicSimulator(settings, rvDoc, this)
       : new TextSimulator(settings, rvDoc, this);
-  
+
     this._isSimulating = true;
     commands.executeCommand("setContext", "ext.isSimulating", true);
-  
-    // Only close the bottom panel in graphic simulation mode
+
     if (isGraphic) {
-      commands.executeCommand('workbench.action.closePanel');
+      commands.executeCommand("workbench.action.closePanel");
     }
-  
+
     this._simulator.start();
+
     if (!isGraphic && this._encoderDecorator) {
       this._currentDocument?.buildAndDecorate(this);
     }
   }
-  
+
+  private cleanupAfterSimulation() {
+    this._simulator?.stop();
+    this._simulator = undefined;
+    this._isSimulating = false;
+    this._encoderDecorator = undefined;
+
+    commands.executeCommand("rv-simulator.riscv.focus");
+
+    commands.executeCommand("setContext", "ext.isSimulating", false);
+  }
 
   private step() {
     if (!this._simulator) throw new Error("No simulator is running");

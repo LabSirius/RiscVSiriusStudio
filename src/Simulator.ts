@@ -1,4 +1,3 @@
-// BaseSimulator.ts
 import { RVDocument } from "./rvDocument";
 import { RVContext } from "./support/context";
 import { SCCPU, SCCPUResult } from "./vcpu/singlecycle";
@@ -20,7 +19,7 @@ export interface StepResult {
  * Base class for all simulators: contains common logic
  * related to execution, memory, and registers.
  */
-export abstract class BaseSimulator {
+export abstract class Simulator {
   protected readonly context: RVContext;
   protected readonly rvDoc: RVDocument;
   protected readonly cpu: SCCPU;
@@ -158,7 +157,7 @@ export abstract class BaseSimulator {
  * Text simulator: handles all the visual logic
  * based on the editor and textual webview.
  */
-export class TextSimulator extends BaseSimulator {
+export class TextSimulator extends Simulator {
   private currentHighlight: TextEditorDecorationType | undefined;
   private selectionListenerDisposable: any;
 
@@ -173,6 +172,9 @@ export class TextSimulator extends BaseSimulator {
     }
 
     this.listenToEditorClicks();
+    const inst = this.cpu.currentInstruction();
+    const line = this.rvDoc.getLineForIR(inst);
+    if (line !== undefined) this.highlightLine(line);
 
     const addressLine =
       this.rvDoc.ir?.instructions.map((instr) => {
@@ -216,6 +218,8 @@ export class TextSimulator extends BaseSimulator {
 
     const inst = this.cpu.currentInstruction();
     const line = this.rvDoc.getLineForIR(inst);
+
+    if (line !== undefined) this.highlightLine(line);
 
     mainView.postMessage({
       from: "extension",
@@ -340,6 +344,27 @@ export class TextSimulator extends BaseSimulator {
       lineDecorationNumber: line !== undefined ? line + 1 : 0,
     });
   }
+
+  private highlightLine(lineNumber: number): void {
+    const editor = this.rvDoc.editor;
+    if (editor) {
+      if (this.currentHighlight) {
+        this.currentHighlight.dispose();
+      }
+  
+      this.currentHighlight = window.createTextEditorDecorationType({
+        backgroundColor: "rgba(209, 227, 231, 0.5)", // Azul pastel
+        isWholeLine: true,
+      });
+  
+      const range = editor.document.lineAt(lineNumber).range;
+      editor.revealRange(range);
+      editor.setDecorations(this.currentHighlight, [
+        { range, hoverMessage: "Selected line" },
+      ]);
+    }
+  }
+  
 
   private clearHighlight() {
     if (this.currentHighlight) {
