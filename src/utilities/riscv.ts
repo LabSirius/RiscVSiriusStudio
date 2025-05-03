@@ -75,11 +75,15 @@
     return symbol["double"]
   }
 
-  function getPosLabel(labelName) {
+  function calculateDistance(memdef: number, line: number): number | undefined {
+    return (memdef - line*4);
+  }
+
+  function getPosLabel(labelName: string): number {
     const pointsTo = labelTable[labelName];
     if (pointsTo === undefined){
-      return getConstantValue(labelName)
-    } 
+      return undefined;
+    }
     const value = pointsTo['memdef'];
     return value;
   }
@@ -89,95 +93,28 @@
     return value;
   }
 
+  function getIdentifierValue(name): number {
+    let value = getPosLabel(name);
+    if (value === undefined){
+      value = getConstantValue(lbl["name"]);
+    }
+    else {
+      value = calculateDistance(value, instcounter-1);
+    }
+    return value;
+  }
+
   function stringToAsciiList(text: string): number[] {
     const asciiList = Array.from(text).map(char => char.charCodeAt(0));
     asciiList.push(0)
     return asciiList;
   }
 
-  function resolveAlignString(ascii: number[]): number {
-    const len = ascii.length;
-    return len;
-  }
-
-  function setInstCountData(end: number): void {
-    instCountData += end; 
-  }
-
-  function alignAddress(addr: number, alignment: number): number {
-    if (addr % alignment === 0){
-        return addr;
-    }
-    return addr + (alignment - addr % alignment);
-  }
-
-  function resolveAlign(align: string, value: any): Object {
-    let end;
-    let start = instCountData;
-    let sum;
-    switch (align) {
-      case ".word":
-        start = alignAddress(start, 4);
-        end = (start + 3);
-        setInstCountData(4);
-        break;
-
-      case ".string":
-        sum = resolveAlignString(value);
-        end = start + sum - 1;
-        setInstCountData(sum);
-        break;
-
-      case ".asciz":
-        sum = resolveAlignString(value);
-        end = start + sum - 1;
-        setInstCountData(sum);
-        break;
-
-      case ".half":
-        start = alignAddress(start, 2);
-        end = start + 1;
-        setInstCountData(3);
-        break;
-      
-      case ".2byte":
-        end = start + 1;
-        setInstCountData(3);
-        break;
-      
-      case ".4byte":
-        end = start + 3;
-        setInstCountData(4);
-        break;
-      
-      case ".byte":
-        end = start + 1;
-        setInstCountData(2);
-        break;
-
-      default:
-        break;
-    }
-
-    return  {
-          start: start,
-          end: end,
-          type: align
-        }
-  }
-
-  function setValueData(name: string, dir: number, align: string, value: any): void {
-    const data = dataTable[name];
-    const valueAlign = resolveAlign(align, data["value"]);
-    data["align"] = valueAlign;
-    data["memdef"] = valueAlign.start;
-    return data;
-  }
-
-  function setData(name: string, value: number | number[]): void {
+  function setData(name: string, value: number | number[], typeAlign: string): void {
     dataTable[name] = {
-      memdef: undefined,
+      memdef: 0,
       value: value,
+      typeAlign: typeAlign,
       align: undefined
     };
     return dataTable[name];
@@ -298,7 +235,7 @@
         return `${instruction} ${rd.regname} ${offset}`;
       
       case "B":
-        return `${instruction} ${rs1.regname} ${rs1.regname} ${offset}`;
+        return `${instruction} ${rs1.regname} ${rs2.regname} ${offset}`;
 
       default:
         return '';
@@ -1234,22 +1171,23 @@ function peg$parse(input, options) {
       if (id.name in dataTable){
         return error(`Duplicate identifier: ${id.name} found multiple times`);
       }
-      return setData(id.name, value);
+      // instCountData += 1;
+      return setData(id.name, value, align);
     }    
-    else{
-      return setValueData(id.name, instCountData, align);
-    }
+    // else{
+    //   return setValueData(id.name, instCountData, align);
+    // }
   };
   var peg$f8 = function(id, align, value) {
     if (isFirstPass){
       if (id.name in dataTable){
         return error(`Duplicate identifier: ${id.name} found multiple times`);
       }
-      return setData(id.name, stringToAsciiList(value));
+      return setData(id.name, stringToAsciiList(value), align);
     }
-    else{
-      return setValueData(id.name, instCountData, align);
-    }
+    // else{
+    //   return setValueData(id.name, instCountData, align);
+    // }
   };
   var peg$f9 = function(name, val) {
     if (isFirstPass){
@@ -1458,7 +1396,7 @@ function peg$parse(input, options) {
       }
       const imm = offset["value"];
       let complementInstruction;
-      if (isDoubleInst(offset)){ complementInstruction = handleUInstruction('auipc', regEnc('6'), shiftLeftLogical(imm, 12), location(), true); }
+      if (isDoubleInst(offset)){ complementInstruction = handleUInstruction('auipc', regEnc('1'), shiftLeftLogical(imm, 12), location(), true); }
       const mainInstruction = handleIInstruction('jalr', regEnc('1'), regEnc('1'), applyBitMask(imm, 0xFFF), location(), true);
       return [complementInstruction, mainInstruction];
     };
@@ -1582,8 +1520,11 @@ function peg$parse(input, options) {
   var peg$f62 = function(imm) { return imm; };
   var peg$f63 = function(lbl) { 
     if (isFirstPass) { return undefined; }
-    const value = getPosLabel(lbl["name"])
-    if (isImm21(value)) {
+    let value = getPosLabel(lbl["name"])
+    if (value === undefined){
+      value = getConstantValue(lbl["name"]);
+    }
+    if (isImm21(value) && value !== undefined) {
         return value;
     }
     return error("Expecting 21 bit representable value [-1048576, 1048575]. Got " + value); 
@@ -1597,7 +1538,13 @@ function peg$parse(input, options) {
   var peg$f65 = function(imm) { return imm; };
   var peg$f66 = function(lbl) {
     if (isFirstPass) { return {}; }
-    const value = getPosLabel(lbl["name"])
+
+    const value = getIdentifierValue(lbl.name);
+  
+    if (value === undefined){
+      return error(`Identifier name is not valid: ${lbl.name}`);
+      
+    }
     return {"value": value, "double": !isImm12(value)};
   };
   var peg$f67 = function(imm) { return imm; };
@@ -1658,7 +1605,7 @@ function peg$parse(input, options) {
   var peg$f77 = function(imm) { return imm; };
   var peg$f78 = function(lbl) {
     if (isFirstPass) { return undefined; }
-    const value = getPosLabel(lbl["name"]);
+    const value = getIdentifierValue(lbl.name);
     if (isImm13(value)) {
         return value;
     }
@@ -4067,7 +4014,7 @@ function peg$parse(input, options) {
     var s0, s1;
 
     peg$silentFails++;
-    s0 = peg$parseJALRTarget();
+    s0 = peg$parseImm13();
     if (s0 === peg$FAILED) {
       s0 = peg$parseAsmModifier();
       if (s0 === peg$FAILED) {

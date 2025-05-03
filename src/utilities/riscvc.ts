@@ -1,5 +1,26 @@
 import { parse } from './riscv';
 
+type Align = {
+  start: number,
+  end: number
+};
+
+type Data = {
+  memdef: number,
+  value: number | number[],
+  typeAlign: string,
+  align: Align
+};
+
+let labelTable = {};
+let constantTable = {};
+let directives = {};
+let dataTable: Record<string, Data> = {};
+let counters = {
+  instcounter: 0,
+  instCountData: 0
+};
+
 function anyCommonElement<T>(...arrays: T[][]): [boolean, any] {
   const visited = new Set<T>();
 
@@ -29,6 +50,92 @@ function checkTextSection(directives: {}): boolean {
   return ".text" in directives;
 }
 
+function resolveAlignString(ascii: number[]): number {
+  const len = ascii.length;
+  return len;
+}
+
+function setInstCountData(end: number): void {
+  counters.instCountData += end; 
+}
+
+function alignAddress(addr: number, alignment: number): number {
+  if (addr % alignment === 0){
+      return addr;
+  }
+  return addr + (alignment - addr % alignment);
+}
+
+function resolveAlign(align: string, value: any): Align {
+  let end: number = 0;
+  let start = counters.instCountData;
+  let sum;
+  switch (align) {
+    case ".word":
+      start = alignAddress(start, 4);
+      end = (start + 3);
+      setInstCountData(4);
+      break;
+
+    case ".string":
+      sum = resolveAlignString(value);
+      end = start + sum - 1;
+      setInstCountData(sum);
+      break;
+
+    case ".asciz":
+      sum = resolveAlignString(value);
+      end = start + sum - 1;
+      setInstCountData(sum);
+      break;
+
+    case ".half":
+      start = alignAddress(start, 2);
+      end = start + 1;
+      setInstCountData(3);
+      break;
+    
+    case ".2byte":
+      end = start + 1;
+      setInstCountData(3);
+      break;
+    
+    case ".4byte":
+      end = start + 3;
+      setInstCountData(4);
+      break;
+    
+    case ".byte":
+      end = start + 1;
+      setInstCountData(2);
+      break;
+
+    default:
+      break;
+  }
+
+  return  {
+        start: start,
+        end: end
+      };
+}
+
+function setValueData(name: string): void {
+  const data = dataTable[name];
+  if (!data) {
+    throw new Error(`No existe data para la clave "${name}"`);
+  }
+  const valueAlign = resolveAlign(data.typeAlign, data["value"]);
+  data["align"] = valueAlign;
+  data["memdef"] = valueAlign.start;
+}
+
+function updateMemdefData(): void {
+  Object.keys(dataTable).forEach( (element) => {
+    setValueData(element);
+  });
+}
+
 export type InternalRepresentation = {
   instructions: Array<any>;
   symbols: Array<any>;
@@ -43,15 +150,16 @@ export type ParserResult = {
 
 
 export function compile(inputSrc: string, inputName: string): ParserResult {
-  console.log('First pass!.');
-  let labelTable = {};
-  let constantTable = {};
-  let directives = {};
-  let dataTable = {};
-  let counters = {
+  dataTable = {};
+  constantTable = {};
+  labelTable = {};
+  counters = {
     instcounter: 0,
     instCountData: 0
   };
+  directives = {};
+  
+  console.log('First pass!.');
   let options = {
     pc: 0
   };
@@ -97,6 +205,7 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
   }
   counters.instCountData = counters.instcounter * 4;
   counters.instcounter = 0;
+  updateMemdefData();
   console.log('Second pass!.');
   let parserOutput;
   try {
@@ -119,15 +228,16 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
   const result = {
     success: true,
     ir: { instructions: parserOutput as any[], 
-          symbols: labelTable as any[],
-          constants: constantTable as any[],
-          directives: directives as any[],
-          dataTable: dataTable as any[],
-          options: options 
-
-        },
+      symbols: labelTable as any[],
+      constants: constantTable as any[],
+      directives: directives as any[],
+      dataTable: dataTable,
+      options: options 
+      
+    },
     info: 'Success',
     extra: undefined
   };
+  console.log(result);
   return result;
 }
