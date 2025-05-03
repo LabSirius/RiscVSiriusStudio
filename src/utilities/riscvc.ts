@@ -35,6 +35,7 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     instcounter: 0,
     instCountData: 0
   };
+  let options = {};
 
   const retError = {
     success: false,
@@ -51,6 +52,7 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
       directives: directives,
       dataTable: dataTable,
       counters: counters,
+      options: options,
       firstPass: true
     });
   } catch (obj) {
@@ -86,6 +88,7 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
       directives: directives,
       dataTable: dataTable,
       counters: counters,
+      options: options,
       firstPass: false
     });
   } catch (obj) {
@@ -99,7 +102,9 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
           symbols: labelTable as any[],
           constants: constantTable as any[],
           directives: directives as any[],
-          dataTable: dataTable as any[]
+          dataTable: dataTable as any[],
+          options: options as any[]
+
         },
     info: 'Success',
     extra: undefined
