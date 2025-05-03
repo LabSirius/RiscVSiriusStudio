@@ -245,12 +245,62 @@
     return { regname: 'x'+r, regeq: 'x'+r, regenc: r}; 
   }
 
-  function setAsmList(insts: any[] | Object, text: string): void{
+  function setPAsmList(insts: any[] | Object, text: string): void{
     if (Array.isArray(insts)){
-      insts.forEach((element) => element? element.asm = text: element);
+      insts.forEach((element) => element? element.pseudoasm = text: element);
     }
     else {
-      insts.asm = text;
+      insts.pseudoasm = text;
+    }
+  }
+
+  function extractRawText(fullText: string): string {
+    const parts = fullText.split(',').map(p => p.trim());
+    return parts[parts.length - 1];
+  }
+
+  function setAsmIntsList(inst: any[]): void {
+    if (Array.isArray(inst)){
+      inst.forEach(element => { element?
+        element.asm = getAsmInts(element): undefined
+      });
+    }
+    else {
+      inst.asm = getAsmInts(inst)
+    }
+  }
+
+  function getAsmInts(inst: Object): string {
+    const instruction = inst.instruction;
+    const rd = inst.rd;
+    const rs1 = inst.rs1;
+    const rs2 = inst.rs2;
+    const imm12 = inst.imm12;
+    const offset = extractRawText(inst.pseudoasm);
+    const type = inst.type;
+
+    switch (type) {
+      case "R":
+        return `${instruction} ${rd.regname} ${rs1.regname} ${rs2.regname}`;
+
+      case "I":
+        return `${instruction} ${rd.regname} ${rs1.regname} ${imm12}`;
+      
+      case "S":
+        return `${instruction} ${rd.regname} ${imm12}(${rs1.regname})`;
+
+      case "U":
+        const imm20 = inst.imm20;
+        return `${instruction} ${rd.regname} ${imm20}`;
+
+      case "J":
+        return `${instruction} ${rd.regname} ${offset}`;
+      
+      case "B":
+        return `${instruction} ${rs1.regname} ${rs1.regname} ${offset}`;
+
+      default:
+        return '';
     }
   }
 
@@ -1289,7 +1339,8 @@ function peg$parse(input, options) {
         getInstMemPosition();
         return undefined; 
       }
-      setAsmList(inst, text());
+      setPAsmList(inst, text());
+      setAsmIntsList(inst);
       return inst;
     };
   var peg$f23 = function(name, rd, rs1, rs2) { 
