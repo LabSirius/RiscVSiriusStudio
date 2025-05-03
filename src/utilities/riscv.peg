@@ -654,7 +654,7 @@
   //     return setValueData(id.name, instCountData, align);
   //   }
   // }
-  
+
   Directive
   // https://michaeljclark.github.io/asm.html
 
@@ -666,11 +666,11 @@
     }
     return {directive: ".equ", identifier: name.name, value: val};
   }
-  / textToken {
+  / sectionToken? _ textToken {
     isData = false;
     return {directive: ".text"};
   }
-  / dataToken __ head:DataDeclaration tail:(__ DataDeclaration)* {
+  / sectionToken? _ dataToken __ head:DataDeclaration tail:(__ DataDeclaration)* {
     if (isFirstPass){
       const fullData = buildList(head, tail, 1);
       setWritable(fullData, true);
@@ -678,7 +678,7 @@
     return {directive: ".data"};
 
   }
-  / rodataToken __ head:DataDeclaration tail:(__ DataDeclaration)* {
+  / sectionToken? _ rodataToken __ head:DataDeclaration tail:(__ DataDeclaration)* {
     if (isFirstPass){
       const fullData = buildList(head, tail, 1);
       setWritable(fullData, false);
@@ -686,7 +686,7 @@
     return {directive: ".rodata"};
 
   }
-  / bssToken __ head:DataDeclaration tail:(__ DataDeclaration)* {
+  / sectionToken? _  bssToken __ head:DataDeclaration tail:(__ DataDeclaration)* {
     if (isFirstPass){
       const fullData = buildList(head, tail, 1);
       setWritable(fullData, true);
