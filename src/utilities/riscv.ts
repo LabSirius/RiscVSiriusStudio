@@ -1218,6 +1218,9 @@ function peg$parse(input, options) {
     // label we find is already in labelTable
 
     if (isFirstPass) {
+      if (id.name in labelTable){
+        return error(`Duplicate identifier: ${id.name} found multiple times`);
+      }
       labelTable[id.name] = {name:id.name, memdef:instcounter*4};
     } else {
       if (!(id['name'] in labelTable)) {
@@ -1228,6 +1231,9 @@ function peg$parse(input, options) {
   };
   var peg$f7 = function(id, align, value) {
     if (isFirstPass){
+      if (id.name in dataTable){
+        return error(`Duplicate identifier: ${id.name} found multiple times`);
+      }
       return setData(id.name, value);
     }    
     else{
@@ -1236,6 +1242,9 @@ function peg$parse(input, options) {
   };
   var peg$f8 = function(id, align, value) {
     if (isFirstPass){
+      if (id.name in dataTable){
+        return error(`Duplicate identifier: ${id.name} found multiple times`);
+      }
       return setData(id.name, stringToAsciiList(value));
     }
     else{
@@ -1244,6 +1253,9 @@ function peg$parse(input, options) {
   };
   var peg$f9 = function(name, val) {
     if (isFirstPass){
+      if (name.name in constantTable){
+        return error(`Duplicate identifier: ${name.name} found multiple times`);
+      }
       constantTable[name.name] = val;
     }
     return {directive: ".equ", identifier: name.name, value: val};

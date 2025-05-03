@@ -658,6 +658,9 @@
     // label we find is already in labelTable
 
     if (isFirstPass) {
+      if (id.name in labelTable){
+        return error(`Duplicate identifier: ${id.name} found multiple times`);
+      }
       labelTable[id.name] = {name:id.name, memdef:instcounter*4};
     } else {
       if (!(id['name'] in labelTable)) {
@@ -671,6 +674,9 @@
   = id: IdentifierName _ ":" __ align: AlignDirectives _ value: Integer
   {
     if (isFirstPass){
+      if (id.name in dataTable){
+        return error(`Duplicate identifier: ${id.name} found multiple times`);
+      }
       return setData(id.name, value);
     }    
     else{
@@ -680,6 +686,9 @@
   / id: IdentifierName _ ":" __ align: AlignDirectivesString _ value: String
   {
     if (isFirstPass){
+      if (id.name in dataTable){
+        return error(`Duplicate identifier: ${id.name} found multiple times`);
+      }
       return setData(id.name, stringToAsciiList(value));
     }
     else{
@@ -693,6 +702,9 @@
   = equToken _ name:Identifier ___ val:Imm32
   {
     if (isFirstPass){
+      if (name.name in constantTable){
+        return error(`Duplicate identifier: ${name.name} found multiple times`);
+      }
       constantTable[name.name] = val;
     }
     return {directive: ".equ", identifier: name.name, value: val};

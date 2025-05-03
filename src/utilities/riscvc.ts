@@ -1,10 +1,27 @@
 import { parse } from './riscv';
 
-function anyCommonElement(arr1: any[], arr2: any[]): boolean {
-  return arr1.some((element) => arr2.includes(element));
+function anyCommonElement<T>(...arrays: T[][]): [boolean, any] {
+  const visited = new Set<T>();
+
+  for (const array of arrays) {
+    const actualy = new Set<T>();
+    for (const item of array) {
+      if (visited.has(item)) {
+        return [true, item];
+      }
+      actualy.add(item);
+    }
+    for (const item of actualy) {
+      visited.add(item);
+    }
+  }
+
+  return [false, undefined];
+
+  // return arr1.some((element) => arr2.includes(element));
 }
 
-function needTextSection(directives: string[]): boolean {
+function needTextSection(directives: string[]): [boolean, any] {
   return anyCommonElement([".data", ".rodata", ".bss"], directives);
 }
 
@@ -35,9 +52,11 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     instcounter: 0,
     instCountData: 0
   };
-  let options = {};
+  let options = {
+    pc: 0
+  };
 
-  const retError = {
+  const retError: ParserResult = {
     success: false,
     ir: undefined,
     info: 'First pass failure',
@@ -57,23 +76,23 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     });
   } catch (obj) {
     console.error('First pass: assembler error: ', obj);
-    return {
-      success: false,
-      ir: undefined,
-      info: 'First pass failure',
-      extra: obj
-    };
+    retError.extra = obj;
+    return retError;
   }
 
-  if (needTextSection(Object.keys(directives))){
+  const [needText, element] = needTextSection(Object.keys(directives));
+  if (needText){
     if (!checkTextSection(directives)){
-      console.error("Need .text directive, but not found");
+      console.error(`.text directive required because ${element} directive was found, but .text was not`);
+      retError.extra = `.text directive required because ${element} directive was found, but .text was not`;
       return retError;
     }
   }
 
-  if (anyCommonElement(Object.keys(labelTable), Object.keys(constantTable))){
-    console.error("Identifier names must be unique");
+  const [exCommonElement, commonElement] = anyCommonElement(Object.keys(labelTable), Object.keys(constantTable), Object.keys(dataTable));
+  if (exCommonElement){
+    console.error(`Duplicate identifier: ${commonElement} found multiple times`);
+    retError.extra = `Duplicate identifier: ${commonElement} found multiple times`;
     return retError;
   }
   counters.instCountData = counters.instcounter * 4;
@@ -93,6 +112,7 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     });
   } catch (obj) {
     console.error('Assembler error: ', obj);
+    retError.extra = obj;
     return retError;
   }
   console.log('Success!.');
@@ -103,7 +123,7 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
           constants: constantTable as any[],
           directives: directives as any[],
           dataTable: dataTable as any[],
-          options: options as any[]
+          options: options 
 
         },
     info: 'Success',
