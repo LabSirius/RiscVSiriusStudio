@@ -11,4 +11,4 @@ loop:
     addi t1, t1, 1  # i++
     beq zero,zero, loop  # jump to loop
 end:
-    # result is in t0
+    nop # result is in t0

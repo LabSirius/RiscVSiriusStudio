@@ -75,7 +75,7 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
       firstPass: true
     });
   } catch (obj) {
-    console.error('First pass: assembler error: ', obj);
+    //console.error('First pass: assembler error: ', obj);
     retError.extra = obj;
     return retError;
   }
@@ -111,7 +111,7 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
       firstPass: false
     });
   } catch (obj) {
-    console.error('Assembler error: ', obj);
+    //console.error('Assembler error: ', obj);
     retError.extra = obj;
     return retError;
   }
