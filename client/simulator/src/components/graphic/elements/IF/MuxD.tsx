@@ -15,7 +15,7 @@ function MuxD() {
       <div className="relative w-full h-full rotate-90">
         <MuxContainer />
         {operation !== "uploadMemory" && (
-          <div className="absolute top-[-3rem] left-[3rem] " style={{ transform: "rotate(-90deg)" }}>
+          <div className="absolute top-[-2rem] left-[3rem] " style={{ transform: "rotate(-90deg)" }}>
             <LabelValueWithHover
               label=""
               value={`b'${signal}`}
