@@ -50,8 +50,7 @@ const bypassBranchUnitEdges = [
 // Edge groups for memory access (read) route
 const memoryReadEdges = [
   'pivot2->pivot5',
-  'pivot5->pivotJump5',
-  'pivotJump5->pivot6',
+  'pivot5->pivot6',
   'pivot6->dataMemory',
   'pivot7->dataMemory',
   'dmWr->dataMemory',
@@ -99,8 +98,7 @@ const muxCRouteExtraEdges_L = [
 // Edge groups for skipping RS2 in data memory access
 const skipRS2MemoryEdges = [
   'pivot2->pivot5',
-  'pivot5->pivotJump5',
-  'pivotJump5->pivot6',
+  'pivot5->pivot6',
   'pivot6->dataMemory'
 ];
 
@@ -127,8 +125,7 @@ const bypassWriteBackEdges = [
   'pivotJump6->pivot9',
   'pivot9->muxC',
   'muxC->pivot11',
-  'pivot11->pivotJump7',
-  'pivotJump7->pivot12',
+  'pivot11->pivot12',
   'pivot12->registersUnit',
   'ruWr->registersUnit',
   'ruDataWrSrc->muxC',

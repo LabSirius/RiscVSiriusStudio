@@ -40,7 +40,7 @@ const LabelValueContainer = () => {
             decimal={immDec}
             binary={immBin}
             hex={immHex}
-            positionClassName="top-[1.5rem] right-[.8rem]"
+            positionClassName="top-[3rem] right-[.8rem]"
             input={false}
           />
 

@@ -104,7 +104,7 @@ export const ID: Node[] = [
     id: 'immSrc',
     type: 'immSrc',
     data: { label: 'IMMSrc' },
-    position: { x: 110, y: 1292 },
+    position: { x: 145, y: 1048.5 },
     parentId: 'ID',
     extent: 'parent',
     style: {
@@ -122,11 +122,11 @@ export const ID: Node[] = [
     id: 'immGenerator',
     type: 'immGenerator',
     data: { label: 'Immediate Generator' },
-    position: { x: 255, y: 1199.5 },
+    position: { x: 285, y: 955.5 },
     parentId: 'ID',
     extent: 'parent',
     style: {
-      width: 360,
+      width: 330,
       height: 150,
       backgroundColor: 'transparent',
       border: 'none',
@@ -302,42 +302,6 @@ export const ID: Node[] = [
     },
   },
 
-  // {
-  //   id: 'pivot23',
-  //   type: 'pivot23',
-  //   data: { label: '' },
-  //   position: { x: 50, y: 495 },
-  //   parentId: 'ID',
-  //   extent: 'parent',
-  //   style: {
-  //     width: 5,
-  //     height: 5,
-  //     backgroundColor: 'black',
-  //     border: 'none',
-  //     borderRadius: 0,
-  //     padding: 0,
-  //     boxShadow: 'none',
-  //   },
-  // },
-
-  // {
-  //   id: 'pivot24',
-  //   type: 'pivot24',
-  //   data: { label: '' },
-  //   position: { x: 50, y: 348 },
-  //   parentId: 'ID',
-  //   extent: 'parent',
-  //   style: {
-  //     width: 5,
-  //     height: 5,
-  //     backgroundColor: 'black',
-  //     border: 'none',
-  //     borderRadius: 0,
-  //     padding: 0,
-  //     boxShadow: 'none',
-  //   },
-  // },
-
 
   //jump
   {
@@ -381,6 +345,24 @@ export const ID: Node[] = [
     type: 'pivotJump4',
     data: { label: 'pivotJump4' },
     position: { x: 664, y: 708 },
+    parentId: 'ID',
+    extent: 'parent',
+    style: {
+      width: 47,
+      height: 47,
+      backgroundColor: 'transparent',
+      border: 'none',
+      borderRadius: 0,
+      padding: 0,
+      boxShadow: 'none',
+    },
+  },
+
+  {
+    id: 'pivotJump5',
+    type: 'pivotJump5',
+    data: { label: 'pivotJump5' },
+    position: { x: 664, y: 1005 },
     parentId: 'ID',
     extent: 'parent',
     style: {

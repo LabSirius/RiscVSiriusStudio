@@ -13,17 +13,10 @@ export const RU_DM: Edge[] = [
   },
   
   {
-    id: 'pivot5->pivotJump5',
+    id: 'pivot5->pivot6',
     source: 'pivot5',
-    target: 'pivotJump5',
-    type: 'default'
-  },
-
-  {
-    id: 'pivotJump5->pivot6',
-    source: 'pivotJump5',
     target: 'pivot6',
-    type: 'step'
+    type: 'default'
   },
 
   {

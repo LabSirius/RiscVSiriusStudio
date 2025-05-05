@@ -32,8 +32,7 @@ const groupRegistersUnitPivot2 = [
   "pivot2->muxB",
   "pivot2->branchUnit",
   "pivot2->pivot5",
-  "pivot5->pivotJump5",
-  "pivotJump5->pivot6",
+  "pivot5->pivot6",
   "pivot6->dataMemory",
 ];
 const groupPivot2_muxB = ["registersUnit->pivot2", "pivot2->muxB"];
@@ -41,8 +40,7 @@ const groupPivot2_branchUnit = ["registersUnit->pivot2", "pivot2->branchUnit"];
 const groupPivot2_pivot5 = [
   "registersUnit->pivot2",
   "pivot2->pivot5",
-  "pivot5->pivotJump5",
-  "pivotJump5->pivot6",
+  "pivot5->pivot6",
   "pivot6->dataMemory",
 ];
 
@@ -76,8 +74,7 @@ const groupPivot7_pivot16 = ["alu->pivot7", "pivot7->pivot16", "pivot16->pivot17
 
 const groupMuxC_pivot11 = [
   "muxC->pivot11",
-  "pivot11->pivotJump7",
-  "pivotJump7->pivot12",
+  "pivot11->pivot12",
   "pivot12->registersUnit",
 ];
 
@@ -135,8 +132,9 @@ const edgeGroups: Record<string, string[]> = {
     "pivot3->immediateGenerator[31:7]"
   ],
   "immSrc->immGenerator": ["immSrc->immGenerator"],
-  "immGenerator->pivot10": ["immGenerator->pivot10", "pivot10->muxB"],
-  "pivot10->muxB": ["immGenerator->pivot10", "pivot10->muxB"],
+  "immGenerator->pivotJump5": ["immGenerator->pivotJump5", "pivotJump5->pivot10", "pivot10->muxB"],
+  "pivotJump5->pivot10": ["immGenerator->pivotJump5", "pivotJump5->pivot10", "pivot10->muxB"],  
+  "pivot10->muxB": ["immGenerator->pivotJump5", "pivotJump5->pivot10", "pivot10->muxB"],
 
   "registersUnit->pivotJump4": [
     "registersUnit->pivotJump4",
@@ -173,8 +171,7 @@ const edgeGroups: Record<string, string[]> = {
   "pivot2->muxB": [...groupPivot2_muxB],
   "pivot2->branchUnit": [...groupPivot2_branchUnit],
   "pivot2->pivot5": [...groupPivot2_pivot5],
-  "pivot5->pivotJump5": [...groupPivot2_pivot5],
-  "pivotJump5->pivot6": [...groupPivot2_pivot5],
+  "pivot5->pivot6": [...groupPivot2_pivot5],
   "pivot6->dataMemory": [...groupPivot2_pivot5],
   "ruWr->registersUnit": ["ruWr->registersUnit"],
 
@@ -201,8 +198,7 @@ const edgeGroups: Record<string, string[]> = {
   "ruDataWrSrc->muxC": ["ruDataWrSrc->muxC"],
 
   "muxC->pivot11": [...groupMuxC_pivot11],
-  "pivot11->pivotJump7": [...groupMuxC_pivot11],
-  "pivotJump7->pivot12": [...groupMuxC_pivot11],
+  "pivot11->pivot12": [...groupMuxC_pivot11],
   "pivot12->registersUnit": [...groupMuxC_pivot11],
 };
 

@@ -211,7 +211,7 @@ export const IE: Node[] = [
     id: 'pivot10',
     type: 'pivot10',
     data: { label: '' },
-    position: { x: 44, y: 1272 },
+    position: { x: 44, y: 1028 },
     parentId: 'IE',
     extent: 'parent',
     style: {
@@ -243,43 +243,7 @@ export const IE: Node[] = [
       padding: 0,
       boxShadow: 'none',
     },
-  },
-
-  {
-    id: 'pivotJump5',
-    type: 'pivotJump5',
-    data: { label: 'pivotJump5' },
-    position: { x: 27, y: 1073 },
-    parentId: 'IE',
-    extent: 'parent',
-    style: {
-      width: 47,
-      height: 47,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
-
-  {
-    id: 'pivotJump7',
-    type: 'pivotJump7',
-    data: { label: 'pivotJump7' },
-    position: { x: 27, y: 1128 },
-    parentId: 'IE',
-    extent: 'parent',
-    style: {
-      width: 47,
-      height: 47,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
+  }
 
 
 

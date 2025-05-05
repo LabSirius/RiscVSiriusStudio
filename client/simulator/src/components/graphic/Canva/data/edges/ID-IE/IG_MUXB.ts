@@ -4,8 +4,14 @@ import { Edge, MarkerType  } from '@xyflow/react';
 
 export const IG_MUXB: Edge[] = [
   {
-    id: 'immGenerator->pivot10',  
+    id: 'immGenerator->pivotJump5',  
     source: 'immGenerator', 
+    target: 'pivotJump5', 
+    type: 'smoothstep', 
+  },
+  {
+    id: 'pivotJump5->pivot10',  
+    source: 'pivotJump5', 
     target: 'pivot10', 
     type: 'smoothstep', 
   },
