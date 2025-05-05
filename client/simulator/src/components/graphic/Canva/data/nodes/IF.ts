@@ -177,7 +177,7 @@ export const IF: Node[] = [
     id: 'pivot17',
     type: 'pivot17',
     data: { label: '' },
-    position: { x: 50, y: 90 },
+    position: { x: 50, y: 98 },
     parentId: 'IF',
     extent: 'parent',
     style: {

@@ -234,7 +234,7 @@ export const ID: Node[] = [
     id: 'pivot19',
     type: 'pivot19',
     data: { label: '' },
-    position: { x: 50, y: 138 },
+    position: { x: 50, y: 148 },
     parentId: 'ID',
     extent: 'parent',
     style: {
