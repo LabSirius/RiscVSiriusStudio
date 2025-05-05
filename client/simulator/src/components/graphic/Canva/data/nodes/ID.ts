@@ -344,7 +344,7 @@ export const ID: Node[] = [
     id: 'pivotJump1',
     type: 'pivotJump1',
     data: { label: 'pivotJump1' },
-    position: { x: 34, y: 583 },
+    position: { x: 34, y: 383 },
     parentId: 'ID',
     extent: 'parent',
     style: {
@@ -362,7 +362,7 @@ export const ID: Node[] = [
     id: 'pivotJump2',
     type: 'pivotJump2',
     data: { label: 'pivotJump2' },
-    position: { x: 664, y: 583 },
+    position: { x: 664, y: 383 },
     parentId: 'ID',
     extent: 'parent',
     style: {
