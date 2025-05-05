@@ -44,23 +44,23 @@ export const ID: Node[] = [
   },
 
   // CHILD NODES SECTION 2
-  {
-    id: 'controlUnit',
-    type: 'controlUnit',
-    data: { label: 'Control Unit' },
-    position: { x: 255, y: 310 },
-    parentId: 'ID',
-    extent: 'parent',
-    style: {
-      width: 260,
-      height: 250,
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: 0,
-      padding: 0,
-      boxShadow: 'none',
-    },
-  },
+  // {
+  //   id: 'controlUnit',
+  //   type: 'controlUnit',
+  //   data: { label: 'Control Unit' },
+  //   position: { x: 255, y: 310 },
+  //   parentId: 'ID',
+  //   extent: 'parent',
+  //   style: {
+  //     width: 260,
+  //     height: 250,
+  //     backgroundColor: 'transparent',
+  //     border: 'none',
+  //     borderRadius: 0,
+  //     padding: 0,
+  //     boxShadow: 'none',
+  //   },
+  // },
 
   {
     id: 'ruWr',

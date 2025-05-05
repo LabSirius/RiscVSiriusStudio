@@ -10,7 +10,7 @@ import MuxD from '../elements/IF/MuxD';
 
 // Section 2
 import RegistersUnit from '../elements/ID/RegistersUnit/RegistersUnit';
-import ControlUnit from '../elements/ID/ControlUnit/ControlUnit';
+//import ControlUnit from '../elements/ID/ControlUnit/ControlUnit';
 import RUWr from '../elements/ID/RUWr';
 import ImmGenerator from '../elements/ID/ImmGenerator/ImmGenerator';
 import ImmSrc from '../elements/ID/ImmSRC';
@@ -90,7 +90,7 @@ export const nodeTypes = {
   
     //ID
     registerUnit: RegistersUnit,
-    controlUnit: ControlUnit,
+    //controlUnit: ControlUnit,
     immGenerator: ImmGenerator,
     immSrc: ImmSrc,
     ruWr: RUWr,
