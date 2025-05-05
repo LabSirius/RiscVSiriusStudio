@@ -11,22 +11,25 @@ export const IM_RU: Edge[] = [
     type: 'smoothstep'
   },
   {
-    id: 'pivot3->RegistersUnit[11:7]',
+    id: 'pivot3->pivot22',
     source: 'pivot3',
     sourceHandle: '[11:7]',
+    target: 'pivot22',
+    targetHandle: '[11:7]',
+    type: 'step',
+
+  },
+  {
+    id: 'pivot22->registersUnit[11:7]',
+    source: 'pivot22',
     target: 'registersUnit',
     targetHandle: '[11:7]',
     type: 'step',
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      color: '#888888',
-      width: 9,
-      height: 9,
-    },
+
   },
   {
-    id: 'pivot3->pivot20',
-    source: 'pivot3',
+    id: 'pivot22->pivot20',
+    source: 'pivot22',
     sourceHandle: '[24:20]',
     target: 'pivot20',
     type: 'smoothstep'

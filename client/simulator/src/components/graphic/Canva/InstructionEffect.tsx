@@ -86,7 +86,7 @@ const skipRS1Edges = ['pivot20->RegistersUnit[19:15]', 'registersUnit->pivotJump
 // Edge groups for skipping RS2 register
 const skipRS2Edges = ['pivot20->RegistersUnit[24:20]'];
 
-const skipRDEdges = ['pivot3->RegistersUnit[11:7]'];
+const skipRDEdges = ['pivot3->pivot22'];
 
 // Additional edge groups for the MUX C route in load instructions (L-type)
 const muxCRouteExtraEdges_L = [
@@ -165,7 +165,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         if (currentInstruction.opcode === "0010011") {
           setCurrentType("I");
           targetEdges = [
-            ...skipFunct7Edges,
+            //...skipFunct7Edges,
             ...skipRS2Edges,
             ...muxARouteEdges,
             ...muxBRouteEdges_I,
@@ -177,7 +177,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         } else if (currentInstruction.opcode === "0000011") {
           setCurrentType("L");
           targetEdges = [
-            ...skipFunct7Edges,
+            //...skipFunct7Edges,
             ...skipRS2Edges,
             ...muxARouteEdges,
             ...muxBRouteEdges_I,
@@ -190,7 +190,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         } else if (currentInstruction.opcode === "1100111") {
           setCurrentType("JALR");
           targetEdges = [
-            ...skipFunct7Edges,
+            //...skipFunct7Edges,
             ...skipRS2Edges,
             ...muxARouteEdges,
             ...muxBRouteEdges_I,
@@ -204,7 +204,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
       case "S":
         setCurrentType("S");
         targetEdges = [
-          ...skipFunct7Edges,
+          //...skipFunct7Edges,
           ...skipRDEdges,
           ...muxARouteEdges,
           ...muxBRouteEdges_I.slice(1),
@@ -219,7 +219,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         setCurrentType("B");
 
         targetEdges = [
-          ...skipFunct7Edges,
+          //...skipFunct7Edges,
           ...skipRDEdges,
           // Modified MUX A route for branch instructions
           'pivot4->muxA',
@@ -243,8 +243,8 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
       case "J":
         setCurrentType("J");
         targetEdges = [
-          ...skipFunct7Edges,
-          ...skipFunct3Edges,
+          //...skipFunct7Edges,
+          //...skipFunct3Edges,
           ...skipRS1Edges,
           ...skipRS1InputEdges,
           ...skipRS2Edges,
@@ -259,7 +259,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         if (currentInstruction.opcode === "0110111") {
           setCurrentType("LUI");
           targetEdges = [
-            ...skipFunct7Edges,
+            //...skipFunct7Edges,
             //...skipFunct3Edges,
             ...skipRS2Edges,
             ...skipRS1InputEdges,
@@ -276,7 +276,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
         } else if (currentInstruction.opcode === "0010111") {
           setCurrentType("AUIPC");
           targetEdges = [
-            ...skipFunct7Edges,
+            //...skipFunct7Edges,
             //...skipFunct3Edges,
             ...skipRS2Edges,
             ...skipRS1InputEdges,

@@ -5,13 +5,13 @@ import { Edge  } from '@xyflow/react';
 export const IM_CU: Edge[] = [
 
 
-  {
-    id: 'pivot21->pivot22',
-    source: 'pivot21',
-    sourceHandle: 'pivot22',
-    target: 'pivot22',
-    type: 'step'
-  },
+  // {
+  //   id: 'pivot21->pivot22',
+  //   source: 'pivot21',
+  //   sourceHandle: 'pivot22',
+  //   target: 'pivot22',
+  //   type: 'step'
+  // },
 
     // {
     //     id: 'pivot22->controlUnit[31:25]',

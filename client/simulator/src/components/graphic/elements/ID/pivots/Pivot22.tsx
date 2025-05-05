@@ -7,17 +7,23 @@ export default function Pivot22() {
 
       <Handle
         type="target"
+        id='[11:7]'
         position={Position.Bottom}
       />
+
       <Handle
         type="source"
-        id="[31:25]"
-        position={Position.Right} />
+        id='[11:7]'
+        position={Position.Right}
+      />
 
     <Handle
         type="source"
-        id='pivot23'
-        position={Position.Top} />
+        id='[24:20]'
+        position={Position.Top}
+      />
+  
+   
     </div>
   );
 }

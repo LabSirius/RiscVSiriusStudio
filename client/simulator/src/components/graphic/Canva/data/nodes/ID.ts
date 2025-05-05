@@ -66,7 +66,7 @@ export const ID: Node[] = [
     id: 'ruWr',
     type: 'ruWr',
     data: { label: 'RUWR' },
-    position: { x: 120, y: 1034 },
+    position: { x: 120, y: 834 },
     parentId: 'ID',
     extent: 'parent',
     style: {
@@ -86,7 +86,7 @@ export const ID: Node[] = [
     id: 'registersUnit',
     type: 'registerUnit',
     data: { label: 'Registers Unit' },
-    position: { x: 255, y: 655 },
+    position: { x: 255, y: 455 },
     parentId: 'ID',
     extent: 'parent',
     style: {
@@ -252,7 +252,7 @@ export const ID: Node[] = [
     id: 'pivot20',
     type: 'pivot20',
     data: { label: '' },
-    position: { x: 50, y: 783 },
+    position: { x: 50, y: 583 },
     parentId: 'ID',
     extent: 'parent',
     style: {
@@ -270,7 +270,25 @@ export const ID: Node[] = [
     id: 'pivot21',
     type: 'pivot21',
     data: { label: '' },
-    position: { x: 50, y: 703 },
+    position: { x: 50, y: 503 },
+    parentId: 'ID',
+    extent: 'parent',
+    style: {
+      width: 5,
+      height: 5,
+      backgroundColor: 'black',
+      border: 'none',
+      borderRadius: 0,
+      padding: 0,
+      boxShadow: 'none',
+    },
+  },
+
+  {
+    id: 'pivot22',
+    type: 'pivot22',
+    data: { label: '' },
+    position: { x: 50, y: 663 },
     parentId: 'ID',
     extent: 'parent',
     style: {
@@ -285,28 +303,10 @@ export const ID: Node[] = [
   },
 
   // {
-  //   id: 'pivot22',
-  //   type: 'pivot22',
-  //   data: { label: '' },
-  //   position: { x: 50, y: 516 },
-  //   parentId: 'ID',
-  //   extent: 'parent',
-  //   style: {
-  //     width: 5,
-  //     height: 5,
-  //     backgroundColor: 'black',
-  //     border: 'none',
-  //     borderRadius: 0,
-  //     padding: 0,
-  //     boxShadow: 'none',
-  //   },
-  // },
-
-  // {
   //   id: 'pivot23',
   //   type: 'pivot23',
   //   data: { label: '' },
-  //   position: { x: 50, y: 431 },
+  //   position: { x: 50, y: 495 },
   //   parentId: 'ID',
   //   extent: 'parent',
   //   style: {

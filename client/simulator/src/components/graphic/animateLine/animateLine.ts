@@ -84,14 +84,13 @@ const groupMuxC_pivot11 = [
 // Grupo común para las conexiones de instructionMemory
 const imGroup = [
   "instructionMemory->pivot3",
-  "pivot3->RegistersUnit[11:7]",
-  "pivot3->pivot20",
+  "pivot3->pivot22",
   "pivot20->RegistersUnit[24:20]",
   "pivot20->pivot21",
   "pivot21->RegistersUnit[19:15]",
   "pivot21->pivot22",
-  //"pivot22->controlUnit[31:25]",
-  //"pivot22->pivot23",
+  "pivot22->registersUnit[11:7]",
+  "pivot22->pivot20",
   //"pivot23->controlUnit[14:12]",
   //"pivot23->pivot24",
   //"pivot24->controlUnit[6:0]",
@@ -121,17 +120,15 @@ const edgeGroups: Record<string, string[]> = {
 
   "instructionMemory->pivot3": [...imGroup],
   "pivot3->pivot20": [...imGroup],
-  "pivot20->pivot21": [...imGroup],
+  "pivot20->pivot21": [...imGroup.slice(0, -1)],
   "pivot21->pivot22": [...imGroup],
-  //"pivot22->pivot23": [...imGroup],
-  //"pivot23->pivot24": [...imGroup],
 
-  "pivot3->RegistersUnit[11:7]": [imGroup[0], imGroup[1]],
-  "pivot20->RegistersUnit[24:20]": [imGroup[0], imGroup[2], imGroup[3]],
-  "pivot21->RegistersUnit[19:15]": [imGroup[0], imGroup[2], imGroup[4], imGroup[5]],
-  //"pivot22->controlUnit[31:25]": [imGroup[0], imGroup[2], imGroup[4], imGroup[6], imGroup[7]],
-  //"pivot23->controlUnit[14:12]": [imGroup[0], imGroup[2], imGroup[4], imGroup[6], imGroup[8], imGroup[9]],
-  //"pivot24->controlUnit[6:0]": [imGroup[0], imGroup[2], imGroup[4], imGroup[6], imGroup[8], imGroup[10], imGroup[11]],
+  "pivot3->pivot22": [imGroup[0], imGroup[1]],
+  "pivot20->RegistersUnit[24:20]": [imGroup[0], imGroup[1], imGroup[2]],
+  "pivot21->RegistersUnit[19:15]": [imGroup[0], imGroup[1], imGroup[3], imGroup[4], imGroup[5]],
+  "pivot22->registersUnit[11:7]": [imGroup[0], imGroup[1], imGroup[6]],  
+  "pivot22->pivot20": [imGroup[0], imGroup[1], imGroup[2], imGroup[3], imGroup[4], imGroup[6], imGroup[7]],
+
 
   "pivot3->immediateGenerator[31:7]": [
     "instructionMemory->pivot3",
