@@ -19,8 +19,7 @@ const skipMuxA = [
 
 // Edge groups for MUX A route
 const muxARouteEdges = [
-  'pivot1->pivotJump1',
-  'pivotJump1->pivotJump2',
+  'pivot1->pivotJump2',
   'pivotJump2->pivotJump3',
   'pivotJump3->muxA'
 ];

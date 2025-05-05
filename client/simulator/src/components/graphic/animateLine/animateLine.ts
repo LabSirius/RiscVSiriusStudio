@@ -3,8 +3,7 @@ import { Edge } from "@xyflow/react";
 const pivotJumpGroup = [
   "pc->pivot25",
   "pivot25->pivot1",
-  "pivot1->pivotJump1",
-  "pivotJump1->pivotJump2",
+  "pivot1->pivotJump2",
   "pivotJump2->pivotJump3",
   "pivotJump3->muxA",
 ];
@@ -101,8 +100,7 @@ const edgeGroups: Record<string, string[]> = {
   "pc->pivot25": ["pc->pivot25", "pivot25->pivot1", "pivot25->instMemory", "pc->pivot1", "pivot1->adder4", ...pivotJumpGroup],
   "pivot25->pivot1": ["pc->pivot25", "pivot25->pivot1", "pc->pivot1", "pivot1->adder4", ...pivotJumpGroup],
   "pivot1->adder4": ["pc->pivot25", "pivot25->pivot1", "pivot1->adder4"],
-  "pivot1->pivotJump1": [...pivotJumpGroup],
-  "pivotJump1->pivotJump2": [...pivotJumpGroup],
+  "pivot1->pivotJump2": [...pivotJumpGroup],
   "pivotJump2->pivotJump3": [...pivotJumpGroup],
   "pivotJump3->muxA": [...pivotJumpGroup],
   "four->adder4": ["four->adder4"],
