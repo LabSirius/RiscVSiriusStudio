@@ -75,10 +75,10 @@ const muxDRouteEdges_R = [
 ];
 
 // Edge groups for skipping the funct7 field
-const skipFunct7Edges = ['pivot22->controlUnit[31:25]'];
+//const skipFunct7Edges = ['pivot22->controlUnit[31:25]'];
 
 // Edge groups for skipping the funct3 field
-const skipFunct3Edges = ['pivot23->controlUnit[14:12]'];
+//const skipFunct3Edges = ['pivot23->controlUnit[14:12]'];
 
 // Edge groups for skipping RS2 register
 const skipRS1InputEdges = ['pivot21->RegistersUnit[19:15]'];
@@ -260,7 +260,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
           setCurrentType("LUI");
           targetEdges = [
             ...skipFunct7Edges,
-            ...skipFunct3Edges,
+            //...skipFunct3Edges,
             ...skipRS2Edges,
             ...skipRS1InputEdges,
             ...skipRS1Edges,
@@ -277,7 +277,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
           setCurrentType("AUIPC");
           targetEdges = [
             ...skipFunct7Edges,
-            ...skipFunct3Edges,
+            //...skipFunct3Edges,
             ...skipRS2Edges,
             ...skipRS1InputEdges,
             ...skipRS1Edges,
