@@ -120,7 +120,7 @@ export const IF: Node[] = [
     id: 'muxD',
     type: 'muxD',
     data: { label: 'MUX D' },
-    position: { x: 158, y: 800 },
+    position: { x: 158, y: 500 },
     parentId: 'IF',
     extent: 'parent',
     style: {
@@ -159,7 +159,7 @@ export const IF: Node[] = [
     id: 'pivot15',
     type: 'pivot15',
     data: { label: '' },
-    position: { x: 188, y: 198 },
+    position: { x: 290, y: 198 },
     parentId: 'IF',
     extent: 'parent',
     style: {
@@ -177,7 +177,7 @@ export const IF: Node[] = [
     id: 'pivot17',
     type: 'pivot17',
     data: { label: '' },
-    position: { x: 50, y: 98 },
+    position: { x: 155.7, y: 98 },
     parentId: 'IF',
     extent: 'parent',
     style: {

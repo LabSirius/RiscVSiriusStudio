@@ -12,10 +12,10 @@ function MuxD() {
 
   return (
     <div className="relative w-full h-full">
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full rotate-90">
         <MuxContainer />
         {operation !== "uploadMemory" && (
-          <div className="absolute top-[-3rem] left-[3rem]">
+          <div className="absolute top-[-3rem] left-[3rem] " style={{ transform: "rotate(-90deg)" }}>
             <LabelValueWithHover
               label=""
               value={`b'${signal}`}
@@ -31,33 +31,33 @@ function MuxD() {
 
       <Handle
         type="target"
-        position={Position.Left}
+        position={Position.Top}
         id="adder4"
         className="input"
-        style={{ top: "2.8rem" }}
+        style={{ left: "4rem", top: "2.6rem" }}
       />
 
       <Handle
         type="target"
-        position={Position.Left}
+        position={Position.Top}
         id="alu"
         className="input"
-        style={{ top: "6.8rem" }}
+        style={{ left: "0rem", top: "2.6rem" }}
       />
 
       <Handle
         type="target"
         id="bu"
-        position={Position.Top}
+        position={Position.Right}
         className="input"
-        style={{ top: "1.5rem" }}
+        style={{ top: "4.5rem", right: "-1.5rem" }}
       />
 
       <Handle
         type="source"
-        position={Position.Right}
+        position={Position.Bottom}
         className="output"
-        style={{ right: ".8rem" }}
+        style={{ top: "5rem" }}
       />
     </div>
   );
