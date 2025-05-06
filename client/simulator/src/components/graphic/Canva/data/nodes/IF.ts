@@ -45,7 +45,7 @@ export const IF: Node[] = [
     id: "pc",
     type: "pc",
     data: { label: "PC" },
-    position: { x: 215, y: 705 },
+    position: { x: 215, y: 685 },
     parentId: "IF",
     extent: "parent",
     style: {
@@ -63,7 +63,7 @@ export const IF: Node[] = [
     id: "adder4",
     type: "adder4",
     data: { label: "Adder 4" },
-    position: { x: 595, y: 245 },
+    position: { x: 595, y: 225 },
     parentId: "IF",
     extent: "parent",
     style: {
@@ -81,7 +81,7 @@ export const IF: Node[] = [
     id: "four",
     type: "four",
     data: { label: "4" },
-    position: { x: 465, y: 211 },
+    position: { x: 465, y: 191 },
     parentId: "IF",
     extent: "parent",
     style: {
@@ -99,7 +99,7 @@ export const IF: Node[] = [
     id: "instructionMemory",
     type: "instructionMemory",
     data: { label: "Instruction Memory" },
-    position: { x: 505, y: 705 },
+    position: { x: 505, y: 685 },
     parentId: "IF",
     extent: "parent",
     style: {
@@ -117,7 +117,7 @@ export const IF: Node[] = [
     id: "muxD",
     type: "muxD",
     data: { label: "MUX D" },
-    position: { x: 93, y: 500 },
+    position: { x: 93, y: 480 },
     parentId: "IF",
     extent: "parent",
     style: {
@@ -137,7 +137,7 @@ export const IF: Node[] = [
     id: "pivot1",
     type: "pivot1",
     data: { label: "" },
-    position: { x: 435, y: 406 },
+    position: { x: 435, y: 386 },
     parentId: "IF",
     extent: "parent",
     style: {
@@ -155,7 +155,7 @@ export const IF: Node[] = [
     id: "pivot15",
     type: "pivot15",
     data: { label: "" },
-    position: { x: 225, y: 198 },
+    position: { x: 225, y: 178 },
     parentId: "IF",
     extent: "parent",
     style: {
@@ -173,7 +173,7 @@ export const IF: Node[] = [
     id: "pivot17",
     type: "pivot17",
     data: { label: "" },
-    position: { x: 90.7, y: 98 },
+    position: { x: 90.7, y: 78 },
     parentId: "IF",
     extent: "parent",
     style: {
@@ -191,7 +191,7 @@ export const IF: Node[] = [
     id: "pivot25",
     type: "pivot25",
     data: { label: "" },
-    position: { x: 435, y: 818.9 },
+    position: { x: 435, y: 798.9 },
     parentId: "IF",
     extent: "parent",
     style: {
