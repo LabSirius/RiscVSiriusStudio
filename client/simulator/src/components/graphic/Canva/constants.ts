@@ -61,6 +61,8 @@ import Pivot22 from '../elements/ID/pivots/Pivot22';
 import Pivot23 from '../elements/ID/pivots/Pivot23';
 import Pivot24 from '../elements/ID/pivots/Pivot24';
 import Pivot25 from '../elements/IF/pivots/Pivot25';
+import Pivot26 from '../elements/ID/pivots/Pivot26';
+
 
 
 //jumps
@@ -140,6 +142,7 @@ export const nodeTypes = {
     pivot23: Pivot23,
     pivot24: Pivot24,
     pivot25: Pivot25,
+    pivot26: Pivot26,
   
     //PIVOTS Jumps
     pivotJump1: PivotJump1,
