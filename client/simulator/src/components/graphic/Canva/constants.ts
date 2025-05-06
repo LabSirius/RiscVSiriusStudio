@@ -79,6 +79,8 @@ import PivotJump10 from '../elements/ID/pivots/PivotJump10';
 
 //Customs 
 import AnimatedSVGEdge from '../custom/AnimatedSVGEdge';
+import Pivot27 from '../elements/ID/pivots/Pivot27';
+import Pivot28 from '../elements/ID/pivots/Pivot28';
 
 export const nodeTypes = {
 
@@ -143,6 +145,8 @@ export const nodeTypes = {
     pivot24: Pivot24,
     pivot25: Pivot25,
     pivot26: Pivot26,
+    pivot27: Pivot27,
+    pivot28: Pivot28,
   
     //PIVOTS Jumps
     pivotJump1: PivotJump1,

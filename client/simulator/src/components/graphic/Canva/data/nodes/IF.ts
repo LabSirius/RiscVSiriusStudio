@@ -211,6 +211,8 @@ export const IF: Node[] = [
     data: { label: "controlUnit" },
     position: { x: 40, y: 1180.5 },
     parentId: "IF",
+    draggable: false,
+
     style: {
       width: 3050,
       height: 150,
