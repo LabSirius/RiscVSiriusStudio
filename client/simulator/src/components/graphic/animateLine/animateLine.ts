@@ -87,10 +87,8 @@ const imGroup = [
   "pivot21->pivot22",
   "pivot22->registersUnit[11:7]",
   "pivot22->pivot20",
-  //"pivot23->controlUnit[14:12]",
-  //"pivot23->pivot24",
-  //"pivot24->controlUnit[6:0]",
-  "pivot3->immediateGenerator[31:7]"
+  "pivot3->pivotJump1",
+  "pivotJump1->immediateGenerator[31:7]"
 ];
 
 const edgeGroups: Record<string, string[]> = {
@@ -115,19 +113,25 @@ const edgeGroups: Record<string, string[]> = {
 
   "instructionMemory->pivot3": [...imGroup],
   "pivot3->pivot20": [...imGroup],
-  "pivot20->pivot21": [...imGroup.slice(0, -1)],
+  "pivot20->pivot21": [...imGroup.slice(0, -2)],
   "pivot21->pivot22": [...imGroup],
 
-  "pivot3->pivot22": [imGroup[0], imGroup[1]],
-  "pivot20->RegistersUnit[24:20]": [imGroup[0], imGroup[1], imGroup[2]],
-  "pivot21->RegistersUnit[19:15]": [imGroup[0], imGroup[1], imGroup[3], imGroup[4], imGroup[5]],
+  "pivot3->pivot22": [imGroup[0], imGroup[1], imGroup[2], imGroup[3], imGroup[4], imGroup[6], imGroup[7]],
+  "pivot20->RegistersUnit[24:20]": [imGroup[0], imGroup[1], imGroup[2], imGroup[7]],
+  "pivot21->RegistersUnit[19:15]": [imGroup[0], imGroup[1], imGroup[3], imGroup[4], imGroup[5], imGroup[7]],
   "pivot22->registersUnit[11:7]": [imGroup[0], imGroup[1], imGroup[6]],  
   "pivot22->pivot20": [imGroup[0], imGroup[1], imGroup[2], imGroup[3], imGroup[4], imGroup[6], imGroup[7]],
 
 
-  "pivot3->immediateGenerator[31:7]": [
+  "pivot3->pivotJump1": [
     "instructionMemory->pivot3",
-    "pivot3->immediateGenerator[31:7]"
+    "pivot3->pivotJump1",
+    "pivotJump1->immediateGenerator[31:7]"
+  ],
+  "pivotJump1->immediateGenerator[31:7]": [
+    "instructionMemory->pivot3",
+    "pivot3->pivotJump1",
+    "pivotJump1->immediateGenerator[31:7]"
   ],
   "immSrc->immGenerator": ["immSrc->immGenerator"],
   "immGenerator->pivotJump5": ["immGenerator->pivotJump5", "pivotJump5->pivot10", "pivot10->muxB"],

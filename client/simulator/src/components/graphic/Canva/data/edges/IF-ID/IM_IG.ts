@@ -4,17 +4,23 @@ import { Edge, MarkerType  } from '@xyflow/react';
 
 export const IM_IG: Edge[] = [
      {
-       id: 'pivot3->immediateGenerator[31:7]',
+       id: 'pivot3->pivotJump1',
         source: 'pivot3',
         sourceHandle: '[31:7]',
-       target: 'immGenerator',
-       targetHandle: '[31:7]',
+       target: 'pivotJump1',
        type: 'smoothstep',
-       markerEnd: {
-       type: MarkerType.ArrowClosed,
-       width: 8,
-        height: 8,
-       color: '#888888',
-      },
+     },
+      {
+        id: 'pivotJump1->immediateGenerator[31:7]',
+         source: 'pivotJump1',
+        target: 'immGenerator',
+        targetHandle: '[31:7]',
+        type: 'smoothstep',
+        markerEnd: {
+        type: MarkerType.ArrowClosed,
+        width: 8,
+         height: 8,
+        color: '#888888',
+       },
 },
 ];
