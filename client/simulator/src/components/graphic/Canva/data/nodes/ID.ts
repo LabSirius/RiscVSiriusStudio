@@ -12,7 +12,7 @@ export const ID: Node[] = [
     id: 'ID',
     type: 'group',
     data: { label: 'Section 2' },
-    position: { x: 920, y: 0 },
+    position: { x: 870, y: 0 },
     draggable: false,
     zIndex: 0,
     style: {

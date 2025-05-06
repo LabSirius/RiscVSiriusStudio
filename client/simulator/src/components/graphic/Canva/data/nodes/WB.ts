@@ -12,11 +12,11 @@ export const WB: Node[] = [
         id: 'WB',
         type: 'group',
         data: { label: 'Section 5' },
-        position: { x: 920 + 730 + 680 + 565, y: 0 },
+        position: { x: 870 + 730 + 680 + 565, y: 0 },
         draggable: false,
         zIndex: 0,
         style: {
-          width: 300,
+          width: 290,
           height: 1375,
           backgroundColor: '#FFF2E0',
           border: '1px solid #FFF2E0',
