@@ -73,10 +73,8 @@ const muxDRouteEdges_R = [
 ];
 
 // Edge groups for skipping the funct7 field
-//const skipFunct7Edges = ['pivot22->controlUnit[31:25]'];
 
 // Edge groups for skipping the funct3 field
-//const skipFunct3Edges = ['pivot23->controlUnit[14:12]'];
 
 // Edge groups for skipping RS2 register
 const skipRS1InputEdges = ['pivot21->RegistersUnit[19:15]'];
