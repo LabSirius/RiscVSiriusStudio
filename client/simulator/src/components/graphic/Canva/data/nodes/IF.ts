@@ -15,7 +15,7 @@ export const IF: Node[] = [
     zIndex: 1,
     style: {
       width: 870,
-      height: 1375,
+      height: 1330,
       backgroundColor: "#FCE4EC",
       border: "1px solid #FCE4EC",
       borderRadius: 8,
