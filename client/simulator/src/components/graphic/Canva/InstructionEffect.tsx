@@ -8,10 +8,12 @@ interface InstructionEffectProps {
 
 
 const skipFunct7Edges = [
+  'pivot30->pivot32',
   'pivot32->pivot33'
 ]
 
 const skipFunct3Edges = [
+  'pivot28->pivot30',
   'pivot30->pivot31'
 ]
 
@@ -35,7 +37,7 @@ const muxARouteEdges = [
 
 // Edge groups for no immediate generation
 const noImmediateEdges = [
-  'pivot3->pivotJump1',
+  'pivot26->pivotJump1',
   'pivotJump1->immediateGenerator[31:7]',
   'immSrc->immGenerator',
   'immGenerator->pivotJump5',
@@ -89,7 +91,7 @@ const muxDRouteEdges_R = [
 // Edge groups for skipping the funct3 field
 
 // Edge groups for skipping RS2 register
-const skipRS1InputEdges = ['pivot21->RegistersUnit[19:15]'];
+const skipRS1InputEdges = ['pivot20->pivot21' ,'pivot21->RegistersUnit[19:15]'];
 const skipRS1Edges = ['pivot20->RegistersUnit[19:15]', 'registersUnit->pivotJump4', 'pivotJump4->pivot4', 'pivot4->muxA'];
 // Edge groups for skipping RS2 register
 const skipRS2Edges = ['pivot20->RegistersUnit[24:20]'];
@@ -255,6 +257,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
           ...skipFunct3Edges,
           ...skipRS1Edges,
           ...skipRS1InputEdges,
+          'pivot22->pivot20',
           ...skipRS2Edges,
           ...muxBRouteEdges_I,
           ...muxCRouteExtraEdges_JALR,
@@ -270,6 +273,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
             ...skipFunct7Edges,
             ...skipFunct3Edges,
             ...skipRS2Edges,
+            'pivot22->pivot20',
             ...skipRS1InputEdges,
             ...skipRS1Edges,
             ...muxARouteEdges,
@@ -287,6 +291,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
             ...skipFunct7Edges,
             ...skipFunct3Edges,
             ...skipRS2Edges,
+            'pivot22->pivot20',
             ...skipRS1InputEdges,
             ...skipRS1Edges,
             ...skipMuxAOutputEdges,

@@ -349,7 +349,7 @@ export const ID: Node[] = [
     id: "pivot30",
     type: "pivot30",
     data: { label: "" },
-    position: { x: 340, y: 1169 },
+    position: { x: 270, y: 1169 },
     parentId: "ID",
     extent: "parent",
     style: {
@@ -367,7 +367,7 @@ export const ID: Node[] = [
     id: "pivot31",
     type: "pivot31",
     data: { label: "" },
-    position: { x: 340, y: 1210 },
+    position: { x: 270, y: 1210 },
     parentId: "ID",
     extent: "parent",
     style: {
@@ -385,7 +385,7 @@ export const ID: Node[] = [
     id: "pivot32",
     type: "pivot32",
     data: { label: "" },
-    position: { x: 520, y: 1169 },
+    position: { x: 450, y: 1169 },
     parentId: "ID",
     extent: "parent",
     style: {
@@ -403,7 +403,7 @@ export const ID: Node[] = [
     id: "pivot33",
     type: "pivot33",
     data: { label: "" },
-    position: { x: 520, y: 1210 },
+    position: { x: 450, y: 1210 },
     parentId: "ID",
     extent: "parent",
     style: {
