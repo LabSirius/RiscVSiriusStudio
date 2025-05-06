@@ -631,6 +631,7 @@ export class SCCPU {
     result.ru = {
       ...defaultRUResult,
       rs1: baseAddressVal,
+      rs2: dataToStore,
       writeSignal: "0",
     };
     result.alu = {
