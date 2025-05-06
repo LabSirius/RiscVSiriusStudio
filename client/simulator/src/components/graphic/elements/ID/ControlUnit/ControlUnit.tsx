@@ -1,7 +1,7 @@
 //import { Handle, Position } from "@xyflow/react";
 import ContainerSVG from "../../ContainerSVG";
 
-//import Tunels from "./outputTunnels/Tunels";
+import Tunels from "./outputTunnels/Tunels";
 // // import LabelSlashConatiner from "./LabelSlashContainer";
 import LabelValueContainer from "./LabelValueContainer";
 import { useSimulator } from "@/context/shared/SimulatorContext";
@@ -25,7 +25,7 @@ export default function ControlUnit() {
           // </>
         )}
 
-        {/* <Tunels /> */}
+        <Tunels />
       </div>
 
     </div>

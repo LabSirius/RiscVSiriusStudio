@@ -10,7 +10,7 @@ const MemoryTunnel = () => {
   const { isFirstStep} = useSimulator();
 
   return (
-    <div className="relative w-full"
+    <div className="relative w-full ml-[17rem]"
     onMouseEnter={() => setOverlayMemoryActive(true)}
     onMouseLeave={() => setOverlayMemoryActive(false)}>
     <h2 className={`subtitleInTunnel ${(currentType === "L" || currentType === "S" || !isFirstStep) ? '!text-[#000000]' : '!text-[#D3D3D3]'  }`}>

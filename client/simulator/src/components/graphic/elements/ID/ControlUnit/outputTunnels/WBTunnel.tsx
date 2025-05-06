@@ -4,7 +4,7 @@ import { useOverlay } from "@/context/graphic/OverlayContext";
 const WBTunnel = () => {
   const { setOverlayWBActive } = useOverlay();
   return (
-    <div className="relative w-full"
+    <div className="relative w-full ml-[3rem]"
     onMouseEnter={() => setOverlayWBActive(true)}
     onMouseLeave={() => setOverlayWBActive(false)}>
      <h2 className="subtitleInTunnel ">
