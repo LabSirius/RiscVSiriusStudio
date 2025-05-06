@@ -71,14 +71,12 @@ const groupPivot7_pivot8 = [
 ];
 const groupPivot7_pivot16 = ["alu->pivot7", "pivot7->pivot16", "pivot16->pivot17", "pivot17->muxD"];
 
-const groupMuxC_pivot11 = [
-  "muxC->pivot11",
-  "pivot11->pivot12",
-  "pivot12->registersUnit",
-];
+const groupMuxC_pivot11 = ["muxC->pivot11", "pivot11->pivot12", "pivot12->registersUnit"];
 
 // Grupo común para las conexiones de instructionMemory
-const imGroup = [
+
+const groupRU = [
+  //RU
   "instructionMemory->pivot3",
   "pivot3->pivot22",
   "pivot20->RegistersUnit[24:20]",
@@ -87,17 +85,47 @@ const imGroup = [
   "pivot21->pivot22",
   "pivot22->registersUnit[11:7]",
   "pivot22->pivot20",
+];
+
+const groupCU = [
+  //CU
+  "pivot26->pivot27",
+  "pivot27->pivot28",
+  "pivot28->pivot29",
+  "pivot28->pivot30",
+  "pivot30->pivot31",
+  "pivot30->pivot32",
+  "pivot32->pivot33",
+];
+
+const groupIm = [
+  //IM
   "pivot3->pivot26",
   "pivot26->pivotJump1",
-  "pivotJump1->immediateGenerator[31:7]"
+  "pivotJump1->immediateGenerator[31:7]",
 ];
+
+const outputIM = [...groupRU, ...groupCU, ...groupIm];
 
 const edgeGroups: Record<string, string[]> = {
   "muxD->pc": ["muxD->pc"],
 
   "pivot25->instMemory": ["pc->pivot25", "pivot25->instMemory"],
-  "pc->pivot25": ["pc->pivot25", "pivot25->pivot1", "pivot25->instMemory", "pc->pivot1", "pivot1->adder4", ...pivotJumpGroup],
-  "pivot25->pivot1": ["pc->pivot25", "pivot25->pivot1", "pc->pivot1", "pivot1->adder4", ...pivotJumpGroup],
+  "pc->pivot25": [
+    "pc->pivot25",
+    "pivot25->pivot1",
+    "pivot25->instMemory",
+    "pc->pivot1",
+    "pivot1->adder4",
+    ...pivotJumpGroup,
+  ],
+  "pivot25->pivot1": [
+    "pc->pivot25",
+    "pivot25->pivot1",
+    "pc->pivot1",
+    "pivot1->adder4",
+    ...pivotJumpGroup,
+  ],
   "pivot1->adder4": ["pc->pivot25", "pivot25->pivot1", "pivot1->adder4"],
   "pivot1->pivotJump2": [...pivotJumpGroup],
   "pivotJump2->pivotJump3": [...pivotJumpGroup],
@@ -112,39 +140,52 @@ const edgeGroups: Record<string, string[]> = {
   "pivotJump9->pivot13": [...groupPivotJump8],
   "pivot13->muxC": [...groupPivotJump8],
 
-  "instructionMemory->pivot3": [...imGroup],
-  "pivot3->pivot20": [...imGroup],
-  "pivot20->pivot21": [...imGroup.slice(0, -3)],
-  "pivot21->pivot22": [...imGroup],
+  "instructionMemory->pivot3": [...outputIM],
+  "pivot3->pivot20": [...groupRU],
+  "pivot20->pivot21": [...groupRU],
+  "pivot21->pivot22": [...groupRU],
 
-  "pivot3->pivot22": [imGroup[0], imGroup[1], imGroup[2], imGroup[3], imGroup[4], imGroup[6], imGroup[7]],
-  "pivot20->RegistersUnit[24:20]": [imGroup[0], imGroup[1], imGroup[2], imGroup[7]],
-  "pivot21->RegistersUnit[19:15]": [imGroup[0], imGroup[1], imGroup[3], imGroup[4], imGroup[5], imGroup[7]],
-  "pivot22->registersUnit[11:7]": [imGroup[0], imGroup[1], imGroup[6]],  
-  "pivot22->pivot20": [imGroup[0], imGroup[1], imGroup[2], imGroup[3], imGroup[4], imGroup[6], imGroup[7]],
+  "pivot3->pivot22": [
+    ...groupRU,
+  ],
+  "pivot20->RegistersUnit[24:20]": [groupRU[0], groupRU[1], groupRU[2], groupRU[7]],
+  "pivot21->RegistersUnit[19:15]": [
+    ...groupRU.filter((_, i) => i !== 2 && i !== 6)
+  ],
+  "pivot22->registersUnit[11:7]": [groupRU[0], groupRU[1], groupRU[6]],
+  "pivot22->pivot20": [
+    ...groupRU
+  ],
 
+  "pivot26->pivot27": [groupRU[0], groupIm[0], ...groupCU],
+  "pivot27->pivot28": [groupRU[0], groupIm[0], ...groupCU],
+  "pivot28->pivot29": [groupRU[0], groupIm[0], ...groupCU],
+  "pivot28->pivot30": [groupRU[0], groupIm[0], ...groupCU],
+  "pivot30->pivot31": [groupRU[0], groupIm[0], ...groupCU],
+  "pivot30->pivot32": [groupRU[0], groupIm[0], ...groupCU],
+  "pivot32->pivot33": [groupRU[0], groupIm[0], ...groupCU],
 
   "pivot3->pivot26": [
     "instructionMemory->pivot3",
     "pivot3->pivot26",
     "pivot26->pivotJump1",
-    "pivotJump1->immediateGenerator[31:7]"
+    "pivotJump1->immediateGenerator[31:7]",
   ],
   "pivot26->pivotJump1": [
     "instructionMemory->pivot3",
     "pivot3->pivot26",
     "pivot26->pivotJump1",
-    "pivotJump1->immediateGenerator[31:7]"
+    "pivotJump1->immediateGenerator[31:7]",
   ],
   "pivotJump1->immediateGenerator[31:7]": [
     "instructionMemory->pivot3",
     "pivot3->pivot26",
     "pivot26->pivotJump1",
-    "pivotJump1->immediateGenerator[31:7]"
+    "pivotJump1->immediateGenerator[31:7]",
   ],
   "immSrc->immGenerator": ["immSrc->immGenerator"],
   "immGenerator->pivotJump5": ["immGenerator->pivotJump5", "pivotJump5->pivot10", "pivot10->muxB"],
-  "pivotJump5->pivot10": ["immGenerator->pivotJump5", "pivotJump5->pivot10", "pivot10->muxB"],  
+  "pivotJump5->pivot10": ["immGenerator->pivotJump5", "pivotJump5->pivot10", "pivot10->muxB"],
   "pivot10->muxB": ["immGenerator->pivotJump5", "pivotJump5->pivot10", "pivot10->muxB"],
 
   "registersUnit->pivotJump4": [
@@ -159,16 +200,8 @@ const edgeGroups: Record<string, string[]> = {
     "pivot4->branchUnit",
     "pivot4->muxA",
   ],
-  "pivot4->branchUnit": [
-    "registersUnit->pivotJump4",
-    "pivotJump4->pivot4",
-    "pivot4->branchUnit"
-  ],
-  "pivot4->muxA": [
-    "registersUnit->pivotJump4",
-    "pivotJump4->pivot4",
-    "pivot4->muxA"
-  ],
+  "pivot4->branchUnit": ["registersUnit->pivotJump4", "pivotJump4->pivot4", "pivot4->branchUnit"],
+  "pivot4->muxA": ["registersUnit->pivotJump4", "pivotJump4->pivot4", "pivot4->muxA"],
 
   "branchUnit->pivot14": [...groupBranchUnitPivot14],
   "pivot14->pivotJump10": [...groupBranchUnitPivot14],
@@ -219,19 +252,19 @@ export const animateLine = (
   edges: Edge[],
   animated: boolean = true
 ): void => {
-  console.log("edge", edge)
+  console.log("edge", edge);
   const idsToUpdate = edgeGroups[edge.id];
-  
+
   idsToUpdate.forEach((id) => {
-    const currentEdge = edges.find(e => e.id === id);
-    
-    if (currentEdge && 'disabled' in currentEdge && currentEdge.disabled) {
+    const currentEdge = edges.find((e) => e.id === id);
+
+    if (currentEdge && "disabled" in currentEdge && currentEdge.disabled) {
       return;
     }
-    
-    updateEdge(id, { 
-      animated, 
-      style: { stroke: "#3B59B6" } 
+
+    updateEdge(id, {
+      animated,
+      style: { stroke: "#3B59B6" },
     });
   });
 };
