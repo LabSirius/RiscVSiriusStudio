@@ -204,4 +204,22 @@ export const IF: Node[] = [
       boxShadow: "none",
     },
   },
+
+  {
+    id: "controlUnit",
+    type: "controlUnit",
+    data: { label: "controlUnit" },
+    position: { x: 40, y: 1180.5 },
+    parentId: "IF",
+    style: {
+      width: 3050,
+      height: 150,
+      backgroundColor: "transparent",
+      border: "none",
+      borderRadius: 0,
+      padding: 0,
+      boxShadow: "none",
+    },
+  },
+
 ];
