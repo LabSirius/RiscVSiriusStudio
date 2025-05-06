@@ -26,9 +26,11 @@ const muxARouteEdges = [
 
 // Edge groups for no immediate generation
 const noImmediateEdges = [
-  'pivot3->immediateGenerator[31:7]',
+  'pivot3->pivotJump1',
+  'pivotJump1->immediateGenerator[31:7]',
   'immSrc->immGenerator',
-  'immGenerator->pivot10'
+  'immGenerator->pivotJump5',
+  'pivotJump5->pivot10'
 ];
 
 // Edge groups for MUX B route for R-type instructions
@@ -70,6 +72,7 @@ const muxDRouteEdges_R = [
   'pivot7->pivot16',
   'pivot16->pivot17',
   'pivot17->muxD'
+
 ];
 
 // Edge groups for skipping the funct7 field
@@ -82,7 +85,7 @@ const skipRS1Edges = ['pivot20->RegistersUnit[19:15]', 'registersUnit->pivotJump
 // Edge groups for skipping RS2 register
 const skipRS2Edges = ['pivot20->RegistersUnit[24:20]'];
 
-const skipRDEdges = ['pivot3->pivot22'];
+const skipRDEdges = ['pivot22->registersUnit[11:7]'];
 
 // Additional edge groups for the MUX C route in load instructions (L-type)
 const muxCRouteExtraEdges_L = [
@@ -226,9 +229,11 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
           targetEdges = [
             ...targetEdges,
             ...muxDRouteEdges_R,
+            'alu->pivot7'
           ]
         }else{
           targetEdges = [
+            'adder4->pivot18',
             ...targetEdges,
             ...muxDRouteEdges_JALR,
           ]
@@ -237,8 +242,6 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
       case "J":
         setCurrentType("J");
         targetEdges = [
-          //...skipFunct7Edges,
-          //...skipFunct3Edges,
           ...skipRS1Edges,
           ...skipRS1InputEdges,
           ...skipRS2Edges,
