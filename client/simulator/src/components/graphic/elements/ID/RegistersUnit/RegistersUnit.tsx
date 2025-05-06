@@ -23,7 +23,7 @@ export default function RegistersUnit() {
 
   const outputHandlers: HandlerConfig[] = [
     { id: "muxA", top: "17.4rem" },
-    { id: "muxB", top: "25.62rem" },
+    { id: "muxB", top: "24.36rem" },
   ];
 
   return (

@@ -80,7 +80,7 @@ export const IE: Node[] = [
     id: "muxB",
     type: "muxB",
     data: { label: "MUX B" },
-    position: { x: 165, y: 800 },
+    position: { x: 165, y: 780 },
     parentId: "IE",
     extent: "parent",
     style: {
