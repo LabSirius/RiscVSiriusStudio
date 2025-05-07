@@ -2,7 +2,7 @@
   "name": "rv-simulator",
   "displayName": "RISCV simulator",
   "description": "An interactive RISC-V assembly simulator with memory views, step execution, and code visualization.",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "repository": "https://github.com/utpgustavogutierrez/vsc-riscv.git",
   "engines": {
     "vscode": "^1.75.0"
