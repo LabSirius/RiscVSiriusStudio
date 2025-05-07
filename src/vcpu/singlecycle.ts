@@ -754,7 +754,7 @@ export class SCCPU {
     result.bu = { ...defaultBUResult, result: "0", operation: "00XXX" };
     result.alu = { operation: "0000", result: aluRes, a: aVal, b: imm32Val };
     result.buMux = { result: add4Res, signal: "0" };
-    result.wb = { result: imm32Val, signal: "00" };
+    result.wb = { result: aluRes, signal: "00" };
     return result;
   }
 
