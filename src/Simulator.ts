@@ -217,7 +217,6 @@ export class TextSimulator extends Simulator {
     }
 
     const inst = this.cpu.currentInstruction();
-    console.log("Current instruction DESDE EL SIMULATOR:", result.result);
     const line = this.rvDoc.getLineForIR(inst);
 
     if (line !== undefined) this.highlightLine(line);
