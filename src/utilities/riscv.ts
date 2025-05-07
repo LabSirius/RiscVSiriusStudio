@@ -75,8 +75,9 @@
     return symbol["double"]
   }
 
-  function calculateDistance(memdef: number, line: number): number | undefined {
-    return (memdef - line*4);
+  function calculateDistance(memdef: number, line: number): number{
+    const distance = line * 4;
+    return memdef - distance;
   }
 
   function getPosLabel(labelName: string): number {
@@ -99,7 +100,7 @@
       value = getConstantValue(lbl["name"]);
     }
     else {
-      value = calculateDistance(value, instcounter-1);
+      value = calculateDistance(value, instcounter);
     }
     return value;
   }
@@ -1391,23 +1392,21 @@ function peg$parse(input, options) {
     };
   var peg$f43 = function(name, offset) {
       if (isFirstPass){
-        verifySymbol(offset);
+        getInstMemPosition();
         return undefined;
       }
       const imm = offset["value"];
-      let complementInstruction;
-      if (isDoubleInst(offset)){ complementInstruction = handleUInstruction('auipc', regEnc('1'), shiftLeftLogical(imm, 12), location(), true); }
+      const complementInstruction = handleUInstruction('auipc', regEnc('1'), shiftRightLogical(imm + 0x800, 12), location(), true); 
       const mainInstruction = handleIInstruction('jalr', regEnc('1'), regEnc('1'), applyBitMask(imm, 0xFFF), location(), true);
       return [complementInstruction, mainInstruction];
     };
   var peg$f44 = function(name, offset) {
       if (isFirstPass){
-        verifySymbol(offset);
+        getInstMemPosition();
         return undefined;
       }
       const imm = offset["value"];
-      let complementInstruction;
-      if (isDoubleInst(offset)){ complementInstruction = handleUInstruction('auipc', regEnc('6'), shiftLeftLogical(imm, 12), location(), true); }
+      const complementInstruction = handleUInstruction('auipc', regEnc('6'), shiftRightLogical(imm + 0x800, 12), location(), true);
       const mainInstruction = handleIInstruction('jalr', regEnc('0'), regEnc('6'), applyBitMask(imm, 0xFFF), location(), true);
       return [complementInstruction, mainInstruction];
     };
@@ -1456,7 +1455,7 @@ function peg$parse(input, options) {
       }
       const imm = symbol["value"];
       let complementInstruction;
-      if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rd, shiftLeftLogical(imm, 12), location(), true); }
+      if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rd, shiftRightLogical(imm, 12), location(), true); }
       const mainInstruction = handleIInstruction('addi', rd, rd, applyBitMask(imm, 0xFFF), location(), true);
       return [complementInstruction, mainInstruction];
     };
@@ -1467,7 +1466,7 @@ function peg$parse(input, options) {
       }
       const imm = symbol["value"];
       let complementInstruction;
-      if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('lui', rd, shiftLeftLogical(imm, 12), location(), true); }
+      if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('lui', rd, shiftRightLogical(imm, 12), location(), true); }
       const mainInstruction = handleIInstruction('addi', rd, regEnc('0'), applyBitMask(imm, 0xFFF), location(), true);
       return [complementInstruction, mainInstruction];
     };
@@ -1478,7 +1477,7 @@ function peg$parse(input, options) {
     }
     const imm = symbol["value"];
     let complementInstruction;
-    if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rd, shiftLeftLogical(imm, 12), location(), true); }
+    if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rd, shiftRightLogical(imm, 12), location(), true); }
     const mainInstruction = handleIInstruction(name, rd, rd, applyBitMask(imm, 0xFFF), location(), true);
     return [complementInstruction, mainInstruction];
   };
@@ -1489,7 +1488,7 @@ function peg$parse(input, options) {
     }
     const imm = symbol["value"];
     let complementInstruction;
-    if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rt, shiftLeftLogical(imm, 12), location(), true); }
+    if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rt, shiftRightLogical(imm, 12), location(), true); }
     const mainInstruction = handleSInstruction(name, rd, applyBitMask(imm, 0xFFF), rt, location(), true);
     return [complementInstruction, mainInstruction];
   };
