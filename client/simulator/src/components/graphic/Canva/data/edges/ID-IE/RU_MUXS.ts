@@ -7,7 +7,8 @@ export const RU_MUXS: Edge[] = [
         id: 'registersUnit->pivotJump4',
         source: 'registersUnit',
         target: 'pivotJump4',
-        type: 'default',
+        type: 'step',
+
     },
 
     {

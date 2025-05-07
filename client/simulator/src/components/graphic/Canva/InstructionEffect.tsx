@@ -6,6 +6,17 @@ interface InstructionEffectProps {
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
 }
 
+
+const skipFunct7Edges = [
+  'pivot30->pivot32',
+  'pivot32->pivot33'
+]
+
+const skipFunct3Edges = [
+  'pivot28->pivot30',
+  'pivot30->pivot31'
+]
+
 // output edge groups for MUX A route
 const skipMuxAOutputEdges = [
   'uxA->alu'
@@ -19,17 +30,18 @@ const skipMuxA = [
 
 // Edge groups for MUX A route
 const muxARouteEdges = [
-  'pivot1->pivotJump1',
-  'pivotJump1->pivotJump2',
+  'pivot1->pivotJump2',
   'pivotJump2->pivotJump3',
   'pivotJump3->muxA'
 ];
 
 // Edge groups for no immediate generation
 const noImmediateEdges = [
-  'pivot3->immediateGenerator[31:7]',
+  'pivot26->pivotJump1',
+  'pivotJump1->immediateGenerator[31:7]',
   'immSrc->immGenerator',
-  'immGenerator->pivot10'
+  'immGenerator->pivotJump5',
+  'pivotJump5->pivot10'
 ];
 
 // Edge groups for MUX B route for R-type instructions
@@ -50,8 +62,7 @@ const bypassBranchUnitEdges = [
 // Edge groups for memory access (read) route
 const memoryReadEdges = [
   'pivot2->pivot5',
-  'pivot5->pivotJump5',
-  'pivotJump5->pivot6',
+  'pivot5->pivot6',
   'pivot6->dataMemory',
   'pivot7->dataMemory',
   'dmWr->dataMemory',
@@ -72,21 +83,20 @@ const muxDRouteEdges_R = [
   'pivot7->pivot16',
   'pivot16->pivot17',
   'pivot17->muxD'
+
 ];
 
 // Edge groups for skipping the funct7 field
-const skipFunct7Edges = ['pivot22->controlUnit[31:25]'];
 
 // Edge groups for skipping the funct3 field
-const skipFunct3Edges = ['pivot23->controlUnit[14:12]'];
 
 // Edge groups for skipping RS2 register
-const skipRS1InputEdges = ['pivot21->RegistersUnit[19:15]'];
+const skipRS1InputEdges = ['pivot20->pivot21' ,'pivot21->RegistersUnit[19:15]'];
 const skipRS1Edges = ['pivot20->RegistersUnit[19:15]', 'registersUnit->pivotJump4', 'pivotJump4->pivot4', 'pivot4->muxA'];
 // Edge groups for skipping RS2 register
 const skipRS2Edges = ['pivot20->RegistersUnit[24:20]'];
 
-const skipRDEdges = ['pivot3->RegistersUnit[11:7]'];
+const skipRDEdges = ['pivot22->registersUnit[11:7]'];
 
 // Additional edge groups for the MUX C route in load instructions (L-type)
 const muxCRouteExtraEdges_L = [
@@ -99,8 +109,7 @@ const muxCRouteExtraEdges_L = [
 // Edge groups for skipping RS2 in data memory access
 const skipRS2MemoryEdges = [
   'pivot2->pivot5',
-  'pivot5->pivotJump5',
-  'pivotJump5->pivot6',
+  'pivot5->pivot6',
   'pivot6->dataMemory'
 ];
 
@@ -127,8 +136,7 @@ const bypassWriteBackEdges = [
   'pivotJump6->pivot9',
   'pivot9->muxC',
   'muxC->pivot11',
-  'pivot11->pivotJump7',
-  'pivotJump7->pivot12',
+  'pivot11->pivot12',
   'pivot12->registersUnit',
   'ruWr->registersUnit',
   'ruDataWrSrc->muxC',
@@ -230,9 +238,11 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
           targetEdges = [
             ...targetEdges,
             ...muxDRouteEdges_R,
+            'alu->pivot7'
           ]
         }else{
           targetEdges = [
+            'adder4->pivot18',
             ...targetEdges,
             ...muxDRouteEdges_JALR,
           ]
@@ -245,6 +255,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
           ...skipFunct3Edges,
           ...skipRS1Edges,
           ...skipRS1InputEdges,
+          'pivot22->pivot20',
           ...skipRS2Edges,
           ...muxBRouteEdges_I,
           ...muxCRouteExtraEdges_JALR,
@@ -260,6 +271,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
             ...skipFunct7Edges,
             ...skipFunct3Edges,
             ...skipRS2Edges,
+            'pivot22->pivot20',
             ...skipRS1InputEdges,
             ...skipRS1Edges,
             ...muxARouteEdges,
@@ -277,6 +289,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
             ...skipFunct7Edges,
             ...skipFunct3Edges,
             ...skipRS2Edges,
+            'pivot22->pivot20',
             ...skipRS1InputEdges,
             ...skipRS1Edges,
             ...skipMuxAOutputEdges,

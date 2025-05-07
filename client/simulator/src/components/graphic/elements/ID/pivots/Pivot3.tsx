@@ -12,13 +12,13 @@ export default function Pivot3() {
       <Handle
         type="source"
         id="[11:7]"
-        position={Position.Right}
+        position={Position.Top}
       />
-      <Handle
+      {/* <Handle
         type="source"
         id="[24:20]"
         position={Position.Top}
-      />
+      /> */}
       <Handle
         type="source"
         id="[31:7]"

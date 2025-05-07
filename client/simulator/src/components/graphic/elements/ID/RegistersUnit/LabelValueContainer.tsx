@@ -86,7 +86,7 @@ const LabelValueContainer = () => {
           decimal={ruRs1Dec}
           binary={ruRs1Bin}
           hex={ruRs1Hex}
-          positionClassName="top-[1rem] right-[.8rem]"
+          positionClassName="bottom-[9rem] right-[.8rem]"
           input={false}
         />
       )}
@@ -99,7 +99,7 @@ const LabelValueContainer = () => {
           decimal={ruRs2Dec}
           binary={ruRs2Bin}
           hex={ruRs2Hex}
-          positionClassName="top-[9.2rem] right-[.8rem]"
+          positionClassName="bottom-[1.2rem] right-[.8rem]"
           input={false}
         />
       )}

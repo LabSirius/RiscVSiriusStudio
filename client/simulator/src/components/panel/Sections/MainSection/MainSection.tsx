@@ -15,7 +15,7 @@ import HelpSection from "../HelpSection";
 import { useTheme } from "@/components/panel/ui/theme/theme-provider";
 
 const MainSection = () => {
-  const {typeSimulator, operation, section} = useSimulator();
+  const { typeSimulator, operation, section } = useSimulator();
   const { setTheme } = useTheme();
   const [showScrollIcon, setShowScrollIcon] = useState(false);
   const BASE_WIDTH = 1296;
@@ -50,10 +50,12 @@ const MainSection = () => {
   return (
     <SidebarProvider className="h-full overflow-hidden">
       <Sidebar />
-      <SidebarTrigger />
 
       {operation === "uploadMemory" || operation === "step" ? (
-        <div className={`relative flex gap-5 p-4 overflow-x-auto overflow-y-hidden  ${!(typeSimulator === "graphic") && 'h-screen'} `}>
+        <div
+          className={`relative flex gap-5 p-4 overflow-x-auto overflow-y-hidden  ${
+            !(typeSimulator === "graphic") && "h-screen"
+          } `}>
           <Tables />
           {operation === "uploadMemory" &&
             (section === "settings" ? (
@@ -90,6 +92,7 @@ const MainSection = () => {
           </div>
         </div>
       )}
+      <SidebarTrigger className={`absolute right-3 ${typeSimulator === 'graphic' ? 'top-5' : 'top-0' } `}/>
     </SidebarProvider>
   );
 };

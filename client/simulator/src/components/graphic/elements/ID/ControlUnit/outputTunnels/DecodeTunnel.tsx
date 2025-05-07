@@ -6,7 +6,7 @@ const DecodeTunnel = () => {
 
   return (
     <div
-      className="relative w-full"
+      className="relative w-full ml-[1rem] rotate-270"
       onMouseEnter={() => setOverlayDecodeActive(true)}
       onMouseLeave={() => setOverlayDecodeActive(false)}
     >

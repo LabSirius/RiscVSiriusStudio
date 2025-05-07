@@ -24,35 +24,35 @@ const LabelValueContainer = () => {
     <>
       {/* OPCODE */}
       <LabelValueWithHover
-        label=""
+        label="Opcode"
         value={`b'${binOpcode}`}
         decimal={decOpcode}
         binary={binOpcode}
         hex={hexOpcode}
-        positionClassName="top-[1.2rem] left-[.8rem]"
+        positionClassName="top-[-.6rem] left-[55rem]"
       />
 
       {/* FUNCT3  */}
       {(currentType !== 'LUI' && currentType !== 'AUIPC' && currentType !== 'J') && (
         <LabelValueWithHover
-          label=""
+          label="Funct3"
           value={`b'${binFunct3}`}
           decimal={decFunct3}
           binary={binFunct3}
           hex={hexFunct3}
-          positionClassName="top-[6.4rem] left-[.8rem]"
+          positionClassName="top-[-.6rem] left-[66.5rem]"
         />
       )}
 
       {/* FUNCT7  */}
       {currentType === 'R' && (
         <LabelValueWithHover
-          label=""
+          label="Funct7"
           value={`b'${binFunct7}`}
           decimal={decFunct7}
           binary={binFunct7}
           hex={hexFunct7}
-          positionClassName="top-[11.9rem] left-[.8rem]"
+          positionClassName=" top-[-.6rem] left-[76.4rem]"
         />
       )}
     </>

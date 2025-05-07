@@ -22,14 +22,14 @@ export default function RegistersUnit() {
   ];
 
   const outputHandlers: HandlerConfig[] = [
-    { id: "muxA", top: "4.9rem" },
-    { id: "muxB", top: "13.12rem" },
+    { id: "muxA", top: "17.4rem" },
+    { id: "muxB", top: "24.36rem" },
   ];
 
   return (
     <div className="w-full">
       <div className="relative w-full h-full">
-        <h2 className=" titleInElement top-[90%] left-[82%]  -translate-x-[82%] -translate-y-[90%] ">
+        <h2 className=" titleInElement top-[15%] left-[82%]  -translate-x-[82%] -translate-y-[15%] ">
           Registers Unit
         </h2>
         <div className="relative">
