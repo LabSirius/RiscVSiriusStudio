@@ -8,7 +8,7 @@
 
   let instcounter: number;
   let labelTable = {};
-  let constantTable = {};
+  let constantTable = [];
   let directives = {};
   let dataTable = {};
   let instCountData: number;
@@ -88,8 +88,8 @@
   }
 
   function getConstantValue(name: string): number {
-    const value = constantTable[name];
-    return value;
+    const value = constantTable.find((element) => element.name === name);
+    return value.value;
   }
 
   function getIdentifierValue(name): number {
@@ -239,6 +239,10 @@
       default:
         return '';
     }
+  }
+
+  function appendDataConstant(name: string, value: number): void {
+    constantTable.push({name: name, value: value});
   }
 
   function handleRInstruction(name, rd, rs1, rs2, location, pseudo=false) {
@@ -1195,7 +1199,7 @@ function peg$parse(input, options) {
       if (name.name in constantTable){
         return error(`Duplicate identifier: ${name.name} found multiple times`);
       }
-      constantTable[name.name] = val;
+      appendDataConstant(name.name, val);
     }
     return {directive: ".equ", identifier: name.name, value: val};
   };

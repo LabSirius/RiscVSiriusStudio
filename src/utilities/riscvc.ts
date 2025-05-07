@@ -12,8 +12,13 @@ type Data = {
   align: Align
 };
 
+type Constant = {
+  name: string,
+  value: number
+};
+
 let labelTable = {};
-let constantTable = {};
+let constantTable: Constant[] = [];
 let directives = {};
 let dataTable: Record<string, Data> = {};
 let counters = {
@@ -151,7 +156,7 @@ export type ParserResult = {
 
 export function compile(inputSrc: string, inputName: string): ParserResult {
   dataTable = {};
-  constantTable = {};
+  constantTable = [];
   labelTable = {};
   counters = {
     instcounter: 0,
