@@ -351,12 +351,10 @@ export class SCCPU {
 
   public nextInstruction() {
     this.pc++;
-    console.log("[next] new value of PC is ", this.pc);
   }
 
   public jumpToInstruction(address: string) {
     this.pc = parseInt(address, 2) / 4;
-    console.log("[jump] new value of PC is ", this.pc);
   }
 
   private toTwosComplement(n: any, len: any) {
