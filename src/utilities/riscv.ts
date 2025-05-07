@@ -7,12 +7,10 @@
 
 
   let instcounter: number;
-  let instEncoding = {};
   let labelTable = {};
   let constantTable = {};
   let directives = {};
   let dataTable = {};
-  let isData = false;
   let instCountData: number;
   let counters = {};
   let simOptions = {};
@@ -194,7 +192,7 @@
   }
 
   function extractRawText(fullText: string): string {
-    const parts = fullText.split(',').map(p => p.trim());
+    const parts = fullText.split(' ').map(p => p.trim());
     return parts[parts.length - 1];
   }
 
@@ -220,23 +218,23 @@
 
     switch (type) {
       case "R":
-        return `${instruction} ${rd.regname} ${rs1.regname} ${rs2.regname}`;
+        return `${instruction} ${rd.regname}, ${rs1.regname}, ${rs2.regname}`;
 
       case "I":
-        return `${instruction} ${rd.regname} ${rs1.regname} ${imm12}`;
+        return `${instruction} ${rd.regname}, ${rs1.regname}, ${imm12}`;
       
       case "S":
-        return `${instruction} ${rd.regname} ${imm12}(${rs1.regname})`;
+        return `${instruction} ${rd.regname}, ${imm12}(${rs1.regname})`;
 
       case "U":
         const imm20 = inst.imm20;
-        return `${instruction} ${rd.regname} ${imm20}`;
+        return `${instruction} ${rd.regname}, ${imm20}`;
 
       case "J":
-        return `${instruction} ${rd.regname} ${offset}`;
+        return `${instruction} ${rd.regname}, ${offset}`;
       
       case "B":
-        return `${instruction} ${rs1.regname} ${rs2.regname} ${offset}`;
+        return `${instruction} ${rs1.regname}, ${rs2.regname}, ${offset}`;
 
       default:
         return '';
@@ -1200,7 +1198,6 @@ function peg$parse(input, options) {
     return {directive: ".equ", identifier: name.name, value: val};
   };
   var peg$f10 = function() {
-    isData = false;
     return {directive: ".text"};
   };
   var peg$f11 = function(head, tail) {
