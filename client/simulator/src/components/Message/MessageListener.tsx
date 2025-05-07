@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useMemoryTable } from "@/context/panel/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
@@ -30,6 +30,11 @@ const MessageListener = () => {
 
   const { setLineDecorationNumber, setClickInEditorLine } = useLines();
   const { setDialog } = useDialog();
+
+  const typeSimulatorRef = useRef(typeSimulator);
+  useEffect(() => {
+    typeSimulatorRef.current = typeSimulator;
+  }, [typeSimulator]);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -70,8 +75,9 @@ const MessageListener = () => {
             } else {
               setLineDecorationNumber(-1);
             }
+
             if (!isFirstStep) {
-              if (typeSimulator === "graphic") {
+              if (typeSimulatorRef.current === "graphic") {
                 setSection("program");
               } else {
                 setSection("search");
@@ -98,7 +104,6 @@ const MessageListener = () => {
             break;
           case "stop":
             setDialog({ title: "Info", description: "The program has ended.", stop: true });
-
             break;
           default:
             break;

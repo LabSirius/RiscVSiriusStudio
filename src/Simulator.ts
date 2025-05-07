@@ -217,9 +217,22 @@ export class TextSimulator extends Simulator {
     }
 
     const inst = this.cpu.currentInstruction();
-    const line = this.rvDoc.getLineForIR(inst);
 
-    if (line !== undefined) this.highlightLine(line);
+    let line: number | undefined;
+
+    try {
+      line = this.rvDoc.getLineForIR(inst);
+    } catch {
+      if (this instanceof GraphicSimulator) {
+        line = undefined;
+      } else {
+        throw new Error("");
+      }
+    }
+
+    if (line !== undefined) {
+      this.highlightLine(line);
+    }
 
     mainView.postMessage({
       from: "extension",
@@ -227,7 +240,7 @@ export class TextSimulator extends Simulator {
       newPc: this.cpu.getPC(),
       currentInst: result.instruction,
       result: result.result,
-      lineDecorationNumber: line !== undefined ? line + 1 : 0,
+      lineDecorationNumber: line !== undefined ? line + 1 : -1,
     });
 
     return result;
@@ -351,20 +364,17 @@ export class TextSimulator extends Simulator {
       if (this.currentHighlight) {
         this.currentHighlight.dispose();
       }
-  
+
       this.currentHighlight = window.createTextEditorDecorationType({
         backgroundColor: "rgba(209, 227, 231, 0.5)", // Azul pastel
         isWholeLine: true,
       });
-  
+
       const range = editor.document.lineAt(lineNumber).range;
       editor.revealRange(range);
-      editor.setDecorations(this.currentHighlight, [
-        { range, hoverMessage: "Selected line" },
-      ]);
+      editor.setDecorations(this.currentHighlight, [{ range, hoverMessage: "Selected line" }]);
     }
   }
-  
 
   private clearHighlight() {
     if (this.currentHighlight) {
@@ -386,28 +396,28 @@ export class TextSimulator extends Simulator {
  * but also sends additional information to the graphic Webview.
  */
 export class GraphicSimulator extends TextSimulator {
-    constructor(settings: SimulationParameters, rvDoc: RVDocument, context: RVContext) {
-      super(settings, rvDoc, context);
-    }
-  
-    public override start(): void {
-      super.start();
-  
-      this.sendSimulatorTypeToView("graphic");
-      this.sendTextProgramToView(this.rvDoc.getText());
-    }
-  
-    public override sendSimulatorTypeToView(simulatorType: string): void {
-      this.sendToWebview({
-        operation: "simulatorType",
-        simulatorType,
-      });
-    }
-  
-    public override sendTextProgramToView(textProgram: string): void {
-      this.sendToWebview({
-        operation: "textProgram",
-        textProgram,
-      });
-    }
+  constructor(settings: SimulationParameters, rvDoc: RVDocument, context: RVContext) {
+    super(settings, rvDoc, context);
   }
+
+  public override start(): void {
+    super.start();
+
+    this.sendSimulatorTypeToView("graphic");
+    this.sendTextProgramToView(this.rvDoc.getText());
+  }
+
+  public override sendSimulatorTypeToView(simulatorType: string): void {
+    this.sendToWebview({
+      operation: "simulatorType",
+      simulatorType,
+    });
+  }
+
+  public override sendTextProgramToView(textProgram: string): void {
+    this.sendToWebview({
+      operation: "textProgram",
+      textProgram,
+    });
+  }
+}
