@@ -1697,10 +1697,10 @@
   = (WhiteSpace / LineTerminatorSequence / Comment)*
 
   EOS
-  = __
-  / _ Comment? LineTerminatorSequence
+  = _ Comment? LineTerminatorSequence
   / _ &"}"
   / __ EOF
+  / __
   
   Comment "comment"
   = ("#" / ";") (!LineTerminator SourceCharacter)* {
