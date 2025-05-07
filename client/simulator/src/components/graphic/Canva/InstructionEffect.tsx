@@ -146,8 +146,6 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
   useEffect(() => {
     let targetEdges: string[] = [];
     const currentInstruction =  currentInst;
-    console.log(currentInstruction.type, currentInstruction);
-
     switch (currentInstruction.type) {
       case "R":
         setCurrentType("R");

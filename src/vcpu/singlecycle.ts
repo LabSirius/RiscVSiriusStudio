@@ -650,7 +650,6 @@ export class SCCPU {
       writeSignal: "1",
     };
     result.imm = { signal: "001", output: offset32Val };
-    console.log("Result of S instruction: ", result);
     return result;
   }
 
