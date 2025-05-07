@@ -28,7 +28,7 @@ const CurrentInstructionInfo = () => {
     <>
       {operation !== "uploadMemory" && (
         <div
-          className={`absolute flex gap-4 items-center top-[-6.4rem] left-[6.8rem] pr-[1.2rem] ${animationClass}`}>
+          className={`absolute flex gap-4 items-center top-[-6.4rem] left-[6.84rem] pr-[1.2rem] ${animationClass}`}>
           <div className="bg-[#66939E] px-[.8rem] py-[.3rem] rounded-[.3rem]">
             <h2 className="text-white text-center text-[.9rem]">{currentInst.asm}</h2>
           </div>
