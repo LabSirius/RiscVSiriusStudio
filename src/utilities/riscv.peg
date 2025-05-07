@@ -220,8 +220,8 @@
         return `${instruction} ${rd.regname}, ${imm12}(${rs1.regname})`;
 
       case "U":
-        const imm20 = inst.imm20;
-        return `${instruction} ${rd.regname}, ${imm20}`;
+        const imm21 = inst.imm21;
+        return `${instruction} ${rd.regname}, ${imm21}`;
 
       case "J":
         return `${instruction} ${rd.regname}, ${offset}`;
