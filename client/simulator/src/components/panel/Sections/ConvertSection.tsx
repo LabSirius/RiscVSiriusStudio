@@ -58,11 +58,9 @@ const ConvertSection: React.FC = () => {
     }
   };
 
-  // Handler para filtrar la entrada (sólo 0 y 1) cuando estamos en Two's Complement
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let newVal = e.target.value;
     if (fromFormat.value === 'twoCompl') {
-      // Elimina cualquier carácter que no sea 0 o 1
       newVal = newVal.replace(/[^01]/g, '');
     }
     setInputValue(newVal);
@@ -77,7 +75,7 @@ const ConvertSection: React.FC = () => {
   };
 
   return (
-    <div className="section-container ">
+    <div className="section-container ml-[.2rem] ">
       <div className="flex gap-2">
         <Dropdown
           label="From"

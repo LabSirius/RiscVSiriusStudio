@@ -3,6 +3,8 @@ import { useSimulator } from "@/context/shared/SimulatorContext";
 
 import { Button } from "@/components/panel/ui/button";
 
+import { useSidebar } from "@/components/panel/ui/sideBar";
+
 
 import CircleActive from "./CircleActive";
 
@@ -20,8 +22,18 @@ import { Text, Search, Calculator, Info, Settings } from "lucide-react";
 
 export function SideBar() {
   const { operation, typeSimulator, section, setSection } = useSimulator();
+  const { setOpen, setHoveringSidebar } = useSidebar();
   return (
-    <Sidebar>
+    <Sidebar
+      onMouseEnter={() => {
+        setOpen(true);
+        setHoveringSidebar(true);
+      }}
+      onMouseLeave={() => {
+        setOpen(false);
+        setHoveringSidebar(false);
+      }}
+    >
       <SidebarContent className="relative w-full h-full pr-10 overflow-x-hidden overflow-y-auto hide-scrollbar">
         <SidebarGroup className="flex flex-col flex-1">
           <SidebarGroupLabel>Options</SidebarGroupLabel>

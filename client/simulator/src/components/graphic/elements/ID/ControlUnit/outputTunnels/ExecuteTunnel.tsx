@@ -5,7 +5,7 @@ const ExecuteTunnel = () => {
   const { setOverlayExecuteActive } = useOverlay();
 
   return (
-    <div className="relative w-full ml-[6rem]"
+    <div className="relative w-full ml-[6rem] rotate-270"
     onMouseEnter={() => setOverlayExecuteActive(true)}
     onMouseLeave={() => setOverlayExecuteActive(false)}
     >
