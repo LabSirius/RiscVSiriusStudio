@@ -4,7 +4,6 @@ import MainSectionContainer from "@/components/panel/Sections/MainSection/MainSe
 import MainSection from "@/components/panel/Sections/MainSection/MainSection";
 
 import Canva from "./components/graphic/Canva/Canva";
-import CurrentInstructionInfo from "./components/graphic/CurrentInstructionInfo";
 import Providers from "./providers";
 
 const App = () => {
@@ -17,7 +16,6 @@ const App = () => {
           <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh">
             <Canva />
             <div className="relative">
-              <CurrentInstructionInfo />
               <MainSectionContainer />
             </div>
           </div>

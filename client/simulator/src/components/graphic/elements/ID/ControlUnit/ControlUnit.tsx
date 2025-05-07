@@ -5,6 +5,7 @@ import Tunels from "./outputTunnels/Tunels";
 // // import LabelSlashConatiner from "./LabelSlashContainer";
 import LabelValueContainer from "./LabelValueContainer";
 import { useSimulator } from "@/context/shared/SimulatorContext";
+import CurrentInstructionInfo from "@/components/graphic/CurrentInstructionInfo";
 
 export default function ControlUnit() {
   const { operation } = useSimulator();
@@ -16,6 +17,8 @@ export default function ControlUnit() {
         Control Unit
       </h2>
       <div className="relative">
+       <CurrentInstructionInfo />
+
         <ContainerSVG height={5} active={true} />
 
         {operation !== "uploadMemory" && (

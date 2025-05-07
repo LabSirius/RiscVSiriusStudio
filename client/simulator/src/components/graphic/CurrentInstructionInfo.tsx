@@ -28,13 +28,13 @@ const CurrentInstructionInfo = () => {
     <>
       {operation !== "uploadMemory" && (
         <div
-          className={`absolute flex gap-4 items-center top-[-6.4rem] left-[6.84rem] pr-[1.2rem] ${animationClass}`}>
-          <div className="bg-[#66939E] px-[.8rem] py-[.3rem] rounded-[.3rem]">
-            <h2 className="text-white text-center text-[.9rem]">{currentInst.asm}</h2>
+          className={`absolute flex gap-4 items-center top-[-5.8rem] left-0 pr-[1.2rem] ${animationClass}`}>
+          <div className="bg-[#66939E] px-[1.2rem] py-[.7rem] rounded-[.6rem]">
+            <h2 className="text-white text-center text-[1.8rem]">{currentInst.asm}</h2>
           </div>
 
-          <div className="bg-[#66939E] px-[.7rem] py-[.3rem] rounded-[.3rem]">
-            <h2 className="text-white text-center text-[.9rem]">{currentInst.type}</h2>
+          <div className="bg-[#66939E] px-[1.2rem] py-[.7rem] rounded-[.6rem]">
+            <h2 className="text-white text-center text-[1.8rem]">{currentInst.type}</h2>
           </div>
         </div>
       )}
