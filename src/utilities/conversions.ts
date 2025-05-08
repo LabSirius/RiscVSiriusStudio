@@ -184,3 +184,11 @@ export function toBinary(value: string, vtype: RegisterView) {
   }
   return '';
 }
+
+export function hexToBin(hex: string): string {
+  return hex
+    .split('')
+    .map(d => parseInt(d, 16).toString(2).padStart(4, '0'))
+    .join('');
+}
+

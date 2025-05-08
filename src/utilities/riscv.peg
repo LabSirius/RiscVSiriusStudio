@@ -97,8 +97,8 @@
   }
 
   function stringToAsciiList(text: string): number[] {
-    const asciiList = Array.from(text).map(char => char.charCodeAt(0));
-    asciiList.push(0)
+    const asciiList = Array.from(text).map(char => char.charCodeAt(0).toString(16).padStart(2, '0'));
+    asciiList.push('00')
     return asciiList;
   }
 

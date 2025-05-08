@@ -1,13 +1,20 @@
 import { parse } from './riscv';
+import { binaryToHex, hexToBin, intToBinary } from './conversions';
+import { isNumber } from 'lodash-es';
 
 type Align = {
   start: number,
   end: number
 };
 
+type MemoryValues = {
+  binValue: string,
+  hexValue: string
+};
+
 type Data = {
   memdef: number,
-  value: number | number[],
+  value: number | string[],
   typeAlign: string,
   align: Align
 };
@@ -15,6 +22,10 @@ type Data = {
 type Constant = {
   name: string,
   value: number
+};
+
+type Memory =  MemoryValues & {
+  memdef: Align,
 };
 
 let labelTable = {};
@@ -44,7 +55,6 @@ function anyCommonElement<T>(...arrays: T[][]): [boolean, any] {
 
   return [false, undefined];
 
-  // return arr1.some((element) => arr2.includes(element));
 }
 
 function needTextSection(directives: string[]): [boolean, any] {
@@ -141,6 +151,107 @@ function updateMemdefData(): void {
   });
 }
 
+function getMemdefFromNumber(memdef: number): Align {
+    return {
+      start: memdef,
+      end: memdef + 3
+    };
+}
+
+function needFillMemory(memdef: Align, before: Align): boolean {
+  if (before.end + 1 < memdef.start){
+    return true;
+  }
+  return false;
+}
+
+function constructFilledMemory(start: number, end: number): Memory {
+  return {
+    memdef: {
+      start: start,
+      end: end
+    },
+    binValue: "X".padEnd(end - start, "X"),
+    hexValue: "X".padEnd(end - start, "X")
+  };
+}
+
+function getHValuesToMemory(binencodig: string): MemoryValues {
+  return {
+    binValue: binencodig,
+    hexValue: binaryToHex(binencodig)
+  };
+}
+
+function getBValuesToMemory(hex: string): MemoryValues {
+  return {
+    binValue: hexToBin(hex),
+    hexValue: hex
+  };
+}
+
+function constructMemoryFromAsciiList(asciiList: string[], start: number): Memory[] {
+  let mem: Memory[] = [];
+  for (let i = 0; i < asciiList.length; i++){
+    const char = asciiList[i];
+    if (char !== undefined) {
+      mem.push({
+        memdef: {
+          start: start + i + 1,
+          end: start + i + 1
+        },
+        ...getBValuesToMemory(char)
+      });
+    }
+  }
+
+  return mem;
+}
+
+// TODO: Cambiar el atributo memdef para que no se un Align sino un number
+
+function fillMemory(data: Data, before: Align | undefined, memory: Memory[]): [Align, Memory[]] | [undefined, Memory[]] {
+  if (before && needFillMemory(data.align, before)){
+    memory.push(constructFilledMemory(before.end + 1, data.align.start - 1));
+  }
+
+  if (Array.isArray(data.value)){
+    const last = memory[ memory.length - 1];
+    if (last !== undefined){
+      const mem = constructMemoryFromAsciiList(data.value, last.memdef.end);
+      memory = memory.concat(mem);
+    }
+
+  }
+  else {
+    memory.push(
+      {
+        memdef: data.align,
+        ...getHValuesToMemory(intToBinary(data.value))
+      }
+    );
+  }
+
+  return [memory[ memory.length - 1 ]?.memdef, memory];
+
+}
+
+function constructMemory(instructions: any[], data: Record<string, Data>): Memory[] {
+  let memory: Memory[] = [];
+  instructions.forEach((element) => 
+    memory.push({
+      memdef: getMemdefFromNumber(element.inst), 
+      binValue: element.encoding.binEncoding, 
+      hexValue: element.encoding.hexEncoding
+    })
+  );
+
+  let before: Align | undefined = memory[ memory.length -1 ]?.memdef;
+
+  Object.keys(data).forEach((key) => [before, memory] = fillMemory(data[key]!, before, memory));
+  return memory;
+}
+
 export type InternalRepresentation = {
   instructions: Array<any>;
   symbols: Array<any>;
@@ -230,6 +341,9 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     return retError;
   }
   console.log('Success!.');
+
+  console.log(constructMemory(parserOutput, dataTable));
+
   const result = {
     success: true,
     ir: { instructions: parserOutput as any[], 
