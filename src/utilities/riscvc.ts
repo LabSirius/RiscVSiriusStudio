@@ -1,6 +1,5 @@
 import { parse } from './riscv';
-import { binaryToHex, hexToBin, intToBinary } from './conversions';
-import { isNumber } from 'lodash-es';
+import { binaryToHex, hexToBin, intToBinary, intTo4Hex } from './conversions';
 
 type Align = {
   start: number,
@@ -25,7 +24,7 @@ type Constant = {
 };
 
 type Memory =  MemoryValues & {
-  memdef: Align,
+  memdef: number,
 };
 
 let labelTable = {};
@@ -151,29 +150,26 @@ function updateMemdefData(): void {
   });
 }
 
-function getMemdefFromNumber(memdef: number): Align {
-    return {
-      start: memdef,
-      end: memdef + 3
-    };
-}
-
-function needFillMemory(memdef: Align, before: Align): boolean {
-  if (before.end + 1 < memdef.start){
+function needFillMemory(memdef: number, before: number): boolean {
+  if (before+ 1 < memdef){
     return true;
   }
   return false;
 }
 
-function constructFilledMemory(start: number, end: number): Memory {
-  return {
-    memdef: {
-      start: start,
-      end: end
-    },
-    binValue: "X".padEnd(end - start, "X"),
-    hexValue: "X".padEnd(end - start, "X")
-  };
+function constructFilledMemory(start: number, end: number): Memory[] {
+
+  let filled: Memory[] = [];
+  filled = Array.from({length: end - start}, (_, i) => {
+    return {
+      memdef: start + i,
+      binValue: "XX",
+      hexValue: "XX"
+    };
+  }
+  );
+return filled;
+
 }
 
 function getHValuesToMemory(binencodig: string): MemoryValues {
@@ -190,16 +186,13 @@ function getBValuesToMemory(hex: string): MemoryValues {
   };
 }
 
-function constructMemoryFromAsciiList(asciiList: string[], start: number): Memory[] {
+function constructMemoryFromAsciiList(asciiList: string[], memdef: number): Memory[] {
   let mem: Memory[] = [];
   for (let i = 0; i < asciiList.length; i++){
     const char = asciiList[i];
     if (char !== undefined) {
       mem.push({
-        memdef: {
-          start: start + i + 1,
-          end: start + i + 1
-        },
+        memdef: memdef + i + 1,
         ...getBValuesToMemory(char)
       });
     }
@@ -208,45 +201,76 @@ function constructMemoryFromAsciiList(asciiList: string[], start: number): Memor
   return mem;
 }
 
-// TODO: Cambiar el atributo memdef para que no se un Align sino un number
-
-function fillMemory(data: Data, before: Align | undefined, memory: Memory[]): [Align, Memory[]] | [undefined, Memory[]] {
-  if (before && needFillMemory(data.align, before)){
-    memory.push(constructFilledMemory(before.end + 1, data.align.start - 1));
+function fillMemory(data: Data, before: number | undefined, memory: Memory[]): [number, Memory[]] | [undefined, Memory[]] {
+  if (before && needFillMemory(data.align.start, before)){
+    memory = memory.concat(constructFilledMemory(before + 1, data.align.start));
   }
+
+  let mem: Memory[] = [];
 
   if (Array.isArray(data.value)){
     const last = memory[ memory.length - 1];
     if (last !== undefined){
-      const mem = constructMemoryFromAsciiList(data.value, last.memdef.end);
-      memory = memory.concat(mem);
+      mem = constructMemoryFromAsciiList(data.value, last.memdef);
     }
-
   }
   else {
-    memory.push(
-      {
-        memdef: data.align,
-        ...getHValuesToMemory(intToBinary(data.value))
-      }
-    );
+    mem = constructMemoryFromNumber(data.value, data.align.start);
   }
+  memory = memory.concat(mem);
 
   return [memory[ memory.length - 1 ]?.memdef, memory];
 
 }
 
+function getHexList(hexEncoding: string): string[]{
+  return hexEncoding.split("-");
+}
+
+function getByteList(binEncoding: string): string[] {
+
+  let binList: string[] = [];
+  for (let i = 0; i < binEncoding.length; i += 8){
+    binList.push(binEncoding.slice(i, i+8));
+  }
+
+  return binList;
+}
+
+function constructMemoryFromInst(instruction: any): Memory[] {
+  const binList = getByteList(instruction.encoding.binEncoding);
+  const hexList = getHexList(instruction.encoding.hexEncoding);
+
+  return getMemoryFromList(binList, hexList, instruction.inst);
+}
+
+function constructMemoryFromNumber(value: number, start: number): Memory[] {
+  const binList = getByteList(intToBinary(value));
+  const hexList = getHexList(intTo4Hex(value));
+
+  return getMemoryFromList(binList, hexList, start);
+}
+
+function getMemoryFromList(binList: string[], hexList: string[], start: number): Memory[]{
+  let mem: Memory[] = [];
+  for (let i = 0; i < binList.length; i++){
+    mem.push({
+      memdef: start + i,
+      binValue: binList[i]!,
+      hexValue: hexList[i]!
+    });
+  }
+
+  return mem;  
+}
+
 function constructMemory(instructions: any[], data: Record<string, Data>): Memory[] {
   let memory: Memory[] = [];
   instructions.forEach((element) => 
-    memory.push({
-      memdef: getMemdefFromNumber(element.inst), 
-      binValue: element.encoding.binEncoding, 
-      hexValue: element.encoding.hexEncoding
-    })
+    memory = memory.concat(constructMemoryFromInst(element))
   );
 
-  let before: Align | undefined = memory[ memory.length -1 ]?.memdef;
+  let before: number | undefined = memory[ memory.length -1 ]?.memdef;
 
   Object.keys(data).forEach((key) => [before, memory] = fillMemory(data[key]!, before, memory));
   return memory;
@@ -342,8 +366,6 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
   }
   console.log('Success!.');
 
-  console.log(constructMemory(parserOutput, dataTable));
-
   const result = {
     success: true,
     ir: { instructions: parserOutput as any[], 
@@ -351,7 +373,8 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
       constants: constantTable as any[],
       directives: directives as any[],
       dataTable: dataTable,
-      options: options 
+      options: options,
+      memory: constructMemory(parserOutput, dataTable)
       
     },
     info: 'Success',

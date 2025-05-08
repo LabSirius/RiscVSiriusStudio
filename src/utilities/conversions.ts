@@ -25,6 +25,14 @@ export function intToBinary(sgnInteger: number): string {
   }
 }
 
+export function intTo4Hex(sgnInteger: number): string {
+  let hex: string = "";
+  for (let i = 3; i >= 0; i--){
+    hex = hex.concat("-", intToHex((sgnInteger >> i * 8) & 0xF).padStart(2, "0"));
+  }
+  return hex.slice(1);
+}
+
 export function intToHex(sgnInteger: number): string {
   return binaryToHex(intToBinary(sgnInteger));
 }
