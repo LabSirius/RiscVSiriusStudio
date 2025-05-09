@@ -217,7 +217,7 @@ const MemoryTable = () => {
   useEffect(() => {
     if (!isCreatedMemoryTable) return;
     if (dataMemoryTable?.codeSize !== undefined) {
-      if (!(newPc * 4 >= dataMemoryTable?.codeSize)) {
+      if (!(newPc * 4 >= dataMemoryTable?.codeSize - dataMemoryTable?.constantsSize)) {
         updatePC(newPc, { current: tableInstanceRef.current });
       }
     }
