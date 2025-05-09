@@ -94,7 +94,13 @@ export const getColumnMemoryDefinitions = (isFirstStepRef: MutableRefObject<bool
     const editableAttrs: ColumnDefinition = {
       ...frozenAttrs,
       editor: binaryMemEditor,
-      editable: function () { return !isFirstStepRef.current;},
+      editable: function (cell) {
+        const rowData = cell.getRow().getData();
+        const isEditableStep = !isFirstStepRef.current;
+        const isCodeSegment = rowData.segment === 'program' || rowData.segment === 'constants';
+        return isEditableStep && !isCodeSegment;
+      },
+      
       cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
     };
   

@@ -16,6 +16,7 @@ export const uploadMemory = (
   table: Tabulator,
   newMemory: string[],
   newCodeSize: number,
+  newConstantsSize: number,
   newSymbols: Record<string, SymbolData>,
   pc: number,
   onComplete?: () => void
@@ -24,9 +25,21 @@ export const uploadMemory = (
   const expectedRowCount = newMemory.length / 4;
   const maxAddress = (expectedRowCount - 1) * 4;
 
+  const programSize = newCodeSize - newConstantsSize;
+
   // Generate main data
   const mainRows = chunk(newMemory, 4).map((word, index) => {
-    const address = intToHex(index * 4).toUpperCase();
+    const byteAddress = index * 4;
+    const address = intToHex(byteAddress).toUpperCase();
+
+    let segment = '';
+
+    if (byteAddress < programSize) {
+      segment = 'program';
+    } else if (byteAddress < newCodeSize) {
+      segment = 'constants';
+    }
+
     return {
       address,
       value0: word[0] || '00000000',
@@ -39,7 +52,7 @@ export const uploadMemory = (
         .map((byte) => binaryToHex(byte || '00000000').toUpperCase().padStart(2, '0'))
         .join('-'),
       info: '',
-      isCode: index * 4 < newCodeSize,
+      segment, // ← lo importante
     };
   });
 
@@ -49,14 +62,12 @@ export const uploadMemory = (
   // Add/Update Heap
   const heapAddress = intToHex(newCodeSize).toUpperCase();
   const heapRow = table.getRow(heapAddress);
-  
+
   if (heapRow) {
-    // If the row exists, update only the info field
     heapRow.update({
       info: '<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>'
     });
   } else {
-    // If it does not exist, add a new row
     table.addRow({
       address: heapAddress,
       value0: '00000000',
@@ -65,7 +76,7 @@ export const uploadMemory = (
       value3: '00000000',
       info: '<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>',
       hex: '00-00-00-00',
-      isCode: false,
+      segment: '',
     });
   }
 
@@ -75,12 +86,10 @@ export const uploadMemory = (
     const symbolRow = table.getRow(symbolAddress);
 
     if (symbolRow) {
-      // Update only the info field if the row exists
       symbolRow.update({
         info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`
       });
     } else {
-      // Add a new row if the symbol does not exist
       table.addRow({
         address: symbolAddress,
         value0: '00000000',
@@ -89,13 +98,12 @@ export const uploadMemory = (
         value3: '00000000',
         info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`,
         hex: '00-00-00-00',
-        isCode: false,
+        segment: '',
       });
     }
   });
 
-
-  // Apply row colors and hide empty info cells
+  // Apply placeholder to empty info cells
   table.getRows().forEach(row => {
     const data = row.getData();
     if (!data.info) {
@@ -110,7 +118,7 @@ export const uploadMemory = (
         const rowAddress = parseInt(row.getData().address, 16);
         return rowAddress > maxAddress && !row.getData().info;
       });
-    
+
     if (rowsToDelete.length) {
       table.deleteRow(rowsToDelete.map(row => row.getData().address));
     }
@@ -120,8 +128,7 @@ export const uploadMemory = (
   setSP(newMemory.length - 4, { current: table });
 
   onComplete?.();
-};
-
+}
 
 /**
  * This function updates the program counter in the memory table.

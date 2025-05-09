@@ -79,14 +79,23 @@ const MemoryTable = () => {
       rowFormatter: function (row) {
         const data = row.getData();
         if (!dataMemoryTable) return;
-        const spAddress = intToHex(dataMemoryTable?.memory.length - 4).toUpperCase();
-        if (data.isCode && data.address !== spAddress) {
-          row.getElement().style.backgroundColor = "#D1E3E7";
-          row.getElement().style.color = "#000";
+      
+        const spAddress = intToHex(dataMemoryTable.memory.length - 4).toUpperCase();
+        if (data.address === spAddress) return;
+      
+        const rowEl = row.getElement();
+      
+        if (data.segment === 'program') {
+          rowEl.style.backgroundColor = "#D1E3E7"; // azul pastel
+          rowEl.style.color = "#000";
+        } else if (data.segment === 'constants') {
+          rowEl.style.backgroundColor = "#FFE5B4"; // naranja pastel
+          rowEl.style.color = "#000";
         } else {
-          row.getElement().style.backgroundColor = "";
+          rowEl.style.backgroundColor = "";
+          rowEl.style.color = "";
         }
-      },
+      },      
       initialSort: [{ column: "address", dir: "desc" }],
     });
 
@@ -99,6 +108,7 @@ const MemoryTable = () => {
           tableInstanceRef.current!,
           dataMemoryTable.memory,
           dataMemoryTable.codeSize,
+          dataMemoryTable.constantsSize,
           dataMemoryTable.symbols,
           0,
           () => {
@@ -165,6 +175,7 @@ const MemoryTable = () => {
         tableInstanceRef.current,
         newMemory,
         dataMemoryTable.codeSize,
+        dataMemoryTable.constantsSize,
         dataMemoryTable.symbols,
         0,
         () => {

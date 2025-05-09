@@ -279,6 +279,7 @@ function constructMemory(instructions: any[], data: Record<string, Data>): Memor
 export type InternalRepresentation = {
   instructions: Array<any>;
   symbols: Array<any>;
+  memory: Array<any>;
 };
 
 export type ParserResult = {

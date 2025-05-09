@@ -97,8 +97,15 @@ class DataMemory {
     return this.size - 4;
   }
 
-  public constructor(codeSize: number, size: number) {
+  private _constantsSize: number;
+  get constantsSize() : number {
+    return this._constantsSize;
+  }
+
+  public constructor(programSize : number, codeSize: number, size: number) {
+   
     this.codeAreaEnd = codeSize - 1;
+    this._constantsSize =  codeSize - programSize;
     this.size = 0;
     this.memory = [];
     this.resize(size);
@@ -119,19 +126,20 @@ class DataMemory {
    *
    * @param program intermediate representation of the program
    */
-  public uploadProgram(program: Array<any>) {
-    program.forEach((instruction, index) => {
-      const encodingString = instruction.encoding.binEncoding;
-      const words = chunk(encodingString.split(""), 8).map((group) => group.join(""));
 
-      words.reverse();
-      words.forEach((w, i) => {
-        const address = index * 4 + i;
-        this.memory[address] = w;
+  public uploadProgram(memory: Array<any>) {
+    for (let i = 0; i < memory.length; i += 4) {
+      const block = memory.slice(i, i + 4).reverse();
+  
+      block.forEach((mem, j) => {
+        const address = i + j;
+        this.memory[address] = mem.binValue;
       });
-    });
+    }
+  
   }
-
+  
+  
   public lastAddress() {
     return this.size - 1;
   }
@@ -316,7 +324,7 @@ export class SCCPU {
     return this.pc;
   }
 
-  public constructor(program: any[], memSize: number) {
+  public constructor(program: any[], memory: any[], memSize: number) {
     console.log("Program to execute: ", program);
     this._program = program.filter((sc) => {
       return sc.kind === "SrcInstruction";
@@ -324,8 +332,8 @@ export class SCCPU {
 
     this.registers = new RegistersFile();
 
-    this.dataMemory = new DataMemory(program.length * 4, memSize);
-    this.dataMemory.uploadProgram(this.program);
+    this.dataMemory = new DataMemory(program.length * 4, memory.length, memSize);
+    this.dataMemory.uploadProgram(memory);
     this.pc = 0;
     // Set the initial value of the stack pointer
     const programSize = program.length * 4;
