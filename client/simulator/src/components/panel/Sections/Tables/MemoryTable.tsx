@@ -17,6 +17,7 @@ import {
   animateMemoryCell,
   animateRow,
   animateArrowBetweenCells,
+  createPCIcon,
 } from "@/utils/tables/handlersMemory";
 import {
   intTo32BitBinary,
@@ -79,23 +80,34 @@ const MemoryTable = () => {
       rowFormatter: function (row) {
         const data = row.getData();
         if (!dataMemoryTable) return;
-      
+
         const spAddress = intToHex(dataMemoryTable.memory.length - 4).toUpperCase();
         if (data.address === spAddress) return;
-      
+
         const rowEl = row.getElement();
-      
-        if (data.segment === 'program') {
+
+        if (data.segment === "program") {
           rowEl.style.backgroundColor = "#D1E3E7"; // azul pastel
           rowEl.style.color = "#000";
-        } else if (data.segment === 'constants') {
+        } else if (data.segment === "constants") {
           rowEl.style.backgroundColor = "#FFE5B4"; // naranja pastel
           rowEl.style.color = "#000";
         } else {
           rowEl.style.backgroundColor = "";
           rowEl.style.color = "";
         }
-      },      
+
+        const currentPcHex = (newPc * 4).toString(16).toUpperCase();
+        if (data.address === currentPcHex) {
+          rowEl.querySelectorAll(".pc-icon").forEach((el) => el.remove());
+          const cell = row.getCell("address");
+          if (cell) {
+            const cellEl = cell.getElement();
+            cellEl.style.position = "relative";
+            cellEl.appendChild(createPCIcon());
+          }
+        }
+      },
       initialSort: [{ column: "address", dir: "desc" }],
     });
 
@@ -110,7 +122,6 @@ const MemoryTable = () => {
           dataMemoryTable.codeSize,
           dataMemoryTable.constantsSize,
           dataMemoryTable.symbols,
-          0,
           () => {
             setSp(intToHex(dataMemoryTable.memory.length - 4));
             setNewPc(0);
@@ -177,7 +188,6 @@ const MemoryTable = () => {
         dataMemoryTable.codeSize,
         dataMemoryTable.constantsSize,
         dataMemoryTable.symbols,
-        0,
         () => {
           setNewPc(0);
           setSp(intToHex(newTotalSize - 4));

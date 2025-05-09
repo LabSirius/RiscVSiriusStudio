@@ -18,7 +18,6 @@ export const uploadMemory = (
   newCodeSize: number,
   newConstantsSize: number,
   newSymbols: Record<string, SymbolData>,
-  pc: number,
   onComplete?: () => void
 ): void => {
   const isInitialLoad = table.getData().length === 0;
@@ -123,10 +122,6 @@ export const uploadMemory = (
       table.deleteRow(rowsToDelete.map(row => row.getData().address));
     }
   }
-
-  updatePC(pc, { current: table });
-  setSP(newMemory.length - 4, { current: table });
-
   onComplete?.();
 }
 
@@ -154,6 +149,7 @@ export const createPCIcon = (): HTMLElement => {
   };
   
   export const updatePC = (newPC: number, tableInstanceRef: React.MutableRefObject<Tabulator | null>): void => {
+    
     document.querySelectorAll('.pc-icon').forEach((icon) => icon.remove());
     const targetValue = (newPC * 4).toString(16).toUpperCase();
     const foundRows = tableInstanceRef.current?.searchRows('address', '=', targetValue) || [];
