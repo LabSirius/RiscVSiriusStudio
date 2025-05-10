@@ -128,14 +128,10 @@ class DataMemory {
    */
 
   public uploadProgram(memory: Array<any>) {
-    for (let i = 0; i < memory.length; i += 4) {
-      const block = memory.slice(i, i + 4).reverse();
-  
-      block.forEach((mem, j) => {
-        const address = i + j;
+      memory.forEach((mem) => {
+        const address = mem.memdef;
         this.memory[address] = mem.binValue;
       });
-    }
   
   }
   

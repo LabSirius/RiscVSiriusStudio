@@ -13,7 +13,7 @@ type MemoryValues = {
 
 type Data = {
   memdef: number,
-  value: number | string[],
+  value: string | string[],
   typeAlign: string,
   align: Align
 };
@@ -244,20 +244,20 @@ function constructMemoryFromInst(instruction: any): Memory[] {
   return getMemoryFromList(binList, hexList, instruction.inst);
 }
 
-function constructMemoryFromNumber(value: number, start: number): Memory[] {
-  const binList = getByteList(intToBinary(value));
-  const hexList = getHexList(intTo4Hex(value));
+function constructMemoryFromNumber(value: string, start: number): Memory[] {
+  const hexList = getHexList(value);
+  const binList = getByteList(hexToBin(hexList.join("")));
 
   return getMemoryFromList(binList, hexList, start);
 }
-
 function getMemoryFromList(binList: string[], hexList: string[], start: number): Memory[]{
   let mem: Memory[] = [];
   for (let i = 0; i < binList.length; i++){
+    const index = binList.length - i - 1;
     mem.push({
       memdef: start + i,
-      binValue: binList[i]!,
-      hexValue: hexList[i]!
+      binValue: binList[index]!,
+      hexValue: hexList[index]!
     });
   }
 
@@ -274,6 +274,16 @@ function constructMemory(instructions: any[], data: Record<string, Data>): Memor
 
   Object.keys(data).forEach((key) => [before, memory] = fillMemory(data[key]!, before, memory));
   return memory;
+}
+
+function reorderMemory(memory: Memory[]): Memory[]{
+  let mem: Memory[] = [];
+  for (let i = 0; i < memory.length; i += 4) {
+      const block = memory.slice(i, i + 4).reverse();
+      mem = mem.concat(block);
+    }
+
+  return mem;
 }
 
 export type InternalRepresentation = {
@@ -361,11 +371,13 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
       firstPass: false
     });
   } catch (obj) {
-    //console.error('Assembler error: ', obj);
     retError.extra = obj;
     return retError;
   }
   console.log('Success!.');
+
+  let memory = constructMemory(parserOutput, dataTable);
+  memory = reorderMemory(memory);
 
   const result = {
     success: true,
@@ -375,7 +387,7 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
       directives: directives as any[],
       dataTable: dataTable,
       options: options,
-      memory: constructMemory(parserOutput, dataTable)
+      memory: memory
       
     },
     info: 'Success',

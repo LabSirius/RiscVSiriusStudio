@@ -112,7 +112,7 @@
   function setData(name: string, value: number | number[], typeAlign: string): void {
     dataTable[name] = {
       memdef: 0,
-      value: value,
+      value: Array.isArray(value) ? value: encodingAsHex(toBinaryString(value, 32)),
       typeAlign: typeAlign,
       align: undefined
     };
