@@ -1,5 +1,5 @@
 import { parse } from './riscv';
-import { binaryToHex, hexToBin, intToBinary, intTo4Hex } from './conversions';
+import { binaryToHex, hexToBin } from './conversions';
 
 type Align = {
   start: number,
@@ -289,7 +289,10 @@ function reorderMemory(memory: Memory[]): Memory[]{
 export type InternalRepresentation = {
   instructions: Array<any>;
   symbols: Array<any>;
-  memory: Array<any>;
+  memory: Memory[],
+  directives: Record<string, any[]>,
+  dataTable: Record<string, Data>,
+  constants: Constant[]
 };
 
 export type ParserResult = {
@@ -383,8 +386,8 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     success: true,
     ir: { instructions: parserOutput as any[], 
       symbols: labelTable as any[],
-      constants: constantTable as any[],
-      directives: directives as any[],
+      constants: constantTable,
+      directives: directives,
       dataTable: dataTable,
       options: options,
       memory: memory
