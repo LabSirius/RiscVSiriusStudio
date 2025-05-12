@@ -148,20 +148,47 @@ export const createPCIcon = (): HTMLElement => {
     return icon;
   };
   
-  export const updatePC = (newPC: number, tableInstanceRef: React.MutableRefObject<Tabulator | null>): void => {
-    
-    document.querySelectorAll('.pc-icon').forEach((icon) => icon.remove());
+  export const updatePC = (
+    newPC: number,
+    tableInstanceRef: React.MutableRefObject<Tabulator | null>
+  ): void => {
     const targetValue = (newPC * 4).toString(16).toUpperCase();
-    const foundRows = tableInstanceRef.current?.searchRows('address', '=', targetValue) || [];
+  
+    tableInstanceRef.current?.getRows().forEach((row) => {
+      const cell = row.getCell("address");
+      if (cell) {
+        const cellElement = cell.getElement();
+  
+        const value = cell.getValue();
+  
+        while (cellElement.firstChild) {
+          cellElement.removeChild(cellElement.firstChild);
+        }
+  
+        const span = document.createElement("span");
+        span.className = "address-value";
+        span.innerText = value;
+        cellElement.appendChild(span);
+      }
+    });
+  
+    const foundRows = tableInstanceRef.current?.searchRows("address", "=", targetValue) || [];
     if (foundRows.length === 0) return;
-    const cell = foundRows[0].getCell('address');
+  
+    const cell = foundRows[0].getCell("address");
     if (!cell) return;
+  
     const cellElement = cell.getElement();
-    cellElement.appendChild(createPCIcon());
-    cellElement.classList.add('animate-pc');
+    cellElement.style.position = "relative";
+  
+    const pcIcon = createPCIcon();
+    cellElement.appendChild(pcIcon);
+  
+    cellElement.classList.add("animate-pc");
     void cellElement.offsetWidth;
-    setTimeout(() => cellElement.classList.remove('animate-pc'), 300);
-};
+    setTimeout(() => cellElement.classList.remove("animate-pc"), 300);
+  };
+  
 
 
 

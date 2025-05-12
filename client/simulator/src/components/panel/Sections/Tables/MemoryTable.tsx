@@ -99,6 +99,7 @@ const MemoryTable = () => {
 
         const currentPcHex = (newPc * 4).toString(16).toUpperCase();
         if (data.address === currentPcHex) {
+          console.log("ACA ENTRO")
           rowEl.querySelectorAll(".pc-icon").forEach((el) => el.remove());
           const cell = row.getCell("address");
           if (cell) {
