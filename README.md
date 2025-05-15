@@ -1,7 +1,7 @@
 # RISC-V Simulator for VS Code
 
-[![Download extension](https://img.shields.io/badge/Download-.vsix-blue?style=for-the-badge&logo=visualstudiocode)](https://github.com/LabSirius/RiscVSiriusStudio/releases/download/v0.0.6/rv-simulator-0.0.6.vsix)
-[![Version](https://img.shields.io/badge/version-0.0.2-green?style=for-the-badge)](https://github.com/LabSirius/RiscVSiriusStudio/releases)
+[![Download extension](https://img.shields.io/badge/Download-.vsix-blue?style=for-the-badge&logo=visualstudiocode)](https://github.com/LabSirius/RiscVSiriusStudio/releases/download/v0.0.7/rv-simulator-0.0.7.vsix)
+[![Version](https://img.shields.io/badge/version-0.0.7-green?style=for-the-badge)](https://github.com/LabSirius/RiscVSiriusStudio/releases)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](LICENSE.md)
 
 An interactive RISC-V assembly simulator with memory views, step execution, and code visualization for Visual Studio Code, primarily designed for educational purposes.
