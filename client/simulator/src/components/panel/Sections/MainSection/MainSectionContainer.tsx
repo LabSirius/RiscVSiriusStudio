@@ -44,7 +44,7 @@ const MainSectionContainer: React.FC = () => {
 
   return (
     <div className={`flex `}>
-      <div style={{ height: `${height}px` }} className="relative w-full overflow-y-hidden">
+      <div style={{ height: `${height}px` }} className="relative w-full overflow-y-hidden overflow-hidden">
         
         <div
           className="flex absolute top-0 left-0 min-w-full h-[.3rem]  cursor-ns-resize bg-gray-500 z-10"
