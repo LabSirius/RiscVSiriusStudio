@@ -20,6 +20,7 @@ interface CurrentInstState {
         regenc: string;
       },
       currentPc: number;
+      pseudoasm?: string;
 }
 
 
@@ -102,7 +103,8 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
         rs2:{
           regenc: "",
         },
-        currentPc: 0
+        currentPc: 0,
+        pseudoasm: ""
   },
     
   setCurrentInst: () => {},
@@ -154,6 +156,7 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
     wb: {
       signal: "",
     }
+
   },
   setCurrentResult: () => {}
 });
@@ -179,7 +182,8 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
         rs2:{
           regenc: "",
         },
-        currentPc: 0
+        currentPc: 0,
+        pseudoasm: ""
       },
 
 
