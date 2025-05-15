@@ -82,7 +82,7 @@
 
   function getConstantValue(name: string): number {
     const value = constantTable.find((element) => element.name === name);
-    return value.value;
+    return value?.value;
   }
 
   function getIdentifierValue(name): number {
@@ -1045,7 +1045,7 @@
       const v = getInt(val);
         if (isImm12(v))
           return v;
-        return error("Expecting 12 bit representable value [-2048,2047]. Got " + v, location());
+        return error("Expecting 12 bit representable value [-2048,2047]. Got " + val, location());
   }
 
   Imm13 "13 bits immediate"
@@ -1054,7 +1054,7 @@
       const v = getInt(val);
         if (isImm13(v))
           return v;
-        return error("Expecting 13 bit representable value [-4096, 4095]. Got " + v, location());
+        return error("Expecting 13 bit representable value [-4096, 4095]. Got " + val, location());
   }
 
   Imm21 "21 bits immediate"
@@ -1063,7 +1063,7 @@
       const v = getInt(val);
       if (isImm21(v))
         return v;
-      error("Expecting 21 bit representable value [-1048576, 1048575]. Got " + v, location());
+      error("Expecting 21 bit representable value [-1048576, 1048575]. Got " + val, location());
   }
 
   Imm32 "32 bits immediate"
@@ -1072,7 +1072,7 @@
       const v = getInt(val);
         if (isImm32(v))
           return v;
-        return error("Expecting 32 bit representable value [0, 4294967295]. Got " + v, location());
+        return error("Expecting 32 bit representable value [0, 4294967295]. Got " + val, location());
   }
 
   JTarget "target address of a jump instruction"
@@ -1081,20 +1081,20 @@
   { 
     if (isFirstPass) { return undefined; }
     let value = getPosLabel(lbl["name"])
-    if (value === undefined){
+    if (!value){
       value = getConstantValue(lbl["name"]);
     }
-    if (isImm21(value) && value !== undefined) {
+    if (value && isImm21(value)) {
         return value;
     }
-    return error("Expecting 21 bit representable value [-1048576, 1048575]. Got " + value); 
+    return error("Expecting 21 bit representable value [-1048576, 1048575]. Got " + lbl.name); 
   }
 
   Symbol "number 12 bit or 32 bit representable"
   = val:Integer
   {
     const v = getInt(val);
-    if (!isImm32(v)) { return error("Expecting 32 bit representable value [-2147483648, 2147483647]. Got " + v); }
+    if (!isImm32(v)) { return error("Expecting 32 bit representable value [-2147483648, 2147483647]. Got " + val); }
     return {"value": v, "double": !isImm12(v)}; 
     
   }
@@ -1107,7 +1107,7 @@
 
     const value = getIdentifierValue(lbl.name);
   
-    if (value === undefined){
+    if (!value){
       return error(`Identifier name is not valid: ${lbl.name}`);
       
     }
@@ -1120,6 +1120,9 @@
   {
     if (isFirstPass) { return {}; }
     const value = getDirFromData(address["name"])
+    if (!value){
+      return error("Expecting a valid Symbol or Direction name. Got " + address.name)
+    }
     return {"value": value, "double": !isImm12(value)};
   }
 
@@ -1127,32 +1130,32 @@
   = name:Identifier
   {
     const value = getConstantValue(name.name);
-    if (isImm32(value)) { return value; }
-    else { return error("Constant value most be 32 bit representable value"); }
+    if (value && isImm32(value)) { return value; }
+    else { return error("Constant value most be 32 bit representable value. Got " + name.name); }
   }
 
   ConstantName12 "Constant name for 12 bit representable value loaded from .equ directive"
   = name:Identifier
   {
     const value = getConstantValue(name.name);
-    if (isImm12(value)) { return value; }
-    else { return error("Constant value most be 12 bit representable value"); }
+    if (value && isImm12(value)) { return value; }
+    else { return error("Constant value most be 12 bit representable value. Got " + name.name); }
   }
 
   ConstantName13 "Constant name for 13 bit representable value loaded from .equ directive"
   = name:Identifier
   {
     const value = getConstantValue(name.name);
-    if (isImm13(value)) { return value; }
-    else { return error("Constant value most be 13 bit representable value"); }
+    if (value && isImm13(value)) { return value; }
+    else { return error("Constant value most be 13 bit representable value. Got " + name.name); }
   }
 
   ConstantName21 "Constant name for 21 bit representable value loaded from .equ directive"
   = name:Identifier
   {
     const value = getConstantValue(name.name);
-    if (isImm21(value)) { return value; }
-    else { return error("Constant value most be 21 bit representable value"); }
+    if (value && isImm21(value)) { return value; }
+    else { return error("Constant value most be 21 bit representable value. Got " + name.name); }
   }
 
   LIOperandKind12
@@ -1194,7 +1197,7 @@
     if (value === undefined){
       value = getConstantValue(name.name);
     }
-    if (!isImm12) { return error("Constant value most be 32 bit representable value"); }
+    if (value && !isImm12(value)) { return error("Constant value most be 32 bit representable value. Got " + name.name); }
     return value;
   }
 
@@ -1204,7 +1207,7 @@
     if (value === undefined){
       value = getConstantValue(name.name);
     }
-    if (!isImm32) { return error("Constant value most be 32 bit representable value"); }
+    if (value && !isImm32(value)) { return error("Constant value most be 32 bit representable value. Got " + name.name); }
     const data = {
       value: value,
       double: !isImm12
@@ -1218,10 +1221,10 @@
   / lbl:Identifier {
     if (isFirstPass) { return undefined; }
     const value = getPosLabel(lbl["name"]);
-    if (isImm13(value)) {
+    if (value && isImm13(value)) {
         return value;
     }
-    return error("Expecting 13 bit representable value [-4096, 4095]. Got " + v, location());
+    return error("Expecting 13 bit representable value [-4096, 4095] (Label, Constant or Imm). Got " + lbl.name, location());
   }
 
   JALRTarget "target address of a jalr instruction"
@@ -1232,7 +1235,7 @@
     if (isImm13(value)) {
         return value;
     }
-    return error("Expecting 13 bit representable value [-4096, 4095]. Got " + v, location());
+    return error("Expecting 13 bit representable value [-4096, 4095] (Label, Constant or Imm). Got " + lbl.name, location());
   }
 
   AsmModifier "assembler modifier"
