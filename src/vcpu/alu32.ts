@@ -14,8 +14,8 @@ export class ALU32 {
   }
 
   public static shiftLeft(a: string, b: string): BigInt {
-    const ba = BigInt(a);
-    const bb = BigInt(b);
+    const ba = Number(a);
+    const bb = Number(b);
     if (bb < 0 || bb > 31) {
       throw new Error('Incorrect shift value ' + bb);
     }
@@ -26,14 +26,14 @@ export class ALU32 {
   }
 
   public static shiftRight(a: string, b: string): BigInt {
-    const ba = BigInt(a);
-    const bb = BigInt(b);
+    const ba = Number(a);
+    const bb = Number(b);
     if (bb < 0 || bb > 31) {
       throw new Error('Incorrect shift value ' + bb);
     }
     // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Right_shift
     // << produces a 32 bits integer.
-    const br = ba >> bb;
+    const br = ba >>> bb;
     return BigInt(br);
   }
 

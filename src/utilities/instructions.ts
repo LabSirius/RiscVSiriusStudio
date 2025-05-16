@@ -279,3 +279,11 @@ export function getFunct7(instruction: any) {
   }
   return instruction.encoding.funct7;
 }
+
+export function isILogical(name: string): boolean {
+    return (name === 'slli'|| name === 'srli' || name === 'srai');
+  }
+
+export function getImmFunct7(imm: string): string {
+  return imm.substring(0, 8);
+}
