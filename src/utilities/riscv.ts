@@ -308,7 +308,7 @@
       case 'andi'  : funct3 = 7; break;
       case 'slli'  : funct3 = 1; funct7 = 0;  break;
       case 'srli'  : funct3 = 5; funct7 = 0;  break;
-      case 'srai'  : funct3 = 5; funct7 = 32;  /* 32 = 0x20 */ break;
+      case 'srai'  : funct3 = 5; funct7 = 1024;  /* 32 = 0x20 --> 1024 = 32 << 5 */ break;
       case 'slti'  : funct3 = 2; break;
       case 'sltiu' : funct3 = 3; break;
 
@@ -339,7 +339,7 @@
     const rs1Val = getInt(rs1["regenc"]);
     const rs1Bin = toBinaryString(rs1Val,5);
 
-    let immVal = getInt(imm);
+    let immVal = getInt(imm) + funct7;
     const immValBin = toBinaryString(immVal,12);
 
     const binEncoding = `${immValBin}${rs1Bin}${funct3Bin}${rdBin}${opcode}`;
