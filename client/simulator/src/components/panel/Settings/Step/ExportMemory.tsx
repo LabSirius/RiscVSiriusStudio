@@ -15,11 +15,19 @@ const ExportMemory = () => {
 
     const hexLines: string[] = [];
 
-    for (let i = 0; i < codeSize; i++) {
-      const binaryString = memory[i];
-      if (!binaryString) continue; 
-      const hexValue = parseInt(binaryString, 2).toString(16).toUpperCase(); 
-      hexLines.push(hexValue);
+    for (let i = 0; i < codeSize; i += 4) {
+      const group: string[] = [];
+
+      for (let j = 0; j < 4; j++) {
+        const index = i + j;
+        const binaryString = memory[index];
+        if (binaryString) {
+          const hexValue = parseInt(binaryString, 2).toString(16).toUpperCase();
+          group.push(hexValue);
+        }
+      }
+
+      hexLines.push(...group.reverse());
     }
 
     const fileContent = hexLines.join("\n");
@@ -30,7 +38,7 @@ const ExportMemory = () => {
 
     const link = document.createElement("a");
     link.href = url;
-    link.download = "instructions_hex.hex"; 
+    link.download = "instructions_hex.hex";
     link.click();
 
     URL.revokeObjectURL(url);

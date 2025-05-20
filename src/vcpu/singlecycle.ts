@@ -23,6 +23,8 @@ import {
   isILoad,
   isIJump,
   isAUIPC,
+  isILogical,
+  getImmFunct7
 } from "../utilities/instructions";
 import { ALU32 } from "./alu32";
 import { binaryToInt, intToBinary } from "../utilities/conversions";
@@ -514,13 +516,21 @@ export class SCCPU {
 
     const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
     const imm12Val = this.currentInstruction().encoding.imm12;
-    const imm32Val = imm12Val.padStart(32, imm12Val.at(0));
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
-
+    
+    let imm32Val = imm12Val.padStart(32, imm12Val.at(0));
     let aluOp = "";
+    let MSBaluOp = "0";
     switch (true) {
       case isIArithmetic(instruction.type, instruction.opcode):
-        aluOp = "0" + getFunct3(instruction);
+        if (isILogical(instruction.instruction)){
+          MSBaluOp =  getImmFunct7(imm12Val)[1]!;
+          imm32Val = imm32Val.split(""); 
+          imm32Val[21] = "0"; 
+          imm32Val = imm32Val.join("");
+        }
+        
+        aluOp = MSBaluOp + getFunct3(instruction);
         break;
       case isILoad(this.currentType(), this.currentOpcode()):
         aluOp = "0000";
