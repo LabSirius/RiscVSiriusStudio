@@ -252,6 +252,14 @@
       case 'sra'  : funct3 = 5; funct7 = 32; /* 32 = 0x20 */  break;
       case 'slt'  : funct3 = 2; funct7 = 0;  break;
       case 'sltu' : funct3 = 3; funct7 = 0;  break;
+      case 'mul' : funct3 = 0; funct7 = 1;  break;
+      case 'mulh' : funct3 = 1; funct7 = 1;  break;
+      case 'mulsu' : funct3 = 2; funct7 = 1;  break;
+      case 'mulu' : funct3 = 3; funct7 = 1;  break;
+      case 'div' : funct3 = 4; funct7 = 1;  break;
+      case 'divu' : funct3 = 5; funct7 = 1;  break;
+      case 'rem' : funct3 = 6; funct7 = 1;  break;
+      case 'remu' : funct3 = 7; funct7 = 1;  break;
     }
     const rdVal = getInt(rd["regenc"]);
     const rdBin = toBinaryString(rdVal,5);
@@ -1366,6 +1374,14 @@
   / sraToken
   / sltuToken
   / sltToken
+  / mulhToken
+  / mulsuToken
+  / muluToken
+  / mulToken
+  / divuToken
+  / divToken
+  / remuToken
+  / remToken
   
   IInstName "i-type instruction name"
   = addiToken
@@ -1470,6 +1486,14 @@
   sraToken  = "sra"
   sltToken  = "slt"
   sltuToken = "sltu"
+  mulToken = "mul"
+  mulhToken = "mulh"
+  mulsuToken = "mulsu"
+  muluToken = "mulu"
+  divToken = "div"
+  divuToken = "divu"
+  remToken = "rem"
+  remuToken = "remu"
   
   addiToken  = "addi"
   xoriToken  = "xori"
