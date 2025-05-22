@@ -2,7 +2,7 @@
   "name": "rv-simulator",
   "displayName": "RISCV simulator",
   "description": "An interactive RISC-V assembly simulator with memory views, step execution, and code visualization.",
-  "version": "0.0.2",
+  "version": "0.0.7",
   "repository": "https://github.com/utpgustavogutierrez/vsc-riscv.git",
   "engines": {
     "vscode": "^1.75.0"
@@ -17,6 +17,12 @@
         "command": "rv-simulator.simulate",
         "title": "RISCV simulator: simulate program execution",
         "icon": "$(chip)",
+        "when": "!ext.isSimulating"
+      },
+      {
+        "command": "rv-simulator.textSimulate",
+        "title": "RISCV simulator: text-simulate program execution",
+        "icon": "$(symbol-parameter)",
         "when": "!ext.isSimulating"
       },
       {
@@ -157,6 +163,11 @@
           "when": "editorLangId == riscvasm && !ext.isSimulating"
         },
         {
+          "command": "rv-simulator.textSimulate",
+          "group": "navigation",
+          "when": "editorLangId == riscvasm && !ext.isSimulating"
+        },
+        {
           "command": "rv-simulator.simulateStep",
           "group": "navigation",
           "when": "editorLangId == riscvasm && ext.isSimulating"
@@ -268,6 +279,7 @@
   },
   "dependencies": {
     "@vscode/codicons": "^0.0.36",
+    "@vscode/vsce": "^3.3.0",
     "@vscode/webview-ui-toolkit": "^1.2.2",
     "jspdf": "^2.5.1",
     "lodash-es": "^4.17.21",

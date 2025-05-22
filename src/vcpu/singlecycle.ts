@@ -23,6 +23,8 @@ import {
   isILoad,
   isIJump,
   isAUIPC,
+  isILogical,
+  getImmFunct7
 } from "../utilities/instructions";
 import { ALU32 } from "./alu32";
 import { binaryToInt, intToBinary } from "../utilities/conversions";
@@ -97,8 +99,15 @@ class DataMemory {
     return this.size - 4;
   }
 
-  public constructor(codeSize: number, size: number) {
+  private _constantsSize: number;
+  get constantsSize() : number {
+    return this._constantsSize;
+  }
+
+  public constructor(programSize : number, codeSize: number, size: number) {
+   
     this.codeAreaEnd = codeSize - 1;
+    this._constantsSize =  codeSize - programSize;
     this.size = 0;
     this.memory = [];
     this.resize(size);
@@ -119,21 +128,16 @@ class DataMemory {
    *
    * @param program intermediate representation of the program
    */
-  public uploadProgram(program: Array<any>) {
-    program.forEach((instruction, index) => {
-      const encodingString = instruction.encoding.binEncoding;
-      const words = chunk(encodingString.split(""), 8).map((group) => group.join(""));
 
-      words.reverse();
-      words.forEach((w, i) => {
-        const address = index * 4 + i;
-        this.memory[address] = w;
+  public uploadProgram(memory: Array<any>) {
+      memory.forEach((mem) => {
+        const address = mem.memdef;
+        this.memory[address] = mem.binValue;
       });
-    });
-    console.table(this.memory);
-    console.log(`Program uploaded. initial sp ${this.spInitialAddress} `);
+  
   }
-
+  
+  
   public lastAddress() {
     return this.size - 1;
   }
@@ -318,7 +322,7 @@ export class SCCPU {
     return this.pc;
   }
 
-  public constructor(program: any[], memSize: number) {
+  public constructor(program: any[], memory: any[], memSize: number) {
     console.log("Program to execute: ", program);
     this._program = program.filter((sc) => {
       return sc.kind === "SrcInstruction";
@@ -326,8 +330,8 @@ export class SCCPU {
 
     this.registers = new RegistersFile();
 
-    this.dataMemory = new DataMemory(program.length * 4, memSize);
-    this.dataMemory.uploadProgram(this.program);
+    this.dataMemory = new DataMemory(program.length * 4, memory.length, memSize);
+    this.dataMemory.uploadProgram(memory);
     this.pc = 0;
     // Set the initial value of the stack pointer
     const programSize = program.length * 4;
@@ -353,12 +357,10 @@ export class SCCPU {
 
   public nextInstruction() {
     this.pc++;
-    console.log("[next] new value of PC is ", this.pc);
   }
 
   public jumpToInstruction(address: string) {
     this.pc = parseInt(address, 2) / 4;
-    console.log("[jump] new value of PC is ", this.pc);
   }
 
   private toTwosComplement(n: any, len: any) {
@@ -514,13 +516,21 @@ export class SCCPU {
 
     const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
     const imm12Val = this.currentInstruction().encoding.imm12;
-    const imm32Val = imm12Val.padStart(32, imm12Val.at(0));
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
-
+    
+    let imm32Val = imm12Val.padStart(32, imm12Val.at(0));
     let aluOp = "";
+    let MSBaluOp = "0";
     switch (true) {
       case isIArithmetic(instruction.type, instruction.opcode):
-        aluOp = "0" + getFunct3(instruction);
+        if (isILogical(instruction.instruction)){
+          MSBaluOp =  getImmFunct7(imm12Val)[1]!;
+          imm32Val = imm32Val.split(""); 
+          imm32Val[21] = "0"; 
+          imm32Val = imm32Val.join("");
+        }
+        
+        aluOp = MSBaluOp + getFunct3(instruction);
         break;
       case isILoad(this.currentType(), this.currentOpcode()):
         aluOp = "0000";
@@ -633,6 +643,7 @@ export class SCCPU {
     result.ru = {
       ...defaultRUResult,
       rs1: baseAddressVal,
+      rs2: dataToStore,
       writeSignal: "0",
     };
     result.alu = {
@@ -653,7 +664,6 @@ export class SCCPU {
       writeSignal: "1",
     };
     result.imm = { signal: "001", output: offset32Val };
-    console.log("Result of S instruction: ", result);
     return result;
   }
 
@@ -737,6 +747,7 @@ export class SCCPU {
 
     const imm21Val = this.currentInstruction().encoding.imm21;
     const imm32Val = imm21Val.padEnd(32, "0");
+    
 
     let aVal = "0".padStart(32, "0");
     let aluASrcVal = "0";
@@ -757,7 +768,7 @@ export class SCCPU {
     result.bu = { ...defaultBUResult, result: "0", operation: "00XXX" };
     result.alu = { operation: "0000", result: aluRes, a: aVal, b: imm32Val };
     result.buMux = { result: add4Res, signal: "0" };
-    result.wb = { result: imm32Val, signal: "00" };
+    result.wb = { result: aluRes, signal: "00" };
     return result;
   }
 
@@ -770,7 +781,7 @@ export class SCCPU {
     const add4Res = (pc + 4).toString(2).padStart(32, "0");
     result.add4.result = add4Res;
     const imm21Val = this.currentInstruction().encoding.imm21 as string;
-    const imm32Val = imm21Val.padStart(32, "0");
+    const imm32Val = imm21Val.padStart(32, imm21Val.at(0));
 
     const aluRes = this.computeALURes(pcVal, imm32Val, "0000");
 
@@ -799,12 +810,21 @@ export class SCCPU {
   }
 
   public replaceDataMemory(newMemory: any[]): void {
+    if (!newMemory) {
+      return;
+  }
     const flatMemory: string[] = [];
     newMemory.forEach((group) => {
       flatMemory.push(group.value0, group.value1, group.value2, group.value3);
     });
 
+
     (this.dataMemory as any).memory = flatMemory;
+
+  }
+
+  public replaceRegisters(newRegisters: string[]): void {
+    (this.registers as any).registers = newRegisters;
   }
 
   public printInfo() {

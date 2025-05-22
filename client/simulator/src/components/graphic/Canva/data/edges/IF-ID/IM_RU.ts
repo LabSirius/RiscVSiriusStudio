@@ -1,0 +1,83 @@
+// This file contains the connections between Instruction memory and Registers unit
+
+import { Edge, MarkerType  } from '@xyflow/react';
+
+export const IM_RU: Edge[] = [
+
+  {
+    id: 'instructionMemory->pivot3',
+    source: 'instructionMemory',
+    target: 'pivot3',
+    type: 'smoothstep'
+  },
+  {
+    id: 'pivot3->pivot22',
+    source: 'pivot3',
+    sourceHandle: '[11:7]',
+    target: 'pivot22',
+    targetHandle: '[11:7]',
+    type: 'step',
+
+  },
+  {
+    id: 'pivot22->registersUnit[11:7]',
+    source: 'pivot22',
+    target: 'registersUnit',
+    targetHandle: '[11:7]',
+    type: 'step',
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      color: '#888888',
+      width: 9,
+      height: 9,
+    },
+
+  },
+  {
+    id: 'pivot22->pivot20',
+    source: 'pivot22',
+    sourceHandle: '[24:20]',
+    target: 'pivot20',
+    type: 'smoothstep'
+  },
+
+  {
+    id: 'pivot20->RegistersUnit[24:20]',
+    source: 'pivot20',
+    sourceHandle: '[24:20]',
+    target: 'registersUnit',
+    targetHandle: '[24:20]',
+    type: 'step',
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      color: '#888888',
+      width: 9,
+      height: 9,
+    },
+  },
+
+  {
+    id: 'pivot20->pivot21',
+    source: 'pivot20',
+    sourceHandle: '[19:15]',
+    target: 'pivot21',
+    type: 'step',
+  },
+
+
+  {
+    id: 'pivot21->RegistersUnit[19:15]',
+    source: 'pivot21',
+    sourceHandle: '[19:15]',
+    target: 'registersUnit',
+    targetHandle: '[19:15]',
+    type: 'step',
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      color: '#888888',
+      width: 8,
+       height: 8,
+    },
+  },
+ 
+];

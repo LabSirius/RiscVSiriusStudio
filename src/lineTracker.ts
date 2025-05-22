@@ -10,7 +10,7 @@ export class LineTracker {
     window.onDidChangeActiveTextEditor(editor => this.onActiveTextEditorChanged(editor));
     window.onDidChangeTextEditorSelection(() => {
       if (this._editor) {
-        const line = this._editor.selection.active.line;
+        const line = this._editorselection.active.line;
         if (line !== this._currentLine) {
           console.log(`Line changed to ${line}`);
           this._currentLine = line;

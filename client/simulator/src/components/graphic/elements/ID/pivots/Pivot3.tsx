@@ -1,0 +1,29 @@
+// This pivot is used to mark the cut points between the instruction memory and what is received by the control unit, the registers unit, and the imm generator of the instruction memory.
+import { Handle, Position } from '@xyflow/react';
+
+export default function Pivot3() {
+  return (
+    <div style={{ width: 0, height: 0, opacity: 0, position: 'relative' }}>
+      <Handle
+        type="target"
+        position={Position.Left}
+      />
+
+      <Handle
+        type="source"
+        id="[11:7]"
+        position={Position.Top}
+      />
+      {/* <Handle
+        type="source"
+        id="[24:20]"
+        position={Position.Top}
+      /> */}
+      <Handle
+        type="source"
+        id="[31:7]"
+        position={Position.Bottom}
+      />
+    </div>
+  );
+}
