@@ -3,7 +3,7 @@ import { useSimulator } from "./context/shared/SimulatorContext";
 import MainSectionContainer from "@/components/panel/Sections/MainSection/MainSectionContainer";
 import MainSection from "@/components/panel/Sections/MainSection/MainSection";
 
-import Canva from "./components/graphic/Canva/Canva";
+import MonocycleCanva from "./components/graphic/Canva/monocycle/MonoCycleCanva";
 import Providers from "./providers";
 
 const App = () => {
@@ -14,7 +14,7 @@ const App = () => {
       <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
         {modeSimulator === "graphic" ? (
           <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh">
-            <Canva />
+            <MonocycleCanva />
             <div className="relative">
               <MainSectionContainer />
             </div>

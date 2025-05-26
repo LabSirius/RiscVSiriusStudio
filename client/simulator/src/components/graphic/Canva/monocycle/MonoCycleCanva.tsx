@@ -16,17 +16,17 @@ import '@xyflow/react/dist/style.css';
 
 import { nodeTypes } from './constants';
 import { edgeTypes } from './constants';
-import { initialNodes } from './data/nodes/initialNodes'; // Nodes
-import { initialEdges } from './data/edges/initialEdges'; //Conecctions between npdes
+import { initialNodes } from '../data/nodes/initialNodes'; // Nodes
+import { initialEdges } from '../data/edges/initialEdges'; //Conecctions between npdes
 
-import CustomControls from '../custom/CustomControls';
+import CustomControls from '../../custom/CustomControls';
 
-import { animateLine } from '../animateLine/animateLine';
+import { animateLine } from '../../animateLine/animateLine';
 import InstructionEffect from './InstructionEffect';
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
-export default function Canva() {
+export default function MonocycleCanva() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [showMinimap, setShowMinimap] = useState(false);

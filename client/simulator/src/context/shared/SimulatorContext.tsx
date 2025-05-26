@@ -25,7 +25,7 @@ const SimulatorContext = createContext<SimulatorContextProps | undefined>(undefi
 
 export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [typeSimulator, setTypeSimulator] = useState<string>("monocycle");
-  const [modeSimulator, setModeSimulator] = useState<string>("text");
+  const [modeSimulator, setModeSimulator] = useState<string>("");
   const [textProgram, setTextProgram] = useState<string>("");
   const [operation, setOperation] = useState<string>("");
   const [isFirstStep, setIsFirstStep] = useState<boolean>(false);
