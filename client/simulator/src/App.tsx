@@ -7,14 +7,19 @@ import MonocycleCanva from "./components/graphic/Canva/monocycle/MonoCycleCanva"
 import Providers from "./providers";
 
 const App = () => {
-  const { modeSimulator } = useSimulator();
+  const { modeSimulator, typeSimulator } = useSimulator();
 
   return (
     <Providers>
       <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
         {modeSimulator === "graphic" ? (
           <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh">
+            {typeSimulator === "monocycle" ? (
             <MonocycleCanva />
+              
+            ) : (
+              <h1>SEGMENTADO</h1>
+            )}
             <div className="relative">
               <MainSectionContainer />
             </div>
