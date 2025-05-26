@@ -173,8 +173,9 @@ export class TextSimulator extends Simulator {
 
     this.listenToEditorClicks();
     const inst = this.cpu.currentInstruction();
-    const line = this.rvDoc.getLineForIR(inst);
-    if (line !== undefined) this.highlightLine(line);
+    let line = this.rvDoc.getLineForIR(inst);
+    if( line === undefined) line = 0;
+    this.highlightLine(line);
 
     const addressLine =
       this.rvDoc.ir?.instructions.map((instr) => {
