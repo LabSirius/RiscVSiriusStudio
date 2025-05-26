@@ -173,8 +173,9 @@ export class TextSimulator extends Simulator {
 
     this.listenToEditorClicks();
     const inst = this.cpu.currentInstruction();
-    const line = this.rvDoc.getLineForIR(inst);
-    if (line !== undefined) this.highlightLine(line);
+    let line = this.rvDoc.getLineForIR(inst);
+    if( line === undefined) line = 0;
+    this.highlightLine(line);
 
     const addressLine =
       this.rvDoc.ir?.instructions.map((instr) => {
@@ -182,6 +183,9 @@ export class TextSimulator extends Simulator {
         const jump = branchesOrJumps(instr.type, instr.opcode) ? instr.encoding.imm13 : null;
         return { line, jump };
       }) || [];
+
+
+    this.highlightCurrentInstruction();
 
     mainView.postMessage({
       from: "extension",
@@ -206,7 +210,7 @@ export class TextSimulator extends Simulator {
       value: intToBinary(spValue),
     });
 
-    this.highlightCurrentInstruction();
+    
   }
 
   public override step(): StepResult {
@@ -351,6 +355,7 @@ export class TextSimulator extends Simulator {
   }
 
   private highlightCurrentInstruction() {
+   
     const inst = this.cpu.currentInstruction();
     const line = this.rvDoc.getLineForIR(inst);
     this.sendToWebview({
@@ -360,16 +365,22 @@ export class TextSimulator extends Simulator {
   }
 
   private highlightLine(lineNumber: number): void {
+    console.log("CONTROL 1, lineNumber:", lineNumber);
     const editor = this.rvDoc.editor;
     if (editor) {
       if (this.currentHighlight) {
         this.currentHighlight.dispose();
       }
 
+      console.log("CONTROL 2, lineNumber:", lineNumber);
+
       this.currentHighlight = window.createTextEditorDecorationType({
         backgroundColor: "rgba(209, 227, 231, 0.5)", // Azul pastel
         isWholeLine: true,
       });
+
+
+      console.log("CONTROL 3, lineNumber:", lineNumber);
 
       const range = editor.document.lineAt(lineNumber).range;
       editor.revealRange(range);

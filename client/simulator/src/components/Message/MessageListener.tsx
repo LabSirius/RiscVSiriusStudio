@@ -16,8 +16,8 @@ const MessageListener = () => {
   } = useMemoryTable();
 
   const {
-    typeSimulator,
-    setTypeSimulator,
+    modeSimulator,
+    setModeSimulator,
     setTextProgram,
     setOperation,
     isFirstStep,
@@ -31,10 +31,10 @@ const MessageListener = () => {
   const { setLineDecorationNumber, setClickInEditorLine } = useLines();
   const { setDialog } = useDialog();
 
-  const typeSimulatorRef = useRef(typeSimulator);
+  const modeSimulatorRef = useRef(modeSimulator);
   useEffect(() => {
-    typeSimulatorRef.current = typeSimulator;
-  }, [typeSimulator]);
+    modeSimulatorRef.current = modeSimulator;
+  }, [modeSimulator]);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -42,13 +42,13 @@ const MessageListener = () => {
       if (message?.from === "UIManager") {
         switch (message.operation) {
           case "simulatorType":
-            setTypeSimulator(message.simulatorType);
+            setModeSimulator(message.simulatorType);
             break;
           case "textProgram":
             setTextProgram(message.textProgram);
             break;
           case "uploadMemory":
-            if (!(typeSimulator === "graphic")) {
+            if (!(modeSimulator === "graphic")) {
               setDialog({
                 title: "Configuration Info",
                 description:
@@ -64,6 +64,7 @@ const MessageListener = () => {
             setOperation("uploadMemory");
             break;
           case "decorateLine":
+            console.log("decorateLine EEEE", message.lineDecorationNumber);
             setLineDecorationNumber(message.lineDecorationNumber);
             break;
           case "step":
@@ -77,7 +78,7 @@ const MessageListener = () => {
             }
 
             if (!isFirstStep) {
-              if (typeSimulatorRef.current === "graphic") {
+              if (modeSimulatorRef.current === "graphic") {
                 setSection("program");
               } else {
                 setSection("search");
@@ -129,7 +130,7 @@ const MessageListener = () => {
   ]);
 
   useEffect(() => {
-    if (typeSimulator == "graphic") {
+    if (modeSimulator == "graphic") {
       setDialog({
         title: "Configuration Info",
         description:
@@ -138,7 +139,7 @@ const MessageListener = () => {
       });
       setSection("program");
     }
-  }, [typeSimulator, setSection, setOperation, setDialog]);
+  }, [modeSimulator, setSection, setOperation, setDialog]);
 
   return null;
 };

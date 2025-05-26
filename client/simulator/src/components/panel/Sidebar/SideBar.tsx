@@ -21,7 +21,7 @@ import {
 import { Text, Search, Calculator, Info, Settings } from "lucide-react";
 
 export function SideBar() {
-  const { operation, typeSimulator, section, setSection } = useSimulator();
+  const { operation, modeSimulator, section, setSection } = useSimulator();
   const { setOpen, setHoveringSidebar } = useSidebar();
   return (
     <Sidebar
@@ -41,7 +41,7 @@ export function SideBar() {
             <SidebarMenu className="flex flex-col justify-between h-auto pl-3 mt-1">
               <div className="flex flex-col items-start gap-3">
                 {(operation === "uploadMemory" || operation === "step") &&
-                  typeSimulator === "graphic" && (
+                  modeSimulator === "graphic" && (
                     <SidebarMenuItem className="flex items-center gap-1">
                       <a onClick={() => setSection("program")} className="curser-pointer">
                         <Button variant="outline" size="icon">

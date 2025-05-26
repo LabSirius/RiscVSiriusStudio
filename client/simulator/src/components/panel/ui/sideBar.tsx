@@ -127,7 +127,7 @@ function Sidebar({
   collapsible?: "offcanvas" | "icon" | "none";
 }) {
   const { state, setOpen } = useSidebar();
-  const { typeSimulator} = useSimulator();
+  const { modeSimulator} = useSimulator();
 
   return (
     <div
@@ -155,7 +155,7 @@ function Sidebar({
         data-slot="sidebar-container"
         className={cn(
           "absolute bottom-0 z-10 flex w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear",
-          typeSimulator === "graphic" ? "top-2" : "top-0",
+          modeSimulator === "graphic" ? "top-2" : "top-0",
           side === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",

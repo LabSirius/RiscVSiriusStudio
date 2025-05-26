@@ -1,8 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 export interface SimulatorContextProps {
+
   typeSimulator: string;
   setTypeSimulator: React.Dispatch<React.SetStateAction<string>>;
+
+  modeSimulator: string;
+  setModeSimulator: React.Dispatch<React.SetStateAction<string>>;
 
   textProgram: string;
   setTextProgram: React.Dispatch<React.SetStateAction<string>>;
@@ -20,7 +24,8 @@ export interface SimulatorContextProps {
 const SimulatorContext = createContext<SimulatorContextProps | undefined>(undefined);
 
 export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [typeSimulator, setTypeSimulator] = useState<string>("");
+  const [typeSimulator, setTypeSimulator] = useState<string>("monocycle");
+  const [modeSimulator, setModeSimulator] = useState<string>("text");
   const [textProgram, setTextProgram] = useState<string>("");
   const [operation, setOperation] = useState<string>("");
   const [isFirstStep, setIsFirstStep] = useState<boolean>(false);
@@ -32,6 +37,8 @@ export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children 
       value={{
         typeSimulator,
         setTypeSimulator,
+        modeSimulator,
+        setModeSimulator,
         textProgram,
         setTextProgram,
         operation,

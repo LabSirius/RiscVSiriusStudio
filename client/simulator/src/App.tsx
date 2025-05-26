@@ -7,12 +7,12 @@ import Canva from "./components/graphic/Canva/Canva";
 import Providers from "./providers";
 
 const App = () => {
-  const { typeSimulator } = useSimulator();
+  const { modeSimulator } = useSimulator();
 
   return (
     <Providers>
       <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
-        {typeSimulator === "graphic" ? (
+        {modeSimulator === "graphic" ? (
           <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh">
             <Canva />
             <div className="relative">
