@@ -17,7 +17,7 @@ import '@xyflow/react/dist/style.css';
 import { nodeTypes } from './constants';
 import { edgeTypes } from './constants';
 import { initialNodes } from '../data/nodes/initialNodes'; // Nodes
-import { initialEdges } from '../data/edges/initialEdges'; //Conecctions between npdes
+import { initialEdges } from './edges/initialEdges'; //Conecctions between npdes
 
 import CustomControls from '../../custom/CustomControls';
 

@@ -3,7 +3,8 @@ import { useSimulator } from "./context/shared/SimulatorContext";
 import MainSectionContainer from "@/components/panel/Sections/MainSection/MainSectionContainer";
 import MainSection from "@/components/panel/Sections/MainSection/MainSection";
 
-import MonocycleCanva from "./components/graphic/Canva/monocycle/MonoCycleCanva";
+import MonocycleCanva from "@/components/graphic/Canva/monocycle/MonocycleCanva";
+import PipelineCanva from "./components/graphic/Canva/pipeline/PipelineCanva";
 import Providers from "./providers";
 
 const App = () => {
@@ -14,12 +15,7 @@ const App = () => {
       <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
         {modeSimulator === "graphic" ? (
           <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh">
-            {typeSimulator === "monocycle" ? (
-            <MonocycleCanva />
-              
-            ) : (
-              <h1>SEGMENTADO</h1>
-            )}
+            {typeSimulator === "monocycle" ? <MonocycleCanva /> : <PipelineCanva />}
             <div className="relative">
               <MainSectionContainer />
             </div>
