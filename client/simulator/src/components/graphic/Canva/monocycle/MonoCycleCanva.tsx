@@ -16,8 +16,10 @@ import '@xyflow/react/dist/style.css';
 
 import { nodeTypes } from './constants';
 import { edgeTypes } from './constants';
-import { initialNodes } from '../data/nodes/initialNodes'; // Nodes
-import { initialEdges } from './edges/initialEdges'; //Conecctions between npdes
+import { initialNodes } from '../shared/nodes/initialNodes'; // Nodes
+
+import { initialEdges } from './edges/initialEdges'; //Conections between npdes
+import { sharedEdges } from '../shared/edges/sharedEdges';
 
 import CustomControls from '../../custom/CustomControls';
 
@@ -28,7 +30,8 @@ const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
 export default function MonocycleCanva() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const combinedEdges = [...initialEdges, ...sharedEdges]
+  const [edges, setEdges, onEdgesChange] = useEdgesState(combinedEdges);
   const [showMinimap, setShowMinimap] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [isInteractive, setIsInteractive] = useState(true); 

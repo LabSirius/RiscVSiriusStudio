@@ -5,22 +5,6 @@ import { Edge, MarkerType  } from '@xyflow/react';
 export const IF_WB: Edge[] = [
 
     //Addr_MuxC connections
-
-    
-    {
-      id: 'adder4->pivot18',
-      source: 'adder4',
-      target: 'pivot18',
-      type: 'step',
-    },
-
-    {
-      id: 'pivot18->pivotJump8',
-      source: 'pivot18',
-      sourceHandle: 'muxC',
-      target: 'pivotJump8',
-      type: 'step',
-    },
    
 
       {
@@ -30,16 +14,6 @@ export const IF_WB: Edge[] = [
         type: 'step',
 
       },
-
-      {
-        id: 'pivotJump9->pivot13',
-        source: 'pivotJump9',
-        target: 'pivot13',
-        type: 'step',
-
-      },
-
-
       {
         id: 'pivot13->muxC',
         source: 'pivot13',
@@ -54,5 +28,29 @@ export const IF_WB: Edge[] = [
         },
       },
 
+
+      //Addr_MuxC connections
+      
+    {
+      id: 'pivot18->pivot19',
+      source: 'pivot18',
+      sourceHandle: 'muxD',
+      target: 'pivot19',
+      type: 'step',
+    },
+
+    {
+      id: 'pivot19->muxD',
+      source: 'pivot19',
+      target: 'muxD',
+      targetHandle: 'adder4',
+      type: 'step',
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        color: '#888888',
+        width: 8,
+        height: 8,
+      },
+    },
  
 ];

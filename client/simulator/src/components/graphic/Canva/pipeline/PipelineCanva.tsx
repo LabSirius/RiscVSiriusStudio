@@ -1,24 +1,26 @@
 import {
-  //useCallback,
+  useCallback,
   useState,
 } from "react";
 import {
   ReactFlow,
   // Edge,
   // useReactFlow,
-  //addEdge,
+  addEdge,
   Background,
   useNodesState,
-  //useEdgesState,
+  useEdgesState,
   MiniMap,
-  //Connection,
+  Connection,
   ReactFlowInstance,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
 import { nodeTypes } from "./constants";
 import { edgeTypes } from "./constants";
-import { initialNodes } from "../data/nodes/initialNodes"; // Nodes
+import { initialNodes } from "../shared/nodes/initialNodes"; // Nodes
+
+import { sharedEdges } from "../shared/edges/sharedEdges";
 
 import CustomControls from "../../custom/CustomControls";
 
@@ -29,16 +31,17 @@ const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
 export default function PipelineCanva() {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  //const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const combinedEdges = [...sharedEdges]
+    const [edges, setEdges, onEdgesChange] = useEdgesState(combinedEdges);
   const [showMinimap, setShowMinimap] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [isInteractive, setIsInteractive] = useState(true);
   //const { updateEdge } = useReactFlow();
 
-  // const onConnect = useCallback(
-  //   (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
-  //   [setEdges]
-  // );
+  const onConnect = useCallback(
+    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
+    [setEdges]
+  );
 
   const handleFitView = () => {
     reactFlowInstance?.fitView({ padding: 0.01 });
@@ -85,10 +88,10 @@ export default function PipelineCanva() {
         instance.fitView({ padding: 0.01 });
       }}
       fitView={false}
-      //edges={edges}
+      edges={edges}
       onNodesChange={onNodesChange}
-      // onEdgesChange={onEdgesChange}
-      // onConnect={onConnect}
+      onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
       style={{ backgroundColor: "#F7F9FB" }}
       minZoom={0.1}
       maxZoom={2}
