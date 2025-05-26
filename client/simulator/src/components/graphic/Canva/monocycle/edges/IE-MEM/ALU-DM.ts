@@ -3,15 +3,6 @@
 import { Edge, MarkerType  } from '@xyflow/react';
 
 export const ALU_DM: Edge[] = [
-
-  {
-    id: 'alu->pivot7',  
-    source: 'alu', 
-    sourceHandle: 'dataMemory',
-    target: 'pivot7', 
-    targetHandle: 'alu', 
-    type: 'smoothstep',
-  },
   
   {
     id: 'pivot7->dataMemory',  

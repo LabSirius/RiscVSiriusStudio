@@ -3,14 +3,7 @@
 import { Edge, MarkerType  } from '@xyflow/react';
 
 export const ALU_WB: Edge[] = [
-  
-  {
-    id: 'pivot7->pivot8',  
-    source: 'pivot7', 
-    sourceHandle: 'wb',
-    target: 'pivot8', 
-    type: 'smoothstep', 
-  },
+
 
 
   {

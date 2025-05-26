@@ -1,46 +1,20 @@
 // This file contains the connection between the ALU and the WB
 
-import { Edge, MarkerType  } from '@xyflow/react';
+import { Edge } from "@xyflow/react";
 
 export const ALU_WB: Edge[] = [
-  
   {
-    id: 'pivot7->pivot8',  
-    source: 'pivot7', 
-    sourceHandle: 'wb',
-    target: 'pivot8', 
-    type: 'smoothstep', 
-  },
-
-
-  {
-    id: 'pivot8->pivotJump6',  
-    source: 'pivot8', 
-    target: 'pivotJump6', 
-    type: 'default', 
+    id: "pivot7->pivot8",
+    source: "pivot7",
+    sourceHandle: "wb",
+    target: "pivot8",
+    type: "smoothstep",
   },
 
   {
-    id: 'pivotJump6->pivot9',  
-    source: 'pivotJump6', 
-    target: 'pivot9', 
-    type: 'step', 
+    id: "pivotJump6->pivot9",
+    source: "pivotJump6",
+    target: "pivot9",
+    type: "step",
   },
-  {
-    id: 'pivot9->muxC',  
-    source: 'pivot9', 
-    target: 'muxC', 
-    targetHandle: 'alu',
-    type: 'smoothstep', 
-    markerEnd:
-        {
-          type: MarkerType.ArrowClosed,
-          color: '#888888',
-          width: 8,
-          height: 8,
-        },
-  }
-
-
 ];
-
