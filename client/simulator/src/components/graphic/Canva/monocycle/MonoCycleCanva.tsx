@@ -16,7 +16,7 @@ import '@xyflow/react/dist/style.css';
 
 import { nodeTypes } from './constants';
 import { edgeTypes } from './constants';
-import { initialNodes } from '../shared/nodes/initialNodes'; // Nodes
+import { useInitialNodes } from '../shared/nodes/initialNodes'; // Nodes
 
 import { initialEdges } from './edges/initialEdges'; //Conections between npdes
 import { sharedEdges } from '../shared/edges/sharedEdges';
@@ -29,6 +29,7 @@ import InstructionEffect from './InstructionEffect';
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
 export default function MonocycleCanva() {
+  const initialNodes = useInitialNodes(); // Hook to get the initial nodes
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const combinedEdges = [...initialEdges, ...sharedEdges]
   const [edges, setEdges, onEdgesChange] = useEdgesState(combinedEdges);

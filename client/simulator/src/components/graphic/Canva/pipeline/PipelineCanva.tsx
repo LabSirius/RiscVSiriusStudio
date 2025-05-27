@@ -18,7 +18,7 @@ import "@xyflow/react/dist/style.css";
 
 import { nodeTypes } from "./constants";
 import { edgeTypes } from "./constants";
-import { initialNodes } from "../shared/nodes/initialNodes"; // Nodes
+import { useInitialNodes } from "../shared/nodes/initialNodes"; // Nodes
 
 import { sharedEdges } from "../shared/edges/sharedEdges";
 
@@ -30,6 +30,7 @@ import CustomControls from "../../custom/CustomControls";
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
 export default function PipelineCanva() {
+  const initialNodes = useInitialNodes(); 
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const combinedEdges = [...sharedEdges]
     const [edges, setEdges, onEdgesChange] = useEdgesState(combinedEdges);
