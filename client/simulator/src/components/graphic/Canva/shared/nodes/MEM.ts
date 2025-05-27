@@ -35,6 +35,37 @@ export const useMEMNodes = (): Node[] => {
     pivotNode("pivot6", { x: shift(135), y: 1077 }, "MEM"),
     pivotNode("pivot8", { x: shift(90), y: 1006 }, "MEM"),
     nodeBase("pivotJump6", "pivotJump6", "pivotJump6", { x: shift(118), y: 983 }, "MEM", 47, 47),
+    ...(isPipeline
+      ? [
+          nodeBase(
+            "pcinc_wb",
+            "pcinc_wb",
+            "pcinc_wb",
+            { x: 565 + offsetXSize, y: 235 },
+            "MEM",
+            36,
+            50
+          ),
+          nodeBase(
+            "dmdatard_wb",
+            "dmdatard_wb",
+            "dmdatard_wb",
+            { x: 565 + offsetXSize, y: 820 },
+            "MEM",
+            36,
+            50
+          ),
+          nodeBase(
+            "alures_wb",
+            "alures_wb",
+            "alures_wb",
+            { x: 565 + offsetXSize, y: 986 },
+            "MEM",
+            36,
+            50
+          ),
+        ]
+      : []),
   ];
 
   if (!isPipeline) {

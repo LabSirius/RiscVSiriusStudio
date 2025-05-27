@@ -1,6 +1,6 @@
 import ContainerPipelineRegister from '../../ContainerPipelineRegister'
 
-const ALURes_me = () => {
+const ALURes_MEM = () => {
   return (
     <div className='relative w-full overflow-visible'>
       <ContainerPipelineRegister text='ALURes_me'/>
@@ -9,4 +9,4 @@ const ALURes_me = () => {
   )
 }
 
-export default ALURes_me
+export default ALURes_MEM
