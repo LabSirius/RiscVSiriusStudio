@@ -65,10 +65,12 @@ export const useIFNodes = (): Node[] => {
 
     ...(isPipeline
   ? [
-      nodeBase("pc_fe", "pc_fe", "pc_fe", { x: 90.5, y: 829.5 }, "IF", 36, 50),
+      nodeBase("pc_fe", "pc_fe", "pc_fe", { x: 90.5, y: 829.5
+
+       }, "IF", 36, 50),
       nodeBase("pcinc_de", "pcinc_de", "pcinc_de", { x:  870 + offsetXSize, y: 235 }, "IF", 36, 50),
       nodeBase("pc_de", "pc_de", "PC_De", { x:  870 + offsetXSize, y: 370 }, "IF", 36, 50),
-      nodeBase("inst_de", "inst_de", "inst_de", { x:  870 + offsetXSize, y: 820 }, "IF", 36, 50),
+      nodeBase("inst_de", "inst_de", "inst_de", { x:  870 + offsetXSize, y: 821.4 }, "IF", 36, 50),
 
     ]
   : []),
