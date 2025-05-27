@@ -255,7 +255,9 @@
       case 'mul' : funct3 = 0; funct7 = 1;  break;
       case 'mulh' : funct3 = 1; funct7 = 1;  break;
       case 'mulsu' : funct3 = 2; funct7 = 1;  break;
+      case 'mulhsu' : funct3 = 2; funct7 = 1;  break;
       case 'mulu' : funct3 = 3; funct7 = 1;  break;
+      case 'mulhu' : funct3 = 3; funct7 = 1;  break;
       case 'div' : funct3 = 4; funct7 = 1;  break;
       case 'divu' : funct3 = 5; funct7 = 1;  break;
       case 'rem' : funct3 = 6; funct7 = 1;  break;
@@ -1374,9 +1376,11 @@
   / sraToken
   / sltuToken
   / sltToken
-  / mulhToken
   / mulsuToken
   / muluToken
+  / mulhsuToken
+  / mulhuToken
+  / mulhToken
   / mulToken
   / divuToken
   / divToken
@@ -1489,7 +1493,9 @@
   mulToken = "mul"
   mulhToken = "mulh"
   mulsuToken = "mulsu"
+  mulhsuToken = "mulhsu"
   muluToken = "mulu"
+  mulhuToken = "mulhu"
   divToken = "div"
   divuToken = "divu"
   remToken = "rem"
