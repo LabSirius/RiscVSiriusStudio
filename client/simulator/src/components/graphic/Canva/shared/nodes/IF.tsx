@@ -7,11 +7,11 @@ import { useSimulator } from "@/context/shared/SimulatorContext";
 import { Node } from "@xyflow/react";
 
 export const useIFNodes = (): Node[] => {
+  const { typeSimulator } = useSimulator();
 
-  const { typeSimulator} = useSimulator();
-
-  const offsetX = typeSimulator === "pipeline" ? 300 : 0;
-  
+  const isPipeline = typeSimulator === "pipeline";
+  const offsetXSize = typeSimulator === "pipeline" ? 300 : 0;
+  const offsetXelements = typeSimulator === "pipeline" ? 50 : 0;
 
   return [
     {
@@ -22,7 +22,7 @@ export const useIFNodes = (): Node[] => {
       draggable: false,
       zIndex: 1,
       style: {
-        width: 870 + offsetX,
+        width: 870 + offsetXSize,
         height: 1330,
         backgroundColor: "#FCE4EC",
         border: "1px solid #FCE4EC",
@@ -53,7 +53,7 @@ export const useIFNodes = (): Node[] => {
       id: "pc",
       type: "pc",
       data: { label: "PC" },
-      position: { x: 215, y: 685 },
+      position: { x: 215 + offsetXelements, y: 685 },
       parentId: "IF",
       extent: "parent",
       style: {
@@ -107,7 +107,7 @@ export const useIFNodes = (): Node[] => {
       id: "instructionMemory",
       type: "instructionMemory",
       data: { label: "Instruction Memory" },
-      position: { x: 505, y: 685 },
+      position: { x: 505 + offsetXelements, y: 685 },
       parentId: "IF",
       extent: "parent",
       style: {
@@ -145,7 +145,7 @@ export const useIFNodes = (): Node[] => {
       id: "pivot1",
       type: "pivot1",
       data: { label: "" },
-      position: { x: 435, y: 386 },
+      position: { x: 435 + offsetXelements, y: 386 },
       parentId: "IF",
       extent: "parent",
       style: {
@@ -199,7 +199,7 @@ export const useIFNodes = (): Node[] => {
       id: "pivot25",
       type: "pivot25",
       data: { label: "" },
-      position: { x: 435, y: 798.9 },
+      position: { x: 435 + offsetXelements, y: 798.9 },
       parentId: "IF",
       extent: "parent",
       style: {
@@ -231,5 +231,28 @@ export const useIFNodes = (): Node[] => {
         boxShadow: "none",
       },
     },
+
+    // PIPELINE CONTROLLERS
+    ...(isPipeline
+      ? [
+          {
+            id: "muxd_pc",
+            type: "muxd_pc",
+            data: { label: "muxd_pc" },
+            position: { x: 100, y: 800 },
+            parentId: "IF",
+            extent: "parent" as const, // ✅ esto sí le gusta a TypeScript
+            style: {
+              width: 50,
+              height: 50,
+              backgroundColor: "transparent",
+              border: "none",
+              borderRadius: 0,
+              padding: 0,
+              boxShadow: "none",
+            },
+          },
+        ]
+      : []),
   ];
 };

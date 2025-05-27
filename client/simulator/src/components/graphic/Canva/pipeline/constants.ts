@@ -87,6 +87,10 @@ import Pivot31 from '../../elements/ID/pivots/Pivot31';
 import Pivot32 from '../../elements/ID/pivots/Pivot32';
 import Pivot33 from '../../elements/ID/pivots/Pivot33';
 
+// pipeline controllers
+import MUXD_PC from '../../elements/IF/pipeline/MUXD_PC';
+
+
 export const nodeTypes = {
 
     title: TitleText,
@@ -169,6 +173,9 @@ export const nodeTypes = {
     pivotJump8: PivotJump8,
     pivotJump9: PivotJump9,
     pivotJump10: PivotJump10,
+
+    //pipeline controllers
+    muxd_pc: MUXD_PC,
   };
   
   export const edgeTypes = {
