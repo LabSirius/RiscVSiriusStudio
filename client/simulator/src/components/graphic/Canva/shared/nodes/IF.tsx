@@ -6,8 +6,7 @@ export const useIFNodes = (): Node[] => {
   const { typeSimulator } = useSimulator();
 
   const isPipeline = typeSimulator === "pipeline";
-  const offsetXSize = isPipeline ? 300 : 0;
-  const offsetXelements = isPipeline ? 50 : 0;
+  const offsetXSize = isPipeline ? 50 : 0;
 
   return [
     {
@@ -27,24 +26,24 @@ export const useIFNodes = (): Node[] => {
     },
 
     nodeBase("title-IF", "title", "Fetch (IF)", { x: 0, y: 0 }, "IF", 870, 50),
-    nodeBase("pc", "pc", "PC", { x: 215 + offsetXelements, y: 685 }, "IF", 180, 239),
+    nodeBase("pc", "pc", "PC", { x: 215 + (isPipeline ? 12 : 0) , y: 685 }, "IF", 180, 239),
     nodeBase("adder4", "adder4", "Adder 4", { x: 595, y: 225 }, "IF", 90, 120),
     nodeBase("four", "four", "4", { x: 465, y: 191 }, "IF", 90, 120),
     nodeBase(
       "instructionMemory",
       "instructionMemory",
       "Instruction Memory",
-      { x: 505 + offsetXelements, y: 685 },
+      { x: 505 + (isPipeline ? 15 : 0), y: 685 },
       "IF",
       290,
       339
     ),
     nodeBase("muxD", "muxD", "MUX D", { x: 93, y: 480 }, "IF", 65, 150),
 
-    pivotNode("pivot1", { x: 435 + offsetXelements, y: 386 }, "IF"),
+    pivotNode("pivot1", { x: 435 + (isPipeline ? 15 : 0), y: 386 }, "IF"),
     pivotNode("pivot15", { x: 225, y: 178 }, "IF"),
     pivotNode("pivot17", { x: 90.7, y: 78 }, "IF"),
-    pivotNode("pivot25", { x: 435 + offsetXelements, y: 798.9 }, "IF"),
+    pivotNode("pivot25", { x: 435 + (isPipeline ? 15 : 0), y: 798.9 }, "IF"),
 
     {
       id: "controlUnit",

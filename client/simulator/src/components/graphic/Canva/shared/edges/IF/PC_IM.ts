@@ -3,6 +3,9 @@
 import { Edge, MarkerType  } from '@xyflow/react';
 
 export const PC_IM: Edge[] = [
+
+  { id: 'pc->pivot25',  source: 'pc', target: 'pivot25', type: 'default'},
+
  
     { id: 'pivot25->instMemory',  source: 'pivot25', sourceHandle: 'instructionMemory', target: 'instructionMemory', type: 'smootstephstep', markerEnd:
         {
