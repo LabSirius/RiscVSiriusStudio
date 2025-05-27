@@ -2,8 +2,8 @@ import { Edge } from "@xyflow/react";
 
 import { IM_RU } from "./IM_RU";
 import { IM_IG } from "./IM_IG";
-import { IM_CU } from "./IM-CU";
-import { PC_MUXA } from "./PC-MUXA";
+import { IM_CU } from "./IM_CU";
+import { PC_MUXA } from "./PC_MUXA";
 
 export const IF_ID: Edge[] = [
   ...PC_MUXA, // PC to MUX A connection

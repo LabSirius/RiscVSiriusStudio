@@ -96,6 +96,7 @@ import PCInc_EX from '../../elements/IF/pipeline/PCInc_EX';
 import PC_EX from '../../elements/IF/pipeline/PC_EX';
 import RUrs1_EX from '../../elements/IF/pipeline/RUrs1_EX';
 import RUrs2_EX from '../../elements/IF/pipeline/RUrs2_EX';
+import ImmExt_EX from '../../elements/IF/pipeline/ImmExt_EX';
 
 
 export const nodeTypes = {
@@ -193,6 +194,7 @@ export const nodeTypes = {
 
     rurs1_ex: RUrs1_EX,
     rurs2_ex: RUrs2_EX,
+    immext_ex: ImmExt_EX,
   };
   
   export const edgeTypes = {

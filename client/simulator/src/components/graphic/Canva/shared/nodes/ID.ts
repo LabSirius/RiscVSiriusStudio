@@ -27,9 +27,25 @@ export const useIDNodes = (): Node[] => {
 
     nodeBase("title-ID", "title", "Decode (ID)", { x: 0, y: 0 }, "ID", 740, 50),
     nodeBase("ruWr", "ruWr", "RUWR", { x: shift(120), y: 814 }, "ID", 90, 30),
-    nodeBase("registersUnit", "registerUnit", "Registers Unit", { x: shift(255), y: 435 }, "ID", 360, 450),
+    nodeBase(
+      "registersUnit",
+      "registerUnit",
+      "Registers Unit",
+      { x: shift(255), y: 435 },
+      "ID",
+      360,
+      450
+    ),
     nodeBase("immSrc", "immSrc", "IMMSrc", { x: shift(145), y: 1028.5 }, "ID", 90, 30),
-    nodeBase("immGenerator", "immGenerator", "Immediate Generator", { x: shift(285), y: 935.5 }, "ID", 330, 150),
+    nodeBase(
+      "immGenerator",
+      "immGenerator",
+      "Immediate Generator",
+      { x: shift(285), y: 935.5 },
+      "ID",
+      330,
+      150
+    ),
 
     pivotNode("pivot3", { x: shift(50), y: 843 }, "ID"),
     pivotNode("pivot12", { x: shift(100), y: 1131 }, "ID"),
@@ -50,18 +66,47 @@ export const useIDNodes = (): Node[] => {
     nodeBase("pivotJump1", "pivotJump1", "pivotJump1", { x: shift(84), y: 953.4 }, "ID", 47, 47),
     nodeBase("pivotJump10", "pivotJump10", "pivotJump10", { x: shift(34), y: 155 }, "ID", 47, 47),
 
-     ...(isPipeline
-  ? [
-      nodeBase("pcinc_ex", "pcinc_ex", "pcinc_ex", { x: 740 + offsetXSize , y: 235 }, "ID", 36, 50),
-      nodeBase("pc_ex", "pc_ex", "PC_ex", { x:  740 + offsetXSize  , y: 370 }, "ID", 36, 50),
-      nodeBase("rurs1_ex", "rurs1_ex", "rurs1_ex", { x:  740 + offsetXSize , y: 680 }, "ID", 36, 50),
-      nodeBase("rurs2_ex", "rurs2_ex", "rurs2_ex", { x:  740 + offsetXSize , y: 815 }, "ID", 36, 50),
-
-
-
-
-    ]
-  : []),
+    ...(isPipeline
+      ? [
+          nodeBase(
+            "pcinc_ex",
+            "pcinc_ex",
+            "pcinc_ex",
+            { x: 740 + offsetXSize, y: 235 },
+            "ID",
+            36,
+            50
+          ),
+          nodeBase("pc_ex", "pc_ex", "PC_ex", { x: 740 + offsetXSize, y: 370 }, "ID", 36, 50),
+          nodeBase(
+            "rurs1_ex",
+            "rurs1_ex",
+            "rurs1_ex",
+            { x: 740 + offsetXSize, y: 680 },
+            "ID",
+            36,
+            50
+          ),
+          nodeBase(
+            "rurs2_ex",
+            "rurs2_ex",
+            "rurs2_ex",
+            { x: 740 + offsetXSize, y: 815 },
+            "ID",
+            36,
+            50
+          ),
+           nodeBase(
+            "immext_ex",
+            "immext_ex",
+            "immext_ex",
+            { x: 740 + offsetXSize, y: 985 },
+            "ID",
+            36,
+            50
+          ),
+        ]
+      : []),
   ];
 
   if (!isPipeline) {
@@ -70,8 +115,7 @@ export const useIDNodes = (): Node[] => {
       pivotNode("pivot5", { x: shift(680), y: 1077 }, "ID", "red"),
       nodeBase("pivotJump2", "pivotJump2", "pivotJump2", { x: shift(664), y: 363 }, "ID", 47, 47),
       nodeBase("pivotJump4", "pivotJump4", "pivotJump4", { x: shift(664), y: 688 }, "ID", 47, 47),
-      nodeBase("pivotJump5", "pivotJump5", "pivotJump5", { x: shift(664), y: 985 }, "ID", 47, 47),
-      
+      nodeBase("pivotJump5", "pivotJump5", "pivotJump5", { x: shift(664), y: 985 }, "ID", 47, 47)
     );
   }
 
