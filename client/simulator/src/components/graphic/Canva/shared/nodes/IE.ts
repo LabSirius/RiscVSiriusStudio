@@ -1,15 +1,9 @@
-/*
- * This file defines the nodes of the third section (IE - Execute) of the simulator.
- * The section is horizontally shifted depending on the active simulator type using useSimulator().
- */
-
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { Node } from "@xyflow/react";
+import { nodeBase, pivotNode } from "./sharedAttributes";
 
 export const useIENodes = (): Node[] => {
   const { typeSimulator } = useSimulator();
-
-  // Offset shift: if in "pipeline" mode, move this section further right
   const offsetX = typeSimulator === "pipeline" ? 300 : 0;
 
   return [
@@ -17,7 +11,7 @@ export const useIENodes = (): Node[] => {
       id: "IE",
       type: "group",
       data: { label: "Section 3" },
-      position: { x: 870 + 730 + offsetX, y: 0 }, // ← dynamic horizontal shift
+      position: { x: 870 + 730 + offsetX, y: 0 },
       draggable: false,
       zIndex: 0,
       style: {
@@ -28,214 +22,19 @@ export const useIENodes = (): Node[] => {
         borderRadius: 8,
       },
     },
-    {
-      id: "title-IE",
-      type: "title",
-      data: { label: "Execute (IE)" },
-      position: { x: 0, y: 0 },
-      parentId: "IE",
-      extent: "parent",
-      draggable: false,
-      style: {
-        width: 680,
-        height: 50,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "muxA",
-      type: "muxA",
-      data: { label: "MUX A" },
-      position: { x: 165, y: 605 },
-      parentId: "IE",
-      extent: "parent",
-      style: {
-        width: 65,
-        height: 150,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "aluASrc",
-      type: "aluASrc",
-      data: { label: "ALU A SRC" },
-      position: { x: 153, y: 535 },
-      parentId: "IE",
-      extent: "parent",
-      style: {
-        width: 90,
-        height: 30,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "muxB",
-      type: "muxB",
-      data: { label: "MUX B" },
-      position: { x: 165, y: 780 },
-      parentId: "IE",
-      extent: "parent",
-      style: {
-        width: 65,
-        height: 150,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "aluBSrc",
-      type: "aluBSrc",
-      data: { label: "ALU B SRC" },
-      position: { x: 153, y: 982 },
-      parentId: "IE",
-      extent: "parent",
-      style: {
-        width: 90,
-        height: 30,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "alu",
-      type: "alu",
-      data: { label: "ALU" },
-      position: { x: 300, y: 635 },
-      parentId: "IE",
-      extent: "parent",
-      style: {
-        width: 325,
-        height: 320,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "aluOp",
-      type: "aluOp",
-      data: { label: "ALU OPERATION" },
-      position: { x: 410, y: 1000 },
-      parentId: "IE",
-      extent: "parent",
-      style: {
-        width: 105,
-        height: 30,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "branchUnit",
-      type: "branchUnit",
-      data: { label: "Branch Unit" },
-      position: { x: 300, y: 295 },
-      parentId: "IE",
-      extent: "parent",
-      style: {
-        width: 325,
-        height: 160,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "brOp",
-      type: "brOp",
-      data: { label: "BrOp" },
-      position: { x: 418, y: 510 },
-      parentId: "IE",
-      extent: "parent",
-      style: {
-        width: 90,
-        height: 30,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
 
-    // Pivot nodes for wiring and junctions
-    {
-      id: "pivot4",
-      type: "pivot4",
-      data: { label: "" },
-      position: { x: 45, y: 711 },
-      parentId: "IE",
-      extent: "parent",
-      style: {
-        width: 5,
-        height: 5,
-        backgroundColor: "black",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "pivot10",
-      type: "pivot10",
-      data: { label: "" },
-      position: { x: 44, y: 1008 },
-      parentId: "IE",
-      extent: "parent",
-      style: {
-        width: 5,
-        height: 5,
-        backgroundColor: "black",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
+    nodeBase("title-IE", "title", "Execute (IE)", { x: 0, y: 0 }, "IE", 680, 50),
+    nodeBase("muxA", "muxA", "MUX A", { x: 165, y: 605 }, "IE", 65, 150),
+    nodeBase("aluASrc", "aluASrc", "ALU A SRC", { x: 153, y: 535 }, "IE", 90, 30),
+    nodeBase("muxB", "muxB", "MUX B", { x: 165, y: 780 }, "IE", 65, 150),
+    nodeBase("aluBSrc", "aluBSrc", "ALU B SRC", { x: 153, y: 982 }, "IE", 90, 30),
+    nodeBase("alu", "alu", "ALU", { x: 300, y: 635 }, "IE", 325, 320),
+    nodeBase("aluOp", "aluOp", "ALU OPERATION", { x: 410, y: 1000 }, "IE", 105, 30),
+    nodeBase("branchUnit", "branchUnit", "Branch Unit", { x: 300, y: 295 }, "IE", 325, 160),
+    nodeBase("brOp", "brOp", "BrOp", { x: 418, y: 510 }, "IE", 90, 30),
 
-    // Jump pivot node
-    {
-      id: "pivotJump3",
-      type: "pivotJump3",
-      data: { label: "pivotJump3" },
-      position: { x: 29, y: 563 },
-      parentId: "IE",
-      extent: "parent",
-      style: {
-        width: 47,
-        height: 47,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
+    pivotNode("pivot4", { x: 45, y: 711 }, "IE"),
+    pivotNode("pivot10", { x: 44, y: 1008 }, "IE"),
+    nodeBase("pivotJump3", "pivotJump3", "pivotJump3", { x: 29, y: 563 }, "IE", 47, 47),
   ];
 };

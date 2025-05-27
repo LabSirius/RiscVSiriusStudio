@@ -5,131 +5,26 @@
 
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { Node } from "@xyflow/react";
+import { nodeBase, pivotNode } from "./sharedAttributes";
 
 export const useWBNodes = (): Node[] => {
   const { typeSimulator } = useSimulator();
-
-  // Offset shift for "pipeline" mode
   const offsetX = typeSimulator === "pipeline" ? 300 : 0;
 
   return [
-    {
-      id: "WB",
-      type: "group",
-      data: { label: "Section 5" },
-      position: { x: 870 + 730 + 680 + 565 + offsetX, y: 0 },
-      draggable: false,
+    nodeBase("WB", "group", "Section 5", { x: 870 + 730 + 680 + 565 + offsetX, y: 0 }, "", 290, 1330, "#FFF2E0", {
+      border: "1px solid #FFF2E0",
       zIndex: 0,
-      style: {
-        width: 290,
-        height: 1330,
-        backgroundColor: "#FFF2E0",
-        border: "1px solid #FFF2E0",
-        borderRadius: 8,
-      },
-    },
-    {
-      id: "title-WB",
-      type: "title",
-      data: { label: "Write back (WB)" },
-      position: { x: 0, y: 0 },
-      parentId: "WB",
-      extent: "parent",
-      draggable: false,
-      style: {
-        width: 300,
-        height: 50,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "muxC",
-      type: "muxC",
-      data: { label: "MUX C" },
-      position: { x: 90, y: 770 },
-      parentId: "WB",
-      extent: "parent",
-      style: {
-        width: 65,
-        height: 150,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "ruDataWrSrc",
-      type: "ruDataWrSrc",
-      data: { label: "RUDataWrSrc" },
-      position: { x: 78, y: 960 },
-      parentId: "WB",
-      extent: "parent",
-      style: {
-        width: 90,
-        height: 30,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "pivot9",
-      type: "pivot9",
-      data: { label: "" },
-      position: { x: 18, y: 1006 },
-      parentId: "WB",
-      extent: "parent",
-      style: {
-        width: 5,
-        height: 5,
-        backgroundColor: "black",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "pivot11",
-      type: "pivot11",
-      data: { label: "" },
-      position: { x: 230, y: 1131 },
-      parentId: "WB",
-      extent: "parent",
-      style: {
-        width: 5,
-        height: 5,
-        backgroundColor: "black",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-    {
-      id: "pivot13",
-      type: "pivot13",
-      data: { label: "" },
-      position: { x: 18, y: 254 },
-      parentId: "WB",
-      extent: "parent",
-      style: {
-        width: 5,
-        height: 5,
-        backgroundColor: "black",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
+    }),
+
+    nodeBase("title-WB", "title", "Write back (WB)", { x: 0, y: 0 }, "WB", 300, 50),
+
+    nodeBase("muxC", "muxC", "MUX C", { x: 90, y: 770 }, "WB", 65, 150),
+
+    nodeBase("ruDataWrSrc", "ruDataWrSrc", "RUDataWrSrc", { x: 78, y: 960 }, "WB", 90, 30),
+
+    pivotNode("pivot9", { x: 18, y: 1006 }, "WB"),
+    pivotNode("pivot11", { x: 230, y: 1131 }, "WB"),
+    pivotNode("pivot13", { x: 18, y: 254 }, "WB"),
   ];
 };

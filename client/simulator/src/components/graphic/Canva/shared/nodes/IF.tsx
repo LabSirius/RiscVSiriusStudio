@@ -1,17 +1,13 @@
-/*
- * this file contains the nodes for section 1 of the simulator view
- *
- */
-
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { Node } from "@xyflow/react";
+import { nodeBase, pivotNode } from "./sharedAttributes";
 
 export const useIFNodes = (): Node[] => {
   const { typeSimulator } = useSimulator();
 
   const isPipeline = typeSimulator === "pipeline";
-  const offsetXSize = typeSimulator === "pipeline" ? 300 : 0;
-  const offsetXelements = typeSimulator === "pipeline" ? 50 : 0;
+  const offsetXSize = isPipeline ? 300 : 0;
+  const offsetXelements = isPipeline ? 50 : 0;
 
   return [
     {
@@ -30,188 +26,25 @@ export const useIFNodes = (): Node[] => {
       },
     },
 
-    {
-      id: "title-IF",
-      type: "title",
-      data: { label: "Fetch (IF)" },
-      position: { x: 0, y: 0 },
-      parentId: "IF",
-      extent: "parent",
-      draggable: false,
-      style: {
-        width: 870,
-        height: 50,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
+    nodeBase("title-IF", "title", "Fetch (IF)", { x: 0, y: 0 }, "IF", 870, 50),
+    nodeBase("pc", "pc", "PC", { x: 215 + offsetXelements, y: 685 }, "IF", 180, 239),
+    nodeBase("adder4", "adder4", "Adder 4", { x: 595, y: 225 }, "IF", 90, 120),
+    nodeBase("four", "four", "4", { x: 465, y: 191 }, "IF", 90, 120),
+    nodeBase(
+      "instructionMemory",
+      "instructionMemory",
+      "Instruction Memory",
+      { x: 505 + offsetXelements, y: 685 },
+      "IF",
+      290,
+      339
+    ),
+    nodeBase("muxD", "muxD", "MUX D", { x: 93, y: 480 }, "IF", 65, 150),
 
-    {
-      id: "pc",
-      type: "pc",
-      data: { label: "PC" },
-      position: { x: 215 + offsetXelements, y: 685 },
-      parentId: "IF",
-      extent: "parent",
-      style: {
-        width: 180,
-        height: 239,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-
-    {
-      id: "adder4",
-      type: "adder4",
-      data: { label: "Adder 4" },
-      position: { x: 595, y: 225 },
-      parentId: "IF",
-      extent: "parent",
-      style: {
-        width: 90,
-        height: 120,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-
-    {
-      id: "four",
-      type: "four",
-      data: { label: "4" },
-      position: { x: 465, y: 191 },
-      parentId: "IF",
-      extent: "parent",
-      style: {
-        width: 90,
-        height: 120,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-
-    {
-      id: "instructionMemory",
-      type: "instructionMemory",
-      data: { label: "Instruction Memory" },
-      position: { x: 505 + offsetXelements, y: 685 },
-      parentId: "IF",
-      extent: "parent",
-      style: {
-        width: 290,
-        height: 339,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-
-    {
-      id: "muxD",
-      type: "muxD",
-      data: { label: "MUX D" },
-      position: { x: 93, y: 480 },
-      parentId: "IF",
-      extent: "parent",
-      style: {
-        width: 65,
-        height: 150,
-        backgroundColor: "transparent",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-
-    // PIVOTS S1
-
-    {
-      id: "pivot1",
-      type: "pivot1",
-      data: { label: "" },
-      position: { x: 435 + offsetXelements, y: 386 },
-      parentId: "IF",
-      extent: "parent",
-      style: {
-        width: 5,
-        height: 5,
-        backgroundColor: "black",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-
-    {
-      id: "pivot15",
-      type: "pivot15",
-      data: { label: "" },
-      position: { x: 225, y: 178 },
-      parentId: "IF",
-      extent: "parent",
-      style: {
-        width: 5,
-        height: 5,
-        backgroundColor: "black",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-
-    {
-      id: "pivot17",
-      type: "pivot17",
-      data: { label: "" },
-      position: { x: 90.7, y: 78 },
-      parentId: "IF",
-      extent: "parent",
-      style: {
-        width: 5,
-        height: 5,
-        backgroundColor: "black",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
-
-    {
-      id: "pivot25",
-      type: "pivot25",
-      data: { label: "" },
-      position: { x: 435 + offsetXelements, y: 798.9 },
-      parentId: "IF",
-      extent: "parent",
-      style: {
-        width: 5,
-        height: 5,
-        backgroundColor: "black",
-        border: "none",
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-      },
-    },
+    pivotNode("pivot1", { x: 435 + offsetXelements, y: 386 }, "IF"),
+    pivotNode("pivot15", { x: 225, y: 178 }, "IF"),
+    pivotNode("pivot17", { x: 90.7, y: 78 }, "IF"),
+    pivotNode("pivot25", { x: 435 + offsetXelements, y: 798.9 }, "IF"),
 
     {
       id: "controlUnit",
@@ -220,7 +53,6 @@ export const useIFNodes = (): Node[] => {
       position: { x: 40, y: 1180.5 },
       parentId: "IF",
       draggable: false,
-
       style: {
         width: 3050,
         height: 150,
@@ -232,27 +64,8 @@ export const useIFNodes = (): Node[] => {
       },
     },
 
-    // PIPELINE CONTROLLERS
     ...(isPipeline
-      ? [
-          {
-            id: "muxd_pc",
-            type: "muxd_pc",
-            data: { label: "muxd_pc" },
-            position: { x: 100, y: 800 },
-            parentId: "IF",
-            extent: "parent" as const, // ✅ esto sí le gusta a TypeScript
-            style: {
-              width: 50,
-              height: 50,
-              backgroundColor: "transparent",
-              border: "none",
-              borderRadius: 0,
-              padding: 0,
-              boxShadow: "none",
-            },
-          },
-        ]
+      ? [nodeBase("muxd_pc", "muxd_pc", "muxd_pc", { x: 100, y: 800 }, "IF", 50, 50)]
       : []),
   ];
 };
