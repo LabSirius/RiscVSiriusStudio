@@ -40,7 +40,7 @@ export const useIFNodes = (): Node[] => {
     ),
     nodeBase("muxD", "muxD", "MUX D", { x: 93, y: 480 }, "IF", 65, 150),
 
-    pivotNode("pivot1", { x: 435 + (isPipeline ? 15 : 0), y: 386 }, "IF"),
+    pivotNode("pivot1", { x: 435 + (isPipeline ? 15 : 0), y: 386 + (isPipeline ? 30 : 0) }, "IF"),
     pivotNode("pivot15", { x: 225, y: 178 }, "IF"),
     pivotNode("pivot17", { x: 90.7, y: 78 }, "IF"),
     pivotNode("pivot25", { x: 435 + (isPipeline ? 15 : 0), y: 798.9 }, "IF"),

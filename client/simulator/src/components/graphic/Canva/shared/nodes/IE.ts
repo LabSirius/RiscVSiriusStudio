@@ -84,7 +84,7 @@ export const useIENodes = (): Node[] => {
         "pivotJump2",
         "pivotJump2",
         "pivotJump2",
-        { x: shiftBackJump(0), y: 363 },
+        { x: shiftBackJump(0), y: 363 + (isPipeline ? 5.5 : 0) },
         "IE",
         47,
         47
