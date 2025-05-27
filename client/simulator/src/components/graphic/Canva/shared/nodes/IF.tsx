@@ -3,9 +3,14 @@
  *
  */
 
+import { useSimulator } from "@/context/shared/SimulatorContext";
 import { Node } from "@xyflow/react";
 
 export const useIFNodes = (): Node[] => {
+
+  const { typeSimulator} = useSimulator();
+
+  const offsetX = typeSimulator === "pipeline" ? 300 : 0;
   
 
   return [
@@ -17,7 +22,7 @@ export const useIFNodes = (): Node[] => {
       draggable: false,
       zIndex: 1,
       style: {
-        width: 870,
+        width: 870 + offsetX,
         height: 1330,
         backgroundColor: "#FCE4EC",
         border: "1px solid #FCE4EC",

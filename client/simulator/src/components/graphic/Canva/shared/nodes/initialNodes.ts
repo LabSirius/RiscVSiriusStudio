@@ -1,14 +1,16 @@
-// initialNodes.ts
 import { Node } from '@xyflow/react';
 import { useIFNodes } from './IF';
-import { ID } from './ID';
-import { IE } from './IE';
-import { MEM } from './MEM';
-import { WB } from './WB';
+import { useIDNodes } from './ID';
+import { useIENodes } from './IE';
+import { useMEMNodes } from './MEM';
+import { useWBNodes } from './WB';
 
-// Hook que junta todos los nodos incluyendo los que usan contexto
 export const useInitialNodes = (): Node[] => {
-  const IF = useIFNodes(); // Aquí sí puedes usar el hook
+  const IF = useIFNodes(); 
+  const ID = useIDNodes();
+  const IE = useIENodes(); 
+  const MEM = useMEMNodes();
+  const WB = useWBNodes();
 
   return [
     ...IF,
