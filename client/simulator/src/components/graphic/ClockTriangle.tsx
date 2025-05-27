@@ -2,7 +2,7 @@ import { useSimulator } from "@/context/shared/SimulatorContext";
 import { Triangle } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const ClockTriangle = () => {
+const ClockTriangle = ({pipeline} : {pipeline? : boolean}) => {
   const { newPc } = useSimulator();
   const [animate, setAnimate] = useState(false);
 
@@ -16,8 +16,8 @@ const ClockTriangle = () => {
 
   return (
     <Triangle
-      size={24}
-      className={`absolute left-[50%] transform -translate-x-[50%] text-[#404040] bottom-0 z-2 ${animate ? "pc-change-anim" : ""}`}
+      size={ pipeline ? 40 : 24}
+      className={`absolute left-[50%] transform -translate-x-[50%] text-[#404040]  ${pipeline ? 'bottom-[-.5rem]' : 'bottom-0'} z-2 ${animate ? "pc-change-anim" : ""}`}
     />
   );
 };

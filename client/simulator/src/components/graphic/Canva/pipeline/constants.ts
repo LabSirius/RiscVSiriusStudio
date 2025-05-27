@@ -88,7 +88,7 @@ import Pivot32 from '../../elements/ID/pivots/Pivot32';
 import Pivot33 from '../../elements/ID/pivots/Pivot33';
 
 // pipeline controllers
-import MUXD_PC from '../../elements/IF/pipeline/MUXD_PC';
+import PC_FE from '../../elements/IF/pipeline/PC_FE';
 
 
 export const nodeTypes = {
@@ -175,7 +175,7 @@ export const nodeTypes = {
     pivotJump10: PivotJump10,
 
     //pipeline controllers
-    muxd_pc: MUXD_PC,
+    pc_fe: PC_FE,
   };
   
   export const edgeTypes = {
