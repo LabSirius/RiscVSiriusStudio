@@ -4,21 +4,20 @@ import { nodeBase, pivotNode } from "./sharedAttributes";
 
 export const useIDNodes = (): Node[] => {
   const { typeSimulator } = useSimulator();
-  const offsetX = typeSimulator === "pipeline" ? 50 : 0;
   const isPipeline = typeSimulator === "pipeline";
+  const offsetXSize = isPipeline ? 10 : 0;
+  const shift = (x: number): number => x + (isPipeline ? 35 : 0);
 
-  const shift = (x: number): number => x + (isPipeline ? 15 : 0);
-
-  return [
+  const nodes: Node[] = [
     {
       id: "ID",
       type: "group",
       data: { label: "Section 2" },
-      position: { x: 870 + offsetX, y: 0 },
+      position: { x: 870 + (isPipeline ? 50 : 0), y: 0 },
       draggable: false,
-      zIndex: 0,
+      zIndex: 1,
       style: {
-        width: 740,
+        width: 740 + offsetXSize,
         height: 1330,
         backgroundColor: "#FFF9C4",
         border: "1px solid #FFF9C4",
@@ -32,9 +31,7 @@ export const useIDNodes = (): Node[] => {
     nodeBase("immSrc", "immSrc", "IMMSrc", { x: shift(145), y: 1028.5 }, "ID", 90, 30),
     nodeBase("immGenerator", "immGenerator", "Immediate Generator", { x: shift(285), y: 935.5 }, "ID", 330, 150),
 
-    pivotNode("pivot2", { x: shift(680), y: 822.3 }, "ID"),
     pivotNode("pivot3", { x: shift(50), y: 843 }, "ID"),
-    pivotNode("pivot5", { x: shift(680), y: 1077 }, "ID", "red"),
     pivotNode("pivot12", { x: shift(100), y: 1131 }, "ID"),
     pivotNode("pivot18", { x: shift(50), y: 254 }, "ID"),
     pivotNode("pivot19", { x: shift(50), y: 128 }, "ID"),
@@ -51,9 +48,32 @@ export const useIDNodes = (): Node[] => {
     pivotNode("pivot33", { x: shift(450), y: 1210 }, "ID"),
 
     nodeBase("pivotJump1", "pivotJump1", "pivotJump1", { x: shift(84), y: 953.4 }, "ID", 47, 47),
-    nodeBase("pivotJump2", "pivotJump2", "pivotJump2", { x: shift(664), y: 363 }, "ID", 47, 47),
-    nodeBase("pivotJump4", "pivotJump4", "pivotJump4", { x: shift(664), y: 688 }, "ID", 47, 47),
-    nodeBase("pivotJump5", "pivotJump5", "pivotJump5", { x: shift(664), y: 985 }, "ID", 47, 47),
     nodeBase("pivotJump10", "pivotJump10", "pivotJump10", { x: shift(34), y: 155 }, "ID", 47, 47),
+
+     ...(isPipeline
+  ? [
+      nodeBase("pcinc_ex", "pcinc_ex", "pcinc_ex", { x: 740 + offsetXSize , y: 235 }, "ID", 36, 50),
+      nodeBase("pc_ex", "pc_ex", "PC_ex", { x:  740 + offsetXSize  , y: 370 }, "ID", 36, 50),
+      nodeBase("rurs1_ex", "rurs1_ex", "rurs1_ex", { x:  740 + offsetXSize , y: 680 }, "ID", 36, 50),
+      nodeBase("rurs2_ex", "rurs2_ex", "rurs2_ex", { x:  740 + offsetXSize , y: 815 }, "ID", 36, 50),
+
+
+
+
+    ]
+  : []),
   ];
+
+  if (!isPipeline) {
+    nodes.push(
+      pivotNode("pivot2", { x: shift(680), y: 822.3 }, "ID"),
+      pivotNode("pivot5", { x: shift(680), y: 1077 }, "ID", "red"),
+      nodeBase("pivotJump2", "pivotJump2", "pivotJump2", { x: shift(664), y: 363 }, "ID", 47, 47),
+      nodeBase("pivotJump4", "pivotJump4", "pivotJump4", { x: shift(664), y: 688 }, "ID", 47, 47),
+      nodeBase("pivotJump5", "pivotJump5", "pivotJump5", { x: shift(664), y: 985 }, "ID", 47, 47),
+      
+    );
+  }
+
+  return nodes;
 };

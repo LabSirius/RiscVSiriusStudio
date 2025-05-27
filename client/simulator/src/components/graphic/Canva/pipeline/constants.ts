@@ -92,6 +92,10 @@ import PC_FE from '../../elements/IF/pipeline/PC_FE';
 import PCInc_DE from '../../elements/IF/pipeline/PCInc_DE';
 import PC_DE from '../../elements/IF/pipeline/PC_DE';
 import Inst_DE from '../../elements/IF/pipeline/Inst_DE';
+import PCInc_EX from '../../elements/IF/pipeline/PCInc_EX';
+import PC_EX from '../../elements/IF/pipeline/PC_EX';
+import RUrs1_EX from '../../elements/IF/pipeline/RUrs1_EX';
+import RUrs2_EX from '../../elements/IF/pipeline/RUrs2_EX';
 
 
 export const nodeTypes = {
@@ -180,8 +184,15 @@ export const nodeTypes = {
     //pipeline controllers
     pc_fe: PC_FE,
     pcinc_de: PCInc_DE,
+    pcinc_ex: PCInc_EX,
+
     pc_de: PC_DE,
+    pc_ex: PC_EX,
+
     inst_de: Inst_DE,
+
+    rurs1_ex: RUrs1_EX,
+    rurs2_ex: RUrs2_EX,
   };
   
   export const edgeTypes = {

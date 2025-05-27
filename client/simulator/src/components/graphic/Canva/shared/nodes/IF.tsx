@@ -15,7 +15,7 @@ export const useIFNodes = (): Node[] => {
       data: { label: "Section 1" },
       position: { x: 0, y: 0 },
       draggable: false,
-      zIndex: 1,
+      zIndex: 3,
       style: {
         width: 870 + offsetXSize,
         height: 1330,
@@ -65,10 +65,10 @@ export const useIFNodes = (): Node[] => {
 
     ...(isPipeline
   ? [
-      nodeBase("pc_fe", "pc_fe", "pc_fe", { x: 80, y: 830 }, "IF", 50, 50),
-      nodeBase("pcinc_de", "pcinc_de", "pcinc_de", { x: 920, y: 235 }, "IF", 50, 50),
-      nodeBase("pc_de", "pc_de", "PC_De", { x: 920, y: 370 }, "IF", 50, 50),
-      nodeBase("inst_de", "inst_de", "inst_de", { x: 920, y: 820 }, "IF", 50, 50),
+      nodeBase("pc_fe", "pc_fe", "pc_fe", { x: 80, y: 830 }, "IF", 36, 50),
+      nodeBase("pcinc_de", "pcinc_de", "pcinc_de", { x:  870 + offsetXSize, y: 235 }, "IF", 36, 50),
+      nodeBase("pc_de", "pc_de", "PC_De", { x:  870 + offsetXSize, y: 370 }, "IF", 36, 50),
+      nodeBase("inst_de", "inst_de", "inst_de", { x:  870 + offsetXSize, y: 820 }, "IF", 36, 50),
 
     ]
   : []),
