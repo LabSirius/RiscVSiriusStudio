@@ -15,7 +15,7 @@ export const useIDNodes = (): Node[] => {
       data: { label: "Section 2" },
       position: { x: 870 + (isPipeline ? 50 : 0), y: 0 },
       draggable: false,
-      zIndex: 1,
+      zIndex: 5,
       style: {
         width: 740 + offsetXSize,
         height: 1330,

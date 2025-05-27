@@ -9,7 +9,7 @@ import { nodeBase, pivotNode } from "./sharedAttributes";
 
 export const useWBNodes = (): Node[] => {
   const { typeSimulator } = useSimulator();
-  const offsetX = typeSimulator === "pipeline" ? 300 : 0;
+  const offsetX = typeSimulator === "pipeline" ? 700 : 0;
 
   return [
     nodeBase("WB", "group", "Section 5", { x: 870 + 730 + 680 + 565 + offsetX, y: 0 }, "", 290, 1330, "#FFF2E0", {

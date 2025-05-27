@@ -15,7 +15,7 @@ export const useIFNodes = (): Node[] => {
       data: { label: "Section 1" },
       position: { x: 0, y: 0 },
       draggable: false,
-      zIndex: 3,
+      zIndex: 6,
       style: {
         width: 870 + offsetXSize,
         height: 1330,

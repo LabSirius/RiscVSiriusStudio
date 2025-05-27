@@ -97,6 +97,9 @@ import PC_EX from '../../elements/IF/pipeline/PC_EX';
 import RUrs1_EX from '../../elements/IF/pipeline/RUrs1_EX';
 import RUrs2_EX from '../../elements/IF/pipeline/RUrs2_EX';
 import ImmExt_EX from '../../elements/IF/pipeline/ImmExt_EX';
+import PCInc_MEM from '../../elements/IF/pipeline/PCInc_MEM';
+import ALURes_me from '../../elements/IF/pipeline/ALURes_me';
+import RUrs2_MEM from '../../elements/IF/pipeline/RUrs2_MEM';
 
 
 export const nodeTypes = {
@@ -186,6 +189,7 @@ export const nodeTypes = {
     pc_fe: PC_FE,
     pcinc_de: PCInc_DE,
     pcinc_ex: PCInc_EX,
+    pcinc_me: PCInc_MEM,
 
     pc_de: PC_DE,
     pc_ex: PC_EX,
@@ -194,7 +198,13 @@ export const nodeTypes = {
 
     rurs1_ex: RUrs1_EX,
     rurs2_ex: RUrs2_EX,
+    rurs2_me: RUrs2_MEM,
+
     immext_ex: ImmExt_EX,
+
+    alures_me: ALURes_me,
+
+   
   };
   
   export const edgeTypes = {

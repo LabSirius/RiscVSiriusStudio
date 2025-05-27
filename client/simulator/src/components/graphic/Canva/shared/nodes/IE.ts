@@ -10,7 +10,7 @@ export const useIENodes = (): Node[] => {
   const shiftBack = (x: number): number => x + (isPipeline ? 100 : 0);
   const shiftBackJump = (x: number): number => x + (isPipeline ? 89 : 0);
 
-  const offsetXSize = isPipeline ? 300 : 0;
+  const offsetXSize = isPipeline ? 275 : 0;
 
   const nodes: Node[] = [
     {
@@ -19,7 +19,7 @@ export const useIENodes = (): Node[] => {
       data: { label: "Section 3" },
       position: { x: 870 + 730 + (isPipeline ? 60 : 0), y: 0 },
       draggable: false,
-      zIndex: 0,
+      zIndex: 3,
       style: {
         width: 680 + offsetXSize,
         height: 1330,
@@ -42,22 +42,77 @@ export const useIENodes = (): Node[] => {
     pivotNode("pivot4", { x: shift(45), y: 711 }, "IE"),
     pivotNode("pivot10", { x: shift(44), y: 1008 }, "IE"),
     nodeBase("pivotJump3", "pivotJump3", "pivotJump3", { x: shift(29), y: 563 }, "IE", 47, 47),
+
+    ...(isPipeline
+      ? [
+          nodeBase(
+            "pcinc_me",
+            "pcinc_me",
+            "pcinc_me",
+            { x: 740 + offsetXSize, y: 235 },
+            "IE",
+            36,
+            50
+          ),
+          nodeBase(
+            "alures_me",
+            "alures_me",
+            "alures_me",
+            { x: 740 + offsetXSize, y: 769 },
+            "IE",
+            36,
+            50
+          ),
+           nodeBase(
+            "rurs2_me",
+            "rurs2_me",
+            "rurs2_me",
+            { x: 740 + offsetXSize, y: 1050 },
+            "IE",
+            36,
+            50
+          ),
+        ]
+      : []),
   ];
 
   if (isPipeline) {
     nodes.push(
       pivotNode("pivot2", { x: shiftBack(5), y: 822.3 }, "IE"),
       pivotNode("pivot5", { x: shiftBack(5), y: 1077 }, "IE", "red"),
-      nodeBase("pivotJump2", "pivotJump2", "pivotJump2", { x: shiftBackJump(0), y: 363 }, "IE", 47, 47),
-      nodeBase("pivotJump4", "pivotJump4", "pivotJump4", { x: shiftBackJump(0), y: 688 }, "IE", 47, 47),
-      nodeBase("pivotJump5", "pivotJump5", "pivotJump5", { x: shiftBackJump(0), y: 985 }, "IE", 47, 47),
+      nodeBase(
+        "pivotJump2",
+        "pivotJump2",
+        "pivotJump2",
+        { x: shiftBackJump(0), y: 363 },
+        "IE",
+        47,
+        47
+      ),
+      nodeBase(
+        "pivotJump4",
+        "pivotJump4",
+        "pivotJump4",
+        { x: shiftBackJump(0), y: 688 },
+        "IE",
+        47,
+        47
+      ),
+      nodeBase(
+        "pivotJump5",
+        "pivotJump5",
+        "pivotJump5",
+        { x: shiftBackJump(0), y: 985 },
+        "IE",
+        47,
+        47
+      ),
 
       pivotNode("pivot14", { x: 800, y: 178 }, "IE"),
-pivotNode("pivot7", { x: 860, y: 792.6 }, "IE"),
-pivotNode("pivot16", { x: 860, y: 78 }, "IE"),
-nodeBase("pivotJump8", "pivotJump8", "pivotJump8", { x: 784, y: 231 }, "IE", 47, 47),
-nodeBase("pivotJump9", "pivotJump9", "pivotJump9", { x: 842, y: 231 }, "IE", 47, 47),
-
+      pivotNode("pivot7", { x: 860, y: 792.6 }, "IE"),
+      pivotNode("pivot16", { x: 860, y: 78 }, "IE"),
+      nodeBase("pivotJump8", "pivotJump8", "pivotJump8", { x: 784, y: 231 }, "IE", 47, 47),
+      nodeBase("pivotJump9", "pivotJump9", "pivotJump9", { x: 842, y: 231 }, "IE", 47, 47)
     );
   }
 
