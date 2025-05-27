@@ -1,4 +1,4 @@
-import ContainerPipelineRegister from '../../ContainerPipelineRegister'
+import ContainerPipelineRegister from '../ContainerPipelineRegister'
 
 const RUrs1_EX = () => {
   return (

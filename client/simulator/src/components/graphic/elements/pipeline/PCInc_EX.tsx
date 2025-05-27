@@ -1,4 +1,4 @@
-import ContainerPipelineRegister from '../../ContainerPipelineRegister'
+import ContainerPipelineRegister from '../ContainerPipelineRegister'
 
 const PCInc_EX = () => {
   return (

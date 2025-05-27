@@ -84,21 +84,21 @@ import Pivot32 from "../../elements/ID/pivots/Pivot32";
 import Pivot33 from "../../elements/ID/pivots/Pivot33";
 
 // pipeline controllers
-import PC_FE from "../../elements/IF/pipeline/PC_FE";
-import PCInc_DE from "../../elements/IF/pipeline/PCInc_DE";
-import PC_DE from "../../elements/IF/pipeline/PC_DE";
-import Inst_DE from "../../elements/IF/pipeline/Inst_DE";
-import PCInc_EX from "../../elements/IF/pipeline/PCInc_EX";
-import PC_EX from "../../elements/IF/pipeline/PC_EX";
-import RUrs1_EX from "../../elements/IF/pipeline/RUrs1_EX";
-import RUrs2_EX from "../../elements/IF/pipeline/RUrs2_EX";
-import ImmExt_EX from "../../elements/IF/pipeline/ImmExt_EX";
-import PCInc_MEM from "../../elements/IF/pipeline/PCInc_MEM";
-import ALURes_MEM from "../../elements/IF/pipeline/ALURes_MEM";
-import RUrs2_MEM from "../../elements/IF/pipeline/RUrs2_MEM";
-import PCInc_WB from "../../elements/IF/pipeline/PCInc_WB";
-import DMDataRd_WB from "../../elements/IF/pipeline/DMDataRd_WB";
-import ALURes_WB from "../../elements/IF/pipeline/ALURes_WB";
+import PC_FE from "../../elements/pipeline/PC_FE"
+import PCInc_DE from "../../elements/pipeline/PCInc_DE";
+import PC_DE from "../../elements/pipeline/PC_DE";
+import Inst_DE from "../../elements/pipeline/Inst_DE";
+import PCInc_EX from "../../elements/pipeline/PCInc_EX";
+import PC_EX from "../../elements/pipeline/PC_EX";
+import RUrs1_EX from "../../elements/pipeline/RUrs1_EX";
+import RUrs2_EX from "../../elements/pipeline/RUrs2_EX";
+import ImmExt_EX from "../../elements/pipeline/ImmExt_EX";
+import PCInc_MEM from "../../elements/pipeline/PCInc_MEM";
+import ALURes_MEM from "../../elements/pipeline/ALURes_MEM";
+import RUrs2_MEM from "../../elements/pipeline/RUrs2_MEM";
+import PCInc_WB from "../../elements/pipeline/PCInc_WB";
+import DMDataRd_WB from "../../elements/pipeline/DMDataRd_WB";
+import ALURes_WB from "../../elements/pipeline/ALURes_WB";
 
 export const nodeTypes = {
   title: TitleText,
