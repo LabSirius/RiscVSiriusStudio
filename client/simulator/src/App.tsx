@@ -3,7 +3,7 @@ import { useSimulator } from "./context/shared/SimulatorContext";
 import MainSectionContainer from "@/components/panel/Sections/MainSection/MainSectionContainer";
 import MainSection from "@/components/panel/Sections/MainSection/MainSection";
 
-import MonocycleCanva from "@/components/graphic/Canva/monocycle/MonocycleCanva";
+import MonocycleCanva from "@/components/graphic/Canva/monocycle/MonoCycleCanva";
 import PipelineCanva from "./components/graphic/Canva/pipeline/PipelineCanva";
 import Providers from "./providers";
 
