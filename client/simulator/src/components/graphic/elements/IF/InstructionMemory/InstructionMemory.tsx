@@ -5,7 +5,7 @@ import LabelValueContainer from "./LabelValueContainer";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
 export default function InstructionMemory() {
-    const { operation } = useSimulator();
+    const { operation, typeSimulator } = useSimulator();
   
   return (
     <div className="w-full h-full">
@@ -17,7 +17,7 @@ export default function InstructionMemory() {
         <div className="relative">
           <ContainerSVG height={15} active={true} />
 
-          {operation !== "uploadMemory" && (
+          {operation !== "uploadMemory" && typeSimulator === "monocycle" && (
             <>
               <div className="absolute bottom-[7.4rem] right-[-2.5rem]">
                 <LabelSlash number={32} />

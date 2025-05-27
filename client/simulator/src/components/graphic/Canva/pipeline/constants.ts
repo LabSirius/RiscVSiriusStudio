@@ -89,6 +89,9 @@ import Pivot33 from '../../elements/ID/pivots/Pivot33';
 
 // pipeline controllers
 import PC_FE from '../../elements/IF/pipeline/PC_FE';
+import PCInc_DE from '../../elements/IF/pipeline/PCInc_DE';
+import PC_DE from '../../elements/IF/pipeline/PC_DE';
+import Inst_DE from '../../elements/IF/pipeline/Inst_DE';
 
 
 export const nodeTypes = {
@@ -176,6 +179,9 @@ export const nodeTypes = {
 
     //pipeline controllers
     pc_fe: PC_FE,
+    pcinc_de: PCInc_DE,
+    pc_de: PC_DE,
+    inst_de: Inst_DE,
   };
   
   export const edgeTypes = {

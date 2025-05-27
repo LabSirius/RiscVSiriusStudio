@@ -16,7 +16,7 @@ const ClockTriangle = ({pipeline} : {pipeline? : boolean}) => {
 
   return (
     <Triangle
-      size={ pipeline ? 40 : 24}
+      size={ pipeline ? 34 : 24}
       className={`absolute left-[50%] transform -translate-x-[50%] text-[#404040]  ${pipeline ? 'bottom-[-.5rem]' : 'bottom-0'} z-2 ${animate ? "pc-change-anim" : ""}`}
     />
   );

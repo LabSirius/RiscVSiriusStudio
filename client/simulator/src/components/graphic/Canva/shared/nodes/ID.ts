@@ -4,7 +4,10 @@ import { nodeBase, pivotNode } from "./sharedAttributes";
 
 export const useIDNodes = (): Node[] => {
   const { typeSimulator } = useSimulator();
-  const offsetX = typeSimulator === "pipeline" ? 300 : 0;
+  const offsetX = typeSimulator === "pipeline" ? 50 : 0;
+  const isPipeline = typeSimulator === "pipeline";
+
+  const shift = (x: number): number => x + (isPipeline ? 15 : 0);
 
   return [
     {
@@ -24,33 +27,33 @@ export const useIDNodes = (): Node[] => {
     },
 
     nodeBase("title-ID", "title", "Decode (ID)", { x: 0, y: 0 }, "ID", 740, 50),
-    nodeBase("ruWr", "ruWr", "RUWR", { x: 120, y: 814 }, "ID", 90, 30),
-    nodeBase("registersUnit", "registerUnit", "Registers Unit", { x: 255, y: 435 }, "ID", 360, 450),
-    nodeBase("immSrc", "immSrc", "IMMSrc", { x: 145, y: 1028.5 }, "ID", 90, 30),
-    nodeBase("immGenerator", "immGenerator", "Immediate Generator", { x: 285, y: 935.5 }, "ID", 330, 150),
+    nodeBase("ruWr", "ruWr", "RUWR", { x: shift(120), y: 814 }, "ID", 90, 30),
+    nodeBase("registersUnit", "registerUnit", "Registers Unit", { x: shift(255), y: 435 }, "ID", 360, 450),
+    nodeBase("immSrc", "immSrc", "IMMSrc", { x: shift(145), y: 1028.5 }, "ID", 90, 30),
+    nodeBase("immGenerator", "immGenerator", "Immediate Generator", { x: shift(285), y: 935.5 }, "ID", 330, 150),
 
-    pivotNode("pivot2", { x: 680, y: 822.3 }, "ID"),
-    pivotNode("pivot3", { x: 50, y: 843 }, "ID"),
-    pivotNode("pivot5", { x: 680, y: 1077 }, "ID", "red"),
-    pivotNode("pivot12", { x: 100, y: 1131 }, "ID"),
-    pivotNode("pivot18", { x: 50, y: 254 }, "ID"),
-    pivotNode("pivot19", { x: 50, y: 128 }, "ID"),
-    pivotNode("pivot20", { x: 50, y: 563 }, "ID"),
-    pivotNode("pivot21", { x: 50, y: 483 }, "ID"),
-    pivotNode("pivot22", { x: 50, y: 643 }, "ID"),
-    pivotNode("pivot26", { x: 50, y: 976.5 }, "ID"),
-    pivotNode("pivot27", { x: 50, y: 1169 }, "ID"),
-    pivotNode("pivot28", { x: 100, y: 1169 }, "ID"),
-    pivotNode("pivot29", { x: 100, y: 1210 }, "ID"),
-    pivotNode("pivot30", { x: 270, y: 1169 }, "ID"),
-    pivotNode("pivot31", { x: 270, y: 1210 }, "ID"),
-    pivotNode("pivot32", { x: 450, y: 1169 }, "ID"),
-    pivotNode("pivot33", { x: 450, y: 1210 }, "ID"),
+    pivotNode("pivot2", { x: shift(680), y: 822.3 }, "ID"),
+    pivotNode("pivot3", { x: shift(50), y: 843 }, "ID"),
+    pivotNode("pivot5", { x: shift(680), y: 1077 }, "ID", "red"),
+    pivotNode("pivot12", { x: shift(100), y: 1131 }, "ID"),
+    pivotNode("pivot18", { x: shift(50), y: 254 }, "ID"),
+    pivotNode("pivot19", { x: shift(50), y: 128 }, "ID"),
+    pivotNode("pivot20", { x: shift(50), y: 563 }, "ID"),
+    pivotNode("pivot21", { x: shift(50), y: 483 }, "ID"),
+    pivotNode("pivot22", { x: shift(50), y: 643 }, "ID"),
+    pivotNode("pivot26", { x: shift(50), y: 976.5 }, "ID"),
+    pivotNode("pivot27", { x: shift(50), y: 1169 }, "ID"),
+    pivotNode("pivot28", { x: shift(100), y: 1169 }, "ID"),
+    pivotNode("pivot29", { x: shift(100), y: 1210 }, "ID"),
+    pivotNode("pivot30", { x: shift(270), y: 1169 }, "ID"),
+    pivotNode("pivot31", { x: shift(270), y: 1210 }, "ID"),
+    pivotNode("pivot32", { x: shift(450), y: 1169 }, "ID"),
+    pivotNode("pivot33", { x: shift(450), y: 1210 }, "ID"),
 
-    nodeBase("pivotJump1", "pivotJump1", "pivotJump1", { x: 84, y: 953.4 }, "ID", 47, 47),
-    nodeBase("pivotJump2", "pivotJump2", "pivotJump2", { x: 664, y: 363 }, "ID", 47, 47),
-    nodeBase("pivotJump4", "pivotJump4", "pivotJump4", { x: 664, y: 688 }, "ID", 47, 47),
-    nodeBase("pivotJump5", "pivotJump5", "pivotJump5", { x: 664, y: 985 }, "ID", 47, 47),
-    nodeBase("pivotJump10", "pivotJump10", "pivotJump10", { x: 34, y: 155 }, "ID", 47, 47),
+    nodeBase("pivotJump1", "pivotJump1", "pivotJump1", { x: shift(84), y: 953.4 }, "ID", 47, 47),
+    nodeBase("pivotJump2", "pivotJump2", "pivotJump2", { x: shift(664), y: 363 }, "ID", 47, 47),
+    nodeBase("pivotJump4", "pivotJump4", "pivotJump4", { x: shift(664), y: 688 }, "ID", 47, 47),
+    nodeBase("pivotJump5", "pivotJump5", "pivotJump5", { x: shift(664), y: 985 }, "ID", 47, 47),
+    nodeBase("pivotJump10", "pivotJump10", "pivotJump10", { x: shift(34), y: 155 }, "ID", 47, 47),
   ];
 };
