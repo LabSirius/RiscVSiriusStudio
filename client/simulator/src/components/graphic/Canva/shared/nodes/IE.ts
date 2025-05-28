@@ -58,7 +58,7 @@ export const useIENodes = (): Node[] => {
             "alures_me",
             "alures_me",
             "alures_me",
-            { x: 740 + offsetXSize, y: 769 },
+            { x: 740 + offsetXSize, y: 770.4 },
             "IE",
             36,
             50

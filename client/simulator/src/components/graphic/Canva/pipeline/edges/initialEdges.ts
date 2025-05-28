@@ -14,6 +14,8 @@ import { RUrs1_EX } from './RUrs1_EX';
 import { RUrs2_EX } from './RUrs2_EX';
 import { ImmExt_EX } from './ImmExt_EX';
 import { RUrs2_ME } from './RUrs2_ME';
+import { ALURes_WB } from './ALURes_WB';
+import { ALURes_ME } from './ALURes_ME';
 
 
 export const initialEdges: Edge[] = [
@@ -32,4 +34,7 @@ export const initialEdges: Edge[] = [
 
    ...ImmExt_EX,
    ...RUrs2_ME,
+
+   ...ALURes_WB,
+   ...ALURes_ME,
 ];
