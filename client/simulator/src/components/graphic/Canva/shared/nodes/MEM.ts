@@ -49,7 +49,7 @@ export const useMEMNodes = (): Node[] => {
             "dmdatard_wb",
             "dmdatard_wb",
             "dmdatard_wb",
-            { x: 565 + offsetXSize, y: 820 },
+            { x: 565 + offsetXSize, y: 820.8 },
             "MEM",
             36,
             50
