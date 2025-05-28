@@ -54,7 +54,7 @@ export const useIFNodes = (): Node[] => {
       draggable: false,
       style: {
         width: 3050 + (isPipeline ? 545 : 0),
-        height: 150,
+        height: 170,
         backgroundColor: "transparent",
         border: "none",
         borderRadius: 0,

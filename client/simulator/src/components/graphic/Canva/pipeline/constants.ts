@@ -108,6 +108,7 @@ import Pivot37 from "../../elements/ID/pivots/Pivot37";
 import RD_ME from "../../elements/pipeline/RD_ME";
 import RD_EX from "../../elements/pipeline/RD_EX";
 import Pivot38 from "../../elements/ID/pivots/Pivot38";
+import CU_EX from "../../elements/pipeline/CU_EX";
 export const nodeTypes = {
   title: TitleText,
   // IF
@@ -224,6 +225,8 @@ export const nodeTypes = {
   rd_ex: RD_EX,
   rd_me: RD_ME,
   rd_wb: RD_WB,
+
+  cu_ex: CU_EX,
 };
 
 export const edgeTypes = {

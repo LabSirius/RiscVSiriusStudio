@@ -4,7 +4,7 @@ import { Handle, Position } from "@xyflow/react";
 const ALURes_MEM = () => {
   return (
     <div className="relative w-full overflow-visible">
-      <ContainerPipelineRegister text="ALURes_me" />
+      <ContainerPipelineRegister text="ALURes_MEM" />
 
       <Handle type="target" position={Position.Left} className="input" style={{ top: "2.2rem" }} />
 

@@ -4,7 +4,7 @@ import { Handle, Position } from "@xyflow/react";
 const PCInc_DE = () => {
   return (
     <div className="relative w-full overflow-visible">
-      <ContainerPipelineRegister text="PCInc_De" />
+      <ContainerPipelineRegister text="PCInc_ID" />
 
       <Handle type="target" position={Position.Left} className="input" style={{ top: "2.2rem" }} />
 

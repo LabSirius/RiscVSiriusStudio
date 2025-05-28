@@ -141,6 +141,15 @@ export const useIDNodes = (): Node[] => {
             50
           ),
           nodeBase("rd_ex", "rd_ex", "rd_ex", { x: 740 + offsetXSize, y: 1210 }, "ID", 36, 50),
+          nodeBase(
+            "cu_ex",
+            "cu_ex",
+            "cu_ex",
+            { x: 740 + offsetXSize, y: 1350.3 },
+            "ID",
+            36,
+            50
+          ),
         ]
       : []),
   ];
