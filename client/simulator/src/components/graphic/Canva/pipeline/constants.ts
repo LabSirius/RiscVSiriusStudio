@@ -100,6 +100,7 @@ import PCInc_WB from "../../elements/pipeline/PCInc_WB";
 import DMDataRd_WB from "../../elements/pipeline/DMDataRd_WB";
 import ALURes_WB from "../../elements/pipeline/ALURes_WB";
 import Pivot34 from "../../elements/ID/pivots/Pivot34";
+import PivotJump11 from "../../elements/ID/pivots/PivotJump11";
 
 export const nodeTypes = {
   title: TitleText,
@@ -184,6 +185,8 @@ export const nodeTypes = {
   pivotJump8: PivotJump8,
   pivotJump9: PivotJump9,
   pivotJump10: PivotJump10,
+
+  pivotJump11: PivotJump11,
 
   
 

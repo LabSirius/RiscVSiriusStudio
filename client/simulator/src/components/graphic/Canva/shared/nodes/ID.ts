@@ -62,6 +62,8 @@ export const useIDNodes = (): Node[] => {
     pivotNode("pivot33", { x: shift(450), y: 1210 }, "ID"),
 
     nodeBase("pivotJump1", "pivotJump1", "pivotJump1", { x: shift(84) + (isPipeline ? 70 : 0), y: 953.4 }, "ID", 47, 47),
+    nodeBase("pivotJump11", "pivotJump11", "pivotJump11", { x: shift(26) + (isPipeline ? 70 : 0), y: 953.4 }, "ID", 47, 47),
+
 
     ...(isPipeline
       ? [
