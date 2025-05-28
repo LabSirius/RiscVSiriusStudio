@@ -1,9 +1,11 @@
 import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 import { binaryToHex, binaryToInt } from '@/utils/handlerConversions';
 import LabelValueWithHover from '../../LabelValueWithHover';
+import { useSimulator } from '@/context/shared/SimulatorContext';
 
 const LabelValueContainer = () => {
-  const { currentType, currentInst } = useCurrentInst();
+  const { typeSimulator} = useSimulator()
+    const { currentType, currentInst } = useCurrentInst();
 
   // OPCODE
   const binOpcode = currentInst.opcode.padStart(7, '0');
@@ -29,7 +31,7 @@ const LabelValueContainer = () => {
         decimal={decOpcode}
         binary={binOpcode}
         hex={hexOpcode}
-        positionClassName="top-[-.6rem] left-[55rem]"
+        positionClassName={`top-[-.6rem] ${typeSimulator === 'pipeline' ? 'left-[60rem]' : 'left-[55rem]'} `}
       />
 
       {/* FUNCT3  */}
@@ -40,7 +42,7 @@ const LabelValueContainer = () => {
           decimal={decFunct3}
           binary={binFunct3}
           hex={hexFunct3}
-          positionClassName="top-[-.6rem] left-[66.5rem]"
+          positionClassName={`top-[-.6rem] ${typeSimulator === 'pipeline' ? 'left-[71.5rem]' : 'left-[66.5rem]'} `}
         />
       )}
 
@@ -52,7 +54,7 @@ const LabelValueContainer = () => {
           decimal={decFunct7}
           binary={binFunct7}
           hex={hexFunct7}
-          positionClassName=" top-[-.6rem] left-[76.4rem]"
+          positionClassName={`top-[-.6rem] ${typeSimulator === 'pipeline' ? 'left-[81.4rem]' : 'left-[76.4rem]'} `}
         />
       )}
     </>
