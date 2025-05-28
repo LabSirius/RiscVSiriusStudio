@@ -12,7 +12,7 @@ export default function ImmSrc() {
     <div className='w-full'>
 
        <div className='relative w-full h-full'>
-       <h2 className={`titleInElement right-[.7rem] top-[40%] -translate-y-[40%]  ${overlayDecodeActive && 'overlay-scale'} ${(currentType === "R") && "!text-[#D3D3D3]"}`}>IMMSrc{typeSimulator === 'pipeline' && '_de'}</h2>
+       <h2 className={`titleInElement right-[.7rem] top-[40%] -translate-y-[40%]  ${overlayDecodeActive && 'overlay-scale'} ${(currentType === "R") && "!text-[#D3D3D3]"}`}>IMMSrc{typeSimulator === 'pipeline' && ''}</h2>
        </div>
         
        <div  className={`${overlayDecodeActive && 'overlay-moveY'}`} >

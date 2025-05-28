@@ -10,7 +10,7 @@ export default function RUWr() {
     <div className={`w-full`}>
 
        <div className='relative w-full h-full'>
-       <h2 className={`titleInElement right-[1rem] top-[40%] -translate-y-[40%] ${overlayDecodeActive && 'overlay-scale'}`}>RUWr{typeSimulator === 'pipeline' && 'R_wb'}</h2>
+       <h2 className={`titleInElement right-[1rem] top-[40%] -translate-y-[40%] ${overlayDecodeActive && 'overlay-scale'}`}>RUWr{typeSimulator === 'pipeline' && ''}</h2>
        </div>
         
         <div  className={`${overlayDecodeActive && 'overlay-moveY'}`} >
