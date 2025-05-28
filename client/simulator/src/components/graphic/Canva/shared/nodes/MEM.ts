@@ -26,7 +26,7 @@ export const useMEMNodes = (): Node[] => {
       },
     },
 
-    nodeBase("title-MEM", "title", "Memory (MEM)", { x: 10 , y: 0 }, "MEM", 565, 50),
+    nodeBase("title-MEM", "title", "Memory (MEM)", { x: 10, y: 0 }, "MEM", 565, 50),
     nodeBase("dataMemory", "dataMemory", "Data Memory", { x: shift(200), y: 635 }, "MEM", 325, 320),
     nodeBase("dmWr", "dmWr", "DMWR", { x: shift(243), y: 555 }, "MEM", 90, 30),
     nodeBase("dmCtrl", "dmCtrl", "DMCtrl", { x: shift(385), y: 555 }, "MEM", 90, 30),
@@ -63,38 +63,34 @@ export const useMEMNodes = (): Node[] => {
             36,
             50
           ),
-          nodeBase(
-            "rd_wb",
-            "rd_wb",
-            "rd_wb",
-            { x: 565 + offsetXSize, y: 1210 },
-            "MEM",
-            36,
-            50
-          ),
-          nodeBase(
-            "cu_wb",
-            "cu_wb",
-            "cu_wb",
-            { x: 565 + offsetXSize, y: 1350.3 },
-            "MEM",
-            36,
-            50
-          ),
+          nodeBase("rd_wb", "rd_wb", "rd_wb", { x: 565 + offsetXSize, y: 1210 }, "MEM", 36, 50),
+          nodeBase("cu_wb", "cu_wb", "cu_wb", { x: 565 + offsetXSize, y: 1350.3 }, "MEM", 36, 50),
           pivotNode("pivot34", { x: shift(90), y: 792.3 }, "MEM"),
         ]
-      : []),
+      : [
+          pivotNode("pivot7", { x: shift(90), y: 792.6 }, "MEM"),
+          pivotNode("pivot14", { x: shift(18), y: 178 }, "MEM"),
+          pivotNode("pivot16", { x: shift(90), y: 78 }, "MEM"),
+          nodeBase(
+            "pivotJump8",
+            "pivotJump8",
+            "pivotJump8",
+            { x: shift(2), y: 231 },
+            "MEM",
+            47,
+            47
+          ),
+          nodeBase(
+            "pivotJump9",
+            "pivotJump9",
+            "pivotJump9",
+            { x: shift(74), y: 231 },
+            "MEM",
+            47,
+            47
+          ),
+        ]),
   ];
-
-  if (!isPipeline) {
-    nodes.push(
-      pivotNode("pivot7", { x: shift(90), y: 792.6 }, "MEM"),
-      pivotNode("pivot14", { x: shift(18), y: 178 }, "MEM"),
-      pivotNode("pivot16", { x: shift(90), y: 78 }, "MEM"),
-      nodeBase("pivotJump8", "pivotJump8", "pivotJump8", { x: shift(2), y: 231 }, "MEM", 47, 47),
-      nodeBase("pivotJump9", "pivotJump9", "pivotJump9", { x: shift(74), y: 231 }, "MEM", 47, 47)
-    );
-  }
 
   return nodes;
 };

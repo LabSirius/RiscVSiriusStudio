@@ -74,49 +74,45 @@ export const useIENodes = (): Node[] => {
           ),
           nodeBase("rd_me", "rd_me", "rd_me", { x: 740 + offsetXSize, y: 1210 }, "IE", 36, 50),
           nodeBase("cu_me", "cu_me", "cu_me", { x: 740 + offsetXSize, y: 1350.3 }, "IE", 36, 50),
+
+          pivotNode("pivot2", { x: shiftBack(5), y: 822.3 }, "IE"),
+          pivotNode("pivot5", { x: shiftBack(5), y: 1077 }, "IE", "red"),
+          nodeBase(
+            "pivotJump2",
+            "pivotJump2",
+            "pivotJump2",
+            { x: shiftBackJump(0), y: 363 + (isPipeline ? 5.5 : 0) },
+            "IE",
+            47,
+            47
+          ),
+          nodeBase(
+            "pivotJump4",
+            "pivotJump4",
+            "pivotJump4",
+            { x: shiftBackJump(0), y: 688 },
+            "IE",
+            47,
+            47
+          ),
+          nodeBase(
+            "pivotJump5",
+            "pivotJump5",
+            "pivotJump5",
+            { x: shiftBackJump(0), y: 985 },
+            "IE",
+            47,
+            47
+          ),
+
+          pivotNode("pivot14", { x: 800, y: 178 }, "IE"),
+          pivotNode("pivot7", { x: 860, y: 792.6 }, "IE"),
+          pivotNode("pivot16", { x: 860, y: 78 }, "IE"),
+          nodeBase("pivotJump8", "pivotJump8", "pivotJump8", { x: 784, y: 231 }, "IE", 47, 47),
+          nodeBase("pivotJump9", "pivotJump9", "pivotJump9", { x: 842, y: 231 }, "IE", 47, 47),
         ]
       : []),
   ];
-
-  if (isPipeline) {
-    nodes.push(
-      pivotNode("pivot2", { x: shiftBack(5), y: 822.3 }, "IE"),
-      pivotNode("pivot5", { x: shiftBack(5), y: 1077 }, "IE", "red"),
-      nodeBase(
-        "pivotJump2",
-        "pivotJump2",
-        "pivotJump2",
-        { x: shiftBackJump(0), y: 363 + (isPipeline ? 5.5 : 0) },
-        "IE",
-        47,
-        47
-      ),
-      nodeBase(
-        "pivotJump4",
-        "pivotJump4",
-        "pivotJump4",
-        { x: shiftBackJump(0), y: 688 },
-        "IE",
-        47,
-        47
-      ),
-      nodeBase(
-        "pivotJump5",
-        "pivotJump5",
-        "pivotJump5",
-        { x: shiftBackJump(0), y: 985 },
-        "IE",
-        47,
-        47
-      ),
-
-      pivotNode("pivot14", { x: 800, y: 178 }, "IE"),
-      pivotNode("pivot7", { x: 860, y: 792.6 }, "IE"),
-      pivotNode("pivot16", { x: 860, y: 78 }, "IE"),
-      nodeBase("pivotJump8", "pivotJump8", "pivotJump8", { x: 784, y: 231 }, "IE", 47, 47),
-      nodeBase("pivotJump9", "pivotJump9", "pivotJump9", { x: 842, y: 231 }, "IE", 47, 47)
-    );
-  }
 
   return nodes;
 };

@@ -143,21 +143,49 @@ export const useIDNodes = (): Node[] => {
           nodeBase("rd_ex", "rd_ex", "rd_ex", { x: 740 + offsetXSize, y: 1210 }, "ID", 36, 50),
           nodeBase("cu_ex", "cu_ex", "cu_ex", { x: 740 + offsetXSize, y: 1350.3 }, "ID", 36, 50),
         ]
-      : []),
+      : [
+          pivotNode("pivot2", { x: shift(680), y: 822.3 }, "ID"),
+          pivotNode("pivot5", { x: shift(680), y: 1077 }, "ID", "red"),
+          pivotNode("pivot18", { x: shift(50), y: 254 }, "ID"),
+          pivotNode("pivot19", { x: shift(50), y: 128 }, "ID"),
+          nodeBase(
+            "pivotJump2",
+            "pivotJump2",
+            "pivotJump2",
+            { x: shift(664), y: 363 },
+            "ID",
+            47,
+            47
+          ),
+          nodeBase(
+            "pivotJump4",
+            "pivotJump4",
+            "pivotJump4",
+            { x: shift(664), y: 688 },
+            "ID",
+            47,
+            47
+          ),
+          nodeBase(
+            "pivotJump5",
+            "pivotJump5",
+            "pivotJump5",
+            { x: shift(664), y: 985 },
+            "ID",
+            47,
+            47
+          ),
+          nodeBase(
+            "pivotJump10",
+            "pivotJump10",
+            "pivotJump10",
+            { x: shift(34), y: 155 },
+            "ID",
+            47,
+            47
+          ),
+        ]),
   ];
-
-  if (!isPipeline) {
-    nodes.push(
-      pivotNode("pivot2", { x: shift(680), y: 822.3 }, "ID"),
-      pivotNode("pivot5", { x: shift(680), y: 1077 }, "ID", "red"),
-      pivotNode("pivot18", { x: shift(50), y: 254 }, "ID"),
-      pivotNode("pivot19", { x: shift(50), y: 128 }, "ID"),
-      nodeBase("pivotJump2", "pivotJump2", "pivotJump2", { x: shift(664), y: 363 }, "ID", 47, 47),
-      nodeBase("pivotJump4", "pivotJump4", "pivotJump4", { x: shift(664), y: 688 }, "ID", 47, 47),
-      nodeBase("pivotJump5", "pivotJump5", "pivotJump5", { x: shift(664), y: 985 }, "ID", 47, 47),
-      nodeBase("pivotJump10", "pivotJump10", "pivotJump10", { x: shift(34), y: 155 }, "ID", 47, 47)
-    );
-  }
 
   return nodes;
 };
