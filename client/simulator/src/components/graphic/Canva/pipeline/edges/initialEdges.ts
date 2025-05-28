@@ -13,6 +13,7 @@ import { PCInc_WB } from './PCInc_WB';
 import { RUrs1_EX } from './RUrs1_EX';
 import { RUrs2_EX } from './RUrs2_EX';
 import { ImmExt_EX } from './ImmExt_EX';
+import { RUrs2_ME } from './RUrs2_ME';
 
 
 export const initialEdges: Edge[] = [
@@ -30,4 +31,5 @@ export const initialEdges: Edge[] = [
    ...RUrs2_EX,
 
    ...ImmExt_EX,
+   ...RUrs2_ME,
 ];
