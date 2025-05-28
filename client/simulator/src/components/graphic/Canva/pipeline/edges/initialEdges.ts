@@ -21,6 +21,7 @@ import { RD_IE_MEM_WB } from './RD_IE_MEM_WB';
 import { CU_IE } from './CU_IE';
 import { CU_MEM } from './CU_MEM';
 import { CU_WB } from './CU_WB';
+import { CU_ID } from './CU_ID';
 
 
 
@@ -50,5 +51,6 @@ export const initialEdges: Edge[] = [
 
    ...CU_IE,
    ...CU_MEM,
-   ...CU_WB
+   ...CU_WB,
+   ...CU_ID
 ];

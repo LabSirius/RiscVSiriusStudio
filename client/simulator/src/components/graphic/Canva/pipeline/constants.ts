@@ -115,6 +115,7 @@ import CU_IE_EXIT from "../../elements/pipeline/CU_IE_EXIT";
 import CU_MEM_EXIT from "../../elements/pipeline/CU_MEM_EXIT";
 import CU_WB_EXIT from "../../elements/pipeline/CU_WB_EXIT";
 import CU_ID_EXIT from "../../elements/pipeline/CU_ID_EXIT";
+import Pivot39 from "../../elements/ID/pivots/Pivot39";
 export const nodeTypes = {
   title: TitleText,
   // IF
@@ -190,6 +191,8 @@ export const nodeTypes = {
   pivot36: Pivot36,
   pivot37: Pivot37,
   pivot38: Pivot38,
+
+  pivot39: Pivot39,
 
   //PIVOTS Jumps
   pivotJump1: PivotJump1,

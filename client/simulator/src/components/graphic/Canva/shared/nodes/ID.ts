@@ -143,7 +143,7 @@ export const useIDNodes = (): Node[] => {
           nodeBase("rd_ie", "rd_ie", "rd_ie", { x: 740 + offsetXSize, y: 1210 }, "ID", 36, 50),
           nodeBase("cu_ie", "cu_ie", "cu_ie", { x: 740 + offsetXSize, y: 1370.3 }, "ID", 36, 50),
           nodeBase("cu_id_exit", "cu_id_exit", "cu_id_exit", { x: 660, y: 1272 }, "ID", 90, 30),
-
+          pivotNode("pivot39", { x: 620, y: 1365 }, "ID"),
         ]
       : [
           pivotNode("pivot2", { x: shift(680), y: 822.3 }, "ID"),
