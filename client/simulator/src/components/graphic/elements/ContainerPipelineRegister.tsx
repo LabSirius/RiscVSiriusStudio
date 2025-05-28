@@ -5,15 +5,14 @@ const ContainerPipelineRegister = ({
   top,
   height,
 }: {
-  text: string;
+  text?: string;
   top?: boolean;
   height?: number;
 }) => {
   return (
     <div
-      className={`relative w-[4.5rem] ${
-        height ? `h-[${height}]` : "h-[4.5rem]"
-      } bg-amber-200 border-4 border-black`}>
+      className="relative w-[4.5rem] bg-amber-200 border-4 border-black"
+      style={{ height: height ? `${height}rem` : "4.5rem" }}>
       <p
         className={`absolute ${
           top ? "top-[-2.9rem]" : "bottom-[-2.7rem]"

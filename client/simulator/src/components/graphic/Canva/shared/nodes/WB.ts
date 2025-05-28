@@ -19,7 +19,7 @@ export const useWBNodes = (): Node[] => {
       zIndex: -1,
       style: {
         width: 290 + (isPipeline ? 80 : 0),
-        height: 1330 + (isPipeline ? 110 : 0),
+        height: 1330 + (isPipeline ? 140 : 0),
         backgroundColor: "#FFF2E0",
         border: "1px solid #FFF2E0",
         borderRadius: 8,

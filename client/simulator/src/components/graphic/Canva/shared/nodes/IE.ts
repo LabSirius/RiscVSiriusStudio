@@ -22,7 +22,7 @@ export const useIENodes = (): Node[] => {
       zIndex: 3,
       style: {
         width: 680 + offsetXSize,
-        height: 1330 + (isPipeline ? 110 : 0),
+        height: 1330 + (isPipeline ? 140 : 0),
         backgroundColor: "#E3F2FD",
         border: "1px solid #E3F2FD",
         borderRadius: 8,
@@ -73,7 +73,7 @@ export const useIENodes = (): Node[] => {
             50
           ),
           nodeBase("rd_me", "rd_me", "rd_me", { x: 740 + offsetXSize, y: 1210 }, "IE", 36, 50),
-          nodeBase("cu_me", "cu_me", "cu_me", { x: 740 + offsetXSize, y: 1350.3 }, "IE", 36, 50),
+          nodeBase("cu_me", "cu_me", "cu_me", { x: 740 + offsetXSize, y: 1378.3 }, "IE", 36, 50),
 
           pivotNode("pivot2", { x: shiftBack(5), y: 822.3 }, "IE"),
           pivotNode("pivot5", { x: shiftBack(5), y: 1077 }, "IE", "red"),

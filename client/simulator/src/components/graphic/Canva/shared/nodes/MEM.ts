@@ -20,7 +20,7 @@ export const useMEMNodes = (): Node[] => {
       zIndex: 0,
       style: {
         width: 565 + offsetXSize,
-        height: 1330 + (isPipeline ? 110 : 0),
+        height: 1330 + (isPipeline ? 140 : 0),
         backgroundColor: "#E8F5E9",
         border: "1px solid #E8F5E9",
       },
@@ -64,7 +64,7 @@ export const useMEMNodes = (): Node[] => {
             50
           ),
           nodeBase("rd_wb", "rd_wb", "rd_wb", { x: 565 + offsetXSize, y: 1210 }, "MEM", 36, 50),
-          nodeBase("cu_wb", "cu_wb", "cu_wb", { x: 565 + offsetXSize, y: 1350.3 }, "MEM", 36, 50),
+          nodeBase("cu_wb", "cu_wb", "cu_wb", { x: 565 + offsetXSize, y: 1379.1 }, "MEM", 36, 50),
           pivotNode("pivot34", { x: shift(90), y: 792.3 }, "MEM"),
         ]
       : [

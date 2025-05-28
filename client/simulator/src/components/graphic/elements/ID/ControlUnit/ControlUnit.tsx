@@ -19,7 +19,7 @@ export default function ControlUnit() {
       <div className="relative">
        <CurrentInstructionInfo />
 
-        <ContainerSVG height={typeSimulator === "monocycle" ? 5 : 6} active={true} />
+        <ContainerSVG height={typeSimulator === "monocycle" ? 5 : 7.5} active={true} />
 
         {operation !== "uploadMemory" && (
           // <>

@@ -4,7 +4,7 @@ import { Handle, Position } from "@xyflow/react";
 const CU_MEM = () => {
   return (
     <div className="relative w-full overflow-visible">
-      <ContainerPipelineRegister text="" />
+      <ContainerPipelineRegister height={5} />
 
 
       <Handle
@@ -12,7 +12,7 @@ const CU_MEM = () => {
          id={"2"}
         position={Position.Left}
         className="input"
-        style={{ right: "-2.4rem", top: "2.3rem" }}
+        style={{ right: "-2.4rem", top: "2rem" }}
       />
 
       <Handle
@@ -20,7 +20,7 @@ const CU_MEM = () => {
          id={"3"}
         position={Position.Left}
         className="input"
-        style={{ right: "-2.4rem", top: "3.6rem" }}
+        style={{ right: "-2.4rem", top: "3.9rem" }}
       />
 
       
@@ -30,7 +30,7 @@ const CU_MEM = () => {
          id={"1"}
         position={Position.Right}
         className="output"
-        style={{ right: "-2.4rem", top: "2.3rem" }}
+        style={{ right: "-2.4rem", top: "2rem" }}
       />
 
       <Handle
@@ -38,7 +38,7 @@ const CU_MEM = () => {
         id={"2"}
         position={Position.Right}
         className="output"
-        style={{ right: "-2.4rem", top: "3.6rem" }}
+        style={{ right: "-2.4rem", top: "3.9rem" }}
       />
 
   
