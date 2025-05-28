@@ -111,6 +111,9 @@ import Pivot38 from "../../elements/ID/pivots/Pivot38";
 import CU_EX from "../../elements/pipeline/CU_EX";
 import CU_MEM from "../../elements/pipeline/CU_MEM";
 import CU_WB from "../../elements/pipeline/CU_WB";
+import CU_IE_EXIT from "../../elements/pipeline/CU_EX_EXIT";
+import CU_MEM_EXIT from "../../elements/pipeline/CU_MEM_EXIT";
+import CU_WB_EXIT from "../../elements/pipeline/CU_WB_EXIT";
 export const nodeTypes = {
   title: TitleText,
   // IF
@@ -231,6 +234,10 @@ export const nodeTypes = {
   cu_ex: CU_EX,
   cu_me: CU_MEM,
   cu_wb: CU_WB,
+
+  cu_ie_exit:CU_IE_EXIT,
+  cu_me_exit: CU_MEM_EXIT,
+  cu_wb_exit: CU_WB_EXIT
 
 };
 

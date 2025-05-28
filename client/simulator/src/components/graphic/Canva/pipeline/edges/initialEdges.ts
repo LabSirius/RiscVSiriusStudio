@@ -20,6 +20,7 @@ import { DMDataRd_WB } from './DMDataRd_WB';
 import { RD_EX_ME_WB } from './RD_EX_ME_WB';
 import { CU_EX } from './CU_EX';
 import { CU_MEM } from './CU_MEM';
+import { CU_WB } from './CU_WB';
 
 
 
@@ -49,4 +50,5 @@ export const initialEdges: Edge[] = [
 
    ...CU_EX,
    ...CU_MEM,
+   ...CU_WB
 ];
