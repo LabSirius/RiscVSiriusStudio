@@ -63,6 +63,7 @@ export const useMEMNodes = (): Node[] => {
             36,
             50
           ),
+          pivotNode("pivot34", { x: shift(90), y: 792.3 }, "MEM"),
         ]
       : []),
   ];

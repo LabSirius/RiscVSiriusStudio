@@ -99,6 +99,7 @@ import RUrs2_MEM from "../../elements/pipeline/RUrs2_MEM";
 import PCInc_WB from "../../elements/pipeline/PCInc_WB";
 import DMDataRd_WB from "../../elements/pipeline/DMDataRd_WB";
 import ALURes_WB from "../../elements/pipeline/ALURes_WB";
+import Pivot34 from "../../elements/ID/pivots/Pivot34";
 
 export const nodeTypes = {
   title: TitleText,
@@ -170,6 +171,8 @@ export const nodeTypes = {
   pivot32: Pivot32,
   pivtot33: Pivot33,
 
+  pivot34: Pivot34,
+
   //PIVOTS Jumps
   pivotJump1: PivotJump1,
   pivotJump2: PivotJump2,
@@ -181,6 +184,8 @@ export const nodeTypes = {
   pivotJump8: PivotJump8,
   pivotJump9: PivotJump9,
   pivotJump10: PivotJump10,
+
+  
 
   //pipeline controllers
   pc_fe: PC_FE,
