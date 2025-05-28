@@ -2,6 +2,39 @@ import { Edge, MarkerType } from "@xyflow/react";
 
 export const RD_EX_ME_WB: Edge[] = [
 
+
+
+  {
+    id: "pivot26->pivot38",
+    source: "pivot26",
+    sourceHandle: 'controlUnit',
+    target: "pivot38",
+    type: "step",
+  },
+
+  {
+    id: "pivot38->pivot27",
+    source: "pivot38",
+    sourceHandle: 'controlUnit',
+    target: "pivot27",
+    type: "step",
+  },
+
+  {
+    id: "pivot38->rd_ex",
+    source: "pivot38",
+    sourceHandle: 'rd_ex',
+    target: "rd_ex",
+    type: "step",
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      color: "#888888",
+      width: 8,
+      height: 8,
+    },
+
+  },
+
   {
     id: "rd_ex->rd_me",
     source: "rd_ex",

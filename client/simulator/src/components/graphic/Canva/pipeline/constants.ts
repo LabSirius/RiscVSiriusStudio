@@ -84,7 +84,7 @@ import Pivot32 from "../../elements/ID/pivots/Pivot32";
 import Pivot33 from "../../elements/ID/pivots/Pivot33";
 
 // pipeline controllers
-import PC_FE from "../../elements/pipeline/PC_FE"
+import PC_FE from "../../elements/pipeline/PC_FE";
 import PCInc_DE from "../../elements/pipeline/PCInc_DE";
 import PC_DE from "../../elements/pipeline/PC_DE";
 import Inst_DE from "../../elements/pipeline/Inst_DE";
@@ -107,8 +107,7 @@ import Pivot35 from "../../elements/ID/pivots/Pivot35";
 import Pivot37 from "../../elements/ID/pivots/Pivot37";
 import RD_ME from "../../elements/pipeline/RD_ME";
 import RD_EX from "../../elements/pipeline/RD_EX";
-;
-
+import Pivot38 from "../../elements/ID/pivots/Pivot38";
 export const nodeTypes = {
   title: TitleText,
   // IF
@@ -183,6 +182,7 @@ export const nodeTypes = {
   pivot35: Pivot35,
   pivot36: Pivot36,
   pivot37: Pivot37,
+  pivot38: Pivot38,
 
   //PIVOTS Jumps
   pivotJump1: PivotJump1,
@@ -197,8 +197,6 @@ export const nodeTypes = {
   pivotJump10: PivotJump10,
 
   pivotJump11: PivotJump11,
-
-  
 
   //pipeline controllers
   pc_fe: PC_FE,
