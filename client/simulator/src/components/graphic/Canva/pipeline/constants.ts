@@ -109,6 +109,8 @@ import RD_ME from "../../elements/pipeline/RD_ME";
 import RD_EX from "../../elements/pipeline/RD_EX";
 import Pivot38 from "../../elements/ID/pivots/Pivot38";
 import CU_EX from "../../elements/pipeline/CU_EX";
+import CU_MEM from "../../elements/pipeline/CU_MEM";
+import CU_WB from "../../elements/pipeline/CU_WB";
 export const nodeTypes = {
   title: TitleText,
   // IF
@@ -227,6 +229,9 @@ export const nodeTypes = {
   rd_wb: RD_WB,
 
   cu_ex: CU_EX,
+  cu_me: CU_MEM,
+  cu_wb: CU_WB,
+
 };
 
 export const edgeTypes = {

@@ -72,15 +72,8 @@ export const useIENodes = (): Node[] => {
             36,
             50
           ),
-          nodeBase(
-            "rd_me",
-            "rd_me",
-            "rd_me",
-            { x: 740 + offsetXSize, y: 1210 },
-            "IE",
-            36,
-            50
-          ),
+          nodeBase("rd_me", "rd_me", "rd_me", { x: 740 + offsetXSize, y: 1210 }, "IE", 36, 50),
+          nodeBase("cu_me", "cu_me", "cu_me", { x: 740 + offsetXSize, y: 1350.3 }, "IE", 36, 50),
         ]
       : []),
   ];

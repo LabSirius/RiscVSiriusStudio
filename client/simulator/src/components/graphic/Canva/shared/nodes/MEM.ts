@@ -72,6 +72,15 @@ export const useMEMNodes = (): Node[] => {
             36,
             50
           ),
+          nodeBase(
+            "cu_wb",
+            "cu_wb",
+            "cu_wb",
+            { x: 565 + offsetXSize, y: 1350.3 },
+            "MEM",
+            36,
+            50
+          ),
           pivotNode("pivot34", { x: shift(90), y: 792.3 }, "MEM"),
         ]
       : []),
