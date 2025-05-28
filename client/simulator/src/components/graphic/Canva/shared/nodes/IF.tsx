@@ -25,7 +25,7 @@ export const useIFNodes = (): Node[] => {
       },
     },
 
-    nodeBase("title-IF", "title", "Fetch (IF)", { x: 0, y: 0 }, "IF", 870, 50),
+    nodeBase("title-IF", "title", "Fetch (IF)", { x: 10, y: 0 }, "IF", 870, 50),
     nodeBase("pc", "pc", "PC", { x: 215 + (isPipeline ? 12 : 0), y: 685 }, "IF", 180, 239),
     nodeBase("adder4", "adder4", "Adder 4", { x: 595, y: 225 }, "IF", 90, 120),
     nodeBase("four", "four", "4", { x: 465, y: 191 }, "IF", 90, 120),

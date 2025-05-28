@@ -1,4 +1,4 @@
-import { useCallback, useState, MouseEvent } from 'react';
+import { useCallback, useState, MouseEvent } from "react";
 import {
   ReactFlow,
   Edge,
@@ -9,33 +9,32 @@ import {
   useEdgesState,
   MiniMap,
   Connection,
-  ReactFlowInstance
-  
-} from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
+  ReactFlowInstance,
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 
-import { nodeTypes } from './constants';
-import { edgeTypes } from './constants';
-import { useInitialNodes } from '../shared/nodes/initialNodes'; // Nodes
+import { nodeTypes } from "./constants";
+import { edgeTypes } from "./constants";
+import { useInitialNodes } from "../shared/nodes/initialNodes"; // Nodes
 
-import { initialEdges } from './edges/initialEdges'; //Conections between npdes
-import { sharedEdges } from '../shared/edges/sharedEdges';
+import { initialEdges } from "./edges/initialEdges"; //Conections between npdes
+import { sharedEdges } from "../shared/edges/sharedEdges";
 
-import CustomControls from '../../custom/CustomControls';
+import CustomControls from "../../custom/CustomControls";
 
-import { animateLine } from '../../animateLine/animateLine';
-import InstructionEffect from './InstructionEffect';
+import { animateLine } from "../../animateLine/animateLine";
+import InstructionEffect from "./InstructionEffect";
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
 export default function MonocycleCanva() {
   const initialNodes = useInitialNodes(); // Hook to get the initial nodes
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
-  const combinedEdges = [...initialEdges, ...sharedEdges]
+  const combinedEdges = [...initialEdges, ...sharedEdges];
   const [edges, setEdges, onEdgesChange] = useEdgesState(combinedEdges);
   const [showMinimap, setShowMinimap] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
-  const [isInteractive, setIsInteractive] = useState(true); 
+  const [isInteractive, setIsInteractive] = useState(true);
   const { updateEdge } = useReactFlow();
 
   const onConnect = useCallback(
@@ -60,19 +59,19 @@ export default function MonocycleCanva() {
   };
 
   const handleEdgeMouseEnter = (
-    _event: MouseEvent<Element>, 
+    _event: MouseEvent<Element>,
     edge: Edge & { disabled?: boolean }
   ): void => {
     if (edge.disabled) return;
-    animateLine(updateEdge, edge, edges, true); 
+    animateLine(updateEdge, edge, edges, true);
   };
-  
+
   const handleEdgeMouseLeave = (
-    _event: MouseEvent<Element>, 
+    _event: MouseEvent<Element>,
     edge: Edge & { disabled?: boolean }
   ): void => {
     if (edge.disabled) return;
-    animateLine(updateEdge, edge, edges, false); 
+    animateLine(updateEdge, edge, edges, false);
   };
 
   return (
@@ -92,12 +91,11 @@ export default function MonocycleCanva() {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      style={{ backgroundColor: '#F7F9FB' }}
+      style={{ backgroundColor: "#F7F9FB" }}
       minZoom={0.1}
       maxZoom={2}
-      panOnDrag={isInteractive} 
-      elementsSelectable={isInteractive} 
-    >
+      panOnDrag={isInteractive}
+      elementsSelectable={isInteractive}>
       <Background color="#000000" gap={20} size={2} />
       {showMinimap && <MiniMap />}
       <CustomControls
@@ -107,8 +105,8 @@ export default function MonocycleCanva() {
         onZoomOut={handleZoomOut}
         onToggleInteractive={handleToggleInteractive}
       />
-      
-      <InstructionEffect setEdges={setEdges}/>
+
+      <InstructionEffect setEdges={setEdges} />
     </ReactFlow>
   );
 }
