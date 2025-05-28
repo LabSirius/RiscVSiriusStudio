@@ -3,22 +3,22 @@
 */
 import { Edge  } from '@xyflow/react';
 import { PC_FE } from './PC_FE';
-import { Inst_DE } from './Inst_DE';
-import { PC_DE } from './PC_DE';
-import { PC_EX } from './PC_EX';
-import { PCInc_DE } from './PCInc_DE';
-import { PCInc_EX } from './PCInc_EX';
-import { PCInc_ME } from './PCInc_ME';
+import { Inst_ID } from './Inst_ID';
+import { PC_ID } from './PC_ID';
+import { PC_IE } from './PC_IE';
+import { PCInc_ID } from './PCInc_ID';
+import { PCInc_IE } from './PCInc_IE';
+import { PCInc_MEM } from './PCInc_MEM';
 import { PCInc_WB } from './PCInc_WB';
-import { RUrs1_EX } from './RUrs1_EX';
-import { RUrs2_EX } from './RUrs2_EX';
-import { ImmExt_EX } from './ImmExt_EX';
-import { RUrs2_ME } from './RUrs2_ME';
+import { RUrs1_IE } from './RUrs1_IE';
+import { RUrs2_IE } from './RUrs2_IE';
+import { ImmExt_IE } from './ImmExt_IE';
+import { RUrs2_MEM } from './RUrs2_MEM';
 import { ALURes_WB } from './ALURes_WB';
-import { ALURes_ME } from './ALURes_ME';
+import { ALURes_MEM } from './ALURes_MEM';
 import { DMDataRd_WB } from './DMDataRd_WB';
-import { RD_EX_ME_WB } from './RD_EX_ME_WB';
-import { CU_EX } from './CU_EX';
+import { RD_IE_MEM_WB } from './RD_IE_MEM_WB';
+import { CU_IE } from './CU_IE';
 import { CU_MEM } from './CU_MEM';
 import { CU_WB } from './CU_WB';
 
@@ -26,29 +26,29 @@ import { CU_WB } from './CU_WB';
 
 export const initialEdges: Edge[] = [
    ...PC_FE,
-   ...Inst_DE,
+   ...Inst_ID,
 
-   ...PC_DE,
-   ...PC_EX,
-   ...PCInc_DE,
-   ...PCInc_EX,
-   ...PCInc_ME,
+   ...PC_ID,
+   ...PC_IE,
+   ...PCInc_ID,
+   ...PCInc_IE,
+   ...PCInc_MEM,
    ...PCInc_WB,
 
-   ...RUrs1_EX,
-   ...RUrs2_EX,
+   ...RUrs1_IE,
+   ...RUrs2_IE,
 
-   ...ImmExt_EX,
-   ...RUrs2_ME,
+   ...ImmExt_IE,
+   ...RUrs2_MEM,
 
    ...ALURes_WB,
-   ...ALURes_ME,
+   ...ALURes_MEM,
 
    ...DMDataRd_WB,
 
-   ...RD_EX_ME_WB,
+   ...RD_IE_MEM_WB,
 
-   ...CU_EX,
+   ...CU_IE,
    ...CU_MEM,
    ...CU_WB
 ];

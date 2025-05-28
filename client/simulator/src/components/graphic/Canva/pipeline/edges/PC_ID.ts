@@ -1,6 +1,6 @@
 import { Edge, MarkerType  } from '@xyflow/react';
 
-export const PC_DE: Edge[] = [
+export const PC_ID: Edge[] = [
     { id: 'pivot1->pc_de',  source: 'pivot1', target: 'pc_de', type: 'step', markerEnd:
         {
          type: MarkerType.ArrowClosed,

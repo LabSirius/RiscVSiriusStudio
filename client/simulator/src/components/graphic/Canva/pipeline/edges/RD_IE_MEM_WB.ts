@@ -1,6 +1,6 @@
 import { Edge, MarkerType } from "@xyflow/react";
 
-export const RD_EX_ME_WB: Edge[] = [
+export const RD_IE_MEM_WB: Edge[] = [
 
 
 

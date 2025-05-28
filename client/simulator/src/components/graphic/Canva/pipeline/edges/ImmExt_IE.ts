@@ -1,6 +1,6 @@
 import { Edge, MarkerType } from "@xyflow/react";
 
-export const ImmExt_EX: Edge[] = [
+export const ImmExt_IE: Edge[] = [
 
      { id: 'immGenerator->immext_ex',  source: 'immGenerator',  target: 'immext_ex', type: 'step', markerEnd:
         {

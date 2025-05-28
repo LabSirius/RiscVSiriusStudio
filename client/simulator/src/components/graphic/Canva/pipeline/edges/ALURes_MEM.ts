@@ -1,6 +1,6 @@
 import { Edge, MarkerType } from "@xyflow/react";
 
-export const ALURes_ME: Edge[] = [
+export const ALURes_MEM: Edge[] = [
   {
     id: "pivot7->alures_me",
     source: "pivot7",

@@ -1,6 +1,6 @@
 import { Edge, MarkerType } from "@xyflow/react";
 
-export const PCInc_DE: Edge[] = [
+export const PCInc_ID: Edge[] = [
   {
     id: "adder4->pivot18",
     source: "adder4",

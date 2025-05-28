@@ -1,6 +1,6 @@
 import { Edge, MarkerType } from "@xyflow/react";
 
-export const Inst_DE: Edge[] = [
+export const Inst_ID: Edge[] = [
   {
     id: "instructionMemory->inst_de",
     source: "instructionMemory",
