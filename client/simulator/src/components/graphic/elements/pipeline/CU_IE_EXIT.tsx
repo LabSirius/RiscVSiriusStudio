@@ -1,6 +1,6 @@
 import { Handle, Position } from "@xyflow/react";
 
-export default function CU_EX_EXIT() {
+export default function CU_IE_EXIT() {
   return (
     <div className="w-full">
       <div className="relative w-full h-full">

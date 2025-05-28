@@ -1,21 +1,21 @@
 import ContainerPipelineRegister from "../ContainerPipelineRegister";
 import { Handle, Position } from "@xyflow/react";
 
-const PCInc_DE = () => {
+const RUrs1_IE = () => {
   return (
     <div className="relative w-full overflow-visible">
-      <ContainerPipelineRegister text="PCInc_ID" />
+      <ContainerPipelineRegister text="RUrs1_IE" top={true} />
 
-      <Handle type="target" position={Position.Left} className="input" style={{ top: "2.2rem" }} />
+      <Handle type="target" position={Position.Left} className="input" style={{ top: "2.46rem" }} />
 
       <Handle
         type="source"
         position={Position.Right}
         className="output"
-        style={{ right: "-2.4rem", top: "2.2rem" }}
+        style={{ right: "-2.4rem", top: "2.46rem" }}
       />
     </div>
   );
 };
 
-export default PCInc_DE;
+export default RUrs1_IE;

@@ -1,7 +1,7 @@
 import ContainerPipelineRegister from "../ContainerPipelineRegister";
 import { Handle, Position } from "@xyflow/react";
 
-const CU_EX = () => {
+const CU_IE = () => {
   return (
     <div className="relative w-full overflow-visible">
       <ContainerPipelineRegister height={6}/>
@@ -33,4 +33,4 @@ const CU_EX = () => {
   );
 };
 
-export default CU_EX;
+export default CU_IE;

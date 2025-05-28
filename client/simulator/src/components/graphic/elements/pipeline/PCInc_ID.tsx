@@ -1,10 +1,10 @@
 import ContainerPipelineRegister from "../ContainerPipelineRegister";
 import { Handle, Position } from "@xyflow/react";
 
-const RD_EX = () => {
+const PCInc_ID = () => {
   return (
     <div className="relative w-full overflow-visible">
-      <ContainerPipelineRegister text="rd_IE" />
+      <ContainerPipelineRegister text="PCInc_ID" />
 
       <Handle type="target" position={Position.Left} className="input" style={{ top: "2.2rem" }} />
 
@@ -18,4 +18,4 @@ const RD_EX = () => {
   );
 };
 
-export default RD_EX;
+export default PCInc_ID;

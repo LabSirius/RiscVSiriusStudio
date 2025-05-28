@@ -85,14 +85,14 @@ import Pivot33 from "../../elements/ID/pivots/Pivot33";
 
 // pipeline controllers
 import PC_FE from "../../elements/pipeline/PC_FE";
-import PCInc_DE from "../../elements/pipeline/PCInc_DE";
-import PC_DE from "../../elements/pipeline/PC_DE";
-import Inst_DE from "../../elements/pipeline/Inst_DE";
-import PCInc_EX from "../../elements/pipeline/PCInc_EX";
-import PC_EX from "../../elements/pipeline/PC_EX";
-import RUrs1_EX from "../../elements/pipeline/RUrs1_EX";
-import RUrs2_EX from "../../elements/pipeline/RUrs2_EX";
-import ImmExt_EX from "../../elements/pipeline/ImmExt_EX";
+import PCInc_ID from "../../elements/pipeline/PCInc_ID";
+import PC_ID from "../../elements/pipeline/PC_ID";
+import Inst_ID from "../../elements/pipeline/Inst_ID";
+import PCInc_IE from "../../elements/pipeline/PCInc_IE";
+import PC_IE from "../../elements/pipeline/PC_IE";
+import RUrs1_IE from "../../elements/pipeline/RUrs1_IE";
+import RUrs2_IE from "../../elements/pipeline/RUrs2_IE";
+import ImmExt_IE from "../../elements/pipeline/ImmExt_IE";
 import PCInc_MEM from "../../elements/pipeline/PCInc_MEM";
 import ALURes_MEM from "../../elements/pipeline/ALURes_MEM";
 import RUrs2_MEM from "../../elements/pipeline/RUrs2_MEM";
@@ -105,15 +105,16 @@ import PivotJump11 from "../../elements/ID/pivots/PivotJump11";
 import Pivot36 from "../../elements/ID/pivots/Pivot36";
 import Pivot35 from "../../elements/ID/pivots/Pivot35";
 import Pivot37 from "../../elements/ID/pivots/Pivot37";
-import RD_ME from "../../elements/pipeline/RD_ME";
-import RD_EX from "../../elements/pipeline/RD_EX";
+import RD_MEM from "../../elements/pipeline/RD_MEM";
+import RD_IE from "../../elements/pipeline/RD_IE";
 import Pivot38 from "../../elements/ID/pivots/Pivot38";
-import CU_EX from "../../elements/pipeline/CU_EX";
+import CU_IE from "../../elements/pipeline/CU_IE";
 import CU_MEM from "../../elements/pipeline/CU_MEM";
 import CU_WB from "../../elements/pipeline/CU_WB";
-import CU_IE_EXIT from "../../elements/pipeline/CU_EX_EXIT";
+import CU_IE_EXIT from "../../elements/pipeline/CU_IE_EXIT";
 import CU_MEM_EXIT from "../../elements/pipeline/CU_MEM_EXIT";
 import CU_WB_EXIT from "../../elements/pipeline/CU_WB_EXIT";
+import CU_ID_EXIT from "../../elements/pipeline/CU_ID_EXIT";
 export const nodeTypes = {
   title: TitleText,
   // IF
@@ -206,35 +207,36 @@ export const nodeTypes = {
 
   //pipeline controllers
   pc_fe: PC_FE,
-  pcinc_de: PCInc_DE,
-  pcinc_ex: PCInc_EX,
+  pcinc_de: PCInc_ID,
+  pcinc_ex: PCInc_IE,
   pcinc_me: PCInc_MEM,
   pcinc_wb: PCInc_WB,
 
-  pc_de: PC_DE,
-  pc_ex: PC_EX,
+  pc_de: PC_ID,
+  pc_ex: PC_IE,
 
-  inst_de: Inst_DE,
+  inst_de: Inst_ID,
 
-  rurs1_ex: RUrs1_EX,
-  rurs2_ex: RUrs2_EX,
+  rurs1_ex: RUrs1_IE,
+  rurs2_ex: RUrs2_IE,
   rurs2_me: RUrs2_MEM,
 
-  immext_ex: ImmExt_EX,
+  immext_ex: ImmExt_IE,
 
   alures_me: ALURes_MEM,
   alures_wb: ALURes_WB,
 
   dmdatard_wb: DMDataRd_WB,
 
-  rd_ex: RD_EX,
-  rd_me: RD_ME,
+  rd_ex: RD_IE,
+  rd_me: RD_MEM,
   rd_wb: RD_WB,
 
-  cu_ex: CU_EX,
+  cu_ex: CU_IE,
   cu_me: CU_MEM,
   cu_wb: CU_WB,
 
+  cu_id_exit: CU_ID_EXIT,
   cu_ie_exit:CU_IE_EXIT,
   cu_me_exit: CU_MEM_EXIT,
   cu_wb_exit: CU_WB_EXIT
