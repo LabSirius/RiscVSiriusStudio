@@ -10,6 +10,9 @@ import { PCInc_DE } from './PCInc_DE';
 import { PCInc_EX } from './PCInc_EX';
 import { PCInc_ME } from './PCInc_ME';
 import { PCInc_WB } from './PCInc_WB';
+import { RUrs1_EX } from './RUrs1_EX';
+import { RUrs2_EX } from './RUrs2_EX';
+import { ImmExt_EX } from './ImmExt_EX';
 
 
 export const initialEdges: Edge[] = [
@@ -22,4 +25,9 @@ export const initialEdges: Edge[] = [
    ...PCInc_EX,
    ...PCInc_ME,
    ...PCInc_WB,
+
+   ...RUrs1_EX,
+   ...RUrs2_EX,
+
+   ...ImmExt_EX,
 ];

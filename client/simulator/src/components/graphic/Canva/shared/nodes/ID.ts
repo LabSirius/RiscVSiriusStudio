@@ -79,7 +79,7 @@ export const useIDNodes = (): Node[] => {
             "rurs1_ex",
             "rurs1_ex",
             "rurs1_ex",
-            { x: 740 + offsetXSize, y: 680 },
+            { x: 740 + offsetXSize, y: 685 },
             "ID",
             36,
             50
@@ -88,7 +88,7 @@ export const useIDNodes = (): Node[] => {
             "rurs2_ex",
             "rurs2_ex",
             "rurs2_ex",
-            { x: 740 + offsetXSize, y: 815 },
+            { x: 740 + offsetXSize, y: 804 },
             "ID",
             36,
             50
@@ -97,7 +97,7 @@ export const useIDNodes = (): Node[] => {
             "immext_ex",
             "immext_ex",
             "immext_ex",
-            { x: 740 + offsetXSize, y: 985 },
+            { x: 740 + offsetXSize, y: 986.3 },
             "ID",
             36,
             50

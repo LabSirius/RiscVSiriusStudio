@@ -1,12 +1,21 @@
-import ContainerPipelineRegister from '../ContainerPipelineRegister'
+import ContainerPipelineRegister from "../ContainerPipelineRegister";
+import { Handle, Position } from "@xyflow/react";
 
 const RUrs1_EX = () => {
   return (
-    <div className='relative w-full overflow-visible'>
-      <ContainerPipelineRegister text='RUrs1_ex'/>
-  
-    </div>
-  )
-}
+    <div className="relative w-full overflow-visible">
+      <ContainerPipelineRegister text="RUrs1_ex" top={true} />
 
-export default RUrs1_EX
+      <Handle type="target" position={Position.Left} className="input" style={{ top: "2.46rem" }} />
+
+      <Handle
+        type="source"
+        position={Position.Right}
+        className="output"
+        style={{ right: "-2.4rem", top: "2.46rem" }}
+      />
+    </div>
+  );
+};
+
+export default RUrs1_EX;
