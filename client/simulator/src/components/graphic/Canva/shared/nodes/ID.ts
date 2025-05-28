@@ -18,7 +18,7 @@ export const useIDNodes = (): Node[] => {
       zIndex: 5,
       style: {
         width: 740 + offsetXSize,
-        height: 1330,
+        height: 1330 + (isPipeline ? 110 : 0),
         backgroundColor: "#FFF9C4",
         border: "1px solid #FFF9C4",
         borderRadius: 8,
@@ -53,20 +53,23 @@ export const useIDNodes = (): Node[] => {
     pivotNode("pivot21", { x: shift(50), y: 483 }, "ID"),
     pivotNode("pivot22", { x: shift(50), y: 643 }, "ID"),
     pivotNode("pivot26", { x: shift(50), y: 976.5 }, "ID"),
-    pivotNode("pivot27", { x: shift(50), y: 1169 }, "ID"),
-    pivotNode("pivot28", { x: shift(100), y: 1169 }, "ID"),
-    pivotNode("pivot29", { x: shift(100), y: 1210 }, "ID"),
-    pivotNode("pivot30", { x: shift(270), y: 1169 }, "ID"),
-    pivotNode("pivot31", { x: shift(270), y: 1210 }, "ID"),
-    pivotNode("pivot32", { x: shift(450), y: 1169 }, "ID"),
-    pivotNode("pivot33", { x: shift(450), y: 1210 }, "ID"),
+    pivotNode("pivot27", { x: shift(50), y: 1169 + (isPipeline ? 110 : 0) }, "ID"),
+    pivotNode("pivot28", { x: shift(100), y: 1169 + (isPipeline ? 110 : 0) }, "ID"),
+    pivotNode("pivot29", { x: shift(100), y: 1210 + (isPipeline ? 110 : 0) }, "ID"),
+    pivotNode("pivot30", { x: shift(270), y: 1169 + (isPipeline ? 110 : 0) }, "ID"),
+    pivotNode("pivot31", { x: shift(270), y: 1210 + (isPipeline ? 110 : 0) }, "ID"),
+    pivotNode("pivot32", { x: shift(450), y: 1169 + (isPipeline ? 110 : 0) }, "ID"),
+    pivotNode("pivot33", { x: shift(450), y: 1210 + (isPipeline ? 110 : 0) }, "ID"),
 
     nodeBase("pivotJump1", "pivotJump1", "pivotJump1", { x: shift(84) + (isPipeline ? 70 : 0), y: 953.4 }, "ID", 47, 47),
-    nodeBase("pivotJump11", "pivotJump11", "pivotJump11", { x: shift(26) + (isPipeline ? 70 : 0), y: 953.4 }, "ID", 47, 47),
+    nodeBase("pivotJump11", "pivotJump11", "pivotJump11", { x: shift(21.5) + (isPipeline ? 70 : 0), y: 953.4 }, "ID", 47, 47),
 
 
     ...(isPipeline
       ? [
+        pivotNode("pivot35", { x: 143, y: 643 }, "ID"),
+        pivotNode("pivot36", { x: 143, y: 1170 }, "ID"),
+         
           nodeBase(
             "pcinc_ex",
             "pcinc_ex",
@@ -100,6 +103,15 @@ export const useIDNodes = (): Node[] => {
             "immext_ex",
             "immext_ex",
             { x: 740 + offsetXSize, y: 986.3 },
+            "ID",
+            36,
+            50
+          ),
+          nodeBase(
+            "rd_ex",
+            "rd_ex",
+            "rd_ex",
+            { x: 740 + offsetXSize, y: 1210 },
             "ID",
             36,
             50

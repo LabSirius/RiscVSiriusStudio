@@ -22,7 +22,7 @@ export const useIENodes = (): Node[] => {
       zIndex: 3,
       style: {
         width: 680 + offsetXSize,
-        height: 1330,
+        height: 1330 + (isPipeline ? 110 : 0),
         backgroundColor: "#E3F2FD",
         border: "1px solid #E3F2FD",
         borderRadius: 8,
@@ -68,6 +68,15 @@ export const useIENodes = (): Node[] => {
             "rurs2_me",
             "rurs2_me",
             { x: 740 + offsetXSize, y: 1050 },
+            "IE",
+            36,
+            50
+          ),
+          nodeBase(
+            "rd_me",
+            "rd_me",
+            "rd_me",
+            { x: 740 + offsetXSize, y: 1210 },
             "IE",
             36,
             50

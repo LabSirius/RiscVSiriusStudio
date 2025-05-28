@@ -99,8 +99,15 @@ import RUrs2_MEM from "../../elements/pipeline/RUrs2_MEM";
 import PCInc_WB from "../../elements/pipeline/PCInc_WB";
 import DMDataRd_WB from "../../elements/pipeline/DMDataRd_WB";
 import ALURes_WB from "../../elements/pipeline/ALURes_WB";
+import RD_WB from "../../elements/pipeline/RD_WB";
 import Pivot34 from "../../elements/ID/pivots/Pivot34";
 import PivotJump11 from "../../elements/ID/pivots/PivotJump11";
+import Pivot36 from "../../elements/ID/pivots/Pivot36";
+import Pivot35 from "../../elements/ID/pivots/Pivot35";
+import Pivot37 from "../../elements/ID/pivots/Pivot37";
+import RD_ME from "../../elements/pipeline/RD_ME";
+import RD_EX from "../../elements/pipeline/RD_EX";
+;
 
 export const nodeTypes = {
   title: TitleText,
@@ -173,6 +180,9 @@ export const nodeTypes = {
   pivtot33: Pivot33,
 
   pivot34: Pivot34,
+  pivot35: Pivot35,
+  pivot36: Pivot36,
+  pivot37: Pivot37,
 
   //PIVOTS Jumps
   pivotJump1: PivotJump1,
@@ -212,6 +222,10 @@ export const nodeTypes = {
   alures_wb: ALURes_WB,
 
   dmdatard_wb: DMDataRd_WB,
+
+  rd_ex: RD_EX,
+  rd_me: RD_ME,
+  rd_wb: RD_WB,
 };
 
 export const edgeTypes = {

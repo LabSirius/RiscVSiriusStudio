@@ -19,7 +19,7 @@ export const useWBNodes = (): Node[] => {
       zIndex: -1,
       style: {
         width: 290 + (isPipeline ? 80 : 0),
-        height: 1330,
+        height: 1330 + (isPipeline ? 110 : 0),
         backgroundColor: "#FFF2E0",
         border: "1px solid #FFF2E0",
         borderRadius: 8,
@@ -28,7 +28,7 @@ export const useWBNodes = (): Node[] => {
 
     nodeBase("title-WB", "title", "Write back (WB)", { x: 10, y: 0 }, "WB", 300, 50),
 
-    nodeBase("muxC", "muxC", "MUX C", { x: shift(90), y: 770 }, "WB", 65, 150),
+    nodeBase("muxC", "muxC", "MUXC", { x: shift(90), y: 770 }, "WB", 65, 150),
 
     nodeBase("ruDataWrSrc", "ruDataWrSrc", "RUDataWrSrc", { x: shift(78), y: 960 }, "WB", 90, 30),
 
@@ -36,6 +36,10 @@ export const useWBNodes = (): Node[] => {
     pivotNode("pivot11", { x: shift(230), y: 1131 }, "WB"),
     pivotNode("pivot13", { x: shift(18), y: 254 }, "WB"),
   ];
+
+  if (isPipeline) {
+    nodes.push(pivotNode("pivot37", { x: shift(18), y: 1170 }, "WB"));
+  }
 
   return nodes;
 };

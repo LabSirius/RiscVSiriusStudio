@@ -18,7 +18,7 @@ export const useIFNodes = (): Node[] => {
       zIndex: 6,
       style: {
         width: 870 + offsetXSize,
-        height: 1330,
+        height: 1330 + (isPipeline ? 110 : 0),
         backgroundColor: "#FCE4EC",
         border: "1px solid #FCE4EC",
         borderRadius: 8,
@@ -49,7 +49,7 @@ export const useIFNodes = (): Node[] => {
       id: "controlUnit",
       type: "controlUnit",
       data: { label: "controlUnit" },
-      position: { x: 40, y: 1180.5 },
+      position: { x: 40, y: 1180.5 + (isPipeline ? 110 : 0) },
       parentId: "IF",
       draggable: false,
       style: {
