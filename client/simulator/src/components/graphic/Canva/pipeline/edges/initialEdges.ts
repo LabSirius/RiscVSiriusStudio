@@ -18,6 +18,8 @@ import { ALURes_WB } from './ALURes_WB';
 import { ALURes_ME } from './ALURes_ME';
 import { DMDataRd_WB } from './DMDataRd_WB';
 import { RD_EX_ME_WB } from './RD_EX_ME_WB';
+import { CU_EX } from './CU_EX';
+import { CU_MEM } from './CU_MEM';
 
 
 
@@ -44,4 +46,7 @@ export const initialEdges: Edge[] = [
    ...DMDataRd_WB,
 
    ...RD_EX_ME_WB,
+
+   ...CU_EX,
+   ...CU_MEM,
 ];

@@ -23,20 +23,22 @@ const CU_MEM = () => {
         style={{ right: "-2.4rem", top: "3.6rem" }}
       />
 
+      
+
       <Handle
         type="source"
-        id={"1"}
+         id={"1"}
         position={Position.Right}
         className="output"
-        style={{ right: "-2.4rem", top: "1rem" }}
+        style={{ right: "-2.4rem", top: "2.3rem" }}
       />
 
       <Handle
         type="source"
-         id={"2"}
+        id={"2"}
         position={Position.Right}
         className="output"
-        style={{ right: "-2.4rem", top: "2.3rem" }}
+        style={{ right: "-2.4rem", top: "3.6rem" }}
       />
 
   

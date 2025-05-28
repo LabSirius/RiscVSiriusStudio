@@ -9,7 +9,6 @@ const CU_WB = () => {
 
       <Handle
         type="target"
-         id={"3"}
         position={Position.Left}
         className="input"
         style={{ right: "-2.4rem", top: "3.6rem" }}
@@ -17,7 +16,6 @@ const CU_WB = () => {
 
       <Handle
         type="source"
-        id={"1"}
         position={Position.Right}
         className="output"
         style={{ right: "-2.4rem", top: "1rem" }}
