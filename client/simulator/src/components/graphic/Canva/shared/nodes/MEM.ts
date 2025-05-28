@@ -7,9 +7,8 @@ export const useMEMNodes = (): Node[] => {
   const isPipeline = typeSimulator === "pipeline";
   const offsetXSize = isPipeline ? 60 : 0;
 
-
   const offsetX = isPipeline ? 335 : 0;
-  const shift = (x: number): number => x + (isPipeline ? 5 : 0);;
+  const shift = (x: number): number => x + (isPipeline ? 5 : 0);
 
   const nodes: Node[] = [
     {
@@ -41,7 +40,7 @@ export const useMEMNodes = (): Node[] => {
             "pcinc_wb",
             "pcinc_wb",
             "pcinc_wb",
-            { x: 565 + offsetXSize, y: 235 },
+            { x: 565 + offsetXSize, y: 232.4 },
             "MEM",
             36,
             50
@@ -74,7 +73,7 @@ export const useMEMNodes = (): Node[] => {
       pivotNode("pivot14", { x: shift(18), y: 178 }, "MEM"),
       pivotNode("pivot16", { x: shift(90), y: 78 }, "MEM"),
       nodeBase("pivotJump8", "pivotJump8", "pivotJump8", { x: shift(2), y: 231 }, "MEM", 47, 47),
-      nodeBase("pivotJump9", "pivotJump9", "pivotJump9", { x: shift(74), y: 231 }, "MEM", 47, 47),
+      nodeBase("pivotJump9", "pivotJump9", "pivotJump9", { x: shift(74), y: 231 }, "MEM", 47, 47)
     );
   }
 

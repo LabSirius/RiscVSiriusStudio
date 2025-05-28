@@ -49,7 +49,7 @@ export const useIENodes = (): Node[] => {
             "pcinc_me",
             "pcinc_me",
             "pcinc_me",
-            { x: 740 + offsetXSize, y: 235 },
+            { x: 740 + offsetXSize, y: 232.4 },
             "IE",
             36,
             50
@@ -63,7 +63,7 @@ export const useIENodes = (): Node[] => {
             36,
             50
           ),
-           nodeBase(
+          nodeBase(
             "rurs2_me",
             "rurs2_me",
             "rurs2_me",

@@ -26,7 +26,7 @@ export const useIFNodes = (): Node[] => {
     },
 
     nodeBase("title-IF", "title", "Fetch (IF)", { x: 0, y: 0 }, "IF", 870, 50),
-    nodeBase("pc", "pc", "PC", { x: 215 + (isPipeline ? 12 : 0) , y: 685 }, "IF", 180, 239),
+    nodeBase("pc", "pc", "PC", { x: 215 + (isPipeline ? 12 : 0), y: 685 }, "IF", 180, 239),
     nodeBase("adder4", "adder4", "Adder 4", { x: 595, y: 225 }, "IF", 90, 120),
     nodeBase("four", "four", "4", { x: 465, y: 191 }, "IF", 90, 120),
     nodeBase(
@@ -64,16 +64,33 @@ export const useIFNodes = (): Node[] => {
     },
 
     ...(isPipeline
-  ? [
-      nodeBase("pc_fe", "pc_fe", "pc_fe", { x: 90.5, y: 829.5
+      ? [
+          nodeBase("pc_fe", "pc_fe", "pc_fe", { x: 90.5, y: 829.5 }, "IF", 36, 50),
+          nodeBase(
+            "pcinc_de",
+            "pcinc_de",
+            "pcinc_de",
+            { x: 870 + offsetXSize, y: 232.4 },
+            "IF",
+            36,
+            50
+          ),
 
-       }, "IF", 36, 50),
-      nodeBase("pcinc_de", "pcinc_de", "pcinc_de", { x:  870 + offsetXSize, y: 235 }, "IF", 36, 50),
-      nodeBase("pc_de", "pc_de", "PC_De", { x:  870 + offsetXSize, y: 370 }, "IF", 36, 50),
-      nodeBase("inst_de", "inst_de", "inst_de", { x:  870 + offsetXSize, y: 821.4 }, "IF", 36, 50),
-
-    ]
-  : []),
-
+        pivotNode("pivot18", { x: 820, y: 254 }, "IF"),
+        pivotNode("pivot19", { x: 820, y: 128 }, "IF"),
+        nodeBase("pivotJump10", "pivotJump10", "pivotJump10", { x: 804.3, y: 155 }, "IF", 47, 47),
+          
+          nodeBase("pc_de", "pc_de", "PC_De", { x: 870 + offsetXSize, y: 370 }, "IF", 36, 50),
+          nodeBase(
+            "inst_de",
+            "inst_de",
+            "inst_de",
+            { x: 870 + offsetXSize, y: 821.4 },
+            "IF",
+            36,
+            50
+          ),
+        ]
+      : []),
   ];
 };
