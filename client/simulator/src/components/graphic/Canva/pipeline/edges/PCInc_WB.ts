@@ -2,8 +2,8 @@ import { Edge, MarkerType } from "@xyflow/react";
 
 export const PCInc_WB: Edge[] = [
   {
-    id: "pcinc_me->pcinc_wb",
-    source: "pcinc_me",
+    id: "pcinc_mem->pcinc_wb",
+    source: "pcinc_mem",
     target: "pcinc_wb",
     type: "step",
     markerEnd: {

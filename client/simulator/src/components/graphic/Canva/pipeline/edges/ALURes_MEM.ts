@@ -2,10 +2,10 @@ import { Edge, MarkerType } from "@xyflow/react";
 
 export const ALURes_MEM: Edge[] = [
   {
-    id: "pivot7->alures_me",
+    id: "pivot7->alures_mem",
     source: "pivot7",
     sourceHandle: "dataMemory",
-    target: "alures_me",
+    target: "alures_mem",
     type: "step",
     markerEnd: {
       type: MarkerType.ArrowClosed,
@@ -15,7 +15,7 @@ export const ALURes_MEM: Edge[] = [
     },
   },
 
-  { id: "alures_me->pivot34", source: "alures_me", target: "pivot34", type: "step" },
+  { id: "alures_mem->pivot34", source: "alures_mem", target: "pivot34", type: "step" },
 
   {
     id: "pivot34->pivot8",

@@ -2,9 +2,9 @@ import { Edge, MarkerType } from "@xyflow/react";
 
 export const PC_IE: Edge[] = [
   {
-    id: "pc_de->pc_ex",
-    source: "pc_de",
-    target: "pc_ex",
+    id: "pc_id->pc_ie",
+    source: "pc_id",
+    target: "pc_ie",
     type: "step",
     markerEnd: {
       type: MarkerType.ArrowClosed,
@@ -14,5 +14,5 @@ export const PC_IE: Edge[] = [
     },
   },
 
-  { id: "pc_ex->pivotJump2", source: "pc_ex", target: "pivotJump2", type: "step" },
+  { id: "pc_ie->pivotJump2", source: "pc_ie", target: "pivotJump2", type: "step" },
 ];

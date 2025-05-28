@@ -21,10 +21,10 @@ export const RD_IE_MEM_WB: Edge[] = [
   },
 
   {
-    id: "pivot38->rd_ex",
+    id: "pivot38->rd_ie",
     source: "pivot38",
-    sourceHandle: 'rd_ex',
-    target: "rd_ex",
+    sourceHandle: 'rd_ie',
+    target: "rd_ie",
     type: "step",
     markerEnd: {
       type: MarkerType.ArrowClosed,
@@ -36,9 +36,9 @@ export const RD_IE_MEM_WB: Edge[] = [
   },
 
   {
-    id: "rd_ex->rd_me",
-    source: "rd_ex",
-    target: "rd_me",
+    id: "rd_ie->rd_mem",
+    source: "rd_ie",
+    target: "rd_mem",
     type: "step",
     markerEnd: {
       type: MarkerType.ArrowClosed,
@@ -50,8 +50,8 @@ export const RD_IE_MEM_WB: Edge[] = [
   },
 
   {
-    id: "rd_me->rd_wb",
-    source: "rd_me",
+    id: "rd_mem->rd_wb",
+    source: "rd_mem",
     target: "rd_wb",
     type: "step",
     markerEnd: {

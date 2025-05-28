@@ -208,37 +208,37 @@ export const nodeTypes = {
   //pipeline controllers
   pc_fe: PC_FE,
   pcinc_de: PCInc_ID,
-  pcinc_ex: PCInc_IE,
-  pcinc_me: PCInc_MEM,
+  pcinc_ie: PCInc_IE,
+  pcinc_mem: PCInc_MEM,
   pcinc_wb: PCInc_WB,
 
-  pc_de: PC_ID,
-  pc_ex: PC_IE,
+  pc_id: PC_ID,
+  pc_ie: PC_IE,
 
-  inst_de: Inst_ID,
+  inst_id: Inst_ID,
 
-  rurs1_ex: RUrs1_IE,
-  rurs2_ex: RUrs2_IE,
-  rurs2_me: RUrs2_MEM,
+  rurs1_ie: RUrs1_IE,
+  rurs2_ie: RUrs2_IE,
+  rurs2_mem: RUrs2_MEM,
 
-  immext_ex: ImmExt_IE,
+  immext_ie: ImmExt_IE,
 
-  alures_me: ALURes_MEM,
+  alures_mem: ALURes_MEM,
   alures_wb: ALURes_WB,
 
   dmdatard_wb: DMDataRd_WB,
 
-  rd_ex: RD_IE,
-  rd_me: RD_MEM,
+  rd_ie: RD_IE,
+  rd_mem: RD_MEM,
   rd_wb: RD_WB,
 
-  cu_ex: CU_IE,
-  cu_me: CU_MEM,
+  cu_ie: CU_IE,
+  cu_mem: CU_MEM,
   cu_wb: CU_WB,
 
   cu_id_exit: CU_ID_EXIT,
   cu_ie_exit:CU_IE_EXIT,
-  cu_me_exit: CU_MEM_EXIT,
+  cu_mem_exit: CU_MEM_EXIT,
   cu_wb_exit: CU_WB_EXIT
 
 };

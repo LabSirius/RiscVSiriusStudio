@@ -2,10 +2,10 @@ import { Edge, MarkerType } from "@xyflow/react";
 
 export const RUrs2_IE: Edge[] = [
   {
-    id: "registersUnit->rurs2_ex",
+    id: "registersUnit->rurs2_ie",
     source: "registersUnit",
     sourceHandle: "muxB",
-    target: "rurs2_ex",
+    target: "rurs2_ie",
     type: "step",
     markerEnd: {
       type: MarkerType.ArrowClosed,
@@ -14,6 +14,6 @@ export const RUrs2_IE: Edge[] = [
       height: 8,
     },
   },
-  { id: "rurs2_ex->pivot2", source: "rurs2_ex", target: "pivot2", type: "step" },
+  { id: "rurs2_ie->pivot2", source: "rurs2_ie", target: "pivot2", type: "step" },
   
 ];

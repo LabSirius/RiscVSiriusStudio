@@ -23,9 +23,9 @@ export const PCInc_ID: Edge[] = [
   },
 
   {
-    id: "pcinc_de->pcinc_ex",
+    id: "pcinc_de->pcinc_ie",
     source: "pcinc_de",
-    target: "pcinc_ex",
+    target: "pcinc_ie",
     type: "step",
     markerEnd: {
       type: MarkerType.ArrowClosed,

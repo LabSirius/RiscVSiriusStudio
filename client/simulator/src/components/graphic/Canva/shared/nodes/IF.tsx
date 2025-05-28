@@ -80,11 +80,11 @@ export const useIFNodes = (): Node[] => {
         pivotNode("pivot19", { x: 820, y: 128 }, "IF"),
         nodeBase("pivotJump10", "pivotJump10", "pivotJump10", { x: 804.3, y: 155 }, "IF", 47, 47),
           
-          nodeBase("pc_de", "pc_de", "PC_De", { x: 870 + offsetXSize, y: 370 }, "IF", 36, 50),
+          nodeBase("pc_id", "pc_id", "PC_De", { x: 870 + offsetXSize, y: 370 }, "IF", 36, 50),
           nodeBase(
-            "inst_de",
-            "inst_de",
-            "inst_de",
+            "inst_id",
+            "inst_id",
+            "inst_id",
             { x: 870 + offsetXSize, y: 821.4 },
             "IF",
             36,

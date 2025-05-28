@@ -46,34 +46,34 @@ export const useIENodes = (): Node[] => {
     ...(isPipeline
       ? [
           nodeBase(
-            "pcinc_me",
-            "pcinc_me",
-            "pcinc_me",
+            "pcinc_mem",
+            "pcinc_mem",
+            "pcinc_mem",
             { x: 740 + offsetXSize, y: 232.4 },
             "IE",
             36,
             50
           ),
           nodeBase(
-            "alures_me",
-            "alures_me",
-            "alures_me",
+            "alures_mem",
+            "alures_mem",
+            "alures_mem",
             { x: 740 + offsetXSize, y: 770.4 },
             "IE",
             36,
             50
           ),
           nodeBase(
-            "rurs2_me",
-            "rurs2_me",
-            "rurs2_me",
+            "rurs2_mem",
+            "rurs2_mem",
+            "rurs2_mem",
             { x: 740 + offsetXSize, y: 1050 },
             "IE",
             36,
             50
           ),
-          nodeBase("rd_me", "rd_me", "rd_me", { x: 740 + offsetXSize, y: 1210 }, "IE", 36, 50),
-          nodeBase("cu_me", "cu_me", "cu_me", { x: 740 + offsetXSize, y: 1378.3 }, "IE", 36, 50),
+          nodeBase("rd_mem", "rd_mem", "rd_mem", { x: 740 + offsetXSize, y: 1210 }, "IE", 36, 50),
+          nodeBase("cu_mem", "cu_mem", "cu_mem", { x: 740 + offsetXSize, y: 1378.3 }, "IE", 36, 50),
 
           pivotNode("pivot2", { x: shiftBack(5), y: 822.3 }, "IE"),
           pivotNode("pivot5", { x: shiftBack(5), y: 1077 }, "IE", "red"),

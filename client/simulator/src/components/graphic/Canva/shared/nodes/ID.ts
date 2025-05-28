@@ -104,44 +104,44 @@ export const useIDNodes = (): Node[] => {
           pivotNode("pivot38", { x: 85, y: 1232 }, "ID"),
 
           nodeBase(
-            "pcinc_ex",
-            "pcinc_ex",
-            "pcinc_ex",
+            "pcinc_ie",
+            "pcinc_ie",
+            "pcinc_ie",
             { x: 740 + offsetXSize, y: 232.4 },
             "ID",
             36,
             50
           ),
-          nodeBase("pc_ex", "pc_ex", "PC_ex", { x: 740 + offsetXSize, y: 370 }, "ID", 36, 50),
+          nodeBase("pc_ie", "pc_ie", "PC_ex", { x: 740 + offsetXSize, y: 370 }, "ID", 36, 50),
           nodeBase(
-            "rurs1_ex",
-            "rurs1_ex",
-            "rurs1_ex",
+            "rurs1_ie",
+            "rurs1_ie",
+            "rurs1_ie",
             { x: 740 + offsetXSize, y: 685 },
             "ID",
             36,
             50
           ),
           nodeBase(
-            "rurs2_ex",
-            "rurs2_ex",
-            "rurs2_ex",
+            "rurs2_ie",
+            "rurs2_ie",
+            "rurs2_ie",
             { x: 740 + offsetXSize, y: 804 },
             "ID",
             36,
             50
           ),
           nodeBase(
-            "immext_ex",
-            "immext_ex",
-            "immext_ex",
+            "immext_ie",
+            "immext_ie",
+            "immext_ie",
             { x: 740 + offsetXSize, y: 986.3 },
             "ID",
             36,
             50
           ),
-          nodeBase("rd_ex", "rd_ex", "rd_ex", { x: 740 + offsetXSize, y: 1210 }, "ID", 36, 50),
-          nodeBase("cu_ex", "cu_ex", "cu_ex", { x: 740 + offsetXSize, y: 1370.3 }, "ID", 36, 50),
+          nodeBase("rd_ie", "rd_ie", "rd_ie", { x: 740 + offsetXSize, y: 1210 }, "ID", 36, 50),
+          nodeBase("cu_ie", "cu_ie", "cu_ie", { x: 740 + offsetXSize, y: 1370.3 }, "ID", 36, 50),
           nodeBase("cu_id_exit", "cu_id_exit", "cu_id_exit", { x: 660, y: 1272 }, "ID", 90, 30),
 
         ]
