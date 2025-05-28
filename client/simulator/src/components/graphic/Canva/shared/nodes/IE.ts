@@ -17,7 +17,7 @@ export const useIENodes = (): Node[] => {
       id: "IE",
       type: "group",
       data: { label: "Section 3" },
-      position: { x: 870 + 730 + (isPipeline ? 60 : 0), y: 0 },
+      position: { x: 870 + 730 + (isPipeline ? 130 : 0), y: 0 },
       draggable: false,
       zIndex: 3,
       style: {

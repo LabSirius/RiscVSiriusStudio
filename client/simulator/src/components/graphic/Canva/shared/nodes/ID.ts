@@ -5,7 +5,7 @@ import { nodeBase, pivotNode } from "./sharedAttributes";
 export const useIDNodes = (): Node[] => {
   const { typeSimulator } = useSimulator();
   const isPipeline = typeSimulator === "pipeline";
-  const offsetXSize = isPipeline ? 10 : 0;
+  const offsetXSize = isPipeline ? 80 : 0;
   const shift = (x: number): number => x + (isPipeline ? 35 : 0);
 
   const nodes: Node[] = [

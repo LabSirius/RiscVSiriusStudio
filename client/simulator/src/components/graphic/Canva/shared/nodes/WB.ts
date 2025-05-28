@@ -6,7 +6,7 @@ export const useWBNodes = (): Node[] => {
   const { typeSimulator } = useSimulator();
   const isPipeline = typeSimulator === "pipeline";
 
-  const offsetX = isPipeline ? 395 : 0;
+  const offsetX = isPipeline ? 465 : 0;
   const shift = (x: number): number => x + (isPipeline ? 90 : 0);
 
   const nodes: Node[] = [

@@ -7,7 +7,7 @@ export const useMEMNodes = (): Node[] => {
   const isPipeline = typeSimulator === "pipeline";
   const offsetXSize = isPipeline ? 60 : 0;
 
-  const offsetX = isPipeline ? 335 : 0;
+  const offsetX = isPipeline ? 405 : 0;
   const shift = (x: number): number => x + (isPipeline ? 5 : 0);
 
   const nodes: Node[] = [
