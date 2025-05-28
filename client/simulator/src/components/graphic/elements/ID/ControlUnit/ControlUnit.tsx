@@ -8,7 +8,7 @@ import { useSimulator } from "@/context/shared/SimulatorContext";
 import CurrentInstructionInfo from "@/components/graphic/CurrentInstructionInfo";
 
 export default function ControlUnit() {
-  const { operation } = useSimulator();
+  const { operation, typeSimulator } = useSimulator();
 
 
   return (
@@ -28,7 +28,8 @@ export default function ControlUnit() {
           // </>
         )}
 
-        <Tunels />
+        {typeSimulator === "monocycle" && (<Tunels />)}
+        
       </div>
 
     </div>
