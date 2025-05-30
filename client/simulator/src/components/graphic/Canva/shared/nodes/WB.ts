@@ -35,12 +35,13 @@ export const useWBNodes = (): Node[] => {
     pivotNode("pivot9", { x: shift(18), y: 1006 }, "WB"),
     pivotNode("pivot11", { x: shift(230), y: 1131 }, "WB"),
     pivotNode("pivot13", { x: shift(18), y: 254 }, "WB"),
-    nodeBase("cu_wb_exit", "cu_wb_exit", "cu_wb_exit", { x: 100, y: 1272 }, "WB", 90, 30),
 
   ];
 
   if (isPipeline) {
     nodes.push(pivotNode("pivot37", { x: shift(18), y: 1170 }, "WB"));
+    nodes.push(nodeBase("cu_wb_exit", "cu_wb_exit", "cu_wb_exit", { x: 100, y: 1272 }, "WB", 90, 30));
+
   }
 
   return nodes;

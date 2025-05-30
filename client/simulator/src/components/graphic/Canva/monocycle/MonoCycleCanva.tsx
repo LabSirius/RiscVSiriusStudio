@@ -13,7 +13,7 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-import { nodeTypes } from "./constants";
+import { nodeTypes } from "../pipeline/constants";
 import { edgeTypes } from "./constants";
 import { useInitialNodes } from "../shared/nodes/initialNodes"; // Nodes
 
