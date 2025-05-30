@@ -49,12 +49,13 @@ export const useIFNodes = (): Node[] => {
       id: "controlUnit",
       type: "controlUnit",
       data: { label: "controlUnit" },
+      zIndex: 7,
       position: { x: 40, y: 1180.5 + (isPipeline ? 130 : 0) },
       parentId: "IF",
       draggable: false,
       style: {
         width: 3050 + (isPipeline ? 545 : 0),
-        height: 170 ,
+        height: 170,
         backgroundColor: "transparent",
         border: "none",
         borderRadius: 0,
@@ -76,10 +77,10 @@ export const useIFNodes = (): Node[] => {
             50
           ),
 
-        pivotNode("pivot18", { x: 820, y: 254 }, "IF"),
-        pivotNode("pivot19", { x: 820, y: 128 }, "IF"),
-        nodeBase("pivotJump10", "pivotJump10", "pivotJump10", { x: 804.3, y: 155 }, "IF", 47, 47),
-          
+          pivotNode("pivot18", { x: 820, y: 254 }, "IF"),
+          pivotNode("pivot19", { x: 820, y: 128 }, "IF"),
+          nodeBase("pivotJump10", "pivotJump10", "pivotJump10", { x: 804.3, y: 155 }, "IF", 47, 47),
+
           nodeBase("pc_id", "pc_id", "PC_De", { x: 870 + offsetXSize, y: 370 }, "IF", 36, 50),
           nodeBase(
             "inst_id",
@@ -90,6 +91,9 @@ export const useIFNodes = (): Node[] => {
             36,
             50
           ),
+
+          nodeBase("stageSeparatorIF_ID", "stageSeparatorIF_ID", "stageSeparatorIF_ID", { x: 865 + offsetXSize, y: 60 }, "IF", 5, 1385,),
+
         ]
       : []),
   ];

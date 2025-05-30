@@ -116,6 +116,7 @@ import CU_MEM_EXIT from "../../elements/pipeline/CU_MEM_EXIT";
 import CU_WB_EXIT from "../../elements/pipeline/CU_WB_EXIT";
 import CU_ID_EXIT from "../../elements/pipeline/CU_ID_EXIT";
 import Pivot39 from "../../elements/ID/pivots/Pivot39";
+import StageSeparator from "../../elements/StageSeparator";
 export const nodeTypes = {
   title: TitleText,
   // IF
@@ -242,7 +243,15 @@ export const nodeTypes = {
   cu_id_exit: CU_ID_EXIT,
   cu_ie_exit:CU_IE_EXIT,
   cu_mem_exit: CU_MEM_EXIT,
-  cu_wb_exit: CU_WB_EXIT
+  cu_wb_exit: CU_WB_EXIT,
+
+
+  stageSeparatorIF_ID: StageSeparator,
+  stageSeparatorID_IE: StageSeparator,
+  stageSeparatorIE_MEM: StageSeparator,
+  stageSeparatorMEM_WB: StageSeparator,
+
+  
 
 };
 
