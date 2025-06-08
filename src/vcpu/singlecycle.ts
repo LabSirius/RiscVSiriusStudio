@@ -381,7 +381,7 @@ export class SCCPU {
     // If non-negative, a straight conversion works
     if (n >= 0) {
       n = n.toString(2);
-      if (n.length >= len) {
+      if (n.length > len) {
         throw Error("out of range");
       }
       return n.padStart(len, "0");
@@ -565,6 +565,7 @@ export class SCCPU {
         aluOp = "00000";
         break;
     }
+
 
     const aluRes = this.computeALURes(rs1Val, imm32Val, aluOp);
     this.registers.writeRegister(getRd(instruction), aluRes);
