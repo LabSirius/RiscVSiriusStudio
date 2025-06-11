@@ -184,6 +184,11 @@ export class TextSimulator extends Simulator {
         return { line, jump };
       }) || [];
 
+
+
+    const asmList = this.rvDoc.ir?.instructions.map(instr => instr.asm);
+
+
     mainView.postMessage({
       from: "extension",
       operation: "uploadMemory",
@@ -193,6 +198,7 @@ export class TextSimulator extends Simulator {
         constantsSize: this.cpu.getDataMemory().constantsSize,
         addressLine,
         symbols: this.rvDoc.ir?.symbols,
+        asmList // To export Memory
       },
     });
 

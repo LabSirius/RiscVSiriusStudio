@@ -12,6 +12,7 @@ interface MemoryData {
  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   symbols: Record<string, any>;
   addressLine : AddressLine[];
+  asmList: string[]; 
   
 }
 interface MemoryRow {
