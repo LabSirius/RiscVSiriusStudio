@@ -1,5 +1,5 @@
 import { parse } from './riscv';
-import { binaryToHex, hexToBin, intToBinary, intTo4Hex } from './conversions';
+import { binaryToHex, hexToBin } from './conversions';
 
 type Align = {
   start: number,
@@ -13,7 +13,7 @@ type MemoryValues = {
 
 type Data = {
   memdef: number,
-  value: number | string[],
+  value: string | string[],
   typeAlign: string,
   align: Align
 };
@@ -77,7 +77,11 @@ function alignAddress(addr: number, alignment: number): number {
   if (addr % alignment === 0){
       return addr;
   }
-  return addr + (alignment - addr % alignment);
+  return addr + endAligment(addr, alignment);
+}
+
+function endAligment(addr: number, alignment: number): number {
+  return alignment - addr % alignment;
 }
 
 function resolveAlign(align: string, value: any): Align {
@@ -244,20 +248,20 @@ function constructMemoryFromInst(instruction: any): Memory[] {
   return getMemoryFromList(binList, hexList, instruction.inst);
 }
 
-function constructMemoryFromNumber(value: number, start: number): Memory[] {
-  const binList = getByteList(intToBinary(value));
-  const hexList = getHexList(intTo4Hex(value));
+function constructMemoryFromNumber(value: string, start: number): Memory[] {
+  const hexList = getHexList(value);
+  const binList = getByteList(hexToBin(hexList.join("")));
 
   return getMemoryFromList(binList, hexList, start);
 }
-
 function getMemoryFromList(binList: string[], hexList: string[], start: number): Memory[]{
   let mem: Memory[] = [];
   for (let i = 0; i < binList.length; i++){
+    const index = binList.length - i - 1;
     mem.push({
       memdef: start + i,
-      binValue: binList[i]!,
-      hexValue: hexList[i]!
+      binValue: binList[index]!,
+      hexValue: hexList[index]!
     });
   }
 
@@ -276,9 +280,36 @@ function constructMemory(instructions: any[], data: Record<string, Data>): Memor
   return memory;
 }
 
+function reorderMemory(memory: Memory[]): Memory[]{
+  let mem: Memory[] = [];
+  for (let i = 0; i < memory.length; i += 4) {
+      const block = memory.slice(i, i + 4).reverse();
+      mem = mem.concat(block);
+    }
+
+  return mem;
+}
+
+function fillEndMemory(memory: Memory[]): Memory[] {
+  
+  const lastValue = memory.at(-1);
+  const start = lastValue?.memdef! + 1;
+  const end = alignAddress(start, 4);
+
+  const mem = constructFilledMemory(start, end);
+
+  memory = memory.concat(mem);
+
+  return memory;
+}
+
 export type InternalRepresentation = {
   instructions: Array<any>;
   symbols: Array<any>;
+  memory: Memory[],
+  directives: Record<string, any[]>,
+  dataTable: Record<string, Data>,
+  constants: Constant[]
 };
 
 export type ParserResult = {
@@ -360,21 +391,24 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
       firstPass: false
     });
   } catch (obj) {
-    //console.error('Assembler error: ', obj);
     retError.extra = obj;
     return retError;
   }
   console.log('Success!.');
 
+  let memory = constructMemory(parserOutput, dataTable);
+  memory = fillEndMemory(memory);
+  memory = reorderMemory(memory);
+
   const result = {
     success: true,
     ir: { instructions: parserOutput as any[], 
       symbols: labelTable as any[],
-      constants: constantTable as any[],
-      directives: directives as any[],
+      constants: constantTable,
+      directives: directives,
       dataTable: dataTable,
       options: options,
-      memory: constructMemory(parserOutput, dataTable)
+      memory: memory
       
     },
     info: 'Success',

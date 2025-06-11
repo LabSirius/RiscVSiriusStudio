@@ -33,7 +33,7 @@ export abstract class Simulator {
       throw new Error("RVDocument has no IR");
     }
 
-    this.cpu = new SCCPU(rvDoc.ir.instructions, params.memorySize);
+    this.cpu = new SCCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
   }
 
   public get configured(): boolean {
@@ -173,8 +173,9 @@ export class TextSimulator extends Simulator {
 
     this.listenToEditorClicks();
     const inst = this.cpu.currentInstruction();
-    const line = this.rvDoc.getLineForIR(inst);
-    if (line !== undefined) this.highlightLine(line);
+    let line = this.rvDoc.getLineForIR(inst);
+    if( line === undefined) line = 0;
+    this.highlightLine(line);
 
     const addressLine =
       this.rvDoc.ir?.instructions.map((instr) => {
@@ -189,6 +190,7 @@ export class TextSimulator extends Simulator {
       payload: {
         memory: this.cpu.getDataMemory().getMemory(),
         codeSize: this.cpu.getDataMemory().codeSize,
+        constantsSize: this.cpu.getDataMemory().constantsSize,
         addressLine,
         symbols: this.rvDoc.ir?.symbols,
       },

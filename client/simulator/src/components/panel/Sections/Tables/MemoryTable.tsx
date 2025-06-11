@@ -17,6 +17,7 @@ import {
   animateMemoryCell,
   animateRow,
   animateArrowBetweenCells,
+  createPCIcon,
 } from "@/utils/tables/handlersMemory";
 import {
   intTo32BitBinary,
@@ -79,12 +80,32 @@ const MemoryTable = () => {
       rowFormatter: function (row) {
         const data = row.getData();
         if (!dataMemoryTable) return;
-        const spAddress = intToHex(dataMemoryTable?.memory.length - 4).toUpperCase();
-        if (data.isCode && data.address !== spAddress) {
-          row.getElement().style.backgroundColor = "#D1E3E7";
-          row.getElement().style.color = "#000";
+
+        const spAddress = intToHex(dataMemoryTable.memory.length - 4).toUpperCase();
+        if (data.address === spAddress) return;
+
+        const rowEl = row.getElement();
+
+        if (data.segment === "program") {
+          rowEl.style.backgroundColor = "#D1E3E7"; // azul pastel
+          rowEl.style.color = "#000";
+        } else if (data.segment === "constants") {
+          rowEl.style.backgroundColor = "#FFE5B4"; // naranja pastel
+          rowEl.style.color = "#000";
         } else {
-          row.getElement().style.backgroundColor = "";
+          rowEl.style.backgroundColor = "";
+          rowEl.style.color = "";
+        }
+
+        const currentPcHex = (newPc * 4).toString(16).toUpperCase();
+        if (data.address === currentPcHex) {
+          rowEl.querySelectorAll(".pc-icon").forEach((el) => el.remove());
+          const cell = row.getCell("address");
+          if (cell) {
+            const cellEl = cell.getElement();
+            cellEl.style.position = "relative";
+            cellEl.appendChild(createPCIcon());
+          }
         }
       },
       initialSort: [{ column: "address", dir: "desc" }],
@@ -99,8 +120,8 @@ const MemoryTable = () => {
           tableInstanceRef.current!,
           dataMemoryTable.memory,
           dataMemoryTable.codeSize,
+          dataMemoryTable.constantsSize,
           dataMemoryTable.symbols,
-          0,
           () => {
             setSp(intToHex(dataMemoryTable.memory.length - 4));
             setNewPc(0);
@@ -165,8 +186,8 @@ const MemoryTable = () => {
         tableInstanceRef.current,
         newMemory,
         dataMemoryTable.codeSize,
+        dataMemoryTable.constantsSize,
         dataMemoryTable.symbols,
-        0,
         () => {
           setNewPc(0);
           setSp(intToHex(newTotalSize - 4));
@@ -206,7 +227,7 @@ const MemoryTable = () => {
   useEffect(() => {
     if (!isCreatedMemoryTable) return;
     if (dataMemoryTable?.codeSize !== undefined) {
-      if (!(newPc * 4 >= dataMemoryTable?.codeSize)) {
+      if (!(newPc * 4 >= dataMemoryTable?.codeSize - dataMemoryTable?.constantsSize)) {
         updatePC(newPc, { current: tableInstanceRef.current });
       }
     }

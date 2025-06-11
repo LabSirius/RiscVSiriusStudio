@@ -118,7 +118,6 @@ export class RVDocument {
     if (result.success) {
       this._ir = result.ir;
       this.syncIR();
-     
     } else {
       this._ir = undefined;
       this._error = result.extra;
