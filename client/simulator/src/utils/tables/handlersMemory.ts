@@ -55,7 +55,7 @@ export const uploadMemory = (
         .map((byte) => binaryToHex(byte || '00000000').toUpperCase().padStart(2, '0'))
         .join('-'),
       info: '',
-      segment, // ← lo importante
+      segment, 
     };
   });
 

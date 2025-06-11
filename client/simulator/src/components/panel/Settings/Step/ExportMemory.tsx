@@ -8,6 +8,7 @@ import {
 import { Save } from "lucide-react";
 import { useMemoryTable } from "@/context/panel/MemoryTableContext";
 import { useState } from "react";
+import { binaryToHex } from "@/utils/handlerConversions";
 
 const ExportMemory = () => {
   const { dataMemoryTable } = useMemoryTable();
@@ -18,19 +19,17 @@ const ExportMemory = () => {
 
     const memory = dataMemoryTable.memory;
     const codeSize = dataMemoryTable.codeSize;
-    const DEPTH = memory.length / 4; 
-
+    const DEPTH = memory.length / 4;
 
     const hexWords: string[] = [];
 
-    // Agrupar cada 4 bytes en una palabra de 32 bits en orden little-endian
     for (let i = 0; i < codeSize; i += 4) {
       let word = "";
 
       for (let j = 3; j >= 0; j--) {
         const index = i + j;
         const binaryString = memory[index] || "00000000";
-        const hex = parseInt(binaryString, 2).toString(16).padStart(2, "0").toUpperCase();
+        const hex = binaryToHex(binaryString).padStart(2, "0").toUpperCase();
         word += hex;
       }
 
@@ -42,10 +41,21 @@ const ExportMemory = () => {
     let fileType = "text/plain;charset=utf-8";
 
     if (format === "hex") {
-      fileContent = hexWords.join("\n");
-      fileName = "instructions_hex.hex";
-    } else if (format === "mif") {
-      // Construir el archivo .mif con el formato de la imagen
+  const hexBytes: string[] = [];
+
+  for (let i = 0; i < codeSize; i += 4) {
+    for (let j = 3; j >= 0; j--) {
+      const index = i + j;
+      const binaryString = memory[index] || "00000000";
+      const hex = binaryToHex(binaryString).padStart(2, "0").toUpperCase();
+      hexBytes.push(hex);
+    }
+  }
+
+  fileContent = hexBytes.join("\n");
+  fileName = "instructions_hex.hex";
+}
+else if (format === "mif") {
       const mifHeader = `-- RISC-V program memory (word addressed)
 WIDTH=32;
 DEPTH=${DEPTH};
@@ -57,12 +67,12 @@ CONTENT BEGIN
 `;
 
       const mifBody = hexWords
-        .map((word, index) => `${index.toString(16).toUpperCase().padStart(2, "0")} : ${word};`)
+        .map((word, index) => `\t${index.toString(16).toUpperCase().padStart(2, "0")} : ${word};`)
         .join("\n");
 
       const nextAddr = codeSize / 4;
       const finalAddr = DEPTH - 1;
-      const zeroFill = `[${nextAddr.toString(16).toUpperCase().padStart(2, "0")}..${finalAddr
+      const zeroFill = `\t[${nextAddr.toString(16).toUpperCase().padStart(2, "0")}..${finalAddr
         .toString(16)
         .toUpperCase()}] : 00000000;`;
 
@@ -98,12 +108,8 @@ END;`;
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={() => handleExport("hex")}>
-              Verilog (.hex)
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleExport("mif")}>
-              .mif
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleExport("hex")}>Verilog (.hex)</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleExport("mif")}>.mif</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <p className="text-gray">Memory (program)</p>
