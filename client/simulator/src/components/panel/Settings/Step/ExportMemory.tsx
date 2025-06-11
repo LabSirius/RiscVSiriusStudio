@@ -18,22 +18,23 @@ const ExportMemory = () => {
 
     const memory = dataMemoryTable.memory;
     const codeSize = dataMemoryTable.codeSize;
+    const DEPTH = memory.length / 4; 
 
-    const hexLines: string[] = [];
 
+    const hexWords: string[] = [];
+
+    // Agrupar cada 4 bytes en una palabra de 32 bits en orden little-endian
     for (let i = 0; i < codeSize; i += 4) {
-      const group: string[] = [];
+      let word = "";
 
-      for (let j = 0; j < 4; j++) {
+      for (let j = 3; j >= 0; j--) {
         const index = i + j;
-        const binaryString = memory[index];
-        if (binaryString) {
-          const hexValue = parseInt(binaryString, 2).toString(16).toUpperCase();
-          group.push(hexValue);
-        }
+        const binaryString = memory[index] || "00000000";
+        const hex = parseInt(binaryString, 2).toString(16).padStart(2, "0").toUpperCase();
+        word += hex;
       }
 
-      hexLines.push(...group.reverse());
+      hexWords.push(word);
     }
 
     let fileContent = "";
@@ -41,20 +42,37 @@ const ExportMemory = () => {
     let fileType = "text/plain;charset=utf-8";
 
     if (format === "hex") {
-      fileContent = hexLines.join("\n");
+      fileContent = hexWords.join("\n");
       fileName = "instructions_hex.hex";
     } else if (format === "mif") {
-      // Placeholder for MIF file generation logic
-      // For now, it will download the same hex content but with a .mif extension
-      // You'll need to replace this with actual MIF generation
-      const mifHeader = `DEPTH = ${codeSize}; -- The size of data in bits\nWIDTH = 8; -- The size of memory in words\nADDRESS_RADIX = HEX; -- The radix for address values\nDATA_RADIX = HEX; -- The radix for data values\nCONTENT\nBEGIN\n`;
-      const mifFooter = "\nEND;";
-      const mifBody = hexLines
-        .map((line, index) => `${index.toString(16).toUpperCase()} : ${line};`)
+      // Construir el archivo .mif con el formato de la imagen
+      const mifHeader = `-- RISC-V program memory (word addressed)
+WIDTH=32;
+DEPTH=${DEPTH};
+
+ADDRESS_RADIX=HEX;
+DATA_RADIX=HEX;
+
+CONTENT BEGIN
+`;
+
+      const mifBody = hexWords
+        .map((word, index) => `${index.toString(16).toUpperCase().padStart(2, "0")} : ${word};`)
         .join("\n");
+
+      const nextAddr = codeSize / 4;
+      const finalAddr = DEPTH - 1;
+      const zeroFill = `[${nextAddr.toString(16).toUpperCase().padStart(2, "0")}..${finalAddr
+        .toString(16)
+        .toUpperCase()}] : 00000000;`;
+
+      const mifFooter = `
+${zeroFill}
+END;`;
+
       fileContent = mifHeader + mifBody + mifFooter;
       fileName = "instructions_mif.mif";
-      fileType = "application/octet-stream"; // Or appropriate MIF MIME type
+      fileType = "application/octet-stream";
     }
 
     const blob = new Blob([fileContent], { type: fileType });
