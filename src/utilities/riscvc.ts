@@ -414,6 +414,6 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     info: 'Success',
     extra: undefined
   };
-  console.log(result);
+  // console.log(result);
   return result;
 }

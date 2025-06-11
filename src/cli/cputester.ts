@@ -23,7 +23,8 @@ export class CPUTester {
   private compiledResult: ParserResult;
   private lastResult: any;
   private ir: InternalRepresentation | undefined;
-  private program: any[];
+  private program: any;
+  private memory: any;
   
   constructor(result: ParserResult, debug: boolean = false) {
     this.debug = debug;
@@ -31,7 +32,8 @@ export class CPUTester {
     this.ir = this.compiledResult.ir;
     this.program = this.ir!.instructions;
     this.programSize = this.program.length;
-    this.cpu = new SCCPU(this.program, this.programSize);    
+    this.memory = this.ir!.memory;
+    this.cpu = new SCCPU(this.program, this.memory, this.programSize);
     this.rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout
@@ -183,7 +185,7 @@ export class CPUTester {
     
     const instruction = this.cpu.currentInstruction();
   
-    console.log(chalk.cyanBright(`\n🔧 Executing @ PC=${pc}: ${instruction.asm}`));
+    console.log(chalk.cyanBright(`\n🔧 Executing @ PC=${pc * 4}: ${instruction.asm}`));
   
     this.lastResult = this.cpu.executeInstruction();
   
@@ -354,10 +356,10 @@ private printFormattedResult(result: any, path: string): void {
     const memory = this.cpu.getDataMemory();
     const value = memory.read(address, 1);
     const binString = value.join("");
-    this.showDataTable([binString]);
+    this.showDataTable([binString], address);
   }
 
-  private showDataTable(array: any[]): void{
+  private showDataTable(array: any[], address: number | undefined = undefined): void{
     const table = new Table({
       head: ["Address", "Value"],
       colWidths: [10, 30],
@@ -365,13 +367,13 @@ private printFormattedResult(result: any, path: string): void {
     });
     for (let i = 0; i < array.length; i++){
       const value = array[i];
-      table.push([chalk.yellow(`0x${intToHex(i)}`), this.formatValue(value)]);
+      table.push([chalk.yellow(address? `0x${intToHex(address)}` : `0x${intToHex(i)}`), this.formatValue(value)]);
     }
     console.log(table.toString());
   }
 
   private showDataDirective(keys: string[]): void{
-    const result = this.traverseObject(this.ir.dataTable, keys);
+    const result = this.traverseObject(this.ir!.dataTable, keys);
     this.printFormattedResult(result, `Data Table ${keys.join('.')}`);
   }
 
@@ -381,7 +383,7 @@ private printFormattedResult(result: any, path: string): void {
       return;
     }
     keys = keys.map((key) => key.startsWith(".")? key : "." + key);
-    const result = this.traverseObject(this.ir.directives, keys);
+    const result = this.traverseObject(this.ir!.directives, keys);
     this.printFormattedResult(result, `Data Table ${keys.join('.')}`);
   }
 
@@ -399,7 +401,7 @@ private printFormattedResult(result: any, path: string): void {
   }
   
   private resetCPU(): void {
-    this.cpu = new SCCPU(this.program, this.programSize);
+    this.cpu = new SCCPU(this.program, this.memory, this.programSize);
     info('CPU reset.');
   }
 
