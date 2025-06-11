@@ -20,11 +20,15 @@ export const uploadMemory = (
   newSymbols: Record<string, SymbolData>,
   onComplete?: () => void
 ): void => {
+
+
+  
   const isInitialLoad = table.getData().length === 0;
   const expectedRowCount = newMemory.length / 4;
   const maxAddress = (expectedRowCount - 1) * 4;
 
   const programSize = newCodeSize - newConstantsSize;
+
 
   // Generate main data
   const mainRows = chunk(newMemory, 4).map((word, index) => {
