@@ -1706,7 +1706,7 @@
   = !ReservedWord name:IdentifierName { return name; }
 
   IdentifierName "Label identifier"
-  = name:IdentifierString _ "(" _ [^)]* ")" { return { type: "IdentifierName", name: text() }; }
+  = name:IdentifierString _ "(" _ !RegisterName [^)]* ")" { return { type: "IdentifierName", name: text() }; }
   / name:IdentifierString { return { type: "IdentifierName", name: text() }; }
 
   IdentifierString
