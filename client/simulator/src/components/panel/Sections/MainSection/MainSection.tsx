@@ -14,6 +14,8 @@ import SearchSection from "../SearchSection";
 import HelpSection from "../HelpSection";
 import { useTheme } from "@/components/panel/ui/theme/theme-provider";
 
+import SimulateAuto from "./SimulateAuto";
+
 const MainSection = () => {
   const { typeSimulator, operation, section } = useSimulator();
   const { setTheme } = useTheme();
@@ -92,7 +94,11 @@ const MainSection = () => {
           </div>
         </div>
       )}
-      <SidebarTrigger className={`absolute right-3 ${typeSimulator === 'graphic' ? 'top-5' : 'top-0' } `}/>
+      <SidebarTrigger
+        className={`absolute right-3 ${typeSimulator === "graphic" ? "top-5" : "top-0"} `}
+      />
+
+      <SimulateAuto />
     </SidebarProvider>
   );
 };
