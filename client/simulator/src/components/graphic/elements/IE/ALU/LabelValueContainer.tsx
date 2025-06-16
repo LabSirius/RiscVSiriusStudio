@@ -3,7 +3,6 @@ import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHover";
 import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
 
-
 const aluOperations: Record<string, string> = {
   // Operaciones clásicas (4 o 5 bits según el caso)
   "0000": "A + B",
@@ -27,29 +26,27 @@ const aluOperations: Record<string, string> = {
   "0101": "A >> B",
   "00101": "A >> B",
 
-  "1101": "A >> B (Arithmetic)",
-  "01101": "A >> B (Arithmetic)",
+  "1101": "A >> B (msb-ext)",
+  "01101": "A >> B (msb-ext)",
 
-  "0010": "A < B (Unsigned)",
-  "00010": "A < B (Unsigned)",
+  "0010": "A < B (U)",
+  "00010": "A < B (U)",
 
-  "0011": "A < B (Signed)",
-  "00011": "A < B (Signed)",
+  "0011": "A < B (S)",
+  "00011": "A < B (S)",
 
   "10000": "A * B",
-  "10001": "High bits of A * B (Signed)",
-  "10010": "High bits of A * B (Signed × Unsigned)",
-  "10011": "High bits of A * B (Unsigned)",
-  "10100": "A ÷ B (Signed)",
-  "10101": "A ÷ B (Unsigned)",
-  "10110": "A % B (Signed)",
-  "10111": "A % B (Unsigned)",
+  "10001": "High bits of A * B (S)",
+  "10010": "High bits of A * B (S × U)",
+  "10011": "High bits of A * B (U)",
+  "10100": "A ÷ B (S)",
+  "10101": "A ÷ B (U)",
+  "10110": "A % B (S)",
+  "10111": "A % B (U)",
 };
 
 const LabelValueContainer = () => {
   const { currentType, currentResult } = useCurrentInst();
-
-  
 
   const [aHex, setAHex] = useState("");
   const [aBin, setABin] = useState("");
@@ -85,9 +82,6 @@ const LabelValueContainer = () => {
 
   const aluOp = currentResult?.alu?.operation ?? "";
   const operationDescription = aluOperations[aluOp];
-
-
-
 
   return (
     <>
@@ -133,10 +127,11 @@ const LabelValueContainer = () => {
         hex={parseInt(aluOp, 2).toString(16).toUpperCase()}
         input={false}
         positionClassName="bottom-[-6rem] right-[0]"
-
       />
 
-      <p className="absolute bottom-[1rem] left-[50%] transform -translate-x-[50%] z-1000 text-xl text-black">{operationDescription}</p>
+      <p className="absolute bottom-[1rem] left-[50%] transform -translate-x-[50%] z-1000 text-[1.4rem] text-[#777777] whitespace-nowrap overflow-hidden text-ellipsis">
+        {operationDescription?.replace("A", `h'${aHex}`).replace("B", `h'${bHex}`)}
+      </p>
     </>
   );
 };
