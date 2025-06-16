@@ -243,10 +243,28 @@ const RegistersTable = () => {
       {!showTable && (
         <div
           onClick={() => setShowTable(true)}
-          className="h-full w-[1.6rem] cursor-pointer  bg-[#2E2E2E] rounded-[.3rem] b-1 border-black  flex flex-col items-center uppercase group">
-          <ArrowBigRightDash size={18} strokeWidth={1.5} className="text-gray-400 transition ease-in-out group-hover:text-gray-300  mt-[0.35rem] mb-3" />
+          className={`h-full w-[1.6rem] cursor-pointer rounded-[.2rem] border flex flex-col items-center uppercase group
+    ${theme === "light" ? "bg-white border-gray-300" : "border-gray-700"}`}>
+          <ArrowBigRightDash
+            size={18}
+            strokeWidth={1.5}
+            className={`mt-[0.35rem] mb-3 transition ease-in-out
+      ${
+        theme === "light"
+          ? "text-gray-700 group-hover:text-gray-800"
+          : "text-gray-400 group-hover:text-gray-300"
+      }`}
+          />
+
           {"registers".split("").map((char, index) => (
-            <span key={index} className="text-[.65rem] font-bold transition ease-in-out text-gray-500 group-hover:text-gray-400 leading-[1.15rem]">
+            <span
+              key={index}
+              className={`text-[.65rem] font-bold leading-[1.15rem] transition ease-in-out
+        ${
+          theme === "light"
+            ? "text-gray-700 group-hover:text-gray-800"
+            : "text-gray-400 group-hover:text-gray-500"
+        }`}>
               {char === " " ? "\u00A0" : char}
             </span>
           ))}

@@ -102,8 +102,7 @@ const MemoryTable = () => {
         }
 
         const currentPcHex = (newPcRef.current * 4).toString(16).toUpperCase();
-        if (data.address === currentPcHex ) {
-          
+        if (data.address === currentPcHex) {
           rowEl.querySelectorAll(".pc-icon").forEach((el) => el.remove());
           const cell = row.getCell("address");
           if (cell) {
@@ -233,13 +232,12 @@ const MemoryTable = () => {
   useEffect(() => {
     if (!isCreatedMemoryTable) return;
     if (dataMemoryTable?.codeSize !== undefined) {
-        newPcRef.current = newPc;
+      newPcRef.current = newPc;
       if (!(newPc * 4 >= dataMemoryTable?.codeSize - dataMemoryTable?.constantsSize)) {
         updatePC(newPc, { current: tableInstanceRef.current });
       }
     }
   }, [newPc, isCreatedMemoryTable]);
-
 
   // Filter the memory data when the search input changes.
   useEffect(() => {
@@ -318,9 +316,7 @@ const MemoryTable = () => {
 
   return (
     <>
-      <div className={`shadow-lg !min-h-min min-w-[37.36rem] relative ${
-          !showTable && "hidden"
-        }`}>
+      <div className={`shadow-lg !min-h-min min-w-[37.36rem] relative ${!showTable && "hidden"}`}>
         <div
           className={`h-full  w-full transition-opacity ease-in 9000  ${
             isCreatedMemoryTable ? "opacity-100" : "opacity-0"
@@ -332,9 +328,8 @@ const MemoryTable = () => {
             }`}
           />
           <ArrowBigLeftDash
-            onClick={() => {setShowTable(false)
-              
-              
+            onClick={() => {
+              setShowTable(false);
             }}
             size={18}
             strokeWidth={1.5}
@@ -347,17 +342,31 @@ const MemoryTable = () => {
           </div>
         )}
       </div>
-        {!showTable && (
+      {!showTable && (
         <div
           onClick={() => setShowTable(true)}
-          className="h-full w-[1.6rem] cursor-pointer z-100 bg-[#2E2E2E] b-1 border-black rounded-[.3rem] flex flex-col items-center uppercase group">
+          className={`h-full w-[1.6rem] cursor-pointer z-100 rounded-[.2rem] flex flex-col items-center uppercase group border 
+    ${theme === "light" ? "bg-white border-gray-300" : " border-gray-700"}`}>
           <ArrowBigRightDash
             size={18}
             strokeWidth={1.5}
-            className="text-gray-400  mt-[0.35rem] mb-3 transition ease-in-out group-hover:text-gray-300"
+            className={`mt-[0.35rem] mb-3 transition ease-in-out 
+      ${
+        theme === "light"
+          ? "text-gray-700 group-hover:text-gray-800"
+          : "text-gray-400 group-hover:text-gray-300"
+      }`}
           />
+
           {"memory".split("").map((char, index) => (
-            <span key={index} className="text-[.65rem] font-bold text-gray-500 leading-[1.15rem] transition ease-in-out group-hover:text-gray-400">
+            <span
+              key={index}
+              className={`text-[.65rem] font-bold leading-[1.15rem] transition ease-in-out 
+        ${
+          theme === "light"
+            ? "text-gray-700 group-hover:text-gray-800"
+            : "text-gray-400 group-hover:text-gray-500"
+        }`}>
               {char === " " ? "\u00A0" : char}
             </span>
           ))}
