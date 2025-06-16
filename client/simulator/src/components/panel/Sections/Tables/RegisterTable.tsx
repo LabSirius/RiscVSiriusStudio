@@ -18,13 +18,14 @@ import { resetCellColors } from '@/utils/tables/handlersShared';
 import SkeletonRegisterTable from '@/components/panel/Skeleton/SkeletonRegisterTable';
 import { sendMessage } from '@/components/Message/sendMessage';
 import { useRegisterData } from '@/context/shared/RegisterData';
-import { FoldHorizontal } from 'lucide-react';
+import { ArrowBigLeftDash } from 'lucide-react';
 
 const RegistersTable = () => {  
   const { theme } = useTheme()
   const { isCreatedMemoryTable } = useMemoryTable();
   const {registerData, setRegisterData} = useRegisterData();
   const {  writeInRegister, setWriteInRegister, importRegister, setImportRegister, searchInRegisters, checkFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters } = useRegistersTable();
+  
   
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
@@ -220,7 +221,7 @@ const RegistersTable = () => {
       {isCreatedMemoryTable && (
         <>
         <div ref={tableRef} className={`w-full  h-full ${theme === "light" ? "theme-light" : "theme-dark"}`} />
-        <FoldHorizontal size={18} strokeWidth={1.5} className='absolute right-[.13rem] top-[.4rem] text-black' />
+        <ArrowBigLeftDash  onClick={() => console.log("ocult")} size={18} strokeWidth={1.5} className='absolute right-[.13rem] top-[.4rem] text-black' />
         </>
       )}
 
