@@ -243,10 +243,10 @@ const RegistersTable = () => {
       {!showTable && (
         <div
           onClick={() => setShowTable(true)}
-          className="h-full w-[1.6rem] cursor-pointer  bg-[#2E2E2E] rounded-[.3rem] flex flex-col items-center uppercase">
-          <ArrowBigRightDash size={18} strokeWidth={1.5} className="text-gray-400  mt-[0.35rem] mb-3" />
+          className="h-full w-[1.6rem] cursor-pointer  bg-[#2E2E2E] rounded-[.3rem] b-1 border-black  flex flex-col items-center uppercase group">
+          <ArrowBigRightDash size={18} strokeWidth={1.5} className="text-gray-400 transition ease-in-out group-hover:text-gray-300  mt-[0.35rem] mb-3" />
           {"registers".split("").map((char, index) => (
-            <span key={index} className="text-[.65rem] text-gray-500 leading-[1.15rem]">
+            <span key={index} className="text-[.65rem] font-bold transition ease-in-out text-gray-500 group-hover:text-gray-400 leading-[1.15rem]">
               {char === " " ? "\u00A0" : char}
             </span>
           ))}
