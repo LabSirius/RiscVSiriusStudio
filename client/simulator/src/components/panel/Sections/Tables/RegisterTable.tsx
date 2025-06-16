@@ -23,7 +23,7 @@ import { resetCellColors } from "@/utils/tables/handlersShared";
 import SkeletonRegisterTable from "@/components/panel/Skeleton/SkeletonRegisterTable";
 import { sendMessage } from "@/components/Message/sendMessage";
 import { useRegisterData } from "@/context/shared/RegisterData";
-import { ArrowBigLeftDash } from "lucide-react";
+import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 
 const RegistersTable = () => {
   const { theme } = useTheme();
@@ -235,15 +235,23 @@ const RegistersTable = () => {
               onClick={() => setShowTable(false)}
               size={18}
               strokeWidth={1.5}
-              className="absolute right-[.13rem] top-[.4rem] text-black"
+              className="absolute right-[.13rem] top-[.4rem] text-black cursor-pointer"
             />
           </>
         )}
       </div>
-      {!showTable && <div onClick={() => setShowTable(true)} className="h-full w-[1.7rem] border-2 border-gray-500 rounded-[.3rem]">
-        
-        
-        </div>}
+      {!showTable && (
+        <div
+          onClick={() => setShowTable(true)}
+          className="h-full w-[1.6rem] cursor-pointer  bg-[#2E2E2E] rounded-[.3rem] flex flex-col items-center uppercase">
+          <ArrowBigRightDash size={18} strokeWidth={1.5} className="text-gray-400  mt-[0.35rem] mb-3" />
+          {"registers".split("").map((char, index) => (
+            <span key={index} className="text-[.65rem] text-gray-500 leading-[1.15rem]">
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
+        </div>
+      )}
     </>
   );
 };
