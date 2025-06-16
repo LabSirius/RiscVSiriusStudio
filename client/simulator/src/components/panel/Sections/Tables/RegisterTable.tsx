@@ -256,7 +256,7 @@ const RegistersTable = () => {
       }`}
           />
 
-          {"registers".split("").map((char, index) => (
+          {"regs".split("").map((char, index) => (
             <span
               key={index}
               className={`text-[.65rem] font-bold leading-[1.15rem] transition ease-in-out

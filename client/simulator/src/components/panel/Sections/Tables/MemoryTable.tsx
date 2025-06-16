@@ -358,7 +358,7 @@ const MemoryTable = () => {
       }`}
           />
 
-          {"memory".split("").map((char, index) => (
+          {"mem".split("").map((char, index) => (
             <span
               key={index}
               className={`text-[.65rem] font-bold leading-[1.15rem] transition ease-in-out 
