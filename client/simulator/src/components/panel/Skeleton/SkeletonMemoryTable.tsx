@@ -6,7 +6,7 @@ const SkeletonMemoryTable = () => {
   const repeatedColCount = 5;
 
   return (
-    <div className="min-w-[34.8rem] max-h-[calc(100dvh-2.3rem)] overflow-hidden z-100 absolute top-0 left-0">
+    <div className="min-w-[37.4rem] max-h-[calc(100dvh-2.3rem)] overflow-hidden z-100 absolute top-0 left-0">
      
         <div className="flex flex-col gap-[.6rem]">
           {Array.from({ length: repeatedRowsCount }).map((_, rowIndex) => (

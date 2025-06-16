@@ -31,6 +31,7 @@ import { getColumnMemoryDefinitions } from "@/utils/tables/definitions/definitio
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";
 import { sendMessage } from "@/components/Message/sendMessage";
 import { useLines } from "@/context/panel/LinesContext";
+import { FoldHorizontal } from "lucide-react";
 
 const MemoryTable = () => {
   const { theme } = useTheme();
@@ -309,7 +310,7 @@ const MemoryTable = () => {
   }, [clickInEditorLine, setClickInEditorLine, isCreatedMemoryTable]);
 
   return (
-    <div className={`shadow-lg !min-h-min min-w-[37.1rem] relative `}>
+    <div className={`shadow-lg !min-h-min min-w-[37.4rem] relative `}>
       <div
         className={`h-full  w-full transition-opacity overflow-y-scroll ease-in 9000  ${
           isCreatedMemoryTable ? "opacity-100" : "opacity-0"
@@ -320,6 +321,8 @@ const MemoryTable = () => {
             theme === "light" ? "theme-light" : "theme-dark"
           }`}
         />
+        <FoldHorizontal size={18}  strokeWidth={1.5}  className='absolute right-[.13rem] top-[.4rem] text-black' />
+      
       </div>
       {!isCreatedMemoryTable && (
         <div className="absolute inset-0">

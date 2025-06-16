@@ -18,6 +18,7 @@ import { resetCellColors } from '@/utils/tables/handlersShared';
 import SkeletonRegisterTable from '@/components/panel/Skeleton/SkeletonRegisterTable';
 import { sendMessage } from '@/components/Message/sendMessage';
 import { useRegisterData } from '@/context/shared/RegisterData';
+import { FoldHorizontal } from 'lucide-react';
 
 const RegistersTable = () => {  
   const { theme } = useTheme()
@@ -214,11 +215,15 @@ const RegistersTable = () => {
   }, []);
 
   return (
-    <div ref={tableContainerRef} className="shadow-lg min-h-min max-h-[calc(100dvh-2.3rem)] min-w-[22.3rem] relative ">
+    <div ref={tableContainerRef} className="shadow-lg min-h-min max-h-[calc(100dvh-2.3rem)] min-w-[22.7rem] relative ">
       {!tableBuilt && <SkeletonRegisterTable />}
       {isCreatedMemoryTable && (
+        <>
         <div ref={tableRef} className={`w-full  h-full ${theme === "light" ? "theme-light" : "theme-dark"}`} />
+        <FoldHorizontal size={18} strokeWidth={1.5} className='absolute right-[.13rem] top-[.4rem] text-black' />
+        </>
       )}
+
     </div>
   );
 };
