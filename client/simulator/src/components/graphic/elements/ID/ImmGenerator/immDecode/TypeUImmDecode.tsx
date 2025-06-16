@@ -30,7 +30,7 @@ const TypeUImmDecode = () => {
   ];
 
   return (
-    <div className="w-full max-h-[30rem] text-[.75rem] text-black overflow-hidden font-mono relative">
+    <div className="w-full z-100000 max-h-[30rem] text-[.75rem] text-black overflow-hidden font-mono relative">
       <img
         src="immTypeUDecode.svg"
         alt="immDecode"
