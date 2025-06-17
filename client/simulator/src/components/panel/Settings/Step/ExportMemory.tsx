@@ -19,10 +19,6 @@ const ExportMemory = () => {
 
     const memory = dataMemoryTable.memory;
     const codeSize = dataMemoryTable.codeSize; // bytes de código (no toda la memoria)
-    const asmList = dataMemoryTable.asmList || [];
-
-    const DEPTH = memory.length / 4;
-    const instructionCount = codeSize / 4; // cantidad de instrucciones REALES en memoria
 
     const hexWords: string[] = [];
 
@@ -56,38 +52,33 @@ const ExportMemory = () => {
       fileContent = hexBytes.join("\n");
       fileName = "instructions_hex.hex";
     } else if (format === "mif") {
-      const mifHeader = `-- RISC-V program memory (word addressed)
-WIDTH=32;
+      const DEPTH = 8192;
+      const mifHeader = `-- RISC-V program memory (byte addressed)
+WIDTH=8;
 DEPTH=${DEPTH};
 
-ADDRESS_RADIX=HEX;
+ADDRESS_RADIX=UNS;
 DATA_RADIX=HEX;
 
+DEFAULT_RADIX=HEX
+DEFAULT_VALUE=00
+
 CONTENT BEGIN
+
 `;
 
       const mifBodyLines: string[] = [];
 
-      for (let i = 0; i < instructionCount; i++) {
-        const addr = i.toString(16).toUpperCase().padStart(2, "0");
-        const comment = i < asmList.length ? ` -- ${asmList[i]}` : "";
-        mifBodyLines.push(`\t${addr} : ${hexWords[i]};${comment}`);
+      for (let i = 0; i < codeSize; i++) {
+        const byteBinary = memory[i] || "00000000";
+        const byteHex = binaryToHex(byteBinary).padStart(2, "0").toUpperCase();
+        mifBodyLines.push(`\t${i} : ${byteHex};`);
       }
 
-      const nextAddr = instructionCount;
-      const finalAddr = DEPTH - 1;
-
-      const zeroFill =
-        nextAddr <= finalAddr
-          ? `\t[${nextAddr.toString(16).toUpperCase().padStart(2, "0")}..${finalAddr
-              .toString(16)
-              .toUpperCase()}] : 00000000;`
-          : "";
-
-      const mifFooter = `${zeroFill}\nEND;`;
+      const mifFooter = `END;`;
 
       fileContent = mifHeader + mifBodyLines.join("\n") + "\n" + mifFooter;
-      fileName = "instructions_mif.mif";
+      fileName = "instructions_byte_mif.mif";
       fileType = "application/octet-stream";
     }
 
