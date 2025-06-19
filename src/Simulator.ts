@@ -45,6 +45,7 @@ export abstract class Simulator {
   }
 
   public step(): StepResult {
+
     if (!this.configured) {
       this._configured = true;
     }
@@ -59,6 +60,7 @@ export abstract class Simulator {
     }
 
     if (readsDM(instruction.type, instruction.opcode)) {
+
       this.notifyMemoryRead(parseInt(result.dm.address, 2), this.bytesToReadOrWrite());
     }
 
@@ -114,6 +116,10 @@ export abstract class Simulator {
         return 2;
       case "010":
         return 4;
+      case "100":
+        return 1;
+      case "101":
+        return 2;
       default:
         throw new Error("Cannot deduce bytes to write from funct3");
     }
@@ -166,6 +172,7 @@ export class TextSimulator extends Simulator {
   }
 
   public override start(): void {
+
     const mainView = this.context.mainWebviewView;
     if (!mainView) {
       return;
@@ -217,6 +224,7 @@ export class TextSimulator extends Simulator {
   }
 
   public override step(): StepResult {
+
     const result = super.step();
 
     const mainView = this.context.mainWebviewView;
@@ -241,6 +249,7 @@ export class TextSimulator extends Simulator {
     if (line !== undefined) {
       this.highlightLine(line);
     }
+
 
     mainView.postMessage({
       from: "extension",

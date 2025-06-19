@@ -284,7 +284,6 @@ export class RVContext {
   }
 
   public dispatchMainViewEvent(message: any) {
-    console.log("EL MENSAJE QUE LLEGA ES ", message);
     switch (message.event) {
       case "step":
         this.step();
