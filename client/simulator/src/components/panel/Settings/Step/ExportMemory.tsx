@@ -18,7 +18,7 @@ const ExportMemory = () => {
     if (!dataMemoryTable?.memory || dataMemoryTable.codeSize === 0) return;
 
     const memory = dataMemoryTable.memory;
-    const codeSize = dataMemoryTable.codeSize; // bytes de código (no toda la memoria)
+    const codeSize = dataMemoryTable.codeSize; 
 
     const hexWords: string[] = [];
 
@@ -74,6 +74,15 @@ CONTENT BEGIN
         const byteHex = binaryToHex(byteBinary).padStart(2, "0").toUpperCase();
         mifBodyLines.push(`\t${i} : ${byteHex};`);
       }
+
+      // for (let i = 0; i < codeSize; i += 4) {
+      //   for (let j = 0; j < 4; j++) {
+      //     const index = i + j;
+      //     const byteBinary = memory[index] || "00000000";
+      //     const byteHex = binaryToHex(byteBinary).padStart(2, "0").toUpperCase();
+      //     mifBodyLines.push(`\t${index} : ${byteHex};`);
+      //   }
+      // }
 
       const mifFooter = `END;`;
 
