@@ -10,6 +10,7 @@ import {
   ViewColumn,
   Uri,
   WebviewPanel,
+  WebviewView,
 } from "vscode";
 
 import { getHtmlForGraphicSimulator } from "../simulators/graphicSimulator/provider";
@@ -28,12 +29,16 @@ export class RVContext {
   private extensionContext: ExtensionContext;
   private disposables: Disposable[];
   private _configurationManager: ConfigurationManager;
-  private _mainPanel: WebviewPanel | undefined;
   private _encoderDecorator: EncoderDecorator | undefined;
-  private _mainWebviewView: Webview | undefined;
-  private _mainViewIsFirstTimeVisible = true;
+
+  // --- REFERENCIAS SEPARADAS Y EXCLUSIVAS PARA CADA VISTA ---
+  private _textWebview: Webview | undefined;
+  private _graphicWebviewPanel: WebviewPanel | undefined;
+
   private _currentDocument: RVDocument | undefined;
   private _isSimulating = false;
+
+  // --- ÚNICA INSTANCIA DEL SIMULADOR ACTIVO ---
   private _simulator: Simulator | undefined;
 
   get configurationManager(): ConfigurationManager {
@@ -44,10 +49,6 @@ export class RVContext {
     return this._encoderDecorator;
   }
 
-  get mainWebviewView(): Webview {
-    return this._mainWebviewView as Webview;
-  }
-
   get simulator(): Simulator {
     if (!this._simulator) throw new Error("Simulator not initialized.");
     return this._simulator;
@@ -56,8 +57,6 @@ export class RVContext {
   static create(context: ExtensionContext): RVContext {
     if (!RVContext.#instance) {
       RVContext.#instance = new RVContext(context);
-    } else {
-      throw new Error("RV extension context is already created");
     }
     return RVContext.#instance;
   }
@@ -67,19 +66,19 @@ export class RVContext {
     this.disposables = [];
     this._configurationManager = new ConfigurationManager();
 
-    this.registerMainWebview();
+    this.registerTextWebviewProvider();
     this.registerCommands();
     this.setupEditorListeners();
 
     commands.executeCommand("setContext", "ext.isSimulating", false);
   }
 
-  private registerMainWebview() {
+  private registerTextWebviewProvider() {
     this.disposables.push(
       window.registerWebviewViewProvider(
         "rv-simulator.riscv",
         {
-          resolveWebviewView: async (webviewView) => {
+          resolveWebviewView: async (webviewView: WebviewView) => {
             webviewView.webview.options = {
               enableScripts: true,
               localResourceRoots: [this.extensionContext.extensionUri],
@@ -89,201 +88,208 @@ export class RVContext {
               webviewView.webview,
               this.extensionContext.extensionUri
             );
-            await activateMessageListenerForRegistersView(webviewView.webview, this);
 
-            this._mainWebviewView = webviewView.webview;
+            this._textWebview = webviewView.webview;
+            activateMessageListenerForRegistersView(webviewView.webview, this);
 
-            if (webviewView.visible) this.onMainViewVisible();
-            webviewView.onDidChangeVisibility(() => {
-              if (webviewView.visible) {
-                this._mainWebviewView = webviewView.webview;
-                this.onMainViewVisible();
+            webviewView.onDidDispose(() => {
+              this._textWebview = undefined;
+              // Si el simulador de texto era el activo, lo detenemos al cerrar su panel
+              if (
+                this._simulator instanceof TextSimulator &&
+                !(this._simulator instanceof GraphicSimulator)
+              ) {
+                this.cleanupSimulator();
               }
             });
           },
         },
-        {
-          webviewOptions: { retainContextWhenHidden: true },
-        }
+        { webviewOptions: { retainContextWhenHidden: true } }
       )
     );
   }
 
   private registerCommands() {
     this.disposables.push(
+      // --- COMANDO PARA SIMULADOR GRÁFICO ---
       commands.registerCommand("rv-simulator.simulate", async () => {
         const editor = window.activeTextEditor;
         if (!editor || !RVDocument.isValid(editor.document)) {
           return window.showErrorMessage("No valid RISC-V document open");
         }
 
-        this._encoderDecorator = new EncoderDecorator();
+        // 1. FORZAR CIERRE DE LA VISTA DE TEXTO (PANEL INFERIOR)
+        await commands.executeCommand("workbench.action.closePanel");
+
+        // 2. DETENER CUALQUIER SIMULADOR ANTERIOR Y LIMPIAR ESTADO
+        this.cleanupSimulator();
+        // Cierra también cualquier panel gráfico viejo que haya quedado abierto
+        this._graphicWebviewPanel?.dispose();
+
         this.buildCurrentDocument();
         if (!this._currentDocument || !this._currentDocument.ir) return;
 
-        if (this._mainPanel) this._mainPanel.dispose();
+        const panel = window.createWebviewPanel(
+          "riscCard",
+          "RISC-V Graphic Simulator",
+          ViewColumn.One,
+          {
+            enableScripts: true,
+            retainContextWhenHidden: true,
+            localResourceRoots: [
+              Uri.joinPath(this.extensionContext.extensionUri, "node_modules"),
+              Uri.joinPath(this.extensionContext.extensionUri, "src/templates"),
+              Uri.joinPath(this.extensionContext.extensionUri, "out"),
+            ],
+          }
+        );
 
-        const panel = window.createWebviewPanel("riscCard", "RISC-V", ViewColumn.One, {
-          enableScripts: true,
-          retainContextWhenHidden: true,
-          localResourceRoots: [
-            Uri.joinPath(this.extensionContext.extensionUri, "node_modules"),
-            Uri.joinPath(this.extensionContext.extensionUri, "src/templates"),
-            Uri.joinPath(this.extensionContext.extensionUri, "out"),
-          ],
-        });
+        this._graphicWebviewPanel = panel;
 
-        this._mainPanel = panel;
+        // 3. LA SIMULACIÓN SE DETIENE CUANDO EL PANEL GRÁFICO SE CIERRA
         panel.onDidDispose(() => {
-          this._mainPanel = undefined;
-          this.cleanupAfterSimulation();
+          this._graphicWebviewPanel = undefined;
+          this.cleanupSimulator();
         });
 
         panel.webview.html = await getHtmlForGraphicSimulator(
           panel.webview,
           this.extensionContext.extensionUri
         );
-        await activateMessageListenerForRegistersView(panel.webview, this);
-        this._mainWebviewView = panel.webview;
+        activateMessageListenerForRegistersView(panel.webview, this);
 
-        this.simulateProgram(this._currentDocument, true);
+        // 4. CREAR E INICIAR EL SIMULADOR GRÁFICO, INYECTANDO SU PROPIO WEBVIEW
+        const settings: SimulationParameters = { memorySize: 40 };
+        this._simulator = new GraphicSimulator(
+          settings,
+          this._currentDocument,
+          this,
+          panel.webview
+        );
+
+        this._isSimulating = true;
+        commands.executeCommand("setContext", "ext.isSimulating", true);
+        this._simulator.start();
       }),
 
+      // --- COMANDO PARA SIMULADOR DE TEXTO ---
       commands.registerCommand("rv-simulator.textSimulate", () => {
         const editor = window.activeTextEditor;
         if (!editor || !RVDocument.isValid(editor.document)) {
           return window.showErrorMessage("No valid RISC-V document open");
         }
+        if (!this._textWebview) {
+          commands.executeCommand("rv-simulator.riscv.focus");
+          return window.showWarningMessage(
+            "Text simulator view is now open. Please press 'Text Simulate' again."
+          );
+        }
+
+        // 1. FORZAR CIERRE DE LA VISTA GRÁFICA
+        this._graphicWebviewPanel?.dispose();
+
+        // 2. DETENER CUALQUIER SIMULADOR ANTERIOR Y LIMPIAR ESTADO
+        this.cleanupSimulator();
 
         commands.executeCommand("rv-simulator.riscv.focus");
-        this._encoderDecorator = new EncoderDecorator();
         this.buildCurrentDocument();
-        if (this._currentDocument) {
-          this.simulateProgram(this._currentDocument, false);
-        }
+        if (!this._currentDocument || !this._currentDocument.ir) return;
+
+        // 3. CREAR E INICIAR EL SIMULADOR DE TEXTO, INYECTANDO SU PROPIO WEBVIEW
+        const settings: SimulationParameters = { memorySize: 40 };
+        this._simulator = new TextSimulator(
+          settings,
+          this._currentDocument,
+          this,
+          this._textWebview
+        );
+
+        this._isSimulating = true;
+        commands.executeCommand("setContext", "ext.isSimulating", true);
+        this._simulator.start();
       }),
 
+      // --- COMANDOS DE CONTROL DE SIMULACIÓN ---
       commands.registerCommand("rv-simulator.simulateStep", () => {
-        try {
-          this._simulator?.step();
-        } catch {
-          this._simulator?.stop();
-        }
+        this._simulator?.step();
       }),
 
       commands.registerCommand("rv-simulator.simulateStop", () => {
-        this._simulator?.stop();
-        this._isSimulating = false;
-        this._simulator = undefined;
+        this.cleanupSimulator();
+        this._graphicWebviewPanel?.dispose(); // Asegurarse que el panel gráfico también se cierre
       }),
 
       commands.registerCommand("rv-simulator.build", () => {
-        if (!this._encoderDecorator) {
-          this._encoderDecorator = new EncoderDecorator();
-        }
         this.buildCurrentDocument();
       })
     );
   }
 
   private setupEditorListeners() {
-    this.disposables.push(
-      window.onDidChangeActiveTextEditor(() => {
-        this.buildCurrentDocument();
-      })
-    );
-
+    this.disposables.push(window.onDidChangeActiveTextEditor(() => this.buildCurrentDocument()));
     this.extensionContext.subscriptions.push({
       dispose: () => this.disposables.reverse().forEach((d) => d.dispose()),
     });
   }
 
-  private onMainViewVisible() {
-    if (this._mainViewIsFirstTimeVisible) {
-      if (this._isSimulating) this._simulator?.start();
-      this._mainViewIsFirstTimeVisible = false;
-    }
-  }
-
   private buildCurrentDocument() {
     const editor = window.activeTextEditor;
     if (editor?.document.languageId === "riscvasm") {
+      if (!this._encoderDecorator) {
+        this._encoderDecorator = new EncoderDecorator();
+      }
       this._currentDocument = new RVDocument(editor, this);
       this._currentDocument.buildAndDecorate(this);
     }
   }
 
-  private simulateProgram(rvDoc: RVDocument, isGraphic: boolean) {
-    if (!rvDoc.ir) return;
+  private cleanupSimulator() {
+    if (!this._simulator) return;
 
-    const settings: SimulationParameters = { memorySize: 40 };
-    this._simulator = isGraphic
-      ? new GraphicSimulator(settings, rvDoc, this)
-      : new TextSimulator(settings, rvDoc, this);
-
-    this._isSimulating = true;
-    commands.executeCommand("setContext", "ext.isSimulating", true);
-
-    if (isGraphic) {
-      commands.executeCommand("workbench.action.closePanel");
-    }
-
-    this._simulator.start();
-
-    if (!isGraphic && this._encoderDecorator) {
-      this._currentDocument?.buildAndDecorate(this);
-    }
-  }
-
-  private cleanupAfterSimulation() {
-    this._simulator?.stop();
+    this._simulator.stop();
     this._simulator = undefined;
     this._isSimulating = false;
-    this._encoderDecorator = undefined;
 
-    commands.executeCommand("rv-simulator.riscv.focus");
+    if (this._encoderDecorator && window.activeTextEditor) {
+      this._encoderDecorator.clearDecorations(window.activeTextEditor);
+    }
+    this._encoderDecorator = undefined;
 
     commands.executeCommand("setContext", "ext.isSimulating", false);
   }
 
   private step() {
-    if (!this._simulator) throw new Error("No simulator is running");
-    try {
-      this._simulator.step();
-    } catch {
-      this._simulator.stop();
-    }
+    this.simulator?.step();
   }
-
   private stop() {
-    if (!this._simulator) throw new Error("No simulator is running");
-    this._simulator.stop();
-    this._isSimulating = false;
-    this._simulator = undefined;
+    this.cleanupSimulator();
+    this._graphicWebviewPanel?.dispose();
   }
-
   private animateLine(line: number) {
-    this.simulator.animateLine(line);
+    this.simulator?.animateLine(line);
   }
-
   private memorySizeChanged(newSize: number) {
-    this.simulator.resizeMemory(newSize);
+    this.simulator?.resizeMemory(newSize);
   }
-
   private registersChanged(newRegisters: string[]) {
-    this.simulator.replaceRegisters(newRegisters);
+    this.simulator?.replaceRegisters(newRegisters);
   }
-
   private memoryChanged(newMemory: []) {
-    this.simulator.replaceMemory(newMemory);
+    this.simulator?.replaceMemory(newMemory);
   }
-
   public resetEncoderDecorator(editor: TextEditor): void {
     this._encoderDecorator?.clearDecorations(editor);
     this._encoderDecorator = undefined;
   }
 
   public dispatchMainViewEvent(message: any) {
+    if (message.event === "clickOpenRISCVCard") {
+      RiscCardPanel.riscCard(this.extensionContext.extensionUri);
+      return;
+    }
+    // Todos los eventos van al único simulador activo. Si no hay, se ignoran.
+    if (!this._simulator) return;
+
     switch (message.event) {
       case "step":
         this.step();
@@ -302,9 +308,6 @@ export class RVContext {
         break;
       case "memoryChanged":
         this.memoryChanged(message.value);
-        break;
-      case "clickOpenRISCVCard":
-        RiscCardPanel.riscCard(this.extensionContext.extensionUri);
         break;
       default:
         console.log("[Mainview - unknown event]", message);
