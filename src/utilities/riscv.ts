@@ -4796,9 +4796,9 @@ function peg$parse(input, options) {
               if (s0 === peg$FAILED) {
                 s0 = peg$parsesraiToken();
                 if (s0 === peg$FAILED) {
-                  s0 = peg$parsesltiToken();
+                  s0 = peg$parsesltiuToken();
                   if (s0 === peg$FAILED) {
-                    s0 = peg$parsesltiuToken();
+                    s0 = peg$parsesltiToken();
                   }
                 }
               }
