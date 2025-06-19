@@ -4,6 +4,9 @@ import { SCCPU, SCCPUResult } from "./vcpu/singlecycle";
 import { branchesOrJumps, getFunct3, readsDM, writesDM, writesRU } from "./utilities/instructions";
 import { intToBinary } from "./utilities/conversions";
 import { window, commands, TextEditorDecorationType, Webview } from "vscode";
+import { Disposable } from "vscode";
+
+// ...IMPORTS (Same as before)
 
 export type SimulationParameters = { memorySize: number };
 export interface StepResult {
@@ -11,19 +14,23 @@ export interface StepResult {
   result: SCCPUResult;
 }
 
+/**
+ * Base class for all simulators: contains common logic
+ * related to execution, memory, and registers.
+ */
 export abstract class Simulator {
   protected readonly context: RVContext;
   protected readonly rvDoc: RVDocument;
   protected readonly cpu: SCCPU;
   // CADA SIMULADOR GUARDA SU PROPIO CANAL DE COMUNICACIÓN (WEBVIEW)
-  protected readonly webview: Webview;
+  protected readonly webview: Webview; // This is the key addition
   private _configured: boolean = false;
 
   constructor(
     params: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext,
-    webview: Webview
+    webview: Webview // Now accepts the specific webview
   ) {
     this.context = context;
     this.rvDoc = rvDoc;
@@ -86,8 +93,11 @@ export abstract class Simulator {
   public replaceRegisters(newRegisters: string[]): void {
     this.cpu.replaceRegisters(newRegisters);
   }
+
   private bytesToReadOrWrite(): number {
-    const funct3 = getFunct3(this.cpu.currentInstruction());
+    const instruction = this.cpu.currentInstruction();
+    const funct3 = getFunct3(instruction);
+
     switch (funct3) {
       case "000":
         return 1;
@@ -103,30 +113,47 @@ export abstract class Simulator {
         throw new Error("Cannot deduce bytes to write from funct3");
     }
   }
+
   private writeResult(result: SCCPUResult): void {
+    const instruction = this.cpu.currentInstruction();
     const bytesToWrite = this.bytesToReadOrWrite();
     const addressNum = parseInt(result.dm.address, 2);
+
     if (result.dm.dataWr.length < 32) {
       result.dm.dataWr = result.dm.dataWr.padStart(32, "0");
     }
+
     if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) {
       throw new Error(`Cannot write to address ${addressNum.toString(16)}.`);
     }
+
     this.notifyMemoryWrite(addressNum, result.dm.dataWr, bytesToWrite);
+
     const chunks = result.dm.dataWr.match(/.{1,8}/g) as string[];
     this.cpu.getDataMemory().write(chunks.reverse(), addressNum);
   }
+
+  // Abstract methods that subclasses MUST implement
   public abstract notifyRegisterWrite(register: string, value: string): void;
   public abstract notifyMemoryRead(address: number, length: number): void;
   public abstract notifyMemoryWrite(address: number, value: string, length: number): void;
   public abstract animateLine(line: number): void;
   public abstract sendSimulatorTypeToView(simulatorType: string): void;
   public abstract sendTextProgramToView(textProgram: string): void;
+
+  protected sendToWebview(msg: any) {
+    // Now uses the injected webview
+    this.webview.postMessage({ from: "extension", ...msg });
+  }
 }
 
+/**
+ * Text simulator: handles all the visual logic
+ * based on the editor and textual webview.
+ */
 export class TextSimulator extends Simulator {
   private currentHighlight: TextEditorDecorationType | undefined;
-  private selectionListenerDisposable: any;
+  private selectionListenerDisposable: Disposable | undefined; // Changed to Disposable for consistency
 
   constructor(
     settings: SimulationParameters,
@@ -134,22 +161,28 @@ export class TextSimulator extends Simulator {
     context: RVContext,
     webview: Webview
   ) {
-    super(settings, rvDoc, context, webview); // Pasa el webview a la clase base
+    super(settings, rvDoc, context, webview); // Pass the webview to the base class
   }
 
   public override start(): void {
+    // The mainView check is now simplified because 'this.webview' is guaranteed to be the correct one
     this.listenToEditorClicks();
-    let line = this.rvDoc.getLineForIR(this.cpu.currentInstruction()) ?? 0;
+    const inst = this.cpu.currentInstruction();
+    let line = this.rvDoc.getLineForIR(inst);
+    if (line === undefined) line = 0;
     this.highlightLine(line);
+
     const addressLine =
-      this.rvDoc.ir?.instructions.map((instr) => ({
-        line: instr.location.start.line,
-        jump: branchesOrJumps(instr.type, instr.opcode) ? instr.encoding.imm13 : null,
-      })) || [];
+      this.rvDoc.ir?.instructions.map((instr) => {
+        const line = instr.location.start.line;
+        const jump = branchesOrJumps(instr.type, instr.opcode) ? instr.encoding.imm13 : null;
+        return { line, jump };
+      }) || [];
+
     const asmList = this.rvDoc.ir?.instructions.map((instr) => instr.asm);
 
-    // USA SIEMPRE EL WEBVIEW ASIGNADO
     this.webview.postMessage({
+      // Use 'this.webview' directly
       from: "extension",
       operation: "uploadMemory",
       payload: {
@@ -161,26 +194,43 @@ export class TextSimulator extends Simulator {
         asmList,
       },
     });
+
     this.makeEditorReadOnly();
     super.start();
+
     const spValue = this.cpu.getDataMemory().spInitialAddress;
     this.webview.postMessage({
+      // Use 'this.webview' directly
       from: "extension",
       operation: "setRegister",
       register: "x2",
       value: intToBinary(spValue),
     });
+
     this.highlightCurrentInstruction();
   }
 
   public override step(): StepResult {
     const result = super.step();
-    let line = this.rvDoc.getLineForIR(this.cpu.currentInstruction());
+
+    // No need for mainView check here, 'this.webview' is already set
+    const inst = this.cpu.currentInstruction();
+    let line: number | undefined;
+
+    try {
+      line = this.rvDoc.getLineForIR(inst);
+    } catch {
+      line = undefined;
+
+      this.stop();
+    }
+
     if (line !== undefined) {
       this.highlightLine(line);
     }
-    // USA SIEMPRE EL WEBVIEW ASIGNADO
+
     this.webview.postMessage({
+      // Use 'this.webview' directly
       from: "extension",
       operation: "step",
       newPc: this.cpu.getPC(),
@@ -188,6 +238,7 @@ export class TextSimulator extends Simulator {
       result: result.result,
       lineDecorationNumber: line !== undefined ? line + 1 : -1,
     });
+
     return result;
   }
 
@@ -195,96 +246,186 @@ export class TextSimulator extends Simulator {
     super.stop();
     this.clearHighlight();
     this.makeEditorWritable();
-    this.selectionListenerDisposable?.dispose();
-    // USA SIEMPRE EL WEBVIEW ASIGNADO
-    this.webview.postMessage({ from: "extension", operation: "stop" });
+    // Dispose of the selection listener when the simulator stops
+    if (this.selectionListenerDisposable) {
+      this.selectionListenerDisposable.dispose();
+      this.selectionListenerDisposable = undefined;
+    }
+
+    // No need for mainView check, 'this.webview' is used in sendToWebview
+    commands.executeCommand("setContext", "ext.isSimulating", false);
+    this.sendToWebview({ operation: "stop" });
   }
 
   public override animateLine(line: number): void {
-    /* ... sin cambios ... */
-  }
-  public override sendSimulatorTypeToView(simulatorType: string): void {
-    this.sendToWebview({ operation: "simulatorType", simulatorType });
-  }
-  public override sendTextProgramToView(textProgram: string): void {
-    this.sendToWebview({ operation: "textProgram", textProgram });
-  }
-  public override notifyRegisterWrite(register: string, value: string): void {
-    this.sendToWebview({ operation: "setRegister", register, value });
-  }
-  public override notifyMemoryRead(address: number, length: number): void {
-    this.sendToWebview({ operation: "readMemory", address, _length: length });
-  }
-  public override notifyMemoryWrite(address: number, value: string, length: number): void {
-    this.sendToWebview({ operation: "writeMemory", address, value, _length: length });
+    const editor = this.rvDoc.editor;
+    if (!editor) {
+      return;
+    }
+
+    const blink = window.createTextEditorDecorationType({
+      isWholeLine: true,
+      backgroundColor: "rgba(58, 108, 115, 0.3)",
+    });
+
+    const range = editor.document.lineAt(line - 1).range;
+    let show = true;
+
+    const intervalId = setInterval(() => {
+      editor.setDecorations(blink, show ? [range] : []);
+      show = !show;
+    }, 250);
+
+    setTimeout(() => {
+      clearInterval(intervalId);
+      editor.setDecorations(blink, []);
+      blink.dispose();
+    }, 1000);
   }
 
-  protected sendToWebview(msg: any) {
-    // ESTE MÉTODO AHORA ES 100% FIABLE
-    this.webview.postMessage({ from: "extension", ...msg });
+  public override sendSimulatorTypeToView(simulatorType: string): void {
+    this.sendToWebview({
+      operation: "simulatorType",
+      simulatorType,
+    });
   }
+
+  public override sendTextProgramToView(textProgram: string): void {
+    this.sendToWebview({
+      operation: "textProgram",
+      textProgram,
+    });
+  }
+
+  public override notifyRegisterWrite(register: string, value: string): void {
+    this.sendToWebview({
+      operation: "setRegister",
+      register,
+      value,
+    });
+  }
+
+  public override notifyMemoryRead(address: number, length: number): void {
+    this.sendToWebview({
+      operation: "readMemory",
+      address,
+      _length: length,
+    });
+  }
+
+  public override notifyMemoryWrite(address: number, value: string, length: number): void {
+    this.sendToWebview({
+      operation: "writeMemory",
+      address,
+      value,
+      _length: length,
+    });
+  }
+
+  // Helper methods
 
   private makeEditorReadOnly() {
     commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
   }
+
   private makeEditorWritable() {
-    if (this.context.encoderDecorator) {
-      commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
-    }
+    commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
   }
+
   private listenToEditorClicks() {
-    this.selectionListenerDisposable?.dispose();
+    if (this.selectionListenerDisposable) {
+      // Already listening
+      return;
+    }
+
     this.selectionListenerDisposable = window.onDidChangeTextEditorSelection((event) => {
-      if (event.selections?.[0]?.active.line !== undefined) {
+      const line = event.selections?.[0]?.active.line;
+      if (line !== undefined) {
         this.sendToWebview({
           operation: "clickInLine",
-          lineNumber: event.selections[0].active.line + 1,
+          lineNumber: line + 1,
         });
       }
     });
   }
+
   private highlightCurrentInstruction() {
-    const line = this.rvDoc.getLineForIR(this.cpu.currentInstruction());
+    const inst = this.cpu.currentInstruction();
+    const line = this.rvDoc.getLineForIR(inst);
     this.sendToWebview({
       operation: "decorateLine",
       lineDecorationNumber: line !== undefined ? line + 1 : 0,
     });
   }
+
   private highlightLine(lineNumber: number): void {
     const editor = this.rvDoc.editor;
     if (editor) {
-      this.currentHighlight?.dispose();
+      if (this.currentHighlight) {
+        this.currentHighlight.dispose();
+      }
+
       this.currentHighlight = window.createTextEditorDecorationType({
-        backgroundColor: "rgba(209, 227, 231, 0.5)",
+        backgroundColor: "rgba(209, 227, 231, 0.5)", // Azul pastel
         isWholeLine: true,
       });
+
       const range = editor.document.lineAt(lineNumber).range;
       editor.revealRange(range);
-      editor.setDecorations(this.currentHighlight, [
-        { range, hoverMessage: "Current instruction" },
-      ]);
+      editor.setDecorations(this.currentHighlight, [{ range, hoverMessage: "Selected line" }]);
     }
   }
+
   private clearHighlight() {
-    this.currentHighlight?.dispose();
+    if (this.currentHighlight) {
+      this.currentHighlight.dispose();
+      this.currentHighlight = undefined; // Set to undefined after disposing
+    }
   }
+
+  // The 'sendToWebview' is now a protected method in the base Simulator class
+  // protected sendToWebview(msg: any) {
+  //   this.webview.postMessage({ from: "extension", ...msg });
+  // }
 }
 
+/**
+ * Graphic simulator: extends the text simulator,
+ * but also sends additional information to the graphic Webview.
+ */
 export class GraphicSimulator extends TextSimulator {
+  // Still extends TextSimulator
   constructor(
     settings: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext,
     webview: Webview
   ) {
-    super(settings, rvDoc, context, webview); // Pasa el webview gráfico a la clase base
+    super(settings, rvDoc, context, webview); // Pass the graphic webview
   }
 
   public override start(): void {
-    super.start();
-    // Estas llamadas usan el `sendToWebview` heredado, que ahora apunta correctamente
-    // al webview del panel gráfico que se le pasó en el constructor.
+    super.start(); // Calls TextSimulator's start, which now uses 'this.webview'
+
+    // These methods now use the GraphicSimulator's 'this.webview' (inherited from Simulator)
     this.sendSimulatorTypeToView("graphic");
     this.sendTextProgramToView(this.rvDoc.getText());
+  }
+
+  // These overrides are technically not strictly necessary if the base method in Simulator
+  // is sufficient and just calls `this.sendToWebview`, but they are kept for explicit clarity
+  // as in the original provided snippet.
+  public override sendSimulatorTypeToView(simulatorType: string): void {
+    this.sendToWebview({
+      operation: "simulatorType",
+      simulatorType,
+    });
+  }
+
+  public override sendTextProgramToView(textProgram: string): void {
+    this.sendToWebview({
+      operation: "textProgram",
+      textProgram,
+    });
   }
 }

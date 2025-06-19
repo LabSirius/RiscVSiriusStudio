@@ -31,14 +31,14 @@ export class RVContext {
   private _configurationManager: ConfigurationManager;
   private _encoderDecorator: EncoderDecorator | undefined;
 
-  // --- REFERENCIAS SEPARADAS Y EXCLUSIVAS PARA CADA VISTA ---
+  // --- SEPARATE REFERENCES FOR EACH WEBVIEW TYPE ---
   private _textWebview: Webview | undefined;
   private _graphicWebviewPanel: WebviewPanel | undefined;
 
   private _currentDocument: RVDocument | undefined;
   private _isSimulating = false;
 
-  // --- ÚNICA INSTANCIA DEL SIMULADOR ACTIVO ---
+  // --- SINGLE ACTIVE SIMULATOR INSTANCE ---
   private _simulator: Simulator | undefined;
 
   get configurationManager(): ConfigurationManager {
@@ -94,7 +94,7 @@ export class RVContext {
 
             webviewView.onDidDispose(() => {
               this._textWebview = undefined;
-              // Si el simulador de texto era el activo, lo detenemos al cerrar su panel
+              // If the text simulator was active, stop it when its panel closes
               if (
                 this._simulator instanceof TextSimulator &&
                 !(this._simulator instanceof GraphicSimulator)
@@ -111,19 +111,19 @@ export class RVContext {
 
   private registerCommands() {
     this.disposables.push(
-      // --- COMANDO PARA SIMULADOR GRÁFICO ---
+      // --- COMMAND FOR GRAPHIC SIMULATOR ---
       commands.registerCommand("rv-simulator.simulate", async () => {
         const editor = window.activeTextEditor;
         if (!editor || !RVDocument.isValid(editor.document)) {
           return window.showErrorMessage("No valid RISC-V document open");
         }
 
-        // 1. FORZAR CIERRE DE LA VISTA DE TEXTO (PANEL INFERIOR)
+        // 1. FORCE-CLOSE THE TEXT VIEW (BOTTOM PANEL)
         await commands.executeCommand("workbench.action.closePanel");
 
-        // 2. DETENER CUALQUIER SIMULADOR ANTERIOR Y LIMPIAR ESTADO
+        // 2. STOP ANY PREVIOUS SIMULATOR AND CLEAN STATE
         this.cleanupSimulator();
-        // Cierra también cualquier panel gráfico viejo que haya quedado abierto
+        // Also close any previously open graphic panel
         this._graphicWebviewPanel?.dispose();
 
         this.buildCurrentDocument();
@@ -146,7 +146,7 @@ export class RVContext {
 
         this._graphicWebviewPanel = panel;
 
-        // 3. LA SIMULACIÓN SE DETIENE CUANDO EL PANEL GRÁFICO SE CIERRA
+        // 3. SIMULATION STOPS WHEN GRAPHIC PANEL IS CLOSED
         panel.onDidDispose(() => {
           this._graphicWebviewPanel = undefined;
           this.cleanupSimulator();
@@ -158,7 +158,7 @@ export class RVContext {
         );
         activateMessageListenerForRegistersView(panel.webview, this);
 
-        // 4. CREAR E INICIAR EL SIMULADOR GRÁFICO, INYECTANDO SU PROPIO WEBVIEW
+        // 4. CREATE AND START THE GRAPHIC SIMULATOR WITH ITS OWN WEBVIEW
         const settings: SimulationParameters = { memorySize: 40 };
         this._simulator = new GraphicSimulator(
           settings,
@@ -172,7 +172,7 @@ export class RVContext {
         this._simulator.start();
       }),
 
-      // --- COMANDO PARA SIMULADOR DE TEXTO ---
+      // --- COMMAND FOR TEXT SIMULATOR ---
       commands.registerCommand("rv-simulator.textSimulate", () => {
         const editor = window.activeTextEditor;
         if (!editor || !RVDocument.isValid(editor.document)) {
@@ -185,17 +185,17 @@ export class RVContext {
           );
         }
 
-        // 1. FORZAR CIERRE DE LA VISTA GRÁFICA
+        // 1. CLOSE GRAPHIC VIEW IF OPEN
         this._graphicWebviewPanel?.dispose();
 
-        // 2. DETENER CUALQUIER SIMULADOR ANTERIOR Y LIMPIAR ESTADO
+        // 2. STOP ANY PREVIOUS SIMULATOR AND CLEAN STATE
         this.cleanupSimulator();
 
         commands.executeCommand("rv-simulator.riscv.focus");
         this.buildCurrentDocument();
         if (!this._currentDocument || !this._currentDocument.ir) return;
 
-        // 3. CREAR E INICIAR EL SIMULADOR DE TEXTO, INYECTANDO SU PROPIO WEBVIEW
+        // 3. CREATE AND START THE TEXT SIMULATOR WITH ITS OWN WEBVIEW
         const settings: SimulationParameters = { memorySize: 40 };
         this._simulator = new TextSimulator(
           settings,
@@ -209,14 +209,14 @@ export class RVContext {
         this._simulator.start();
       }),
 
-      // --- COMANDOS DE CONTROL DE SIMULACIÓN ---
+      // --- SIMULATION CONTROL COMMANDS ---
       commands.registerCommand("rv-simulator.simulateStep", () => {
         this._simulator?.step();
       }),
 
       commands.registerCommand("rv-simulator.simulateStop", () => {
         this.cleanupSimulator();
-        this._graphicWebviewPanel?.dispose(); // Asegurarse que el panel gráfico también se cierre
+        this._graphicWebviewPanel?.dispose(); // Ensure graphic panel is also closed
       }),
 
       commands.registerCommand("rv-simulator.build", () => {
@@ -261,22 +261,28 @@ export class RVContext {
   private step() {
     this.simulator?.step();
   }
+
   private stop() {
     this.cleanupSimulator();
     this._graphicWebviewPanel?.dispose();
   }
+
   private animateLine(line: number) {
     this.simulator?.animateLine(line);
   }
+
   private memorySizeChanged(newSize: number) {
     this.simulator?.resizeMemory(newSize);
   }
+
   private registersChanged(newRegisters: string[]) {
     this.simulator?.replaceRegisters(newRegisters);
   }
+
   private memoryChanged(newMemory: []) {
     this.simulator?.replaceMemory(newMemory);
   }
+
   public resetEncoderDecorator(editor: TextEditor): void {
     this._encoderDecorator?.clearDecorations(editor);
     this._encoderDecorator = undefined;
@@ -287,7 +293,7 @@ export class RVContext {
       RiscCardPanel.riscCard(this.extensionContext.extensionUri);
       return;
     }
-    // Todos los eventos van al único simulador activo. Si no hay, se ignoran.
+    // All events are forwarded to the only active simulator. If none, ignore.
     if (!this._simulator) return;
 
     switch (message.event) {
