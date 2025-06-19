@@ -4,7 +4,6 @@ import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHov
 import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
 
 const aluOperations: Record<string, string> = {
-  // Operaciones clásicas (4 o 5 bits según el caso)
   "0000": "A + B",
   "00000": "A + B",
 
@@ -26,8 +25,8 @@ const aluOperations: Record<string, string> = {
   "0101": "A >> B",
   "00101": "A >> B",
 
-  "1101": "A >> B (msb-ext)",
-  "01101": "A >> B (msb-ext)",
+  "1101": "A >> B (ext)",
+  "01101": "A >> B (ext)",
 
   "0010": "A < B (U)",
   "00010": "A < B (U)",
@@ -36,9 +35,9 @@ const aluOperations: Record<string, string> = {
   "00011": "A < B (S)",
 
   "10000": "A * B",
-  "10001": "High bits of A * B (S)",
-  "10010": "High bits of A * B (S × U)",
-  "10011": "High bits of A * B (U)",
+  "10001": "A * B (S)",
+  "10010": "A * B (S*U)",
+  "10011": "A * B (U)",
   "10100": "A ÷ B (S)",
   "10101": "A ÷ B (U)",
   "10110": "A % B (S)",
@@ -93,7 +92,7 @@ const LabelValueContainer = () => {
           decimal={aDec}
           binary={aBin}
           hex={aHex}
-          positionClassName="top-[1.4rem] left-[.8rem]"
+          positionClassName="top-[3.4rem] left-[.8rem]"
         />
       )}
 
@@ -104,7 +103,7 @@ const LabelValueContainer = () => {
         decimal={bDec}
         binary={bBin}
         hex={bHex}
-        positionClassName="top-[11.4rem] left-[.8rem]"
+        positionClassName="top-[13.9rem] left-[.8rem]"
       />
 
       {/* ALU Result */}
@@ -126,10 +125,10 @@ const LabelValueContainer = () => {
         binary={aluOp}
         hex={parseInt(aluOp, 2).toString(16).toUpperCase()}
         input={false}
-        positionClassName="bottom-[-6rem] right-[0]"
+        positionClassName="bottom-[-6rem] right-[-.8rem]"
       />
 
-      <p className="absolute bottom-[1rem] left-[50%] transform -translate-x-[50%] z-1000 text-[1.4rem] text-[#777777] whitespace-nowrap overflow-hidden text-ellipsis">
+      <p className="absolute top-[1.35rem] left-[50%] transform -translate-x-[50%] z-1000 text-[1.7rem] text-[#777777] whitespace-nowrap overflow-hidden text-ellipsis">
         {operationDescription?.replace("A", `h'${aHex}`).replace("B", `h'${bHex}`)}
       </p>
     </>
