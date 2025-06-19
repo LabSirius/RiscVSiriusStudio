@@ -4,16 +4,45 @@ import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHov
 import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
 
 const aluOperations: Record<string, string> = {
+  // Operaciones clásicas (4 o 5 bits según el caso)
   "0000": "A + B",
+  "00000": "A + B",
+
   "1000": "A - B",
+  "01000": "A - B",
+
   "0100": "A ⊕ B",
+  "00100": "A ⊕ B",
+
   "0110": "A | B",
+  "00110": "A | B",
+
   "0111": "A & B",
+  "00111": "A & B",
+
   "0001": "A << B",
+  "00001": "A << B",
+
   "0101": "A >> B",
-  "1101": "A >> B",
-  "0010": "A < B",
-  "0011": "A < B",
+  "00101": "A >> B",
+
+  "1101": "A >> B (msb-ext)",
+  "01101": "A >> B (msb-ext)",
+
+  "0010": "A < B (U)",
+  "00010": "A < B (U)",
+
+  "0011": "A < B (S)",
+  "00011": "A < B (S)",
+
+  "10000": "A * B",
+  "10001": "High bits of A * B (S)",
+  "10010": "High bits of A * B (S × U)",
+  "10011": "High bits of A * B (U)",
+  "10100": "A ÷ B (S)",
+  "10101": "A ÷ B (U)",
+  "10110": "A % B (S)",
+  "10111": "A % B (U)",
 };
 
 const LabelValueContainer = () => {
@@ -53,8 +82,6 @@ const LabelValueContainer = () => {
 
   const aluOp = currentResult?.alu?.operation ?? "";
   const operationDescription = aluOperations[aluOp];
-  const showMsbNote = aluOp === "1101";
-  const showZeroExtend = aluOp === '0011'
 
   return (
     <>
@@ -100,10 +127,11 @@ const LabelValueContainer = () => {
         hex={parseInt(aluOp, 2).toString(16).toUpperCase()}
         input={false}
         positionClassName="bottom-[-6rem] right-[0]"
-        operation={operationDescription}
-        showMsbNote={showMsbNote}
-        showZeroExtend={showZeroExtend}
       />
+
+      <p className="absolute bottom-[1rem] left-[50%] transform -translate-x-[50%] z-1000 text-[1.4rem] text-[#777777] whitespace-nowrap overflow-hidden text-ellipsis">
+        {operationDescription?.replace("A", `h'${aHex}`).replace("B", `h'${bHex}`)}
+      </p>
     </>
   );
 };

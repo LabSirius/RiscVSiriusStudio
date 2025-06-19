@@ -156,8 +156,9 @@ export const createPCIcon = (): HTMLElement => {
     newPC: number,
     tableInstanceRef: React.MutableRefObject<Tabulator | null>
   ): void => {
-    const targetValue = (newPC * 4).toString(16).toUpperCase();
-  
+
+
+    const targetValue = (newPC * 4).toString(16).toUpperCase();  
     tableInstanceRef.current?.getRows().forEach((row) => {
       const cell = row.getCell("address");
       if (cell) {

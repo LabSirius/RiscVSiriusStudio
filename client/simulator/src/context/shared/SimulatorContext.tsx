@@ -15,6 +15,9 @@ export interface SimulatorContextProps {
 
   newPc: number;
   setNewPc: React.Dispatch<React.SetStateAction<number>>;
+
+  simulateAuto: boolean;
+  setSimulateAuto: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SimulatorContext = createContext<SimulatorContextProps | undefined>(undefined);
@@ -26,6 +29,7 @@ export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [isFirstStep, setIsFirstStep] = useState<boolean>(false);
   const [section, setSection] = useState<string>("convert");
   const [newPc, setNewPc] = useState<number>(0);
+  const [simulateAuto, setSimulateAuto] = useState<boolean>(false);
 
   return (
     <SimulatorContext.Provider
@@ -42,6 +46,8 @@ export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children 
         setSection,
         newPc,
         setNewPc,
+        simulateAuto,
+        setSimulateAuto
       }}>
       {children}
     </SimulatorContext.Provider>
