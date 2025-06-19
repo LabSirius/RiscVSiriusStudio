@@ -4,44 +4,44 @@ import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHov
 import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
 
 const aluOperations: Record<string, string> = {
-  "0000": "A + B",
-  "00000": "A + B",
+  "0000": "+",
+  "00000": "+",
 
-  "1000": "A - B",
-  "01000": "A - B",
+  "1000": "-",
+  "01000": "-",
 
-  "0100": "A ⊕ B",
-  "00100": "A ⊕ B",
+  "0100": "⊕",
+  "00100": "⊕",
 
-  "0110": "A | B",
-  "00110": "A | B",
+  "0110": "|",
+  "00110": "|",
 
-  "0111": "A & B",
-  "00111": "A & B",
+  "0111": "&",
+  "00111": "&",
 
-  "0001": "A << B",
-  "00001": "A << B",
+  "0001": "<<",
+  "00001": "<<",
 
-  "0101": "A >> B",
-  "00101": "A >> B",
+  "0101": ">>",
+  "00101": ">>",
 
-  "1101": "A >> B (ext)",
-  "01101": "A >> B (ext)",
+  "1101": ">> (msb ext)",
+  "01101": ">> (msb ext)",
 
-  "0010": "A < B (U)",
-  "00010": "A < B (U)",
+  "0010": "< (U)",
+  "00010": "< (U)",
 
-  "0011": "A < B (S)",
-  "00011": "A < B (S)",
+  "0011": "< (S)",
+  "00011": "< (S)",
 
-  "10000": "A * B",
-  "10001": "A * B (S)",
-  "10010": "A * B (S*U)",
-  "10011": "A * B (U)",
-  "10100": "A ÷ B (S)",
-  "10101": "A ÷ B (U)",
-  "10110": "A % B (S)",
-  "10111": "A % B (U)",
+  "10000": "*",
+  "10001": "* (S)",
+  "10010": "* (S*U)",
+  "10011": "* (U)",
+  "10100": "÷ (S)",
+  "10101": "÷ (U)",
+  "10110": "% (S)",
+  "10111": "% (U)",
 };
 
 const LabelValueContainer = () => {
@@ -114,7 +114,7 @@ const LabelValueContainer = () => {
         binary={resBin}
         hex={resHex}
         input={false}
-        positionClassName="top-[6.8rem] right-[.8rem]"
+        positionClassName="top-[9.8rem] right-[.8rem]"
       />
 
       {/* ALU operation code (with description) */}
@@ -128,9 +128,18 @@ const LabelValueContainer = () => {
         positionClassName="bottom-[-6rem] right-[-.8rem]"
       />
 
-      <p className="absolute top-[1.35rem] left-[50%] transform -translate-x-[50%] z-1000 text-[1.7rem] text-[#777777] whitespace-nowrap overflow-hidden text-ellipsis">
-        {operationDescription?.replace("A", `h'${aHex}`).replace("B", `h'${bHex}`)}
-      </p>
+      {operationDescription && (
+        <div className="absolute text-black transform z-1000 top-[52%] left-[13%] -translate-x-[13%] -translate-y-[50%] text-center">
+          <p className="text-[2.2rem]">
+            <span>{operationDescription.split(" ")[0]}</span>
+            {operationDescription.includes("(") && (
+              <span className="text-[1.5rem] text-[#777777] ml-2">
+                {operationDescription.slice(operationDescription.indexOf("("))}
+              </span>
+            )}
+          </p>
+        </div>
+      )}
     </>
   );
 };

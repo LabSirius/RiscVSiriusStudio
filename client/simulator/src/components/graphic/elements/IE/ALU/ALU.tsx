@@ -31,7 +31,7 @@ export default function ALU() {
   return (
     <div className="w-full">
       <div className="relative w-full h-full">
-        <h2 className="titleInElement top-[52%] left-[13%] -translate-x-[13%] -translate-y-[50%]">
+        <h2 className="titleInElement top-[1.95rem] left-[50%] transform -translate-x-[50%]">
           ALU
         </h2>
         <ContainerSVG height={22.9} active={true} />
