@@ -226,7 +226,11 @@ export class RVContext {
   }
 
   private setupEditorListeners() {
-    this.disposables.push(window.onDidChangeActiveTextEditor(() => this.buildCurrentDocument()));
+    this.disposables.push(window.onDidChangeActiveTextEditor(() => {
+      if(this._simulator && this._isSimulating) {
+      this.buildCurrentDocument();
+      }
+    }));
     this.extensionContext.subscriptions.push({
       dispose: () => this.disposables.reverse().forEach((d) => d.dispose()),
     });
