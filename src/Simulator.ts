@@ -248,7 +248,6 @@ export class TextSimulator extends Simulator {
     super.stop();
     this.clearHighlight();
     this.makeEditorWritable();
-    this.context.clearEncoderDecorations();
     // Dispose of the selection listener when the simulator stops
     if (this.selectionListenerDisposable) {
       this.selectionListenerDisposable.dispose();

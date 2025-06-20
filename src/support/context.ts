@@ -244,16 +244,21 @@ export class RVContext {
   }
 
   private cleanupSimulator() {
-    if (!this._simulator) return;
+    if (!this._simulator) {
+        return;
+    }
 
-    this._simulator.stop();
-    this._simulator = undefined;
+    const simulatorToStop = this._simulator; 
+
+    this._simulator = undefined; 
     this._isSimulating = false;
-
-    this.clearEncoderDecorations();
-
     commands.executeCommand("setContext", "ext.isSimulating", false);
-  }
+
+    simulatorToStop.stop(); 
+
+    this.clearEncoderDecorations(); 
+
+}
 
   public clearEncoderDecorations() {
     if (this._encoderDecorator && window.activeTextEditor) {
