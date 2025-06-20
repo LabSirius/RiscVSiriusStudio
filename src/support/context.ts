@@ -250,12 +250,16 @@ export class RVContext {
     this._simulator = undefined;
     this._isSimulating = false;
 
+    this.clearEncoderDecorations();
+
+    commands.executeCommand("setContext", "ext.isSimulating", false);
+  }
+
+  public clearEncoderDecorations() {
     if (this._encoderDecorator && window.activeTextEditor) {
       this._encoderDecorator.clearDecorations(window.activeTextEditor);
     }
     this._encoderDecorator = undefined;
-
-    commands.executeCommand("setContext", "ext.isSimulating", false);
   }
 
   private step() {
