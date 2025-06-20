@@ -75,9 +75,7 @@ export abstract class Simulator {
   }
 
   public stop(): void {
-
     console.log("Simulator stopped");
-    
   }
   public finished(): void {
     this.stop();
@@ -248,7 +246,7 @@ export class TextSimulator extends Simulator {
     super.stop();
     this.clearHighlight();
     this.makeEditorWritable();
-    this.context.clearEncoderDecorations(); 
+    this.context.clearEncoderDecorations();
     // Dispose of the selection listener when the simulator stops
     if (this.selectionListenerDisposable) {
       this.selectionListenerDisposable.dispose();

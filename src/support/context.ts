@@ -245,20 +245,19 @@ export class RVContext {
 
   private cleanupSimulator() {
     if (!this._simulator) {
-        return;
+      return;
     }
 
-    const simulatorToStop = this._simulator; 
+    const simulatorToStop = this._simulator;
 
-    this._simulator = undefined; 
+    this._simulator = undefined;
     this._isSimulating = false;
     commands.executeCommand("setContext", "ext.isSimulating", false);
 
-    simulatorToStop.stop(); 
+    simulatorToStop.stop();
 
-    this.clearEncoderDecorations(); 
-
-}
+    this.clearEncoderDecorations();
+  }
 
   public clearEncoderDecorations() {
     if (this._encoderDecorator && window.activeTextEditor) {
