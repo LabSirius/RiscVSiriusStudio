@@ -226,11 +226,13 @@ export class RVContext {
   }
 
   private setupEditorListeners() {
-    this.disposables.push(window.onDidChangeActiveTextEditor(() => {
-      if(this._simulator && this._isSimulating) {
-      this.buildCurrentDocument();
-      }
-    }));
+    this.disposables.push(
+      window.onDidChangeActiveTextEditor(() => {
+        if (this._simulator && this._isSimulating) {
+          this.buildCurrentDocument();
+        }
+      })
+    );
     this.extensionContext.subscriptions.push({
       dispose: () => this.disposables.reverse().forEach((d) => d.dispose()),
     });
@@ -247,23 +249,15 @@ export class RVContext {
     }
   }
 
-  private cleanupSimulator() {
+  public cleanupSimulator() {
     if (!this._simulator) {
       return;
     }
-
+    commands.executeCommand("setContext", "ext.isSimulating", false);
     const simulatorToStop = this._simulator;
-
     this._simulator = undefined;
     this._isSimulating = false;
-    commands.executeCommand("setContext", "ext.isSimulating", false);
-
     simulatorToStop.stop();
-
-    this.clearEncoderDecorations();
-  }
-
-  public clearEncoderDecorations() {
     if (this._encoderDecorator && window.activeTextEditor) {
       this._encoderDecorator.clearDecorations(window.activeTextEditor);
     }

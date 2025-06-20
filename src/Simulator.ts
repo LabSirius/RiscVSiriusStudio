@@ -243,10 +243,11 @@ export class TextSimulator extends Simulator {
   }
 
   public override stop(): void {
+    console.log("ENTRA ACAAA");
     super.stop();
     this.clearHighlight();
     this.makeEditorWritable();
-    this.context.clearEncoderDecorations();
+    this.context.cleanupSimulator();
     // Dispose of the selection listener when the simulator stops
     if (this.selectionListenerDisposable) {
       this.selectionListenerDisposable.dispose();
