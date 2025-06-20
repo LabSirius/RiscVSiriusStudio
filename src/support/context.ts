@@ -276,7 +276,6 @@ export class RVContext {
 
   private stop() {
     this.cleanupSimulator();
-    this._graphicWebviewPanel?.dispose();
   }
 
   private animateLine(line: number) {
