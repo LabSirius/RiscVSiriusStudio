@@ -169,7 +169,9 @@ export class RVContext {
 
         this._isSimulating = true;
         commands.executeCommand("setContext", "ext.isSimulating", true);
-        this._simulator.start();
+        await this._simulator.start();
+
+        panel.reveal(panel.viewColumn); 
       }),
 
       // --- COMMAND FOR TEXT SIMULATOR ---
