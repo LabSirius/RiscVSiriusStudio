@@ -538,7 +538,7 @@
   }
 }
 
-  Start = Program 
+  Start = Program
   
   Program = root:SourceElements?
   {
@@ -1735,9 +1735,9 @@
   = (WhiteSpace / LineTerminatorSequence / Comment)*
 
   EOS
-  = _ Comment? LineTerminatorSequence
-  / _ &"}"
+  = _ &"}"
   / __ EOF
+  / _ Comment? LineTerminatorSequence
   / __
   
   Comment "comment"
