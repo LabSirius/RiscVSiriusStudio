@@ -346,7 +346,7 @@ const MemoryTable = () => {
         <div
           onClick={() => setShowTable(true)}
           className={`h-full w-[1.6rem] cursor-pointer z-100 rounded-[.2rem] flex flex-col items-center uppercase group border 
-    ${theme === "light" ? "bg-white border-gray-300" : " border-gray-700"}`}>
+    ${theme === "light" ? "bg-white border-gray-300" : "bg-[#1a1a1a] border-gray-700"}`}>
           <ArrowBigRightDash
             size={18}
             strokeWidth={1.5}

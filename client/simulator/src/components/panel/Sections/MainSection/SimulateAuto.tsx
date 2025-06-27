@@ -18,18 +18,21 @@ const SimulateAuto = () => {
 
   useEffect(() => {
     if (!simulateAuto) return;
-    if (dialog && dialog.stop) {
-      setSimulateAuto(false);
-      setEnd(true);
-      return;
-    }
 
     const interval = setInterval(() => {
       sendMessage({ event: "step" });
     }, intervalDelay);
 
     return () => clearInterval(interval);
-  }, [simulateAuto, dialog, setSimulateAuto, intervalDelay]);
+  }, [simulateAuto, setSimulateAuto, intervalDelay]);
+
+  useEffect(() => {
+    if (dialog && dialog.stop) {
+      setSimulateAuto(false);
+      setEnd(true);
+      return;
+    }
+  }, [dialog, setSimulateAuto]);
 
   useEffect(() => {
     if (operation === "uploadMemory") {
