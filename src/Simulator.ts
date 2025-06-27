@@ -6,8 +6,6 @@ import { intToBinary } from "./utilities/conversions";
 import { window, commands, TextEditorDecorationType, Webview } from "vscode";
 import { Disposable } from "vscode";
 
-// ...IMPORTS (Same as before)
-
 export type SimulationParameters = { memorySize: number };
 export interface StepResult {
   instruction: any;
@@ -22,9 +20,9 @@ export abstract class Simulator {
   protected readonly context: RVContext;
   protected readonly rvDoc: RVDocument;
   protected readonly cpu: SCCPU;
-  // CADA SIMULADOR GUARDA SU PROPIO CANAL DE COMUNICACIÓN (WEBVIEW)
   protected readonly webview: Webview; // This is the key addition
   private _configured: boolean = false;
+  protected _isEditorReadOnly = false;
 
   constructor(
     params: SimulationParameters,
@@ -140,9 +138,9 @@ export abstract class Simulator {
   public abstract animateLine(line: number): void;
   public abstract sendSimulatorTypeToView(simulatorType: string): void;
   public abstract sendTextProgramToView(textProgram: string): void;
+  public abstract makeEditorWritable(): Promise<void>;
 
   protected sendToWebview(msg: any) {
-    // Now uses the injected webview
     this.webview.postMessage({ from: "extension", ...msg });
   }
 }
@@ -164,10 +162,10 @@ export class TextSimulator extends Simulator {
     super(settings, rvDoc, context, webview); // Pass the webview to the base class
   }
 
-  public override async  start(): Promise<void> {
-     if (this instanceof GraphicSimulator) {
-    await this.makeEditorReadOnly();
-  }
+  public override async start(): Promise<void> {
+    if (this instanceof GraphicSimulator) {
+      await this.makeEditorReadOnly();
+    }
     // The mainView check is now simplified because 'this.webview' is guaranteed to be the correct one
     this.listenToEditorClicks();
     const inst = this.cpu.currentInstruction();
@@ -249,7 +247,7 @@ export class TextSimulator extends Simulator {
     super.stop();
     this.clearHighlight();
     this.makeEditorWritable();
-    this.context.cleanupSimulator();
+    this.context.clearDecorations();
     // Dispose of the selection listener when the simulator stops
     if (this.selectionListenerDisposable) {
       this.selectionListenerDisposable.dispose();
@@ -328,21 +326,26 @@ export class TextSimulator extends Simulator {
 
   // Helper methods
 
-  private async makeEditorReadOnly() {
+  public async makeEditorReadOnly() {
     const editor = this.rvDoc.editor;
-    if (!editor) { return; }
+    if (!editor) {
+      return;
+    }
 
     await window.showTextDocument(editor.document, editor.viewColumn);
-    
+
     await commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
+    this._isEditorReadOnly = true;
   }
 
-  private async makeEditorWritable() {
-     const editor = this.rvDoc.editor;
-     if (!editor) { return; }
+  public async makeEditorWritable() {
+    const editor = this.rvDoc.editor;
+    if (!editor) {
+      return;
+    }
 
-    await window.showTextDocument(editor.document, editor.viewColumn);
     await commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
+    this._isEditorReadOnly = false;
   }
 
   private listenToEditorClicks() {
@@ -417,7 +420,7 @@ export class GraphicSimulator extends TextSimulator {
     super(settings, rvDoc, context, webview); // Pass the graphic webview
   }
 
-  public override async  start():  Promise<void>  {
+  public override async start(): Promise<void> {
     await super.start(); // Calls TextSimulator's start, which now uses 'this.webview'
 
     // These methods now use the GraphicSimulator's 'this.webview' (inherited from Simulator)

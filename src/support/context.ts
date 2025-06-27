@@ -54,6 +54,8 @@ export class RVContext {
     return this._simulator;
   }
 
+  private _madeReadonlyOnce = false;
+
   static create(context: ExtensionContext): RVContext {
     if (!RVContext.#instance) {
       RVContext.#instance = new RVContext(context);
@@ -114,6 +116,7 @@ export class RVContext {
     this.disposables.push(
       // --- COMMAND FOR GRAPHIC SIMULATOR ---
       commands.registerCommand("rv-simulator.simulate", async () => {
+        this._madeReadonlyOnce = false; // Reset the readonly state for the next simulation
         const editor = window.activeTextEditor;
         if (!editor || !RVDocument.isValid(editor.document)) {
           return window.showErrorMessage("No valid RISC-V document open");
@@ -150,6 +153,9 @@ export class RVContext {
         // 3. SIMULATION STOPS WHEN GRAPHIC PANEL IS CLOSED
         panel.onDidDispose(() => {
           this._graphicWebviewPanel = undefined;
+          if (this._isSimulating) {
+            this._simulator?.makeEditorWritable();
+          }
           this.cleanupSimulator();
         });
 
@@ -177,6 +183,7 @@ export class RVContext {
 
       // --- COMMAND FOR TEXT SIMULATOR ---
       commands.registerCommand("rv-simulator.textSimulate", () => {
+        this._madeReadonlyOnce = false; // Reset the readonly state for the next simulation
         const editor = window.activeTextEditor;
         if (!editor || !RVDocument.isValid(editor.document)) {
           return window.showErrorMessage("No valid RISC-V document open");
@@ -219,6 +226,7 @@ export class RVContext {
 
       commands.registerCommand("rv-simulator.simulateStop", () => {
         this.cleanupSimulator();
+
         this._graphicWebviewPanel?.dispose(); // Ensure graphic panel is also closed
       }),
 
@@ -230,9 +238,15 @@ export class RVContext {
 
   private setupEditorListeners() {
     this.disposables.push(
-      window.onDidChangeActiveTextEditor(() => {
+      window.onDidChangeActiveTextEditor((editor) => {
         if (this._simulator && this._isSimulating) {
           this.buildCurrentDocument();
+        }
+        if (editor?.document.languageId === "riscvasm") {
+          if (!this._isSimulating && !this._madeReadonlyOnce) {
+            commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
+            this._madeReadonlyOnce = true;
+          }
         }
       })
     );
@@ -252,15 +266,23 @@ export class RVContext {
     }
   }
 
-  public cleanupSimulator() {
+  private cleanupSimulator() {
     if (!this._simulator) {
       return;
     }
+
     commands.executeCommand("setContext", "ext.isSimulating", false);
     const simulatorToStop = this._simulator;
-    this._simulator = undefined;
-    this._isSimulating = false;
+
     simulatorToStop.stop();
+
+    this.clearDecorations();
+  }
+
+  public clearDecorations() {
+    this._isSimulating = false;
+    this._simulator = undefined;
+
     if (this._encoderDecorator && window.activeTextEditor) {
       this._encoderDecorator.clearDecorations(window.activeTextEditor);
     }
