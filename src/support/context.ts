@@ -74,6 +74,7 @@ export class RVContext {
   }
 
   private registerTextWebviewProvider() {
+    commands.executeCommand("rv-simulator.riscv.focus");
     this.disposables.push(
       window.registerWebviewViewProvider(
         "rv-simulator.riscv",
@@ -169,7 +170,9 @@ export class RVContext {
 
         this._isSimulating = true;
         commands.executeCommand("setContext", "ext.isSimulating", true);
-        this._simulator.start();
+        await this._simulator.start();
+
+        panel.reveal(panel.viewColumn);
       }),
 
       // --- COMMAND FOR TEXT SIMULATOR ---

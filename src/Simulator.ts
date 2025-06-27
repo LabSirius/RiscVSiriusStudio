@@ -164,7 +164,10 @@ export class TextSimulator extends Simulator {
     super(settings, rvDoc, context, webview); // Pass the webview to the base class
   }
 
-  public override start(): void {
+  public override async  start(): Promise<void> {
+     if (this instanceof GraphicSimulator) {
+    await this.makeEditorReadOnly();
+  }
     // The mainView check is now simplified because 'this.webview' is guaranteed to be the correct one
     this.listenToEditorClicks();
     const inst = this.cpu.currentInstruction();
@@ -243,7 +246,6 @@ export class TextSimulator extends Simulator {
   }
 
   public override stop(): void {
-    console.log("ENTRA ACAAA");
     super.stop();
     this.clearHighlight();
     this.makeEditorWritable();
@@ -326,12 +328,21 @@ export class TextSimulator extends Simulator {
 
   // Helper methods
 
-  private makeEditorReadOnly() {
-    commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
+  private async makeEditorReadOnly() {
+    const editor = this.rvDoc.editor;
+    if (!editor) { return; }
+
+    await window.showTextDocument(editor.document, editor.viewColumn);
+    
+    await commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
   }
 
-  private makeEditorWritable() {
-    commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
+  private async makeEditorWritable() {
+     const editor = this.rvDoc.editor;
+     if (!editor) { return; }
+
+    await window.showTextDocument(editor.document, editor.viewColumn);
+    await commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
   }
 
   private listenToEditorClicks() {
@@ -406,8 +417,8 @@ export class GraphicSimulator extends TextSimulator {
     super(settings, rvDoc, context, webview); // Pass the graphic webview
   }
 
-  public override start(): void {
-    super.start(); // Calls TextSimulator's start, which now uses 'this.webview'
+  public override async  start():  Promise<void>  {
+    await super.start(); // Calls TextSimulator's start, which now uses 'this.webview'
 
     // These methods now use the GraphicSimulator's 'this.webview' (inherited from Simulator)
     this.sendSimulatorTypeToView("graphic");
