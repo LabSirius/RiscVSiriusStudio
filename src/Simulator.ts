@@ -162,9 +162,8 @@ export class TextSimulator extends Simulator {
   }
 
   public override async start(): Promise<void> {
-    if (this instanceof GraphicSimulator) {
-      await this.makeEditorReadOnly();
-    }
+    await this.makeEditorReadOnly();
+
     // The mainView check is now simplified because 'this.webview' is guaranteed to be the correct one
     this.listenToEditorClicks();
     const inst = this.cpu.currentInstruction();
@@ -195,8 +194,6 @@ export class TextSimulator extends Simulator {
       },
     });
 
-
-    this.makeEditorReadOnly();
     super.start();
 
     const spValue = this.cpu.getDataMemory().spInitialAddress;
