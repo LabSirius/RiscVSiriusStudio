@@ -22,7 +22,6 @@ export abstract class Simulator {
   protected readonly cpu: SCCPU;
   protected readonly webview: Webview; // This is the key addition
   private _configured: boolean = false;
-  protected _isEditorReadOnly = false;
 
   constructor(
     params: SimulationParameters,
@@ -196,6 +195,7 @@ export class TextSimulator extends Simulator {
       },
     });
 
+
     this.makeEditorReadOnly();
     super.start();
 
@@ -335,7 +335,6 @@ export class TextSimulator extends Simulator {
     await window.showTextDocument(editor.document, editor.viewColumn);
 
     await commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
-    this._isEditorReadOnly = true;
   }
 
   public async makeEditorWritable() {
@@ -345,7 +344,6 @@ export class TextSimulator extends Simulator {
     }
 
     await commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
-    this._isEditorReadOnly = false;
   }
 
   private listenToEditorClicks() {
