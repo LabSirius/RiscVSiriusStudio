@@ -145,104 +145,102 @@ const formatValueAsType = (value: string, type: RegisterView): string => {
 
 // This function attaches the conversion toggle to the cell
 export const attachConvertionToggle = (cell: CellComponent) => {
-    const cellElement = cell.getElement();
-    let originalContent = cellElement.innerHTML;
-    const viewTypeCell = cell.getRow().getCell("viewType");
-    let originalViewTypeContent = viewTypeCell.getElement().innerHTML;
-    let isConverted = false;
-    let activeKey: string | null = null;
-  
-    const keyDownHandler = (evt: KeyboardEvent) => {
-      if (isConverted) return;
-      if (
-        document.querySelector('input.register-editor') ||
-        document.querySelector('input.binary-editor')
-      ) {
-        return;
+  const cellElement = cell.getElement();
+  let originalContent = cellElement.innerHTML;
+  const viewTypeCell = cell.getRow().getCell("viewType");
+  let originalViewTypeContent = viewTypeCell.getElement().innerHTML;
+  let isConverted = false;
+  let activeKey: string | null = null;
+
+  const keyDownHandler = (evt: KeyboardEvent) => {
+    if (isConverted) return;
+    if (
+      document.querySelector("input.register-editor") ||
+      document.querySelector("input.binary-editor")
+    ) {
+      return;
+    }
+
+    const data = cell.getData();
+    const value = data.value;
+    const key = evt.key.toLowerCase();
+    let newContent: string | null = null;
+    let newViewTypeLabel: string | null = null;
+
+        switch (key) {
+      case "b": {
+        newContent = binaryRepresentation(value);
+        newViewTypeLabel = "bin";
+        break;
       }
-      const data = cell.getData();
-      const viewType = data.viewType;
-      let newContent: string | null = null;
-      let newViewTypeLabel: string | null = null;
-      const key = evt.key.toLowerCase();
-  
-      if (viewType === 2) {
-        if (key === 'd') {
-          const unsignedVal = binaryToUInt(data.value);
-          const signedVal = binaryToInt(data.value);
-          newContent = (unsignedVal.toString() === signedVal.toString())
+      case "h": {
+        newContent = binaryToHex(value);
+        newViewTypeLabel = "hex";
+        break;
+      }
+      case "s": {
+        const unsignedVal = binaryToUInt(value);
+        const signedVal = binaryToInt(value);
+        newContent =
+          unsignedVal.toString() === signedVal.toString()
             ? signedVal.toString()
             : `${signedVal} / ${unsignedVal}`;
-          newViewTypeLabel = "±10";
-          activeKey = 'd';
-        } else if (key === 'h') {
-          newContent = binaryToHex(data.value);
-          newViewTypeLabel = "hex";
-          activeKey = 'h';
-        }
-      } else if (viewType === 'signed' || viewType === 'unsigned') {
-        if (key === 'h') {
-          newContent = binaryToHex(data.value);
-          newViewTypeLabel = "hex";
-          activeKey = 'h';
-        } else if (key === 'b') {
-          newContent = binaryRepresentation(data.value);
-          newViewTypeLabel = "bin";
-          activeKey = 'b';
-        }
-      } else if (viewType === 16) {
-        if (key === 'd') {
-          const unsignedVal = binaryToUInt(data.value);
-          const signedVal = binaryToInt(data.value);
-          newContent = (unsignedVal.toString() === signedVal.toString())
-            ? signedVal.toString()
-            : `${signedVal} / ${unsignedVal}`;
-          newViewTypeLabel = "±10";
-          activeKey = 'd';
-        } else if (key === 'b') {
-          newContent = binaryRepresentation(data.value);
-          newViewTypeLabel = "bin";
-          activeKey = 'b';
-        }
+        newViewTypeLabel = "±10";
+        break;
       }
-      if (newContent !== null) {
-        isConverted = true;
-        cellElement.innerHTML = newContent;
-        if (newViewTypeLabel !== null) {
-          viewTypeCell.getElement().innerHTML = newViewTypeLabel;
-        }
+      case "u": {
+        newContent = binaryToUInt(value).toString();
+        newViewTypeLabel = "10";
+        break;
       }
-    };
-  
-    const keyUpHandler = (evt: KeyboardEvent) => {
-      if (evt.key.toLowerCase() !== activeKey) return;
-      if (isConverted) {
-        isConverted = false;
-        activeKey = null;
-        cellElement.innerHTML = originalContent;
-        viewTypeCell.getElement().innerHTML = originalViewTypeContent;
-        cell.getRow().reformat();
+      case "a": {
+        newContent = binaryToAscii(value);
+        newViewTypeLabel = "ascii";
+        break;
       }
-    };
-  
-    cellElement.addEventListener('mouseenter', () => {
-      originalContent = cellElement.innerHTML;
-      originalViewTypeContent = viewTypeCell.getElement().innerHTML;
-      document.addEventListener('keydown', keyDownHandler);
-      document.addEventListener('keyup', keyUpHandler);
-    });
-  
-    cellElement.addEventListener('mouseleave', () => {
-      document.removeEventListener('keydown', keyDownHandler);
-      document.removeEventListener('keyup', keyUpHandler);
-      if (isConverted) {
-        isConverted = false;
-        activeKey = null;
-        cellElement.innerHTML = originalContent;
-        viewTypeCell.getElement().innerHTML = originalViewTypeContent;
+    }
+
+     
+
+    if (newContent !== null) {
+      isConverted = true;
+      activeKey = key;
+      cellElement.innerHTML = newContent;
+      if (newViewTypeLabel !== null) {
+        viewTypeCell.getElement().innerHTML = newViewTypeLabel;
       }
-    });
+    }
   };
+
+  const keyUpHandler = (evt: KeyboardEvent) => {
+    if (evt.key.toLowerCase() !== activeKey) return;
+    if (isConverted) {
+      isConverted = false;
+      activeKey = null;
+      cellElement.innerHTML = originalContent;
+      viewTypeCell.getElement().innerHTML = originalViewTypeContent;
+      cell.getRow().reformat();
+    }
+  };
+
+  cellElement.addEventListener("mouseenter", () => {
+    originalContent = cellElement.innerHTML;
+    originalViewTypeContent = viewTypeCell.getElement().innerHTML;
+    document.addEventListener("keydown", keyDownHandler);
+    document.addEventListener("keyup", keyUpHandler);
+  });
+
+  cellElement.addEventListener("mouseleave", () => {
+    document.removeEventListener("keydown", keyDownHandler);
+    document.removeEventListener("keyup", keyUpHandler);
+    if (isConverted) {
+      isConverted = false;
+      activeKey = null;
+      cellElement.innerHTML = originalContent;
+      viewTypeCell.getElement().innerHTML = originalViewTypeContent;
+    }
+  });
+};
 
 
 
