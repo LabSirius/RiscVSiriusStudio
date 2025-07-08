@@ -25,7 +25,6 @@ const ResetSimulation = () => {
   }, [operation]);
 
   const handleReset = () => {
-    console.log("HOLA?");
     sendMessage({ event: "reset" });
     setEnd(true);
   };
