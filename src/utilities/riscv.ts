@@ -1552,7 +1552,7 @@ function peg$parse(input, options) {
   var peg$f63 = function(lbl) { 
     if (isFirstPass) { return undefined; }
     let value = getPosLabel(lbl["name"])
-    if (!value){
+    if (value === undefined){
       value = getConstantValue(lbl["name"]);
     }
     if (value && isImm21(value)) {
@@ -1572,7 +1572,7 @@ function peg$parse(input, options) {
 
     const value = getIdentifierValue(lbl.name);
   
-    if (!value){
+    if (value === undefined){
       return error(`Identifier name is not valid: ${lbl.name}`);
       
     }
@@ -1582,29 +1582,29 @@ function peg$parse(input, options) {
   var peg$f68 = function(address) {
     if (isFirstPass) { return {}; }
     const value = getDirFromData(address["name"])
-    if (!value){
+    if (value === undefined){
       return error("Expecting a valid Symbol or Direction name. Got " + address.name)
     }
     return {"value": value, "double": !isImm12(value)};
   };
   var peg$f69 = function(name) {
     const value = getConstantValue(name.name);
-    if (value && isImm32(value)) { return value; }
+    if (value !== undefined && isImm32(value)) { return value; }
     else { return error("Constant value most be 32 bit representable value. Got " + name.name); }
   };
   var peg$f70 = function(name) {
     const value = getConstantValue(name.name);
-    if (value && isImm12(value)) { return value; }
+    if (value !== undefined && isImm12(value)) { return value; }
     else { return error("Constant value most be 12 bit representable value. Got " + name.name); }
   };
   var peg$f71 = function(name) {
     const value = getConstantValue(name.name);
-    if (value && isImm13(value)) { return value; }
+    if (value !== undefined && isImm13(value)) { return value; }
     else { return error("Constant value most be 13 bit representable value. Got " + name.name); }
   };
   var peg$f72 = function(name) {
     const value = getConstantValue(name.name);
-    if (value && isImm21(value)) { return value; }
+    if (value !== undefined && isImm21(value)) { return value; }
     else { return error("Constant value most be 21 bit representable value. Got " + name.name); }
   };
   var peg$f73 = function(name) {
@@ -1612,7 +1612,7 @@ function peg$parse(input, options) {
     if (value === undefined){
       value = getConstantValue(name.name);
     }
-    if (value && !isImm12(value)) { return error("Constant value most be 32 bit representable value. Got " + name.name); }
+    if (value !== undefined && !isImm12(value)) { return error("Constant value most be 32 bit representable value. Got " + name.name); }
     return value;
   };
   var peg$f74 = function(name) {
@@ -1631,7 +1631,7 @@ function peg$parse(input, options) {
   var peg$f76 = function(lbl) {
     if (isFirstPass) { return undefined; }
     const value = getPosLabel(lbl["name"]);
-    if (value && isImm13(value)) {
+    if (value !== undefined && isImm13(value)) {
         return value;
     }
     return error("Expecting 13 bit representable value [-4096, 4095] (Label, Constant or Imm). Got " + lbl.name, location());
