@@ -65,6 +65,8 @@ const MainSection = () => {
               <SettingsSection />
             ) : section === "program" ? (
               <ProgramSection />
+            ) : section === "convert" ? (
+              <ConvertSection />
             ) : (
               <HelpSection />
             ))}
@@ -101,7 +103,6 @@ const MainSection = () => {
 
       <SimulateAuto />
       <ResetSimulation />
-      
     </SidebarProvider>
   );
 };
