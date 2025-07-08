@@ -84,7 +84,7 @@ const RegistersTable = () => {
       name,
       rawName: name.split(" ")[0],
       value: registerData[id],
-      viewType: (name.split(" ")[0] === "x2" ? 16 : 2) as RegisterView,
+      viewType: 16 as RegisterView,
       watched: false,
       modified: 0,
       id,
