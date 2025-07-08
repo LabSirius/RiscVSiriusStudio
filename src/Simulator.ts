@@ -51,6 +51,7 @@ export abstract class Simulator {
       this._configured = true;
     }
     const instruction = this.cpu.currentInstruction();
+    const isEbreak = (instruction.opcode === "1110011") && (getFunct3(instruction) === "000") && (instruction.encoding.imm12 === "000000000001");
     instruction.currentPc = this.cpu.getPC();
     const result = this.cpu.executeInstruction();
     if (writesRU(instruction.type, instruction.opcode)) {
