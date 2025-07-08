@@ -12,7 +12,7 @@ interface HandlerConfig {
 
 export default function DataMemory() {
   const { currentType } = useCurrentInst();
-  const { operation, isFirstStep} = useSimulator();
+  const { operation, isFirstStep, isEbreak} = useSimulator();
 
   const inputHandlers: HandlerConfig[] = [
     { id: 'dmWr', left: '5.5rem' },
@@ -33,7 +33,7 @@ export default function DataMemory() {
           Data Memory
         </h2>
         <ContainerSVG height={19.9} active={currentType === "L" || currentType === "S"} />
-        {(operation !== "uploadMemory") && <LabelValueContainer /> }
+        {(operation !== "uploadMemory") && !isEbreak && <LabelValueContainer /> }
       </div>
 
       {inputHandlers.map((handler, index) => (

@@ -13,7 +13,7 @@ interface HandlerConfig {
 
 function MuxA() {
   const { currentResult } = useCurrentInst();
-  const { operation } = useSimulator();
+  const { operation, isEbreak } = useSimulator();
 
   const signal = currentResult.alua.signal;
 
@@ -48,7 +48,7 @@ function MuxA() {
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
         <MuxContainer />
-        {operation !== "uploadMemory" && (
+        {operation !== "uploadMemory" && !isEbreak && (
           <div className="absolute top-[-2.7rem] left-[3.5rem]">
             <LabelValueWithHover
               label=""

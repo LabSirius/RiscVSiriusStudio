@@ -10,7 +10,7 @@ import ImmDecode from "./immDecode/ImmDecode";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
 export default function ImmGenerator() {
-  const { operation } = useSimulator();
+  const { operation, isEbreak } = useSimulator();
   const { currentType } = useCurrentInst();
 
   const [showImmDecode, setShowImmDecode] = useState(false);
@@ -23,8 +23,8 @@ export default function ImmGenerator() {
             <h2 className={` titleInElement top-[25%] left-[30%]  -translate-x-[15%] -translate-y-[25%] ${!(currentType !== "R")  &&  '!text-[#D3D3D3]'  }`}>
               Imm Generator
             </h2>
-            <ContainerSVG height={9.6} active={currentType !== "R"} />
-            {operation !== "uploadMemory" && <LabelValueContainer />}
+            <ContainerSVG height={9.6} active={currentType !== "R" && !isEbreak} />
+            {operation !== "uploadMemory" && !isEbreak && <LabelValueContainer />}
           </div>
 
           <Handle

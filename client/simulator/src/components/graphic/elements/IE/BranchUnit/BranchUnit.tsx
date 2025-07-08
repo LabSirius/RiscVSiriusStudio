@@ -11,7 +11,7 @@ interface HandlerConfig {
 }
 
 export default function BranchUnit() {
-  const { operation } = useSimulator();
+  const { operation, isEbreak } = useSimulator();
 
   const handlers: HandlerConfig[] = [
     {
@@ -44,8 +44,8 @@ export default function BranchUnit() {
         <h2 className="titleInElement top-[50%] left-[73.5%] -translate-x-[73.5%] -translate-y-[50%]">
           Branch Unit
         </h2>
-        <ContainerSVG height={10.2} active={true} />
-        {operation !== 'uploadMemory' && <LabelValueContainer />}
+        <ContainerSVG height={10.2} active={!isEbreak} />
+        {operation !== 'uploadMemory' && !isEbreak && <LabelValueContainer />}
       </div>
 
       {handlers.map((h) => (

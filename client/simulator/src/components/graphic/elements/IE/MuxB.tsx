@@ -13,7 +13,7 @@ interface HandlerConfig {
 
 function MuxB() {
   const { currentResult } = useCurrentInst();
-  const { operation } = useSimulator();
+  const { operation, isEbreak } = useSimulator();
 
   const signal = currentResult.alub.signal;
 
@@ -48,7 +48,7 @@ function MuxB() {
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
         <MuxContainer />
-        {operation !== "uploadMemory" && (
+        {operation !== "uploadMemory" && !isEbreak && (
           <div className="absolute bottom-[.8rem] left-[3.5rem]">
             <LabelValueWithHover
               label=""

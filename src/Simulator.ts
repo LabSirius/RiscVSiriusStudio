@@ -31,7 +31,7 @@ export abstract class Simulator {
   ) {
     this.context = context;
     this.rvDoc = rvDoc;
-    this.webview = webview; // Se inyecta y almacena el webview correcto
+    this.webview = webview; 
 
     if (!rvDoc.ir) {
       throw new Error("RVDocument has no IR");
