@@ -702,11 +702,14 @@ export class SCCPU {
     result.add4.result = add4Res.toString(2);
 
     const funct3 = getFunct3(instruction);
-    const rs1 = this.registers.readRegisterFromName(getRs1(instruction));
-    const rs2 = this.registers.readRegisterFromName(getRs2(instruction));
+    const rs1 = "0b" + this.registers.readRegisterFromName(getRs1(instruction));
+    const rs2 = "0b" + this.registers.readRegisterFromName(getRs2(instruction));
 
-    const rs1Int = parseInt(rs1, 2);
-    const rs2Int = parseInt(rs2, 2);
+    const rs1B = BigInt(rs1);
+    const rs2B = BigInt(rs2);
+
+    const rs1Int = BigInt.asIntN(32, rs1B);
+    const rs2Int = BigInt.asIntN(32, rs2B);
 
     const imm13 = this.currentInstruction().encoding.imm13;
     const imm32Val = imm13.padStart(32, imm13.at(0));
@@ -735,10 +738,16 @@ export class SCCPU {
       }
       case 6: {
         //bltu
+        const rs1U = BigInt.asUintN(32, rs1B);
+        const rs2U = BigInt.asUintN(32, rs2B);
+        condition = rs1U < rs2U;
         break;
       }
       case 7: {
         //bgeu
+        const rs1U = BigInt.asUintN(32, rs1B);
+        const rs2U = BigInt.asUintN(32, rs2B);
+        condition = rs1U >= rs2U;
         break;
       }
     }
