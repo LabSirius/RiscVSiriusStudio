@@ -475,7 +475,7 @@ export class SCCPU {
         break;
 
       default:
-        throw new Error("ALU: unknown operation");
+        result = 0n; // Default case, should not happen
     }
     const result32 = this.toTwosComplement(result, 32);
     return result32;

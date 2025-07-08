@@ -51,7 +51,17 @@ export abstract class Simulator {
       this._configured = true;
     }
     const instruction = this.cpu.currentInstruction();
-    const isEbreak = (instruction.opcode === "1110011") && (getFunct3(instruction) === "000") && (instruction.encoding.imm12 === "000000000001");
+    console.log("LA INSTRUCCION ES", instruction);
+    let isEbreak =
+      instruction.opcode === "1110011" &&
+      getFunct3(instruction) === "000" &&
+      instruction.encoding.imm12 === "000000000001";
+
+    if (isEbreak) {
+      this.stop();
+      isEbreak = false; // Reset after stopping
+    }
+
     instruction.currentPc = this.cpu.getPC();
     const result = this.cpu.executeInstruction();
     if (writesRU(instruction.type, instruction.opcode)) {
