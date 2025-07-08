@@ -57,10 +57,12 @@ const ExampleShortcuts = ({ caseValue }: { caseValue: string }) => {
               </p>
               <div className="space-y-1 text-[.7rem]">
                 <p className="font-mono">
-                  d: For a decimal <br />
-                  h: For a hexadecimal <br />
-                  b: For a binary <br />
-                </p>
+                    b: For a binary <br />
+                    h: For a hexadecimal <br />
+                    s: For a signed <br />
+                    u: For an unsigned <br />
+                    a: For an ascii <br />
+                  </p>
               </div>
             </>
           )}
