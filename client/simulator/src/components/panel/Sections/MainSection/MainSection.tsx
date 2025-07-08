@@ -15,6 +15,7 @@ import HelpSection from "../HelpSection";
 import { useTheme } from "@/components/panel/ui/theme/theme-provider";
 
 import SimulateAuto from "./SimulateAuto";
+import ResetSimulation from "./ResetSimulation";
 
 const MainSection = () => {
   const { typeSimulator, operation, section } = useSimulator();
@@ -99,6 +100,8 @@ const MainSection = () => {
       />
 
       <SimulateAuto />
+      <ResetSimulation />
+      
     </SidebarProvider>
   );
 };

@@ -84,7 +84,7 @@ const RegistersTable = () => {
       name,
       rawName: name.split(" ")[0],
       value: registerData[id],
-      viewType: (name.split(" ")[0] === "x2" ? 16 : 2) as RegisterView,
+      viewType: 16 as RegisterView,
       watched: false,
       modified: 0,
       id,
@@ -244,7 +244,7 @@ const RegistersTable = () => {
         <div
           onClick={() => setShowTable(true)}
           className={`h-full w-[1.6rem] cursor-pointer rounded-[.2rem] border flex flex-col items-center uppercase group
-    ${theme === "light" ? "bg-white border-gray-300" : "border-gray-700"}`}>
+    ${theme === "light" ? "bg-white border-gray-300" : "bg-[#1a1a1a] border-gray-700"}`}>
           <ArrowBigRightDash
             size={18}
             strokeWidth={1.5}

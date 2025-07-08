@@ -1552,7 +1552,7 @@ function peg$parse(input, options) {
   var peg$f63 = function(lbl) { 
     if (isFirstPass) { return undefined; }
     let value = getPosLabel(lbl["name"])
-    if (!value){
+    if (value === undefined){
       value = getConstantValue(lbl["name"]);
     }
     if (value && isImm21(value)) {
@@ -1572,7 +1572,7 @@ function peg$parse(input, options) {
 
     const value = getIdentifierValue(lbl.name);
   
-    if (!value){
+    if (value === undefined){
       return error(`Identifier name is not valid: ${lbl.name}`);
       
     }
@@ -1582,29 +1582,29 @@ function peg$parse(input, options) {
   var peg$f68 = function(address) {
     if (isFirstPass) { return {}; }
     const value = getDirFromData(address["name"])
-    if (!value){
+    if (value === undefined){
       return error("Expecting a valid Symbol or Direction name. Got " + address.name)
     }
     return {"value": value, "double": !isImm12(value)};
   };
   var peg$f69 = function(name) {
     const value = getConstantValue(name.name);
-    if (value && isImm32(value)) { return value; }
+    if (value !== undefined && isImm32(value)) { return value; }
     else { return error("Constant value most be 32 bit representable value. Got " + name.name); }
   };
   var peg$f70 = function(name) {
     const value = getConstantValue(name.name);
-    if (value && isImm12(value)) { return value; }
+    if (value !== undefined && isImm12(value)) { return value; }
     else { return error("Constant value most be 12 bit representable value. Got " + name.name); }
   };
   var peg$f71 = function(name) {
     const value = getConstantValue(name.name);
-    if (value && isImm13(value)) { return value; }
+    if (value !== undefined && isImm13(value)) { return value; }
     else { return error("Constant value most be 13 bit representable value. Got " + name.name); }
   };
   var peg$f72 = function(name) {
     const value = getConstantValue(name.name);
-    if (value && isImm21(value)) { return value; }
+    if (value !== undefined && isImm21(value)) { return value; }
     else { return error("Constant value most be 21 bit representable value. Got " + name.name); }
   };
   var peg$f73 = function(name) {
@@ -1612,7 +1612,7 @@ function peg$parse(input, options) {
     if (value === undefined){
       value = getConstantValue(name.name);
     }
-    if (value && !isImm12(value)) { return error("Constant value most be 32 bit representable value. Got " + name.name); }
+    if (value !== undefined && !isImm12(value)) { return error("Constant value most be 32 bit representable value. Got " + name.name); }
     return value;
   };
   var peg$f74 = function(name) {
@@ -1631,7 +1631,7 @@ function peg$parse(input, options) {
   var peg$f76 = function(lbl) {
     if (isFirstPass) { return undefined; }
     const value = getPosLabel(lbl["name"]);
-    if (value && isImm13(value)) {
+    if (value !== undefined && isImm13(value)) {
         return value;
     }
     return error("Expecting 13 bit representable value [-4096, 4095] (Label, Constant or Imm). Got " + lbl.name, location());
@@ -4796,9 +4796,9 @@ function peg$parse(input, options) {
               if (s0 === peg$FAILED) {
                 s0 = peg$parsesraiToken();
                 if (s0 === peg$FAILED) {
-                  s0 = peg$parsesltiToken();
+                  s0 = peg$parsesltiuToken();
                   if (s0 === peg$FAILED) {
-                    s0 = peg$parsesltiuToken();
+                    s0 = peg$parsesltiToken();
                   }
                 }
               }
@@ -8192,13 +8192,24 @@ function peg$parse(input, options) {
 
     s0 = peg$currPos;
     s1 = peg$parse_();
-    s2 = peg$parseComment();
-    if (s2 === peg$FAILED) {
-      s2 = null;
+    s2 = peg$currPos;
+    peg$silentFails++;
+    if (input.charCodeAt(peg$currPos) === 125) {
+      s3 = peg$c173;
+      peg$currPos++;
+    } else {
+      s3 = peg$FAILED;
+      if (peg$silentFails === 0) { peg$fail(peg$e231); }
     }
-    s3 = peg$parseLineTerminatorSequence();
+    peg$silentFails--;
     if (s3 !== peg$FAILED) {
-      s1 = [s1, s2, s3];
+      peg$currPos = s2;
+      s2 = undefined;
+    } else {
+      s2 = peg$FAILED;
+    }
+    if (s2 !== peg$FAILED) {
+      s1 = [s1, s2];
       s0 = s1;
     } else {
       peg$currPos = s0;
@@ -8206,23 +8217,8 @@ function peg$parse(input, options) {
     }
     if (s0 === peg$FAILED) {
       s0 = peg$currPos;
-      s1 = peg$parse_();
-      s2 = peg$currPos;
-      peg$silentFails++;
-      if (input.charCodeAt(peg$currPos) === 125) {
-        s3 = peg$c173;
-        peg$currPos++;
-      } else {
-        s3 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$e231); }
-      }
-      peg$silentFails--;
-      if (s3 !== peg$FAILED) {
-        peg$currPos = s2;
-        s2 = undefined;
-      } else {
-        s2 = peg$FAILED;
-      }
+      s1 = peg$parse__();
+      s2 = peg$parseEOF();
       if (s2 !== peg$FAILED) {
         s1 = [s1, s2];
         s0 = s1;
@@ -8232,10 +8228,14 @@ function peg$parse(input, options) {
       }
       if (s0 === peg$FAILED) {
         s0 = peg$currPos;
-        s1 = peg$parse__();
-        s2 = peg$parseEOF();
-        if (s2 !== peg$FAILED) {
-          s1 = [s1, s2];
+        s1 = peg$parse_();
+        s2 = peg$parseComment();
+        if (s2 === peg$FAILED) {
+          s2 = null;
+        }
+        s3 = peg$parseLineTerminatorSequence();
+        if (s3 !== peg$FAILED) {
+          s1 = [s1, s2, s3];
           s0 = s1;
         } else {
           peg$currPos = s0;
