@@ -28,7 +28,7 @@ const CurrentInstructionInfo = () => {
     <>
       {operation !== "uploadMemory" && (
         <div
-          className={`absolute flex flex-col gap-4 ${currentInst.pseudoasm ? "top-[-10.5rem]" : "top-[-5.8rem]"} left-[5rem] pr-[1.2rem] ${animationClass}`}>
+          className={`absolute flex flex-col gap-4 ${currentInst.pseudoasm ? "top-[-11.5rem]" : "top-[-6.8rem]"} left-[18.5rem] pr-[1.2rem] ${animationClass}`}>
             {currentInst.pseudoasm && (
             <div className="bg-[#66939E] px-[1.2rem] py-[.7rem] rounded-[.6rem]">
               <h2 className="text-white text-start text-[1.8rem]">{currentInst.pseudoasm}</h2>
