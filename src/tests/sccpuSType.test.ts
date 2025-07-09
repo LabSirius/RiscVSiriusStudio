@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { Simulator } from "../Simulator";
+import type { Webview } from "vscode";
 
 // Mock to simulate incompatible libraries and ignore them
 vi.mock("vscode", () => ({
@@ -9,9 +10,23 @@ vi.mock("vscode", () => ({
 }));
 
 
+// Fake webview(mock)
+const dummyWebview: Webview = {
+  postMessage: (_msg: any) => Promise.resolve(true),
+  asWebviewUri: () => {
+    throw new Error("Not implemented");
+  },
+  cspSource: "",
+  onDidReceiveMessage: () => {
+    throw new Error("Not implemented");
+  },
+  html: "",
+  options: {},
+};
+
 class DummySimulator extends Simulator {
   constructor(params: any, rvDoc: any, context: any) {
-    super(params, rvDoc, context);
+    super(params, rvDoc, context, dummyWebview);
   }
 
   public notifyRegisterWrite(): void {}
@@ -20,6 +35,9 @@ class DummySimulator extends Simulator {
   public animateLine(): void {}
   public sendSimulatorTypeToView(): void {}
   public sendTextProgramToView(): void {}
+  public makeEditorWritable(): Promise<void> {
+    return Promise.resolve();
+  }
 }
 
 describe("SCCPU - S-type instructions using Simulator", () => {
