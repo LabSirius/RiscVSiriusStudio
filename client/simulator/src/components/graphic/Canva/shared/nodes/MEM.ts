@@ -66,10 +66,7 @@ export const useMEMNodes = (): Node[] => {
           nodeBase("rd_wb", "rd_wb", "rd_wb", { x: 565 + offsetXSize, y: 1210 }, "MEM", 36, 50),
           nodeBase("cu_wb", "cu_wb", "cu_wb", { x: 565 + offsetXSize, y: 1379.1 }, "MEM", 36, 50),
           pivotNode("pivot34", { x: shift(90), y: 792.3 }, "MEM"),
-        nodeBase("cu_mem_exit", "cu_mem_exit", "cu_mem_exit", { x: 100, y: 1272 }, "MEM", 90, 30),
-          nodeBase("stageSeparatorMEM_WB", "stageSeparatorMEM_WB", "stageSeparatorMEM_WB", { x: 565 + offsetXSize, y: 60 }, "MEM", 5, 1385,),
-
-
+          nodeBase("cu_mem_exit", "cu_mem_exit", "cu_mem_exit", { x: 100, y: 1272 }, "MEM", 90, 30),
         ]
       : [
           pivotNode("pivot7", { x: shift(90), y: 792.6 }, "MEM"),

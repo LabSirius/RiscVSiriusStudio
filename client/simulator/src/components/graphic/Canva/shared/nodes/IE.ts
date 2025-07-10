@@ -112,7 +112,6 @@ export const useIENodes = (): Node[] => {
           nodeBase("pivotJump9", "pivotJump9", "pivotJump9", { x: 842, y: 231 }, "IE", 47, 47),
 
           nodeBase("cu_ie_exit", "cu_ie_exit", "cu_ie_exit", { x: 100, y: 1272 }, "IE", 90, 30),
-          nodeBase("stageSeparatorIE_MEM", "stageSeparatorIE_MEM", "stageSeparatorIE_MEM", { x: 740 + offsetXSize, y: 60 }, "IE", 5, 1385,),
 
         ]
       : []),

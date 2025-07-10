@@ -92,7 +92,6 @@ export const useIFNodes = (): Node[] => {
             50
           ),
 
-          nodeBase("stageSeparatorIF_ID", "stageSeparatorIF_ID", "stageSeparatorIF_ID", { x: 865 + offsetXSize, y: 60 }, "IF", 5, 1385,),
 
         ]
       : []),

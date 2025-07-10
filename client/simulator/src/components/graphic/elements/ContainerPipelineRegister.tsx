@@ -11,7 +11,7 @@ const ContainerPipelineRegister = ({
 }) => {
   return (
     <div
-      className="relative w-[4.5rem] bg-amber-200 border-4 border-black"
+      className="relative w-[4.5rem]  border-4 border-black"
       style={{ height: height ? `${height}rem` : "4.5rem" }}>
       <p
         className={`absolute ${

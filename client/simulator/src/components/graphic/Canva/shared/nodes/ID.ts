@@ -135,15 +135,7 @@ export const useIDNodes = (): Node[] => {
           nodeBase("cu_ie", "cu_ie", "cu_ie", { x: 740 + offsetXSize, y: 1370.3 }, "ID", 36, 50),
           nodeBase("cu_id_exit", "cu_id_exit", "cu_id_exit", { x: 660, y: 1272 }, "ID", 90, 30),
           pivotNode("pivot39", { x: 620, y: 1365 }, "ID"),
-          nodeBase(
-            "stageSeparatorID_IE",
-            "stageSeparatorID_IE",
-            "stageSeparatorID_IE",
-            { x: 740 + offsetXSize, y: 60 },
-            "ID",
-            5,
-            1385
-          ),
+       
           nodeBase(
             "pivotJump11",
             "pivotJump11",
