@@ -29,7 +29,7 @@ const LabelValueContainer = () => {
         decimal={decOpcode}
         binary={binOpcode}
         hex={hexOpcode}
-        positionClassName="top-[-.6rem] left-[55rem]"
+        positionClassName="top-[-.6rem] left-[52rem]"
       />
 
       {/* FUNCT3  */}
@@ -40,7 +40,7 @@ const LabelValueContainer = () => {
           decimal={decFunct3}
           binary={binFunct3}
           hex={hexFunct3}
-          positionClassName="top-[-.6rem] left-[66.5rem]"
+          positionClassName="top-[-.6rem] left-[63.5rem]"
         />
       )}
 
@@ -52,7 +52,7 @@ const LabelValueContainer = () => {
           decimal={decFunct7}
           binary={binFunct7}
           hex={hexFunct7}
-          positionClassName=" top-[-.6rem] left-[76.4rem]"
+          positionClassName=" top-[-.6rem] left-[73.4rem]"
         />
       )}
     </>
