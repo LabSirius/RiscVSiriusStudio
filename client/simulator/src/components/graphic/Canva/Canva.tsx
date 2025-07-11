@@ -1,4 +1,4 @@
-import { useCallback, useState, MouseEvent } from 'react';
+import { useCallback, useState, MouseEvent, useEffect } from "react";
 import {
   ReactFlow,
   Edge,
@@ -9,20 +9,19 @@ import {
   useEdgesState,
   MiniMap,
   Connection,
-  ReactFlowInstance
-  
-} from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
+  ReactFlowInstance,
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 
-import { nodeTypes } from './constants';
-import { edgeTypes } from './constants';
-import { initialNodes } from './data/nodes/initialNodes'; // Nodes
-import { initialEdges } from './data/edges/initialEdges'; //Conecctions between npdes
+import { nodeTypes } from "./constants";
+import { edgeTypes } from "./constants";
+import { initialNodes } from "./data/nodes/initialNodes"; // Nodes
+import { initialEdges } from "./data/edges/initialEdges"; //Conecctions between npdes
 
-import CustomControls from '../custom/CustomControls';
+import CustomControls from "../custom/CustomControls";
 
-import { animateLine } from '../animateLine/animateLine';
-import InstructionEffect from './InstructionEffect';
+import { animateLineClick, animateLineHover } from "../animateLine/animateLine";
+import InstructionEffect from "./InstructionEffect";
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
@@ -31,8 +30,13 @@ export default function Canva() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [showMinimap, setShowMinimap] = useState(false);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
-  const [isInteractive, setIsInteractive] = useState(true); 
+  const [isInteractive, setIsInteractive] = useState(true);
   const { updateEdge } = useReactFlow();
+  const [selectedGroup, setSelectedGroup] = useState<string[][]>([]);
+
+  useEffect(() => {
+    console.log("Selected group changed:", selectedGroup);
+  }, [selectedGroup]);
 
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
@@ -55,20 +59,25 @@ export default function Canva() {
     setIsInteractive((prev) => !prev);
   };
 
+  const handleEdgeClick = (_event: MouseEvent<Element>, edge: Edge): void => {
+    const updatedGroups = animateLineClick(updateEdge, edge, edges, selectedGroup);
+    setSelectedGroup(updatedGroups);
+};
+
   const handleEdgeMouseEnter = (
-    _event: MouseEvent<Element>, 
+    _event: MouseEvent<Element>,
     edge: Edge & { disabled?: boolean }
   ): void => {
     if (edge.disabled) return;
-    animateLine(updateEdge, edge, edges, true); 
+    animateLineHover(updateEdge, edge, edges, true);
   };
-  
+
   const handleEdgeMouseLeave = (
-    _event: MouseEvent<Element>, 
+    _event: MouseEvent<Element>,
     edge: Edge & { disabled?: boolean }
   ): void => {
     if (edge.disabled) return;
-    animateLine(updateEdge, edge, edges, false); 
+    animateLineHover(updateEdge, edge, edges, false);
   };
 
   return (
@@ -76,6 +85,7 @@ export default function Canva() {
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
       defaultViewport={defaultViewport}
+      onEdgeClick={handleEdgeClick}
       onEdgeMouseEnter={handleEdgeMouseEnter}
       onEdgeMouseLeave={handleEdgeMouseLeave}
       nodes={nodes}
@@ -88,12 +98,11 @@ export default function Canva() {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      style={{ backgroundColor: '#F7F9FB' }}
+      style={{ backgroundColor: "#F7F9FB" }}
       minZoom={0.1}
       maxZoom={2}
-      panOnDrag={isInteractive} 
-      elementsSelectable={isInteractive} 
-    >
+      panOnDrag={isInteractive}
+      elementsSelectable={isInteractive}>
       <Background color="#000000" gap={20} size={2} />
       {showMinimap && <MiniMap />}
       <CustomControls
@@ -103,8 +112,8 @@ export default function Canva() {
         onZoomOut={handleZoomOut}
         onToggleInteractive={handleToggleInteractive}
       />
-      
-      <InstructionEffect setEdges={setEdges}/>
+
+      <InstructionEffect setEdges={setEdges} />
     </ReactFlow>
   );
 }
