@@ -54,16 +54,34 @@ const ExportMemory = () => {
     } else if (format === "mif") {
       const asmList = dataMemoryTable.asmList || [];
       const instructionCount = codeSize / 4;
+      const totalWords = instructionCount; // This includes both instructions and constants
 
-      const mifHeader = `-- RISC-V program memory (byte addressed)
-WIDTH=8;
-DEPTH=8192;
+      // Calculate depth as next power of 2, minimum 256
+      const calculateDepth = (totalWords: number): number => {
+        const minDepth = 256;
+        if (totalWords <= minDepth) {
+          return minDepth;
+        }
+
+        // Find next power of 2
+        let depth = 1;
+        while (depth < totalWords) {
+          depth *= 2;
+        }
+        return depth;
+      };
+
+      const memoryDepth = calculateDepth(totalWords);
+
+      const mifHeader = `-- RISC-V program memory (word addressed)
+WIDTH=32;
+DEPTH=${memoryDepth};
 
 ADDRESS_RADIX=UNS;
 DATA_RADIX=HEX;
 
 DEFAULT_RADIX=HEX
-DEFAULT_VALUE=00
+DEFAULT_VALUE=00000000
 
 CONTENT BEGIN
 `;
@@ -71,38 +89,39 @@ CONTENT BEGIN
       const mifBodyLines: string[] = [];
       let constantsCommentAdded = false;
 
-      for (let i = 0; i < codeSize; i++) {
-        if (i % 4 === 0) {
-          const index = i / 4;
-          if (index < instructionCount && asmList[index]) {
-            let word = "";
-            for (let j = 3; j >= 0; j--) {
-              const byteIndex = i + j;
-              const byteBinary = memory[byteIndex] || "00000000";
-              const byteHex = binaryToHex(byteBinary).padStart(2, "0").toUpperCase();
-              word += byteHex;
-            }
-            const pcHex = i.toString(16).toUpperCase().padStart(8, "0");
-            mifBodyLines.push(`  -- ${word} (PC 0x${pcHex}) ${asmList[index]}`);
-          }
+      // Process memory in 4-byte chunks (words)
+      for (let i = 0; i < codeSize; i += 4) {
+        const wordIndex = i / 4;
 
-          if (!constantsCommentAdded && !asmList[index]) {
-            mifBodyLines.push(`  -- CONSTANTS`);
-            constantsCommentAdded = true;
-          }
-
-          console.log("i:", i, "codeSize:", asmList[index]);
+        // Reconstruct 32-bit word from 4 bytes (big-endian)
+        let word = "";
+        for (let j = 3; j >= 0; j--) {
+          const byteIndex = i + j;
+          const byteBinary = memory[byteIndex] || "00000000";
+          const byteHex = binaryToHex(byteBinary).padStart(2, "0").toUpperCase();
+          word += byteHex;
         }
 
-        const byteBinary = memory[i] || "00000000";
-        const byteHex = binaryToHex(byteBinary).padStart(2, "0").toUpperCase();
-        mifBodyLines.push(`\t${i} : ${byteHex};`);
+        // Add constants section marker
+        if (!constantsCommentAdded && !asmList[wordIndex]) {
+          mifBodyLines.push(`  -- CONSTANTS`);
+          constantsCommentAdded = true;
+        }
+
+        // Add word entry with inline comment (using decimal address)
+        if (wordIndex < asmList.length && asmList[wordIndex]) {
+          const pcHex = i.toString(16).toUpperCase().padStart(8, "0");
+          mifBodyLines.push(`\t${wordIndex} : ${word}; -- (PC 0x${pcHex}) ${asmList[wordIndex]}`);
+        } else {
+          // Entry without assembly instruction (constants/data)
+          mifBodyLines.push(`\t${wordIndex} : ${word};`);
+        }
       }
 
       const mifFooter = `END;`;
 
       fileContent = mifHeader + mifBodyLines.join("\n") + "\n" + mifFooter;
-      fileName = "instructions_byte_mif.mif";
+      fileName = "instructions_word_mif.mif";
       fileType = "application/octet-stream";
     }
 
