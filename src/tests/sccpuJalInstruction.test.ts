@@ -49,24 +49,6 @@ class DummySimulator extends Simulator {
   }
 }
 
-function createTestInstruction(
-  rd: string,
-  offsetBytes: number,
-  pcBytes: number,
-  imm21: string
-): TestInstruction {
-  return {
-    kind: "SrcInstruction",
-    type: "J",
-    opcode: "1101111",
-    rd: { regeq: rd },
-    encoding: { imm21 },
-    inst: pcBytes,
-    instruction: `jal ${rd}, ${offsetBytes}`,
-    currentPc: pcBytes
-  };
-}
-
 describe("SCCPU - JAL instruction tests", () => {
   const testCases = [
     {
