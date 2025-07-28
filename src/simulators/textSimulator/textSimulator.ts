@@ -90,13 +90,6 @@ function dispatch(event: MessageEvent) {
           });
           break;
         }
-        case "reset": {
-          UIManager.getInstance()._sendMessageToExtension({
-            command: "event",
-            object: { event: data.event },
-          });
-          break;
-        }
         case "clickInInstruction": {
           UIManager.getInstance()._sendMessageToExtension({
             command: "event",

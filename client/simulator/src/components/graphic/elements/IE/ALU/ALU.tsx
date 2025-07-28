@@ -11,7 +11,7 @@ interface HandlerConfig {
 }
 
 export default function ALU() {
-  const { operation } = useSimulator();
+  const { operation, isEbreak } = useSimulator();
 
   const leftInputHandlers: HandlerConfig[] = [
     { id: "muxA", position: Position.Left, className: "input", style: { top: "6.7rem" } },
@@ -34,8 +34,8 @@ export default function ALU() {
         <h2 className="titleInElement top-[1.95rem] left-[50%] transform -translate-x-[50%]">
           ALU
         </h2>
-        <ContainerSVG height={22.9} active={true} />
-        {operation !== "uploadMemory" && <LabelValueContainer />}
+        <ContainerSVG height={22.9} active={!isEbreak} />
+        {operation !== "uploadMemory" && !isEbreak && <LabelValueContainer />}
       </div>
 
       {leftInputHandlers.map((handler) => (

@@ -224,6 +224,24 @@ export class RVContext {
         this._simulator?.step();
       }),
 
+      // --- SIMULATION CONTROL COMMANDS ---
+      commands.registerCommand("rv-simulator.simulateReset", () => {
+        const wasGraphic = this._simulator instanceof GraphicSimulator;
+        const wasText = this._simulator instanceof TextSimulator;
+        this.cleanupSimulator();
+
+        if (wasGraphic && this._graphicWebviewPanel) {
+          this._graphicWebviewPanel.dispose();
+          setTimeout(() => {
+            commands.executeCommand("rv-simulator.simulate");
+          }, 100);
+        } else if (wasText) {
+          commands.executeCommand("rv-simulator.textSimulate");
+        } else {
+          console.warn("No active simulator type detected.");
+        }
+      }),
+
       commands.registerCommand("rv-simulator.simulateStop", () => {
         this.cleanupSimulator();
 
@@ -298,23 +316,15 @@ export class RVContext {
   }
 
   private reset() {
-  const wasGraphic = this._simulator instanceof GraphicSimulator;
-  const wasText = this._simulator instanceof TextSimulator;
+    this.cleanupSimulator();
 
-  this.cleanupSimulator();
-
-  if (wasGraphic && this._graphicWebviewPanel) {
-    this._graphicWebviewPanel.dispose(); 
-    setTimeout(() => {
-      commands.executeCommand("rv-simulator.simulate");
-    }, 100);
-  } else if (wasText) {
-    commands.executeCommand("rv-simulator.textSimulate");
-  } else {
-    console.warn("No active simulator type detected.");
+    if (this._graphicWebviewPanel) {
+      this._graphicWebviewPanel.dispose();
+      setTimeout(() => {
+        commands.executeCommand("rv-simulator.simulate");
+      }, 100);
+    }
   }
-}
-
 
   private animateLine(line: number) {
     this.simulator?.animateLine(line);
@@ -347,9 +357,8 @@ export class RVContext {
 
     switch (message.event) {
       case "reset":
-        console.log("LLEGO")
-      this.reset(); 
-      break;
+        this.reset();
+        break;
       case "step":
         this.step();
         break;

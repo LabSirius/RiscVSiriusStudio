@@ -1,10 +1,11 @@
 import { Controls } from '@xyflow/react';
-import { RedoDot, Ban, ZoomIn, ZoomOut, Fullscreen, Map } from 'lucide-react';
+import { RedoDot, Ban, RotateCcw, ZoomIn, ZoomOut, Fullscreen } from 'lucide-react';
 import DownloadButton from '../DownloadButton';
 
 import { sendMessage } from '@/components/Message/sendMessage';
 import { useDialog } from '@/context/panel/DialogContext';
 import { useEffect, useState } from 'react';
+
 
 interface CustomControlsProps {
   onToggleMinimap: () => void;
@@ -15,7 +16,6 @@ interface CustomControlsProps {
 }
 
 export default function CustomControls({
-  onToggleMinimap,
   onFitView,
   onZoomIn,
   onZoomOut,
@@ -39,11 +39,14 @@ export default function CustomControls({
     >
       { showControls && (
         <>
-          <button className="react-flow__controls-button-custom_green" onClick={() => sendMessage({event:"step"})}  title="Step">
+          <button className="react-flow__controls-button-custom_blue" onClick={() => sendMessage({event:"step"})}  title="Step">
             <RedoDot size={18}  />
           </button>
           <button className="react-flow__controls-button-custom_red " onClick={() => sendMessage({event:"stop"})}   title="Stop">
             <Ban size={16}  />
+          </button>
+          <button className="react-flow__controls-button-custom_green" onClick={() => sendMessage({event:"reset"})}  title="Reset">
+            <RotateCcw size={16}  />
           </button>
         </>
       )}
@@ -61,10 +64,6 @@ export default function CustomControls({
       {/* <button className="react-flow__controls-button-custom" onClick={onToggleInteractive} title="Toggle Interactive">
         <Lock size={16}  />
       </button> */}
-
-      <button className="react-flow__controls-button-custom" onClick={onToggleMinimap} title="Toggle Minimap">
-        <Map  size={16}  />
-      </button>
 
       <DownloadButton />
     </Controls>
