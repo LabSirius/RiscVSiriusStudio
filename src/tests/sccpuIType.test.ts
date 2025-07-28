@@ -115,13 +115,14 @@ describe('SCCPU - I-type instructions', () => {
 
       const cpu = new SCCPU([mockInstruction], [], 64);
 
-      const registers = Array(32).fill('00000000000000000000000000000000');
-      registers[1] = (test.rs1 >>> 0).toString(2).padStart(32, '0');
-      cpu.replaceRegisters(registers);
+       const regFile = cpu.getRegisterFile();
+      regFile.writeRegister('x1', (test.rs1 >>> 0).toString(2).padStart(32, '0'));
 
       cpu.executeInstruction();
-      const x5 = cpu.getRegisterFile().readRegisterFromName('x5');
+
+      const x5 = regFile.readRegisterFromName('x5');
       const expectedBin = (test.expected >>> 0).toString(2).padStart(32, '0');
+      
       expect(x5).toBe(expectedBin);
     });
   });

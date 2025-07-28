@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { Simulator } from "../Simulator";
+import type { Webview } from "vscode";
 
 // Mock to simulate incompatible libraries and ignore them
 vi.mock("vscode", () => ({
@@ -9,9 +10,23 @@ vi.mock("vscode", () => ({
 }));
 
 
+// Fake webview(mock)
+const dummyWebview: Webview = {
+  postMessage: (_msg: any) => Promise.resolve(true),
+  asWebviewUri: () => {
+    throw new Error("Not implemented");
+  },
+  cspSource: "",
+  onDidReceiveMessage: () => {
+    throw new Error("Not implemented");
+  },
+  html: "",
+  options: {},
+};
+
 class DummySimulator extends Simulator {
   constructor(params: any, rvDoc: any, context: any) {
-    super(params, rvDoc, context);
+    super(params, rvDoc, context, dummyWebview);
   }
 
   public notifyRegisterWrite(): void {}
@@ -20,6 +35,9 @@ class DummySimulator extends Simulator {
   public animateLine(): void {}
   public sendSimulatorTypeToView(): void {}
   public sendTextProgramToView(): void {}
+  public makeEditorWritable(): Promise<void> {
+    return Promise.resolve();
+  }
 }
 
 describe("SCCPU - S-type instructions using Simulator", () => {
@@ -40,10 +58,8 @@ describe("SCCPU - S-type instructions using Simulator", () => {
         inst: 0,
         instruction: "sb x2, 4(x1)",
       },
-      registers: [
-        "00000000000000000000000000000000",
-        "00000000000000000000000010101010",
-      ],
+      rs1: "00000000000000000000000000000000",
+      rs2: "00000000000000000000000010101010",
       expected: {
         address: 4,
         value: "10101010",
@@ -66,10 +82,8 @@ describe("SCCPU - S-type instructions using Simulator", () => {
         inst: 0,
         instruction: "sh x2, 4(x1)",
       },
-      registers: [
-        "00000000000000000000000000000000",
-        "00000000000000001010101010101010",
-      ],
+      rs1: "00000000000000000000000000000000",
+      rs2: "00000000000000001010101010101010",
       expected: {
         address: 4,
         value: "1010101010101010",
@@ -92,10 +106,8 @@ describe("SCCPU - S-type instructions using Simulator", () => {
         inst: 0,
         instruction: "sw x2, 4(x1)",
       },
-      registers: [
-        "00000000000000000000000000000000",
-        "00000000000000000000000000101010",
-      ],
+      rs1: "00000000000000000000000000000000",
+      rs2: "00000000000000000000000000101010",
       expected: {
         address: 4,
         value: "00000000000000000000000000101010",
@@ -106,21 +118,15 @@ describe("SCCPU - S-type instructions using Simulator", () => {
 
   for (const test of testCases) {
     it(test.name, () => {
-      const registers = new Array(32).fill("00000000000000000000000000000000");
-      registers[1] = test.registers[0]; // x1
-      registers[2] = test.registers[1]; // x2
-
-      const mem = Array.from({ length: 64 }, (_, i) => ({
-        memdef: i,
-        binValue: "00000000",
-      }));
-
       const params = { memorySize: 64 };
-      const rvDoc = { ir: { instructions: [test.inst], memory: mem } };
+      const rvDoc = { ir: { instructions: [test.inst], memory: [] } };
       const context = {};
 
       const sim = new DummySimulator(params, rvDoc, context);
-      sim.replaceRegisters(registers);
+
+      const regFile = sim["cpu"].getRegisterFile();
+      regFile.writeRegister("x1", test.rs1);
+      regFile.writeRegister("x2", test.rs2);
 
       const result = sim["cpu"].executeInstruction();
       (sim as any).writeResult(result); // Execute the writing
@@ -128,6 +134,7 @@ describe("SCCPU - S-type instructions using Simulator", () => {
       const readBytes = sim["cpu"]
         .getDataMemory()
         .read(test.expected.address, test.expected.size);
+
       const reconstructed = readBytes.join("");
       const expected = test.expected.value.padStart(test.expected.size * 8, "0");
 
