@@ -1,23 +1,43 @@
-import { describe, it, expect } from "vitest";
-import { SCCPU } from "../vcpu/singlecycle";
+import { describe, it, expect, vi } from "vitest";
+import { Simulator } from "../Simulator";
+import type { Webview } from "vscode";
 
-// Utility to manually build memory
-function createMemory(bytes: string[], address = 4): any[] {
-    const mem = Array.from({ length: 64 }, (_, i) => ({
-        memdef: i,
-        binValue: "00000000",
-    }));
-    for (let i = 0; i < bytes.length; i++) {
-        const cell = mem[address + i];
-        if (!cell) throw new Error(`Invalid address: ${address + i}`);
+// Mock to simulate incompatible libraries and ignore them
+vi.mock("vscode", () => ({
+    window: {},
+    commands: {},
+    TextEditorDecorationType: {},
+}));
 
-        const byte = bytes[i];
-        if (byte === undefined) throw new Error(`Byte at position ${i} is undefined`);
 
-        cell.binValue = byte;
+// Fake webview(mock)
+const dummyWebview: Webview = {
+    postMessage: (_msg: any) => Promise.resolve(true),
+    asWebviewUri: () => {
+        throw new Error("Not implemented");
+    },
+    cspSource: "",
+    onDidReceiveMessage: () => {
+        throw new Error("Not implemented");
+    },
+    html: "",
+    options: {},
+};
+
+class DummySimulator extends Simulator {
+    constructor(params: any, rvDoc: any, context: any) {
+        super(params, rvDoc, context, dummyWebview);
     }
 
-    return mem;
+    public notifyRegisterWrite(): void { }
+    public notifyMemoryRead(): void { }
+    public notifyMemoryWrite(): void { }
+    public animateLine(): void { }
+    public sendSimulatorTypeToView(): void { }
+    public sendTextProgramToView(): void { }
+    public makeEditorWritable(): Promise<void> {
+        return Promise.resolve();
+    }
 }
 
 describe("SCCPU - Load instructions (execution only)", () => {
@@ -76,16 +96,30 @@ describe("SCCPU - Load instructions (execution only)", () => {
                 },
             };
 
-            const mem = createMemory(test.bytes);
-            const cpu = new SCCPU([instruction], mem, 64);
+            // Simulation load data into memory
+            const memory = test.bytes.map((binValue, i) => ({
+                memdef: 4 + i,
+                binValue,
+            }));
 
-            const registers = new Array(32).fill("00000000000000000000000000000000");
-            registers[1] = "00000000000000000000000000000000"; // x1 = 0
-            cpu.replaceRegisters(registers);
+            // Program structure
+            const rvDoc = {
+                ir: {
+                    instructions: [instruction], // intruction list
+                    memory, // memory data to be used when executing the instruction.
+                },
+            };
 
-            const result = cpu.executeInstruction();
+            const sim = new DummySimulator({ memorySize: 64 }, rvDoc, {});
+            const regFile = sim["cpu"].getRegisterFile();
 
-            expect(result.wb.result).toBe(test.expected);
+            regFile.writeRegister("x1", "00000000000000000000000000000000");
+            sim.step();
+
+            const result = regFile.readRegisterFromName("x5");
+            console.log(`Resultado en x5 (${test.name}):`, result);
+
+            expect(result).toBe(test.expected);
         });
     });
 });

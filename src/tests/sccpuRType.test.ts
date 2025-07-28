@@ -125,15 +125,16 @@ describe('SCCPU - R-type instructions', () => {
 
       const cpu = new SCCPU([mockInstruction], [], 64);
 
-      const registerValues = Array(32).fill('00000000000000000000000000000000');
-      registerValues[1] = (test.rs1 >>> 0).toString(2).padStart(32, '0'); // x1
-      registerValues[2] = (test.rs2 >>> 0).toString(2).padStart(32, '0'); // x2
-      cpu.replaceRegisters(registerValues);
+       const regFile = cpu.getRegisterFile();
+      regFile.writeRegister('x1', (test.rs1 >>> 0).toString(2).padStart(32, '0'));
+      regFile.writeRegister('x2', (test.rs2 >>> 0).toString(2).padStart(32, '0'));
 
       cpu.executeInstruction();
-      const x5 = cpu.getRegisterFile().readRegisterFromName('x5');
+
+      const result = regFile.readRegisterFromName('x5');
       const expectedBinary = (test.expected >>> 0).toString(2).padStart(32, '0');
-      expect(x5).toBe(expectedBinary);
+
+      expect(result).toBe(expectedBinary);
     });
   });
 });

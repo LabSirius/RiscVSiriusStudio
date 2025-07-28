@@ -60,6 +60,7 @@ describe("SCCPU - LUI instruction tests", () => {
       currentPc: testConfig.pcStartBytes
     };
 
+    // Creating an array of binaries to then pass them to the simulator constructor
     const memory = Array.from({ length: 64 }, (_, i) => ({
       memdef: i,
       binValue: "00000000",

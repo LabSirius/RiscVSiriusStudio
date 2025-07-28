@@ -20,19 +20,6 @@ const dummyWebview: Webview = {
   options: {},
 };
 
-interface TestInstruction {
-  kind: string;
-  type: string;
-  opcode: string;
-  rd: { regeq: string };
-  encoding: {
-    imm21: string;
-  };
-  inst: number;
-  instruction: string;
-  currentPc?: number;
-}
-
 class DummySimulator extends Simulator {
   constructor(params: any, rvDoc: any, context: any) {
     super(params, rvDoc, context, dummyWebview);
@@ -76,42 +63,40 @@ describe("SCCPU - JAL instruction tests", () => {
         currentPc: test.pcStartBytes
       };
 
-      const mem = Array.from({ length: 64 }, (_, i) => ({
-        memdef: i,
-        binValue: "00000000",
-      }));
-
       const rvDoc = {
         ir: {
           instructions: [instruction],
-          memory: mem,
+          memory: [],
         },
       };
 
       const params = { memorySize: 64 };
       const context = {};
-      
-      try {
-        const sim = new DummySimulator(params, rvDoc, context);
-        
-        sim["cpu"]["pc"] = test.pcStartIndex;
-        sim.replaceRegisters(new Array(32).fill("00000000000000000000000000000000"));
+      const sim = new DummySimulator(params, rvDoc, context);
 
-        const stepResult = sim.step();
-        if (!stepResult.instruction) {
-          throw new Error("No instruction received in step result");
-        }
+      // Access memory and load content
+      const memory = sim["cpu"].getDataMemory();
+      const blankMemory = Array.from({ length: 64 }, (_, i) => ({
+        memdef: i,
+        binValue: "00000000",
+      }));
+      memory.uploadProgram(blankMemory);
 
-        const x1Binary = sim["cpu"].getRegisterFile().readRegister(1);
-        const pc = sim["cpu"].getPC();
-        const x1 = parseInt(x1Binary, 2);
+      sim["cpu"]["pc"] = test.pcStartIndex;
+      sim.replaceRegisters(new Array(32).fill("00000000000000000000000000000000"));
 
-        expect(pc).toBe(test.expectedPCIndex);
-        expect(x1).toBe(test.expectedX1);
-      } catch (error) {
-        console.error("Test execution error:", error);
-        throw error;
+      const stepResult = sim.step();
+
+      if (!stepResult.instruction) {
+        throw new Error("No instruction received in step result");
       }
+
+      const x1Binary = sim["cpu"].getRegisterFile().readRegister(1);
+      const pc = sim["cpu"].getPC();
+      const x1 = parseInt(x1Binary, 2);
+
+      expect(pc).toBe(test.expectedPCIndex);
+      expect(x1).toBe(test.expectedX1);
     });
   }
 });
