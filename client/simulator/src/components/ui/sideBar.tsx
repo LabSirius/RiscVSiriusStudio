@@ -190,15 +190,14 @@ function SidebarTrigger({ className, ...props }: React.ComponentProps<typeof But
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       variant="ghost"
-      size="icon"
       className={cn(
-        "size-7 transition-opacity duration-200 bg-[#000000] border-lg p-4 ",
+        " transition-opacity duration-200 bg-[#000000] p-4 ",
         hoveringSidebar ? "opacity-0 pointer-events-none" : "opacity-100",
         className
       )}
       onMouseEnter={() => setOpen(true)}
       {...props}>
-      <PanelLeftIcon  className="w-[2rem] h-[2rem]" />
+      <PanelLeftIcon  size={18} />
       <span className="sr-only ">Open Sidebar</span>
     </Button>
   );

@@ -1,10 +1,8 @@
-
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
 import { Button } from "@/components/ui/button";
 
 import { useSidebar } from "@/components/ui/sideBar";
-
 
 import CircleActive from "./CircleActive";
 
@@ -19,7 +17,6 @@ import {
 } from "@/components/ui/sideBar";
 
 import { Text, Search, Calculator, Info, Settings } from "lucide-react";
-import ChangeTypeSimulator from "./ChangeTypeSimulator";
 
 export function SideBar() {
   const { operation, modeSimulator, section, setSection } = useSimulator();
@@ -33,19 +30,13 @@ export function SideBar() {
       onMouseLeave={() => {
         setOpen(false);
         setHoveringSidebar(false);
-      }}
-    >
+      }}>
       <SidebarContent className="relative w-full h-full pr-10 overflow-x-hidden overflow-y-auto hide-scrollbar">
         <SidebarGroup className="flex flex-col flex-1">
           <SidebarGroupLabel>Sections</SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-col">
             <SidebarMenu className="flex flex-col justify-between h-auto pl-3 mt-1">
               <div className="flex flex-col items-start gap-3">
-
-                
-                <ChangeTypeSimulator />
-                
-
                 {(operation === "uploadMemory" || operation === "step") &&
                   modeSimulator === "graphic" && (
                     <SidebarMenuItem className="flex items-center gap-1">
@@ -69,16 +60,14 @@ export function SideBar() {
                   </SidebarMenuItem>
                 )}
 
-                
-                  <SidebarMenuItem className="flex items-center gap-1">
-                    <a onClick={() => setSection("convert")} className="curser-pointer">
-                      <Button variant="outline" size="icon">
-                        <Calculator />
-                      </Button>
-                    </a>
-                    {section === "convert" && <CircleActive />}
-                  </SidebarMenuItem>
-         
+                <SidebarMenuItem className="flex items-center gap-1">
+                  <a onClick={() => setSection("convert")} className="curser-pointer">
+                    <Button variant="outline" size="icon">
+                      <Calculator />
+                    </Button>
+                  </a>
+                  {section === "convert" && <CircleActive />}
+                </SidebarMenuItem>
 
                 {(operation === "uploadMemory" || operation === "step") && (
                   <SidebarMenuItem className="flex items-center gap-1">

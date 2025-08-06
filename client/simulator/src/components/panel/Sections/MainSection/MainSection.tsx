@@ -14,7 +14,7 @@ import SearchSection from "../SearchSection";
 import HelpSection from "../HelpSection";
 import { useTheme } from "@/components/ui/theme/theme-provider";
 
-import SimulateAuto from "./SimulateAuto";
+import OptionsSimulate from "./OptionsSimulate";
 
 const MainSection = () => {
   const { modeSimulator, operation, section } = useSimulator();
@@ -98,9 +98,10 @@ const MainSection = () => {
       )}
 
         <div className="absolute right-2 flex flex-col items-center  ">
-          <SidebarTrigger className={``} />
+          <SidebarTrigger />
 
-        <SimulateAuto />
+          <OptionsSimulate />
+
 
         </div>
         
