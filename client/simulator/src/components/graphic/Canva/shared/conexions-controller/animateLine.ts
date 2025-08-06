@@ -1,5 +1,5 @@
 import { Edge } from "@xyflow/react";
-import * as dataConexions from "./dataConexions2";
+import * as dataConexions from "./dataConexions";
 
 const allConexions = Object.values(dataConexions);
 const edgeGroups: Record<string, string[]> = {};

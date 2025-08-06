@@ -1,135 +1,168 @@
-export const skipFunct7Edges = [
-  'pivot30->pivot32',
-  'pivot32->pivot33'
+export const pc_im = ["pc->pivot25", "pivot25->instMemory"];
+
+export const pc_adder4 = ["pc->pivot25", "pivot25->pivot1", "pivot1->adder4"];
+
+export const four_adder4 = ["four->adder4"];
+
+export const muxD_pc = ["muxD->pc"]
+
+//REGISTER UNIT
+export const im_rs1 = [
+  "instructionMemory->pivot3",
+  "pivot3->pivot22",
+  "pivot22->pivot20",
+  "pivot20->pivot21",
+  "pivot21->RegistersUnit[19:15]",
+];
+
+export const im_rs2 = [
+  "instructionMemory->pivot3",
+  "pivot3->pivot22",
+  "pivot22->pivot20",
+  "pivot20->RegistersUnit[24:20]",
+];
+
+export const im_rd = [
+  "instructionMemory->pivot3",
+  "pivot3->pivot22",
+  "pivot22->registersUnit[11:7]",
+];
+
+export const muxC_rd = ["muxC->pivot11", "pivot11->pivot12", "pivot12->registersUnit"];
+
+export const RUWr_wb = ["ruWr->registersUnit"];
+
+//IMM GENERATOR
+export const im_immGen = [
+  "instructionMemory->pivot3",
+  "pivot3->pivot26",
+  "pivot26->pivotJump1",
+  "pivotJump1->immediateGenerator[31:7]",
+];
+
+export const immSrc_immGen = ["immSrc->immGenerator"];
+
+//OPCODE
+export const im_opcode = [
+  "instructionMemory->pivot3",
+  "pivot3->pivot26",
+  "pivot26->pivot27",
+  "pivot27->pivot28",
+  "pivot28->pivot29",
+];
+
+export const im_funct3 = [
+  "instructionMemory->pivot3",
+  "pivot3->pivot26",
+  "pivot26->pivot27",
+  "pivot27->pivot28",
+  "pivot28->pivot29",
+  "pivot28->pivot30",
+  "pivot30->pivot31",
+];
+
+export const im_funct7 = [
+  "instructionMemory->pivot3",
+  "pivot3->pivot26",
+  "pivot26->pivot27",
+  "pivot27->pivot28",
+  "pivot28->pivot29",
+  "pivot28->pivot30",
+  "pivot30->pivot32",
+  "pivot32->pivot33",
+];
+
+//MUXA
+export const rs1_muxA = ["registersUnit->pivotJump4", "pivotJump4->pivot4", "pivot4->muxA"];
+
+export const pc_muxA = [
+  "pc->pivot25",
+  "pivot25->pivot1",
+  "pivot1->pivotJump2",
+  "pivotJump2->pivotJump3",
+  "pivotJump3->muxA",
+];
+
+export const aluASrc_muxA = ["aluASrc->muxA"];
+
+//MUXB
+export const rs2_muxB = ["registersUnit->pivot2", "pivot2->muxB"];
+
+export const immGen_muxB = ["immGenerator->pivotJump5", "pivotJump5->pivot10", "pivot10->muxB"];
+
+export const aluBSrc_muxB = ["aluBSrc->muxB"];
+
+//ALU
+export const muxA_aluA = ["muxA->alu"];
+
+export const muxB_aluB = ["muxB->alu"];
+
+export const aluOp_alu = ["aluOp->ALU"];
+
+//BRANCH
+export const rs1_bu = ["registersUnit->pivotJump4", "pivotJump4->pivot4", "pivot4->branchUnit"];
+
+export const rs2_bu = ["registersUnit->pivot2", "pivot2->branchUnit"];
+
+export const brOp_bu = ["brOp->branchUnit"];
+
+//DATA MEMORY
+export const alu_dm = ["alu->pivot7", "pivot7->dataMemory"];
+
+export const rs2_dm = [
+  "registersUnit->pivot2",
+  "pivot2->pivot5",
+  "pivot5->pivot6",
+  "pivot6->dataMemory",
+];
+
+export const dmWr_dm = ["dmWr->dataMemory"];
+
+export const dmCtrl_dm = ["dmCtrl->dataMemory"];
+
+//MUX C
+export const adder4_muxC = [
+  "adder4->pivot18",
+  "pivot18->pivotJump8",
+  "pivotJump8->pivotJump9",
+  "pivotJump9->pivot13",
+  "pivot13->muxC",
+];
+
+export const dm_muxC = [
+    "dataMemory->muxC"
 ]
 
-export const skipFunct3Edges = [
-  'pivot28->pivot30',
-  'pivot30->pivot31'
+export const alu_muxC = [
+    "alu->pivot7",
+    "pivot7->pivot8",
+    "pivot8->pivotJump6",
+    "pivotJump6->pivot9",
+    "pivot9->muxC"
 ]
 
-// output edge groups for MUX A route
-export const skipMuxAOutputEdges = [
-  'uxA->alu'
+export const ruDataWrSrc_muxC = [
+    "ruDataWrSrc->muxC"
 ]
 
-// Edge groups for skipping MUX A route
-export const skipMuxA = [
-  'aluASrc->muxA',
-  'muxA->alu'
+
+//MUX D
+export const alu_muxD = [
+    "alu->pivot7",
+    "pivot7->pivot16",
+    "pivot16->pivot17",
+    "pivot17->muxD"
 ]
 
-// Edge groups for MUX A route
-export const muxARouteEdges = [
-  'pivot1->pivotJump2',
-  'pivotJump2->pivotJump3',
-  'pivotJump3->muxA'
-];
+export const adder4_muxD = [
+    "adder4->pivot18",
+    "pivot18->pivot19",
+    "pivot19->muxD"
+]
 
-// Edge groups for no immediate generation
-export const noImmediateEdges = [
-  'pivot26->pivotJump1',
-  'pivotJump1->immediateGenerator[31:7]',
-  'immSrc->immGenerator',
-  'immGenerator->pivotJump5',
-  'pivotJump5->pivot10'
-];
-
-// Edge groups for MUX B route for R-type instructions
-export const muxBRouteEdges_R = ['pivot10->muxB'];
-
-// Edge groups for MUX B route for I-type instructions and others
-export const muxBRouteEdges_I = [
-  'registersUnit->pivot2',
-  'pivot2->muxB'
-];
-
-// Edge groups for bypassing the branch unit
-export const bypassBranchUnitEdges = [
-  'pivot2->branchUnit',
-  'pivot4->branchUnit',
-];
-
-// Edge groups for memory access (read) route
-export const memoryReadEdges = [
-  'pivot2->pivot5',
-  'pivot5->pivot6',
-  'pivot6->dataMemory',
-  'pivot7->dataMemory',
-  'dmWr->dataMemory',
-  'dmCtrl->dataMemory'
-];
-
-// Edge groups for MUX C route for R-type instructions
-export const muxCRouteEdges_R = [
-  'dataMemory->muxC',
-  'pivot18->pivotJump8',
-  'pivotJump8->pivotJump9',
-  'pivotJump9->pivot13',
-  'pivot13->muxC'
-];
-
-// Edge groups for MUX D route for R-type instructions
-export const muxDRouteEdges_R = [
-  'pivot7->pivot16',
-  'pivot16->pivot17',
-  'pivot17->muxD'
-
-];
-
-
-
-// Edge groups for skipping RS2 register
-export const skipRS1InputEdges = ['pivot20->pivot21' ,'pivot21->RegistersUnit[19:15]'];
-export const skipRS1Edges = ['pivot20->RegistersUnit[19:15]', 'registersUnit->pivotJump4', 'pivotJump4->pivot4', 'pivot4->muxA'];
-// Edge groups for skipping RS2 register
-export const skipRS2Edges = ['pivot20->RegistersUnit[24:20]'];
-
-export const skipRDEdges = ['pivot22->registersUnit[11:7]'];
-
-// Additional edge groups for the MUX C route in load instructions (L-type)
-export const muxCRouteExtraEdges_L = [
-  'pivot7->pivot8',
-  'pivot8->pivotJump6',
-  'pivotJump6->pivot9',
-  'pivot9->muxC'
-];
-
-// Edge groups for skipping RS2 in data memory access
-export const skipRS2MemoryEdges = [
-  'pivot2->pivot5',
-  'pivot5->pivot6',
-  'pivot6->dataMemory'
-];
-
-// Edge groups for the MUX D route in JALR instructions
-export const muxDRouteEdges_JALR = [
-  'pivot18->pivot19',
-  'pivot19->muxD'
-];
-
-// Additional edge groups for the MUX C route in JALR instructions
-export const muxCRouteExtraEdges_JALR = [
-  'dataMemory->muxC',
-  'pivot7->pivot8',
-  'pivot8->pivotJump6',
-  'pivotJump6->pivot9',
-  'pivot9->muxC'
-];
-
-// Edge groups for bypassing the write-back stage
-export const bypassWriteBackEdges = [
-  'dataMemory->muxC',
-  'pivot7->pivot8',
-  'pivot8->pivotJump6',
-  'pivotJump6->pivot9',
-  'pivot9->muxC',
-  'muxC->pivot11',
-  'pivot11->pivot12',
-  'pivot12->registersUnit',
-  'ruWr->registersUnit',
-  'ruDataWrSrc->muxC',
-  ...muxCRouteEdges_R
-];
-
-export const fullMemoryAccessEdges = memoryReadEdges; 
+export const bu_muxD = [
+    "branchUnit->pivot14",
+    "pivot14->pivotJump10",
+    "pivotJump10->pivot15",
+    "pivot15->muxD"
+]

@@ -1,7 +1,10 @@
-import { useMemo } from 'react';
-import { useSimulator } from '@/context/shared/SimulatorContext';
-import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
-import * as conexion from './dataConexions';
+import { useMemo } from "react";
+import { useSimulator } from "@/context/shared/SimulatorContext";
+import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
+import * as conexion from "./dataConexions";
+
+const allConexions = Object.values(conexion);
+const allEdges = [...new Set(allConexions.flat())];
 
 export const useDataConexions = () => {
   const { typeSimulator } = useSimulator();
@@ -9,164 +12,379 @@ export const useDataConexions = () => {
 
   const disabledEdges = useMemo(() => {
     if (!currentInst) return [];
-    
-    let targetEdges: string[] = [];
+
+    let enabledEdges: string[] = [];
     const currentInstruction = currentInst;
 
     switch (currentInstruction.type) {
       case "R":
         setCurrentType("R");
-        targetEdges = [
-          ...conexion.muxARouteEdges,
-          ...conexion.noImmediateEdges,
-          ...conexion.muxBRouteEdges_R,
-          ...conexion.bypassBranchUnitEdges,
-          ...conexion.memoryReadEdges,
-          ...conexion.muxCRouteEdges_R,
-          ...conexion.muxDRouteEdges_R,
+        enabledEdges = [
+          ...conexion.adder4_muxD,
+          ...conexion.bu_muxD,
+
+          ...conexion.muxD_pc,
+
+          ...conexion.pc_adder4,
+          ...conexion.four_adder4,
+          ...conexion.pc_im,
+
+          ...conexion.im_opcode,
+          ...conexion.im_funct3,
+          ...conexion.im_funct7,
+
+          ...conexion.im_rs1,
+          ...conexion.im_rs2,
+          ...conexion.im_rd,
+          ...conexion.muxC_rd,
+          ...conexion.RUWr_wb,
+
+          ...conexion.rs1_muxA,
+          ...conexion.aluASrc_muxA,
+          ...conexion.rs2_muxB,
+          ...conexion.aluBSrc_muxB,
+
+          ...conexion.muxA_aluA,
+          ...conexion.muxB_aluB,
+          ...conexion.aluOp_alu,
+
+          ...conexion.brOp_bu,
+
+          ...conexion.alu_muxC,
+          ...conexion.ruDataWrSrc_muxC,
         ];
         break;
+
       case "I":
         if (currentInstruction.opcode === "0010011") {
           setCurrentType("I");
-          targetEdges = [
-            ...conexion.skipFunct7Edges,
-            ...conexion.skipRS2Edges,
-            ...conexion.muxARouteEdges,
-            ...conexion.muxBRouteEdges_I,
-            ...conexion.muxCRouteEdges_R,
-            ...conexion.muxDRouteEdges_R,
-            ...conexion.bypassBranchUnitEdges,
-            ...conexion.memoryReadEdges,
+          enabledEdges = [
+            ...conexion.adder4_muxD,
+            ...conexion.bu_muxD,
+
+            ...conexion.muxD_pc,
+
+            ...conexion.pc_adder4,
+            ...conexion.four_adder4,
+            ...conexion.pc_im,
+
+            ...conexion.im_opcode,
+            ...conexion.im_funct3,
+
+            ...conexion.im_rs1,
+            ...conexion.im_rd,
+            ...conexion.muxC_rd,
+            ...conexion.RUWr_wb,
+
+            ...conexion.im_immGen,
+            ...conexion.immSrc_immGen,
+
+            ...conexion.rs1_muxA,
+            ...conexion.aluASrc_muxA,
+
+            ...conexion.immGen_muxB,
+            ...conexion.aluBSrc_muxB,
+
+            ...conexion.muxA_aluA,
+            ...conexion.muxB_aluB,
+            ...conexion.aluOp_alu,
+
+            ...conexion.brOp_bu,
+
+            ...conexion.alu_muxC,
+            ...conexion.ruDataWrSrc_muxC,
           ];
         } else if (currentInstruction.opcode === "0000011") {
           setCurrentType("L");
-          targetEdges = [
-            ...conexion.skipFunct7Edges,
-            ...conexion.skipRS2Edges,
-            ...conexion.muxARouteEdges,
-            ...conexion.muxBRouteEdges_I,
-            ...conexion.muxCRouteEdges_R.slice(1),
-            ...conexion.muxCRouteExtraEdges_L,
-            ...conexion.muxDRouteEdges_R,
-            ...conexion.bypassBranchUnitEdges,
-            ...conexion.skipRS2MemoryEdges,
+          enabledEdges = [
+            ...conexion.adder4_muxD,
+            ...conexion.bu_muxD,
+
+            ...conexion.muxD_pc,
+
+            ...conexion.pc_adder4,
+            ...conexion.four_adder4,
+
+            ...conexion.pc_im,
+
+            ...conexion.im_opcode,
+            ...conexion.im_funct3,
+
+            ...conexion.im_rs1,
+            ...conexion.im_rd,
+            ...conexion.muxC_rd,
+            ...conexion.RUWr_wb,
+
+            ...conexion.im_immGen,
+            ...conexion.immSrc_immGen,
+
+            ...conexion.rs1_muxA,
+            ...conexion.aluASrc_muxA,
+
+            ...conexion.immGen_muxB,
+            ...conexion.aluBSrc_muxB,
+
+            ...conexion.muxA_aluA,
+            ...conexion.muxB_aluB,
+            ...conexion.aluOp_alu,
+
+            ...conexion.brOp_bu,
+
+            ...conexion.alu_dm,
+            ...conexion.dmWr_dm,
+            ...conexion.dmCtrl_dm,
+
+            ...conexion.dm_muxC,
+
+            ...conexion.ruDataWrSrc_muxC,
           ];
         } else if (currentInstruction.opcode === "1100111") {
           setCurrentType("JALR");
-          targetEdges = [
-            ...conexion.skipFunct7Edges,
-            ...conexion.skipRS2Edges,
-            ...conexion.muxARouteEdges,
-            ...conexion.muxBRouteEdges_I,
-            ...conexion.muxCRouteExtraEdges_JALR,
-            ...conexion.muxDRouteEdges_JALR,
-            ...conexion.bypassBranchUnitEdges,
-            ...conexion.fullMemoryAccessEdges,
+          enabledEdges = [
+            ...conexion.alu_muxD,
+            ...conexion.bu_muxD,
+
+            ...conexion.muxD_pc,
+
+            ...conexion.pc_adder4,
+            ...conexion.four_adder4,
+
+            ...conexion.pc_im,
+
+            ...conexion.im_opcode,
+            ...conexion.im_funct3,
+
+            ...conexion.im_rs1,
+            ...conexion.im_rd,
+            ...conexion.muxC_rd,
+            ...conexion.RUWr_wb,
+
+            ...conexion.im_immGen,
+            ...conexion.immSrc_immGen,
+
+            ...conexion.rs1_muxA,
+            ...conexion.aluASrc_muxA,
+
+            ...conexion.immGen_muxB,
+            ...conexion.aluBSrc_muxB,
+
+            ...conexion.muxA_aluA,
+            ...conexion.muxB_aluB,
+            ...conexion.aluOp_alu,
+
+            ...conexion.brOp_bu,
+
+            ...conexion.adder4_muxC,
+
+            ...conexion.ruDataWrSrc_muxC,
           ];
         }
         break;
+
       case "S":
         setCurrentType("S");
-        targetEdges = [
-          ...conexion.skipFunct7Edges,
-          ...conexion.skipRDEdges,
-          ...conexion.muxARouteEdges,
-          ...conexion.muxBRouteEdges_I.slice(1),
-          ...conexion.muxCRouteEdges_R,
-          ...conexion.muxCRouteExtraEdges_L,
-          ...conexion.muxDRouteEdges_R,
-          ...conexion.bypassBranchUnitEdges,
-          ...conexion.bypassWriteBackEdges,
+        enabledEdges = [
+          ...conexion.adder4_muxD,
+          ...conexion.bu_muxD,
+
+          ...conexion.muxD_pc,
+
+          ...conexion.pc_adder4,
+          ...conexion.four_adder4,
+
+          ...conexion.pc_im,
+
+          ...conexion.im_opcode,
+          ...conexion.im_funct3,
+
+          ...conexion.im_rs1,
+          ...conexion.im_rs2,
+
+          ...conexion.im_immGen,
+          ...conexion.immSrc_immGen,
+
+          ...conexion.rs1_muxA,
+          ...conexion.aluASrc_muxA,
+
+          ...conexion.immGen_muxB,
+          ...conexion.aluBSrc_muxB,
+
+          ...conexion.muxA_aluA,
+          ...conexion.muxB_aluB,
+          ...conexion.aluOp_alu,
+
+          ...conexion.brOp_bu,
+
+          ...conexion.alu_dm,
+          ...conexion.rs2_dm,
+          ...conexion.dmWr_dm,
+          ...conexion.dmCtrl_dm,
         ];
         break;
-      case "B":
-        setCurrentType("B");
-        targetEdges = [
-          ...conexion.skipFunct7Edges,
-          ...conexion.skipRDEdges,
-          'pivot4->muxA', 
-          ...conexion.muxBRouteEdges_I.slice(1),
-          ...conexion.memoryReadEdges,
-          ...conexion.bypassWriteBackEdges,
-        ];
 
-        if (currentResult.buMux.signal === '0') {
-          targetEdges = [
-            ...targetEdges,
-            ...conexion.muxDRouteEdges_R,
-            'alu->pivot7', 
-          ];
+      case "B": // BEQ, BNE, etc.
+        setCurrentType("B");
+        enabledEdges = [
+          ...conexion.bu_muxD,
+
+          ...conexion.muxD_pc,
+
+          ...conexion.pc_adder4,
+          ...conexion.four_adder4,
+
+          ...conexion.pc_im,
+
+          ...conexion.im_opcode,
+          ...conexion.im_funct3,
+
+          ...conexion.im_rs1,
+          ...conexion.im_rs2,
+
+          ...conexion.im_immGen,
+          ...conexion.immSrc_immGen,
+
+          ...conexion.pc_muxA,
+          ...conexion.aluASrc_muxA,
+
+          ...conexion.immGen_muxB,
+          ...conexion.aluBSrc_muxB,
+
+          ...conexion.muxA_aluA,
+          ...conexion.muxB_aluB,
+          ...conexion.aluOp_alu,
+
+          ...conexion.rs1_bu,
+          ...conexion.rs2_bu,
+          ...conexion.brOp_bu,
+        ];
+        if (currentResult.buMux.signal === "1") {
+          enabledEdges.push(...conexion.alu_muxD);
         } else {
-          targetEdges = [
-            'adder4->pivot18', 
-            ...targetEdges,
-            ...conexion.muxDRouteEdges_JALR,
-          ];
+          enabledEdges.push(...conexion.adder4_muxD);
         }
         break;
-      case "J":
+
+      case "J": // JAL
         setCurrentType("J");
-        targetEdges = [
-          ...conexion.skipFunct7Edges,
-          ...conexion.skipFunct3Edges,
-          ...conexion.skipRS1Edges,
-          ...conexion.skipRS1InputEdges,
-          'pivot22->pivot20', 
-          ...conexion.skipRS2Edges,
-          ...conexion.muxBRouteEdges_I,
-          ...conexion.muxCRouteExtraEdges_JALR,
-          ...conexion.muxDRouteEdges_JALR,
-          ...conexion.bypassBranchUnitEdges,
-          ...conexion.fullMemoryAccessEdges,
+        enabledEdges = [
+          ...conexion.alu_muxD,
+          ...conexion.bu_muxD,
+
+          ...conexion.muxD_pc,
+
+          ...conexion.pc_adder4,
+          ...conexion.four_adder4,
+
+          ...conexion.pc_im,
+
+          ...conexion.im_opcode,
+
+          ...conexion.im_rd,
+          ...conexion.muxC_rd,
+          ...conexion.RUWr_wb,
+
+          ...conexion.im_immGen,
+          ...conexion.immSrc_immGen,
+
+          ...conexion.pc_muxA,
+          ...conexion.aluASrc_muxA,
+
+          ...conexion.immGen_muxB,
+          ...conexion.aluBSrc_muxB,
+
+          ...conexion.muxA_aluA,
+          ...conexion.muxB_aluB,
+          ...conexion.aluOp_alu,
+
+          ...conexion.brOp_bu,
+
+          ...conexion.adder4_muxC,
+          ...conexion.ruDataWrSrc_muxC,
         ];
         break;
+
       case "U":
         if (currentInstruction.opcode === "0110111") {
+          // LUI
           setCurrentType("LUI");
-          targetEdges = [
-            ...conexion.skipFunct7Edges,
-            ...conexion.skipFunct3Edges,
-            ...conexion.skipRS2Edges,
-            'pivot22->pivot20', 
-            ...conexion.skipRS1InputEdges,
-            ...conexion.skipRS1Edges,
-            ...conexion.muxARouteEdges,
-            ...conexion.skipMuxA,
-            ...conexion.skipMuxAOutputEdges,
-            ...conexion.muxBRouteEdges_I,
-            ...conexion.muxCRouteEdges_R,
-            ...conexion.muxDRouteEdges_R,
-            ...conexion.bypassBranchUnitEdges,
-            ...conexion.memoryReadEdges,
+          enabledEdges = [
+            ...conexion.adder4_muxD,
+            ...conexion.bu_muxD,
+
+            ...conexion.muxD_pc,
+
+            ...conexion.pc_adder4,
+            ...conexion.four_adder4,
+
+            ...conexion.pc_im,
+
+            ...conexion.im_opcode,
+
+            ...conexion.im_rd,
+            ...conexion.muxC_rd,
+            ...conexion.RUWr_wb,
+
+            ...conexion.im_immGen,
+            ...conexion.immSrc_immGen,
+
+            ...conexion.immGen_muxB,
+            ...conexion.aluBSrc_muxB,
+
+            ...conexion.muxB_aluB,
+            ...conexion.aluOp_alu,
+
+            ...conexion.brOp_bu,
+
+            ...conexion.alu_muxC,
+            ...conexion.ruDataWrSrc_muxC,
           ];
         } else if (currentInstruction.opcode === "0010111") {
+          // AUIPC
           setCurrentType("AUIPC");
-          targetEdges = [
-            ...conexion.skipFunct7Edges,
-            ...conexion.skipFunct3Edges,
-            ...conexion.skipRS2Edges,
-            'pivot22->pivot20', 
-            ...conexion.skipRS1InputEdges,
-            ...conexion.skipRS1Edges,
-            ...conexion.skipMuxAOutputEdges,
-            ...conexion.muxBRouteEdges_I,
-            ...conexion.muxCRouteEdges_R,
-            ...conexion.muxDRouteEdges_R,
-            ...conexion.bypassBranchUnitEdges,
-            ...conexion.memoryReadEdges,
+          enabledEdges = [
+            ...conexion.adder4_muxD,
+            ...conexion.bu_muxD,
+
+            ...conexion.muxD_pc,
+
+            ...conexion.pc_adder4,
+            ...conexion.four_adder4,
+
+            ...conexion.pc_im,
+
+            ...conexion.im_opcode,
+
+            ...conexion.im_rd,
+            ...conexion.muxC_rd,
+            ...conexion.RUWr_wb,
+
+            ...conexion.im_immGen,
+            ...conexion.immSrc_immGen,
+
+            ...conexion.pc_muxA,
+            ...conexion.aluASrc_muxA,
+
+            ...conexion.immGen_muxB,
+            ...conexion.aluBSrc_muxB,
+
+            ...conexion.muxB_aluB,
+            ...conexion.aluOp_alu,
+
+            ...conexion.brOp_bu,
+
+            ...conexion.alu_muxC,
+            ...conexion.ruDataWrSrc_muxC,
           ];
         }
         break;
-      default:
-        break;
-    }
-    
-    if (typeSimulator === 'pipeline') {
-        // LOGIC
     }
 
-    return targetEdges;
+    if (typeSimulator === "pipeline") {
+      // LOGIC
+    }
+
+    const enabledSet = new Set(enabledEdges);
+    return allEdges.filter((edge) => !enabledSet.has(edge));
   }, [currentInst, currentResult, typeSimulator, setCurrentType]);
 
   return disabledEdges;
