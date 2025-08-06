@@ -1,6 +1,17 @@
 import { Edge } from "@xyflow/react";
+import * as dataConexions from "./dataConexions2";
 
-import { edgeGroups } from "./constants";
+const allConexions = Object.values(dataConexions);
+const edgeGroups: Record<string, string[]> = {};
+
+for (const path of allConexions) {
+  for (const edgeId of path) {
+    if (!edgeGroups[edgeId]) {
+      edgeGroups[edgeId] = [];
+    }
+    edgeGroups[edgeId].push(...path);
+  }
+}
 
 export const animateLineHover = (
   updateEdge: (id: string, newEdge: Partial<Edge>) => void,
@@ -8,24 +19,19 @@ export const animateLineHover = (
   edges: Edge[],
   animated: boolean = true
 ): void => {
-   console.log("Hovered edge only:", edge.id); 
+  console.log("Hovered edge only:", edge.id);
   const idsToUpdate = edgeGroups[edge.id];
 
   idsToUpdate?.forEach((id) => {
-     
     const currentEdge = edges.find((e) => e.id === id);
-
     if (currentEdge && "disabled" in currentEdge && currentEdge.disabled) return;
-
     const isSelected = currentEdge?.data?.selected;
-
     updateEdge(id, {
       animated,
       style: { stroke: isSelected ? "#E91E63" : "#3B59B6" },
     });
   });
 };
-
 
 export const animateLineClick = (
   updateEdge: (id: string, newEdge: Partial<Edge>) => void,
@@ -44,14 +50,11 @@ export const animateLineClick = (
     const remainingGroups = selectedGroups.filter(
       (group) => !group.every((id) => groupToToggle.includes(id))
     );
-
     const allStillSelected = new Set(remainingGroups.flat());
-
     groupToToggle.forEach((id) => {
       if (!allStillSelected.has(id)) {
         const currentEdge = edges.find((e) => e.id === id);
         if (currentEdge && "disabled" in currentEdge && currentEdge.disabled) return;
-
         updateEdge(id, {
           animated,
           style: { stroke: "#3B59B6" },
@@ -59,14 +62,12 @@ export const animateLineClick = (
         });
       }
     });
-
     return remainingGroups;
   }
 
   groupToToggle.forEach((id) => {
     const currentEdge = edges.find((e) => e.id === id);
     if (currentEdge && "disabled" in currentEdge && currentEdge.disabled) return;
-
     updateEdge(id, {
       animated,
       style: { stroke: "#E91E63" },
