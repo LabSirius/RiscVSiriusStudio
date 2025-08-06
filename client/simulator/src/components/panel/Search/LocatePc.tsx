@@ -1,5 +1,5 @@
 import { useMemoryTable } from '@/context/panel/MemoryTableContext';
-import { Button } from '@/components/panel/ui/button';
+import { Button } from '@/components/ui/button';
 import { Locate } from 'lucide-react';
 
 const LocatePc = () => {

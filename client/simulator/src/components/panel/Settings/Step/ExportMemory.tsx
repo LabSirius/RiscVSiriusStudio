@@ -1,10 +1,10 @@
-import { Button } from "@/components/panel/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/graphic/ui/theme/dropdown-menu";
+} from "@/components/ui/theme/dropdown-menu";
 import { Save } from "lucide-react";
 import { useMemoryTable } from "@/context/panel/MemoryTableContext";
 import { useState } from "react";

@@ -2,14 +2,14 @@
 import {
     Card,
   
-  } from "@/components/panel/ui/card"
+  } from "@/components/ui/card"
   
   import {
     Tabs,
     TabsContent,
     TabsList,
     TabsTrigger,
-  } from "@/components/panel/ui/tabs"
+  } from "@/components/ui/tabs"
 
 import ExampleShortcuts from "./ExampleShortcuts"
 

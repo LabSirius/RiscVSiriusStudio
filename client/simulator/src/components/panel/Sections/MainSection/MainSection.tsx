@@ -1,7 +1,7 @@
 import MouseScrollIcon from "@/components/panel/MouseScrollIcon";
 import { useState, useEffect } from "react";
 
-import { SidebarProvider, SidebarTrigger } from "@/components/panel/ui/sideBar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sideBar";
 import Sidebar from "@/components/panel/Sidebar/SideBar";
 
 import { useSimulator } from "@/context/shared/SimulatorContext";
@@ -12,7 +12,7 @@ import Tables from "../Tables/Tables";
 import SettingsSection from "../SettingsSection";
 import SearchSection from "../SearchSection";
 import HelpSection from "../HelpSection";
-import { useTheme } from "@/components/panel/ui/theme/theme-provider";
+import { useTheme } from "@/components/ui/theme/theme-provider";
 
 import SimulateAuto from "./SimulateAuto";
 

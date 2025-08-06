@@ -1,4 +1,4 @@
-import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/graphic/ui/hover-card";
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import LabelValue from "@/components/graphic/LabelValue";
 
 interface Props {

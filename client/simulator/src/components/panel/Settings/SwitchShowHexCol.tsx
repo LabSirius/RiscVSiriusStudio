@@ -1,4 +1,4 @@
-import { Label } from "@/components/panel/ui/label"
+import { Label } from "@/components/ui/label"
 import * as SwitchPrimitive from "@radix-ui/react-switch"
 import { useMemoryTable } from "@/context/panel/MemoryTableContext"
 

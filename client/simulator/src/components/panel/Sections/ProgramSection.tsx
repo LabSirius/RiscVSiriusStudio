@@ -1,7 +1,7 @@
 import { useSimulator } from '@/context/shared/SimulatorContext';
 import { useLines } from '@/context/panel/LinesContext';
 import Editor, { Monaco } from '@monaco-editor/react';
-import { useTheme } from '../ui/theme/theme-provider';
+import { useTheme } from '@/components/ui/theme/theme-provider'; 
 import { useEffect, useRef, useState } from 'react';
 import type { editor } from 'monaco-editor';
 

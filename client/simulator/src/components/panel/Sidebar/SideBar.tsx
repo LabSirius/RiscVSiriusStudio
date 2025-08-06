@@ -1,9 +1,9 @@
 
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
-import { Button } from "@/components/panel/ui/button";
+import { Button } from "@/components/ui/button";
 
-import { useSidebar } from "@/components/panel/ui/sideBar";
+import { useSidebar } from "@/components/ui/sideBar";
 
 
 import CircleActive from "./CircleActive";
@@ -16,7 +16,7 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuItem,
-} from "@/components/panel/ui/sideBar";
+} from "@/components/ui/sideBar";
 
 import { Text, Search, Calculator, Info, Settings } from "lucide-react";
 import ChangeTypeSimulator from "./ChangeTypeSimulator";

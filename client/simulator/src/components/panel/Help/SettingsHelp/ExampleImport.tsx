@@ -1,9 +1,9 @@
-import { Button } from "@/components/panel/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/panel/ui/hover-card"
+} from "@/components/ui/hover-card"
 
 import { FileDown } from "lucide-react"
 
