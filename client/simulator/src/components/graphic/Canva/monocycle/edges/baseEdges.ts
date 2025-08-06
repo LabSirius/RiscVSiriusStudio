@@ -14,7 +14,7 @@ import { MEM_WB } from './MEM_WB/MEM_WB';
 import { IE_WB } from './IE_WB/IE_WB';
 import { IF_WB } from './IF_WB/IF_WB';
 
-export const initialEdges: Edge[] = [
+export const baseEdges: Edge[] = [
   ...IF, // IF stage edges
   ...IF_ID, // IF-ID stage edges
   ...IF_IE, // IF-IE stage edges

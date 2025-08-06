@@ -7,7 +7,7 @@ export type AppEdge = Edge & { disabled?: boolean }
 import { useProcessorFlow } from "../hooks/useProcessorFlow"; 
 
 import { nodeTypes, edgeTypes } from "../shared/constants";
-import { initialEdges } from "./edges/initialEdges"; 
+import { baseEdges } from "./edges/baseEdges"; 
 import CustomControls from "../../custom/CustomControls";
 import { animateLineClick, animateLineHover } from "../../animateLine/animateLine";
 import InstructionEffect from "./InstructionEffect";
@@ -26,7 +26,7 @@ export default function MonocycleCanva() {
     isInteractive,
     controlHandlers,
     minimapVisible,
-  } = useProcessorFlow(initialEdges);
+  } = useProcessorFlow(baseEdges);
 
   const { updateEdge } = useReactFlow();
   const [selectedGroup, setSelectedGroup] = useState<string[][]>([]);

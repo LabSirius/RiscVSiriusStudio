@@ -11,9 +11,7 @@ import {
 import { useInitialNodes } from "../shared/nodes/initialNodes";
 import { sharedEdges } from "../shared/edges/sharedEdges";
 
-// El hook recibe como argumento las conexiones que son únicas para cada canvas
 export const useProcessorFlow = (initialEdges: Edge[]) => {
-  // Toda la lógica de estado y hooks se mueve aquí
   const initialNodes = useInitialNodes();
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
 
@@ -24,7 +22,6 @@ export const useProcessorFlow = (initialEdges: Edge[]) => {
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [isInteractive, setIsInteractive] = useState(true);
 
-  // Los manejadores de eventos compartidos también van aquí
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges]
@@ -48,9 +45,8 @@ export const useProcessorFlow = (initialEdges: Edge[]) => {
     onEdgesChange,
     onConnect,
     onInit,
-    setEdges, // Exportamos setEdges para que InstructionEffect lo pueda usar
+    setEdges, 
     isInteractive,
-    // Agrupamos los handlers de los controles para mayor limpieza
     controlHandlers: {
       onFitView: handleFitView,
       onZoomIn: handleZoomIn,

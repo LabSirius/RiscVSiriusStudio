@@ -25,7 +25,7 @@ import { CU_ID } from './CU_ID';
 
 
 
-export const initialEdges: Edge[] = [
+export const baseEdges: Edge[] = [
    ...PC_FE,
    ...Inst_ID,
 
