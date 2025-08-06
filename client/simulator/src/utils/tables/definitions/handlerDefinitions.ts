@@ -356,7 +356,7 @@ export const attachMemoryConversionToggle = (cell: CellComponent): void => {
           activeKey = "b";
           break;
         case "h":
-          newContent = binaryToHex(cellValue);
+          newContent = binaryToHex(cellValue).toUpperCase();
           activeKey = "h";
           break;
         case "s": {
