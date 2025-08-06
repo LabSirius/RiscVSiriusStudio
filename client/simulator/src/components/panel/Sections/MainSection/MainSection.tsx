@@ -96,9 +96,14 @@ const MainSection = () => {
           </div>
         </div>
       )}
-      <SidebarTrigger className={`absolute right-3 ${modeSimulator === 'graphic' ? 'top-5' : 'top-0' } `}/>
 
-      <SimulateAuto />
+        <div className="absolute right-2 flex flex-col items-center  ">
+          <SidebarTrigger className={``} />
+
+        <SimulateAuto />
+
+        </div>
+        
     </SidebarProvider>
   );
 };

@@ -8,7 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 
 const SimulateAuto = () => {
-  const { typeSimulator, operation, simulateAuto, setSimulateAuto } = useSimulator();
+  const { operation, simulateAuto, setSimulateAuto } = useSimulator();
   const [end, setEnd] = useState(false);
   const [speed, setSpeed] = useState(1); // 0: slow, 1: medium, 2: fast
   const { dialog } = useDialog();
@@ -45,9 +45,7 @@ const SimulateAuto = () => {
       {operation !== "" && !end && (
         <HoverCard>
           <HoverCardTrigger
-            className={`absolute ${
-              typeSimulator === "graphic" ? "top-[3.35rem]" : "top-[2.5rem]"
-            }  right-[1.1rem]`}>
+            >
             {simulateAuto ? (
               <TimerOff
                 size={16}
