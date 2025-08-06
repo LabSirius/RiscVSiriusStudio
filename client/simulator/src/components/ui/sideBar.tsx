@@ -5,6 +5,7 @@ import { PanelLeftIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { useTheme } from "./theme/theme-provider";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -180,6 +181,7 @@ function Sidebar({
 
 function SidebarTrigger({ className, ...props }: React.ComponentProps<typeof Button>) {
   const { setOpen, hoveringSidebar } = useSidebar();
+  const {theme} = useTheme();
 
   return (
 
@@ -188,13 +190,14 @@ function SidebarTrigger({ className, ...props }: React.ComponentProps<typeof But
       data-slot="sidebar-trigger"
       variant="ghost"
       className={cn(
-        " transition-opacity duration-200 bg-[#000000] p-4 ",
+        " transition-opacity duration-200 ${theme === 'light' ? 'bg-gray-200' : 'bg-black' } p-4 ",
         hoveringSidebar ? "opacity-0 pointer-events-none" : "opacity-100",
+        theme === 'light' ? 'bg-gray-200' : 'bg-black',
         className
       )}
       onMouseEnter={() => setOpen(true)}
       {...props}>
-      <PanelLeftIcon  size={18} />
+      <PanelLeftIcon  size={17} />
       <span className="sr-only ">Open Sidebar</span>
     </Button>
   );
