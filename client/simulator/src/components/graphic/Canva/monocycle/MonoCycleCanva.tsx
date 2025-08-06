@@ -1,4 +1,4 @@
-import { useCallback, useState, MouseEvent } from "react";
+import { useCallback, useState, MouseEvent, useEffect } from "react";
 import {
   ReactFlow,
   Edge,
@@ -15,14 +15,17 @@ import "@xyflow/react/dist/style.css";
 
 import { nodeTypes } from "../shared/constants";
 import { edgeTypes } from "../shared/constants";
-import { useInitialNodes } from "../shared/nodes/initialNodes"; // Nodes
 
-import { initialEdges } from "./edges/initialEdges"; //Conections between npdes
+import { useInitialNodes } from "../shared/nodes/initialNodes"; // Nodes
+import { initialEdges } from "./edges/initialEdges"; 
 import { sharedEdges } from "../shared/edges/sharedEdges";
+
+
 
 import CustomControls from "../../custom/CustomControls";
 
-import { animateLine } from "../../animateLine/animateLine";
+
+import { animateLineClick, animateLineHover } from "../../animateLine/animateLine";
 import InstructionEffect from "./InstructionEffect";
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
@@ -36,6 +39,11 @@ export default function MonocycleCanva() {
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [isInteractive, setIsInteractive] = useState(true);
   const { updateEdge } = useReactFlow();
+  const [selectedGroup, setSelectedGroup] = useState<string[][]>([]);
+
+  useEffect(() => {
+    console.log("Selected group changed:", selectedGroup);
+  }, [selectedGroup]);
 
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
@@ -58,12 +66,17 @@ export default function MonocycleCanva() {
     setIsInteractive((prev) => !prev);
   };
 
+  const handleEdgeClick = (_event: MouseEvent<Element>, edge: Edge): void => {
+    const updatedGroups = animateLineClick(updateEdge, edge, edges, selectedGroup);
+    setSelectedGroup(updatedGroups);
+};
+
   const handleEdgeMouseEnter = (
     _event: MouseEvent<Element>,
     edge: Edge & { disabled?: boolean }
   ): void => {
     if (edge.disabled) return;
-    animateLine(updateEdge, edge, edges, true);
+    animateLineHover(updateEdge, edge, edges, true);
   };
 
   const handleEdgeMouseLeave = (
@@ -71,7 +84,7 @@ export default function MonocycleCanva() {
     edge: Edge & { disabled?: boolean }
   ): void => {
     if (edge.disabled) return;
-    animateLine(updateEdge, edge, edges, false);
+    animateLineHover(updateEdge, edge, edges, false);
   };
 
   return (
@@ -79,6 +92,7 @@ export default function MonocycleCanva() {
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
       defaultViewport={defaultViewport}
+      onEdgeClick={handleEdgeClick}
       onEdgeMouseEnter={handleEdgeMouseEnter}
       onEdgeMouseLeave={handleEdgeMouseLeave}
       nodes={nodes}

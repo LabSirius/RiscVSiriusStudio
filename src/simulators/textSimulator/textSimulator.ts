@@ -1,15 +1,11 @@
-import {
-  provideVSCodeDesignSystem,
-  allComponents
-} from '@vscode/webview-ui-toolkit';
+import { provideVSCodeDesignSystem, allComponents } from "@vscode/webview-ui-toolkit";
 
-
-import { UIManager } from './uiManager';
+import { UIManager } from "./uiManager";
 
 provideVSCodeDesignSystem().register(allComponents);
 
 const vscode = acquireVsCodeApi();
-window.addEventListener('load', main, { passive: true });
+window.addEventListener("load", main, { passive: true });
 
 /**
  * Log functionality. The logger that is actually used is in the extension. This
@@ -19,62 +15,56 @@ window.addEventListener('load', main, { passive: true });
  * @param level logging level.
  * @param object the object to be logged
  */
-function log(object: any = {}, level: string = 'info') {
-  sendMessageToExtension({ level: level, command: 'log', object: object });
+function log(object: any = {}, level: string = "info") {
+  sendMessageToExtension({ level: level, command: "log", object: object });
 }
 
 function main() {
-
   UIManager.createInstance(sendMessageToExtension, sendMessageToReact);
 
-  window.addEventListener('message', (event) => {
+  window.addEventListener("message", (event) => {
     dispatch(event);
   });
-
-
 }
 
-function dispatch(
-  event: MessageEvent,
-) {
-  log({ msg: 'Dispatching message', data: event.data });
+function dispatch(event: MessageEvent) {
+  log({ msg: "Dispatching message", data: event.data });
   const data = event.data;
 
-
   switch (data.from) {
-    case 'extension': {
+    case "extension": {
       switch (data.operation) {
-        case 'uploadMemory': {
+        case "uploadMemory": {
           const { from, ...newData } = data;
           UIManager.getInstance()._sendMessageToReact(newData);
           break;
         }
-        case 'step': {
+        case "step": {
           const { from, ...newData } = data;
           UIManager.getInstance()._sendMessageToReact(newData);
           break;
         }
-        case 'clickInLine': {
+        case "clickInLine": {
           const { from, ...newData } = data;
           UIManager.getInstance()._sendMessageToReact(newData);
           break;
         }
-        case 'setRegister': {
+        case "setRegister": {
           const { from, ...newData } = data;
           UIManager.getInstance()._sendMessageToReact(newData);
           break;
         }
-        case 'writeMemory':{
-            const { from, ...newData } = data;
-            UIManager.getInstance()._sendMessageToReact(newData);
-        break;
-        }
-        case 'readMemory':{
+        case "writeMemory": {
           const { from, ...newData } = data;
           UIManager.getInstance()._sendMessageToReact(newData);
           break;
         }
-        case 'stop': {
+        case "readMemory": {
+          const { from, ...newData } = data;
+          UIManager.getInstance()._sendMessageToReact(newData);
+          break;
+        }
+        case "stop": {
           const { from, ...newData } = data;
           UIManager.getInstance()._sendMessageToReact(newData);
           break;
@@ -84,45 +74,59 @@ function dispatch(
       }
       break;
     }
-    case 'react': {
+    case "react": {
       switch (data.event) {
-        case 'clickInInstruction': {
+        case "step": {
           UIManager.getInstance()._sendMessageToExtension({
-            command: 'event',
-            object: { event: data.event, value: data.line }
+            command: "event",
+            object: { event: data.event },
           });
           break;
         }
-        case 'memorySizeChanged': {
+        case "stop": {
           UIManager.getInstance()._sendMessageToExtension({
-            command: 'event',
-            object: { event: data.event, value: data.sizeMemory }
+            command: "event",
+            object: { event: data.event },
           });
           break;
         }
-        case 'registersChanged': {
+        case "clickInInstruction": {
           UIManager.getInstance()._sendMessageToExtension({
-            command: 'event',
-            object: { event: data.event, value: data.registers }
+            command: "event",
+            object: { event: data.event, value: data.line },
           });
           break;
         }
-        case 'memoryChanged': {
+        case "memorySizeChanged": {
           UIManager.getInstance()._sendMessageToExtension({
-            command: 'event',
-            object: { event: data.event, value: data.memory }
+            command: "event",
+            object: { event: data.event, value: data.sizeMemory },
           });
           break;
         }
-        case 'clickOpenRISCVCard': {
+        case "registersChanged": {
           UIManager.getInstance()._sendMessageToExtension({
-            command: 'event',
-            object: { event: data.event }
+            command: "event",
+            object: { event: data.event, value: data.registers },
+          });
+          break;
+        }
+        case "memoryChanged": {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: "event",
+            object: { event: data.event, value: data.memory },
+          });
+          break;
+        }
+        case "clickOpenRISCVCard": {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: "event",
+            object: { event: data.event },
           });
           break;
         }
         default: {
-          log({ msg: 'Unknown operation', data: data });
+          log({ msg: "Unknown operation", data: data });
           break;
         }
       }
@@ -140,6 +144,5 @@ function sendMessageToExtension(messageObject: any) {
 }
 
 function sendMessageToReact(data: any) {
-  window.postMessage({ from: 'UIManager', ...data }, '*');
+  window.postMessage({ from: "UIManager", ...data }, "*");
 }
-

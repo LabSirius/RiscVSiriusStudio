@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import { useTheme } from "@/tables/components/ui/theme/theme-provider";
+import { JSX, useEffect } from "react";
+import { useTheme } from "@/components/ui/theme/theme-provider";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@/tables/components/ui/accordion";
+} from "@/components/ui/accordion";
 import {
   Table,
   TableBody,
@@ -14,7 +14,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/tables/components/ui/table";
+} from "@/components/ui/table";
+import React from "react";
 
 
 const coreFormats = [
@@ -432,13 +433,28 @@ const uType = [
 // Pseudo instructions
 const pseudoInstructions = [
   {
+    pseudo: "la rd, symbol",
+    base: ["auipc rd, symbol[31:12]", "addi rd, rd, symbol[11:0"],
+    meaning: "Load address",
+  },
+  {
+    pseudo: "l{b|h|w|d} rd, symbol",
+    base: ["l{b|h|w|d} rd, symbol[11:0](rd)", "auipc rt, symbol[31:12]"],
+    meaning: "Load global",
+  },
+    {
+    pseudo: "s{b|h|w|d} rd, symbol",
+    base: ["s{b|h|w|d} rd, symbol[11:0](rd)", "auipc rt, symbol[31:12]"],
+    meaning: "Store global",
+  },
+  {
     pseudo: "nop",
     base: "addi x0, x0, 0",
     meaning: "No operation",
   },
   {
-    pseudo: "li rd, immediate",
-    base: "Myriad sequences",
+    pseudo: "li rd, symbol",
+    base: ["lui rd, symbol[31:12]", "addi rd, zero, symbol[11:0]"],
     meaning: "Load immediate",
   },
   {
@@ -476,8 +492,259 @@ const pseudoInstructions = [
     base: "slt rd, x0, rs",
     meaning: "Set if > zero",
   },
+  {
+    pseudo: "beqz rs, offset",
+    base: ["beq rs, x0, offset"],
+    meaning: "Branch if = zero",
+  },
+  {
+    pseudo: "bnez rs, offset",
+    base: ["bne rs, x0, offset"],
+    meaning: "Branch if ≠ zero",
+  },
+  {
+    pseudo: "blez rs, offset",
+    base: ["bge x0, rs, offset"],
+    meaning: "Branch if ≤ zero",
+  },
+  {
+    pseudo: "bgez rs, offset",
+    base: ["bge rs, x0, offset"],
+    meaning: "Branch if ≥ zero",
+  },
+  {
+    pseudo: "bltz rs, offset",
+    base: ["blt rs, x0, offset"],
+    meaning: "Branch if < zero",
+  },
+  {
+    pseudo: "bgtz rs, offset",
+    base: ["blt x0, rs, offset"],
+    meaning: "Branch if > zero",
+  },
+  {
+    pseudo: "bgt rs, rt, offset",
+    base: ["blt rt, rs, offset"],
+    meaning: "Branch if >",
+  },
+  {
+    pseudo: "ble rs, rt, offset",
+    base: ["bge rt, rs, offset"],
+    meaning: "Branch if ≤",
+  },
+  {
+    pseudo: "bgtu rs, rt, offset",
+    base: ["bltu rt, rs, offset"],
+    meaning: "Branch if >, unsigned",
+  },
+  {
+    pseudo: "bleu rs, rt, offset",
+    base: ["bgeu rt, rs, offset"],
+    meaning: "Branch if ≤, unsigned",
+  },
+  {
+    pseudo: "j offset",
+    base: ["jal x0, offset"],
+    meaning: "Jump",
+  },
+  {
+    pseudo: "jal offset",
+    base: ["jal x1, offset"],
+    meaning: "Jump and link",
+  },
+  {
+    pseudo: "jr rs",
+    base: ["jalr x0, rs, 0"],
+    meaning: "Jump register",
+  },
+  {
+    pseudo: "jalr rs",
+    base: ["jalr x1, rs, 0"],
+    meaning: "Jump and link register",
+  },
+  {
+    pseudo: "ret",
+    base: ["jalr x0, x1, 0"],
+    meaning: "Return from subroutine",
+  },
+  {
+    pseudo: "call offset",
+    base: [
+      "auipc x1, offset[31:12]",
+      "jalr x1, x1, offset[11:0]",
+    ],
+    meaning: "Call far-away subroutine",
+  },
+  {
+    pseudo: "tail offset",
+    base: [
+      "auipc x6, offset[31:12]",
+      "jalr x0, x6, offset[11:0]",
+    ],
+    meaning: "Tail call far-away subroutine",
+  },
 ];
 
+const dataDefinitionDirectives = [
+  {
+    directive: ".byte",
+    meaning: "Define one or more bytes",
+    example: ".byte 0x1F, 0x2A"
+  },
+  {
+    directive: ".half",
+    meaning: "Define one or more halfwords (2 bytes)",
+    example: ".half 1024"
+  },
+  {
+    directive: ".word",
+    meaning: "Define one or more words (4 bytes)",
+    example: ".word 0xDEADBEEF"
+  },
+  {
+    directive: ".ascii",
+    meaning: "Define a string without null terminator",
+    example: '.ascii "Hello "'
+  },
+  {
+    directive: ".asciz / .string",
+    meaning: "Define a null-terminated string",
+    example: '.asciz "Hello world"'
+  }
+];
+
+const sectionAlignmentDirectives = [
+  {
+    directive: ".align",
+    meaning: "Align the next address to 2^N bytes",
+    example: ".align 2"
+  },
+  {
+    directive: ".org",
+    meaning: "Set location counter to the specified address",
+    example: ".org 0x1000"
+  },
+  {
+    directive: ".section",
+    meaning: "Switch to the specified section",
+    example: ".section .data"
+  },
+  {
+    directive: ".global",
+    meaning: "Make a symbol globally accessible",
+    example: ".global main"
+  }
+];
+
+const symbolConstantDirectives = [
+  {
+    directive: ".equ / .set",
+    meaning: "Define a symbolic constant",
+    example: ".equ SIZE, 100"
+  }
+];
+
+const relocationFunctions = [
+  {
+    notation: "%hi(symbol)",
+    description: "Absolute (HI20)",
+    instructions: "lui",
+    purpose: "Generates the high 20 bits of an absolute address"
+  },
+  {
+    notation: "%lo(symbol)",
+    description: "Absolute (LO12)",
+    instructions: "loads, stores, adds",
+    purpose: "Generates the low 12 bits of an absolute address"
+  },
+  {
+    notation: "%pcrel_hi(symbol)",
+    description: "PC-relative (HI20)",
+    instructions: "auipc",
+    purpose: "Generates the high 20 bits of a PC-relative address"
+  },
+  {
+    notation: "%pcrel_lo(label)",
+    description: "PC-relative (LO12)",
+    instructions: "loads, stores, adds",
+    purpose: "Generates the low 12 bits of a PC-relative address"
+  },
+];
+
+const rvMult = [
+    {
+      inst: "mul",
+      name: "MUL",
+      fmt: "R",
+      opcode: "0110011",
+      funct3: "0x0",
+      funct7: "0x01",
+      description: "rd = (rs1 * rs2)[31:0]",
+    },
+    {
+      inst: "mulh",
+      name: "MUL High",
+      fmt: "R",
+      opcode: "0110011",
+      funct3: "0x1",
+      funct7: "0x01",
+      description: "rd = (rs1 * rs2)[63:32]",
+    },
+    {
+      inst: "mulsu | mulhsu",
+      name: "MUL High (S)(U)",
+      fmt: "R",
+      opcode: "0110011",
+      funct3: "0x2",
+      funct7: "0x01",
+      description: "rd = (rs1 * rs2)[63:32]",
+    },
+    {
+      inst: "mulu | mulhu",
+      name: "MUL High (U)",
+      fmt: "R",
+      opcode: "0110011",
+      funct3: "0x3",
+      funct7: "0x01",
+      description: "rd = (rs1 * rs2)[63:32]",
+    },
+    {
+      inst: "div",
+      name: "DIV",
+      fmt: "R",
+      opcode: "0110011",
+      funct3: "0x4",
+      funct7: "0x01",
+      description: "rd = rs1 / rs2",
+    },
+    {
+      inst: "divu",
+      name: "DIV (U)",
+      fmt: "R",
+      opcode: "0110011",
+      funct3: "0x5",
+      funct7: "0x01",
+      description: "rd = rs1 / rs2",
+    },
+    {
+      inst: "rem",
+      name: "Remainder",
+      fmt: "R",
+      opcode: "0110011",
+      funct3: "0x6",
+      funct7: "0x01",
+      description: "rd = rs1 % rs2",
+    },
+    {
+      inst: "remu",
+      name: "Remainder (U)",
+      fmt: "R",
+      opcode: "0110011",
+      funct3: "0x7",
+      funct7: "0x01",
+      description: "rd = rs1 % rs2",
+    },
+]
 
 function CoreInstructionTable() {
   return (
@@ -510,11 +777,11 @@ function CoreInstructionTable() {
 interface InstructionTableProps {
   caption: string;
   columns: string[];
-  data: Array<Record<string, string>>;
+  data: Array<Record<string, string | string[]>>;
 }
 
 
-function InstructionTable({ caption, columns, data } : InstructionTableProps) {
+function InstructionTable({ caption, columns, data }: InstructionTableProps): JSX.Element {
   return (
     <Table>
       <TableCaption>{caption}</TableCaption>
@@ -525,29 +792,75 @@ function InstructionTable({ caption, columns, data } : InstructionTableProps) {
           ))}
         </TableRow>
       </TableHeader>
-      <TableBody>
-        {data.map((item, idx) => (
-          <TableRow key={idx}>
-            {columns.map((col, cdx) => {
-              const key = col.toLowerCase().includes("pseudo")
+          <TableBody>
+      {data.map((item, idx) => {
+        const maxRows = Math.max(
+          ...columns.map((col) => {
+            const key =
+              col.toLowerCase().includes("pseudo")
                 ? "pseudo"
                 : col.toLowerCase().includes("base")
                 ? "base"
                 : col.toLowerCase().includes("meaning")
                 ? "meaning"
                 : col.toLowerCase();
-              return (
-                <TableCell key={cdx} className="px-3 py-2">
-                  {item[key] || ""}
-                </TableCell>
-              );
-            })}
-          </TableRow>
-        ))}
-      </TableBody>
+            const value = item[key];
+            return Array.isArray(value) ? value.length : 1;
+          })
+        );
+
+        return (
+          <React.Fragment key={idx}>
+            {Array.from({ length: maxRows }).map((_, rowIdx) => (
+              <TableRow key={rowIdx}>
+                {columns.map((col, colIdx) => {
+                  const key =
+                    col.toLowerCase().includes("pseudo")
+                      ? "pseudo"
+                      : col.toLowerCase().includes("base")
+                      ? "base"
+                      : col.toLowerCase().includes("meaning")
+                      ? "meaning"
+                      : col.toLowerCase();
+
+                  const value = item[key];
+
+                  if (Array.isArray(value)) {
+                    return (
+                      <TableCell key={colIdx} className="px-3 py-2">
+                        {value[rowIdx] || ""}
+                      </TableCell>
+                    );
+                  }
+
+                  if (rowIdx === 0) {
+                    const isPseudo = key === "pseudo";
+                    const cellClass = isPseudo
+                      ? "px-3 py-2 text-center align-middle font-medium"
+                      : "px-3 py-2 align-middle";
+                    return (
+                      <TableCell
+                        key={colIdx}
+                        rowSpan={maxRows}
+                        className={cellClass}
+                      >
+                        {value}
+                      </TableCell>
+                    );
+                  }
+
+                  return null;
+                })}
+              </TableRow>
+            ))}
+          </React.Fragment>
+        );
+      })}
+    </TableBody>
     </Table>
   );
 }
+
 
 
 const Page = () => {
@@ -590,7 +903,7 @@ const Page = () => {
           <AccordionContent>
             <InstructionTable
               caption="R‑type Instructions"
-              columns={["Inst", "Name", "Opcode", "funct3", "funct7", "Description (C)"]}
+              columns={["Inst", "Name", "Opcode", "funct3", "funct7", "Description"]}
               data={rTypeInstructions}
             />
           </AccordionContent>
@@ -606,7 +919,7 @@ const Page = () => {
               <h3 className="mb-2 text-xl font-medium">Arithmetic and Logical Instructions</h3>
               <InstructionTable
                 caption="I‑type Arithmetic & Logical"
-                columns={["Inst", "Name", "Opcode", "funct3", "funct7", "Description (C)"]}
+                columns={["Inst", "Name", "Opcode", "funct3", "funct7", "Description"]}
                 data={iTypeArithmetic}
               />
             </div>
@@ -614,7 +927,7 @@ const Page = () => {
               <h3 className="mb-2 text-xl font-medium">Load Instructions</h3>
               <InstructionTable
                 caption="I‑type Load Instructions"
-                columns={["Inst", "Name", "Opcode", "funct3", "Description (C)"]}
+                columns={["Inst", "Name", "Opcode", "funct3", "Description"]}
                 data={iTypeLoad}
               />
             </div>
@@ -622,7 +935,7 @@ const Page = () => {
               <h3 className="mb-2 text-xl font-medium">Jump Instruction</h3>
               <InstructionTable
                 caption="I‑type Jump Instruction"
-                columns={["Inst", "Name", "Opcode", "funct3", "Description (C)"]}
+                columns={["Inst", "Name", "Opcode", "funct3", "Description"]}
                 data={iTypeJump}
               />
             </div>
@@ -630,7 +943,7 @@ const Page = () => {
               <h3 className="mb-2 text-xl font-medium">Control Transfer Instructions</h3>
               <InstructionTable
                 caption="I‑type Control Transfer"
-                columns={["Inst", "Name", "Opcode", "funct3", "funct7", "Description (C)"]}
+                columns={["Inst", "Name", "Opcode", "funct3", "funct7", "Description"]}
                 data={iTypeControl}
               />
             </div>
@@ -645,7 +958,7 @@ const Page = () => {
           <AccordionContent>
             <InstructionTable
               caption="S‑type Instructions"
-              columns={["Inst", "Name", "Opcode", "funct3", "Description (C)"]}
+              columns={["Inst", "Name", "Opcode", "funct3", "Description"]}
               data={sType}
             />
           </AccordionContent>
@@ -659,7 +972,7 @@ const Page = () => {
           <AccordionContent>
             <InstructionTable
               caption="B‑type Instructions"
-              columns={["Inst", "Name", "Opcode", "funct3", "Description (C)"]}
+              columns={["Inst", "Name", "Opcode", "funct3", "Description"]}
               data={bType}
             />
           </AccordionContent>
@@ -673,7 +986,7 @@ const Page = () => {
           <AccordionContent>
             <InstructionTable
               caption="J‑type Instructions"
-              columns={["Inst", "Name", "Opcode", "Description (C)"]}
+              columns={["Inst", "Name", "Opcode", "Description"]}
               data={jType}
             />
           </AccordionContent>
@@ -687,7 +1000,7 @@ const Page = () => {
           <AccordionContent>
             <InstructionTable
               caption="U‑type Instructions"
-              columns={["Inst", "Name", "Opcode", "Description (C)"]}
+              columns={["Inst", "Name", "Opcode", "Description"]}
               data={uType}
             />
           </AccordionContent>
@@ -707,7 +1020,102 @@ const Page = () => {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
+
+      <h2 className="text-2xl font-semibold">Directives</h2>
+      <p>
+        The assembler includes various directives that govern how instructions are translated into an object file. 
+        These directives allow for the inclusion of custom data, control symbol exporting, section selection, data alignment, 
+        and assembly configurations such as compression, position-dependent code, and position-independent code.
+      </p>
+      <Accordion type="single" collapsible className="space-y-4">
+        <AccordionItem value="data-directives">
+          <AccordionTrigger className="text-lg font-semibold">
+            Data Definition Directives
+          </AccordionTrigger>
+            <p>These directives are used to define and initialize data in memory.</p>
+          <AccordionContent>
+            <InstructionTable
+              caption="Directives"
+              columns={["Directive", "Meaning", "Example"]}
+              data={dataDefinitionDirectives}
+            />
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="alignment-directives">
+          <AccordionTrigger className="text-lg font-semibold">
+            Section and Alignment Directives
+          </AccordionTrigger>
+            <p>These directives control the organization and alignment of code and data in memory.</p>
+          <AccordionContent>
+            <InstructionTable
+              caption="Directives"
+              columns={["Directive", "Meaning", "Example"]}
+              data={sectionAlignmentDirectives }
+            />
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="constant-directives">
+          <AccordionTrigger className="text-lg font-semibold">
+            Symbol and Constant Directives
+          </AccordionTrigger>
+            <p>These directives define constants for use in assembly code.</p>
+          <AccordionContent>
+            <InstructionTable
+              caption="Directives"
+              columns={["Directive", "Meaning", "Example"]}
+              data={symbolConstantDirectives }
+            />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
+      <h2 className="text-2xl font-semibold">Relocation Functions</h2>
+      <p>
+        The relocation function directives create synthesize operand values that are resolved at 
+        program link time and are used as immediate parameters to specific instructions. 
+        The sections on absolute and relative addressing give examples of using the relocation functions.
+      </p>
+      <Accordion type="single" collapsible className="space-y-4">
+        <AccordionItem value="relocation-functions">
+          <AccordionTrigger className="text-lg font-semibold">
+            Relocation Functions
+          </AccordionTrigger>
+          <AccordionContent>
+            <InstructionTable
+              caption="Relocation Functions"
+              columns={["Notation", "Description", "Instructions", "Purpose"]}
+              data={relocationFunctions}
+            />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
+      <h2 className="text-2xl font-semibold">RV32M Multiply Extension</h2>
+      <p>
+        The core RISC-V ISA (Instruction Set Architecture) supports basic integer arithmetic and logical operations, such as addition, 
+        subtraction, AND, OR, and XOR. More advanced operations like multiplication and division are not part of the base ISA but are instead 
+        included in the optional{" "}
+        <span className={`px-2 py-1 ${theme === "dark" ? 'text-white bg-[#3A6973] ' : ' text-black bg-[#D1E3E7] ' } rounded`}>M (Multiply/Divide) extension.</span>
+      </p>
+      <Accordion type="single" collapsible className="space-y-4">
+        <AccordionItem value="multiply-extension">
+          <AccordionTrigger className="text-lg font-semibold">
+            Multiply Extension Inst
+          </AccordionTrigger>
+          <AccordionContent>
+            <InstructionTable
+              caption="Multiply Extension"
+              columns={["Inst", "Name", "Opcode", "funct3", "funct7", "Description"]}
+              data={rvMult}
+            />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
+
+
   );
 };
 

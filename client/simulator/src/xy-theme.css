@@ -103,7 +103,8 @@
 
   .react-flow__controls-button-custom,
    .react-flow__controls-button-custom_green, 
-   .react-flow__controls-button-custom_red {
+   .react-flow__controls-button-custom_red,
+   .react-flow__controls-button-custom_blue {
      border: none; 
      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
      padding: 8px; 
@@ -112,7 +113,8 @@
    }
 
    .react-flow__controls-button-custom_green, 
-   .react-flow__controls-button-custom_red{
+   .react-flow__controls-button-custom_red,
+   .react-flow__controls-button-custom_blue{
     color: white !important
    }
 
@@ -154,6 +156,10 @@
 
   .react-flow__controls-button-custom_red {
     background-color: #E28C8C;
+  }
+
+  .react-flow__controls-button-custom_blue {
+    background-color: #8CC7E2;
   }
 
 

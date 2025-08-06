@@ -16,13 +16,13 @@
       {
         "command": "rv-simulator.simulate",
         "title": "RISCV simulator: simulate program execution",
-        "icon": "$(chip)",
+        "icon": "$(combine)",
         "when": "!ext.isSimulating"
       },
       {
         "command": "rv-simulator.textSimulate",
         "title": "RISCV simulator: text-simulate program execution",
-        "icon": "$(symbol-parameter)",
+        "icon": "$(github-project)",
         "when": "!ext.isSimulating"
       },
       {
@@ -35,6 +35,12 @@
         "command": "rv-simulator.simulateStop",
         "title": "RISCV simulator: stop simulation",
         "icon": "$(debug-stop)",
+        "when": "ext.isSimulating"
+      },
+      {
+        "command": "rv-simulator.simulateReset",
+        "title": "RISCV simulator: reset simulation",
+        "icon": "$(debug-restart)",
         "when": "ext.isSimulating"
       },
       {
@@ -154,27 +160,33 @@
       "editor/title": [
         {
           "command": "rv-simulator.build",
-          "group": "navigation",
+          "group": "navigation@1",
           "when": "editorLangId == riscvasm && !ext.isSimulating"
         },
         {
           "command": "rv-simulator.simulate",
-          "group": "navigation",
+          "group": "navigation@3",
           "when": "editorLangId == riscvasm && !ext.isSimulating"
         },
         {
           "command": "rv-simulator.textSimulate",
-          "group": "navigation",
+          "group": "navigation@2",
           "when": "editorLangId == riscvasm && !ext.isSimulating"
         },
         {
           "command": "rv-simulator.simulateStep",
-          "group": "navigation",
+          "group": "navigation@1",
           "when": "editorLangId == riscvasm && ext.isSimulating"
+          
         },
         {
           "command": "rv-simulator.simulateStop",
-          "group": "navigation",
+          "group": "navigation@2",
+          "when": "editorLangId == riscvasm && ext.isSimulating"
+        },
+        {
+          "command": "rv-simulator.simulateReset",
+          "group": "navigation@3",
           "when": "editorLangId == riscvasm && ext.isSimulating"
         }
       ]

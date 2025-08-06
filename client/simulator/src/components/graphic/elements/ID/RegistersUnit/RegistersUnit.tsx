@@ -11,7 +11,7 @@ interface HandlerConfig {
 }
 
 export default function RegistersUnit() {
-  const { operation } = useSimulator();
+  const { operation, isEbreak } = useSimulator();
 
   const inputHandlers: HandlerConfig[] = [
     { id: "[19:15]", top: "3.15rem" },
@@ -33,9 +33,9 @@ export default function RegistersUnit() {
           Registers Unit
         </h2>
         <div className="relative">
-          <ContainerSVG height={28} active={true} />
+          <ContainerSVG height={28} active={!isEbreak} />
 
-          {operation !== "uploadMemory" && (
+          {operation !== "uploadMemory" && !isEbreak && (
             <>
               <LabelSlashContainer />
               <LabelValueContainer />

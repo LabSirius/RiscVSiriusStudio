@@ -24,6 +24,7 @@ const MessageListener = () => {
     setIsFirstStep,
     setSection,
     setNewPc,
+    setIsEbreak,
   } = useSimulator();
   const { setWriteInRegister } = useRegistersTable();
   const { setCurrentInst, setCurrentResult } = useCurrentInst();
@@ -70,6 +71,10 @@ const MessageListener = () => {
           case "step":
             setNewPc(message.newPc);
             setCurrentInst(message.currentInst);
+            if (message.currentInst.asm?.toLowerCase() === "ebreak") {
+              setIsEbreak(true);
+            }
+
             setCurrentResult(message.result);
             if (message.lineDecorationNumber !== undefined) {
               setLineDecorationNumber(message.lineDecorationNumber);

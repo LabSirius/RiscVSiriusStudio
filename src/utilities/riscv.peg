@@ -82,7 +82,7 @@
 
   function getConstantValue(name: string): number {
     const value = constantTable.find((element) => element.name === name);
-    return value.value;
+    return value?.value;
   }
 
   function getIdentifierValue(name): number {
@@ -252,6 +252,16 @@
       case 'sra'  : funct3 = 5; funct7 = 32; /* 32 = 0x20 */  break;
       case 'slt'  : funct3 = 2; funct7 = 0;  break;
       case 'sltu' : funct3 = 3; funct7 = 0;  break;
+      case 'mul' : funct3 = 0; funct7 = 1;  break;
+      case 'mulh' : funct3 = 1; funct7 = 1;  break;
+      case 'mulsu' : funct3 = 2; funct7 = 1;  break;
+      case 'mulhsu' : funct3 = 2; funct7 = 1;  break;
+      case 'mulu' : funct3 = 3; funct7 = 1;  break;
+      case 'mulhu' : funct3 = 3; funct7 = 1;  break;
+      case 'div' : funct3 = 4; funct7 = 1;  break;
+      case 'divu' : funct3 = 5; funct7 = 1;  break;
+      case 'rem' : funct3 = 6; funct7 = 1;  break;
+      case 'remu' : funct3 = 7; funct7 = 1;  break;
     }
     const rdVal = getInt(rd["regenc"]);
     const rdBin = toBinaryString(rdVal,5);
@@ -301,7 +311,7 @@
       case 'andi'  : funct3 = 7; break;
       case 'slli'  : funct3 = 1; funct7 = 0;  break;
       case 'srli'  : funct3 = 5; funct7 = 0;  break;
-      case 'srai'  : funct3 = 3; funct7 = 32;  /* 32 = 0x20 */ break;
+      case 'srai'  : funct3 = 5; funct7 = 1024;  /* 32 = 0x20 --> 1024 = 32 << 5 */ break;
       case 'slti'  : funct3 = 2; break;
       case 'sltiu' : funct3 = 3; break;
 
@@ -332,7 +342,7 @@
     const rs1Val = getInt(rs1["regenc"]);
     const rs1Bin = toBinaryString(rs1Val,5);
 
-    let immVal = getInt(imm);
+    let immVal = getInt(imm) + funct7;
     const immValBin = toBinaryString(immVal,12);
 
     const binEncoding = `${immValBin}${rs1Bin}${funct3Bin}${rdBin}${opcode}`;
@@ -528,7 +538,7 @@
   }
 }
 
-  Start = Program 
+  Start = Program
   
   Program = root:SourceElements?
   {
@@ -591,7 +601,7 @@
 
 
   LabelDeclaration
-  = id:LabelIdentifierName _ ":"
+  = id:IdentifierName _ ":"
   {
     // During preparsing the labes were transformed into absolute memory
     // addresses. At this point we only check that everything is ok and every 
@@ -1045,7 +1055,7 @@
       const v = getInt(val);
         if (isImm12(v))
           return v;
-        return error("Expecting 12 bit representable value [-2048,2047]. Got " + v, location());
+        return error("Expecting 12 bit representable value [-2048,2047]. Got " + val, location());
   }
 
   Imm13 "13 bits immediate"
@@ -1054,7 +1064,7 @@
       const v = getInt(val);
         if (isImm13(v))
           return v;
-        return error("Expecting 13 bit representable value [-4096, 4095]. Got " + v, location());
+        return error("Expecting 13 bit representable value [-4096, 4095]. Got " + val, location());
   }
 
   Imm21 "21 bits immediate"
@@ -1063,7 +1073,7 @@
       const v = getInt(val);
       if (isImm21(v))
         return v;
-      error("Expecting 21 bit representable value [-1048576, 1048575]. Got " + v, location());
+      error("Expecting 21 bit representable value [-1048576, 1048575]. Got " + val, location());
   }
 
   Imm32 "32 bits immediate"
@@ -1072,7 +1082,7 @@
       const v = getInt(val);
         if (isImm32(v))
           return v;
-        return error("Expecting 32 bit representable value [0, 4294967295]. Got " + v, location());
+        return error("Expecting 32 bit representable value [0, 4294967295]. Got " + val, location());
   }
 
   JTarget "target address of a jump instruction"
@@ -1084,17 +1094,17 @@
     if (value === undefined){
       value = getConstantValue(lbl["name"]);
     }
-    if (isImm21(value) && value !== undefined) {
+    if (value && isImm21(value)) {
         return value;
     }
-    return error("Expecting 21 bit representable value [-1048576, 1048575]. Got " + value); 
+    return error("Expecting 21 bit representable value [-1048576, 1048575]. Got " + lbl.name); 
   }
 
   Symbol "number 12 bit or 32 bit representable"
   = val:Integer
   {
     const v = getInt(val);
-    if (!isImm32(v)) { return error("Expecting 32 bit representable value [-2147483648, 2147483647]. Got " + v); }
+    if (!isImm32(v)) { return error("Expecting 32 bit representable value [-2147483648, 2147483647]. Got " + val); }
     return {"value": v, "double": !isImm12(v)}; 
     
   }
@@ -1120,6 +1130,9 @@
   {
     if (isFirstPass) { return {}; }
     const value = getDirFromData(address["name"])
+    if (value === undefined){
+      return error("Expecting a valid Symbol or Direction name. Got " + address.name)
+    }
     return {"value": value, "double": !isImm12(value)};
   }
 
@@ -1127,32 +1140,32 @@
   = name:Identifier
   {
     const value = getConstantValue(name.name);
-    if (isImm32(value)) { return value; }
-    else { return error("Constant value most be 32 bit representable value"); }
+    if (value !== undefined && isImm32(value)) { return value; }
+    else { return error("Constant value most be 32 bit representable value. Got " + name.name); }
   }
 
   ConstantName12 "Constant name for 12 bit representable value loaded from .equ directive"
   = name:Identifier
   {
     const value = getConstantValue(name.name);
-    if (isImm12(value)) { return value; }
-    else { return error("Constant value most be 12 bit representable value"); }
+    if (value !== undefined && isImm12(value)) { return value; }
+    else { return error("Constant value most be 12 bit representable value. Got " + name.name); }
   }
 
   ConstantName13 "Constant name for 13 bit representable value loaded from .equ directive"
   = name:Identifier
   {
     const value = getConstantValue(name.name);
-    if (isImm13(value)) { return value; }
-    else { return error("Constant value most be 13 bit representable value"); }
+    if (value !== undefined && isImm13(value)) { return value; }
+    else { return error("Constant value most be 13 bit representable value. Got " + name.name); }
   }
 
   ConstantName21 "Constant name for 21 bit representable value loaded from .equ directive"
   = name:Identifier
   {
     const value = getConstantValue(name.name);
-    if (isImm21(value)) { return value; }
-    else { return error("Constant value most be 21 bit representable value"); }
+    if (value !== undefined && isImm21(value)) { return value; }
+    else { return error("Constant value most be 21 bit representable value. Got " + name.name); }
   }
 
   LIOperandKind12
@@ -1194,7 +1207,7 @@
     if (value === undefined){
       value = getConstantValue(name.name);
     }
-    if (!isImm12) { return error("Constant value most be 32 bit representable value"); }
+    if (value !== undefined && !isImm12(value)) { return error("Constant value most be 32 bit representable value. Got " + name.name); }
     return value;
   }
 
@@ -1204,7 +1217,7 @@
     if (value === undefined){
       value = getConstantValue(name.name);
     }
-    if (!isImm32) { return error("Constant value most be 32 bit representable value"); }
+    if (value && !isImm32(value)) { return error("Constant value most be 32 bit representable value. Got " + name.name); }
     const data = {
       value: value,
       double: !isImm12
@@ -1218,10 +1231,10 @@
   / lbl:Identifier {
     if (isFirstPass) { return undefined; }
     const value = getPosLabel(lbl["name"]);
-    if (isImm13(value)) {
+    if (value !== undefined && isImm13(value)) {
         return value;
     }
-    return error("Expecting 13 bit representable value [-4096, 4095]. Got " + v, location());
+    return error("Expecting 13 bit representable value [-4096, 4095] (Label, Constant or Imm). Got " + lbl.name, location());
   }
 
   JALRTarget "target address of a jalr instruction"
@@ -1232,7 +1245,7 @@
     if (isImm13(value)) {
         return value;
     }
-    return error("Expecting 13 bit representable value [-4096, 4095]. Got " + v, location());
+    return error("Expecting 13 bit representable value [-4096, 4095] (Label, Constant or Imm). Got " + lbl.name, location());
   }
 
   AsmModifier "assembler modifier"
@@ -1363,6 +1376,16 @@
   / sraToken
   / sltuToken
   / sltToken
+  / mulsuToken
+  / muluToken
+  / mulhsuToken
+  / mulhuToken
+  / mulhToken
+  / mulToken
+  / divuToken
+  / divToken
+  / remuToken
+  / remToken
   
   IInstName "i-type instruction name"
   = addiToken
@@ -1372,8 +1395,8 @@
   / slliToken
   / srliToken
   / sraiToken
-  / sltiToken
   / sltiuToken
+  / sltiToken
   
   RegisterName "register name" 
   = reg:ABIRegister
@@ -1467,6 +1490,16 @@
   sraToken  = "sra"
   sltToken  = "slt"
   sltuToken = "sltu"
+  mulToken = "mul"
+  mulhToken = "mulh"
+  mulsuToken = "mulsu"
+  mulhsuToken = "mulhsu"
+  muluToken = "mulu"
+  mulhuToken = "mulhu"
+  divToken = "div"
+  divuToken = "divu"
+  remToken = "rem"
+  remuToken = "remu"
   
   addiToken  = "addi"
   xoriToken  = "xori"
@@ -1654,7 +1687,8 @@
   / _ [\+-]?[0-9]+ { return parseInt(text(), 10); }
 
   ReservedWord 
-  = RegisterName
+  = (
+    RegisterName
   / RInstName
   / IInstName
   / LoadInstName
@@ -1666,19 +1700,19 @@
   / BPZInstName
   / MiscInstName
   / DirectiveName
+  ) !IdentifierChar
 
   Identifier
   = !ReservedWord name:IdentifierName { return name; }
 
-  LabelIdentifierName "Label identifier"
-  = name:IdentifierString _ "(" _ [^)]* ")" { return { type: "IdentifierName", name: text() }; }
+  IdentifierName "Label identifier"
+  = name:IdentifierString _ "(" _ !RegisterName [^)]* ")" { return { type: "IdentifierName", name: text() }; }
   / name:IdentifierString { return { type: "IdentifierName", name: text() }; }
 
-  IdentifierName "identifier"
-  = name:IdentifierString { return { type: "IdentifierName", name: text() }; }
-
   IdentifierString
-    = [a-zA-Z_.][a-zA-Z0-9_]* { return text(); }
+    = [a-zA-Z_.] IdentifierChar* { return text(); }
+
+  IdentifierChar = [a-zA-Z0-9_]
 
   String
   = '"' StringChar* '"' { return text().replace(/"/g, ""); }
@@ -1701,9 +1735,9 @@
   = (WhiteSpace / LineTerminatorSequence / Comment)*
 
   EOS
-  = _ Comment? LineTerminatorSequence
-  / _ &"}"
+  = _ &"}"
   / __ EOF
+  / _ Comment? LineTerminatorSequence
   / __
   
   Comment "comment"

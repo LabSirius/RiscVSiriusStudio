@@ -320,7 +320,7 @@ const InstructionEffect: React.FC<InstructionEffectProps> = ({ setEdges }) => {
             disabled: false,
             style: {
               ...edge.style,
-              stroke: "#3B59B6"
+              stroke: edge.data?.selected ? "#E91E63" : "#3B59B6"
             }
           };
         }

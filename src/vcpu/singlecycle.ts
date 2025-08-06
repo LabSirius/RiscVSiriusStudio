@@ -381,7 +381,7 @@ export class SCCPU {
     // If non-negative, a straight conversion works
     if (n >= 0) {
       n = n.toString(2);
-      if (n.length >= len) {
+      if (n.length > len) {
         throw Error("out of range");
       }
       return n.padStart(len, "0");
@@ -419,38 +419,63 @@ export class SCCPU {
     const numB = "0b" + B;
     let result: BigInt = 0n;
     switch (ALUOp) {
-      case "0000":
+      case "00000":
         result = ALU32.addition(numA, numB);
         break;
-      case "1000":
+      case "01000":
         result = ALU32.subtraction(numA, numB);
         break;
-      case "0100":
+      case "00100":
         result = ALU32.xor(numA, numB);
         break;
-      case "0110":
+      case "00110":
         result = ALU32.or(numA, numB);
         break;
-      case "0111":
+      case "00111":
         result = ALU32.and(numA, numB);
         break;
-      case "0001":
+      case "00001":
         result = ALU32.shiftLeft(numA, numB);
         break;
-      case "0101":
+      case "00101":
         result = ALU32.shiftRight(numA, numB);
         break;
-      case "1101":
+      case "01101":
         result = ALU32.shiftRightA(numA, numB);
         break;
-      case "0010":
+      case "00010":
         result = ALU32.lessThan(numA, numB);
         break;
-      case "0011":
+      case "00011":
         result = ALU32.lessThanU(numA, numB);
         break;
+      case "10000":
+        result = ALU32.mul(numA, numB);
+        break;
+      case "10001":
+        result = ALU32.mulh(numA, numB);
+        break;
+      case "10010":
+        result = ALU32.mulsu(numA, numB);
+        break;
+      case "10011":
+        result = ALU32.mulu(numA, numB);
+        break;
+      case "10100":
+        result = ALU32.div(numA, numB);
+        break;
+      case "10101":
+        result = ALU32.divu(numA, numB);
+        break;
+      case "10110":
+        result = ALU32.rem(numA, numB);
+        break;
+      case "10111":
+        result = ALU32.remu(numA, numB);
+        break;
+
       default:
-        throw new Error("ALU: unknown operation");
+        result = 0n; // Default case, should not happen
     }
     const result32 = this.toTwosComplement(result, 32);
     return result32;
@@ -489,7 +514,8 @@ export class SCCPU {
 
     const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
     const rs2Val = this.registers.readRegisterFromName(getRs2(instruction));
-    const aluOp = getFunct7(instruction)[1] + getFunct3(instruction);
+    const funct7 =  getFunct7(instruction);
+    const aluOp = funct7[6] + funct7[1] + getFunct3(instruction);
     const aluRes = this.computeALURes(rs1Val, rs2Val, aluOp);
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
     this.registers.writeRegister(getRd(instruction), aluRes);
@@ -530,15 +556,16 @@ export class SCCPU {
           imm32Val = imm32Val.join("");
         }
         
-        aluOp = MSBaluOp + getFunct3(instruction);
+        aluOp = "0" + MSBaluOp + getFunct3(instruction);
         break;
       case isILoad(this.currentType(), this.currentOpcode()):
-        aluOp = "0000";
+        aluOp = "00000";
         break;
       case isIJump(this.currentType(), this.currentOpcode()):
-        aluOp = "0000";
+        aluOp = "00000";
         break;
     }
+
 
     const aluRes = this.computeALURes(rs1Val, imm32Val, aluOp);
     this.registers.writeRegister(getRd(instruction), aluRes);
@@ -637,7 +664,7 @@ export class SCCPU {
     const offset12Val = this.currentInstruction().encoding.imm12;
     const offset32Val = offset12Val.padStart(32, offset12Val.at(0));
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
-    const aluRes = this.computeALURes(baseAddressVal, offset32Val, "0000");
+    const aluRes = this.computeALURes(baseAddressVal, offset32Val, "00000");
 
     result.add4.result = add4Res.toString(2);
     result.ru = {
@@ -675,11 +702,14 @@ export class SCCPU {
     result.add4.result = add4Res.toString(2);
 
     const funct3 = getFunct3(instruction);
-    const rs1 = this.registers.readRegisterFromName(getRs1(instruction));
-    const rs2 = this.registers.readRegisterFromName(getRs2(instruction));
+    const rs1 = "0b" + this.registers.readRegisterFromName(getRs1(instruction));
+    const rs2 = "0b" + this.registers.readRegisterFromName(getRs2(instruction));
 
-    const rs1Int = parseInt(rs1, 2);
-    const rs2Int = parseInt(rs2, 2);
+    const rs1B = BigInt(rs1);
+    const rs2B = BigInt(rs2);
+
+    const rs1Int = BigInt.asIntN(32, rs1B);
+    const rs2Int = BigInt.asIntN(32, rs2B);
 
     const imm13 = this.currentInstruction().encoding.imm13;
     const imm32Val = imm13.padStart(32, imm13.at(0));
@@ -708,17 +738,23 @@ export class SCCPU {
       }
       case 6: {
         //bltu
+        const rs1U = BigInt.asUintN(32, rs1B);
+        const rs2U = BigInt.asUintN(32, rs2B);
+        condition = rs1U < rs2U;
         break;
       }
       case 7: {
         //bgeu
+        const rs1U = BigInt.asUintN(32, rs1B);
+        const rs2U = BigInt.asUintN(32, rs2B);
+        condition = rs1U >= rs2U;
         break;
       }
     }
 
     const aluaRes = (instruction.inst as number).toString(2);
     const aluaRes32 = aluaRes.padStart(32, "0");
-    const aluRes = this.computeALURes(aluaRes32, imm32Val, "0000");
+    const aluRes = this.computeALURes(aluaRes32, imm32Val, "00000");
 
     result.ru = { ...defaultRUResult, writeSignal: "0", rs1: rs1, rs2: rs2 };
     result.alua = { signal: "1", result: aluaRes32 };
@@ -783,7 +819,7 @@ export class SCCPU {
     const imm21Val = this.currentInstruction().encoding.imm21 as string;
     const imm32Val = imm21Val.padStart(32, imm21Val.at(0));
 
-    const aluRes = this.computeALURes(pcVal, imm32Val, "0000");
+    const aluRes = this.computeALURes(pcVal, imm32Val, "00000");
 
     result.alua = { result: pcVal, signal: "1" };
     result.alub = { result: imm32Val, signal: "1" };

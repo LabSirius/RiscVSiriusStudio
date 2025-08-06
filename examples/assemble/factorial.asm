@@ -38,7 +38,7 @@ nfact:
         lw   a0, 0(sp)
         lw   ra, 8(sp)
         addi sp, sp, 16
-        # mul a0, a0, t1
+        mul a0, a0, t1
         ret
 
 # --- printResult ---

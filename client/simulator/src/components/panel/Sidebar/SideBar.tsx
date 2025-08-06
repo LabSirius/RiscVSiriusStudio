@@ -69,7 +69,7 @@ export function SideBar() {
                   </SidebarMenuItem>
                 )}
 
-                {!(operation === "uploadMemory") && (
+                
                   <SidebarMenuItem className="flex items-center gap-1">
                     <a onClick={() => setSection("convert")} className="curser-pointer">
                       <Button variant="outline" size="icon">
@@ -78,7 +78,7 @@ export function SideBar() {
                     </a>
                     {section === "convert" && <CircleActive />}
                   </SidebarMenuItem>
-                )}
+         
 
                 {(operation === "uploadMemory" || operation === "step") && (
                   <SidebarMenuItem className="flex items-center gap-1">

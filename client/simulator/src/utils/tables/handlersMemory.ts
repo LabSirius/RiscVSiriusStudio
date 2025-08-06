@@ -20,11 +20,15 @@ export const uploadMemory = (
   newSymbols: Record<string, SymbolData>,
   onComplete?: () => void
 ): void => {
+
+
+  
   const isInitialLoad = table.getData().length === 0;
   const expectedRowCount = newMemory.length / 4;
   const maxAddress = (expectedRowCount - 1) * 4;
 
   const programSize = newCodeSize - newConstantsSize;
+
 
   // Generate main data
   const mainRows = chunk(newMemory, 4).map((word, index) => {
@@ -51,7 +55,7 @@ export const uploadMemory = (
         .map((byte) => binaryToHex(byte || '00000000').toUpperCase().padStart(2, '0'))
         .join('-'),
       info: '',
-      segment, // ← lo importante
+      segment, 
     };
   });
 
@@ -152,8 +156,9 @@ export const createPCIcon = (): HTMLElement => {
     newPC: number,
     tableInstanceRef: React.MutableRefObject<Tabulator | null>
   ): void => {
-    const targetValue = (newPC * 4).toString(16).toUpperCase();
-  
+
+
+    const targetValue = (newPC * 4).toString(16).toUpperCase();  
     tableInstanceRef.current?.getRows().forEach((row) => {
       const cell = row.getCell("address");
       if (cell) {

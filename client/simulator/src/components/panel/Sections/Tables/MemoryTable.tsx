@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMemoryTable } from "@/context/panel/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
@@ -31,6 +31,7 @@ import { getColumnMemoryDefinitions } from "@/utils/tables/definitions/definitio
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";
 import { sendMessage } from "@/components/Message/sendMessage";
 import { useLines } from "@/context/panel/LinesContext";
+import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 
 const MemoryTable = () => {
   const { theme } = useTheme();
@@ -57,10 +58,13 @@ const MemoryTable = () => {
   } = useMemoryTable();
 
   const { newPc, setNewPc, isFirstStep } = useSimulator();
+  const newPcRef = useRef(newPc);
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
   const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable } = useLines();
   const isFirstStepRef = useRef(isFirstStep);
+
+  const [showTable, setShowTable] = useState(true);
 
   // Initialize the memory table regardless of dataMemoryTable so that the container is always rendered.
   // Then, in the "tableBuilt" event, mark the table as created and load the data (if available).
@@ -97,7 +101,7 @@ const MemoryTable = () => {
           rowEl.style.color = "";
         }
 
-        const currentPcHex = (newPc * 4).toString(16).toUpperCase();
+        const currentPcHex = (newPcRef.current * 4).toString(16).toUpperCase();
         if (data.address === currentPcHex) {
           rowEl.querySelectorAll(".pc-icon").forEach((el) => el.remove());
           const cell = row.getCell("address");
@@ -190,6 +194,7 @@ const MemoryTable = () => {
         dataMemoryTable.symbols,
         () => {
           setNewPc(0);
+
           setSp(intToHex(newTotalSize - 4));
           const newMemorySize = intTo32BitBinary(newTotalSize - 4);
           setWriteInRegister({ registerName: "x2", value: newMemorySize });
@@ -227,6 +232,7 @@ const MemoryTable = () => {
   useEffect(() => {
     if (!isCreatedMemoryTable) return;
     if (dataMemoryTable?.codeSize !== undefined) {
+      newPcRef.current = newPc;
       if (!(newPc * 4 >= dataMemoryTable?.codeSize - dataMemoryTable?.constantsSize)) {
         updatePC(newPc, { current: tableInstanceRef.current });
       }
@@ -309,24 +315,64 @@ const MemoryTable = () => {
   }, [clickInEditorLine, setClickInEditorLine, isCreatedMemoryTable]);
 
   return (
-    <div className={`shadow-lg !min-h-min min-w-[34.8rem] relative `}>
-      <div
-        className={`h-full  w-full transition-opacity overflow-y-scroll ease-in 9000  ${
-          isCreatedMemoryTable ? "opacity-100" : "opacity-0"
-        }`}>
+    <>
+      <div className={`shadow-lg !min-h-min min-w-[37.36rem] relative ${!showTable && "hidden"}`}>
         <div
-          ref={tableContainerRef}
-          className={`w-full h-full overflow-x-hidden ${
-            theme === "light" ? "theme-light" : "theme-dark"
-          }`}
-        />
+          className={`h-full  w-full transition-opacity ease-in 9000  ${
+            isCreatedMemoryTable ? "opacity-100" : "opacity-0"
+          }`}>
+          <div
+            ref={tableContainerRef}
+            className={`w-full h-full overflow-x-hidden ${
+              theme === "light" ? "theme-light" : "theme-dark"
+            }`}
+          />
+          <ArrowBigLeftDash
+            onClick={() => {
+              setShowTable(false);
+            }}
+            size={18}
+            strokeWidth={1.5}
+            className="absolute cursor-pointer right-[.13rem] top-[.4rem] z-100 text-black"
+          />
+        </div>
+        {!isCreatedMemoryTable && (
+          <div className="absolute inset-0">
+            <SkeletonMemoryTable />
+          </div>
+        )}
       </div>
-      {!isCreatedMemoryTable && (
-        <div className="absolute inset-0">
-          <SkeletonMemoryTable />
+      {!showTable && (
+        <div
+          onClick={() => setShowTable(true)}
+          className={`h-full w-[1.6rem] cursor-pointer z-100 rounded-[.2rem] flex flex-col items-center uppercase group border 
+    ${theme === "light" ? "bg-white border-gray-300" : "bg-[#1a1a1a] border-gray-700"}`}>
+          <ArrowBigRightDash
+            size={18}
+            strokeWidth={1.5}
+            className={`mt-[0.35rem] mb-3 transition ease-in-out 
+      ${
+        theme === "light"
+          ? "text-gray-700 group-hover:text-gray-800"
+          : "text-gray-400 group-hover:text-gray-300"
+      }`}
+          />
+
+          {"mem".split("").map((char, index) => (
+            <span
+              key={index}
+              className={`text-[.65rem] font-bold leading-[1.15rem] transition ease-in-out 
+        ${
+          theme === "light"
+            ? "text-gray-700 group-hover:text-gray-800"
+            : "text-gray-400 group-hover:text-gray-500"
+        }`}>
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

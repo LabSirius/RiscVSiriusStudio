@@ -77,7 +77,11 @@ function alignAddress(addr: number, alignment: number): number {
   if (addr % alignment === 0){
       return addr;
   }
-  return addr + (alignment - addr % alignment);
+  return addr + endAligment(addr, alignment);
+}
+
+function endAligment(addr: number, alignment: number): number {
+  return alignment - addr % alignment;
 }
 
 function resolveAlign(align: string, value: any): Align {
@@ -286,6 +290,19 @@ function reorderMemory(memory: Memory[]): Memory[]{
   return mem;
 }
 
+function fillEndMemory(memory: Memory[]): Memory[] {
+  
+  const lastValue = memory.at(-1);
+  const start = lastValue?.memdef! + 1;
+  const end = alignAddress(start, 4);
+
+  const mem = constructFilledMemory(start, end);
+
+  memory = memory.concat(mem);
+
+  return memory;
+}
+
 export type InternalRepresentation = {
   instructions: Array<any>;
   symbols: Array<any>;
@@ -380,6 +397,7 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
   console.log('Success!.');
 
   let memory = constructMemory(parserOutput, dataTable);
+  memory = fillEndMemory(memory);
   memory = reorderMemory(memory);
 
   const result = {

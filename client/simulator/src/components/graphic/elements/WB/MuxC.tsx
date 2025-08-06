@@ -13,7 +13,7 @@ interface HandlerConfig {
 
 export default function MuxC() {
   const { currentResult, currentType } = useCurrentInst();
-  const { operation } = useSimulator();
+  const { operation, isEbreak } = useSimulator();
 
   const signal = currentResult.wb.signal;
   const hasX = signal.includes('X');
@@ -34,7 +34,7 @@ export default function MuxC() {
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
         <MuxContainer />
-        {(operation !== "uploadMemory" && !(currentType === "S" || currentType === "B" )) && 
+        {(operation !== "uploadMemory" && !(currentType === "S" || currentType === "B" ) && !isEbreak) && 
           <div className="absolute bottom-[.3rem] left-[3.5rem]">
             <LabelValueWithHover
               label=""

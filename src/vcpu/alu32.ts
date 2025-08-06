@@ -89,4 +89,69 @@ export class ALU32 {
     const br = ba & bb;
     return BigInt(br);
   }
+
+  public static mul(a: string, b: string): BigInt {
+    const ba = BigInt(a);
+    const bb = BigInt(b);
+
+    const br = ba * bb;
+    return BigInt.asIntN(32, br);
+  }
+
+  public static mulh(a: string, b: string): BigInt {
+    const ba = BigInt(a);
+    const bb = BigInt(b);
+
+    const br = ba * bb;
+    return BigInt.asIntN(32, br >> 32n);
+  }
+
+  public static mulsu(a: string, b: string): BigInt {
+    const ba = BigInt(a);
+    const bb = BigInt(b);
+
+    const br = ba * BigInt.asUintN(32, bb);
+    return BigInt.asIntN(32, br >> 32n);
+  }
+
+  public static mulu(a: string, b: string): BigInt {
+    const ba = BigInt(a);
+    const bb = BigInt(b);
+
+    const br = BigInt.asUintN(32, ba) * BigInt.asUintN(32, bb);
+    return BigInt.asUintN(32, br >> 32n);
+  }
+
+  public static div(a: string, b: string): BigInt {
+    const ba = BigInt(a);
+    const bb = BigInt(b);
+
+    const br = BigInt.asIntN(32, ba) / BigInt.asIntN(32, bb);
+    return br;
+  }
+
+  public static divu(a: string, b: string): BigInt {
+    const ba = BigInt(a);
+    const bb = BigInt(b);
+
+    const br = BigInt.asUintN(32, ba) / BigInt.asUintN(32, bb);
+    return BigInt.asUintN(32, br);
+  }
+
+  public static rem(a: string, b: string): BigInt {
+    const ba = BigInt(a);
+    const bb = BigInt(b);
+
+    const br = BigInt.asIntN(32, ba) % BigInt.asIntN(32, bb);
+    return br;
+  }
+
+  public static remu(a: string, b: string): BigInt {
+    const ba = Number(a);
+    const bb = Number(b);
+
+    const br = (ba >>> 0) % (bb >>> 0);
+    return BigInt.asUintN(32, BigInt(br));
+  }
+
 }

@@ -23,10 +23,6 @@ const LabelValueWithHover = ({
   hex,
   positionClassName,
   input = true,
-  operation,
-  showMsbNote = false,
-  showZeroExtend = false,
-  dmCtrl = false,
 }: Props) => {
   return (
     <div className={`absolute ${positionClassName}`}>
@@ -36,35 +32,11 @@ const LabelValueWithHover = ({
             <LabelValue label={label} value={value} input={input} />
           </div>
         </HoverCardTrigger>
-        <HoverCardContent className="!text-[.65rem] flex flex-col gap-2 bg-[#404040]">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-semibold text-gray-200">decimal:</p>
-              <p>d'{decimal}</p>
-            </div>
+        <HoverCardContent className="!rounded-sm !px-2 !py-1 flex gap-[1rem] bg-[#404040] w-full !b-[.2rem]">
+          <p className="!text-[.6rem]">d'{decimal}</p>
 
-            {operation && (
-              <div>
-                <p className="text-xs font-semibold text-gray-200">operation{dmCtrl && ' with'}:</p>
-                <h2 className="!text-[.7rem]">{operation}</h2>
-                {showMsbNote && (
-                  <p className="text-[.6rem] text-gray-400">msb-extends</p>
-                )}
-                {showZeroExtend && (
-                  <p className="text-[.6rem] text-gray-400">zero-extends</p>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div>
-            <p className="text-xs font-semibold text-gray-200">binary:</p>
-            <p>b'{binary}</p>
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-gray-200">hexadecimal:</p>
-            <p>h'{hex}</p>
-          </div>
+          <p className="!text-[.6rem]">b'{binary}</p>
+          <p className="!text-[.6rem]">h'{hex}</p>
         </HoverCardContent>
       </HoverCard>
     </div>

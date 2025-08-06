@@ -11,11 +11,11 @@ interface HandlerConfig {
 }
 
 export default function ALU() {
-  const { operation } = useSimulator();
+  const { operation, isEbreak } = useSimulator();
 
   const leftInputHandlers: HandlerConfig[] = [
-    { id: "muxA", position: Position.Left, className: "input", style: { top: "4.7rem" } },
-    { id: "muxB", position: Position.Left, className: "input", style: { top: "15rem" } },
+    { id: "muxA", position: Position.Left, className: "input", style: { top: "6.7rem" } },
+    { id: "muxB", position: Position.Left, className: "input", style: { top: "16.57rem" } },
   ];
 
   const bottomInputHandler: HandlerConfig = {
@@ -25,17 +25,17 @@ export default function ALU() {
   };
 
   const outputHandlers: HandlerConfig[] = [
-    { id: "dataMemory", position: Position.Right, className: "output" },
+    { id: "dataMemory", position: Position.Right, className: "output",  style: { top: "12.82rem" } },
   ];
 
   return (
     <div className="w-full">
       <div className="relative w-full h-full">
-        <h2 className="titleInElement top-[50%] left-[13%] -translate-x-[13%] -translate-y-[50%]">
+        <h2 className="titleInElement top-[1.95rem] left-[50%] transform -translate-x-[50%]">
           ALU
         </h2>
-        <ContainerSVG height={19.9} active={true} />
-        {operation !== "uploadMemory" && <LabelValueContainer />}
+        <ContainerSVG height={22.9} active={!isEbreak} />
+        {operation !== "uploadMemory" && !isEbreak && <LabelValueContainer />}
       </div>
 
       {leftInputHandlers.map((handler) => (
@@ -64,6 +64,7 @@ export default function ALU() {
           id={handler.id}
           position={handler.position}
           className={handler.className}
+          style={handler.style}
         />
       ))}
     </div>

@@ -32,6 +32,7 @@ const LabelValueContainer = () => {
         binary={binOpcode}
         hex={hexOpcode}
         positionClassName={` ${typeSimulator === 'pipeline' ? 'left-[60rem] top-[0.1rem]' : 'left-[55rem] top-[-.6rem]'} `}
+        // positionClassName="top-[-.6rem] left-[52rem]"
       />
 
       {/* FUNCT3  */}
@@ -43,6 +44,7 @@ const LabelValueContainer = () => {
           binary={binFunct3}
           hex={hexFunct3}
           positionClassName={`${typeSimulator === 'pipeline' ? 'left-[71.5rem] top-[0.1rem]' : 'left-[66.5rem] top-[-.6rem]'} `}
+          // positionClassName="top-[-.6rem] left-[63.5rem]"
         />
       )}
 
@@ -55,6 +57,7 @@ const LabelValueContainer = () => {
           binary={binFunct7}
           hex={hexFunct7}
           positionClassName={` ${typeSimulator === 'pipeline' ? 'left-[81.4rem] top-[0.1rem]' : 'left-[76.4rem] top-[-.6rem]'} `}
+          // // positionClassName=" top-[-.6rem] left-[73.4rem]"
         />
       )}
     </>
