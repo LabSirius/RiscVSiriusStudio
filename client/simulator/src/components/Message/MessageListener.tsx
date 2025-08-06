@@ -141,7 +141,6 @@ const MessageListener = () => {
           "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.",
         stop: false,
       });
-      setSection("program");
     }
   }, [typeSimulator, setSection, setOperation, setDialog]);
 

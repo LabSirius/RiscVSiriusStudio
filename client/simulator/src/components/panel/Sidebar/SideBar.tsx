@@ -32,14 +32,17 @@ const MenuItem: React.FC<MenuItemProps> = ({ sectionName, currentSection, setSec
 );
 
 export function SideBar() {
-  const { operation, typeSimulator, section, setSection } = useSimulator();
+  const { operation, section, setSection, isFirstStep } = useSimulator();
   const { setOpen, setHoveringSidebar } = useSidebar();
+
+
+  console.log(operation, isFirstStep)
 
   const mainSections: SectionItem[] = [
     {
       name: "program",
       icon: <Text />,
-      show: (operation === "uploadMemory" || operation === "step") && typeSimulator === "graphic",
+      show: (operation === "uploadMemory"  || operation === "step")  ,
     },
     {
       name: "search",
@@ -54,7 +57,7 @@ export function SideBar() {
     {
       name: "settings",
       icon: <Settings />,
-      show: operation === "uploadMemory" || operation === "step",
+      show: (operation === "uploadMemory" || operation === "step"),
     },
   ];
 
