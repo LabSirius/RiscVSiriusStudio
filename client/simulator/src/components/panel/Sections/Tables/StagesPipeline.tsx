@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
-import 'tabulator-tables/dist/css/tabulator.min.css';
+import './tabulator.css';
 import { useTheme } from "@/components/panel/ui/theme/theme-provider"
 
 
