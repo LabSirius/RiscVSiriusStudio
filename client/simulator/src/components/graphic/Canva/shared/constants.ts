@@ -250,9 +250,6 @@ export const nodeTypes = {
   stageSeparatorID_IE: StageSeparator,
   stageSeparatorIE_MEM: StageSeparator,
   stageSeparatorMEM_WB: StageSeparator,
-
-  
-
 };
 
 export const edgeTypes = {
