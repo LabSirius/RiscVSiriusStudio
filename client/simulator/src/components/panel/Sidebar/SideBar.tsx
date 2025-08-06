@@ -36,7 +36,7 @@ export function SideBar() {
     >
       <SidebarContent className="relative w-full h-full pr-10 overflow-x-hidden overflow-y-auto hide-scrollbar">
         <SidebarGroup className="flex flex-col flex-1">
-          <SidebarGroupLabel>Options</SidebarGroupLabel>
+          <SidebarGroupLabel>Sections</SidebarGroupLabel>
           <SidebarGroupContent className="flex flex-col">
             <SidebarMenu className="flex flex-col justify-between h-auto pl-3 mt-1">
               <div className="flex flex-col items-start gap-3">
