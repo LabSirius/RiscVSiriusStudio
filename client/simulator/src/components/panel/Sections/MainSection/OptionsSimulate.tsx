@@ -3,12 +3,13 @@ import SimulateAuto from "./SimulateAuto";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useDialog } from "@/context/panel/DialogContext";
 import ChangeTypeSimulator from "./ChangeTypeSimulator";
+import { useTheme } from "@/components/ui/theme/theme-provider";
 
 const OptionsSimulate = () => {
   const { operation, setSimulateAuto } = useSimulator();
   const [end, setEnd] = useState(false);
   const { dialog } = useDialog();
-
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (operation === "uploadMemory") {
@@ -16,7 +17,7 @@ const OptionsSimulate = () => {
     }
   }, [operation]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (dialog && dialog.stop) {
       setSimulateAuto(false);
       setEnd(true);
@@ -27,10 +28,12 @@ const OptionsSimulate = () => {
   return (
     <>
       {operation !== "" && !end && (
-        <div className="flex flex-col gap-6 items-center px-2 py-4 bg-black rounded-sm mt-3">
+        <div
+          className={`flex flex-col gap-6 items-center px-2 py-4 ${
+            theme === "light" ? "bg-gray-200" : "bg-black"
+          }  rounded-sm mt-3`}>
           <ChangeTypeSimulator />
-          <SimulateAuto   />
-
+          <SimulateAuto />
         </div>
       )}
     </>
