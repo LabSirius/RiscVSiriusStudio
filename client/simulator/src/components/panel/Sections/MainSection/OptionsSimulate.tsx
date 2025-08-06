@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import SimulateAuto from "./SimulateAuto";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useDialog } from "@/context/panel/DialogContext";
-import ChangeTypeSimulator from "./ChangeTypeSimulator";
 import { useTheme } from "@/components/ui/theme/theme-provider";
+import ChangeTypeSimulator from "./ChangeTypeSimulator";
 
 const OptionsSimulate = () => {
   const { operation, setSimulateAuto } = useSimulator();
   const [end, setEnd] = useState(false);
   const { dialog } = useDialog();
-  const { theme } = useTheme();
+  const { theme} = useTheme();
+
 
   useEffect(() => {
     if (operation === "uploadMemory") {
@@ -17,7 +18,7 @@ const OptionsSimulate = () => {
     }
   }, [operation]);
 
-  useEffect(() => {
+   useEffect(() => {
     if (dialog && dialog.stop) {
       setSimulateAuto(false);
       setEnd(true);

@@ -96,15 +96,11 @@ const MainSection = () => {
           </div>
         </div>
       )}
-
-        <div className="absolute right-2 flex flex-col items-center  ">
+       <div className="absolute right-2 flex flex-col items-center  ">
           <SidebarTrigger />
 
           <OptionsSimulate />
-
-
         </div>
-        
     </SidebarProvider>
   );
 };

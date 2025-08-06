@@ -20,7 +20,6 @@ interface SectionItem {
   icon: JSX.Element;
   show: boolean;
 }
-
 const MenuItem: React.FC<MenuItemProps> = ({ sectionName, currentSection, setSection, children }) => (
   <SidebarMenuItem className="flex items-center gap-1">
     <a onClick={() => setSection(sectionName)} className="cursor-pointer">
@@ -32,16 +31,18 @@ const MenuItem: React.FC<MenuItemProps> = ({ sectionName, currentSection, setSec
   </SidebarMenuItem>
 );
 
-
 export function SideBar() {
-  const { operation, section, setSection } = useSimulator();
+  const { operation, section, setSection, isFirstStep } = useSimulator();
   const { setOpen, setHoveringSidebar } = useSidebar();
+
+
+  console.log(operation, isFirstStep)
 
   const mainSections: SectionItem[] = [
     {
       name: "program",
       icon: <Text />,
-      show: (operation === "uploadMemory" || operation === "step") ,
+      show: (operation === "uploadMemory"  || operation === "step")  ,
     },
     {
       name: "search",
@@ -51,12 +52,12 @@ export function SideBar() {
     {
       name: "convert",
       icon: <Calculator />,
-      show: true,
+      show: true, 
     },
     {
       name: "settings",
       icon: <Settings />,
-      show: operation === "uploadMemory" || operation === "step",
+      show: (operation === "uploadMemory" || operation === "step"),
     },
   ];
 
