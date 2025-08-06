@@ -1,6 +1,6 @@
 import { useSimulator } from "@/context/shared/SimulatorContext";
-import { Button } from "@/components/panel/ui/button";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/panel/ui/hover-card";
+import { Button } from "@/components/ui/button";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { RefreshCcw } from "lucide-react";
 
 const ChangeTypeSimulator = () => {

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 import './tabulator.css';
-import { useTheme } from "@/components/panel/ui/theme/theme-provider"
+import { useTheme } from "@/components/ui/theme/theme-provider"
 
 
 const StagesPipeline = () => {
