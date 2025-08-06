@@ -131,3 +131,5 @@ export const bypassWriteBackEdges = [
   'ruDataWrSrc->muxC',
   ...muxCRouteEdges_R
 ];
+
+export const fullMemoryAccessEdges = memoryReadEdges; 
