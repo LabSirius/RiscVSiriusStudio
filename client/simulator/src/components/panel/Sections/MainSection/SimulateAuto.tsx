@@ -57,7 +57,7 @@ const SimulateAuto = () => {
             ) : (
               <TimerReset
                 size={16}
-                className="cursor-pointer"
+                className="cursor-pointer mt-3"
                 onClick={() => setSimulateAuto((prev) => !prev)}
               />
             )}

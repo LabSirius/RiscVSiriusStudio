@@ -197,8 +197,8 @@ function SidebarTrigger({ className, ...props }: React.ComponentProps<typeof But
       )}
       onMouseEnter={() => setOpen(true)}
       {...props}>
-      <PanelLeftIcon />
-      <span className="sr-only">Open Sidebar</span>
+      <PanelLeftIcon  />
+      <span className="sr-only ">Open Sidebar</span>
     </Button>
   );
 }

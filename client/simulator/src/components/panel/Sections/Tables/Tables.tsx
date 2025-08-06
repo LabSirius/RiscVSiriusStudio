@@ -20,7 +20,6 @@ const Tables = () => {
     "RegisterTable",
     "MemoryTable",
   ]);
-
   // 🔁 Reacciona cuando el tipo de simulador cambia
   useEffect(() => {
     setComponentOrder((prev) => {
