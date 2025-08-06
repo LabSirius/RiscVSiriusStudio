@@ -26,7 +26,7 @@ const OptionsSimulate = () => {
   return (
     <>
       {operation !== "" && !end && (
-        <div className="flex flex-col gap-6 items-center px-2 py-4 bg-black rounded-sm mt-3">
+        <div className="flex flex-col gap-6 items-center p-2 bg-black rounded-sm mt-3">
           <SimulateAuto   />
 
         </div>
