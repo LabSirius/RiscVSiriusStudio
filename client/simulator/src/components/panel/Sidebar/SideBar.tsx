@@ -1,28 +1,63 @@
-
+import React, { JSX } from "react";
 import { useSimulator } from "@/context/shared/SimulatorContext";
-
 import { Button } from "@/components/ui/button";
-
 import { useSidebar } from "@/components/ui/sideBar";
-
-
 import CircleActive from "./CircleActive";
-
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuItem,
-} from "@/components/ui/sideBar";
-
+import { Sidebar, SidebarContent, SidebarMenuItem } from "@/components/ui/sideBar";
 import { Text, Search, Calculator, Info, Settings } from "lucide-react";
+
+type SectionType = string;
+
+interface MenuItemProps {
+  sectionName: SectionType;
+  currentSection: SectionType;
+  setSection: (section: SectionType) => void;
+  children: React.ReactNode;
+}
+
+interface SectionItem {
+  name: SectionType;
+  icon: JSX.Element;
+  show: boolean;
+}
+const MenuItem: React.FC<MenuItemProps> = ({ sectionName, currentSection, setSection, children }) => (
+  <SidebarMenuItem className="flex items-center gap-1">
+    <a onClick={() => setSection(sectionName)} className="cursor-pointer">
+      <Button variant="outline" size="icon">
+        {children}
+      </Button>
+    </a>
+    {currentSection === sectionName && <CircleActive />}
+  </SidebarMenuItem>
+);
 
 export function SideBar() {
   const { operation, typeSimulator, section, setSection } = useSimulator();
   const { setOpen, setHoveringSidebar } = useSidebar();
+
+  const mainSections: SectionItem[] = [
+    {
+      name: "program",
+      icon: <Text />,
+      show: (operation === "uploadMemory" || operation === "step") && typeSimulator === "graphic",
+    },
+    {
+      name: "search",
+      icon: <Search />,
+      show: !(operation === "") && !(operation === "uploadMemory"),
+    },
+    {
+      name: "convert",
+      icon: <Calculator />,
+      show: true, 
+    },
+    {
+      name: "settings",
+      icon: <Settings />,
+      show: operation === "uploadMemory" || operation === "step",
+    },
+  ];
+
   return (
     <Sidebar
       onMouseEnter={() => {
@@ -34,73 +69,28 @@ export function SideBar() {
         setHoveringSidebar(false);
       }}
     >
-      <SidebarContent className="relative w-full h-full pr-10 overflow-x-hidden overflow-y-auto hide-scrollbar">
-        <SidebarGroup className="flex flex-col flex-1">
-          <SidebarGroupLabel>Sections</SidebarGroupLabel>
-          <SidebarGroupContent className="flex flex-col">
-            <SidebarMenu className="flex flex-col justify-between h-auto pl-3 mt-1">
-              <div className="flex flex-col items-start gap-3">
-                {(operation === "uploadMemory" || operation === "step") &&
-                  typeSimulator === "graphic" && (
-                    <SidebarMenuItem className="flex items-center gap-1">
-                      <a onClick={() => setSection("program")} className="curser-pointer">
-                        <Button variant="outline" size="icon">
-                          <Text />
-                        </Button>
-                      </a>
-                      {section === "program" && <CircleActive />}
-                    </SidebarMenuItem>
-                  )}
+      <SidebarContent className="flex flex-col justify-between w-full h-full p-3">
+        <div className="flex flex-col items-start gap-3">
+          {mainSections.map(
+            (item) =>
+              item.show && (
+                <MenuItem
+                  key={item.name}
+                  sectionName={item.name}
+                  currentSection={section}
+                  setSection={setSection}
+                >
+                  {item.icon}
+                </MenuItem>
+              )
+          )}
+        </div>
 
-                {!(operation === "") && !(operation === "uploadMemory") && (
-                  <SidebarMenuItem className="flex items-center gap-1">
-                    <a onClick={() => setSection("search")} className="curser-pointer">
-                      <Button variant="outline" size="icon">
-                        <Search />
-                      </Button>
-                    </a>
-                    {section === "search" && <CircleActive />}
-                  </SidebarMenuItem>
-                )}
-
-                
-                  <SidebarMenuItem className="flex items-center gap-1">
-                    <a onClick={() => setSection("convert")} className="curser-pointer">
-                      <Button variant="outline" size="icon">
-                        <Calculator />
-                      </Button>
-                    </a>
-                    {section === "convert" && <CircleActive />}
-                  </SidebarMenuItem>
-         
-
-                {(operation === "uploadMemory" || operation === "step") && (
-                  <SidebarMenuItem className="flex items-center gap-1">
-                    <a onClick={() => setSection("settings")} className="curser-pointer">
-                      <Button variant="outline" size="icon">
-                        <Settings />
-                      </Button>
-                    </a>
-                    {section === "settings" && <CircleActive />}
-                  </SidebarMenuItem>
-                )}
-              </div>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup className="mb-[.5rem]">
-          <div className="flex flex-col gap-5 pl-3 mt-2">
-            <SidebarMenuItem className="flex items-center gap-1">
-              <a onClick={() => setSection("help")} className="curser-pointer">
-                <Button variant="outline" size="icon">
-                  <Info />
-                </Button>
-              </a>
-              {section === "help" && <CircleActive />}
-            </SidebarMenuItem>
-          </div>
-        </SidebarGroup>
+        <div className="flex flex-col items-start gap-3">
+          <MenuItem sectionName="help" currentSection={section} setSection={setSection}>
+            <Info />
+          </MenuItem>
+        </div>
       </SidebarContent>
     </Sidebar>
   );
