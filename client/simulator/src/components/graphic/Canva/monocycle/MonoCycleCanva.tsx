@@ -10,7 +10,9 @@ import { nodeTypes, edgeTypes } from "../shared/constants";
 import { baseEdges } from "./edges/baseEdges"; 
 import CustomControls from "../../custom/CustomControls";
 import { animateLineClick, animateLineHover } from "../../animateLine/animateLine";
-import ActiveConexionsController from "../shared/active-conexions-controller/ActiveConexionsController";
+
+
+import ActiveConexionsController from "../shared/conexions-controller/ActiveConexionsController";
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 

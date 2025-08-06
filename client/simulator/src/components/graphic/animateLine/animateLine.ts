@@ -8,9 +8,11 @@ export const animateLineHover = (
   edges: Edge[],
   animated: boolean = true
 ): void => {
+   console.log("Hovered edge only:", edge.id); 
   const idsToUpdate = edgeGroups[edge.id];
 
   idsToUpdate?.forEach((id) => {
+     
     const currentEdge = edges.find((e) => e.id === id);
 
     if (currentEdge && "disabled" in currentEdge && currentEdge.disabled) return;
