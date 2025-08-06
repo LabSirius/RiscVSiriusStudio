@@ -5,7 +5,7 @@ import { PanelLeftIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useSimulator } from "@/context/shared/SimulatorContext";
+import { useTheme } from "./theme/theme-provider";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -127,7 +127,6 @@ function Sidebar({
   collapsible?: "offcanvas" | "icon" | "none";
 }) {
   const { state, setOpen } = useSidebar();
-  const { modeSimulator} = useSimulator();
 
   return (
     <div
@@ -154,8 +153,7 @@ function Sidebar({
       <div
         data-slot="sidebar-container"
         className={cn(
-          "absolute bottom-0 z-10 flex w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear",
-          modeSimulator === "graphic" ? "top-2" : "top-0",
+          "absolute top-0 h-full z-10 flex w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear",
           side === "left"
             ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
             : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
@@ -183,6 +181,7 @@ function Sidebar({
 
 function SidebarTrigger({ className, ...props }: React.ComponentProps<typeof Button>) {
   const { setOpen, hoveringSidebar } = useSidebar();
+  const {theme} = useTheme();
 
   return (
 
@@ -191,13 +190,14 @@ function SidebarTrigger({ className, ...props }: React.ComponentProps<typeof But
       data-slot="sidebar-trigger"
       variant="ghost"
       className={cn(
-        " transition-opacity duration-200 bg-[#000000] p-4 ",
+        " transition-opacity duration-200 ${theme === 'light' ? 'bg-gray-200' : 'bg-black' } p-4 ",
         hoveringSidebar ? "opacity-0 pointer-events-none" : "opacity-100",
+        theme === 'light' ? 'bg-gray-200' : 'bg-black',
         className
       )}
       onMouseEnter={() => setOpen(true)}
       {...props}>
-      <PanelLeftIcon  size={18} />
+      <PanelLeftIcon  size={17} />
       <span className="sr-only ">Open Sidebar</span>
     </Button>
   );
