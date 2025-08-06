@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useMemoryTable } from "@/context/panel/MemoryTableContext";
 import { useDialog } from "@/context/panel/DialogContext";
-import { Button } from "@/components/panel/ui/button";
+import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 
 const ImportMemory = () => {

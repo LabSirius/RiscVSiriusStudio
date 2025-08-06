@@ -1,4 +1,4 @@
-import { Button } from "@/components/panel/ui/button";
+import { Button } from "@/components/ui/button";
 import { Save } from "lucide-react";
 
 import { useRegisterData } from "@/context/shared/RegisterData";

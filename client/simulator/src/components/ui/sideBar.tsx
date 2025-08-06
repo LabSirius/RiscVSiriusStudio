@@ -3,8 +3,8 @@ import { Slot } from "@radix-ui/react-slot";
 import { PanelLeftIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/panel/ui/button";
-import { TooltipProvider } from "@/components/panel/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";

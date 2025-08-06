@@ -1,10 +1,10 @@
 import { TimerReset, TimerOff } from "lucide-react";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/graphic/ui/hover-card";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { sendMessage } from "@/components/Message/sendMessage";
 import { useEffect, useState } from "react";
 import { useDialog } from "@/context/panel/DialogContext";
-import { Slider } from "@/components/panel/ui/slider";
+import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 
 const SimulateAuto = () => {

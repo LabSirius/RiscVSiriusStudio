@@ -1,13 +1,13 @@
 import { useRef, useState } from "react";
-import { Card, CardContent } from "@/components/panel/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
-} from "@/components/panel/ui/carousel";
-import { Button } from "@/components/panel/ui/button";
+} from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
 
 
 interface CarouserProps {

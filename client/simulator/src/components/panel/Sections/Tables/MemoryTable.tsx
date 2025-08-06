@@ -5,7 +5,7 @@ import { useSimulator } from "@/context/shared/SimulatorContext";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "./tabulator.css";
 
-import { useTheme } from "@/components/panel/ui/theme/theme-provider";
+import { useTheme } from "@/components/ui/theme/theme-provider";
 
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";
 import { useLines } from "@/context/panel/LinesContext";

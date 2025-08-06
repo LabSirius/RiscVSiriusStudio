@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ThemeProvider } from "@/components/panel/ui/theme/theme-provider";
+import { ThemeProvider } from "@/components/ui/theme/theme-provider";
 import { ReactFlowProvider } from "@xyflow/react";
 import { CurrentInstProvider } from "./context/graphic/CurrentInstContext";
 import { MemoryTableProvider } from "./context/panel/MemoryTableContext";

@@ -8,7 +8,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/panel/ui/alert-dialog";
+} from "@/components/ui/alert-dialog";
 
 import { Info, Settings} from "lucide-react";  
 

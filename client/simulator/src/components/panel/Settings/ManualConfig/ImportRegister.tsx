@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useDialog } from "@/context/panel/DialogContext";
 import { registersNames } from "@/components/panel/Sections/constants/data";
-import { Button } from "@/components/panel/ui/button";
+import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
 import { sendMessage } from "../../../Message/sendMessage";
 

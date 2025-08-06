@@ -1,5 +1,5 @@
-import { Button } from "@/components/panel/ui/button";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/panel/ui/hover-card";
+import { Button } from "@/components/ui/button"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 import { Layers2 } from "lucide-react";
 

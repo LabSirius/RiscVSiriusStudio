@@ -5,7 +5,7 @@ import "./tabulator.css";
 import { useMemoryTable } from "@/context/panel/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
-import { useTheme } from "@/components/panel/ui/theme/theme-provider";
+import { useTheme } from "@/components/ui/theme/theme-provider";
 
 import { createViewTypeFormatter } from "@/utils/tables/handlersRegisters";
 

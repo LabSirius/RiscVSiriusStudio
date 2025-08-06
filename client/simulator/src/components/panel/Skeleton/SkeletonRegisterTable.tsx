@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/panel/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const SkeletonRegisterTable = () => {
   const topRowCount = 3;

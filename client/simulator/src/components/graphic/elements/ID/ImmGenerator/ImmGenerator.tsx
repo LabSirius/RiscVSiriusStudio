@@ -5,7 +5,7 @@ import LabelValueContainer from "./LabelValueContainer";
 import { PanelTopClose } from "lucide-react";
 import { useState } from "react";
 
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/graphic/ui/hover-card";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import ImmDecode from "./immDecode/ImmDecode";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
