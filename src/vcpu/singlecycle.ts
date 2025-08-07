@@ -1,22 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-/**
- * A CPU instance consists of:
- * - A program memory
- * - An instruction counter
- * - A register file
- * - A data memory
- *
- * There is an execute instruction function that computes all the values of
- * every component in the simulation.
- */
-
 import {
   getRs1,
   getRs2,
   getRd,
-  writesDM,
-  writesRU,
   getFunct3,
   getFunct7,
   isIArithmetic,
@@ -27,167 +14,14 @@ import {
   getImmFunct7
 } from "../utilities/instructions";
 import { ALU32 } from "./alu32";
-import { binaryToInt, intToBinary } from "../utilities/conversions";
+import { intToBinary } from "../utilities/conversions";
 import { logger } from "../utilities/logger";
 import { chunk } from "lodash-es";
 
 import { ICPU } from "./interface";
+import { RegistersFile, DataMemory } from "./components"; 
 
 
-class RegistersFile {
-  private registers: Array<string>;
-  public constructor() {
-    this.registers = new Array(32).fill("00000000000000000000000000000000");
-  }
-
-  public printRegisters() {
-    this.registers.forEach((val, idx) => {
-      logger().info({ msg: "PrintRegister", idx: "x" + idx, val: val });
-    });
-  }
-
-  private getIndexFromName(name: string): number {
-    return parseInt(name.substring(1));
-  }
-  public readRegisterFromName(name: string): string {
-    const value = this.registers[this.getIndexFromName(name)];
-    if (value === undefined) {
-      throw new Error(`Register ${name} not found`);
-    }
-    return value;
-  }
-
-  public readRegister(index: number): string {
-    const value = this.registers[index];
-    if (value === undefined) {
-      throw new Error(`Register index ${index} not found`);
-    }
-    return value;
-  }
-
-  public writeRegister(name: string, value: string) {
-    const idx = this.getIndexFromName(name);
-    if (idx === 0) {
-      return;
-    }
-    this.registers[idx] = value;
-  }
-
-  public getRegisterData() {
-    return this.registers;
-  }
-}
-
-class DataMemory {
-  private memory: Array<string>;
-  public getMemory(): Array<string> {
-    return [...this.memory];
-  }
-  /**
-   * Last address in memory of the code area.
-   *
-   * Code is always stored in the lowest part of the memory. For this reason,
-   * code area size is codeAreaEnd + 1.
-   */
-  private codeAreaEnd: number;
-  get codeSize() {
-    return this.codeAreaEnd + 1;
-  }
-
-  private size: number;
-  get memSize() {
-    return this.size;
-  }
-  get spInitialAddress() {
-    return this.size - 4;
-  }
-
-  private _constantsSize: number;
-  get constantsSize() : number {
-    return this._constantsSize;
-  }
-
-  public constructor(programSize : number, codeSize: number, size: number) {
-   
-    this.codeAreaEnd = codeSize - 1;
-    this._constantsSize =  codeSize - programSize;
-    this.size = 0;
-    this.memory = [];
-    this.resize(size);
-  }
-
-  public resize(size: number) {
-    this.size = size;
-    // Ensure there is always space for the code area
-    const totalSize = this.codeSize + this.memSize;
-    this.size = totalSize;
-    this.memory = new Array(totalSize).fill("00000000");
-  }
-
-  /**
-   * Writes the program into the memory.
-   *
-   * Assumes memory is big enough to store the program.
-   *
-   * @param program intermediate representation of the program
-   */
-
-  public uploadProgram(memory: Array<any>) {
-      memory.forEach((mem) => {
-        const address = mem.memdef;
-        this.memory[address] = mem.binValue;
-      });
-  
-  }
-  
-  
-  public lastAddress() {
-    return this.size - 1;
-  }
-
-  public validAddress(address: number) {
-    return this.canWrite(1, address);
-  }
-
-  /**
-   * Tests whether @argument numBytes bytes can be written at @argument address
-   * without overflowing the memory.
-   */
-  public canWrite(numBytes: number, address: number) {
-    const lastAddress = address + numBytes - 1;
-    console.log("last address", lastAddress, "size", this.size);
-    return lastAddress <= this.lastAddress();
-  }
-
-  public write(data: Array<string>, address: number) {
-    const lastAddress = address + data.length - 1;
-    if (lastAddress > this.lastAddress()) {
-      throw new Error("Data memory size exceeded.");
-    }
-    for (let i = 0; i < data.length; i++) {
-      if (data[i] === undefined) {
-        throw new Error("Undefined data element");
-      }
-      this.memory[address + i] = data[i]!;
-    }
-  }
-  public read(address: number, length: number): Array<string> {
-    const lastAddress = address + length - 1;
-    if (lastAddress > this.lastAddress()) {
-      throw new Error("Data memory size exceeded.");
-    }
-    let data = [] as Array<string>;
-    for (let i = 0; i < length; i++) {
-      const value = this.memory[address + i];
-      if (value !== undefined) {
-        data.push(value);
-      } else {
-        throw new Error(`Invalid memory access at ${address + i}`);
-      }
-    }
-    return data.reverse();
-  }
-}
 
 /**
  * The result of a instruction execution is a set of values for each input

@@ -22,8 +22,7 @@ import { RVDocument } from "../rvDocument";
 import { EncoderDecorator } from "../encoderDecorator";
 import { ConfigurationManager } from "./configurationManager";
 import { SimulationParameters, Simulator, TextSimulator, GraphicSimulator } from "../Simulator";
-import { SCCPU } from "../vcpu/singlecycle";
-import { PipelineCPU } from "../vcpu/pipeline";
+
 
 /**
  * Manages the state and logic for the entire RISC-V Simulator extension.

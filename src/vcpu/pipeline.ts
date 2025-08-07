@@ -1,66 +1,38 @@
 
-import { ICPU } from "./interface"; 
+import { ICPU } from "./interface";
+import { RegistersFile, DataMemory } from "./components"; 
 
-/**
- * Skeleton for the Pipelined CPU.
- * Implements the ICPU interface so the simulator can use it.
- * For now, most methods are empty or throw an error.
- */
 export class PipelineCPU implements ICPU {
-  
+  private readonly program: any[];
+  private dataMemory: DataMemory;
+  private registers: RegistersFile;
+
   constructor(program: any[], memory: any[], memSize: number) {
-    console.log("CPU pipeline created!");
-    // Here we will initialize pipeline registers, memory, etc.
+    this.program = program;
+
+    this.registers = new RegistersFile();
+    this.dataMemory = new DataMemory(program.length * 4, memory.length, memSize);
+    this.dataMemory.uploadProgram(memory);
   }
 
-  /**
-   * The "cycle" in the pipelined processor will advance all stages at once.
-   */
-  cycle(): any {
-    console.log("Executing a cycle of the pipelined processor (Pipeline)...");
-    // Main logic to advance IF, ID, EX, MEM, WB will go here
-    return {}; // Return an empty object for now
+  public cycle(): any {
+    console.log("Ejecutando un ciclo del procesador segmentado (Pipeline)...");
   }
   
 
-  getPC(): number {
-    // We will return the PC of the IF stage
-    return 0;
+  public getDataMemory(): DataMemory {
+    return this.dataMemory;
   }
 
-  currentInstruction() {
-    // This could return the instruction in the ID or IF stage
-    return {};
-  }
-
-  finished(): boolean {
-    // The simulation will end when the pipeline is empty
-    return false;
+  public getRegisterFile(): RegistersFile {
+    return this.registers;
   }
   
-  jumpToInstruction(address: string): void {
-    console.log(`PIPELINE: Jump to ${address} not implemented.`);
-  }
-
-  nextInstruction(): void {
-    // This method no longer makes sense in the pipeline, PC is updated differently
-  }
-
-  getRegisterFile() {
-    console.log("PIPELINE: getRegisterFile not implemented.");
-    return null;
-  }
-
-  getDataMemory() {
-    console.log("PIPELINE: getDataMemory not implemented.");
-    return null;
-  }
-
-  replaceDataMemory(newMemory: any[]): void {
-    console.log("PIPELINE: replaceDataMemory not implemented.");
-  }
-
-  replaceRegisters(newRegisters: string[]): void {
-    console.log("PIPELINE: replaceRegisters not implemented.");
-  }
+  public getPC = () => 0;
+  public currentInstruction = () => ({});
+  public finished = () => false;
+  public jumpToInstruction = (address: string) => {};
+  public nextInstruction = () => {};
+  public replaceDataMemory = (newMemory: any[]) => {};
+  public replaceRegisters = (newRegisters: string[]) => {};
 }
