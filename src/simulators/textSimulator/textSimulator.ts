@@ -33,80 +33,31 @@ function dispatch(event: MessageEvent) {
 
   switch (data.from) {
     case "extension": {
-          const { from, ...newData } = data;
-          UIManager.getInstance()._sendMessageToReact(newData);
-          break;
+      const { from, ...newData } = data;
+      UIManager.getInstance()._sendMessageToReact(newData);
+      break;
     }
     case "react": {
-      switch (data.event) {
-        case "monocycle": {
-          UIManager.getInstance()._sendMessageToExtension({
-            command: "event",
-            object: { event: data.event },
-          });
-          break;
-        }
-        case "pipeline": {
-          UIManager.getInstance()._sendMessageToExtension({
-            command: "event",
-            object: { event: data.event },
-          });
-          break;
-        }
-        case "step": {
-          UIManager.getInstance()._sendMessageToExtension({
-            command: "event",
-            object: { event: data.event },
-          });
-          break;
-        }
-        case "stop": {
-          UIManager.getInstance()._sendMessageToExtension({
-            command: "event",
-            object: { event: data.event },
-          });
-          break;
-        }
-        case "clickInInstruction": {
-          UIManager.getInstance()._sendMessageToExtension({
-            command: "event",
-            object: { event: data.event, value: data.line },
-          });
-          break;
-        }
-        case "memorySizeChanged": {
-          UIManager.getInstance()._sendMessageToExtension({
-            command: "event",
-            object: { event: data.event, value: data.sizeMemory },
-          });
-          break;
-        }
-        case "registersChanged": {
-          UIManager.getInstance()._sendMessageToExtension({
-            command: "event",
-            object: { event: data.event, value: data.registers },
-          });
-          break;
-        }
-        case "memoryChanged": {
-          UIManager.getInstance()._sendMessageToExtension({
-            command: "event",
-            object: { event: data.event, value: data.memory },
-          });
-          break;
-        }
-        case "clickOpenRISCVCard": {
-          UIManager.getInstance()._sendMessageToExtension({
-            command: "event",
-            object: { event: data.event },
-          });
-          break;
-        }
-        default: {
-          log({ msg: "Unknown operation", data: data });
-          break;
-        }
+      const baseObject: any = { event: data.event };
+
+      const eventValueMap: Record<string, keyof typeof data> = {
+        clickInInstruction: "line",
+        memorySizeChanged: "sizeMemory",
+        registersChanged: "registers",
+        memoryChanged: "memory",
+      };
+
+      const valueKey = eventValueMap[data.event];
+      if (valueKey) {
+        baseObject.value = data[valueKey];
       }
+
+      // Enviar a la extensión
+      UIManager.getInstance()._sendMessageToExtension({
+        command: "event",
+        object: baseObject,
+      });
+
       break;
     }
   }
