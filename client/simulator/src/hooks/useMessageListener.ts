@@ -16,6 +16,7 @@ export const useMessageListener = () => {
   } = useMemoryTable();
 
   const {
+    setTypeSimulator,
     modeSimulator,
     setModeSimulator,
     setTextProgram,
@@ -49,23 +50,23 @@ export const useMessageListener = () => {
             setTextProgram(message.textProgram);
             break;
           case "uploadMemory":
-  
-              setDialog({
-                title: "Configuration Info",
-                description:
-                  "Before executing the first instruction, you can change the simulation settings.",
-                stop: false,
-                chooseTypeSimulator: true
-              });
-              setSection("settings");
+            setDialog({
+              title: "Configuration Info",
+              description:
+                "Before executing the first instruction, you can change the simulation settings.",
+              stop: false,
+              chooseTypeSimulator: message.typeSimulator === 'monocycle' ? true : false,
+            });
+            setTypeSimulator(message.typeSimulator);
+            setSection("settings");
             setIsCreatedMemoryTable(false);
             setDataMemoryTable(message.payload);
             setSizeMemory(message.payload.memory.length - message.payload.codeSize);
             setIsFirstStep(false);
             setOperation("uploadMemory");
+
             break;
           case "decorateLine":
-            console.log("decorateLine EEEE", message.lineDecorationNumber);
             setLineDecorationNumber(message.lineDecorationNumber);
             break;
           case "step":
@@ -133,7 +134,4 @@ export const useMessageListener = () => {
     setDialog,
     setIsCreatedMemoryTable,
   ]);
-
-
-
 };

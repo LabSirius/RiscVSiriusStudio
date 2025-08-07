@@ -24,6 +24,7 @@ export abstract class Simulator {
   protected readonly cpu: ICPU;
   protected readonly webview: Webview; // This is the key addition
   private _configured: boolean = false;
+  protected readonly simulatorType: 'monocycle' | 'pipeline';
 
   constructor(
     simulatorType: 'monocycle' | 'pipeline', 
@@ -35,6 +36,7 @@ export abstract class Simulator {
     this.context = context;
     this.rvDoc = rvDoc;
     this.webview = webview; 
+    this.simulatorType = simulatorType;
 
     if (!rvDoc.ir) {
       throw new Error("RVDocument has no IR");
@@ -44,7 +46,6 @@ export abstract class Simulator {
       this.cpu = new PipelineCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
     } else {
       console.log("TYPE MONOCYCLE");
-
       this.cpu = new SCCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
     }
   }
@@ -189,7 +190,7 @@ export class TextSimulator extends Simulator {
     this.listenToEditorClicks();
     const inst = this.cpu.currentInstruction();
     let line = this.rvDoc.getLineForIR(inst);
-    if (line === undefined) line = 0;
+    if (line === undefined) {line = 0;}
     this.highlightLine(line);
 
     const addressLine =
@@ -202,7 +203,6 @@ export class TextSimulator extends Simulator {
     const asmList = this.rvDoc.ir?.instructions.map((instr) => instr.asm);
 
     this.webview.postMessage({
-      // Use 'this.webview' directly
       from: "extension",
       operation: "uploadMemory",
       payload: {
@@ -213,6 +213,8 @@ export class TextSimulator extends Simulator {
         symbols: this.rvDoc.ir?.symbols,
         asmList,
       },
+      typeSimulator: this.simulatorType
+
     });
 
     super.start();

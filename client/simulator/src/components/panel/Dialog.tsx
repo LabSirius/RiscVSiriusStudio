@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { Info, Settings } from "lucide-react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; 
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { sendMessage } from "../Message/sendMessage";
@@ -39,12 +39,16 @@ const Dialog = () => {
   const handleAccept = () => {
     setOpen(false);
     setDialog(undefined);
-    sendMessage({event: typeSimulator})
+
+      sendMessage({ event: typeSimulator });
+    
   };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogContent> {/* Removed custom z-index, shadcn handles this */}
+      <AlertDialogContent>
+        {" "}
+        {/* Removed custom z-index, shadcn handles this */}
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-[#3A6973]">
             {dialog?.stop ? (
@@ -54,22 +58,18 @@ const Dialog = () => {
             )}
             {dialog?.title}
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-base text-start text-foreground"> 
-            <div className="text-xs mt-1">
-            {dialog?.description}
-
-            </div>
+          <AlertDialogDescription className="text-base text-start text-foreground">
+            <div className="text-xs mt-1">{dialog?.description}</div>
 
             {dialog?.chooseTypeSimulator && (
               <div className="py-4">
                 {/* 1. Title for the simulator type selection. */}
                 <p className="mb-3 font-medium text-[.8rem]">Choose Type Simulator</p>
-                
+
                 <RadioGroup
                   value={typeSimulator}
                   onValueChange={handleSelection}
-                  className="space-y-2" 
-                >
+                  className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="monocycle" id="r_monocycle" />
                     <Label htmlFor="r_monocycle" className="cursor-pointer">
