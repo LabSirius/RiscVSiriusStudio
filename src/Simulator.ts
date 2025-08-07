@@ -5,6 +5,8 @@ import { branchesOrJumps, getFunct3, readsDM, writesDM, writesRU } from "./utili
 import { intToBinary } from "./utilities/conversions";
 import { window, commands, TextEditorDecorationType, Webview } from "vscode";
 import { Disposable } from "vscode";
+import { PipelineCPU } from "./vcpu/pipeline";
+import { ICPU } from "./vcpu/interface";
 
 export type SimulationParameters = { memorySize: number };
 export interface StepResult {
@@ -19,7 +21,7 @@ export interface StepResult {
 export abstract class Simulator {
   protected readonly context: RVContext;
   protected readonly rvDoc: RVDocument;
-  protected readonly cpu: SCCPU;
+  protected readonly cpu: ICPU;
   protected readonly webview: Webview; // This is the key addition
   private _configured: boolean = false;
 
@@ -37,7 +39,13 @@ export abstract class Simulator {
     if (!rvDoc.ir) {
       throw new Error("RVDocument has no IR");
     }
-    this.cpu = new SCCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
+    if (simulatorType === 'pipeline') {
+      console.log("ENTRA A PIPELINE")
+      this.cpu = new PipelineCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
+    } else {
+      console.log("ENTRA A MONO")
+      this.cpu = new SCCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
+    }
   }
 
   public get configured(): boolean {
@@ -384,14 +392,12 @@ export class TextSimulator extends Simulator {
   }
 
   private highlightLine(lineNumber: number): void {
-    console.log("CONTROL 1, lineNumber:", lineNumber);
     const editor = this.rvDoc.editor;
     if (editor) {
       if (this.currentHighlight) {
         this.currentHighlight.dispose();
       }
 
-      console.log("CONTROL 2, lineNumber:", lineNumber);
 
       this.currentHighlight = window.createTextEditorDecorationType({
         backgroundColor: "rgba(209, 227, 231, 0.5)", // Azul pastel
@@ -399,7 +405,6 @@ export class TextSimulator extends Simulator {
       });
 
 
-      console.log("CONTROL 3, lineNumber:", lineNumber);
 
       const range = editor.document.lineAt(lineNumber).range;
       editor.revealRange(range);
