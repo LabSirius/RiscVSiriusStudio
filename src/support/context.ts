@@ -312,6 +312,7 @@ export class RVContext {
 
     switch (message.event) {
       case "monocycle":
+        this._simulatorType = "monocycle";
         // Do nothing, as monocycle is the default initial state.
         break;
       case "pipeline":
