@@ -116,73 +116,17 @@ export class RVContext {
 
   private registerCommands() {
     this.disposables.push(
-      // --- COMMAND FOR GRAPHIC SIMULATOR ---
+
       commands.registerCommand("rv-simulator.simulate", async () => {
-        this._madeReadonlyOnce = false; // Reset the readonly state for the next simulation
-        const editor = window.activeTextEditor;
-        if (!editor || !RVDocument.isValid(editor.document)) {
-          return window.showErrorMessage("No valid RISC-V document open");
+        const environmentReady = await this.prepareSimulationEnvironment();
+        if (!environmentReady) {
+          return;
         }
 
-        // 1. FORCE-CLOSE THE TEXT VIEW (BOTTOM PANEL)
-        await commands.executeCommand("workbench.action.closePanel");
-
-        // 2. STOP ANY PREVIOUS SIMULATOR AND CLEAN STATE
-        this.cleanupSimulator();
-        // Also close any previously open graphic panel
-        this._graphicWebviewPanel?.dispose();
-
-        this.buildCurrentDocument();
-        if (!this._currentDocument || !this._currentDocument.ir) return;
-
-        const panel = window.createWebviewPanel(
-          "riscCard",
-          "RISC-V Graphic Simulator",
-          ViewColumn.One,
-          {
-            enableScripts: true,
-            retainContextWhenHidden: true,
-            localResourceRoots: [
-              Uri.joinPath(this.extensionContext.extensionUri, "node_modules"),
-              Uri.joinPath(this.extensionContext.extensionUri, "src/templates"),
-              Uri.joinPath(this.extensionContext.extensionUri, "out"),
-            ],
-          }
-        );
-
-        this._graphicWebviewPanel = panel;
-
-        // 3. SIMULATION STOPS WHEN GRAPHIC PANEL IS CLOSED
-        panel.onDidDispose(() => {
-          this._graphicWebviewPanel = undefined;
-          if (this._isSimulating) {
-            this._simulator?.makeEditorWritable();
-          }
-          this.cleanupSimulator();
-        });
-
-        panel.webview.html = await getHtmlForGraphicSimulator(
-          panel.webview,
-          this.extensionContext.extensionUri
-        );
-        activateMessageListenerForRegistersView(panel.webview, this);
-
-        // 4. CREATE AND START THE GRAPHIC SIMULATOR WITH ITS OWN WEBVIEW
-        const settings: SimulationParameters = { memorySize: 40 };
-        this._simulator = new GraphicSimulator(
-          this._simulatorType,
-          settings,
-          this._currentDocument,
-          this,
-          panel.webview
-        );
-
-        this._isSimulating = true;
-        commands.executeCommand("setContext", "ext.isSimulating", true);
-        await this._simulator.start();
-
-        panel.reveal(panel.viewColumn);
+        const panel = await this.createAndConfigureGraphicPanel();
+        await this.initializeAndStartSimulator(panel);
       }),
+
 
       // --- COMMAND FOR TEXT SIMULATOR ---
       commands.registerCommand("rv-simulator.textSimulate", () => {
@@ -243,6 +187,80 @@ export class RVContext {
         this.buildCurrentDocument();
       })
     );
+  }
+
+  private async prepareSimulationEnvironment(): Promise<boolean> {
+    this._madeReadonlyOnce = false;
+    const editor = window.activeTextEditor;
+    if (!editor || !RVDocument.isValid(editor.document)) {
+      window.showErrorMessage("No valid RISC-V document open");
+      return false;
+    }
+
+    await commands.executeCommand("workbench.action.closePanel");
+    this.cleanupSimulator();
+    this._graphicWebviewPanel?.dispose();
+    
+    this.buildCurrentDocument();
+    if (!this._currentDocument || !this._currentDocument.ir) {
+      return false;
+    }
+    
+    return true;
+  }
+
+  private async createAndConfigureGraphicPanel(): Promise<WebviewPanel> {
+    const panel = window.createWebviewPanel(
+      "riscCard",
+      "RISC-V Graphic Simulator",
+      ViewColumn.One,
+      {
+        enableScripts: true,
+        retainContextWhenHidden: true,
+        localResourceRoots: [
+          Uri.joinPath(this.extensionContext.extensionUri, "node_modules"),
+          Uri.joinPath(this.extensionContext.extensionUri, "src/templates"),
+          Uri.joinPath(this.extensionContext.extensionUri, "out"),
+        ],
+      }
+    );
+
+    this._graphicWebviewPanel = panel;
+
+    panel.onDidDispose(() => {
+      this._graphicWebviewPanel = undefined;
+      if (this._isSimulating) {
+        this._simulator?.makeEditorWritable();
+      }
+      this.cleanupSimulator();
+    });
+
+    panel.webview.html = await getHtmlForGraphicSimulator(
+      panel.webview,
+      this.extensionContext.extensionUri
+    );
+    activateMessageListenerForRegistersView(panel.webview, this);
+
+    return panel;
+  }
+
+  private async initializeAndStartSimulator(panel: WebviewPanel) {
+    if (!this._currentDocument) {return;}
+
+    const settings: SimulationParameters = { memorySize: 40 };
+    this._simulator = new GraphicSimulator(
+      this._simulatorType,
+      settings,
+      this._currentDocument,
+      this,
+      panel.webview
+    );
+
+    this._isSimulating = true;
+    commands.executeCommand("setContext", "ext.isSimulating", true);
+    await this._simulator.start();
+
+    panel.reveal(panel.viewColumn);
   }
 
   private setupEditorListeners() {
@@ -368,7 +386,7 @@ export class RVContext {
         console.log("MONO");
         break;
       case "pipeline":
-        console.log("Pipe");
+        this.resetSimulator();
         break;
       case "reset":
         this.reset();
