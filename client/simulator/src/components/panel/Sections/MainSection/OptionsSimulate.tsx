@@ -3,7 +3,6 @@ import SimulateAuto from "./SimulateAuto";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useDialog } from "@/context/panel/DialogContext";
 import { useTheme } from "@/components/ui/theme/theme-provider";
-import ChangeTypeSimulator from "./ChangeTypeSimulator";
 
 const OptionsSimulate = () => {
   const { operation, setSimulateAuto } = useSimulator();
@@ -33,7 +32,6 @@ const OptionsSimulate = () => {
           className={`flex flex-col gap-6 items-center px-2 py-4 ${
             theme === "light" ? "bg-gray-200" : "bg-black"
           }  rounded-sm mt-3`}>
-          <ChangeTypeSimulator />
           <SimulateAuto />
         </div>
       )}

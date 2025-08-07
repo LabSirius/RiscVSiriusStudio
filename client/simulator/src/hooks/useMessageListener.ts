@@ -53,7 +53,7 @@ export const useMessageListener = () => {
               setDialog({
                 title: "Configuration Info",
                 description:
-                  "Before executing the first instruction, you can change the simulation settings",
+                  "Before executing the first instruction, you can change the simulation settings.",
                 stop: false,
                 chooseTypeSimulator: true
               });
