@@ -16,8 +16,8 @@ export const useMessageListener = () => {
   } = useMemoryTable();
 
   const {
-    typeSimulator,
-    setTypeSimulator,
+    modeSimulator,
+    setModeSimulator,
     setTextProgram,
     setOperation,
     isFirstStep,
@@ -26,45 +26,38 @@ export const useMessageListener = () => {
     setNewPc,
     setIsEbreak,
   } = useSimulator();
-  
   const { setWriteInRegister } = useRegistersTable();
   const { setCurrentInst, setCurrentResult } = useCurrentInst();
+
   const { setLineDecorationNumber, setClickInEditorLine } = useLines();
   const { setDialog } = useDialog();
 
-  // --- 2. Logic to track the current simulator type ---
-  // This ref tracks the latest simulator type without adding it as a dependency
-  // to the main message listener effect, preventing unwanted re-registrations.
-  const typeSimulatorRef = useRef(typeSimulator);
+  const modeSimulatorRef = useRef(modeSimulator);
   useEffect(() => {
-    typeSimulatorRef.current = typeSimulator;
-  }, [typeSimulator]);
+    modeSimulatorRef.current = modeSimulator;
+  }, [modeSimulator]);
 
-
-  // --- 3. Main message event listener effect ---
-  // This effect sets up a global listener for messages from the parent window (e.g., VS Code extension).
-  // It contains the central switch statement to handle all incoming operations.
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
       if (message?.from === "UIManager") {
         switch (message.operation) {
           case "simulatorType":
-            setTypeSimulator(message.simulatorType);
+            setModeSimulator(message.simulatorType);
             break;
           case "textProgram":
             setTextProgram(message.textProgram);
             break;
           case "uploadMemory":
-            if (!(typeSimulator === "graphic")) {
+  
               setDialog({
                 title: "Configuration Info",
                 description:
-                  "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.",
+                  "Before executing the first instruction, you can change the simulation settings",
                 stop: false,
+                chooseTypeSimulator: true
               });
               setSection("settings");
-            }
             setIsCreatedMemoryTable(false);
             setDataMemoryTable(message.payload);
             setSizeMemory(message.payload.memory.length - message.payload.codeSize);
@@ -72,6 +65,7 @@ export const useMessageListener = () => {
             setOperation("uploadMemory");
             break;
           case "decorateLine":
+            console.log("decorateLine EEEE", message.lineDecorationNumber);
             setLineDecorationNumber(message.lineDecorationNumber);
             break;
           case "step":
@@ -80,14 +74,16 @@ export const useMessageListener = () => {
             if (message.currentInst.asm?.toLowerCase() === "ebreak") {
               setIsEbreak(true);
             }
+
             setCurrentResult(message.result);
             if (message.lineDecorationNumber !== undefined) {
               setLineDecorationNumber(message.lineDecorationNumber);
             } else {
               setLineDecorationNumber(-1);
             }
+
             if (!isFirstStep) {
-              if (typeSimulatorRef.current === "graphic") {
+              if (modeSimulatorRef.current === "graphic") {
                 setSection("program");
               } else {
                 setSection("search");
@@ -124,7 +120,6 @@ export const useMessageListener = () => {
     window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
   }, [
-    // The dependency array remains untouched, as requested.
     setOperation,
     setDataMemoryTable,
     setSizeMemory,
@@ -139,18 +134,6 @@ export const useMessageListener = () => {
     setIsCreatedMemoryTable,
   ]);
 
-  // --- 4. Effect to show dialog on graphic simulator start ---
-  // This effect runs when the simulator type changes to 'graphic'
-  // to show an informational dialog.
-  useEffect(() => {
-    if (typeSimulator === "graphic") {
-      setDialog({
-        title: "Configuration Info",
-        description:
-          "Before executing the first instruction, you can change the simulation settings by clicking the corresponding icon in the drop-down menu.",
-        stop: false,
-      });
-    }
-  }, [typeSimulator, setSection, setOperation, setDialog]);
+
 
 };
