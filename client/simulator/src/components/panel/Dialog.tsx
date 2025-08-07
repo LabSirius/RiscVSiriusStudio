@@ -14,6 +14,7 @@ import { Info, Settings } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"; 
 import { Label } from "@/components/ui/label";
 import { useSimulator } from "@/context/shared/SimulatorContext";
+import { sendMessage } from "../Message/sendMessage";
 
 const Dialog = () => {
   const { dialog, setDialog } = useDialog();
@@ -38,6 +39,7 @@ const Dialog = () => {
   const handleAccept = () => {
     setOpen(false);
     setDialog(undefined);
+    sendMessage({event: typeSimulator})
   };
 
   return (

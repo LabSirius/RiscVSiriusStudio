@@ -34,6 +34,20 @@ function dispatch(event: MessageEvent) {
   switch (data.from) {
     case "extension": {
       switch (data.operation) {
+        case "monocycle": {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: "event",
+            object: { event: data.event },
+          });
+          break;
+        }
+        case "pipeline": {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: "event",
+            object: { event: data.event },
+          });
+          break;
+        }
         case "uploadMemory": {
           const { from, ...newData } = data;
           UIManager.getInstance()._sendMessageToReact(newData);

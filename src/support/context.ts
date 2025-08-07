@@ -360,6 +360,12 @@ export class RVContext {
     if (!this._simulator) return;
 
     switch (message.event) {
+      case "monocycle":
+        console.log("MONO");
+        break;
+      case "pipeline":
+        console.log("Pipe");
+        break;
       case "reset":
         this.reset();
         break;

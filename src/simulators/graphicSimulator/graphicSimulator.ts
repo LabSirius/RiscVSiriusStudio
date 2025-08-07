@@ -39,6 +39,20 @@ function dispatch(event: MessageEvent) {
     }
     case "react": {
       switch (data.event) {
+        case "monocycle": {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: "event",
+            object: { event: data.event },
+          });
+          break;
+        }
+        case "pipeline": {
+          UIManager.getInstance()._sendMessageToExtension({
+            command: "event",
+            object: { event: data.event },
+          });
+          break;
+        }
         case "step": {
           UIManager.getInstance()._sendMessageToExtension({
             command: "event",
