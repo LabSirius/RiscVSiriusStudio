@@ -389,15 +389,6 @@ export class TextSimulator extends Simulator {
     });
   }
 
-  private highlightCurrentInstruction() {
-    const inst = this.cpu.currentInstruction();
-    const line = this.rvDoc.getLineForIR(inst);
-    this.sendToWebview({
-      operation: "decorateLine",
-      lineDecorationNumber: line !== undefined ? line + 1 : 0,
-    });
-  }
-
   private highlightLine(lineNumber: number): void {
     const editor = this.rvDoc.editor;
     if (editor) {
