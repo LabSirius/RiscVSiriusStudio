@@ -31,6 +31,9 @@ import { binaryToInt, intToBinary } from "../utilities/conversions";
 import { logger } from "../utilities/logger";
 import { chunk } from "lodash-es";
 
+import { ICPU } from "./interface";
+
+
 class RegistersFile {
   private registers: Array<string>;
   public constructor() {
@@ -304,7 +307,7 @@ const defaultSCCPUResult = {
   wb: defaultMuxResult,
 };
 
-export class SCCPU {
+export class SCCPU implements ICPU {
   // TODO: We need a proper type for a program representation.
   private readonly _program: any[];
   get program() {
@@ -487,7 +490,7 @@ export class SCCPU {
    * At this point, the result consists of an object with the following fields:
    * !TODO: document when ready
    */
-  public executeInstruction(): SCCPUResult {
+  public cycle(): SCCPUResult {
     // console.log('execute instruction', this.currentInstruction());
     switch (this.currentType()) {
       case "R":

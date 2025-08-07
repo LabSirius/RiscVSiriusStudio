@@ -24,6 +24,7 @@ export abstract class Simulator {
   private _configured: boolean = false;
 
   constructor(
+    simulatorType: 'monocycle' | 'pipeline', 
     params: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext,
@@ -63,7 +64,7 @@ export abstract class Simulator {
     }
 
     instruction.currentPc = this.cpu.getPC();
-    const result = this.cpu.executeInstruction();
+    const result = this.cpu.cycle();
     if (writesRU(instruction.type, instruction.opcode)) {
       this.cpu.getRegisterFile().writeRegister(instruction.rd.regeq, result.wb.result);
       this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
@@ -164,12 +165,13 @@ export class TextSimulator extends Simulator {
   private selectionListenerDisposable: Disposable | undefined; // Changed to Disposable for consistency
 
   constructor(
+    simulatorType: 'monocycle' | 'pipeline', 
     settings: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext,
     webview: Webview
   ) {
-    super(settings, rvDoc, context, webview); // Pass the webview to the base class
+    super(simulatorType, settings, rvDoc, context, webview); // Pass the webview to the base class
   }
 
   public override async start(): Promise<void> {
@@ -425,12 +427,13 @@ export class TextSimulator extends Simulator {
 export class GraphicSimulator extends TextSimulator {
   // Still extends TextSimulator
   constructor(
+     simulatorType: 'monocycle' | 'pipeline', 
     settings: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext,
     webview: Webview
   ) {
-    super(settings, rvDoc, context, webview); // Pass the graphic webview
+    super(simulatorType, settings, rvDoc, context, webview); // Pass the graphic webview
   }
 
   public override async start(): Promise<void> {

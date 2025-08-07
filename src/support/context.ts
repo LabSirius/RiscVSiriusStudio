@@ -35,6 +35,8 @@ export class RVContext {
   private _textWebview: Webview | undefined;
   private _graphicWebviewPanel: WebviewPanel | undefined;
 
+  private _simulatorType: 'monocycle' | 'pipeline' = 'monocycle';
+
   private _currentDocument: RVDocument | undefined;
   private _isSimulating = false;
 
@@ -168,6 +170,7 @@ export class RVContext {
         // 4. CREATE AND START THE GRAPHIC SIMULATOR WITH ITS OWN WEBVIEW
         const settings: SimulationParameters = { memorySize: 40 };
         this._simulator = new GraphicSimulator(
+          this._simulatorType,
           settings,
           this._currentDocument,
           this,
@@ -208,6 +211,7 @@ export class RVContext {
         // 3. CREATE AND START THE TEXT SIMULATOR WITH ITS OWN WEBVIEW
         const settings: SimulationParameters = { memorySize: 40 };
         this._simulator = new TextSimulator(
+          this._simulatorType,
           settings,
           this._currentDocument,
           this,
