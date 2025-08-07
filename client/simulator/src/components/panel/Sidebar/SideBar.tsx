@@ -32,11 +32,9 @@ const MenuItem: React.FC<MenuItemProps> = ({ sectionName, currentSection, setSec
 );
 
 export function SideBar() {
-  const { operation, section, setSection, isFirstStep } = useSimulator();
+  const { operation, section, setSection } = useSimulator();
   const { setOpen, setHoveringSidebar } = useSidebar();
 
-
-  console.log(operation, isFirstStep)
 
   const mainSections: SectionItem[] = [
     {

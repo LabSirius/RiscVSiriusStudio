@@ -40,12 +40,13 @@ export abstract class Simulator {
       throw new Error("RVDocument has no IR");
     }
     if (simulatorType === 'pipeline') {
-      console.log("ENTRA A PIPELINE")
-      this.cpu = new PipelineCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
+      console.log("ES PIPELINE");
     } else {
-      console.log("ENTRA A MONO")
-      this.cpu = new SCCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
+      console.log("ES MONOCYCLE");
+
     }
+      this.cpu = new SCCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
+
   }
 
   public get configured(): boolean {
@@ -60,7 +61,6 @@ export abstract class Simulator {
       this._configured = true;
     }
     const instruction = this.cpu.currentInstruction();
-    console.log("LA INSTRUCCION ES", instruction);
     let isEbreak =
       instruction.opcode === "1110011" &&
       getFunct3(instruction) === "000" &&
