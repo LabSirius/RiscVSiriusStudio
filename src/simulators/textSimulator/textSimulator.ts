@@ -33,46 +33,9 @@ function dispatch(event: MessageEvent) {
 
   switch (data.from) {
     case "extension": {
-      switch (data.operation) {
-        case "uploadMemory": {
           const { from, ...newData } = data;
           UIManager.getInstance()._sendMessageToReact(newData);
           break;
-        }
-        case "step": {
-          const { from, ...newData } = data;
-          UIManager.getInstance()._sendMessageToReact(newData);
-          break;
-        }
-        case "clickInLine": {
-          const { from, ...newData } = data;
-          UIManager.getInstance()._sendMessageToReact(newData);
-          break;
-        }
-        case "setRegister": {
-          const { from, ...newData } = data;
-          UIManager.getInstance()._sendMessageToReact(newData);
-          break;
-        }
-        case "writeMemory": {
-          const { from, ...newData } = data;
-          UIManager.getInstance()._sendMessageToReact(newData);
-          break;
-        }
-        case "readMemory": {
-          const { from, ...newData } = data;
-          UIManager.getInstance()._sendMessageToReact(newData);
-          break;
-        }
-        case "stop": {
-          const { from, ...newData } = data;
-          UIManager.getInstance()._sendMessageToReact(newData);
-          break;
-        }
-        default:
-          break;
-      }
-      break;
     }
     case "react": {
       switch (data.event) {
