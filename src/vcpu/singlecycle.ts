@@ -128,7 +128,7 @@ export type SCCPUResult = {
   wb: MuxResult;
 };
 
-const defaultSCCPUResult = {
+export const defaultSCCPUResult = {
   add4: defaultADD4Result,
   ru: defaultRUResult,
   imm: defaultIMMResult,

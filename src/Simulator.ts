@@ -1,6 +1,6 @@
 import { RVDocument } from "./rvDocument";
 import { RVContext } from "./support/context";
-import { SCCPU, SCCPUResult } from "./vcpu/singlecycle";
+import { defaultSCCPUResult, SCCPU, SCCPUResult } from "./vcpu/singlecycle";
 import { branchesOrJumps, getFunct3, readsDM, writesDM, writesRU } from "./utilities/instructions";
 import { intToBinary } from "./utilities/conversions";
 import { window, commands, TextEditorDecorationType, Webview } from "vscode";
@@ -57,39 +57,53 @@ export abstract class Simulator {
     console.log("Simulator started");
   }
 
-  public step(): StepResult {
+  //: StepResult
+  public step() {
     if (!this.configured) {
       this._configured = true;
     }
-    const instruction = this.cpu.currentInstruction();
-    let isEbreak =
-      instruction.opcode === "1110011" &&
-      getFunct3(instruction) === "000" &&
-      instruction.encoding.imm12 === "000000000001";
 
-    if (isEbreak) {
-      this.stop();
-      isEbreak = false; // Reset after stopping
-    }
+    if (this.simulatorType === 'monocycle') {
+        const instruction = this.cpu.currentInstruction();
+        if (!instruction) { // Safety check in case program finished
+            this.stop();
+            return { instruction: {}, result: {} };
+        }
 
-    instruction.currentPc = this.cpu.getPC();
-    const result = this.cpu.cycle();
-    if (writesRU(instruction.type, instruction.opcode)) {
-      this.cpu.getRegisterFile().writeRegister(instruction.rd.regeq, result.wb.result);
-      this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
-    }
-    if (readsDM(instruction.type, instruction.opcode)) {
-      this.notifyMemoryRead(parseInt(result.dm.address, 2), this.bytesToReadOrWrite());
-    }
-    if (writesDM(instruction.type, instruction.opcode)) {
-      this.writeResult(result);
-    }
-    if (branchesOrJumps(instruction.type, instruction.opcode)) {
-      this.cpu.jumpToInstruction(result.buMux.result);
+        let isEbreak = instruction.opcode === "1110011" && getFunct3(instruction) === "000" && instruction.encoding.imm12 === "000000000001";
+        if (isEbreak) {
+            this.stop();
+            return { instruction, result: {} };
+        }
+
+        instruction.currentPc = this.cpu.getPC();
+        const result = this.cpu.cycle();
+        if (writesRU(instruction.type, instruction.opcode)) {
+            this.cpu.getRegisterFile().writeRegister(instruction.rd.regeq, result.wb.result);
+            this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
+        }
+        if (readsDM(instruction.type, instruction.opcode)) {
+            this.notifyMemoryRead(parseInt(result.dm.address, 2), this.bytesToReadOrWrite());
+        }
+        if (writesDM(instruction.type, instruction.opcode)) {
+            this.writeResult(result);
+        }
+        if (branchesOrJumps(instruction.type, instruction.opcode)) {
+            this.cpu.jumpToInstruction(result.buMux.result);
+        } else {
+            this.cpu.nextInstruction();
+        }
+        return { instruction, result };
+
     } else {
-      this.cpu.nextInstruction();
+        
+        this.cpu.cycle();
+        
+        
+        return { instruction: {}, result: {} };
     }
-    return { instruction, result };
+
+    
   }
 
   public stop(): void {

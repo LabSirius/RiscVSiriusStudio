@@ -7,27 +7,27 @@ export class PipelineCPU implements ICPU {
   private dataMemory: DataMemory;
   private registers: RegistersFile;
 
+  private clockCycles: number = 0;
+
   constructor(program: any[], memory: any[], memSize: number) {
     this.program = program;
-
     this.registers = new RegistersFile();
     this.dataMemory = new DataMemory(program.length * 4, memory.length, memSize);
     this.dataMemory.uploadProgram(memory);
   }
 
   public cycle(): any {
-    console.log("Ejecutando un ciclo del procesador segmentado (Pipeline)...");
+    this.clockCycles++;
+    console.log(`[Pipeline CPU] Clock Cycle: ${this.clockCycles}`);
+    // this.executeWB();
+    // this.executeMEM();
+    // this.executeEX();
+    // this.executeID();
+    // this.executeIF();
   }
   
-
-  public getDataMemory(): DataMemory {
-    return this.dataMemory;
-  }
-
-  public getRegisterFile(): RegistersFile {
-    return this.registers;
-  }
-  
+  public getDataMemory(): DataMemory { return this.dataMemory; }
+  public getRegisterFile(): RegistersFile { return this.registers; }
   public getPC = () => 0;
   public currentInstruction = () => ({});
   public finished = () => false;
