@@ -1,17 +1,18 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import { RVDocument } from "./rvDocument";
 import { RVContext } from "./support/context";
-import { defaultSCCPUResult, SCCPU, SCCPUResult } from "./vcpu/singlecycle";
+import { SCCPU, SCCPUResult } from "./vcpu/singlecycle";
 import { branchesOrJumps, getFunct3, readsDM, writesDM, writesRU } from "./utilities/instructions";
 import { intToBinary } from "./utilities/conversions";
-import { window, commands, TextEditorDecorationType, Webview } from "vscode";
-import { Disposable } from "vscode";
+import { window, commands, TextEditorDecorationType, Webview, Disposable } from "vscode";
 import { PipelineCPU } from "./vcpu/pipeline";
 import { ICPU } from "./vcpu/interface";
 
 export type SimulationParameters = { memorySize: number };
 export interface StepResult {
   instruction: any;
-  result: SCCPUResult;
+  result: SCCPUResult | {}; // Allow result to be an empty object for pipeline
 }
 
 /**
@@ -19,106 +20,69 @@ export interface StepResult {
  * related to execution, memory, and registers.
  */
 export abstract class Simulator {
+  // --- Properties ---
   protected readonly context: RVContext;
   protected readonly rvDoc: RVDocument;
-  protected readonly cpu: ICPU;
-  protected readonly webview: Webview; // This is the key addition
+  public readonly cpu: ICPU;
+  protected readonly webview: Webview;
   private _configured: boolean = false;
-  protected readonly simulatorType: 'monocycle' | 'pipeline';
+  protected readonly simulatorType: "monocycle" | "pipeline";
 
   constructor(
-    simulatorType: 'monocycle' | 'pipeline', 
+    simulatorType: "monocycle" | "pipeline",
     params: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext,
-    webview: Webview // Now accepts the specific webview
+    webview: Webview
   ) {
     this.context = context;
     this.rvDoc = rvDoc;
-    this.webview = webview; 
+    this.webview = webview;
     this.simulatorType = simulatorType;
 
     if (!rvDoc.ir) {
       throw new Error("RVDocument has no IR");
     }
-    if (simulatorType === 'pipeline') {
-      console.log("TYPE PIPELINE");
+    if (simulatorType === "pipeline") {
       this.cpu = new PipelineCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
     } else {
-      console.log("TYPE MONOCYCLE");
       this.cpu = new SCCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
     }
   }
 
+  // --- Public Methods ---
   public get configured(): boolean {
     return this._configured;
   }
+
   public start(): void {
     console.log("Simulator started");
   }
 
-  //: StepResult
-  public step() {
+  public step(): StepResult {
     if (!this.configured) {
       this._configured = true;
     }
+    const result = this.cpu.cycle();
+    const instruction = this.cpu.currentInstruction();
 
-    if (this.simulatorType === 'monocycle') {
-        const instruction = this.cpu.currentInstruction();
-        if (!instruction) { // Safety check in case program finished
-            this.stop();
-            return { instruction: {}, result: {} };
-        }
-
-        let isEbreak = instruction.opcode === "1110011" && getFunct3(instruction) === "000" && instruction.encoding.imm12 === "000000000001";
-        if (isEbreak) {
-            this.stop();
-            return { instruction, result: {} };
-        }
-
-        instruction.currentPc = this.cpu.getPC();
-        const result = this.cpu.cycle();
-        if (writesRU(instruction.type, instruction.opcode)) {
-            this.cpu.getRegisterFile().writeRegister(instruction.rd.regeq, result.wb.result);
-            this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
-        }
-        if (readsDM(instruction.type, instruction.opcode)) {
-            this.notifyMemoryRead(parseInt(result.dm.address, 2), this.bytesToReadOrWrite());
-        }
-        if (writesDM(instruction.type, instruction.opcode)) {
-            this.writeResult(result);
-        }
-        if (branchesOrJumps(instruction.type, instruction.opcode)) {
-            this.cpu.jumpToInstruction(result.buMux.result);
-        } else {
-            this.cpu.nextInstruction();
-        }
-        return { instruction, result };
-
-    } else {
-        
-        this.cpu.cycle();
-        
-        
-        return { instruction: {}, result: {} };
-    }
-
-    
+    return { instruction, result };
   }
 
   public stop(): void {
     console.log("Simulator stopped");
   }
+
   public finished(): void {
     this.stop();
   }
+
   public resizeMemory(newSize: number): void {
-    if (this.configured) {
-      throw new Error("Cannot resize memory after configuration");
-    }
+    if (this.configured) throw new Error("Cannot resize memory after configuration");
     this.cpu.getDataMemory().resize(newSize);
     this.cpu.getRegisterFile().writeRegister("x2", intToBinary(newSize));
   }
+
   public replaceMemory(newMemory: string[]): void {
     this.cpu.replaceDataMemory(newMemory);
   }
@@ -126,46 +90,10 @@ export abstract class Simulator {
     this.cpu.replaceRegisters(newRegisters);
   }
 
-  private bytesToReadOrWrite(): number {
-    const instruction = this.cpu.currentInstruction();
-    const funct3 = getFunct3(instruction);
-
-    switch (funct3) {
-      case "000":
-        return 1;
-      case "001":
-        return 2;
-      case "010":
-        return 4;
-      case "100":
-        return 1;
-      case "101":
-        return 2;
-      default:
-        throw new Error("Cannot deduce bytes to write from funct3");
-    }
+  protected sendToWebview(msg: any) {
+    this.webview.postMessage({ from: "extension", ...msg });
   }
 
-  private writeResult(result: SCCPUResult): void {
-    const instruction = this.cpu.currentInstruction();
-    const bytesToWrite = this.bytesToReadOrWrite();
-    const addressNum = parseInt(result.dm.address, 2);
-
-    if (result.dm.dataWr.length < 32) {
-      result.dm.dataWr = result.dm.dataWr.padStart(32, "0");
-    }
-
-    if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) {
-      throw new Error(`Cannot write to address ${addressNum.toString(16)}.`);
-    }
-
-    this.notifyMemoryWrite(addressNum, result.dm.dataWr, bytesToWrite);
-
-    const chunks = result.dm.dataWr.match(/.{1,8}/g) as string[];
-    this.cpu.getDataMemory().write(chunks.reverse(), addressNum);
-  }
-
-  // Abstract methods that subclasses MUST implement
   public abstract notifyRegisterWrite(register: string, value: string): void;
   public abstract notifyMemoryRead(address: number, length: number): void;
   public abstract notifyMemoryWrite(address: number, value: string, length: number): void;
@@ -173,10 +101,6 @@ export abstract class Simulator {
   public abstract sendSimulatorTypeToView(simulatorType: string): void;
   public abstract sendTextProgramToView(textProgram: string): void;
   public abstract makeEditorWritable(): Promise<void>;
-
-  protected sendToWebview(msg: any) {
-    this.webview.postMessage({ from: "extension", ...msg });
-  }
 }
 
 /**
@@ -184,21 +108,23 @@ export abstract class Simulator {
  * based on the editor and textual webview.
  */
 export class TextSimulator extends Simulator {
+  // --- Properties ---
   private currentHighlight: TextEditorDecorationType | undefined;
-  private selectionListenerDisposable: Disposable | undefined; // Changed to Disposable for consistency
+  private selectionListenerDisposable: Disposable | undefined;
 
   constructor(
-    simulatorType: 'monocycle' | 'pipeline', 
+    simulatorType: "monocycle" | "pipeline",
     settings: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext,
     webview: Webview
   ) {
-    super(simulatorType, settings, rvDoc, context, webview); // Pass the webview to the base class
+    super(simulatorType, settings, rvDoc, context, webview);
   }
 
+  // --- Public Override Methods ---
   public override async start(): Promise<void> {
-    await this.makeEditorReadOnly();
+     await this.makeEditorReadOnly();
 
     // The mainView check is now simplified because 'this.webview' is guaranteed to be the correct one
     this.listenToEditorClicks();
@@ -241,40 +167,52 @@ export class TextSimulator extends Simulator {
       register: "x2",
       value: intToBinary(spValue),
     });
-
-    
   }
 
   public override step(): StepResult {
-    const result = super.step();
+    const stepResult = super.step();
 
-    // No need for mainView check here, 'this.webview' is already set
-    const inst = this.cpu.currentInstruction();
-    let line: number | undefined;
+    if (this.simulatorType === "monocycle") {
+      const instruction = stepResult.instruction;
+      const result = stepResult.result as SCCPUResult;
 
-    try {
-      line = this.rvDoc.getLineForIR(inst);
-    } catch {
-      line = undefined;
+      if (!instruction || Object.keys(instruction).length === 0) {
+        this.stop();
+        return { instruction: {}, result: {} };
+      }
+      let isEbreak =
+        instruction.opcode === "1110011" &&
+        getFunct3(instruction) === "000" &&
+        instruction.encoding.imm12 === "000000000001";
+      if (isEbreak) {
+        this.stop();
+        return { instruction, result: {} };
+      }
 
-      this.stop();
+      instruction.currentPc = this.cpu.getPC();
+
+      if (writesRU(instruction.type, instruction.opcode)) {
+        this.cpu.getRegisterFile().writeRegister(instruction.rd.regeq, result.wb.result);
+        this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
+      }
+      if (readsDM(instruction.type, instruction.opcode)) {
+        this.notifyMemoryRead(parseInt(result.dm.address, 2), this.bytesToReadOrWrite(instruction));
+      }
+      if (writesDM(instruction.type, instruction.opcode)) {
+        this.writeResult(instruction, result);
+      }
+      if (branchesOrJumps(instruction.type, instruction.opcode)) {
+        this.cpu.jumpToInstruction(result.buMux.result);
+      } else {
+        this.cpu.nextInstruction();
+      }
+
+      this.updateTextUI(this.cpu.currentInstruction(), stepResult);
+      return stepResult;
+    } else {
+      console.log("Pipeline step executed in TextSimulator.");
+      return stepResult;
     }
-
-    if (line !== undefined) {
-      this.highlightLine(line);
-    }
-
-    this.webview.postMessage({
-      // Use 'this.webview' directly
-      from: "extension",
-      operation: "step",
-      newPc: this.cpu.getPC(),
-      currentInst: result.instruction,
-      result: result.result,
-      lineDecorationNumber: line !== undefined ? line + 1 : -1,
-    });
-
-    return result;
   }
 
   public override stop(): void {
@@ -291,6 +229,57 @@ export class TextSimulator extends Simulator {
     // No need for mainView check, 'this.webview' is used in sendToWebview
     commands.executeCommand("setContext", "ext.isSimulating", false);
     this.sendToWebview({ operation: "stop" });
+  }
+
+  // --- UI Notification and Helper Methods ---
+
+  private updateTextUI(currentInst: any, result: StepResult) {
+    let line: number | undefined;
+    try {
+      line = this.rvDoc.getLineForIR(currentInst);
+    } catch {
+      line = undefined;
+      this.stop();
+    }
+    if (line !== undefined) this.highlightLine(line);
+    this.webview.postMessage({
+      from: "extension",
+      operation: "step",
+      newPc: this.cpu.getPC(),
+      currentInst: result.instruction,
+      result: result.result,
+      lineDecorationNumber: line !== undefined ? line + 1 : -1,
+    });
+  }
+
+  private bytesToReadOrWrite(instruction: any): number {
+    const funct3 = getFunct3(instruction);
+    switch (funct3) {
+      case "000":
+        return 1;
+      case "001":
+        return 2;
+      case "010":
+        return 4;
+      case "100":
+        return 1;
+      case "101":
+        return 2;
+      default:
+        throw new Error("Cannot deduce bytes to write from funct3");
+    }
+  }
+
+  private writeResult(instruction: any, result: SCCPUResult): void {
+    const bytesToWrite = this.bytesToReadOrWrite(instruction);
+    const addressNum = parseInt(result.dm.address, 2);
+    if (result.dm.dataWr.length < 32) result.dm.dataWr = result.dm.dataWr.padStart(32, "0");
+    if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) {
+      throw new Error(`Cannot write to address ${addressNum.toString(16)}.`);
+    }
+    this.notifyMemoryWrite(addressNum, result.dm.dataWr, bytesToWrite);
+    const chunks = result.dm.dataWr.match(/.{1,8}/g) as string[];
+    this.cpu.getDataMemory().write(chunks.reverse(), addressNum);
   }
 
   public override animateLine(line: number): void {
@@ -398,7 +387,6 @@ export class TextSimulator extends Simulator {
   }
 
   private highlightCurrentInstruction() {
-   
     const inst = this.cpu.currentInstruction();
     const line = this.rvDoc.getLineForIR(inst);
     this.sendToWebview({
@@ -414,13 +402,10 @@ export class TextSimulator extends Simulator {
         this.currentHighlight.dispose();
       }
 
-
       this.currentHighlight = window.createTextEditorDecorationType({
         backgroundColor: "rgba(209, 227, 231, 0.5)", // Azul pastel
         isWholeLine: true,
       });
-
-
 
       const range = editor.document.lineAt(lineNumber).range;
       editor.revealRange(range);
@@ -434,27 +419,20 @@ export class TextSimulator extends Simulator {
       this.currentHighlight = undefined; // Set to undefined after disposing
     }
   }
-
-  // The 'sendToWebview' is now a protected method in the base Simulator class
-  // protected sendToWebview(msg: any) {
-  //   this.webview.postMessage({ from: "extension", ...msg });
-  // }
 }
 
 /**
- * Graphic simulator: extends the text simulator,
- * but also sends additional information to the graphic Webview.
+ * Graphic simulator: extends the text simulator.
  */
 export class GraphicSimulator extends TextSimulator {
-  // Still extends TextSimulator
   constructor(
-     simulatorType: 'monocycle' | 'pipeline', 
+    simulatorType: "monocycle" | "pipeline",
     settings: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext,
     webview: Webview
   ) {
-    super(simulatorType, settings, rvDoc, context, webview); // Pass the graphic webview
+    super(simulatorType, settings, rvDoc, context, webview);
   }
 
   public override async start(): Promise<void> {
@@ -465,9 +443,7 @@ export class GraphicSimulator extends TextSimulator {
     this.sendTextProgramToView(this.rvDoc.getText());
   }
 
-  // These overrides are technically not strictly necessary if the base method in Simulator
-  // is sufficient and just calls `this.sendToWebview`, but they are kept for explicit clarity
-  // as in the original provided snippet.
+
   public override sendSimulatorTypeToView(simulatorType: string): void {
     this.sendToWebview({
       operation: "simulatorType",
