@@ -124,13 +124,15 @@ export class TextSimulator extends Simulator {
 
   // --- Public Override Methods ---
   public override async start(): Promise<void> {
-     await this.makeEditorReadOnly();
+    await this.makeEditorReadOnly();
 
     // The mainView check is now simplified because 'this.webview' is guaranteed to be the correct one
     this.listenToEditorClicks();
     const inst = this.cpu.currentInstruction();
     let line = this.rvDoc.getLineForIR(inst);
-    if (line === undefined) {line = 0;}
+    if (line === undefined) {
+      line = 0;
+    }
     this.highlightLine(line);
 
     const addressLine =
@@ -153,8 +155,7 @@ export class TextSimulator extends Simulator {
         symbols: this.rvDoc.ir?.symbols,
         asmList,
       },
-      typeSimulator: this.simulatorType
-
+      typeSimulator: this.simulatorType,
     });
 
     super.start();
@@ -180,14 +181,6 @@ export class TextSimulator extends Simulator {
         this.stop();
         return { instruction: {}, result: {} };
       }
-      let isEbreak =
-        instruction.opcode === "1110011" &&
-        getFunct3(instruction) === "000" &&
-        instruction.encoding.imm12 === "000000000001";
-      if (isEbreak) {
-        this.stop();
-        return { instruction, result: {} };
-      }
 
       instruction.currentPc = this.cpu.getPC();
 
@@ -208,6 +201,16 @@ export class TextSimulator extends Simulator {
       }
 
       this.updateTextUI(this.cpu.currentInstruction(), stepResult);
+
+      const isEbreak =
+        instruction.opcode === "1110011" &&
+        getFunct3(instruction) === "000" &&
+        instruction.encoding.imm12 === "000000000001";
+
+      if (isEbreak) {
+        this.stop();
+      }
+
       return stepResult;
     } else {
       console.log("Pipeline step executed in TextSimulator.");
@@ -442,7 +445,6 @@ export class GraphicSimulator extends TextSimulator {
     this.sendSimulatorTypeToView("graphic");
     this.sendTextProgramToView(this.rvDoc.getText());
   }
-
 
   public override sendSimulatorTypeToView(simulatorType: string): void {
     this.sendToWebview({
