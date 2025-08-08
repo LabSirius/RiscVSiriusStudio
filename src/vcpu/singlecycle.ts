@@ -13,11 +13,9 @@ import {
   isILogical,
   getImmFunct7,
 } from "../utilities/instructions";
-import { ALU32 } from "./alu32";
 import { intToBinary } from "../utilities/conversions";
 import { ICPU } from "./interface";
-import { RegistersFile, DataMemory } from "./components";
-import { ImmediateUnit } from "./components";
+import { RegistersFile, DataMemory, ProcessorALU, ImmediateUnit } from "./components"; // <-- 1. Importar ProcessorALU
 
 type ALUResult = { a: string; b: string; operation: string; result: string };
 const defaultALUResult = {
@@ -91,6 +89,7 @@ export class SCCPU implements ICPU {
   private registers: RegistersFile;
   private dataMemory: DataMemory;
   private immediateUnit: ImmediateUnit;
+  private alu: ProcessorALU;
   private pc: number;
 
   get program() {
@@ -107,6 +106,7 @@ export class SCCPU implements ICPU {
     this.dataMemory.uploadProgram(memory);
     this.pc = 0;
     this.immediateUnit = new ImmediateUnit();
+    this.alu = new ProcessorALU();
     const programSize = program.length * 4;
     this.registers.writeRegister("x2", intToBinary(programSize + memSize - 4));
   }
@@ -114,129 +114,20 @@ export class SCCPU implements ICPU {
   public currentInstruction() {
     return this._program[this.pc];
   }
-
   private currentType(): string {
     return this.currentInstruction().type;
   }
-
   private currentOpcode(): string {
     return this.currentInstruction().opcode;
   }
-
   public finished(): boolean {
     return this.pc >= this._program.length;
   }
-
   public nextInstruction() {
     this.pc++;
   }
-
   public jumpToInstruction(address: string) {
     this.pc = parseInt(address, 2) / 4;
-  }
-
-  private toTwosComplement(n: any, len: any) {
-    n = BigInt(n);
-    len = Number(len);
-    if (!Number.isInteger(len)) {
-      throw Error("`len` must be an integer");
-    }
-    if (len <= 0) {
-      throw Error("`len` must be greater than zero");
-    }
-    if (n >= 0) {
-      n = n.toString(2);
-      if (n.length > len) {
-        throw Error("out of range");
-      }
-      return n.padStart(len, "0");
-    }
-    n = (-n).toString(2);
-    if (!(n.length < len || n === "1".padEnd(len, "0"))) {
-      throw Error("out of range");
-    }
-    let invert = false;
-    return n
-      .split("")
-      .reverse()
-      .map((bit: any) => {
-        if (invert) {
-          return bit === "0" ? "1" : "0";
-        }
-        if (bit === "0") {
-          return bit;
-        }
-        invert = true;
-        return bit;
-      })
-      .reverse()
-      .join("")
-      .padStart(len, "1");
-  }
-
-  private computeALURes(A: string, B: string, ALUOp: string): string {
-    const numA = "0b" + A;
-    const numB = "0b" + B;
-    let result: BigInt = 0n;
-    switch (ALUOp) {
-      case "00000":
-        result = ALU32.addition(numA, numB);
-        break;
-      case "01000":
-        result = ALU32.subtraction(numA, numB);
-        break;
-      case "00100":
-        result = ALU32.xor(numA, numB);
-        break;
-      case "00110":
-        result = ALU32.or(numA, numB);
-        break;
-      case "00111":
-        result = ALU32.and(numA, numB);
-        break;
-      case "00001":
-        result = ALU32.shiftLeft(numA, numB);
-        break;
-      case "00101":
-        result = ALU32.shiftRight(numA, numB);
-        break;
-      case "01101":
-        result = ALU32.shiftRightA(numA, numB);
-        break;
-      case "00010":
-        result = ALU32.lessThan(numA, numB);
-        break;
-      case "00011":
-        result = ALU32.lessThanU(numA, numB);
-        break;
-      case "10000":
-        result = ALU32.mul(numA, numB);
-        break;
-      case "10001":
-        result = ALU32.mulh(numA, numB);
-        break;
-      case "10010":
-        result = ALU32.mulsu(numA, numB);
-        break;
-      case "10011":
-        result = ALU32.mulu(numA, numB);
-        break;
-      case "10100":
-        result = ALU32.div(numA, numB);
-        break;
-      case "10101":
-        result = ALU32.divu(numA, numB);
-        break;
-      case "10110":
-        result = ALU32.rem(numA, numB);
-        break;
-      case "10111":
-        result = ALU32.remu(numA, numB);
-        break;
-      default:
-        result = 0n;
-    }
-    return this.toTwosComplement(result, 32);
   }
 
   public cycle(): SCCPUResult {
@@ -265,7 +156,7 @@ export class SCCPU implements ICPU {
     const rs2Val = this.registers.readRegisterFromName(getRs2(instruction));
     const funct7 = getFunct7(instruction);
     const aluOp = funct7[6] + funct7[1] + getFunct3(instruction);
-    const aluRes = this.computeALURes(rs1Val, rs2Val, aluOp);
+    const aluRes = this.alu.execute(rs1Val, rs2Val, aluOp); // <-- REFACTORIZADO
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
     this.registers.writeRegister(getRd(instruction), aluRes);
     result.add4.result = add4Res.toString(2);
@@ -284,7 +175,6 @@ export class SCCPU implements ICPU {
     const instruction = this.currentInstruction();
     const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
-
     const imm32Val = this.immediateUnit.generate(instruction);
 
     let aluOp = "";
@@ -303,7 +193,7 @@ export class SCCPU implements ICPU {
         break;
     }
 
-    const aluRes = this.computeALURes(rs1Val, imm32Val, aluOp);
+    const aluRes = this.alu.execute(rs1Val, imm32Val, aluOp); // <-- REFACTORIZADO
     this.registers.writeRegister(getRd(instruction), aluRes);
     result.add4.result = add4Res.toString(2);
     result.ru = { ...defaultRUResult, rs1: rs1Val, writeSignal: "1" };
@@ -385,11 +275,9 @@ export class SCCPU implements ICPU {
     const instruction = this.currentInstruction();
     const baseAddressVal = this.registers.readRegisterFromName(getRs1(instruction));
     const dataToStore = this.registers.readRegisterFromName(getRs2(instruction));
-
     const offset32Val = this.immediateUnit.generate(instruction);
-
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
-    const aluRes = this.computeALURes(baseAddressVal, offset32Val, "00000");
+    const aluRes = this.alu.execute(baseAddressVal, offset32Val, "00000"); // <-- REFACTORIZADO
     result.add4.result = add4Res.toString(2);
     result.ru = { ...defaultRUResult, rs1: baseAddressVal, rs2: dataToStore, writeSignal: "0" };
     result.alu = { a: baseAddressVal, b: offset32Val, operation: "0000", result: aluRes };
@@ -418,9 +306,7 @@ export class SCCPU implements ICPU {
     const rs2Val = this.registers.readRegisterFromName(getRs2(instruction));
     const rs1Int = BigInt.asIntN(32, BigInt("0b" + rs1Val));
     const rs2Int = BigInt.asIntN(32, BigInt("0b" + rs2Val));
-
     const imm32Val = this.immediateUnit.generate(instruction);
-
     let condition = false;
     switch (parseInt(funct3, 2)) {
       case 0:
@@ -444,10 +330,8 @@ export class SCCPU implements ICPU {
           BigInt.asUintN(32, BigInt("0b" + rs1Val)) >= BigInt.asUintN(32, BigInt("0b" + rs2Val));
         break;
     }
-
     const pcAsString = (instruction.inst as number).toString(2).padStart(32, "0");
-    const aluRes = this.computeALURes(pcAsString, imm32Val, "00000");
-
+    const aluRes = this.alu.execute(pcAsString, imm32Val, "00000"); // <-- REFACTORIZADO
     result.ru = { ...defaultRUResult, writeSignal: "0", rs1: rs1Val, rs2: rs2Val };
     result.alua = { signal: "1", result: pcAsString };
     result.alub = { signal: "1", result: imm32Val };
@@ -466,20 +350,16 @@ export class SCCPU implements ICPU {
     const instruction = this.currentInstruction();
     const add4Res = (parseInt(instruction.inst) + 4).toString(2);
     result.add4.result = add4Res;
-
     const imm32Val = this.immediateUnit.generate(instruction);
-
     let aluInputA = "0".padStart(32, "0");
     let aluaSignal = "0";
     let aluRes = imm32Val;
-
     if (isAUIPC(instruction.type, instruction.opcode)) {
       const PC = instruction.inst as number;
       aluInputA = PC.toString(2).padStart(32, "0");
       aluaSignal = "1";
-      aluRes = (PC + parseInt(imm32Val, 2)).toString(2).padStart(32, "0");
+      aluRes = this.alu.execute(aluInputA, imm32Val, "00000"); // <-- REFACTORIZADO
     }
-
     result.ru = { ...defaultRUResult, writeSignal: "1", dataWrite: aluRes };
     result.imm = { signal: "010", output: imm32Val };
     result.alub = { result: imm32Val, signal: "1" };
@@ -498,11 +378,8 @@ export class SCCPU implements ICPU {
     const pcVal = pc.toString(2).padStart(32, "0");
     const add4Res = (pc + 4).toString(2).padStart(32, "0");
     result.add4.result = add4Res;
-
     const imm32Val = this.immediateUnit.generate(instruction);
-
-    const aluRes = this.computeALURes(pcVal, imm32Val, "00000");
-
+    const aluRes = this.alu.execute(pcVal, imm32Val, "00000"); // <-- REFACTORIZADO
     result.alua = { result: pcVal, signal: "1" };
     result.alub = { result: imm32Val, signal: "1" };
     result.imm = { output: imm32Val, signal: "110" };
