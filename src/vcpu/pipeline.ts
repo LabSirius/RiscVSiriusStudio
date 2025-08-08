@@ -1,5 +1,5 @@
 import { ICPU } from "./interface";
-import { RegistersFile, DataMemory } from "./components";
+import { RegistersFile, DataMemory } from "./components/components";
 
 /**
  * Defines the structure of the data that is passed from the

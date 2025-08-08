@@ -15,7 +15,8 @@ import {
 } from "../utilities/instructions";
 import { intToBinary } from "../utilities/conversions";
 import { ICPU } from "./interface";
-import { RegistersFile, DataMemory, ProcessorALU, ImmediateUnit } from "./components"; // <-- 1. Importar ProcessorALU
+import { RegistersFile, DataMemory, ProcessorALU } from "./components/components";
+import { ImmediateUnit } from "./components/decode";
 
 type ALUResult = { a: string; b: string; operation: string; result: string };
 const defaultALUResult = {
