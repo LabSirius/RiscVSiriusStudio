@@ -10,25 +10,25 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { Info, Settings } from "lucide-react";
+import { Info, Lock, Settings } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useSimulator } from "@/context/shared/SimulatorContext";
-import { sendMessage } from "../Message/sendMessage";
+// import { sendMessage } from "../Message/sendMessage";
 
 const Dialog = () => {
-  const { dialog, setDialog } = useDialog();
+  const { dialog } = useDialog();
   const [open, setOpen] = useState(false);
-  const { typeSimulator, setTypeSimulator } = useSimulator();
+  const { typeSimulator } = useSimulator();
 
   // This logic is fine, no changes needed here.
   // It handles the selection but doesn't close the dialog, which is correct
   // since the user confirms with the "Accept" button.
-  const handleSelection = (newType: string) => {
-    if (newType) {
-      setTypeSimulator(newType as "monocycle" | "pipeline");
-    }
-  };
+  // const handleSelection = (newType: string) => {
+  //   if (newType) {
+  //     setTypeSimulator(newType as "monocycle" | "pipeline");
+  //   }
+  // };
 
   useEffect(() => {
     if (dialog) {
@@ -36,13 +36,13 @@ const Dialog = () => {
     }
   }, [dialog]);
 
-  const handleAccept = () => {
-    setOpen(false);
-    setDialog(undefined);
+  // const handleAccept = () => {
+  //   setOpen(false);
+  //   setDialog(undefined);
 
-      sendMessage({ event: typeSimulator });
+  //     sendMessage({ event: typeSimulator });
     
-  };
+  // };
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -68,7 +68,7 @@ const Dialog = () => {
 
                 <RadioGroup
                   value={typeSimulator}
-                  onValueChange={handleSelection}
+                  // onValueChange={handleSelection}
                   className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="monocycle" id="r_monocycle" />
@@ -79,9 +79,10 @@ const Dialog = () => {
 
                   {/* 4. Structure for "Pipeline" radio item. */}
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="pipeline" id="r_pipeline" />
-                    <Label htmlFor="r_pipeline" className="cursor-pointer">
-                      Pipeline
+                    <RadioGroupItem value="pipeline" id="r_pipeline" disabled />
+                    <Label htmlFor="r_pipeline" className="cursor-pointer text-gray-500 flex items-center gap-3">
+                      <p>Pipeline</p>
+                      <Lock size={20} strokeWidth={1}/>
                     </Label>
                   </div>
                 </RadioGroup>
@@ -90,7 +91,7 @@ const Dialog = () => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogAction onClick={handleAccept}>Accept</AlertDialogAction>
+          <AlertDialogAction >Accept</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
