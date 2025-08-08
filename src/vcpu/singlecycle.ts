@@ -11,88 +11,41 @@ import {
   isIJump,
   isAUIPC,
   isILogical,
-  getImmFunct7
+  getImmFunct7,
 } from "../utilities/instructions";
 import { ALU32 } from "./alu32";
 import { intToBinary } from "../utilities/conversions";
-import { logger } from "../utilities/logger";
-import { chunk } from "lodash-es";
-
 import { ICPU } from "./interface";
-import { RegistersFile, DataMemory } from "./components"; 
+import { RegistersFile, DataMemory } from "./components";
+import { ImmediateUnit } from "./components";
 
-
-
-/**
- * The result of a instruction execution is a set of values for each input
- * output and signal of the emulator. Each component then has its own type that
- * describes the computed value it needs to present to the user.
- */
-
-type ALUResult = {
-  a: string; // A input to the ALU
-  b: string; // B input to the ALU
-  operation: string; // Operation performed
-  result: string; // Computed result
-};
-
+type ALUResult = { a: string; b: string; operation: string; result: string };
 const defaultALUResult = {
   a: "".padStart(32, "0"),
   b: "".padStart(32, "0"),
   result: "".padStart(32, "0"),
   operation: "".padStart(4, "0"),
 };
-
-type ADD4Result = {
-  result: string; // Computed result
-};
-
-const defaultADD4Result = {
-  result: "".padStart(32, "0"),
-};
-
-type MuxResult = {
-  signal: string; // MUX signal
-  result: string; // result
-};
-
-const defaultMuxResult = {
-  signal: "X",
-  result: "".padStart(32, "0"),
-};
-
-type BUResult = {
-  a: string; // Upper value
-  b: string; // Lower value
-  operation: string; // Operation signal
-  result: string; // Computed result
-};
-
+type ADD4Result = { result: string };
+const defaultADD4Result = { result: "".padStart(32, "0") };
+type MuxResult = { signal: string; result: string };
+const defaultMuxResult = { signal: "X", result: "".padStart(32, "0") };
+type BUResult = { a: string; b: string; operation: string; result: string };
 const defaultBUResult = {
   a: "".padStart(32, "0"),
   b: "".padStart(32, "0"),
   operation: "".padStart(5, "X"),
   result: "X",
 };
-
-type IMMResult = {
-  signal: string; // Immediate control signal
-  output: string; // Immediate output
-};
-
-const defaultIMMResult = {
-  signal: "".padStart(3, "X"),
-  output: "".padStart(32, "0"),
-};
-
+type IMMResult = { signal: string; output: string };
+const defaultIMMResult = { signal: "".padStart(3, "X"), output: "".padStart(32, "0") };
 type DMResult = {
-  address: string; // read or write address
-  dataWr: string; // write data
-  dataRd: string; // read data
+  address: string;
+  dataWr: string;
+  dataRd: string;
   writeSignal: string;
   controlSignal: string;
 };
-
 const defaultDMResult = {
   address: "".padStart(32, "0"),
   dataWr: "".padStart(32, "0"),
@@ -100,14 +53,7 @@ const defaultDMResult = {
   writeSignal: "X",
   controlSignal: "".padStart(3, "XXX"),
 };
-
-type RUResult = {
-  rs1: string;
-  rs2: string;
-  dataWrite: string;
-  writeSignal: string;
-};
-
+type RUResult = { rs1: string; rs2: string; dataWrite: string; writeSignal: string };
 const defaultRUResult = {
   rs1: "".padStart(32, "0"),
   rs2: "".padStart(32, "0"),
@@ -127,7 +73,6 @@ export type SCCPUResult = {
   buMux: MuxResult;
   wb: MuxResult;
 };
-
 export const defaultSCCPUResult = {
   add4: defaultADD4Result,
   ru: defaultRUResult,
@@ -142,42 +87,32 @@ export const defaultSCCPUResult = {
 };
 
 export class SCCPU implements ICPU {
-  // TODO: We need a proper type for a program representation.
   private readonly _program: any[];
+  private registers: RegistersFile;
+  private dataMemory: DataMemory;
+  private immediateUnit: ImmediateUnit;
+  private pc: number;
+
   get program() {
     return this._program;
   }
-
-  private registers: RegistersFile;
-  private dataMemory: DataMemory;
-  /**
-   * This pc indexes the program array. As so, it is not an address.
-   */
-  private pc: number;
-  // TODO: transform into a javascript get
   public getPC() {
     return this.pc;
   }
 
   public constructor(program: any[], memory: any[], memSize: number) {
-    console.log("Program to execute: ", program);
-    this._program = program.filter((sc) => {
-      return sc.kind === "SrcInstruction";
-    });
-
+    this._program = program.filter((sc) => sc.kind === "SrcInstruction");
     this.registers = new RegistersFile();
-
     this.dataMemory = new DataMemory(program.length * 4, memory.length, memSize);
     this.dataMemory.uploadProgram(memory);
     this.pc = 0;
-    // Set the initial value of the stack pointer
+    this.immediateUnit = new ImmediateUnit();
     const programSize = program.length * 4;
     this.registers.writeRegister("x2", intToBinary(programSize + memSize - 4));
   }
 
   public currentInstruction() {
-    // console.log('called current instruction ', this.program[this.pc]);
-    return this.program[this.pc];
+    return this._program[this.pc];
   }
 
   private currentType(): string {
@@ -189,7 +124,7 @@ export class SCCPU implements ICPU {
   }
 
   public finished(): boolean {
-    return this.pc >= this.program.length;
+    return this.pc >= this._program.length;
   }
 
   public nextInstruction() {
@@ -201,12 +136,7 @@ export class SCCPU implements ICPU {
   }
 
   private toTwosComplement(n: any, len: any) {
-    // Taken from: https://stackoverflow.com/questions/73340264/how-to-convert-a-bigint-to-twos-complement-binary-in-javascript
-    // `n` must be an integer
-    // `len` must be a positive integer greater than bit-length of `n`
-
     n = BigInt(n);
-
     len = Number(len);
     if (!Number.isInteger(len)) {
       throw Error("`len` must be an integer");
@@ -214,8 +144,6 @@ export class SCCPU implements ICPU {
     if (len <= 0) {
       throw Error("`len` must be greater than zero");
     }
-
-    // If non-negative, a straight conversion works
     if (n >= 0) {
       n = n.toString(2);
       if (n.length > len) {
@@ -223,15 +151,10 @@ export class SCCPU implements ICPU {
       }
       return n.padStart(len, "0");
     }
-
-    n = (-n).toString(2); // make positive and convert to bit string
-
+    n = (-n).toString(2);
     if (!(n.length < len || n === "1".padEnd(len, "0"))) {
       throw Error("out of range");
     }
-
-    // Start at the LSB and work up. Copy bits up to and including the
-    // first 1 bit then invert the remaining
     let invert = false;
     return n
       .split("")
@@ -310,25 +233,15 @@ export class SCCPU implements ICPU {
       case "10111":
         result = ALU32.remu(numA, numB);
         break;
-
       default:
-        result = 0n; // Default case, should not happen
+        result = 0n;
     }
-    const result32 = this.toTwosComplement(result, 32);
-    return result32;
+    return this.toTwosComplement(result, 32);
   }
 
-  /**
-   * Computes the result of executing the current instruction.
-   *
-   * At this point, the result consists of an object with the following fields:
-   * !TODO: document when ready
-   */
   public cycle(): SCCPUResult {
-    // console.log('execute instruction', this.currentInstruction());
     switch (this.currentType()) {
       case "R":
-        // console.log('breakpoint execute r');
         return this.executeRInstruction();
       case "I":
         return this.executeIInstruction();
@@ -348,22 +261,15 @@ export class SCCPU implements ICPU {
   private executeRInstruction() {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
-
     const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
     const rs2Val = this.registers.readRegisterFromName(getRs2(instruction));
-    const funct7 =  getFunct7(instruction);
+    const funct7 = getFunct7(instruction);
     const aluOp = funct7[6] + funct7[1] + getFunct3(instruction);
     const aluRes = this.computeALURes(rs1Val, rs2Val, aluOp);
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
     this.registers.writeRegister(getRd(instruction), aluRes);
-
     result.add4.result = add4Res.toString(2);
-    result.ru = {
-      rs1: rs1Val,
-      rs2: rs2Val,
-      dataWrite: aluRes,
-      writeSignal: "1",
-    };
+    result.ru = { rs1: rs1Val, rs2: rs2Val, dataWrite: aluRes, writeSignal: "1" };
     result.alua = { result: rs1Val, signal: "0" };
     result.alub = { result: rs2Val, signal: "0" };
     result.alu = { a: rs1Val, b: rs2Val, operation: aluOp, result: aluRes };
@@ -376,23 +282,17 @@ export class SCCPU implements ICPU {
   private executeIInstruction(): SCCPUResult {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
-
     const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
-    const imm12Val = this.currentInstruction().encoding.imm12;
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
-    
-    let imm32Val = imm12Val.padStart(32, imm12Val.at(0));
+
+    const imm32Val = this.immediateUnit.generate(instruction);
+
     let aluOp = "";
-    let MSBaluOp = "0";
     switch (true) {
       case isIArithmetic(instruction.type, instruction.opcode):
-        if (isILogical(instruction.instruction)){
-          MSBaluOp =  getImmFunct7(imm12Val)[1]!;
-          imm32Val = imm32Val.split(""); 
-          imm32Val[21] = "0"; 
-          imm32Val = imm32Val.join("");
-        }
-        
+        const MSBaluOp = isILogical(instruction.instruction)
+          ? getImmFunct7(instruction.encoding.imm12)[1]!
+          : "0";
         aluOp = "0" + MSBaluOp + getFunct3(instruction);
         break;
       case isILoad(this.currentType(), this.currentOpcode()):
@@ -403,15 +303,10 @@ export class SCCPU implements ICPU {
         break;
     }
 
-
     const aluRes = this.computeALURes(rs1Val, imm32Val, aluOp);
     this.registers.writeRegister(getRd(instruction), aluRes);
     result.add4.result = add4Res.toString(2);
-    result.ru = {
-      ...defaultRUResult,
-      rs1: rs1Val,
-      writeSignal: "1",
-    };
+    result.ru = { ...defaultRUResult, rs1: rs1Val, writeSignal: "1" };
     result.alu = { a: rs1Val, b: imm32Val, operation: aluOp, result: aluRes };
     result.imm = { signal: "000", output: imm32Val };
     result.alua = { result: rs1Val, signal: "0" };
@@ -419,7 +314,6 @@ export class SCCPU implements ICPU {
 
     switch (true) {
       case isIArithmetic(instruction.type, instruction.opcode):
-        // TODO: I have to update the parser to look for shift operations that use shamt and funct7
         result.wb = { signal: "00", result: aluRes };
         result.bu = { ...defaultBUResult, result: "0", operation: "00XXX" };
         result.buMux = { signal: "0", result: add4Res.toString(2) };
@@ -454,36 +348,31 @@ export class SCCPU implements ICPU {
     switch (control) {
       case 0: {
         // lb
-        console.log("reading for lb");
-        const val = this.getDataMemory().read(address, 1).join("");
+        const val = this.dataMemory.read(address, 1).join("");
         value = val.padStart(32, val.at(0));
         break;
       }
       case 1: {
         // lh
-        console.log("reading for lb");
-        const val = this.getDataMemory().read(address, 2).join("");
+        const val = this.dataMemory.read(address, 2).join("");
         value = val.padStart(32, val.at(0));
         break;
       }
       case 2: {
-        //lw
-        console.log("reading for lw");
-        const val = this.getDataMemory().read(address, 4);
+        // lw
+        const val = this.dataMemory.read(address, 4);
         value = val.join("");
         break;
       }
       case 4: {
-        //lbu
-        console.log("reading for lb");
-        const val = this.getDataMemory().read(address, 1).join("");
+        // lbu
+        const val = this.dataMemory.read(address, 1).join("");
         value = val.padStart(32, "0");
         break;
       }
       case 5: {
         // lhu
-        console.log("reading for lb");
-        const val = this.getDataMemory().read(address, 2).join("");
+        const val = this.dataMemory.read(address, 2).join("");
         value = val.padStart(32, "0");
         break;
       }
@@ -494,28 +383,16 @@ export class SCCPU implements ICPU {
   private executeSInstruction(): SCCPUResult {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
-
     const baseAddressVal = this.registers.readRegisterFromName(getRs1(instruction));
     const dataToStore = this.registers.readRegisterFromName(getRs2(instruction));
 
-    const offset12Val = this.currentInstruction().encoding.imm12;
-    const offset32Val = offset12Val.padStart(32, offset12Val.at(0));
+    const offset32Val = this.immediateUnit.generate(instruction);
+
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
     const aluRes = this.computeALURes(baseAddressVal, offset32Val, "00000");
-
     result.add4.result = add4Res.toString(2);
-    result.ru = {
-      ...defaultRUResult,
-      rs1: baseAddressVal,
-      rs2: dataToStore,
-      writeSignal: "0",
-    };
-    result.alu = {
-      a: baseAddressVal,
-      b: offset32Val,
-      operation: "0000",
-      result: aluRes,
-    };
+    result.ru = { ...defaultRUResult, rs1: baseAddressVal, rs2: dataToStore, writeSignal: "0" };
+    result.alu = { a: baseAddressVal, b: offset32Val, operation: "0000", result: aluRes };
     result.alua = { result: baseAddressVal, signal: "0" };
     result.alub = { result: offset32Val, signal: "1" };
     result.bu = { ...defaultBUResult, operation: "00XXX", result: "0" };
@@ -534,79 +411,52 @@ export class SCCPU implements ICPU {
   private executeBInstruction() {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
-
     const add4Res = parseInt(instruction.inst) + 4;
     result.add4.result = add4Res.toString(2);
-
     const funct3 = getFunct3(instruction);
-    const rs1 = "0b" + this.registers.readRegisterFromName(getRs1(instruction));
-    const rs2 = "0b" + this.registers.readRegisterFromName(getRs2(instruction));
+    const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
+    const rs2Val = this.registers.readRegisterFromName(getRs2(instruction));
+    const rs1Int = BigInt.asIntN(32, BigInt("0b" + rs1Val));
+    const rs2Int = BigInt.asIntN(32, BigInt("0b" + rs2Val));
 
-    const rs1B = BigInt(rs1);
-    const rs2B = BigInt(rs2);
-
-    const rs1Int = BigInt.asIntN(32, rs1B);
-    const rs2Int = BigInt.asIntN(32, rs2B);
-
-    const imm13 = this.currentInstruction().encoding.imm13;
-    const imm32Val = imm13.padStart(32, imm13.at(0));
+    const imm32Val = this.immediateUnit.generate(instruction);
 
     let condition = false;
     switch (parseInt(funct3, 2)) {
-      case 0: {
-        //beq
+      case 0:
         condition = rs1Int === rs2Int;
         break;
-      }
-      case 1: {
-        //bne
+      case 1:
         condition = rs1Int !== rs2Int;
         break;
-      }
-      case 4: {
-        //blt
+      case 4:
         condition = rs1Int < rs2Int;
         break;
-      }
-      case 5: {
-        //bge
+      case 5:
         condition = rs1Int >= rs2Int;
         break;
-      }
-      case 6: {
-        //bltu
-        const rs1U = BigInt.asUintN(32, rs1B);
-        const rs2U = BigInt.asUintN(32, rs2B);
-        condition = rs1U < rs2U;
+      case 6:
+        condition =
+          BigInt.asUintN(32, BigInt("0b" + rs1Val)) < BigInt.asUintN(32, BigInt("0b" + rs2Val));
         break;
-      }
-      case 7: {
-        //bgeu
-        const rs1U = BigInt.asUintN(32, rs1B);
-        const rs2U = BigInt.asUintN(32, rs2B);
-        condition = rs1U >= rs2U;
+      case 7:
+        condition =
+          BigInt.asUintN(32, BigInt("0b" + rs1Val)) >= BigInt.asUintN(32, BigInt("0b" + rs2Val));
         break;
-      }
     }
 
-    const aluaRes = (instruction.inst as number).toString(2);
-    const aluaRes32 = aluaRes.padStart(32, "0");
-    const aluRes = this.computeALURes(aluaRes32, imm32Val, "00000");
+    const pcAsString = (instruction.inst as number).toString(2).padStart(32, "0");
+    const aluRes = this.computeALURes(pcAsString, imm32Val, "00000");
 
-    result.ru = { ...defaultRUResult, writeSignal: "0", rs1: rs1, rs2: rs2 };
-    result.alua = { signal: "1", result: aluaRes32 };
+    result.ru = { ...defaultRUResult, writeSignal: "0", rs1: rs1Val, rs2: rs2Val };
+    result.alua = { signal: "1", result: pcAsString };
     result.alub = { signal: "1", result: imm32Val };
-    result.bu = {
-      operation: "01" + funct3,
-      result: condition ? "1" : "0",
-      a: rs1,
-      b: rs2,
-    };
+    result.bu = { operation: "01" + funct3, result: condition ? "1" : "0", a: rs1Val, b: rs2Val };
     result.buMux = {
-      result: condition ? parseInt(aluRes, 2).toString(2) : add4Res.toString(2),
+      result: condition ? aluRes : add4Res.toString(2),
       signal: condition ? "1" : "0",
     };
-    result.alu = { a: aluaRes, b: imm32Val, operation: "0000", result: aluRes };
+    result.alu = { a: pcAsString, b: imm32Val, operation: "0000", result: aluRes };
     result.imm = { signal: "101", output: imm32Val };
     return result;
   }
@@ -614,32 +464,28 @@ export class SCCPU implements ICPU {
   private executeUInstruction() {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
-
     const add4Res = (parseInt(instruction.inst) + 4).toString(2);
     result.add4.result = add4Res;
 
-    const imm21Val = this.currentInstruction().encoding.imm21;
-    const imm32Val = imm21Val.padEnd(32, "0");
-    
+    const imm32Val = this.immediateUnit.generate(instruction);
 
-    let aVal = "0".padStart(32, "0");
-    let aluASrcVal = "0";
-    let aluAResVal = "0".padStart(32, "0");
+    let aluInputA = "0".padStart(32, "0");
+    let aluaSignal = "0";
     let aluRes = imm32Val;
+
     if (isAUIPC(instruction.type, instruction.opcode)) {
       const PC = instruction.inst as number;
-      aVal = PC.toString(2).padStart(32, "0");
-      aluASrcVal = "1";
-      aluAResVal = aVal;
+      aluInputA = PC.toString(2).padStart(32, "0");
+      aluaSignal = "1";
       aluRes = (PC + parseInt(imm32Val, 2)).toString(2).padStart(32, "0");
     }
 
     result.ru = { ...defaultRUResult, writeSignal: "1", dataWrite: aluRes };
     result.imm = { signal: "010", output: imm32Val };
     result.alub = { result: imm32Val, signal: "1" };
-    result.alua = { result: aluAResVal, signal: aluASrcVal };
+    result.alua = { result: aluInputA, signal: aluaSignal };
     result.bu = { ...defaultBUResult, result: "0", operation: "00XXX" };
-    result.alu = { operation: "0000", result: aluRes, a: aVal, b: imm32Val };
+    result.alu = { operation: "00000", result: aluRes, a: aluInputA, b: imm32Val };
     result.buMux = { result: add4Res, signal: "0" };
     result.wb = { result: aluRes, signal: "00" };
     return result;
@@ -648,25 +494,19 @@ export class SCCPU implements ICPU {
   private executeJInstruction() {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
-
     const pc = parseInt(instruction.inst);
     const pcVal = pc.toString(2).padStart(32, "0");
     const add4Res = (pc + 4).toString(2).padStart(32, "0");
     result.add4.result = add4Res;
-    const imm21Val = this.currentInstruction().encoding.imm21 as string;
-    const imm32Val = imm21Val.padStart(32, imm21Val.at(0));
+
+    const imm32Val = this.immediateUnit.generate(instruction);
 
     const aluRes = this.computeALURes(pcVal, imm32Val, "00000");
 
     result.alua = { result: pcVal, signal: "1" };
     result.alub = { result: imm32Val, signal: "1" };
     result.imm = { output: imm32Val, signal: "110" };
-    result.alu = {
-      a: pc.toString(2),
-      b: imm32Val,
-      operation: "0000",
-      result: aluRes,
-    };
+    result.alu = { a: pc.toString(2), b: imm32Val, operation: "00000", result: aluRes };
     result.buMux = { result: aluRes, signal: "1" };
     result.bu = { ...defaultBUResult, operation: "1XXXX", result: "1" };
     result.ru = { ...defaultRUResult, writeSignal: "1", dataWrite: add4Res };
@@ -677,32 +517,25 @@ export class SCCPU implements ICPU {
   public getRegisterFile(): RegistersFile {
     return this.registers;
   }
-
   public getDataMemory(): DataMemory {
     return this.dataMemory;
   }
-
   public replaceDataMemory(newMemory: any[]): void {
     if (!newMemory) {
       return;
-  }
+    }
     const flatMemory: string[] = [];
     newMemory.forEach((group) => {
       flatMemory.push(group.value0, group.value1, group.value2, group.value3);
     });
-
-
     (this.dataMemory as any).memory = flatMemory;
-
   }
-
   public replaceRegisters(newRegisters: string[]): void {
     (this.registers as any).registers = newRegisters;
   }
-
   public printInfo() {
-    logger().info("CPU state");
-    logger().info("Registers");
+    console.log("CPU state");
+    console.log("Registers");
     this.registers.printRegisters();
   }
 }
