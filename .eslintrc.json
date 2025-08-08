@@ -9,11 +9,11 @@
   "rules": {
     "@typescript-eslint/naming-convention": "warn",
     "@typescript-eslint/semi": "warn",
-    "curly": "warn",
     "eqeqeq": "warn",
     "no-throw-literal": "warn",
     "semi": "off",
-    "camelcase": "off"
+    "camelcase": "off",
+    "curly": ["off"]
   },
   "ignorePatterns": ["node_modules", "out", "dist", "**/*.d.ts",  "src/utilities/riscv.ts"]
 }
