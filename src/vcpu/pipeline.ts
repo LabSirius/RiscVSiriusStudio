@@ -4,15 +4,16 @@ import { RegistersFile, DataMemory } from "./components";
 /**
  * Defines the structure of the data that is passed from the
  * Instruction Fetch (IF) stage to the Instruction Decode (ID) stage.
+ * Corresponds to the inputs of the DecodeStage module in Verilog.
  */
 interface IFID_Register {
-  instruction: any;    // The instruction fetched from memory
-  pc_plus_4: number; // The value of PC + 4, for the next instruction
+  instruction: any; // Corresponds to Inst_fe
+  pc: number;       // Corresponds to PC_fe
+  pc_plus_4: number; // Corresponds to PCP4_fe
 }
 
 /**
  * The implementation of the Pipelined CPU.
- * It contains the pipeline registers and the logic for each of the 5 stages.
  */
 export class PipelineCPU implements ICPU {
   // --- Core Components ---
@@ -22,7 +23,9 @@ export class PipelineCPU implements ICPU {
 
   // --- Pipeline State ---
   private clockCycles: number = 0;
-  private pc: number = 0;
+  
+  // --- Global Wires/Signals ---
+  private pc: number = 0; // This is the main PC register, corresponds to the input of FetchStage
 
   // --- Pipeline Registers ---
   private if_id_register: IFID_Register;
@@ -34,15 +37,9 @@ export class PipelineCPU implements ICPU {
     this.dataMemory.uploadProgram(memory);
 
     // Initialize pipeline registers with default/NOP values
-    this.if_id_register = { instruction: null, pc_plus_4: 0 };
+    this.if_id_register = { instruction: null, pc: 0, pc_plus_4: 0 };
   }
 
-  /**
-   * Executes one full clock cycle, advancing each stage of the pipeline.
-   * The execution order is reversed (WB to IF) to simulate the parallel
-   * nature of hardware, preventing data from one stage from incorrectly
-   * affecting the next stage in the same clock cycle.
-   */
   public cycle(): any {
     this.clockCycles++;
     console.log(`[Pipeline CPU] Clock Cycle: ${this.clockCycles}`);
@@ -60,83 +57,44 @@ export class PipelineCPU implements ICPU {
 
   /**
    * Instruction Fetch (IF) Stage.
-   * Fetches the instruction from memory and calculates the next PC.
    */
   private executeIF() {
-    // 1. Fetch the instruction from the program memory using the PC.
-    //    PC is a byte address, so we divide by 4 for the word-indexed array.
-    const instruction = this.program[this.pc / 4];
+    // Verilog wires for this stage
+    const pc_fe = this.pc;
+    let instruction: any;
+    let pc_plus_4: number;
 
-    // 2. Calculate PC + 4 for the next sequential instruction.
-    const pc_plus_4 = this.pc + 4;
+    // Module: InstMem - Fetches the instruction
+    // Note: We check if pc_fe is within program bounds
+    if (pc_fe / 4 < this.program.length) {
+      instruction = this.program[pc_fe / 4];
+    } else {
+      instruction = null; // Represents fetching past the end of the program
+    }
 
-    // 3. Load the IF/ID pipeline register with the values for the NEXT clock cycle.
-    this.if_id_register = { instruction, pc_plus_4 };
+    // Module: Adder - Calculates PC + 4
+    pc_plus_4 = pc_fe + 4;
 
-    // 4. Update the PC for the NEXT clock cycle.
+    // Load the IF/ID pipeline register for the NEXT clock cycle
+    this.if_id_register = { instruction, pc: pc_fe, pc_plus_4 };
+
+    // Update the main PC for the NEXT clock cycle
+    // In a real pipeline, a MUX would select between PC+4 and a branch address.
+    // For now, it's always PC+4.
     this.pc = pc_plus_4;
 
     // --- Verification Log ---
-    console.log(`[IF Stage] Fetched instruction: ${instruction?.asm || 'NOP'}, Next PC will be: ${this.pc}`);
+    console.log(`[IF Stage] Reading from PC=${pc_fe}. Fetched Instr: "${instruction?.asm || 'NOP'}". Next PC will be ${this.pc}.`);
   }
 
-  // =================================================================
-  //  ICPU Interface Methods
-  // =================================================================
-
-  public getDataMemory(): DataMemory {
-    return this.dataMemory;
-  }
-
-  public getRegisterFile(): RegistersFile {
-    return this.registers;
-  }
-
-  /**
-   * Returns the current value of the Program Counter.
-   */
-  public getPC(): number {
-    return this.pc;
-  }
-
-  /**
-   * Returns the instruction currently being decoded (in the ID stage).
-   * For now, it returns the last fetched instruction.
-   */
-  public currentInstruction(): any {
-    return this.if_id_register.instruction || {};
-  }
-
-  /**
-   * Determines if the simulation has finished.
-   */
-  public finished(): boolean {
-    // TODO: Implement logic to check if the pipeline is empty.
-    return false;
-  }
-
-  /**
-   * Handles jumps and branches by modifying the PC.
-   */
-  public jumpToInstruction(address: string): void {
-    // TODO: Implement jump logic for the pipeline (e.g., flushing).
-    console.warn(`jumpToInstruction(${address}) not yet implemented for pipeline.`);
-  }
-
-  /**
-   * This method is largely unused in the pipeline model, as PC updates
-   * are handled by the IF stage and branch/jump logic.
-   */
-  public nextInstruction(): void {
-    // Does nothing in the pipeline model.
-  }
-
-  public replaceDataMemory(newMemory: any[]): void {
-    this.dataMemory.uploadProgram(newMemory);
-  }
-
-  public replaceRegisters(newRegisters: string[]): void {
-    // This requires a more direct way to set registers, let's add it.
-    (this.registers as any).registers = newRegisters;
-  }
+  // ... el resto de la clase ...
+  public getDataMemory(): DataMemory { return this.dataMemory; }
+  public getRegisterFile(): RegistersFile { return this.registers; }
+  public getPC(): number { return this.pc; }
+  public currentInstruction(): any { return this.if_id_register.instruction || {}; }
+  public finished(): boolean { return false; }
+  public jumpToInstruction(address: string): void { console.warn(`jumpToInstruction(${address}) not yet implemented for pipeline.`); }
+  public nextInstruction(): void { }
+  public replaceDataMemory(newMemory: any[]): void { this.dataMemory.uploadProgram(newMemory); }
+  public replaceRegisters(newRegisters: string[]): void { (this.registers as any).registers = newRegisters; }
 }
