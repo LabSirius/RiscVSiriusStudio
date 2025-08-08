@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-
 import { ICPU } from "./interface";
-import { RegistersFile, DataMemory, ProcessorALU } from "./components/components"; 
+import { RegistersFile, DataMemory, ProcessorALU } from "./components/components";
 import { ControlUnit, ImmediateUnit } from "./components/decoder";
 
 /**
@@ -28,11 +27,11 @@ interface IDEX_Register {
   ru_data_wr_src: string;
   alu_op: string;
   br_op: string;
-  
+
   // Data Values
   pc: number;
-  rs1Val: string; 
-  rs2Val: string; 
+  rs1Val: string;
+  rs2Val: string;
   imm_ext: string;
   rd: string;
 }
@@ -60,7 +59,7 @@ export class PipelineCPU implements ICPU {
 
   constructor(program: any[], memory: any[], memSize: number) {
     this.program = program;
-    
+
     // Initialize components
     this.registers = new RegistersFile();
     this.dataMemory = new DataMemory(program.length * 4, memory.length, memSize);
@@ -72,11 +71,18 @@ export class PipelineCPU implements ICPU {
     // Initialize pipeline registers with default/NOP values
     this.if_id_register = { instruction: null, pc: -4, pc_plus_4: 0 };
     this.id_ex_register = {
-      ru_wr: false, alua_src: false, alub_src: false, dm_wr: false,
-      ru_data_wr_src: "00", alu_op: "00000", br_op: "00000", pc: 0,
-      rs1Val: "0".padStart(32, "0"), 
-      rs2Val: "0".padStart(32, "0"), 
-      imm_ext: "0".padStart(32, "0"), rd: "00000"
+      ru_wr: false,
+      alua_src: false,
+      alub_src: false,
+      dm_wr: false,
+      ru_data_wr_src: "00",
+      alu_op: "00000",
+      br_op: "00000",
+      pc: 0,
+      rs1Val: "0".padStart(32, "0"),
+      rs2Val: "0".padStart(32, "0"),
+      imm_ext: "0".padStart(32, "0"),
+      rd: "00000",
     };
   }
 
@@ -112,7 +118,11 @@ export class PipelineCPU implements ICPU {
     const pc_plus_4 = pc_fe + 4;
     this.if_id_register = { instruction, pc: pc_fe, pc_plus_4 };
     this.pc = pc_plus_4; // For now, PC always increments. Branching will change this.
-    console.log(`[IF Stage] Reading from PC=${pc_fe}. Fetched Instr: "${instruction?.asm || 'NOP'}". Next PC will be ${this.pc}.`);
+    console.log(
+      `[IF Stage] Reading from PC=${pc_fe}. Fetched Instr: "${
+        instruction?.asm || "NOP"
+      }". Next PC will be ${this.pc}.`
+    );
   }
 
   /**
@@ -125,10 +135,18 @@ export class PipelineCPU implements ICPU {
     if (!instruction) {
       // If instruction is null, propagate a NOP (bubble)
       this.id_ex_register = {
-        ru_wr: false, alua_src: false, alub_src: false, dm_wr: false,
-        ru_data_wr_src: "00", alu_op: "00000", br_op: "00000", pc: 0,
-        rs1Val: "0".padStart(32, "0"), rs2Val: "0".padStart(32, "0"),
-        imm_ext: "0".padStart(32, "0"), rd: "00000"
+        ru_wr: false,
+        alua_src: false,
+        alub_src: false,
+        dm_wr: false,
+        ru_data_wr_src: "00",
+        alu_op: "00000",
+        br_op: "00000",
+        pc: 0,
+        rs1Val: "0".padStart(32, "0"),
+        rs2Val: "0".padStart(32, "0"),
+        imm_ext: "0".padStart(32, "0"),
+        rd: "00000",
       };
       console.log("[ID Stage] NOP received. Passing NOP to EX.");
       return;
@@ -137,10 +155,14 @@ export class PipelineCPU implements ICPU {
     // Use reusable components to get all decoded values
     const controls = this.controlUnit.generate(instruction);
     const imm_ext = this.immediateUnit.generate(instruction);
-    
+
     // Read from register file
-    const rs1Val = instruction.rs1 ? this.registers.readRegisterFromName(instruction.rs1.regeq) : "0".padStart(32, "0");
-    const rs2Val = instruction.rs2 ? this.registers.readRegisterFromName(instruction.rs2.regeq) : "0".padStart(32, "0");
+    const rs1Val = instruction.rs1
+      ? this.registers.readRegisterFromName(instruction.rs1.regeq)
+      : "0".padStart(32, "0");
+    const rs2Val = instruction.rs2
+      ? this.registers.readRegisterFromName(instruction.rs2.regeq)
+      : "0".padStart(32, "0");
     const rd = instruction.rd ? instruction.rd.regeq.substring(1) : "0";
 
     // Load the ID/EX pipeline register
@@ -153,26 +175,55 @@ export class PipelineCPU implements ICPU {
       alu_op: controls.alu_op,
       br_op: controls.br_op,
       pc,
-      rs1Val,      
-      rs2Val,     
+      rs1Val,
+      rs2Val,
       imm_ext,
       rd,
     };
 
-    console.log(`[ID Stage] Decoded Instr: "${instruction.asm}". Controls generated (ALUOp=${controls.alu_op}). Passing to EX.`);
+    console.log(`[ID Stage] Decoded Instr: "${instruction.asm}"`);
+    console.log(`[ID Stage] Control Signals:
+  ru_wr: ${controls.ru_wr},
+  alua_src: ${controls.alua_src},
+  alub_src: ${controls.alub_src},
+  dm_wr: ${controls.dm_wr},
+  ru_data_wr_src: ${controls.ru_data_wr_src},
+  alu_op: ${controls.alu_op},
+  br_op: ${controls.br_op}
+`);
+    console.log(`[ID Stage] Immediate Extended: ${imm_ext}`);
+    console.log(`[ID Stage] rs1: ${instruction.rs1?.regeq || "NA"} -> ${rs1Val}`);
+    console.log(`[ID Stage] rs2: ${instruction.rs2?.regeq || "NA"} -> ${rs2Val}`);
+    console.log(`[ID Stage] rd: ${rd}`);
   }
 
   // =================================================================
   //  ICPU Interface Methods
   // =================================================================
 
-  public getDataMemory(): DataMemory { return this.dataMemory; }
-  public getRegisterFile(): RegistersFile { return this.registers; }
-  public getPC(): number { return this.pc; }
-  public currentInstruction(): any { return this.if_id_register.instruction || {}; }
-  public finished(): boolean { return false; }
-  public jumpToInstruction(address: string): void { console.warn(`jumpToInstruction(${address}) not yet implemented for pipeline.`); }
+  public getDataMemory(): DataMemory {
+    return this.dataMemory;
+  }
+  public getRegisterFile(): RegistersFile {
+    return this.registers;
+  }
+  public getPC(): number {
+    return this.pc;
+  }
+  public currentInstruction(): any {
+    return this.if_id_register.instruction || {};
+  }
+  public finished(): boolean {
+    return false;
+  }
+  public jumpToInstruction(address: string): void {
+    console.warn(`jumpToInstruction(${address}) not yet implemented for pipeline.`);
+  }
   public nextInstruction(): void {}
-  public replaceDataMemory(newMemory: any[]): void { this.dataMemory.uploadProgram(newMemory); }
-  public replaceRegisters(newRegisters: string[]): void { (this.registers as any).registers = newRegisters; }
+  public replaceDataMemory(newMemory: any[]): void {
+    this.dataMemory.uploadProgram(newMemory);
+  }
+  public replaceRegisters(newRegisters: string[]): void {
+    (this.registers as any).registers = newRegisters;
+  }
 }
