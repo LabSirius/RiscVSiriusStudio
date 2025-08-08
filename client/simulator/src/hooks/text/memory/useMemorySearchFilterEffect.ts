@@ -24,7 +24,6 @@ export const useMemorySearchFilterEffect = ({
   searchInMemory,
 }: UseMemorySearchFilterEffectProps): void => {
   useEffect(() => {
-    // ---- LÓGICA 100% IDÉNTICA A LA ORIGINAL ----
     if (!tableInstanceRef.current || !isCreatedMemoryTable || newPc === 0) return;
     filterMemoryData(searchInMemory, tableInstanceRef);
     updatePC(newPc, { current: tableInstanceRef.current });
