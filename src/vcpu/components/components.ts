@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import { logger } from "../../utilities/logger";
 import { ALU32 } from "../alu32";
 
