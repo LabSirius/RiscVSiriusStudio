@@ -464,5 +464,19 @@ h2 {
 
 .custom-shadow:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45); /* mucho más profunda abajo */
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45); 
+}
+
+.polygon-shadow {
+  transition: filter 0.2s ease-in;
+  filter: none; 
+}
+
+.polygon-shadow:hover {
+  filter: url(#shadow); 
+}
+
+.svg-container-lift:hover .polygon-shadow {
+    transition: transform 0.2s ease-in, filter 0.2s ease-in;
+    filter: url(#shadow);
 }
