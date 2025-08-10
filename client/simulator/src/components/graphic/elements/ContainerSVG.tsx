@@ -6,7 +6,7 @@ interface ContainerProps {
   active?: boolean;
 }
 
-const Container: FC<ContainerProps> = ({ height, active = false }: ContainerProps) => {
+const Container: FC<ContainerProps> = ({ height, active = false }) => {
   const { operation } = useSimulator();
 
   const isUploadMemory = operation === "uploadMemory";
@@ -18,7 +18,11 @@ const Container: FC<ContainerProps> = ({ height, active = false }: ContainerProp
       style={{ height: `${height}rem` }}
     >
       <div
-        className={`absolute rounded-[20px] borderElementContainer ${isUploadMemory ? 'animate-border-pulse' : ''}`}
+        className={`
+          absolute rounded-[20px] borderElementContainer
+          custom-shadow
+          ${isUploadMemory ? 'animate-border-pulse' : ''}
+        `}
         style={{
           borderColor,
           width: '100%',

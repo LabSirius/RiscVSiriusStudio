@@ -456,3 +456,13 @@ h2 {
 .animate-border-pulse {
   animation: pulse-border 1.5s infinite ease-in-out;
 }
+
+
+.custom-shadow {
+  transition: all 0.2s ease-in;
+}
+
+.custom-shadow:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45); /* mucho más profunda abajo */
+}
