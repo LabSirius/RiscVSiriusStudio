@@ -101,7 +101,6 @@ export class PipelineCPU implements ICPU {
     this.mem_wb_register = { ...NOP_DATA };
     const programSize = program.length * 4;
     this.registers.writeRegister("x2", intToBinary(programSize + memSize - 4));
-    
   }
 
   public cycle(): any {
@@ -253,6 +252,9 @@ export class PipelineCPU implements ICPU {
               console.log(`[MEM Stage] DataMemory.write called at address ${address} with ${bytesToWrite.length} byte(s)`);
           }
       } 
+
+
+      console.log("New memory?", this.getDataMemory());
 
     }  else if (this.ex_mem_register.RUDataWrSrc === "01") {
 
