@@ -185,7 +185,6 @@ export class TextSimulator extends Simulator {
       instruction.currentPc = this.cpu.getPC();
 
       if (writesRU(instruction.type, instruction.opcode)) {
-        console.log("AQUII ENTRA")
         this.cpu.getRegisterFile().writeRegister(instruction.rd.regeq, result.wb.result);
         this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
       }

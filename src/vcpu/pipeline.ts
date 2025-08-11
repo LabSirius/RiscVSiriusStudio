@@ -231,29 +231,31 @@ export class PipelineCPU implements ICPU {
     const address = parseInt(ALURes, 2);
     let memReadData = "X".padStart(32, "X");
 
-    if (DMWr) {
-      // --- (Type S) ---
+   if (DMWr) {
       console.log(`[MEM Stage] Store instruction detected (DMWr=true).`);
-      let bytesToWrite: string[] = [];
-      switch (DMCtrl) {
-        case "000": // SB
-          bytesToWrite = [RUrs2.substring(24, 32)];
-          break;
-        case "001": // SH
-          bytesToWrite = [RUrs2.substring(16, 24), RUrs2.substring(24, 32)];
-          break;
-        case "010": // SW
-          bytesToWrite = (RUrs2.match(/.{1,8}/g) || []).reverse();
-          break;
-      }
-      if (bytesToWrite.length > 0) {
-        this.dataMemory.write(bytesToWrite, address);
-        console.log(`[MEM Stage] DataMemory.write called at address ${address}`);
-      }
-    } else if (this.ex_mem_register.RUDataWrSrc === "01") {
-      // ######################################################################
-      // ### CAMBIO: Lógica de LECTURA (Load) idéntica a la del MONOCICLO   ###
-      // ######################################################################
+      const chunks = (RUrs2.match(/.{1,8}/g) || []);
+      
+      if (chunks[2] && chunks[3]) {
+          let bytesToWrite: string[] = [];
+          switch (DMCtrl) {
+              case "000": // SB 
+                  bytesToWrite = [chunks[3]]; // Byte0 
+                  break;
+              case "001": // SH
+                  bytesToWrite = [chunks[2], chunks[3]]; // Byte1, Byte0
+                  break;
+              case "010": // SW 
+                  bytesToWrite = chunks; // Byte3, Byte2, Byte1, Byte0
+                  break;
+          }
+          if (bytesToWrite.length > 0) {
+              this.dataMemory.write(bytesToWrite.reverse(), address);
+              console.log(`[MEM Stage] DataMemory.write called at address ${address} with ${bytesToWrite.length} byte(s)`);
+          }
+      } 
+
+    }  else if (this.ex_mem_register.RUDataWrSrc === "01") {
+
       console.log(`[MEM Stage] Load instruction detected (RUDataWrSrc=01).`);
 
       switch (DMCtrl) {
@@ -291,9 +293,7 @@ export class PipelineCPU implements ICPU {
         }
       }
       console.log(`[MEM Stage] DataMemory.read from address ${address} -> ${memReadData}`);
-      // ######################################################################
-      // ### FIN DEL CAMBIO                                                 ###
-      // ######################################################################
+
     } else {
       console.log(`[MEM Stage] No memory operation.`);
     }

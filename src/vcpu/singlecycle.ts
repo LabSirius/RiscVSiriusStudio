@@ -182,7 +182,6 @@ export class SCCPU implements ICPU {
       wbData = aluRes;
     } else if (controls.ru_data_wr_src === "01") {
       // Result from Memory
-      console.log("ADREEES MONO", parseInt(aluRes, 2))
       let value = this.readFromMemory(parseInt(aluRes, 2), parseInt(getFunct3(instruction), 2));
       wbData = value;
       result.dm = {
