@@ -18,7 +18,6 @@ import { useResetRegistersOnNewSimulation } from "@/hooks/text/registers/UseRese
 import { useGlobalKeyboardShortcuts } from "@/hooks/text/registers/useGlobalKeyboardShortcuts";
 import { useTabulator } from "@/hooks/text/registers/useTabulator";
 import { useRegisterUpdates } from "@/hooks/text/registers/useRegisterUpdates";
-import { useSyncWatchedRegisters } from "@/hooks/text/registers/useSyncWatchedRegisters";
 import { useImportRegisterData } from "@/hooks/text/registers/useImportRegisterData";
 import { useUpdateTableColumns } from "@/hooks/text/registers/useUpdateTableColumns";
 import { useTableFilter } from "@/hooks/text/registers/useTableFilter";
@@ -48,6 +47,7 @@ const RegistersTable = () => {
   const [tableBuilt, setTableBuilt] = useState(false);
 
   const { isFirstStep } = useSimulator();
+  
 
   const viewTypeFormatterCustom = useMemo(
     () =>
@@ -89,13 +89,6 @@ const RegistersTable = () => {
     checkFixedRegisters,
     fixedchangedRegisters,
     setFixedchangedRegisters,
-  });
-
-  useSyncWatchedRegisters({
-    tabulatorInstance,
-    isTableBuilt: tableBuilt,
-    checkFixedRegisters,
-    fixedchangedRegisters,
   });
 
   useImportRegisterData({
