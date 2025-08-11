@@ -36,6 +36,24 @@ interface IDEX_Register {
   rd: string;
 }
 
+
+/**
+ * @interface EXMEM_Register
+ * @description Defines the data structure passed from the EX to the MEM stage.
+ */
+interface EXMEM_Register {
+  // Control Signals to be passed to MEM and WB
+  ru_wr: boolean;
+  dm_wr: boolean;
+  ru_data_wr_src: string;
+
+  // Data Values
+  alu_result: string;
+  rs2Val: string; // Needed for store instructions in MEM stage
+  rd: string;     // The destination register
+}
+
+
 /**
  * @class PipelineCPU
  * @description The implementation of the Pipelined CPU, containing pipeline registers and stage logic.
@@ -56,6 +74,7 @@ export class PipelineCPU implements ICPU {
   // --- Pipeline Registers ---
   private if_id_register: IFID_Register;
   private id_ex_register: IDEX_Register;
+  private ex_mem_register: EXMEM_Register;
 
   constructor(program: any[], memory: any[], memSize: number) {
     this.program = program;
@@ -84,6 +103,14 @@ export class PipelineCPU implements ICPU {
       imm_ext: "0".padStart(32, "0"),
       rd: "00000",
     };
+    this.ex_mem_register = {
+      ru_wr: false,
+      dm_wr: false,
+      ru_data_wr_src: "00",
+      alu_result: "0".padStart(32, "0"),
+      rs2Val: "0".padStart(32, "0"),
+      rd: "00000",
+    };
   }
 
   /**
@@ -96,7 +123,7 @@ export class PipelineCPU implements ICPU {
 
     // this.executeWB();
     // this.executeMEM();
-    // this.executeEX();
+    this.executeEX();
     this.executeID();
     this.executeIF();
   }
@@ -195,6 +222,45 @@ export class PipelineCPU implements ICPU {
     console.log(`[ID Stage] rs1: ${instruction.rs1?.regeq || "NA"} -> ${rs1Val}`);
     console.log(`[ID Stage] rs2: ${instruction.rs2?.regeq || "NA"} -> ${rs2Val}`);
     console.log(`[ID Stage] rd: ${rd}`);
+  }
+
+
+  /**
+   * @method executeEX
+   * @description Execution (EX) Stage.
+   */
+  private executeEX() {
+    // 1. Lee los datos del registro ID/EX
+    const { alua_src, alub_src, alu_op, pc, rs1Val, rs2Val, imm_ext } = this.id_ex_register;
+    
+    console.log(`[EX Stage] Processing instruction from PC=${pc}`);
+    
+    // 2. Lógica de los MUX para las entradas de la ALU (como en MUXALUA y MUXALUB del Verilog)
+    const operandA = alua_src ? pc.toString(2).padStart(32, '0') : rs1Val;
+    const operandB = alub_src ? imm_ext : rs2Val;
+    
+    // 3. Ejecuta la operación de la ALU
+    const aluResult = this.alu.execute(operandA, operandB, alu_op);
+    
+    // VERIFICACIÓN CON CONSOLE.LOG
+    console.log(`[EX Stage] ALU Inputs: 
+      Operand A (alua_src=${alua_src}): ${operandA}
+      Operand B (alub_src=${alub_src}): ${operandB}
+      ALU Op: ${alu_op}
+    `);
+    console.log(`[EX Stage] ALU Result: ${aluResult}`);
+
+    // 4. Carga el registro EX/MEM para la siguiente etapa
+    this.ex_mem_register = {
+      ru_wr: this.id_ex_register.ru_wr,
+      dm_wr: this.id_ex_register.dm_wr,
+      ru_data_wr_src: this.id_ex_register.ru_data_wr_src,
+      alu_result: aluResult,
+      rs2Val: this.id_ex_register.rs2Val, // Pasamos rs2Val para las instrucciones store (SW, SB)
+      rd: this.id_ex_register.rd,
+    };
+
+    console.log(`[EX Stage] EX/MEM Register loaded for next cycle.`);
   }
 
   // =================================================================
