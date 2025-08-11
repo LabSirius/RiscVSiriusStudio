@@ -24,6 +24,7 @@ const NOP_DATA = {
   rs1: "XXXXX",
   rs2: "XXXXX",
   ALURes: "X".padStart(32, "X"),
+  MemReadData: "X".padStart(32, "X"),
 };
 
 interface IDEX_Register {
@@ -58,6 +59,16 @@ interface EXMEM_Register {
   RD: string;
 }
 
+interface MEMWB_Register {
+  instruction: any;
+  PCP4: number; 
+  RUWr: boolean; 
+  RUDataWrSrc: string; 
+  ALURes: string; 
+  MemReadData: string; 
+  RD: string; 
+}
+
 export class PipelineCPU implements ICPU {
   private readonly program: any[];
   private dataMemory: DataMemory;
@@ -72,6 +83,7 @@ export class PipelineCPU implements ICPU {
   private if_id_register: { instruction: any; PC: number; PCP4: number };
   private id_ex_register: IDEX_Register;
   private ex_mem_register: EXMEM_Register;
+  private mem_wb_register: MEMWB_Register; 
 
   constructor(program: any[], memory: any[], memSize: number) {
     this.program = program;
@@ -85,11 +97,13 @@ export class PipelineCPU implements ICPU {
     this.if_id_register = { instruction: null, PC: -1, PCP4: 0 };
     this.id_ex_register = { ...NOP_DATA };
     this.ex_mem_register = { ...NOP_DATA };
+    this.mem_wb_register = { ...NOP_DATA };
   }
 
   public cycle(): any {
     this.clockCycles++;
     console.log(`\n--- [Pipeline CPU] Clock Cycle: ${this.clockCycles} ---`);
+    this.executeMEM();
     this.executeEX();
     this.executeID();
     this.executeIF();
@@ -192,6 +206,77 @@ export class PipelineCPU implements ICPU {
     console.log(`[EX Stage] EX/MEM Register OUT ->`, this.ex_mem_register);
   }
 
+  private executeMEM() {
+    const { instruction, PCP4, DMWr, DMCtrl, ALURes, RUrs2, RD } = this.ex_mem_register;
+    
+    if (instruction.pc === -1) {
+        this.mem_wb_register = { ...NOP_DATA };
+        console.log(`[MEM Stage] NOP`);
+        return;
+    }
+
+    console.log(`[MEM Stage] Processing: "${instruction.asm}" (PC=${instruction.pc})`);
+    const address = parseInt(ALURes, 2);
+    let memReadData = "X".padStart(32, "X");
+
+    if (DMWr) {
+      // --- (Type S) ---
+      console.log(`[MEM Stage] Store instruction detected (DMWr=true).`);
+      let bytesToWrite: string[] = [];
+      switch (DMCtrl) {
+          case "000": // SB
+              bytesToWrite = [RUrs2.substring(24, 32)];
+              break;
+          case "001": // SH
+              bytesToWrite = [RUrs2.substring(16, 24), RUrs2.substring(24, 32)];
+              break;
+          case "010": // SW
+              bytesToWrite = (RUrs2.match(/.{1,8}/g) || []).reverse();
+              break;
+      }
+      if (bytesToWrite.length > 0) {
+          this.dataMemory.write(bytesToWrite, address);
+          console.log(`[MEM Stage] DataMemory.write called at address ${address}`);
+      }
+    } else if (this.ex_mem_register.RUDataWrSrc === "01") {
+      // --- (Type L)---
+      console.log(`[MEM Stage] Load instruction detected (RUDataWrSrc=01).`);
+      let bytesToRead = 0;
+      switch (DMCtrl) {
+        case "000": case "100": bytesToRead = 1; break; // LB, LBU
+        case "001": case "101": bytesToRead = 2; break; // LH, LHU
+        case "010": bytesToRead = 4; break;             // LW
+      }
+
+      if (bytesToRead > 0) {
+        const dataArray = this.dataMemory.read(address, bytesToRead);
+        const rawData = dataArray.join("");
+        const signExtend = DMCtrl === "000" || DMCtrl === "001";
+        
+        if (signExtend) {
+          memReadData = rawData.padStart(32, rawData.charAt(0) || '0');
+        } else {
+          memReadData = rawData.padStart(32, '0');
+        }
+        console.log(`[MEM Stage] DataMemory.read from address ${address} -> ${memReadData}`);
+      }
+    } else {
+        console.log(`[MEM Stage] No memory operation.`);
+    }
+
+    this.mem_wb_register = {
+        instruction,
+        PCP4,
+        RUWr: this.ex_mem_register.RUWr,
+        RUDataWrSrc: this.ex_mem_register.RUDataWrSrc,
+        ALURes,
+        MemReadData: memReadData,
+        RD,
+    };
+    
+    console.log(`[MEM Stage] MEM/WB Register OUT ->`, this.mem_wb_register);
+  }
+
   public getDataMemory(): DataMemory { return this.dataMemory; }
   public getRegisterFile(): RegistersFile { return this.registers; }
   public getPC(): number { return this.pc; }
@@ -202,3 +287,6 @@ export class PipelineCPU implements ICPU {
   public replaceDataMemory(newMemory: any[]): void { this.dataMemory.uploadProgram(newMemory); }
   public replaceRegisters(newRegisters: string[]): void { (this.registers as any).registers = newRegisters; }
 }
+
+
+
