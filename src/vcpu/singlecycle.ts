@@ -104,7 +104,7 @@ export class SCCPU implements ICPU {
     this.pc = 0;
     this.immediateUnit = new ImmediateUnit();
     this.alu = new ProcessorALU();
-    this.controlUnit = new ControlUnit(); // <-- Añadido
+    this.controlUnit = new ControlUnit();
     const programSize = program.length * 4;
     this.registers.writeRegister("x2", intToBinary(programSize + memSize - 4));
   }
@@ -182,6 +182,7 @@ export class SCCPU implements ICPU {
       wbData = aluRes;
     } else if (controls.ru_data_wr_src === "01") {
       // Result from Memory
+      console.log("ADREEES MONO", parseInt(aluRes, 2))
       let value = this.readFromMemory(parseInt(aluRes, 2), parseInt(getFunct3(instruction), 2));
       wbData = value;
       result.dm = {
@@ -224,6 +225,8 @@ export class SCCPU implements ICPU {
   }
 
   private readFromMemory(address: number, control: number): string {
+    console.log("data MEMORY SCCPU",this.dataMemory)
+
     let value = "";
     switch (control) {
       case 0: {
@@ -393,9 +396,11 @@ export class SCCPU implements ICPU {
     return this.registers;
   }
   public getDataMemory(): DataMemory {
+
     return this.dataMemory;
   }
   public replaceDataMemory(newMemory: any[]): void {
+
     if (!newMemory) {
       return;
     }

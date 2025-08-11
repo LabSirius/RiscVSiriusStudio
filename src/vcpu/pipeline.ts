@@ -4,6 +4,7 @@ import { ICPU } from "./interface";
 import { RegistersFile, DataMemory, ProcessorALU } from "./components/components";
 import { ControlUnit, ImmediateUnit } from "./components/decoder";
 import { getFunct3 } from "../utilities/instructions";
+import { intToBinary } from "../utilities/conversions";
 
 const NOP_DATA = {
   instruction: { asm: "NOP", pc: -1 },
@@ -98,6 +99,9 @@ export class PipelineCPU implements ICPU {
     this.id_ex_register = { ...NOP_DATA };
     this.ex_mem_register = { ...NOP_DATA };
     this.mem_wb_register = { ...NOP_DATA };
+    const programSize = program.length * 4;
+    this.registers.writeRegister("x2", intToBinary(programSize + memSize - 4));
+    
   }
 
   public cycle(): any {
@@ -139,6 +143,7 @@ export class PipelineCPU implements ICPU {
 
     const rs1Addr = instruction.rs1?.regeq;
     const rs2Addr = instruction.rs2?.regeq;
+
     const RUrs1 = rs1Addr ? this.registers.readRegisterFromName(rs1Addr) : "X".padStart(32, "X");
     const RUrs2 = rs2Addr ? this.registers.readRegisterFromName(rs2Addr) : "X".padStart(32, "X");
 
@@ -185,6 +190,7 @@ export class PipelineCPU implements ICPU {
 
     console.log(`[EX Stage] Processing: "${instruction.asm}" (PC=${PC})`);
 
+      
     const operandA = ALUASrc ? PC.toString(2).padStart(32, "0") : RUrs1;
     const operandB = ALUBSrc ? ImmExt : RUrs2;
     const ALURes = this.alu.execute(operandA, operandB, ALUOp);
@@ -249,12 +255,14 @@ export class PipelineCPU implements ICPU {
       // ### CAMBIO: Lógica de LECTURA (Load) idéntica a la del MONOCICLO   ###
       // ######################################################################
       console.log(`[MEM Stage] Load instruction detected (RUDataWrSrc=01).`);
+
       switch (DMCtrl) {
+        
         case "000": {
           // LB - Load Byte Signed
           const val = this.dataMemory.read(address, 1).join("");
-          memReadData = val.padStart(32, val.at(0));
-           console.log("AQUIIIIIIIIII", memReadData)
+
+           memReadData = val.padStart(32, val.at(0));
           break;
         }
         case "001": {
@@ -323,7 +331,14 @@ export class PipelineCPU implements ICPU {
   }
   public nextInstruction(): void {}
   public replaceDataMemory(newMemory: any[]): void {
-    this.dataMemory.uploadProgram(newMemory);
+    if (!newMemory) {
+      return;
+    }
+    const flatMemory: string[] = [];
+    newMemory.forEach((group) => {
+      flatMemory.push(group.value0, group.value1, group.value2, group.value3);
+    });
+    (this.dataMemory as any).memory = flatMemory;
   }
   public replaceRegisters(newRegisters: string[]): void {
     (this.registers as any).registers = newRegisters;
