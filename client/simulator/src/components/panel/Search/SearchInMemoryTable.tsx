@@ -1,4 +1,4 @@
-import { useMemoryTable } from '@/context/panel/MemoryTableContext';
+import { useMemoryTable } from '@/context/shared/MemoryTableContext';
 import { Save } from "lucide-react";
 
 const SearchInMemoryTable = () => {

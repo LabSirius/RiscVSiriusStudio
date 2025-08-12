@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
 import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHover";
+import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 
 const DMCtrol: Record<string, string> = {
   "000": "8 bits",
@@ -11,6 +12,8 @@ const DMCtrol: Record<string, string> = {
 
 const LabelValueContainer = () => {
   const { currentType, currentResult } = useCurrentInst();
+    const { setReadInMemory } = useMemoryTable();
+  
 
   const [addressHex, setAddressHex] = useState("");
   const [addressBin, setAddressBin] = useState("");
@@ -60,6 +63,15 @@ const LabelValueContainer = () => {
       {/* Address */}
       {["S", "L"].includes(currentType) && (
         <>
+         <div className="z-1000" onClick={() => {
+        if(currentType === "S" || currentType === "L"){
+          setReadInMemory({
+            address: parseInt(addressDec, 10),
+            _length:  currentResult.dm.controlSignal === "000" ? 1 : currentResult.dm.controlSignal === "001" ? 2 : 4,
+            value: "1"
+          })
+        }
+      }}>
           <LabelValueWithHover
             label="Address"
             value={`h'${addressHex}`}
@@ -68,6 +80,9 @@ const LabelValueContainer = () => {
             hex={addressHex}
             positionClassName="absolute top-[6rem] left-[.8rem]"
           />
+
+         </div>
+          
 
           {/* Write Signal */}
           <LabelValueWithHover

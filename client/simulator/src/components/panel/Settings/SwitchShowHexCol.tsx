@@ -1,6 +1,6 @@
 import { Label } from "@/components/ui/label"
 import * as SwitchPrimitive from "@radix-ui/react-switch"
-import { useMemoryTable } from "@/context/panel/MemoryTableContext"
+import { useMemoryTable } from "@/context/shared/MemoryTableContext"
 
 export function SwitchShowHexCol() {
     const { showHex, setShowHex } = useMemoryTable()

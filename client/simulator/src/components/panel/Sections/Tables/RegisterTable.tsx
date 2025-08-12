@@ -2,7 +2,7 @@ import { useRef, useState, useMemo } from "react";
 import { TabulatorFull as Tabulator, CellComponent } from "tabulator-tables";
 import "./tabulator.css";
 
-import { useMemoryTable } from "@/context/panel/MemoryTableContext";
+import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useTheme } from "@/components/ui/theme/theme-provider";

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Grid2x2Plus } from "lucide-react";
-import { useMemoryTable } from "@/context/panel/MemoryTableContext";
+import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 
 interface MemorySizeInputProps {
   disabled?: boolean;

@@ -12,6 +12,7 @@ interface HandlerConfig {
 
 export default function ALU() {
   const { operation, isEbreak } = useSimulator();
+  
 
   const leftInputHandlers: HandlerConfig[] = [
     { id: "muxA", position: Position.Left, className: "input", style: { top: "6.7rem" } },

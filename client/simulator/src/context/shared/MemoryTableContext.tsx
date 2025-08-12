@@ -1,27 +1,26 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-interface AddressLine{
+interface AddressLine {
   line: number;
   jump: number;
 }
 
 interface MemoryData {
-  memory: string[];            
-  codeSize: number; 
-  constantsSize: number;       
- // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  memory: string[];
+  codeSize: number;
+  constantsSize: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   symbols: Record<string, any>;
-  addressLine : AddressLine[];
-  asmList: string[]; 
-  
+  addressLine: AddressLine[];
+  asmList: string[];
 }
 interface MemoryRow {
-  address: string; 
-  hex: string;      
-  value0: string;   
-  value1: string;   
-  value2: string;   
-  value3: string;  
+  address: string;
+  hex: string;
+  value0: string;
+  value1: string;
+  value2: string;
+  value3: string;
 }
 
 interface WriteInMemory {
@@ -36,13 +35,13 @@ interface ReadInMemory {
 }
 
 export interface MemoryTableContextProps {
-  isCreatedMemoryTable: boolean;  
+  isCreatedMemoryTable: boolean;
   setIsCreatedMemoryTable: React.Dispatch<React.SetStateAction<boolean>>;
 
-  dataMemoryTable: MemoryData | undefined;  
+  dataMemoryTable: MemoryData | undefined;
   setDataMemoryTable: React.Dispatch<React.SetStateAction<MemoryData | undefined>>;
 
-  sizeMemory: number
+  sizeMemory: number;
   setSizeMemory: React.Dispatch<React.SetStateAction<number>>;
 
   sp: string;
@@ -50,7 +49,7 @@ export interface MemoryTableContextProps {
 
   importMemory: MemoryRow[];
   setImportMemory: React.Dispatch<React.SetStateAction<MemoryRow[]>>;
-  
+
   searchInMemory: string;
   setSearchInMemory: React.Dispatch<React.SetStateAction<string>>;
 
@@ -67,26 +66,33 @@ export interface MemoryTableContextProps {
   setLocatePc: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-
-
 const MemoryTableContext = createContext<MemoryTableContextProps | undefined>(undefined);
 
 export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isCreatedMemoryTable, setIsCreatedMemoryTable] = useState<boolean>(false);
   const [dataMemoryTable, setDataMemoryTable] = useState<MemoryData | undefined>(undefined);
   const [sizeMemory, setSizeMemory] = useState<number>(0);
-  const [sp, setSp] = useState<string>('');
+  const [sp, setSp] = useState<string>("");
   const [importMemory, setImportMemory] = useState<MemoryRow[]>([]);
   const [searchInMemory, setSearchInMemory] = useState<string>("");
   const [showHex, setShowHex] = useState<boolean>(true);
-  const [writeInMemory, setWriteInMemory] = useState<WriteInMemory>({ address: 0, value: '', _length: 0 });
-  const [readInMemory, setReadInMemory] = useState<ReadInMemory>({ address: 0, value: '-1' , _length: 0, });
+  const [writeInMemory, setWriteInMemory] = useState<WriteInMemory>({
+    address: 0,
+    value: "",
+    _length: 0,
+  });
+  const [readInMemory, setReadInMemory] = useState<ReadInMemory>({
+    address: 0,
+    value: "-1",
+    _length: 0,
+  });
   const [locatePc, setLocatePc] = useState<boolean>(false);
+
 
   return (
     <MemoryTableContext.Provider
       value={{
-        isCreatedMemoryTable, 
+        isCreatedMemoryTable,
         setIsCreatedMemoryTable,
         dataMemoryTable,
         setDataMemoryTable,
@@ -96,16 +102,17 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
         setSp,
         importMemory,
         setImportMemory,
-        searchInMemory, 
+        searchInMemory,
         setSearchInMemory,
         showHex,
         setShowHex,
-        writeInMemory, 
+        writeInMemory,
         setWriteInMemory,
         readInMemory,
         setReadInMemory,
         locatePc,
-        setLocatePc
+        setLocatePc,
+
       }}>
       {children}
     </MemoryTableContext.Provider>

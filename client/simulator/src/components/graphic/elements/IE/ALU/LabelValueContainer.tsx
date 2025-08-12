@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHover";
 import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
+import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 
 const aluOperations: Record<string, string> = {
   "0000": "+",
@@ -46,6 +47,8 @@ const aluOperations: Record<string, string> = {
 
 const LabelValueContainer = () => {
   const { currentType, currentResult } = useCurrentInst();
+  const { setReadInMemory } = useMemoryTable();
+
 
   const [aHex, setAHex] = useState("");
   const [aBin, setABin] = useState("");
@@ -106,7 +109,17 @@ const LabelValueContainer = () => {
         positionClassName="top-[13.9rem] left-[.8rem]"
       />
 
-      <div className="z-1000" onClick={() => console.log("EL VALOR DEL RESULT ES", resDec)}>
+      <div className="z-1000" onClick={() => {
+        if(currentType === "S" || currentType === "L"){
+          setReadInMemory({
+            address: parseInt(resDec, 10),
+            _length:  currentResult.dm.controlSignal === "000" ? 1 : currentResult.dm.controlSignal === "001" ? 2 : 4,
+            value: "1"
+          })
+        }
+      }}>
+
+
         {/* ALU Result */}
       <LabelValueWithHover
         label="ALURes"
