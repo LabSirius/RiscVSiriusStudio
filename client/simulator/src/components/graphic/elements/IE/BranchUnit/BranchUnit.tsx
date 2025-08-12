@@ -41,7 +41,7 @@ export default function BranchUnit() {
   return (
     <div className="w-full">
       <div className="relative w-full h-full">
-        <h2 className="titleInElement top-[50%] left-[73.5%] -translate-x-[73.5%] -translate-y-[50%]">
+        <h2 className="titleInElement top-[50%] left-[73.5%] -translate-x-[73.5%] -translate-y-[50%] !z-0 ">
           Branch Unit
         </h2>
         <ContainerSVG height={10.2} active={!isEbreak} />

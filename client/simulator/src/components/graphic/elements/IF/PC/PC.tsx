@@ -10,7 +10,7 @@ export default function PC() {
   return (
     <div className="w-full h-full">
       <div className="relative w-full h-full">
-        <h2 className="titleInElement top-[15%] left-[20%] -translate-x-[20%] -translate-y-[15%]">
+        <h2 className="titleInElement top-[15%] left-[20%] -translate-x-[20%] -translate-y-[15%] !z-0 ">
           PC
         </h2>
         <div className="relative w-full h-full">

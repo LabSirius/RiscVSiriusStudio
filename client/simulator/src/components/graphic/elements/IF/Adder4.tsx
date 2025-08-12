@@ -6,7 +6,7 @@ export default function Adder4() {
   return (
     <div className='relative w-full h-full'>
       <div>
-        <Sigma size={46} className="text-[#555555] absolute top-[50%] left-[50%] transform -translate-x-[50%] -translate-y-[50%] z-2" />
+        <Sigma size={46} className="text-[#555555] absolute top-[50%] left-[50%] transform -translate-x-[50%] -translate-y-[50%] !z-0 " />
         <ContainerSVG height={7.5}  active={true}/>
       </div>
 

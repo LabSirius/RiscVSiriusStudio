@@ -25,9 +25,7 @@ const ProgramSection = () => {
   const addressDecorationsRef = useRef<string[]>([]);
 
   useEffect(() => {
-    console.log("AQUI LLEGO", lineDecorationNumber)
     if (!editor || lineDecorationNumber === -1 || !monacoRef.current) return;
-    console.log("AQUI PASO")
 
     const range = new monacoRef.current.Range(
       lineDecorationNumber, 1,

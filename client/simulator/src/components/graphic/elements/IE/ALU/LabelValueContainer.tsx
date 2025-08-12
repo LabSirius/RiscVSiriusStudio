@@ -106,7 +106,8 @@ const LabelValueContainer = () => {
         positionClassName="top-[13.9rem] left-[.8rem]"
       />
 
-      {/* ALU Result */}
+      <div className="z-1000" onClick={() => console.log("EL VALOR DEL RESULT ES", resDec)}>
+        {/* ALU Result */}
       <LabelValueWithHover
         label="ALURes"
         value={`h'${resHex}`}
@@ -116,6 +117,9 @@ const LabelValueContainer = () => {
         input={false}
         positionClassName="top-[9.8rem] right-[.8rem]"
       />
+
+      </div>
+      
 
       {/* ALU operation code (with description) */}
       <LabelValueWithHover

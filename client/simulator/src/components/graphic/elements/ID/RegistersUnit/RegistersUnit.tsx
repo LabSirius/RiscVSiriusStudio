@@ -29,7 +29,7 @@ export default function RegistersUnit() {
   return (
     <div className="w-full">
       <div className="relative w-full h-full">
-        <h2 className=" titleInElement top-[15%] left-[82%]  -translate-x-[82%] -translate-y-[15%] ">
+        <h2 className=" titleInElement top-[15%] left-[82%]  -translate-x-[82%] -translate-y-[15%] !z-0 ">
           Registers Unit
         </h2>
         <div className="relative">
