@@ -23,7 +23,7 @@ export class ControlUnit {
   public generate(instruction: any): ControlSignals {
     const type = instruction.type;
     const opcode = instruction.opcode;
-    const funct3 = getFunct3(instruction);
+
 
     let signals: ControlSignals = {
       ru_wr: false, alua_src: false, alub_src: false, dm_wr: false,
@@ -34,7 +34,7 @@ export class ControlUnit {
       case "R":
         const funct7 = getFunct7(instruction);
         signals.ru_wr = true;
-        signals.alu_op = funct7[6] + funct7[1] + funct3;
+        signals.alu_op = funct7[6] + funct7[1] + getFunct3(instruction);
         break;
 
       case "I":
@@ -43,7 +43,7 @@ export class ControlUnit {
 
         if (isIArithmetic(type, opcode)) {
           const MSBaluOp = isILogical(instruction.instruction) ? getImmFunct7(instruction.encoding.imm12)[1]! : "0";
-          signals.alu_op = "0" + MSBaluOp + funct3;
+          signals.alu_op = "0" + MSBaluOp + getFunct3(instruction);
         } else if (isILoad(type, opcode)) {
           signals.alu_op = "00000";
           signals.ru_data_wr_src = "01";
@@ -63,7 +63,7 @@ export class ControlUnit {
       case "B":
         signals.alua_src = true;
         signals.alub_src = true;
-        signals.br_op = "01" + funct3;
+        signals.br_op = "01" + getFunct3(instruction);
         break;
 
       case "U":
@@ -103,9 +103,9 @@ export class ImmediateUnit {
         imm = encoding.imm12 || "0";
         // Special case for I-type logical instructions, extracted from executeIInstruction
         if (isILogical(instruction.instruction)) {
-            let immAsArray = imm.padStart(32, imm.charAt(0)).split("");
-            immAsArray[21] = "0"; 
-            return immAsArray.join("");
+          let immAsArray = imm.padStart(32, imm.charAt(0)).split("");
+          immAsArray[21] = "0";
+          return immAsArray.join("");
         }
         break;
       case "S":
