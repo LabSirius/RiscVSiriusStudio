@@ -21,6 +21,7 @@ import { useRegisterUpdates } from "@/hooks/text/registers/useRegisterUpdates";
 import { useImportRegisterData } from "@/hooks/text/registers/useImportRegisterData";
 import { useUpdateTableColumns } from "@/hooks/text/registers/useUpdateTableColumns";
 import { useTableFilter } from "@/hooks/text/registers/useTableFilter";
+import { useCustomOptionSimulate } from "@/context/shared/CustomOptionSimulate";
 
 const RegistersTable = () => {
   const { theme } = useTheme();
@@ -32,10 +33,9 @@ const RegistersTable = () => {
     importRegister,
     setImportRegister,
     searchInRegisters,
-    checkFixedRegisters,
-    fixedchangedRegisters,
-    setFixedchangedRegisters,
   } = useRegistersTable();
+
+  const {     checkFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters} = useCustomOptionSimulate()
   const [showTable, setShowTable] = useState(true);
 
   const tableContainerRef = useRef<HTMLDivElement>(null);

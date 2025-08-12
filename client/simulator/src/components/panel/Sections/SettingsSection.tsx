@@ -4,6 +4,7 @@ import StepConfig from "@/components/panel/Settings/Step/StepConfig";
 import SwitchSeeRegistersChanged from "@/components/panel/Settings/SwitchSeeRegistersChanged";
 import ExportRegisters from "../Settings/Step/ExportRegisters";
 import ExportMemory from "../Settings/Step/ExportMemory";
+import SwitchAutoFocusOnNewLine from "../Settings/SwitchAutoFocusOnNewLine";
 
 const SettingsSection = () => {
   const { operation } = useSimulator();
@@ -20,6 +21,7 @@ const SettingsSection = () => {
           </div>
         </div>
         <SwitchSeeRegistersChanged />
+        <SwitchAutoFocusOnNewLine />
       </div>
     </div>
   );

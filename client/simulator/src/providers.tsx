@@ -12,28 +12,31 @@ import { OverlayProvider } from "@/context/graphic/OverlayContext";
 
 import MessageListener from "@/components/Message/MessageListener";
 import Dialog from "@/components/panel/Dialog";
+import { CustomOptionSimulateProvider } from "./context/shared/CustomOptionSimulate";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <ReactFlowProvider>
         <CurrentInstProvider>
-          <MemoryTableProvider>
-            <RegistersTableProvider>
-              <RegisterDataProvider>
-                <DialogProvider>
-                  <LinesProvider>
-                    <OverlayProvider>
-                      <MessageListener />
-                      <Dialog />
+          <CustomOptionSimulateProvider>
+            <MemoryTableProvider>
+              <RegistersTableProvider>
+                <RegisterDataProvider>
+                  <DialogProvider>
+                    <LinesProvider>
+                      <OverlayProvider>
+                        <MessageListener />
+                        <Dialog />
 
-                      {children}
-                    </OverlayProvider>
-                  </LinesProvider>
-                </DialogProvider>
-              </RegisterDataProvider>
-            </RegistersTableProvider>
-          </MemoryTableProvider>
+                        {children}
+                      </OverlayProvider>
+                    </LinesProvider>
+                  </DialogProvider>
+                </RegisterDataProvider>
+              </RegistersTableProvider>
+            </MemoryTableProvider>
+          </CustomOptionSimulateProvider>
         </CurrentInstProvider>
       </ReactFlowProvider>
     </ThemeProvider>

@@ -28,6 +28,7 @@ interface UseRegisterUpdatesProps {
  * 1. Handling a direct write to a register.
  * 2. Updating the "watched" status of registers when the feature is toggled.
  */
+
 export const useRegisterUpdates = ({
   tabulatorInstance,
   isTableBuilt,
