@@ -68,7 +68,7 @@ export const useMessageListener = () => {
             setOperation("uploadMemory");
 
             break;
-          case "decorateLine":
+          case "initialLine":
             setLineDecorationNumber(message.lineDecorationNumber);
             break;
           case "step":

@@ -161,12 +161,19 @@ export class TextSimulator extends Simulator {
     super.start();
 
     const spValue = this.cpu.getDataMemory().spInitialAddress;
+
     this.webview.postMessage({
       // Use 'this.webview' directly
       from: "extension",
       operation: "setRegister",
       register: "x2",
       value: intToBinary(spValue),
+    });
+
+    this.webview.postMessage({
+      from: "extension",
+      operation: "initialLine",
+      lineDecorationNumber: line !== undefined ? line + 1 : -1
     });
   }
 
