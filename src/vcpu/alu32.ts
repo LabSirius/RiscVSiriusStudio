@@ -15,37 +15,43 @@ export class ALU32 {
 
   public static shiftLeft(a: string, b: string): BigInt {
     const ba = Number(a);
-    const bb = Number(b);
-    if (bb < 0 || bb > 31) {
-      throw new Error('Incorrect shift value ' + bb);
-    }
-    // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Left_shift
-    // << produces a 32 bits integer.
+    let bb = Number(b);
+
+    // Mask shift amount to 5 bits (0-31), per RISC-V spec behavior
+    bb = bb & 0x1F;
+
+    // Perform 32-bit left shift (<<), JavaScript uses only lower 5 bits anyway,
+    // but we explicitly mask here for clarity and spec compliance.
     const br = ba << bb;
+
+    // Return as BigInt as before
     return BigInt(br);
   }
 
   public static shiftRight(a: string, b: string): BigInt {
     const ba = Number(a);
-    const bb = Number(b);
-    if (bb < 0 || bb > 31) {
-      throw new Error('Incorrect shift value ' + bb);
-    }
-    // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Right_shift
-    // << produces a 32 bits integer.
+    let bb = Number(b);
+
+    // Mask shift amount to 5 bits (0-31) per RISC-V spec
+    bb = bb & 0x1F;
+
+    // Use logical right shift to fill with zeros on the left (unsigned)
     const br = ba >>> bb;
+
+    // Return result as BigInt
     return BigInt(br);
   }
 
   public static shiftRightA(a: string, b: string): BigInt {
     const ba = Number(a);
-    const bb = Number(b);
-    if (bb < 0 || bb > 31) {
-      throw new Error('Incorrect shift value ' + bb);
-    }
-    // According to https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Right_shift
-    // << produces a 32 bits integer.
+    let bb = Number(b);
+
+    // Mask shift amount to 5 bits (0 to 31), per RISC-V spec
+    bb = bb & 0x1F;
+
+    // Arithmetic right shift (sign-extended)
     const br = ba >> bb;
+
     return BigInt(br);
   }
 
