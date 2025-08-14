@@ -178,6 +178,18 @@
       return enc.toString().replace(/,/g,"-");
   }
 
+  function hexToTwosComplement(hex: string): number {
+    let unsigned = parseInt(hex, 16);
+    let bits = hex.length * 4;
+
+    let signBit = 1 << (bits - 1);
+
+    if (unsigned & signBit) {
+        return unsigned - (1 << bits);
+    }
+    return unsigned;
+}
+
   function regEnc(r) {
     return { regname: 'x'+r, regeq: 'x'+r, regenc: r}; 
   }
@@ -1720,8 +1732,8 @@ function peg$parse(input, options) {
   var peg$f115 = function(reg) {return {"regname": reg, "regeq": "x15"};};
   var peg$f116 = function(reg) {return {"regname": reg, "regeq": "x16"};};
   var peg$f117 = function(reg) {return {"regname": reg, "regeq": "x17"};};
-  var peg$f118 = function(digits) { return parseInt(digits.join(""), 16); };
-  var peg$f119 = function(digits) { return parseInt(digits.join(""), 16); };
+  var peg$f118 = function(digits) { return hexToTwosComplement(digits.join("")); };
+  var peg$f119 = function(digits) { return hexToTwosComplement(digits.join("")); };
   var peg$f120 = function() { return parseInt(text(), 10); };
   var peg$f121 = function(name) { return name; };
   var peg$f122 = function(name) { return { type: "IdentifierName", name: text() }; };
