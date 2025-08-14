@@ -171,6 +171,18 @@
       return enc.toString().replace(/,/g,"-");
   }
 
+  function hexToTwosComplement(hex: string): number {
+    let unsigned = parseInt(hex, 16);
+    let bits = hex.length * 4;
+
+    let signBit = 1 << (bits - 1);
+
+    if (unsigned & signBit) {
+        return unsigned - (1 << bits);
+    }
+    return unsigned;
+}
+
   function regEnc(r) {
     return { regname: 'x'+r, regeq: 'x'+r, regenc: r}; 
   }
@@ -1682,8 +1694,8 @@
   globlToken = ".globl"
 
   Integer "Integer"
-  = _ "0x" digits:[0-9a-fA-F]+ { return parseInt(digits.join(""), 16); }
-  / _ "0X" digits:[0-9a-fA-F]+ { return parseInt(digits.join(""), 16); }
+  = _ "0x" digits:[0-9a-fA-F]+ { return hexToTwosComplement(digits.join("")); }
+  / _ "0X" digits:[0-9a-fA-F]+ { return hexToTwosComplement(digits.join("")); }
   / _ [\+-]?[0-9]+ { return parseInt(text(), 10); }
 
   ReservedWord 
