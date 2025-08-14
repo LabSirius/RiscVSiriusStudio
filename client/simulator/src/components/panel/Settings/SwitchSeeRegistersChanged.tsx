@@ -1,11 +1,11 @@
 import { Label } from "@/components/ui/label"
 import * as SwitchPrimitive from "@radix-ui/react-switch"
-import { useRegistersTable } from "@/context/panel/RegisterTableContext"
+import { useCustomOptionSimulate } from "@/context/shared/CustomOptionSimulate"
 
 
 export function SwitchSeeRegistersChanged() {
 
-  const { checkFixedRegisters, setCheckFixedRegisters } = useRegistersTable()
+  const { checkFixedRegisters, setCheckFixedRegisters } = useCustomOptionSimulate()
   
     const handleCheckedChange = (value: boolean) => {
       setCheckFixedRegisters(value)  

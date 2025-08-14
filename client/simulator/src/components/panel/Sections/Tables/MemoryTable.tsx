@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { useMemoryTable } from "@/context/panel/MemoryTableContext";
+import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
@@ -46,6 +46,7 @@ const MemoryTable = () => {
     setReadInMemory,
     locatePc,
     setLocatePc,
+
   } = useMemoryTable();
 
   const { newPc, setNewPc, isFirstStep } = useSimulator();
@@ -56,6 +57,7 @@ const MemoryTable = () => {
   const isFirstStepRef = useRef(isFirstStep);
 
   const [showTable, setShowTable] = useState(true);
+
 
   useMemoryTabulator({
     tableContainerRef,
@@ -139,6 +141,8 @@ const MemoryTable = () => {
     setLocatePc,
     newPc,
   });
+
+
 
   useEditorClickAnimation({
     isCreatedMemoryTable,

@@ -4,6 +4,7 @@ import Editor, { Monaco } from '@monaco-editor/react';
 import { useTheme } from '@/components/ui/theme/theme-provider'; 
 import { useEffect, useRef, useState } from 'react';
 import type { editor } from 'monaco-editor';
+import { useCustomOptionSimulate } from '@/context/shared/CustomOptionSimulate';
 
 const ProgramSection = () => {
   const { textProgram } = useSimulator();
@@ -14,6 +15,8 @@ const ProgramSection = () => {
     clickAddressInMemoryTable, 
     setClickAddressInMemoryTable 
   } = useLines();
+
+  const {switchAutoFocusOnNewLine} = useCustomOptionSimulate()
   
   const editorTheme = theme === 'dark' ? 'my-custom-dark' : 'my-custom-light';
   const [editor, setEditor] = useState<editor.IStandaloneCodeEditor | null>(null);
@@ -39,12 +42,16 @@ const ProgramSection = () => {
 
     decorationsRef.current = editor.deltaDecorations(decorationsRef.current, newDecorations);
 
+    if(switchAutoFocusOnNewLine){
+       editor.revealLineInCenterIfOutsideViewport(lineDecorationNumber);
+    }
+
     return () => {
       if (editor) {
         editor.deltaDecorations(decorationsRef.current, []);
       }
     };
-  }, [lineDecorationNumber, editor]);
+  }, [lineDecorationNumber, editor, switchAutoFocusOnNewLine]);
 
   useEffect(() => {
     if (!editor || clickAddressInMemoryTable === -1 || !monacoRef.current) return;

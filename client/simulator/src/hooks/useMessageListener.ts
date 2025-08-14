@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useSimulator } from "@/context/shared/SimulatorContext";
-import { useMemoryTable } from "@/context/panel/MemoryTableContext";
+import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useDialog } from "@/context/panel/DialogContext";
 import { useLines } from "@/context/panel/LinesContext";
@@ -68,7 +68,7 @@ export const useMessageListener = () => {
             setOperation("uploadMemory");
 
             break;
-          case "decorateLine":
+          case "initialLine":
             setLineDecorationNumber(message.lineDecorationNumber);
             break;
           case "step":

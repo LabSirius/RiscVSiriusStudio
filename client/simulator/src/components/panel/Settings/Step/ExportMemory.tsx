@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/theme/dropdown-menu";
 import { Save } from "lucide-react";
-import { useMemoryTable } from "@/context/panel/MemoryTableContext";
+import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useState } from "react";
 import { binaryToHex } from "@/utils/handlerConversions";
 

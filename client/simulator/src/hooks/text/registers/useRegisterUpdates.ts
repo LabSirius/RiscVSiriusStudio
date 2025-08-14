@@ -28,6 +28,7 @@ interface UseRegisterUpdatesProps {
  * 1. Handling a direct write to a register.
  * 2. Updating the "watched" status of registers when the feature is toggled.
  */
+
 export const useRegisterUpdates = ({
   tabulatorInstance,
   isTableBuilt,
@@ -58,8 +59,10 @@ export const useRegisterUpdates = ({
       const row = tabulatorInstance.current?.getRow(writeInRegister.registerName);
       if (row && !row.getData().watched) {
         row.update({ watched: true });
-        // The group may need to be re-sorted after this update
         tabulatorInstance.current?.setGroupBy('watched');
+         setTimeout(() => {
+        tabulatorInstance.current?.scrollToRow(writeInRegister.registerName, "center", false);
+      }, 0);
       }
     }
 
@@ -76,8 +79,7 @@ export const useRegisterUpdates = ({
     tabulatorInstance,
   ]);
 
-  // Effect 2: Handles marking all historically changed registers as 'watched'
-  // when the user toggles the 'checkFixedRegisters' checkbox ON.
+
   useEffect(() => {
     if (!isTableBuilt || !checkFixedRegisters) {
       return;

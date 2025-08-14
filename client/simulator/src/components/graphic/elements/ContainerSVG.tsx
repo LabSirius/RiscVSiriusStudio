@@ -14,7 +14,7 @@ const Container: FC<ContainerProps> = ({ height, active = false }) => {
 
   return (
     <div
-      className="relative w-full overflow-visible z-2"
+      className="relative w-full overflow-visible z-1 "
       style={{ height: `${height}rem` }}
     >
       <div

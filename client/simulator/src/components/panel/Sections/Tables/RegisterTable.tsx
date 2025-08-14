@@ -2,7 +2,7 @@ import { useRef, useState, useMemo } from "react";
 import { TabulatorFull as Tabulator, CellComponent } from "tabulator-tables";
 import "./tabulator.css";
 
-import { useMemoryTable } from "@/context/panel/MemoryTableContext";
+import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useTheme } from "@/components/ui/theme/theme-provider";
@@ -18,10 +18,10 @@ import { useResetRegistersOnNewSimulation } from "@/hooks/text/registers/UseRese
 import { useGlobalKeyboardShortcuts } from "@/hooks/text/registers/useGlobalKeyboardShortcuts";
 import { useTabulator } from "@/hooks/text/registers/useTabulator";
 import { useRegisterUpdates } from "@/hooks/text/registers/useRegisterUpdates";
-import { useSyncWatchedRegisters } from "@/hooks/text/registers/useSyncWatchedRegisters";
 import { useImportRegisterData } from "@/hooks/text/registers/useImportRegisterData";
 import { useUpdateTableColumns } from "@/hooks/text/registers/useUpdateTableColumns";
 import { useTableFilter } from "@/hooks/text/registers/useTableFilter";
+import { useCustomOptionSimulate } from "@/context/shared/CustomOptionSimulate";
 
 const RegistersTable = () => {
   const { theme } = useTheme();
@@ -33,10 +33,9 @@ const RegistersTable = () => {
     importRegister,
     setImportRegister,
     searchInRegisters,
-    checkFixedRegisters,
-    fixedchangedRegisters,
-    setFixedchangedRegisters,
   } = useRegistersTable();
+
+  const {     checkFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters} = useCustomOptionSimulate()
   const [showTable, setShowTable] = useState(true);
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -48,6 +47,7 @@ const RegistersTable = () => {
   const [tableBuilt, setTableBuilt] = useState(false);
 
   const { isFirstStep } = useSimulator();
+  
 
   const viewTypeFormatterCustom = useMemo(
     () =>
@@ -89,13 +89,6 @@ const RegistersTable = () => {
     checkFixedRegisters,
     fixedchangedRegisters,
     setFixedchangedRegisters,
-  });
-
-  useSyncWatchedRegisters({
-    tabulatorInstance,
-    isTableBuilt: tableBuilt,
-    checkFixedRegisters,
-    fixedchangedRegisters,
   });
 
   useImportRegisterData({

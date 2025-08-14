@@ -29,7 +29,7 @@ export default function DataMemory() {
     <div className='w-full'>
 
       <div className='relative w-full h-full'>
-        <h2 className={`titleInElement top-[15%] left-[50%] -translate-x-[50%] -translate-y-[15%] ${!(currentType === "L" || currentType === "S" || !isFirstStep) && '!text-[#D3D3D3]'  }`}>
+        <h2 className={`!z-0  titleInElement top-[15%] left-[50%] -translate-x-[50%] -translate-y-[15%] ${!(currentType === "L" || currentType === "S" || !isFirstStep) && '!text-[#D3D3D3]'  }`}>
           Data Memory
         </h2>
         <ContainerSVG height={19.9} active={currentType === "L" || currentType === "S"} />

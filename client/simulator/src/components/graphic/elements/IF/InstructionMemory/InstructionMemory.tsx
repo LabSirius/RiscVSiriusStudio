@@ -10,7 +10,7 @@ export default function InstructionMemory() {
   return (
     <div className="w-full h-full">
       <div className="relative w-full h-full">
-        <h2 className="titleInElement top-[15%] left-[80%]  -translate-x-[80%] -translate-y-[15%]">
+        <h2 className="titleInElement top-[15%] left-[80%]  -translate-x-[80%] -translate-y-[15%] !z-0 ">
           Instruction Memory
         </h2>
 

@@ -12,6 +12,7 @@ interface HandlerConfig {
 
 export default function ALU() {
   const { operation, isEbreak } = useSimulator();
+  
 
   const leftInputHandlers: HandlerConfig[] = [
     { id: "muxA", position: Position.Left, className: "input", style: { top: "6.7rem" } },
@@ -31,7 +32,7 @@ export default function ALU() {
   return (
     <div className="w-full">
       <div className="relative w-full h-full">
-        <h2 className="titleInElement top-[1.95rem] left-[50%] transform -translate-x-[50%]">
+        <h2 className="titleInElement top-[1.95rem] left-[50%] transform -translate-x-[50%] !z-0 ">
           ALU
         </h2>
         <ContainerSVG height={22.9} active={!isEbreak} />

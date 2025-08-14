@@ -32,6 +32,8 @@ export const useAnimateMemoryRead = ({
 }: UseAnimateMemoryReadProps): void => {
   useEffect(() => {
     if (!isCreatedMemoryTable || readInMemory.value === '-1' || !tableInstanceRef.current) return;
+
+    console.log("QUE DIRECCION ES", readInMemory.address)
     
     animateMemoryCell(tableInstanceRef.current, readInMemory.address, readInMemory._length, true);
     setReadInMemory({ address: 0, _length: 0, value: '-1' });
