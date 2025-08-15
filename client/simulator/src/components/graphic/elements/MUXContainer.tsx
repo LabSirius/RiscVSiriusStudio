@@ -1,42 +1,49 @@
-import { useSimulator } from '@/context/shared/SimulatorContext';
+import { useSimulator } from "@/context/shared/SimulatorContext";
 // Importa tu CSS
 
-function Mux2_1() {
+function Mux2_1({signal} : {signal: string}) {
   const { operation } = useSimulator();
   const isUploadMemory = operation === "uploadMemory";
 
-  return (
-    // Aplicamos la clase que controla el "lift" al contenedor SVG
-    <svg 
-        className="svg-container-lift" 
-        width="100%" 
-        height="100%" 
-        viewBox="0 0 90 220" 
-        style={{ overflow: 'visible' }} // Importante para que la sombra no se corte
-    >
-      <defs>
-        {/* La definición del filtro no cambia */}
-        <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow 
-            dx="0" 
-            dy="10" 
-            stdDeviation="10" 
-            floodColor="#000" 
-            floodOpacity="0.45" 
-          />
-        </filter>
-      </defs>
 
-      <polygon
-        // Combinamos las clases de CSS
-        className={`${isUploadMemory ? 'animate-border-pulse' : ''} polygon-shadow`}
-        points="70,55 70,161.4 0,220 0,0"
-        fill="none"
-        stroke="#AAAAAA"
-        strokeWidth="6"
-        // Quitamos el filtro de aquí para que CSS lo controle
-      />
-    </svg>
+  return (
+    <div className="relative">
+      <svg
+        className="svg-container-lift"
+        width="100%"
+        height="100%"
+        viewBox="0 0 90 220"
+        style={{ overflow: "visible" }}>
+        <defs>
+          <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="10" stdDeviation="10" floodColor="#000" floodOpacity="0.45" />
+          </filter>
+        </defs>
+
+        <polygon
+          className={`${isUploadMemory ? "animate-border-pulse" : ""} polygon-shadow`}
+          points="70,55 70,161.4 0,220 0,0"
+          fill="none"
+          stroke="#AAAAAA"
+          strokeWidth="6"
+        />
+      </svg>
+
+      {!isUploadMemory && (
+        <div style={{ transform: signal === "0" ? "" : "scaleY(-1)" }} className={`absolute transform ${signal === "0" ? "top-[5.8rem]" : "top-[3.7rem]" } -translate-y-1/2 ` }>
+        <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" >
+          <path
+            id="signal-path-1"
+            d="M0 40 H25 V8 H50"
+            stroke="gray"
+            stroke-width="3"
+            fill="none"
+          />
+        </svg>
+      </div>
+      )}
+      
+    </div>
   );
 }
 

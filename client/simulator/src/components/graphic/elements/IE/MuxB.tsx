@@ -15,6 +15,8 @@ function MuxB() {
   const { currentResult } = useCurrentInst();
   const { operation, isEbreak } = useSimulator();
 
+  console.log("SIGNAL EN MUXB", currentResult.alub.signal)
+
   const signal = currentResult.alub.signal;
 
   const handlers: HandlerConfig[] = [
@@ -47,7 +49,7 @@ function MuxB() {
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
-        <MuxContainer />
+        <MuxContainer   signal={currentResult.alub.signal === "0" ? "1" : "0"}/>
         {operation !== "uploadMemory" && !isEbreak && (
           <div className="absolute bottom-[.8rem] left-[3.5rem]">
             <LabelValueWithHover

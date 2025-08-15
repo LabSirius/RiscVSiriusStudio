@@ -15,6 +15,8 @@ function MuxA() {
   const { currentResult } = useCurrentInst();
   const { operation, isEbreak } = useSimulator();
 
+  console.log("CURRENT RESULT", currentResult)
+
   const signal = currentResult.alua.signal;
 
   const handlers: HandlerConfig[] = [
@@ -47,7 +49,7 @@ function MuxA() {
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
-        <MuxContainer />
+        <MuxContainer signal={currentResult.alua.signal}/>
         {operation !== "uploadMemory" && !isEbreak && (
           <div className="absolute top-[-2.7rem] left-[3.5rem]">
             <LabelValueWithHover
