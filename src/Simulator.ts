@@ -163,7 +163,6 @@ export class TextSimulator extends Simulator {
     const spValue = this.cpu.getDataMemory().spInitialAddress;
 
     this.webview.postMessage({
-      // Use 'this.webview' directly
       from: "extension",
       operation: "setRegister",
       register: "x2",

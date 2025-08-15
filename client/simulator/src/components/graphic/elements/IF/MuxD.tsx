@@ -10,10 +10,12 @@ function MuxD() {
 
   const signal = currentResult.buMux.signal;
 
+
+
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full rotate-90">
-        <MuxContainer />
+        <MuxContainer  signal={signal === "0" ? "1" : "0"}/>
         {operation !== "uploadMemory" && (
           <div className="absolute top-[-2rem] left-[3rem] " style={{ transform: "rotate(-90deg)" }}>
             <LabelValueWithHover

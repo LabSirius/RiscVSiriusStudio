@@ -1,4 +1,4 @@
-import MuxContainer from "../MUXContainer";
+import MuxContainer3_1 from "../MUXContainer3_1";
 import { Handle, Position } from "@xyflow/react";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
@@ -14,6 +14,7 @@ interface HandlerConfig {
 export default function MuxC() {
   const { currentResult, currentType } = useCurrentInst();
   const { operation, isEbreak } = useSimulator();
+
 
   const signal = currentResult.wb.signal;
   const hasX = signal.includes('X');
@@ -33,7 +34,7 @@ export default function MuxC() {
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
-        <MuxContainer />
+        <MuxContainer3_1  signal={currentResult.wb.signal}/>
         {(operation !== "uploadMemory" && !(currentType === "S" || currentType === "B" ) && !isEbreak) && 
           <div className="absolute bottom-[.3rem] left-[3.5rem]">
             <LabelValueWithHover
