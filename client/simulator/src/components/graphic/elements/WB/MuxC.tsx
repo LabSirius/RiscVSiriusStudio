@@ -15,7 +15,6 @@ export default function MuxC() {
   const { currentResult, currentType } = useCurrentInst();
   const { operation, isEbreak } = useSimulator();
 
-  console.log("RESILT Y INSTRUCCION", currentResult)
 
   const signal = currentResult.wb.signal;
   const hasX = signal.includes('X');

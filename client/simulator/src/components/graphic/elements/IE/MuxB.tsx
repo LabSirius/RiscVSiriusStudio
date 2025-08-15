@@ -15,7 +15,6 @@ function MuxB() {
   const { currentResult } = useCurrentInst();
   const { operation, isEbreak } = useSimulator();
 
-  console.log("SIGNAL EN MUXB", currentResult.alub.signal)
 
   const signal = currentResult.alub.signal;
 
