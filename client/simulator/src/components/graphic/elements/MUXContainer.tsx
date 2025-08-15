@@ -1,7 +1,6 @@
 import { useSimulator } from "@/context/shared/SimulatorContext";
-// Importa tu CSS
 
-function Mux2_1({signal} : {signal: string}) {
+function Mux2_1({signal, islui} : {signal: string, islui?: boolean}) {
   const { operation } = useSimulator();
   const isUploadMemory = operation === "uploadMemory";
 
@@ -29,14 +28,14 @@ function Mux2_1({signal} : {signal: string}) {
         />
       </svg>
 
-      {!isUploadMemory && (
+      {!isUploadMemory && !islui && (
         <div style={{ transform: signal === "0" ? "" : "scaleY(-1)" }} className={`absolute transform ${signal === "0" ? "top-[5.8rem]" : "top-[3.7rem]" } -translate-y-1/2 ` }>
         <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" >
           <path
             id="signal-path-1"
             d="M0 40 H25 V8 H50"
-            stroke="gray"
-            stroke-width="3"
+            stroke="#3B59B6"
+            stroke-width="4"
             fill="none"
           />
         </svg>
