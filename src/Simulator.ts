@@ -63,13 +63,22 @@ export abstract class Simulator {
     if (!this.configured) {
       this._configured = true;
     }
-    const result = this.cpu.cycle();
+
+    let result;
+    let descerror;
+    try {
+      result = this.cpu.cycle();
+    } catch {
+      descerror = "Unexpected operation, possibly trying to read a memory address that does not exist.";
+      this.stop(descerror);
+    }
+
     const instruction = this.cpu.currentInstruction();
 
     return { instruction, result };
   }
 
-  public stop(): void {
+  public stop(descerror?: string): void {
     console.log("Simulator stopped");
   }
 
@@ -172,7 +181,7 @@ export class TextSimulator extends Simulator {
     this.webview.postMessage({
       from: "extension",
       operation: "initialLine",
-      lineDecorationNumber: line !== undefined ? line + 1 : -1
+      lineDecorationNumber: line !== undefined ? line + 1 : -1,
     });
   }
 
@@ -197,9 +206,17 @@ export class TextSimulator extends Simulator {
       if (readsDM(instruction.type, instruction.opcode)) {
         this.notifyMemoryRead(parseInt(result.dm.address, 2), this.bytesToReadOrWrite(instruction));
       }
-      if (writesDM(instruction.type, instruction.opcode)) {
-        this.writeResult(instruction, result);
+
+      try {
+        if (writesDM(instruction.type, instruction.opcode)) {
+          this.writeResult(instruction, result);
+        }
+      } catch {
+        const descerror = "You are trying to save to an invalid address in memory.";
+
+        this.stop(descerror);
       }
+
       if (branchesOrJumps(instruction.type, instruction.opcode)) {
         this.cpu.jumpToInstruction(result.buMux.result);
       } else {
@@ -224,7 +241,7 @@ export class TextSimulator extends Simulator {
     }
   }
 
-  public override stop(): void {
+  public override stop(descerror?: string): void {
     super.stop();
     this.clearHighlight();
     this.makeEditorWritable();
@@ -237,7 +254,8 @@ export class TextSimulator extends Simulator {
 
     // No need for mainView check, 'this.webview' is used in sendToWebview
     commands.executeCommand("setContext", "ext.isSimulating", false);
-    this.sendToWebview({ operation: "stop" });
+
+    this.sendToWebview({ operation: "stop", descerror: descerror });
   }
 
   // --- UI Notification and Helper Methods ---

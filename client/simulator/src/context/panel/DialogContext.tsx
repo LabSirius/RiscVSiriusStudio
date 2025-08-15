@@ -5,6 +5,7 @@ interface DialogObject {
   description: string;
   stop?: boolean;
   chooseTypeSimulator?: boolean
+  descerror?: string
 }
 
 interface DialogContextProps {

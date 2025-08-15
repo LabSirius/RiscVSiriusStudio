@@ -112,7 +112,8 @@ export const useMessageListener = () => {
             setReadInMemory({ address: message.address, value: "1", _length: message._length });
             break;
           case "stop":
-            setDialog({ title: "Info", description: "The program has ended.", stop: true });
+
+            setDialog({ title: "Info", description: "The program has ended.", stop: true, descerror: message.descerror });
             break;
           default:
             break;

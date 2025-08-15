@@ -224,7 +224,6 @@ export class SCCPU implements ICPU {
   }
 
   private readFromMemory(address: number, control: number): string {
-    console.log("data MEMORY SCCPU",this.dataMemory)
 
     let value = "";
     switch (control) {
