@@ -1,4 +1,3 @@
-// src/components/GeminiChatWidget.jsx
 
 import { useState } from 'react';
 import { MessageSquareWarning, SendHorizonal, LoaderCircle } from 'lucide-react';
