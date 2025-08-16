@@ -6,7 +6,7 @@ import { SCCPU, SCCPUResult } from "./vcpu/singlecycle";
 import { branchesOrJumps, getFunct3, readsDM, writesDM, writesRU } from "./utilities/instructions";
 import { intToBinary } from "./utilities/conversions";
 import { window, commands, TextEditorDecorationType, Webview, Disposable } from "vscode";
-import { PipelineCPU } from "./vcpu/pipeline";
+import { PipelineCPU } from "./vcpu/pipeline/pipeline";
 import { ICPU } from "./vcpu/interface";
 
 export type SimulationParameters = { memorySize: number };

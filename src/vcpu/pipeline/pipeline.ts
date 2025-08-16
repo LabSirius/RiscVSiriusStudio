@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { ICPU } from "./interface";
-import { RegistersFile, DataMemory, ProcessorALU } from "./components/components";
-import { ControlUnit, ImmediateUnit } from "./components/decoder";
-import { getFunct3 } from "../utilities/instructions";
-import { intToBinary } from "../utilities/conversions";
+import { ICPU } from "../interface";
+import { RegistersFile, DataMemory, ProcessorALU } from "../components/components";
+import { ControlUnit, ImmediateUnit } from "../components/decoder";
+import { ForwardingUnit, ForwardingSignals, ForwardingSource } from "./forwarding";
+import { getFunct3 } from "../../utilities/instructions";
+import { intToBinary } from "../../utilities/conversions";
 
 const NOP_DATA = {
   instruction: { asm: "NOP", pc: -1 },
@@ -79,6 +80,7 @@ export class PipelineCPU implements ICPU {
   private controlUnit: ControlUnit;
   private immediateUnit: ImmediateUnit;
   private alu: ProcessorALU;
+  private forwardingUnit: ForwardingUnit;
 
   private clockCycles: number = 0;
   private pc: number = 0;
@@ -96,6 +98,7 @@ export class PipelineCPU implements ICPU {
     this.controlUnit = new ControlUnit();
     this.immediateUnit = new ImmediateUnit();
     this.alu = new ProcessorALU();
+    this.forwardingUnit = new ForwardingUnit();
 
     this.if_id_register = { instruction: null, PC: -1, PCP4: 0 };
     this.id_ex_register = { ...NOP_DATA };
@@ -105,38 +108,71 @@ export class PipelineCPU implements ICPU {
     this.registers.writeRegister("x2", intToBinary(programSize + memSize - 4));
   }
 
+  // ======================= ¡¡¡CAMBIO ESTRUCTURAL EN CYCLE!!! =======================
   public cycle(): any {
     this.clockCycles++;
     console.log(`\n--- [Pipeline CPU] Clock Cycle: ${this.clockCycles} ---`);
-    this.executeWB();
-    this.executeMEM();
-    this.executeEX();
-    this.executeID();
-    this.executeIF();
+
+    // --- FASE 1: Detección y Cálculo ---
+    // Todas las etapas leen el estado de los registros (this.*_register)
+    // tal como estaban al principio del ciclo.
+
+    // 1a. Detectar riesgos de adelantamiento con el estado actual
+    const forwardingSignals = this.forwardingUnit.detect(
+      this.id_ex_register.rs1,
+      this.id_ex_register.rs2,
+      this.ex_mem_register.RD,
+      this.ex_mem_register.RUWr,
+      this.mem_wb_register.RD,
+      this.mem_wb_register.RUWr
+    );
+
+    // 1b. Cada etapa calcula el NUEVO estado para su registro de salida y lo RETORNA
+    const writebackAction = this.executeWB();
+    const newState_MEM_WB = this.executeMEM();
+    const newState_EX_MEM = this.executeEX(forwardingSignals);
+    const newState_ID_EX = this.executeID();
+    const { newState_IF_ID, nextPC } = this.executeIF();
+
+    // --- FASE 2: Actualización ("Pulso de Reloj") ---
+    // Actualizamos todos los registros de pipeline A LA VEZ con los nuevos estados calculados.
+    // Esto evita la "carrera de datos" que causaba el bug.
+    this.mem_wb_register = newState_MEM_WB;
+    this.ex_mem_register = newState_EX_MEM;
+    this.id_ex_register = newState_ID_EX;
+    this.if_id_register = newState_IF_ID;
+    this.pc = nextPC;
+
+    // Y ahora ejecutamos la acción de escritura en el banco de registros.
+    writebackAction();
+
     return {};
   }
 
-  
-  private executeIF() {
+  // ======================= ¡¡¡CAMBIOS EN LOS MÉTODOS DE ETAPA!!! =======================
+  // Ahora retornan su resultado en lugar de modificar el estado directamente.
+
+  private executeIF(): { newState_IF_ID: any; nextPC: number } {
     const PC_fe = this.pc;
     let instruction: any = null;
     if (PC_fe / 4 < this.program.length) {
       instruction = this.program[PC_fe / 4];
     }
     const PCP4 = PC_fe + 4;
-    this.if_id_register = { instruction, PC: PC_fe, PCP4 };
-    this.pc = PCP4;
+
+    const newState_IF_ID = { instruction, PC: PC_fe, PCP4 };
     console.log(
       `[IF Stage] Fetching PC=${PC_fe}. Instruction: "${instruction?.asm || "STALL/END"}"`
     );
+
+    return { newState_IF_ID, nextPC: PC_fe + 4 };
   }
 
-  private executeID() {
+  private executeID(): IDEX_Register {
     const { instruction, PC, PCP4 } = this.if_id_register;
     if (!instruction) {
-      this.id_ex_register = { ...NOP_DATA };
       console.log("[ID Stage] NOP");
-      return;
+      return { ...NOP_DATA };
     }
     console.log(`[ID Stage] Processing: "${instruction.asm}" (PC=${PC})`);
     const controls = this.controlUnit.generate(instruction);
@@ -151,7 +187,7 @@ export class PipelineCPU implements ICPU {
       }) -> ${RUrs2}`
     );
 
-    this.id_ex_register = {
+    const newState: IDEX_Register = {
       instruction,
       PC,
       PCP4,
@@ -166,39 +202,87 @@ export class PipelineCPU implements ICPU {
       RUrs1,
       RUrs2,
       ImmExt,
-
       RD: instruction.rd ? instruction.rd.regeq.substring(1) : "X",
       rs1: instruction.rs1 ? instruction.rs1.regeq.substring(1) : "X",
       rs2: instruction.rs2 ? instruction.rs2.regeq.substring(1) : "X",
     };
-    console.log(`[ID Stage] ID/EX Register OUT ->`, this.id_ex_register);
+    console.log(`[ID Stage] ID/EX Register OUT ->`, newState);
+    return newState;
   }
 
-  private executeEX() {
-    const { instruction, PC, PCP4, ALUASrc, ALUBSrc, ALUOp, BrOp, RUrs1, RUrs2, ImmExt } =
-      this.id_ex_register;
-    if (PC === -1) {
-      this.ex_mem_register = { ...NOP_DATA };
-      console.log(`[EX Stage] NOP`);
-      return;
-    }
-    console.log(`[EX Stage] Processing: "${instruction.asm}" (PC=${PC})`);
-    const operandA = ALUASrc ? PC.toString(2).padStart(32, "0") : RUrs1;
-    const operandB = ALUBSrc ? ImmExt : RUrs2;
-    const ALURes = this.alu.execute(operandA, operandB, ALUOp);
-    console.log(`[EX Stage] Branch control signal received: BrOp=${BrOp}`);
-    console.log(
-      `[EX Stage] ALU Inputs:\n      Operand A: ${operandA} ${
-        ALUASrc ? "(from PC)" : "(from RUrs1)"
-      }\n      Operand B: ${operandB} ${
-        ALUBSrc ? "(from ImmExt)" : "(from RUrs2)"
-      }\n      ALU Op: ${ALUOp}`
-    );
-    console.log(`[EX Stage] ALU Result: ${ALURes}`);
-    this.ex_mem_register = {
+  private executeEX(forwardingSignals: ForwardingSignals): EXMEM_Register {
+    const {
       instruction,
       PC,
-      PCP4, 
+      PCP4,
+      ALUASrc,
+      ALUBSrc,
+      ALUOp,
+      BrOp,
+      RUrs1,
+      RUrs2,
+      ImmExt,
+      RD,
+      rs1,
+      rs2,
+    } = this.id_ex_register;
+    if (PC === -1) {
+      console.log(`[EX Stage] NOP`);
+      return { ...NOP_DATA };
+    }
+    console.log(`[EX Stage] Processing: "${instruction.asm}" (PC=${PC})`);
+
+    let operandA = RUrs1;
+    let operandB = RUrs2;
+    let logA = "(from RUrs1)";
+    let logB = "(from RUrs2)";
+
+    switch (forwardingSignals.forwardA) {
+      case ForwardingSource.FROM_MEM_STAGE:
+        operandA = this.ex_mem_register.ALURes;
+        logA = "(Forwarded from MEM)";
+        break;
+      case ForwardingSource.FROM_WB_STAGE:
+        if (this.mem_wb_register.RUDataWrSrc === "01") {
+          operandA = this.mem_wb_register.MemReadData;
+        } else {
+          operandA = this.mem_wb_register.ALURes;
+        }
+        logA = "(Forwarded from WB)";
+        break;
+    }
+
+    switch (forwardingSignals.forwardB) {
+      case ForwardingSource.FROM_MEM_STAGE:
+        operandB = this.ex_mem_register.ALURes;
+        logB = "(Forwarded from MEM)";
+        break;
+      case ForwardingSource.FROM_WB_STAGE:
+        if (this.mem_wb_register.RUDataWrSrc === "01") {
+          operandB = this.mem_wb_register.MemReadData;
+        } else {
+          operandB = this.mem_wb_register.ALURes;
+        }
+        logB = "(Forwarded from WB)";
+        break;
+    }
+
+    const finalOperandA = ALUASrc ? PC.toString(2).padStart(32, "0") : operandA;
+    const finalOperandB = ALUBSrc ? ImmExt : operandB;
+    const finalLogA = ALUASrc ? "(from PC)" : logA;
+    const finalLogB = ALUBSrc ? "(from ImmExt)" : logB;
+    const ALURes = this.alu.execute(finalOperandA, finalOperandB, ALUOp);
+
+    console.log(`[EX Stage] Branch control signal received: BrOp=${BrOp}`);
+    console.log(
+      `[EX Stage] ALU Inputs:\n      Operand A: ${finalOperandA} ${finalLogA}\n      Operand B: ${finalOperandB} ${finalLogB}\n      ALU Op: ${ALUOp}`
+    );
+    console.log(`[EX Stage] ALU Result: ${ALURes}`);
+
+    const newState: EXMEM_Register = {
+      instruction,
+      PC,
+      PCP4,
       RUWr: this.id_ex_register.RUWr,
       DMWr: this.id_ex_register.DMWr,
       RUDataWrSrc: this.id_ex_register.RUDataWrSrc,
@@ -207,17 +291,17 @@ export class PipelineCPU implements ICPU {
       RUrs2: this.id_ex_register.RUrs2,
       RD: this.id_ex_register.RD,
     };
-    console.log(`[EX Stage] EX/MEM Register OUT ->`, this.ex_mem_register);
+    console.log(`[EX Stage] EX/MEM Register OUT ->`, newState);
+    return newState;
   }
 
-  private executeMEM() {
+  private executeMEM(): MEMWB_Register {
     const { instruction, PC, PCP4, DMWr, DMCtrl, ALURes, RUrs2, RD } = this.ex_mem_register;
     if (instruction.pc === -1) {
-      this.mem_wb_register = { ...NOP_DATA };
       console.log(`[MEM Stage] NOP`);
-      return;
+      return { ...NOP_DATA };
     }
-    console.log(`[MEM Stage] Processing: "${instruction.asm}" (PC=${PC})`); 
+    console.log(`[MEM Stage] Processing: "${instruction.asm}" (PC=${PC})`);
     const address = parseInt(ALURes, 2);
     let memReadData = "X".padStart(32, "X");
     if (DMWr) {
@@ -240,15 +324,13 @@ export class PipelineCPU implements ICPU {
           console.log(
             `[MEM Stage] DataMemory.write called at address ${address} with ${bytesToWrite.length} byte(s)`
           );
+          console.log("new MEMORY", this.getDataMemory());
         }
       } else {
         console.error(
           `[MEM Stage] Error: Dato para Store (RUrs2) no tiene el formato de 32 bits esperado.`
         );
       }
-
-        console.log("new MEMORY", this.getDataMemory());
-
     } else if (this.ex_mem_register.RUDataWrSrc === "01") {
       switch (DMCtrl) {
         case "000": {
@@ -281,64 +363,65 @@ export class PipelineCPU implements ICPU {
     } else {
       console.log(`[MEM Stage] No memory operation.`);
     }
-    this.mem_wb_register = {
+
+    const newState: MEMWB_Register = {
       instruction,
       PC,
-      PCP4, 
+      PCP4,
       RUWr: this.ex_mem_register.RUWr,
       RUDataWrSrc: this.ex_mem_register.RUDataWrSrc,
       ALURes,
       MemReadData: memReadData,
       RD,
     };
-    console.log(`[MEM Stage] MEM/WB Register OUT ->`, this.mem_wb_register);
+    console.log(`[MEM Stage] MEM/WB Register OUT ->`, newState);
+    return newState;
   }
 
-  private executeWB() {
+  private executeWB(): () => void {
     const { instruction, PC, PCP4, RUWr, RUDataWrSrc, ALURes, MemReadData, RD } =
       this.mem_wb_register;
-
     if (instruction.pc === -1) {
       console.log(`[WB Stage] NOP`);
-      return;
+      return () => {};
     }
-
     console.log(`[WB Stage] Processing: "${instruction.asm}" (PC=${PC})`);
 
-    if (RUWr) {
-      let dataToWrite: string;
-      switch (RUDataWrSrc) {
-        case "00":
-          dataToWrite = ALURes;
-          console.log(`[WB Stage] Data source: ALU Result (${dataToWrite})`);
-          break;
-        case "01":
-          dataToWrite = MemReadData;
-          console.log(`[WB Stage] Data source: Memory Read Data (${dataToWrite})`);
-          break;
-        case "10":
-          dataToWrite = PCP4.toString(2).padStart(32, "0");
-          console.log(`[WB Stage] Data source: PC+4 (${dataToWrite})`);
-          break;
-        default:
-          dataToWrite = "X".padStart(32, "X");
-          console.log(`[WB Stage] Data source: Unknown`);
-          break;
-      }
-
-      if (RD !== "X" && RD !== "0") {
-        const rdRegName = `x${RD}`;
-        this.registers.writeRegister(rdRegName, dataToWrite);
-        console.log(`[WB Stage] SUCCESS: Wrote to ${rdRegName} <- ${dataToWrite}`);
-        console.log("new REGISTER", this.getRegisterFile());
+    const writeAction = () => {
+      if (RUWr) {
+        let dataToWrite: string;
+        switch (RUDataWrSrc) {
+          case "00":
+            dataToWrite = ALURes;
+            console.log(`[WB Stage] Data source: ALU Result (${dataToWrite})`);
+            break;
+          case "01":
+            dataToWrite = MemReadData;
+            console.log(`[WB Stage] Data source: Memory Read Data (${dataToWrite})`);
+            break;
+          case "10":
+            dataToWrite = PCP4.toString(2).padStart(32, "0");
+            console.log(`[WB Stage] Data source: PC+4 (${dataToWrite})`);
+            break;
+          default:
+            dataToWrite = "X".padStart(32, "X");
+            console.log(`[WB Stage] Data source: Unknown`);
+            break;
+        }
+        if (RD !== "X" && RD !== "0") {
+          const rdRegName = `x${RD}`;
+          this.registers.writeRegister(rdRegName, dataToWrite);
+          console.log(`[WB Stage] SUCCESS: Wrote to ${rdRegName} <- ${dataToWrite}`);
+          console.log("new REGISTER", this.getRegisterFile());
+        } else {
+          console.log(`[WB Stage] Write to register x0 or invalid register suppressed.`);
+        }
       } else {
-        console.log(`[WB Stage] Write to register x0 or invalid register suppressed.`);
+        console.log(`[WB Stage] No write to Register Unit (RUWr=false).`);
       }
-    } else {
-      console.log(`[WB Stage] No write to Register Unit (RUWr=false).`);
-    }
+    };
+    return writeAction;
   }
-
 
   public getDataMemory(): DataMemory {
     return this.dataMemory;
