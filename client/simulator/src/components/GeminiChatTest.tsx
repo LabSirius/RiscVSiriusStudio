@@ -158,7 +158,6 @@ const GeminiChatWidget = () => {
     const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-    console.log("API KEYS ES ", API_KEY)
 
     const currentHistory = [
       ...history,
@@ -231,12 +230,6 @@ const GeminiChatWidget = () => {
             <MessageSquareWarning className="h-8 w-8" />
           </Button>
         </PopoverTrigger>
-
-        {/* CAMBIOS CLAVE:
-            1. Se cambia h-[30rem] por max-h-[80vh] para que sea responsivo.
-            2. Se convierte el PopoverContent en el contenedor flex principal.
-            3. Se añade un 'gap' y 'padding' para mantener el espaciado.
-        */}
         <PopoverContent
           className="w-80 mr-4 flex flex-col gap-4 p-4
                      max-h-[80vh] 
@@ -244,26 +237,23 @@ const GeminiChatWidget = () => {
                      dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-100" 
           align="end"
         >
-            {/* ENCABEZADO: No se encoge */}
             <div className="space-y-2 flex-shrink-0">
-              <h4 className="font-medium leading-none">Pregúntale a la IA</h4>
+              <h4 className="font-medium leading-none">Ask the AI</h4>
             </div>
 
-            {/* ÁREA DE CONTENIDO: Crecerá y tendrá el scroll */}
             <div className="flex-1 rounded-md border overflow-y-auto
                             border-neutral-300 bg-neutral-50 p-3 text-sm
                             dark:border-neutral-700 dark:bg-neutral-800/50">
               {loading && aiResponse === 'Pensando...' && (
                 <div className="flex items-center gap-2">
                   <LoaderCircle className="h-4 w-4 animate-spin" />
-                  <span>Pensando...</span>
+                  <span>Thinking...</span>
                 </div>
               )}
-              {!aiResponse && <p>Esperando tu pregunta...</p>}
+              {!aiResponse && <p>Waiting for your question...</p>}
               {aiResponse && !loading && <p className="whitespace-pre-wrap">{aiResponse}</p>}
             </div>
 
-            {/* FORMULARIO: No se encoge */}
             <form onSubmit={handleSubmit} className="flex items-center gap-2 flex-shrink-0">
               <Input
                 id="question"
