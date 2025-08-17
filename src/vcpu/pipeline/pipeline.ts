@@ -6,6 +6,7 @@ import { ControlUnit, ImmediateUnit } from "../components/decoder";
 import { ForwardingUnit, ForwardingSignals, ForwardingSource } from "./forwarding";
 import { getFunct3 } from "../../utilities/instructions";
 import { intToBinary } from "../../utilities/conversions";
+import { HazardDetectionUnit } from "./hazard";
 
 const NOP_DATA = {
   instruction: { asm: "NOP", pc: -1 },
@@ -81,6 +82,7 @@ export class PipelineCPU implements ICPU {
   private immediateUnit: ImmediateUnit;
   private alu: ProcessorALU;
   private forwardingUnit: ForwardingUnit;
+   private hazardDetectionUnit: HazardDetectionUnit;
 
   private clockCycles: number = 0;
   private pc: number = 0;
@@ -99,6 +101,7 @@ export class PipelineCPU implements ICPU {
     this.immediateUnit = new ImmediateUnit();
     this.alu = new ProcessorALU();
     this.forwardingUnit = new ForwardingUnit();
+     this.hazardDetectionUnit = new HazardDetectionUnit();
 
     this.if_id_register = { instruction: null, PC: -1, PCP4: 0 };
     this.id_ex_register = { ...NOP_DATA };
@@ -108,16 +111,11 @@ export class PipelineCPU implements ICPU {
     this.registers.writeRegister("x2", intToBinary(programSize + memSize - 4));
   }
 
-  // ======================= ¡¡¡CAMBIO ESTRUCTURAL EN CYCLE!!! =======================
   public cycle(): any {
     this.clockCycles++;
     console.log(`\n--- [Pipeline CPU] Clock Cycle: ${this.clockCycles} ---`);
 
-    // --- FASE 1: Detección y Cálculo ---
-    // Todas las etapas leen el estado de los registros (this.*_register)
-    // tal como estaban al principio del ciclo.
 
-    // 1a. Detectar riesgos de adelantamiento con el estado actual
     const forwardingSignals = this.forwardingUnit.detect(
       this.id_ex_register.rs1,
       this.id_ex_register.rs2,
@@ -127,30 +125,38 @@ export class PipelineCPU implements ICPU {
       this.mem_wb_register.RUWr
     );
 
-    // 1b. Cada etapa calcula el NUEVO estado para su registro de salida y lo RETORNA
+    const stallNeeded = this.hazardDetectionUnit.detect(
+      this.id_ex_register.RUDataWrSrc, // Is the instruction in EX a Load?
+      this.id_ex_register.RD,          // ¿A qué registro escribe?
+      this.if_id_register.instruction?.rs1?.regeq.substring(1) || "X", // What register does the instruction read at ID?
+      this.if_id_register.instruction?.rs2?.regeq.substring(1) || "X"
+    );
+
     const writebackAction = this.executeWB();
     const newState_MEM_WB = this.executeMEM();
     const newState_EX_MEM = this.executeEX(forwardingSignals);
     const newState_ID_EX = this.executeID();
     const { newState_IF_ID, nextPC } = this.executeIF();
 
-    // --- FASE 2: Actualización ("Pulso de Reloj") ---
-    // Actualizamos todos los registros de pipeline A LA VEZ con los nuevos estados calculados.
-    // Esto evita la "carrera de datos" que causaba el bug.
-    this.mem_wb_register = newState_MEM_WB;
-    this.ex_mem_register = newState_EX_MEM;
-    this.id_ex_register = newState_ID_EX;
-    this.if_id_register = newState_IF_ID;
-    this.pc = nextPC;
+    if (stallNeeded) {
+      // Inject a bubble (NOP) into the EX stage.
+      this.id_ex_register = { ...NOP_DATA };
+      this.mem_wb_register = newState_MEM_WB;
+      this.ex_mem_register = newState_EX_MEM;
+    } else {
+      this.mem_wb_register = newState_MEM_WB;
+      this.ex_mem_register = newState_EX_MEM;
+      this.id_ex_register = newState_ID_EX;
+      this.if_id_register = newState_IF_ID;
+      this.pc = nextPC;
+    }
 
-    // Y ahora ejecutamos la acción de escritura en el banco de registros.
     writebackAction();
 
     return {};
   }
 
-  // ======================= ¡¡¡CAMBIOS EN LOS MÉTODOS DE ETAPA!!! =======================
-  // Ahora retornan su resultado en lugar de modificar el estado directamente.
+
 
   private executeIF(): { newState_IF_ID: any; nextPC: number } {
     const PC_fe = this.pc;
