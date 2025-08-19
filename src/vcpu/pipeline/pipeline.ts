@@ -136,9 +136,22 @@ export class PipelineCPU implements ICPU {
 
     const writebackAction = this.executeWB();
     const newState_MEM_WB = this.executeMEM();
-    const newState_EX_MEM = this.executeEX(forwardingSignals);
+    const { newState: newState_EX_MEM, branchDecision } = this.executeEX(forwardingSignals);
     const newState_ID_EX = this.executeID();
     const { newState_IF_ID, nextPC } = this.executeIF();
+
+     
+    let finalNextPC = nextPC;
+    let final_newState_ID_EX = newState_ID_EX;
+    let final_newState_IF_ID = newState_IF_ID;
+
+     if (branchDecision.taken) {
+      console.log(`[Pipeline] BRANCH TAKEN! Updating PC and flushing IF/ID stages.`);
+      finalNextPC = parseInt(branchDecision.targetAddress, 2);
+      
+      final_newState_ID_EX = { ...NOP_DATA };
+      final_newState_IF_ID = { instruction: null, PC: -1, PCP4: 0 };
+    }
 
     if (stallNeeded) {
       // Inject a bubble (NOP) into the EX stage.
@@ -146,11 +159,11 @@ export class PipelineCPU implements ICPU {
       this.mem_wb_register = newState_MEM_WB;
       this.ex_mem_register = newState_EX_MEM;
     } else {
-      this.mem_wb_register = newState_MEM_WB;
+       this.mem_wb_register = newState_MEM_WB;
       this.ex_mem_register = newState_EX_MEM;
-      this.id_ex_register = newState_ID_EX;
-      this.if_id_register = newState_IF_ID;
-      this.pc = nextPC;
+      this.id_ex_register = final_newState_ID_EX;
+      this.if_id_register = final_newState_IF_ID;
+      this.pc = finalNextPC;
     }
 
     writebackAction();
@@ -218,7 +231,7 @@ export class PipelineCPU implements ICPU {
     return newState;
   }
 
-  private executeEX(forwardingSignals: ForwardingSignals): EXMEM_Register {
+  private executeEX(forwardingSignals: ForwardingSignals): { newState: EXMEM_Register, branchDecision: { taken: boolean, targetAddress: string } } {
     const {
       instruction,
       PC,
@@ -236,7 +249,7 @@ export class PipelineCPU implements ICPU {
     } = this.id_ex_register;
     if (PC === -1) {
       console.log(`[EX Stage] NOP`);
-      return { ...NOP_DATA };
+      return { newState: { ...NOP_DATA }, branchDecision: { taken: false, targetAddress: "0" } };
     }
     console.log(`[EX Stage] Processing: "${instruction.asm}" (PC=${PC})`);
 
@@ -282,7 +295,7 @@ export class PipelineCPU implements ICPU {
     const ALURes = this.alu.execute(finalOperandA, finalOperandB, ALUOp);
 
 
-    const branchTaken = this.branchUnit.evaluate(BrOp, finalOperandA, finalOperandB);
+    const branchTaken = this.branchUnit.evaluate(BrOp, operandA, operandB);
     console.log(`[EX Stage] Branch Unit decision for BrOp=${BrOp}: ${branchTaken ? 'TAKE BRANCH' : 'DO NOT TAKE'}`);
 
     console.log(`[EX Stage] Branch control signal received: BrOp=${BrOp}`);
@@ -291,20 +304,20 @@ export class PipelineCPU implements ICPU {
     );
     console.log(`[EX Stage] ALU Result: ${ALURes}`);
 
-    const newState: EXMEM_Register = {
-      instruction,
-      PC,
-      PCP4,
-      RUWr: this.id_ex_register.RUWr,
-      DMWr: this.id_ex_register.DMWr,
-      RUDataWrSrc: this.id_ex_register.RUDataWrSrc,
-      DMCtrl: this.id_ex_register.DMCtrl,
-      ALURes,
-      RUrs2: this.id_ex_register.RUrs2,
-      RD: this.id_ex_register.RD,
+     const newState: EXMEM_Register = {
+      instruction, PC, PCP4,
+      RUWr: this.id_ex_register.RUWr, DMWr: this.id_ex_register.DMWr,
+      RUDataWrSrc: this.id_ex_register.RUDataWrSrc, DMCtrl: this.id_ex_register.DMCtrl,
+      ALURes, RUrs2: this.id_ex_register.RUrs2, RD: this.id_ex_register.RD,
     };
     console.log(`[EX Stage] EX/MEM Register OUT ->`, newState);
-    return newState;
+    return { 
+      newState: newState,
+      branchDecision: {
+        taken: branchTaken,
+        targetAddress: ALURes // La ALU calcula la dirección de destino para saltos
+      }
+    };
   }
 
   private executeMEM(): MEMWB_Register {
