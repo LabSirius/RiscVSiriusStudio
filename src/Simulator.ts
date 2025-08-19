@@ -2,17 +2,17 @@
 
 import { RVDocument } from "./rvDocument";
 import { RVContext } from "./support/context";
-import { SCCPU, SCCPUResult } from "./vcpu/singlecycle";
+import { defaultSCCPUResult, SCCPU, SCCPUResult } from "./vcpu/singlecycle";
 import { branchesOrJumps, getFunct3, readsDM, writesDM, writesRU } from "./utilities/instructions";
 import { intToBinary } from "./utilities/conversions";
 import { window, commands, TextEditorDecorationType, Webview, Disposable } from "vscode";
-import { PipelineCPU } from "./vcpu/pipeline/pipeline";
+import { PipelineCPU, PipelineCycleResult } from "./vcpu/pipeline/pipeline";
 import { ICPU } from "./vcpu/interface";
 
 export type SimulationParameters = { memorySize: number };
 export interface StepResult {
   instruction: any;
-  result: SCCPUResult | {}; // Allow result to be an empty object for pipeline
+  result: SCCPUResult | PipelineCycleResult; // Allow result to be an empty object for pipeline
 }
 
 /**
@@ -181,11 +181,11 @@ export class TextSimulator extends Simulator {
 
     if (this.simulatorType === "monocycle") {
       const instruction = stepResult.instruction;
-      const result = stepResult.result as SCCPUResult;
+      const result = stepResult.result as SCCPUResult;   
 
       if (!instruction || Object.keys(instruction).length === 0) {
         this.stop();
-        return { instruction: {}, result: {} };
+        return { instruction: {}, result: defaultSCCPUResult };
       }
 
       instruction.currentPc = this.cpu.getPC();
@@ -219,8 +219,13 @@ export class TextSimulator extends Simulator {
 
       return stepResult;
     } else {
-      console.log("Pipeline step executed in TextSimulator.");
+      
+      const pipelineResult = stepResult.result as PipelineCycleResult;
+
+      console.log("PipelineResult", pipelineResult);
+
       return stepResult;
+
     }
   }
 

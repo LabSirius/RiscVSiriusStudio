@@ -74,6 +74,14 @@ interface MEMWB_Register {
   RD: string;
 }
 
+export type PipelineCycleResult = {
+  IF: { instruction: any; PC: number; PCP4: number };
+  ID: IDEX_Register;
+  EX: EXMEM_Register;
+  MEM: MEMWB_Register;
+  WB: MEMWB_Register; 
+};
+
 export class PipelineCPU implements ICPU {
   private readonly program: any[];
   private dataMemory: DataMemory;
@@ -113,7 +121,7 @@ export class PipelineCPU implements ICPU {
     this.registers.writeRegister("x2", intToBinary(programSize + memSize - 4));
   }
 
-  public cycle(): any {
+  public cycle(): PipelineCycleResult {
     this.clockCycles++;
     console.log(`\n--- [Pipeline CPU] Clock Cycle: ${this.clockCycles} ---`);
 
@@ -168,7 +176,13 @@ export class PipelineCPU implements ICPU {
 
     writebackAction();
 
-    return {};
+    return {
+      IF: this.if_id_register,
+      ID: this.id_ex_register,
+      EX: this.ex_mem_register,
+      MEM: this.mem_wb_register,
+      WB: this.mem_wb_register, 
+    };
   }
 
 
