@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { ICPU } from "../interface";
-import { RegistersFile, DataMemory, ProcessorALU } from "../components/components";
+import { RegistersFile, DataMemory, ProcessorALU, BranchUnit } from "../components/components";
 import { ControlUnit, ImmediateUnit } from "../components/decoder";
 import { ForwardingUnit, ForwardingSignals, ForwardingSource } from "./forwarding";
 import { getFunct3 } from "../../utilities/instructions";
@@ -83,6 +83,7 @@ export class PipelineCPU implements ICPU {
   private alu: ProcessorALU;
   private forwardingUnit: ForwardingUnit;
    private hazardDetectionUnit: HazardDetectionUnit;
+   private branchUnit: BranchUnit; 
 
   private clockCycles: number = 0;
   private pc: number = 0;
@@ -102,6 +103,7 @@ export class PipelineCPU implements ICPU {
     this.alu = new ProcessorALU();
     this.forwardingUnit = new ForwardingUnit();
      this.hazardDetectionUnit = new HazardDetectionUnit();
+     this.branchUnit = new BranchUnit(); 
 
     this.if_id_register = { instruction: null, PC: -1, PCP4: 0 };
     this.id_ex_register = { ...NOP_DATA };
@@ -278,6 +280,10 @@ export class PipelineCPU implements ICPU {
     const finalLogA = ALUASrc ? "(from PC)" : logA;
     const finalLogB = ALUBSrc ? "(from ImmExt)" : logB;
     const ALURes = this.alu.execute(finalOperandA, finalOperandB, ALUOp);
+
+
+    const branchTaken = this.branchUnit.evaluate(BrOp, finalOperandA, finalOperandB);
+    console.log(`[EX Stage] Branch Unit decision for BrOp=${BrOp}: ${branchTaken ? 'TAKE BRANCH' : 'DO NOT TAKE'}`);
 
     console.log(`[EX Stage] Branch control signal received: BrOp=${BrOp}`);
     console.log(
