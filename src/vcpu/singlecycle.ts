@@ -1,13 +1,6 @@
-/* eslint-disable @typescript-eslint/naming-convention */ 
+/* eslint-disable @typescript-eslint/naming-convention */
 
-import {
-  getRs1,
-  getRs2,
-  getRd,
-  getFunct3,
-  isIJump,
-  isAUIPC,
-} from "../utilities/instructions";
+import { getRs1, getRs2, getRd, getFunct3, isIJump, isAUIPC } from "../utilities/instructions";
 import { intToBinary } from "../utilities/conversions";
 import { ICPU } from "./interface";
 import { RegistersFile, DataMemory, ProcessorALU } from "./components/components";
@@ -100,28 +93,18 @@ export class SCCPU implements ICPU {
     this._program = program.filter((sc) => sc.kind === "SrcInstruction");
     this.registers = new RegistersFile();
     this.dataMemory = new DataMemory(program.length * 4, memory.length, memSize);
+
     this.dataMemory.uploadProgram(memory);
     this.pc = 0;
     this.immediateUnit = new ImmediateUnit();
     this.alu = new ProcessorALU();
     this.controlUnit = new ControlUnit();
-    const programSize = program.length * 4;
-    this.registers.writeRegister("x2", intToBinary(programSize + memSize - 4));
 
-
-    console.log("--- VALIDACIÓN ETAPA 1: INICIALIZACIÓN ---");
-const programMemorySize = this.dataMemory.getProgramMemory().length;
-const availableMemorySize = this.dataMemory.getAvailableMemory().length;
-console.log(`Tamaño Memoria Programa: ${programMemorySize}`);
-console.log(`Tamaño Memoria Disponible: ${availableMemorySize}`);
-
-
-
-console.log("--- VALIDACIÓN ETAPA 2: STACK POINTER ---");
-const newSP = this.dataMemory.availableSpInitialAddress;
-console.log(`SP Nuevo (basado en solo a memoria disponible): ${newSP}`);
+    const spAbsoluteAddress = this.dataMemory.availableSpInitialAddress;
+    this.registers.writeRegister("x2", intToBinary(spAbsoluteAddress));
   }
 
+  
   public currentInstruction() {
     return this._program[this.pc];
   }
@@ -237,7 +220,6 @@ console.log(`SP Nuevo (basado en solo a memoria disponible): ${newSP}`);
   }
 
   private readFromMemory(address: number, control: number): string {
-
     let value = "";
     switch (control) {
       case 0: {
@@ -407,11 +389,9 @@ console.log(`SP Nuevo (basado en solo a memoria disponible): ${newSP}`);
     return this.registers;
   }
   public getDataMemory(): DataMemory {
-
     return this.dataMemory;
   }
   public replaceDataMemory(newMemory: any[]): void {
-
     if (!newMemory) {
       return;
     }

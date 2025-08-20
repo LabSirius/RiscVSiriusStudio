@@ -126,6 +126,8 @@ export class DataMemory {
   }
 
   public canWrite(numBytes: number, address: number) {
+    console.log("ADREEES Y NUMERO DE BYTES", address, numBytes)
+    console.log("MEMORIA", this.memory_available)
     const lastAddress = address + numBytes - 1;
     return lastAddress <= this.lastAddress();
   }
