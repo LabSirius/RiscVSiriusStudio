@@ -38,7 +38,6 @@ export const useMemoryResizeEffect = ({
   tableInstanceRef,
   dataMemoryTable,
   sizeMemory,
-  setNewPc,
   setSp,
   setWriteInRegister,
   setDataMemoryTable,
@@ -62,12 +61,7 @@ export const useMemoryResizeEffect = ({
       uploadMemory(
         tableInstanceRef.current,
         newMemory,
-        dataMemoryTable.codeSize,
-        dataMemoryTable.constantsSize,
-        dataMemoryTable.symbols,
         () => {
-          setNewPc(0);
-
           setSp(intToHex(sizeMemory - 4));
           const newMemorySize = intTo32BitBinary(sizeMemory - 4);
           setWriteInRegister({ registerName: 'x2', value: newMemorySize });

@@ -1,5 +1,5 @@
 import RegisterTable from "./RegisterTable";
-import MemoryTable from "./MemoryTable";
+import AvailableMemoryTable from "./MemoryTable/AvailableMemoryTable";
 import StagesPipeline from "./StagesPipeline";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
@@ -8,7 +8,7 @@ const Tables = () => {
   return (
     <div className="flex gap-5 overflow-hidden min-w-min">
       <RegisterTable />
-      <MemoryTable />
+      <AvailableMemoryTable />
       {typeSimulator === "pipeline" && (<StagesPipeline />)}
     </div>
   );

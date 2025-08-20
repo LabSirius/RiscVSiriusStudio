@@ -1,6 +1,5 @@
 import { chunk } from 'lodash';
 import { intToHex, binaryToHex,  } from '@/utils/handlerConversions';
-import { SymbolData } from '@/utils/tables/types';
 import { TabulatorFull as Tabulator, CellComponent, RowComponent } from 'tabulator-tables';
 import { MemoryRow } from '@/utils/tables/types';
 
@@ -15,9 +14,6 @@ import { MemoryRow } from '@/utils/tables/types';
 export const uploadMemory = (
   table: Tabulator,
   newMemory: string[],
-  newCodeSize: number,
-  newConstantsSize: number,
-  newSymbols: Record<string, SymbolData>,
   onComplete?: () => void
 ): void => {
 
@@ -27,21 +23,13 @@ export const uploadMemory = (
   const expectedRowCount = newMemory.length / 4;
   const maxAddress = (expectedRowCount - 1) * 4;
 
-  const programSize = newCodeSize - newConstantsSize;
-
 
   // Generate main data
   const mainRows = chunk(newMemory, 4).map((word, index) => {
     const byteAddress = index * 4;
     const address = intToHex(byteAddress).toUpperCase();
 
-    let segment = '';
 
-    if (byteAddress < programSize) {
-      segment = 'program';
-    } else if (byteAddress < newCodeSize) {
-      segment = 'constants';
-    }
 
     return {
       address,
@@ -55,7 +43,6 @@ export const uploadMemory = (
         .map((byte) => binaryToHex(byte || '00000000').toUpperCase().padStart(2, '0'))
         .join('-'),
       info: '',
-      segment, 
     };
   });
 
@@ -63,7 +50,7 @@ export const uploadMemory = (
   table.setData(mainRows);
 
   // Add/Update Heap
-  const heapAddress = intToHex(newCodeSize).toUpperCase();
+  const heapAddress = intToHex(0).toUpperCase();
   const heapRow = table.getRow(heapAddress);
 
   if (heapRow) {
@@ -82,29 +69,6 @@ export const uploadMemory = (
       segment: '',
     });
   }
-
-  // Add/Update symbols
-  Object.values(newSymbols).forEach(symbol => {
-    const symbolAddress = intToHex(symbol.memdef).toUpperCase();
-    const symbolRow = table.getRow(symbolAddress);
-
-    if (symbolRow) {
-      symbolRow.update({
-        info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`
-      });
-    } else {
-      table.addRow({
-        address: symbolAddress,
-        value0: '00000000',
-        value1: '00000000',
-        value2: '00000000',
-        value3: '00000000',
-        info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`,
-        hex: '00-00-00-00',
-        segment: '',
-      });
-    }
-  });
 
   // Apply placeholder to empty info cells
   table.getRows().forEach(row => {

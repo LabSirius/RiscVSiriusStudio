@@ -3,7 +3,7 @@ import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
-import "./tabulator.css";
+import "../tabulator.css";
 
 import { useTheme } from "@/components/ui/theme/theme-provider";
 
@@ -16,15 +16,11 @@ import { useMemoryTabulator } from "@/hooks/text/memory/useMemoryTabulator";
 import { useMemoryResizeEffect } from "@/hooks/text/memory/useMemoryResizeEffect";
 import { useMemoryImportEffect } from "@/hooks/text/memory/useMemoryImportEffect";
 import { useSyncIsFirstStepRef } from "@/hooks/text/memory/useSyncIsFirstStepRef";
-import { useProgramCounterEffect } from "@/hooks/text/memory/useProgramCounterEffect";
-import { useMemorySearchFilterEffect } from "@/hooks/text/memory/useMemorySearchFilterEffect";
 import { useStackPointerEffect } from "@/hooks/text/memory/useStackPointerEffect";
 import { useMemoryCellWriteEffect } from "@/hooks/text/memory/useMemoryCellWriteEffect";
 import { useAnimateMemoryRead } from "@/hooks/text/memory/useAnimateMemoryRead";
-import { useLocatePcEffect } from "@/hooks/text/memory/useLocatePcEffect";
-import { useEditorClickAnimation } from "@/hooks/text/memory/useEditorClickAnimation";
 
-const MemoryTable = () => {
+const AvailableMemoryTable = () => {
   const { theme } = useTheme();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
@@ -39,25 +35,20 @@ const MemoryTable = () => {
     setSp,
     importMemory,
     setImportMemory,
-    searchInMemory,
     writeInMemory,
     setWriteInMemory,
     readInMemory,
     setReadInMemory,
-    locatePc,
-    setLocatePc,
-
   } = useMemoryTable();
 
   const { newPc, setNewPc, isFirstStep } = useSimulator();
   const newPcRef = useRef(newPc);
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
-  const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable } = useLines();
+  const { setClickAddressInMemoryTable } = useLines();
   const isFirstStepRef = useRef(isFirstStep);
 
   const [showTable, setShowTable] = useState(true);
-
 
   useMemoryTabulator({
     tableContainerRef,
@@ -96,21 +87,6 @@ const MemoryTable = () => {
     isFirstStepRef,
   });
 
-  useProgramCounterEffect({
-    isCreatedMemoryTable,
-    dataMemoryTable,
-    newPc,
-    newPcRef,
-    tableInstanceRef,
-  });
-
-  useMemorySearchFilterEffect({
-    tableInstanceRef,
-    isCreatedMemoryTable,
-    newPc,
-    searchInMemory,
-  });
-
   useStackPointerEffect({
     tableInstanceRef,
     isCreatedMemoryTable,
@@ -132,24 +108,6 @@ const MemoryTable = () => {
     tableInstanceRef,
     readInMemory,
     setReadInMemory,
-  });
-
-  useLocatePcEffect({
-    isCreatedMemoryTable,
-    tableInstanceRef,
-    locatePc,
-    setLocatePc,
-    newPc,
-  });
-
-
-
-  useEditorClickAnimation({
-    isCreatedMemoryTable,
-    tableInstanceRef,
-    clickInEditorLine,
-    setClickInEditorLine,
-    dataMemoryTable,
   });
 
   return (
@@ -214,4 +172,4 @@ const MemoryTable = () => {
   );
 };
 
-export default MemoryTable;
+export default AvailableMemoryTable;

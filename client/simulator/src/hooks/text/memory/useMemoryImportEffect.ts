@@ -28,7 +28,6 @@ export const useMemoryImportEffect = ({
   setImportMemory,
 }: UseMemoryImportEffectProps): void => {
   useEffect(() => {
-    // ---- LÓGICA 100% IDÉNTICA A LA ORIGINAL ----
     if (importMemory.length === 0 || !isCreatedMemoryTable) return;
     
     const importMemoryUppercase = importMemory.map((row) => ({
