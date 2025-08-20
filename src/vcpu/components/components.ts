@@ -177,24 +177,36 @@ export class DataMemory {
         throw new Error("Undefined data element");
       }
       this.memory[address + i] = data[i]!;
+      this.memory_available[address + i] = data[i]!;
+
+      console.log("AVAIBLE MEMORY CAMBIO", this.memory_available )
+
     }
   }
   public read(address: number, length: number): Array<string> {
+
+    console.log("EL LENGH ORIGINAL ES ", address)
     const lastAddress = address + length - 1;
+
     if (lastAddress > this.lastAddress()) {
       throw new Error("Data memory size exceeded.");
     }
     let data = [] as Array<string>;
     for (let i = 0; i < length; i++) {
       const value = this.memory[address + i];
+      const valueAvailableMem =   this.memory_available[address + i]
       if (value !== undefined) {
+        console.log("VA A RETORNAR", address, valueAvailableMem)
         data.push(value);
       } else {
         throw new Error(`Invalid memory access at ${address + i}`);
       }
     }
+
+    console.log("Y LO QUE RETORNA ES ", data.reverse())
     return data.reverse();
   }
+  
 }
 
 
