@@ -104,6 +104,8 @@ export const uploadProgramMemory = (
   onComplete?: () => void
 ): void => {
 
+  console.log(newConstantsSize)
+
 
   
   // Generate main data
