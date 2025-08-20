@@ -63,7 +63,7 @@ export const useMessageListener = () => {
             setSection("settings");
             setIsCreatedMemoryTable(false);
             setDataMemoryTable(message.payload);
-            setSizeMemory(message.payload.memory.length - message.payload.codeSize);
+            setSizeMemory(message.payload.memory.length);
             setIsFirstStep(false);
             setOperation("uploadMemory");
 

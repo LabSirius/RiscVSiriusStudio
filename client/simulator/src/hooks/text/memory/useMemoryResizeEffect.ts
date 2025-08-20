@@ -46,15 +46,14 @@ export const useMemoryResizeEffect = ({
   useEffect(() => {
     if (!isCreatedMemoryTable) return;
     if (tableInstanceRef.current && dataMemoryTable) {
-      const newTotalSize = dataMemoryTable.codeSize + sizeMemory;
       let newMemory: string[] = [];
 
-      if (newTotalSize < dataMemoryTable.memory.length) {
-        newMemory = dataMemoryTable.memory.slice(0, newTotalSize);
-      } else if (newTotalSize > dataMemoryTable.memory.length) {
+      if (sizeMemory < dataMemoryTable.memory.length) {
+        newMemory = dataMemoryTable.memory.slice(0, sizeMemory);
+      } else if (sizeMemory > dataMemoryTable.memory.length) {
         newMemory = [
           ...dataMemoryTable.memory,
-          ...new Array(newTotalSize - dataMemoryTable.memory.length).fill('00000000'),
+          ...new Array(sizeMemory - dataMemoryTable.memory.length).fill('00000000'),
         ];
       } else {
         newMemory = dataMemoryTable.memory;
@@ -69,8 +68,8 @@ export const useMemoryResizeEffect = ({
         () => {
           setNewPc(0);
 
-          setSp(intToHex(newTotalSize - 4));
-          const newMemorySize = intTo32BitBinary(newTotalSize - 4);
+          setSp(intToHex(sizeMemory - 4));
+          const newMemorySize = intTo32BitBinary(sizeMemory - 4);
           setWriteInRegister({ registerName: 'x2', value: newMemorySize });
         }
       );
@@ -80,7 +79,7 @@ export const useMemoryResizeEffect = ({
         memory: newMemory,
       });
 
-      sendMessage({ event: 'memorySizeChanged', sizeMemory: newTotalSize - 4 });
+      sendMessage({ event: 'memorySizeChanged', sizeMemory: sizeMemory - 4 });
     }
 
  

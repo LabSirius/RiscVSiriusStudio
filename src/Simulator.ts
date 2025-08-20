@@ -63,22 +63,13 @@ export abstract class Simulator {
     if (!this.configured) {
       this._configured = true;
     }
-
-    let result;
-    let descerror;
-    try {
-      result = this.cpu.cycle();
-    } catch {
-      descerror = "Unexpected operation, possibly trying to read a memory address that does not exist.";
-      this.stop(descerror);
-    }
-
+    const result = this.cpu.cycle();
     const instruction = this.cpu.currentInstruction();
 
     return { instruction, result };
   }
 
-  public stop(descerror?: string): void {
+  public stop(): void {
     console.log("Simulator stopped");
   }
 
@@ -153,11 +144,14 @@ export class TextSimulator extends Simulator {
 
     const asmList = this.rvDoc.ir?.instructions.map((instr) => instr.asm);
 
+
+
     this.webview.postMessage({
       from: "extension",
       operation: "uploadMemory",
       payload: {
-        memory: this.cpu.getDataMemory().getMemory(),
+        memory: this.cpu.getDataMemory().getAvailableMemory(),
+        program: this.cpu.getDataMemory().getProgramMemory(),
         codeSize: this.cpu.getDataMemory().codeSize,
         constantsSize: this.cpu.getDataMemory().constantsSize,
         addressLine,
@@ -169,19 +163,13 @@ export class TextSimulator extends Simulator {
 
     super.start();
 
-    const spValue = this.cpu.getDataMemory().spInitialAddress;
-
+    const spValue = this.cpu.getDataMemory().availableSpInitialAddress;
     this.webview.postMessage({
+      // Use 'this.webview' directly
       from: "extension",
       operation: "setRegister",
       register: "x2",
       value: intToBinary(spValue),
-    });
-
-    this.webview.postMessage({
-      from: "extension",
-      operation: "initialLine",
-      lineDecorationNumber: line !== undefined ? line + 1 : -1,
     });
   }
 
@@ -206,17 +194,9 @@ export class TextSimulator extends Simulator {
       if (readsDM(instruction.type, instruction.opcode)) {
         this.notifyMemoryRead(parseInt(result.dm.address, 2), this.bytesToReadOrWrite(instruction));
       }
-
-      try {
-        if (writesDM(instruction.type, instruction.opcode)) {
-          this.writeResult(instruction, result);
-        }
-      } catch {
-        const descerror = "You are trying to save to an invalid address in memory.";
-
-        this.stop(descerror);
+      if (writesDM(instruction.type, instruction.opcode)) {
+        this.writeResult(instruction, result);
       }
-
       if (branchesOrJumps(instruction.type, instruction.opcode)) {
         this.cpu.jumpToInstruction(result.buMux.result);
       } else {
@@ -241,7 +221,7 @@ export class TextSimulator extends Simulator {
     }
   }
 
-  public override stop(descerror?: string): void {
+  public override stop(): void {
     super.stop();
     this.clearHighlight();
     this.makeEditorWritable();
@@ -254,8 +234,7 @@ export class TextSimulator extends Simulator {
 
     // No need for mainView check, 'this.webview' is used in sendToWebview
     commands.executeCommand("setContext", "ext.isSimulating", false);
-
-    this.sendToWebview({ operation: "stop", descerror: descerror });
+    this.sendToWebview({ operation: "stop" });
   }
 
   // --- UI Notification and Helper Methods ---

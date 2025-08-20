@@ -86,7 +86,7 @@ export class SCCPU implements ICPU {
   private dataMemory: DataMemory;
   private immediateUnit: ImmediateUnit;
   private alu: ProcessorALU;
-  private controlUnit: ControlUnit; // <-- Añadido
+  private controlUnit: ControlUnit;
   private pc: number;
 
   get program() {
@@ -107,6 +107,19 @@ export class SCCPU implements ICPU {
     this.controlUnit = new ControlUnit();
     const programSize = program.length * 4;
     this.registers.writeRegister("x2", intToBinary(programSize + memSize - 4));
+
+
+    console.log("--- VALIDACIÓN ETAPA 1: INICIALIZACIÓN ---");
+const programMemorySize = this.dataMemory.getProgramMemory().length;
+const availableMemorySize = this.dataMemory.getAvailableMemory().length;
+console.log(`Tamaño Memoria Programa: ${programMemorySize}`);
+console.log(`Tamaño Memoria Disponible: ${availableMemorySize}`);
+
+
+
+console.log("--- VALIDACIÓN ETAPA 2: STACK POINTER ---");
+const newSP = this.dataMemory.availableSpInitialAddress;
+console.log(`SP Nuevo (basado en solo a memoria disponible): ${newSP}`);
   }
 
   public currentInstruction() {

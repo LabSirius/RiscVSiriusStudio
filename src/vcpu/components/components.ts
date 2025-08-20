@@ -54,52 +54,34 @@ export class RegistersFile {
 export class DataMemory {
 
 
-   //---
-  private memory: Array<string>;
   private memory_program: Array<string>; //U
   private memory_available: Array<string>; //U
-  //---
 
- //---
-  public getMemory(): Array<string> {
-    return [...this.memory];
-  }
+
     public getProgramMemory(): Array<string> { //U
     return [...this.memory_program];
   }
   public getAvailableMemory(): Array<string> { //U
     return [...this.memory_available];
   }
-  //---
   
   private codeAreaEnd: number;
   get codeSize() {
     return this.codeAreaEnd + 1;
   }
 
-  //---
-  private size: number;
   private available_size: number; //U
-  //---
 
-  //--
-  get memSize() {
-    return this.size;
-  }
+
   get availableMemSize() {
     return this.available_size; //U
   }
-  //--
 
 
-  //--
-  get spInitialAddress() {
-    return this.size - 4;
-  }
+ 
    get availableSpInitialAddress() {
     return this.availableMemSize - 4; //U
   }
-  //--
 
   private _constantsSize: number;
   get constantsSize() : number {
@@ -110,52 +92,33 @@ export class DataMemory {
     this.codeAreaEnd = codeSize - 1;
     this._constantsSize =  codeSize - programSize;
 
-     //---
-    this.size = 0;
     this.available_size = 0; 
-     //---
 
-  //---
-    this.memory = [];
     this.memory_program = []; //U
     this.memory_available = []; //U
-    //---
 
 
     this.resize(size);
   }
-
-
   public resize(size: number) {
-    //--
-    this.size = size;
     this.available_size = size; //U
-    const totalSize = this.codeSize + this.memSize;
-    this.size = totalSize;
-    //--
 
   
-  //---
-    this.memory = new Array(totalSize).fill("00000000");
     this.memory_program = new Array(this.codeSize).fill("00000000"); //U
     this.memory_available = new Array(this.available_size).fill("00000000"); //U
 
-  //---
   }
 
   public uploadProgram(memory: Array<any>) {
       memory.forEach((mem) => {
         const address = mem.memdef;
 
-        //----
-        this.memory[address] = mem.binValue;
         this.memory_program[address] = mem.binValue; //U
-        //---
       });
   }
   
   public lastAddress() {
-    return this.size - 1;
+    return this.available_size - 1;
   }
 
   public validAddress(address: number) {
@@ -176,7 +139,6 @@ export class DataMemory {
       if (data[i] === undefined) {
         throw new Error("Undefined data element");
       }
-      this.memory[address + i] = data[i]!;
       this.memory_available[address + i] = data[i]!;
 
       console.log("AVAIBLE MEMORY CAMBIO", this.memory_available )
@@ -193,11 +155,10 @@ export class DataMemory {
     }
     let data = [] as Array<string>;
     for (let i = 0; i < length; i++) {
-      const value = this.memory[address + i];
       const valueAvailableMem =   this.memory_available[address + i]
-      if (value !== undefined) {
+      if (valueAvailableMem !== undefined) {
         console.log("VA A RETORNAR", address, valueAvailableMem)
-        data.push(value);
+        data.push(valueAvailableMem);
       } else {
         throw new Error(`Invalid memory access at ${address + i}`);
       }
