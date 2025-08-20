@@ -89,12 +89,15 @@ export class SCCPU implements ICPU {
     return this.pc;
   }
 
-  public constructor(program: any[], memory: any[], memSize: number) {
+  public constructor(program: any[], dataMemory: any[], availableMemSize: number) {
+
+
+
     this._program = program.filter((sc) => sc.kind === "SrcInstruction");
     this.registers = new RegistersFile();
-    this.dataMemory = new DataMemory(program.length * 4, memory.length, memSize);
+    this.dataMemory = new DataMemory(program.length * 4, dataMemory.length, availableMemSize);
 
-    this.dataMemory.uploadProgram(memory);
+    this.dataMemory.uploadProgram(dataMemory);
     this.pc = 0;
     this.immediateUnit = new ImmediateUnit();
     this.alu = new ProcessorALU();
@@ -104,7 +107,7 @@ export class SCCPU implements ICPU {
     this.registers.writeRegister("x2", intToBinary(spAbsoluteAddress));
   }
 
-  
+
   public currentInstruction() {
     return this._program[this.pc];
   }
