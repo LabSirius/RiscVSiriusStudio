@@ -2,7 +2,7 @@ import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import ContainerSVG from "../../ContainerSVG";
 import { Handle, Position } from "@xyflow/react";
 import LabelValueContainer from "./LabelValueContainer";
-import { PanelTopClose } from "lucide-react";
+import { PanelTopClose, X } from "lucide-react";
 import { useState } from "react";
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
@@ -14,9 +14,10 @@ export default function ImmGenerator() {
   const { currentType } = useCurrentInst();
 
   const [showImmDecode, setShowImmDecode] = useState(false);
+  const [isCardOpen, setIsCardOpen] = useState(false);
 
   return (
-    <HoverCard>
+    <HoverCard open={isCardOpen} onOpenChange={setIsCardOpen}>
       <HoverCardTrigger asChild>
         <div className="w-full ">
           <div className="relative w-full h-full">
@@ -50,7 +51,20 @@ export default function ImmGenerator() {
         <HoverCardContent onMouseLeave={() => setShowImmDecode(false)} className={`${showImmDecode ? 'p-0 w-[45rem]' : 'px-2 py-1 w-min flex justify-end bg-[#404040]'}`} side="top">
          
           {!showImmDecode &&  <PanelTopClose size={20} className="cursor-pointer trasnform hover:scale-[0.9] transition-transform ease-in-out" onClick={() =>  setShowImmDecode(true)}/>}
-          {showImmDecode &&  <ImmDecode /> }
+          
+          {showImmDecode && (
+            <div className="relative">
+              <X 
+                size={22} 
+                className="absolute top-2 right-2 cursor-pointer text-white p-1 hover:scale-[0.95] transition-transform z-1000000 bg-red-400 rounded-lg " 
+                onClick={() => {
+                  setShowImmDecode(false);
+                  setIsCardOpen(false);
+                }}
+              />
+              <ImmDecode /> 
+            </div>
+          )}
         
         </HoverCardContent>
       )} 

@@ -244,7 +244,7 @@ const GeminiChatWidget = () => {
             <div className="flex-1 rounded-md border overflow-y-auto
                             border-neutral-300 bg-neutral-50 p-3 text-sm
                             dark:border-neutral-700 dark:bg-neutral-800/50">
-              {loading && aiResponse === 'Pensando...' && (
+              {loading && aiResponse === 'Thinking...' && (
                 <div className="flex items-center gap-2">
                   <LoaderCircle className="h-4 w-4 animate-spin" />
                   <span>Thinking...</span>
@@ -257,7 +257,7 @@ const GeminiChatWidget = () => {
             <form onSubmit={handleSubmit} className="flex items-center gap-2 flex-shrink-0">
               <Input
                 id="question"
-                placeholder="¿En qué puedo ayudarte?"
+                placeholder="How can I help you?"
                 className="flex-1 
                            bg-neutral-50 border-neutral-300 outline-none
                            dark:bg-neutral-800 dark:border-neutral-700 "
