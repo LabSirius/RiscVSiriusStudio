@@ -12,13 +12,13 @@ import { useLines } from "@/context/panel/LinesContext";
 import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 
 //Hooks
-import { useMemoryTabulator } from "@/hooks/text/memory/useMemoryTabulator";
-import { useMemoryResizeEffect } from "@/hooks/text/memory/useMemoryResizeEffect";
-import { useMemoryImportEffect } from "@/hooks/text/memory/useMemoryImportEffect";
-import { useSyncIsFirstStepRef } from "@/hooks/text/memory/useSyncIsFirstStepRef";
-import { useStackPointerEffect } from "@/hooks/text/memory/useStackPointerEffect";
-import { useMemoryCellWriteEffect } from "@/hooks/text/memory/useMemoryCellWriteEffect";
-import { useAnimateMemoryRead } from "@/hooks/text/memory/useAnimateMemoryRead";
+import { useMemoryTabulator } from "@/hooks/text/memory/availableMemory/useMemoryTabulator";
+import { useMemoryResizeEffect } from "@/hooks/text/memory/availableMemory/useMemoryResizeEffect";
+import { useMemoryImportEffect } from "@/hooks/text/memory/availableMemory/useMemoryImportEffect";
+import { useSyncIsFirstStepRef } from "@/hooks/text/memory/availableMemory/useSyncIsFirstStepRef";
+import { useStackPointerEffect } from "@/hooks/text/memory/availableMemory/useStackPointerEffect";
+import { useMemoryCellWriteEffect } from "@/hooks/text/memory/availableMemory/useMemoryCellWriteEffect";
+import { useAnimateMemoryRead } from "@/hooks/text/memory/availableMemory/useAnimateMemoryRead";
 
 const AvailableMemoryTable = () => {
   const { theme } = useTheme();

@@ -40,17 +40,10 @@ const ImportMemory = () => {
         const addressStr = parts[0].trim();
         const address = parseInt(addressStr, 16);
         if(!dataMemoryTable) return
-        if (address < dataMemoryTable.codeSize) {
-          setDialog({
-            title: "Error importing memory",
-            description: `Cannot import data into the instruction reserved area. Invalid address: ${addressStr.toUpperCase()}`,
-          });
-          return;
-        }
-        if (address > sizeMemory + (dataMemoryTable.codeSize - 4)) {
+        if (address > sizeMemory - 4 ) {
             setDialog({
               title: "Error importing memory",
-              description: `Memory overflow: address ${addressStr} exceeds the allowed limit)`,
+              description: `Memory overflow: address ${addressStr} exceeds the allowed limit`,
             });
             return;
           }
