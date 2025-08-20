@@ -15,11 +15,11 @@ import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 import { useMemoryTabulator } from "@/hooks/text/memory/availableMemory/useMemoryTabulator";
 import { useMemoryResizeEffect } from "@/hooks/text/memory/availableMemory/useMemoryResizeEffect";
 import { useMemoryImportEffect } from "@/hooks/text/memory/availableMemory/useMemoryImportEffect";
-import { useSyncIsFirstStepRef } from "@/hooks/text/memory/availableMemory/useSyncIsFirstStepRef";
+import { useSyncIsFirstStepRef } from "@/hooks/text/memory/shared/useSyncIsFirstStepRef";
 import { useStackPointerEffect } from "@/hooks/text/memory/availableMemory/useStackPointerEffect";
 import { useMemoryCellWriteEffect } from "@/hooks/text/memory/availableMemory/useMemoryCellWriteEffect";
 import { useAnimateMemoryRead } from "@/hooks/text/memory/availableMemory/useAnimateMemoryRead";
-import { useMemorySearchFilterEffect } from "@/hooks/text/memory/programMemory/useMemorySearchFilterEffect";
+import { useMemorySearchFilterEffect } from "@/hooks/text/memory/shared/useMemorySearchFilterEffect";
 
 const AvailableMemoryTable = () => {
   const { theme } = useTheme();
@@ -136,9 +136,9 @@ const AvailableMemoryTable = () => {
             onClick={() => {
               setShowTable(false);
             }}
-            size={18}
+           
             strokeWidth={1.5}
-            className="absolute cursor-pointer right-[.13rem] top-[.4rem] z-100 text-black"
+            className="absolute cursor-pointer right-[0rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] z-100 text-black"
           />
         </div>
         {!isCreatedMemoryTable && (
@@ -153,9 +153,9 @@ const AvailableMemoryTable = () => {
           className={`h-full w-[1.6rem] cursor-pointer z-100 rounded-[.2rem] flex flex-col items-center uppercase group border 
     ${theme === "light" ? "bg-white border-gray-300" : "bg-[#1a1a1a] border-gray-700"}`}>
           <ArrowBigRightDash
-            size={18}
+ 
             strokeWidth={1.5}
-            className={`mt-[0.35rem] mb-3 transition ease-in-out 
+            className={`mt-[0.35rem] mb-3 transition ease-in-out  min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem]
       ${
         theme === "light"
           ? "text-gray-700 group-hover:text-gray-800"
@@ -166,7 +166,7 @@ const AvailableMemoryTable = () => {
           {"mem".split("").map((char, index) => (
             <span
               key={index}
-              className={`text-[.65rem] font-bold leading-[1.15rem] transition ease-in-out 
+              className={`text-[.55rem] font-bold leading-[1.15rem] transition ease-in-out 
         ${
           theme === "light"
             ? "text-gray-700 group-hover:text-gray-800"

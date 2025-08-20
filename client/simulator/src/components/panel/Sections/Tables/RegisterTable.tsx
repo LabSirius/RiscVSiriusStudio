@@ -128,9 +128,8 @@ const RegistersTable = () => {
             />
             <ArrowBigLeftDash
               onClick={() => setShowTable(false)}
-              size={18}
               strokeWidth={1.5}
-              className="absolute right-[.13rem] top-[.4rem] text-black cursor-pointer"
+              className="absolute right-[.13rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] text-black cursor-pointer"
             />
           </>
         )}
@@ -141,9 +140,8 @@ const RegistersTable = () => {
           className={`h-full w-[1.6rem] cursor-pointer rounded-[.2rem] border flex flex-col items-center uppercase group
     ${theme === "light" ? "bg-white border-gray-300" : "bg-[#1a1a1a] border-gray-700"}`}>
           <ArrowBigRightDash
-            size={18}
             strokeWidth={1.5}
-            className={`mt-[0.35rem] mb-3 transition ease-in-out
+            className={`mt-[0.35rem] mb-3 transition ease-in-out min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem]
       ${
         theme === "light"
           ? "text-gray-700 group-hover:text-gray-800"
@@ -154,7 +152,7 @@ const RegistersTable = () => {
           {"regs".split("").map((char, index) => (
             <span
               key={index}
-              className={`text-[.65rem] font-bold leading-[1.15rem] transition ease-in-out
+              className={`text-[.55rem] font-bold leading-[1.15rem] transition ease-in-out
         ${
           theme === "light"
             ? "text-gray-700 group-hover:text-gray-800"

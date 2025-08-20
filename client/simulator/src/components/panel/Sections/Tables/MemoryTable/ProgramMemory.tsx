@@ -12,9 +12,9 @@ import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 
 //Hooks
 import { useMemoryTabulator } from "@/hooks/text/memory/programMemory/useMemoryTabulator";
-import { useSyncIsFirstStepRef } from "@/hooks/text/memory/programMemory/useSyncIsFirstStepRef";
+import { useSyncIsFirstStepRef } from "@/hooks/text/memory/shared/useSyncIsFirstStepRef";
 import { useProgramCounterEffect } from "@/hooks/text/memory/programMemory/useProgramCounterEffect";
-import { useMemorySearchFilterEffect } from "@/hooks/text/memory/programMemory/useMemorySearchFilterEffect";
+import { useMemorySearchFilterEffect } from "@/hooks/text/memory/shared/useMemorySearchFilterEffect";
 import { useLocatePcEffect } from "@/hooks/text/memory/programMemory/useLocatePcEffect";
 import { useEditorClickAnimation } from "@/hooks/text/memory/programMemory/useEditorClickAnimation";
 
@@ -41,7 +41,7 @@ const ProgramMemoryTable = () => {
   const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable } = useLines();
   const isFirstStepRef = useRef(isFirstStep);
 
-  const [showTable, setShowTable] = useState(true);
+  const [showTable, setShowTable] = useState(false);
 
 
   useMemoryTabulator({
@@ -113,9 +113,9 @@ const ProgramMemoryTable = () => {
             onClick={() => {
               setShowTable(false);
             }}
-            size={18}
+   
             strokeWidth={1.5}
-            className="absolute cursor-pointer right-[.13rem] top-[.4rem] z-100 text-black"
+            className="absolute cursor-pointer min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] right-[0rem] top-[.4rem] z-100 text-black"
           />
         </div>
         {!isCreatedMemoryTable && (
@@ -130,9 +130,8 @@ const ProgramMemoryTable = () => {
           className={`h-full w-[1.6rem] cursor-pointer z-100 rounded-[.2rem] flex flex-col items-center uppercase group border 
     ${theme === "light" ? "bg-white border-gray-300" : "bg-[#1a1a1a] border-gray-700"}`}>
           <ArrowBigRightDash
-            size={18}
             strokeWidth={1.5}
-            className={`mt-[0.35rem] mb-3 transition ease-in-out 
+            className={`mt-[0.35rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] mb-3 transition ease-in-out 
       ${
         theme === "light"
           ? "text-gray-700 group-hover:text-gray-800"
@@ -140,10 +139,10 @@ const ProgramMemoryTable = () => {
       }`}
           />
 
-          {"prog mem".split("").map((char, index) => (
+          {"progmem".split("").map((char, index) => (
             <span
               key={index}
-              className={`text-[.65rem] font-bold leading-[1.15rem] transition ease-in-out 
+              className={`text-[.55rem] font-bold leading-[1rem] transition ease-in-out 
         ${
           theme === "light"
             ? "text-gray-700 group-hover:text-gray-800"
