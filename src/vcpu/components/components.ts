@@ -126,8 +126,6 @@ export class DataMemory {
   }
 
   public canWrite(numBytes: number, address: number) {
-    console.log("ADREEES Y NUMERO DE BYTES", address, numBytes)
-    console.log("MEMORIA", this.memory_available)
     const lastAddress = address + numBytes - 1;
     return lastAddress <= this.lastAddress();
   }
@@ -135,6 +133,7 @@ export class DataMemory {
   public write(data: Array<string>, address: number) {
     const lastAddress = address + data.length - 1;
     if (lastAddress > this.lastAddress()) {
+      console.log
       throw new Error("Data memory size exceeded.");
     }
     for (let i = 0; i < data.length; i++) {
@@ -143,13 +142,11 @@ export class DataMemory {
       }
       this.memory_available[address + i] = data[i]!;
 
-      console.log("AVAIBLE MEMORY CAMBIO", this.memory_available )
 
     }
   }
   public read(address: number, length: number): Array<string> {
 
-    console.log("EL LENGH ORIGINAL ES ", address)
     const lastAddress = address + length - 1;
 
     if (lastAddress > this.lastAddress()) {
@@ -159,14 +156,12 @@ export class DataMemory {
     for (let i = 0; i < length; i++) {
       const valueAvailableMem =   this.memory_available[address + i]
       if (valueAvailableMem !== undefined) {
-        console.log("VA A RETORNAR", address, valueAvailableMem)
         data.push(valueAvailableMem);
       } else {
         throw new Error(`Invalid memory access at ${address + i}`);
       }
     }
 
-    console.log("Y LO QUE RETORNA ES ", data.reverse())
     return data.reverse();
   }
   

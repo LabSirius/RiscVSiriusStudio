@@ -23,6 +23,38 @@ const ProgramSection = () => {
   const monacoRef = useRef<Monaco | null>(null);
   const decorationsRef = useRef<string[]>([]);
   const addressDecorationsRef = useRef<string[]>([]);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // CAMBIO CLAVE: useEffect con lógica de captura de eventos.
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      // Solo actuamos si el scroll es MÁS horizontal que vertical.
+      // Esto evita interferir con el scroll vertical si alguna vez lo activas.
+      if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+        // 1. Evitamos que el navegador haga la acción por defecto.
+        event.preventDefault();
+        // 2. DETENEMOS el evento aquí para que NUNCA llegue al editor de Monaco.
+        event.stopPropagation();
+        
+        const parentScroller = wrapper.closest('.overflow-x-auto');
+        
+        if (parentScroller) {
+          // 3. Movemos al padre manualmente.
+          parentScroller.scrollLeft += event.deltaX;
+        }
+      }
+    };
+
+    // 4. Añadimos el listener en la FASE DE CAPTURA (muy importante).
+    wrapper.addEventListener('wheel', handleWheel, { capture: true });
+
+    return () => {
+      wrapper.removeEventListener('wheel', handleWheel, { capture: true });
+    };
+  }, []);
 
   useEffect(() => {
     if (!editor || lineDecorationNumber === -1 || !monacoRef.current) return;
@@ -126,7 +158,7 @@ const ProgramSection = () => {
   };
 
   return (
-    <div className="min-w-[30rem] max-w-[30rem] overflow-hidden min-h-min relative left-[-3rem] mt-1">
+    <div ref={wrapperRef} className="min-w-[30rem] max-w-[30rem] overflow-hidden min-h-min relative left-[-3rem] mt-1">
       <Editor
         height="100%"
         defaultLanguage="python"
