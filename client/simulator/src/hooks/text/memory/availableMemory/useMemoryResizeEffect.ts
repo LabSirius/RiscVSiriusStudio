@@ -2,7 +2,7 @@ import { useEffect, MutableRefObject, Dispatch, SetStateAction } from 'react';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 
 // Import all utility functions and types needed
-import { uploadMemory } from '@/utils/tables/handlersMemory';
+import { uploadAvailableMemory } from '@/utils/tables/handlersMemory';
 import { intTo32BitBinary, intToHex } from '@/utils/handlerConversions';
 import { sendMessage } from '@/components/Message/sendMessage';
 
@@ -58,7 +58,7 @@ export const useMemoryResizeEffect = ({
         newMemory = dataMemoryTable.memory;
       }
 
-      uploadMemory(
+      uploadAvailableMemory(
         tableInstanceRef.current,
         newMemory,
         () => {

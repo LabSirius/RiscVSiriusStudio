@@ -2,6 +2,7 @@ import { chunk } from 'lodash';
 import { intToHex, binaryToHex,  } from '@/utils/handlerConversions';
 import { TabulatorFull as Tabulator, CellComponent, RowComponent } from 'tabulator-tables';
 import { MemoryRow } from '@/utils/tables/types';
+import { SymbolData } from '@/utils/tables/types';
 
 /**
  * This function performs the following tasks:
@@ -11,7 +12,7 @@ import { MemoryRow } from '@/utils/tables/types';
  * 4. Labels the symbols in the table.
  * 5. Resets the program counter to 0.
  */
-export const uploadMemory = (
+export const uploadAvailableMemory = (
   table: Tabulator,
   newMemory: string[],
   onComplete?: () => void
@@ -92,6 +93,90 @@ export const uploadMemory = (
   }
   onComplete?.();
 }
+
+
+export const uploadProgramMemory = (
+  table: Tabulator,
+  newMemory: string[],
+  newCodeSize: number,
+  newConstantsSize: number,
+  newSymbols: Record<string, SymbolData>,
+  onComplete?: () => void
+): void => {
+
+
+  const programSize = newCodeSize - newConstantsSize;
+
+
+  // Generate main data
+  const mainRows = chunk(newMemory, 4).map((word, index) => {
+    const byteAddress = index * 4;
+    const address = intToHex(byteAddress).toUpperCase();
+
+    let segment = '';
+
+    if (byteAddress < programSize) {
+      segment = 'program';
+    } else if (byteAddress < newCodeSize) {
+      segment = 'constants';
+    }
+
+    return {
+      address,
+      value0: word[0] || '00000000',
+      value1: word[1] || '00000000',
+      value2: word[2] || '00000000',
+      value3: word[3] || '00000000',
+      hex: word
+        .slice()
+        .reverse()
+        .map((byte) => binaryToHex(byte || '00000000').toUpperCase().padStart(2, '0'))
+        .join('-'),
+      info: '',
+      segment, 
+    };
+  });
+
+  // Update main data
+  table.setData(mainRows);
+  
+
+  // Add/Update symbols
+  Object.values(newSymbols).forEach(symbol => {
+    const symbolAddress = intToHex(symbol.memdef).toUpperCase();
+    const symbolRow = table.getRow(symbolAddress);
+
+    if (symbolRow) {
+      symbolRow.update({
+        info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`
+      });
+    } else {
+      table.addRow({
+        address: symbolAddress,
+        value0: '00000000',
+        value1: '00000000',
+        value2: '00000000',
+        value3: '00000000',
+        info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`,
+        hex: '00-00-00-00',
+        segment: '',
+      });
+    }
+  });
+
+  // Apply placeholder to empty info cells
+  table.getRows().forEach(row => {
+    const data = row.getData();
+    if (!data.info) {
+      row.getCell("info").getElement().innerHTML = '<div style="opacity:0">\u00A0</div>';
+    }
+  });
+
+  onComplete?.();
+}
+
+
+
 
 /**
  * This function updates the program counter in the memory table.

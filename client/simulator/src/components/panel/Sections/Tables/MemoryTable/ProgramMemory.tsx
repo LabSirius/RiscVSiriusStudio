@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { useMemoryTable } from "@/context/shared/MemoryTableContext";
-import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
 import "../tabulator.css";
@@ -12,16 +11,14 @@ import { useLines } from "@/context/panel/LinesContext";
 import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 
 //Hooks
-import { useMemoryTabulator } from "@/hooks/text/memory/availableMemory/useMemoryTabulator";
-import { useMemoryResizeEffect } from "@/hooks/text/memory/availableMemory/useMemoryResizeEffect";
-import { useMemoryImportEffect } from "@/hooks/text/memory/availableMemory/useMemoryImportEffect";
-import { useSyncIsFirstStepRef } from "@/hooks/text/memory/availableMemory/useSyncIsFirstStepRef";
-import { useStackPointerEffect } from "@/hooks/text/memory/availableMemory/useStackPointerEffect";
-import { useMemoryCellWriteEffect } from "@/hooks/text/memory/availableMemory/useMemoryCellWriteEffect";
-import { useAnimateMemoryRead } from "@/hooks/text/memory/availableMemory/useAnimateMemoryRead";
+import { useMemoryTabulator } from "@/hooks/text/memory/programMemory/useMemoryTabulator";
+import { useSyncIsFirstStepRef } from "@/hooks/text/memory/programMemory/useSyncIsFirstStepRef";
+import { useProgramCounterEffect } from "@/hooks/text/memory/programMemory/useProgramCounterEffect";
 import { useMemorySearchFilterEffect } from "@/hooks/text/memory/programMemory/useMemorySearchFilterEffect";
+import { useLocatePcEffect } from "@/hooks/text/memory/programMemory/useLocatePcEffect";
+import { useEditorClickAnimation } from "@/hooks/text/memory/programMemory/useEditorClickAnimation";
 
-const AvailableMemoryTable = () => {
+const ProgramMemoryTable = () => {
   const { theme } = useTheme();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
@@ -30,27 +27,22 @@ const AvailableMemoryTable = () => {
     isCreatedMemoryTable,
     setIsCreatedMemoryTable,
     dataMemoryTable,
-    setDataMemoryTable,
-    sizeMemory,
-    sp,
+
     setSp,
-    importMemory,
-    setImportMemory,
-    writeInMemory,
-    setWriteInMemory,
-    readInMemory,
-    setReadInMemory,
-    searchInMemory
+    searchInMemory,
+    locatePc,
+    setLocatePc,
+
   } = useMemoryTable();
 
   const { newPc, setNewPc, isFirstStep } = useSimulator();
   const newPcRef = useRef(newPc);
 
-  const { writeInRegister, setWriteInRegister } = useRegistersTable();
-  const { setClickAddressInMemoryTable } = useLines();
+  const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable } = useLines();
   const isFirstStepRef = useRef(isFirstStep);
 
   const [showTable, setShowTable] = useState(true);
+
 
   useMemoryTabulator({
     tableContainerRef,
@@ -65,30 +57,6 @@ const AvailableMemoryTable = () => {
     setClickAddressInMemoryTable,
   });
 
-  useMemoryResizeEffect({
-    isCreatedMemoryTable,
-    tableInstanceRef,
-    dataMemoryTable,
-    setDataMemoryTable,
-    sizeMemory,
-    setNewPc,
-    setSp,
-    setWriteInRegister,
-  });
-
-    useMemorySearchFilterEffect({
-      tableInstanceRef,
-      isCreatedMemoryTable,
-      newPc,
-      searchInMemory,
-    });
-
-  useMemoryImportEffect({
-    isCreatedMemoryTable,
-    tableInstanceRef,
-    importMemory,
-    setImportMemory,
-  });
 
   useSyncIsFirstStepRef({
     isCreatedMemoryTable,
@@ -96,27 +64,36 @@ const AvailableMemoryTable = () => {
     isFirstStepRef,
   });
 
-  useStackPointerEffect({
-    tableInstanceRef,
+  useProgramCounterEffect({
     isCreatedMemoryTable,
-    writeInRegister,
-    sp,
-    setSp,
+    dataMemoryTable,
+    newPc,
+    newPcRef,
+    tableInstanceRef,
   });
 
-  useMemoryCellWriteEffect({
-    isCreatedMemoryTable,
+  useMemorySearchFilterEffect({
     tableInstanceRef,
-    theme,
-    writeInMemory,
-    setWriteInMemory,
+    isCreatedMemoryTable,
+    newPc,
+    searchInMemory,
   });
 
-  useAnimateMemoryRead({
+
+  useLocatePcEffect({
     isCreatedMemoryTable,
     tableInstanceRef,
-    readInMemory,
-    setReadInMemory,
+    locatePc,
+    setLocatePc,
+    newPc,
+  });
+
+  useEditorClickAnimation({
+    isCreatedMemoryTable,
+    tableInstanceRef,
+    clickInEditorLine,
+    setClickInEditorLine,
+    dataMemoryTable,
   });
 
   return (
@@ -163,7 +140,7 @@ const AvailableMemoryTable = () => {
       }`}
           />
 
-          {"mem".split("").map((char, index) => (
+          {"prog mem".split("").map((char, index) => (
             <span
               key={index}
               className={`text-[.65rem] font-bold leading-[1.15rem] transition ease-in-out 
@@ -181,4 +158,4 @@ const AvailableMemoryTable = () => {
   );
 };
 
-export default AvailableMemoryTable;
+export default ProgramMemoryTable;

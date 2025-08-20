@@ -2,10 +2,12 @@ import { useEffect, RefObject, MutableRefObject, Dispatch, SetStateAction } from
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 import { getColumnMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 import {
-  uploadAvailableMemory,
+  uploadProgramMemory,
   setupEventListeners,
+  animateArrowBetweenCells,
+  createPCIcon,
 } from '@/utils/tables/handlersMemory';
-import { intToHex } from '@/utils/handlerConversions';
+import { intToHex, hexToInt, binaryToIntTwoComplement } from '@/utils/handlerConversions';
 import { sendMessage } from '@/components/Message/sendMessage';
 
 /**
@@ -41,8 +43,11 @@ export const useMemoryTabulator = ({
   isCreatedMemoryTable,
   setIsCreatedMemoryTable,
   dataMemoryTable,
+  newPcRef,
   isFirstStepRef,
   setSp,
+  setNewPc,
+  setClickAddressInMemoryTable,
 }: UseMemoryTabulatorProps): void => {
   useEffect(() => {
 
@@ -62,13 +67,26 @@ export const useMemoryTabulator = ({
         const data = row.getData();
         if (!dataMemoryTable) return;
 
-        const spAddress = intToHex(dataMemoryTable.memory.length - 4).toUpperCase();
-        if (data.address === spAddress) return;
-
         const rowEl = row.getElement();
-        rowEl.style.backgroundColor = '';
-        rowEl.style.color = '';
 
+        if (data.segment === 'program') {
+          rowEl.style.backgroundColor = '#D1E3E7';
+          rowEl.style.color = '#000';
+        } else if (data.segment === 'constants') {
+          rowEl.style.backgroundColor = '#FFE5B4';
+          rowEl.style.color = '#000';
+        }
+
+        const currentPcHex = (newPcRef.current * 4).toString(16).toUpperCase();
+        if (data.address === currentPcHex) {
+          rowEl.querySelectorAll('.pc-icon').forEach((el) => el.remove());
+          const cell = row.getCell('address');
+          if (cell) {
+            const cellEl = cell.getElement();
+            cellEl.style.position = 'relative';
+            cellEl.appendChild(createPCIcon());
+          }
+        }
       },
       initialSort: [{ column: 'address', dir: 'desc' }],
     });
@@ -76,14 +94,44 @@ export const useMemoryTabulator = ({
     tableInstanceRef.current.on('tableBuilt', () => {
       setIsCreatedMemoryTable(true);
       if (dataMemoryTable) {
-        uploadAvailableMemory(
+        uploadProgramMemory(
           tableInstanceRef.current!,
-          dataMemoryTable.memory,
+          dataMemoryTable.program,
+          dataMemoryTable.codeSize,
+          dataMemoryTable.constantsSize,
+          dataMemoryTable.symbols,
           () => {
             setSp(intToHex(dataMemoryTable.memory.length - 4));
+            setNewPc(0);
           }
         );
       }
+
+      tableInstanceRef.current?.on('cellClick', (_, cell) => {
+        if (cell.getField() === 'address') {
+          const address = cell.getValue();
+          const intAdress = Number(hexToInt(address)) / 4;
+          if (dataMemoryTable?.codeSize) {
+            if (intAdress * 4 < dataMemoryTable?.codeSize) {
+              const instruction = dataMemoryTable?.addressLine[intAdress];
+              if (instruction) {
+                setClickAddressInMemoryTable(instruction.line);
+                sendMessage({ event: 'clickInInstruction', line: instruction.line });
+                if (dataMemoryTable?.addressLine[intAdress].jump) {
+                  const intJump = Number(
+                    binaryToIntTwoComplement(String(dataMemoryTable?.addressLine[intAdress].jump))
+                  );
+                  const jumpTo = intJump + intAdress * 4;
+                  if (tableInstanceRef.current) {
+                    animateArrowBetweenCells(tableInstanceRef.current, intAdress * 4, jumpTo);
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
+
       setupEventListeners(tableInstanceRef.current!);
     });
 
