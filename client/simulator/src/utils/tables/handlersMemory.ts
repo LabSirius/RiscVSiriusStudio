@@ -105,9 +105,7 @@ export const uploadProgramMemory = (
 ): void => {
 
 
-  const programSize = newCodeSize - newConstantsSize;
-
-
+  
   // Generate main data
   const mainRows = chunk(newMemory, 4).map((word, index) => {
     const byteAddress = index * 4;
@@ -115,9 +113,11 @@ export const uploadProgramMemory = (
 
     let segment = '';
 
-    if (byteAddress < programSize) {
+
+  
+    if (byteAddress < newCodeSize) {
       segment = 'program';
-    } else if (byteAddress < newCodeSize) {
+    }else{
       segment = 'constants';
     }
 

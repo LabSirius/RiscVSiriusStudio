@@ -153,7 +153,7 @@ export class TextSimulator extends Simulator {
         memory: this.cpu.getDataMemory().getAvailableMemory(),
         program: this.cpu.getDataMemory().getProgramMemory(),
         codeSize: this.cpu.getDataMemory().codeSize,
-        constantsSize: this.cpu.getDataMemory().constantsSize,
+        m: this.cpu.getDataMemory().constantsSize,
         addressLine,
         symbols: this.rvDoc.ir?.symbols,
         asmList,
