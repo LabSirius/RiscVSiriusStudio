@@ -116,7 +116,7 @@ const RegistersTable = () => {
     <>
       <div
         ref={tableContainerRef}
-        className={`shadow-lg min-h-min max-h-[calc(100dvh-2.3rem)] ${
+        className={`shadow-lg min-h-min max-h-[calc(100dvh-2.3rem)] mx-4 ${
           !showTable && "hidden"
         } min-w-[22.7rem] relative `}>
         {!tableBuilt && <SkeletonRegisterTable />}

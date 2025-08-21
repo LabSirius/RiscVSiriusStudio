@@ -7,7 +7,7 @@ import ProgramMemoryTable from "./MemoryTable/ProgramMemory";
 const Tables = () => {
   const { typeSimulator } = useSimulator();
   return (
-    <div className="flex gap-5 overflow-hidden min-w-min">
+    <div className="flex gap-0 overflow-hidden min-w-min">
       <RegisterTable />
       <AvailableMemoryTable />
       <ProgramMemoryTable />

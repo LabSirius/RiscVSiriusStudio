@@ -97,7 +97,7 @@ const ProgramMemoryTable = () => {
   });
 return (
     <>
-      <div className={`shadow-lg !min-h-min min-w-[37.36rem] relative ${!showTable && "hidden"}`}>
+      <div className={`shadow-lg !min-h-min min-w-[37.36rem]  mx-4  relative ${!showTable && "hidden"}`}>
         <div
           className={`h-full  w-full transition-opacity ease-in 9000  ${
             isCreatedMemoryTable ? "opacity-100" : "opacity-0"
