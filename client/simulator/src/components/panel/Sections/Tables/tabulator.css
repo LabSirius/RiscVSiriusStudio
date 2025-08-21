@@ -3,14 +3,21 @@
 
 .theme-dark .tabulator {
     background-color: #2c2c2c;  
-    border: 1px solid #444;
     color: #eee;
   }
+
+
+  div.tabulator {
+    border: none !important;
+}
+
+div.tabulator .tabulator-header {
+    border-bottom: none !important;
+}
   
   
   .theme-dark .tabulator .tabulator-header {
     background-color: #444;
-    border-bottom: 1px solid #666;
     color: #fff;
   }
   .theme-dark .tabulator .tabulator-header .tabulator-col,

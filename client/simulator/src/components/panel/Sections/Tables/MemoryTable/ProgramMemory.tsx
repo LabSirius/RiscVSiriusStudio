@@ -96,68 +96,65 @@ const ProgramMemoryTable = () => {
     dataMemoryTable,
   });
 return (
-  <>
-    <div
-      className={`shadow-lg min-w-[37.36rem] relative flex flex-col max-h-[calc(100vh-100px)] ${
-        !showTable && "hidden"
-      }`}>
-      <div
-        className={`w-full transition-opacity ease-in 9000 overflow-y-auto ${
-          isCreatedMemoryTable ? "opacity-100" : "opacity-0"
-        }`}>
+    <>
+      <div className={`shadow-lg !min-h-min min-w-[37.36rem] relative ${!showTable && "hidden"}`}>
         <div
-          ref={tableContainerRef}
-          className={`w-full overflow-x-hidden ${
-            theme === "light" ? "theme-light" : "theme-dark"
-          }`}
-        />
-      </div>
-
-      <ArrowBigLeftDash
-        onClick={() => {
-          setShowTable(false);
-        }}
-        strokeWidth={1.5}
-        className="absolute cursor-pointer min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] right-[0rem] top-[.4rem] z-100 text-black"
-      />
-      {!isCreatedMemoryTable && (
-        <div className="absolute inset-0">
-          <SkeletonMemoryTable />
+          className={`h-full  w-full transition-opacity ease-in 9000  ${
+            isCreatedMemoryTable ? "opacity-100" : "opacity-0"
+          }`}>
+          <div
+            ref={tableContainerRef}
+            className={`w-full h-full overflow-x-hidden ${
+              theme === "light" ? "theme-light" : "theme-dark"
+            }`}
+          />
+          <ArrowBigLeftDash
+            onClick={() => {
+              setShowTable(false);
+            }}
+           
+            strokeWidth={1.5}
+            className="absolute cursor-pointer right-[0rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] z-100 text-black"
+          />
         </div>
-      )}
-    </div>
-
-    {!showTable && (
-      <div
-        onClick={() => setShowTable(true)}
-        className={`h-full w-[1.6rem] cursor-pointer z-100 rounded-[.2rem] flex flex-col items-center uppercase group border 
-  ${theme === "light" ? "bg-white border-gray-300" : "bg-[#1a1a1a] border-gray-700"}`}>
-        <ArrowBigRightDash
-          strokeWidth={1.5}
-          className={`mt-[0.35rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] mb-3 transition ease-in-out 
-    ${
-      theme === "light"
-        ? "text-gray-700 group-hover:text-gray-800"
-        : "text-gray-400 group-hover:text-gray-300"
-    }`}
-        />
-
-        {"progmem".split("").map((char, index) => (
-          <span
-            key={index}
-            className={`text-[.55rem] font-bold leading-[1rem] transition ease-in-out 
+        {!isCreatedMemoryTable && (
+          <div className="absolute inset-0">
+            <SkeletonMemoryTable />
+          </div>
+        )}
+      </div>
+      {!showTable && (
+        <div
+          onClick={() => setShowTable(true)}
+          className={`h-full w-[1.6rem] cursor-pointer z-100 rounded-[.2rem] flex flex-col items-center uppercase group border 
+    ${theme === "light" ? "bg-white border-gray-300" : "bg-[#1a1a1a] border-gray-700"}`}>
+          <ArrowBigRightDash
+ 
+            strokeWidth={1.5}
+            className={`mt-[0.35rem] mb-3 transition ease-in-out  min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem]
       ${
         theme === "light"
           ? "text-gray-700 group-hover:text-gray-800"
-          : "text-gray-400 group-hover:text-gray-500"
-      }`}>
-            {char === " " ? "\u00A0" : char}
-          </span>
-        ))}
-      </div>
-    )}
-  </>
-);
+          : "text-gray-400 group-hover:text-gray-300"
+      }`}
+          />
+
+          {"progmem".split("").map((char, index) => (
+            <span
+              key={index}
+              className={`text-[.55rem] font-bold leading-[1.15rem] transition ease-in-out 
+        ${
+          theme === "light"
+            ? "text-gray-700 group-hover:text-gray-800"
+            : "text-gray-400 group-hover:text-gray-500"
+        }`}>
+              {char === " " ? "\u00A0" : char}
+            </span>
+          ))}
+        </div>
+      )}
+    </>
+  );
 };
 
 export default ProgramMemoryTable;
