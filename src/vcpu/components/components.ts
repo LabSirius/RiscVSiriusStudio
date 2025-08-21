@@ -88,6 +88,12 @@ export class DataMemory {
     return this._constantsSize;
   }
 
+
+  public overwriteAvailableMemory(newMemory: string[]): void {
+  this.memory_available = newMemory;
+  this.available_size = newMemory.length;
+}
+
   public constructor(programSize : number, codeSize: number, size: number) {
     this.codeAreaEnd = codeSize - 1;
     this._constantsSize =  codeSize - programSize;
@@ -131,6 +137,7 @@ export class DataMemory {
   }
 
   public write(data: Array<string>, address: number) {
+    console.log("CAMBIOOOO", data, address)
     const lastAddress = address + data.length - 1;
     if (lastAddress > this.lastAddress()) {
       console.log

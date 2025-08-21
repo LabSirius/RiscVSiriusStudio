@@ -402,7 +402,7 @@ export class SCCPU implements ICPU {
     newMemory.forEach((group) => {
       flatMemory.push(group.value0, group.value1, group.value2, group.value3);
     });
-    (this.dataMemory as any).memory = flatMemory;
+    this.dataMemory.overwriteAvailableMemory(flatMemory);
   }
   public replaceRegisters(newRegisters: string[]): void {
     (this.registers as any).registers = newRegisters;
