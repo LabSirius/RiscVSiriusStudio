@@ -3,6 +3,7 @@ import SimulateAuto from "./SimulateAuto";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useDialog } from "@/context/panel/DialogContext";
 import { useTheme } from "@/components/ui/theme/theme-provider";
+import GeminiChatWidget from "@/components/GeminiChatTest";
 
 const OptionsSimulate = () => {
   const { operation, setSimulateAuto } = useSimulator();
@@ -33,6 +34,8 @@ const OptionsSimulate = () => {
             theme === "light" ? "bg-gray-200" : "bg-black"
           }  rounded-sm mt-3`}>
           <SimulateAuto />
+          <GeminiChatWidget />
+
         </div>
       )}
     </>

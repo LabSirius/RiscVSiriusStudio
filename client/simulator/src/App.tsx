@@ -6,7 +6,6 @@ import MainSection from "@/components/panel/Sections/MainSection/MainSection";
 import MonocycleCanva from "@/components/graphic/Canva/monocycle/MonoCycleCanva";
 import PipelineCanva from "./components/graphic/Canva/pipeline/PipelineCanva";
 import Providers from "./providers";
-import GeminiChatTest from "./components/GeminiChatTest";
 
 const App = () => {
   const { modeSimulator, typeSimulator } = useSimulator();
@@ -26,7 +25,6 @@ const App = () => {
             <MainSection />
           </div>
         )}
-        <GeminiChatTest />
       </div>
     </Providers>
   );

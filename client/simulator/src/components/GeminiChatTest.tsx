@@ -1,12 +1,7 @@
+import { useState } from "react";
+import { MessageSquareWarning, SendHorizonal, LoaderCircle } from "lucide-react";
 
-import { useState } from 'react';
-import { MessageSquareWarning, SendHorizonal, LoaderCircle } from 'lucide-react';
-
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -136,15 +131,14 @@ Actúa como un "Analista Experto en Simulación de Procesadores", especializado 
    - Pide una breve aclaración o asume el caso más probable y explica tu suposición.
 `;
 
-
 type HistoryItem = {
-  role: 'user' | 'model';
+  role: "user" | "model";
   parts: { text: string }[];
 };
 
 const GeminiChatWidget = () => {
-  const [question, setQuestion] = useState('');
-  const [aiResponse, setAiResponse] = useState('');
+  const [question, setQuestion] = useState("");
+  const [aiResponse, setAiResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
@@ -153,22 +147,21 @@ const GeminiChatWidget = () => {
     if (!currentQuestion) return;
 
     setLoading(true);
-    setAiResponse('Pensando...');
+    setAiResponse("Pensando...");
 
     const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-
     const currentHistory = [
       ...history,
       {
-        role: 'user' as const,
+        role: "user" as const,
         parts: [{ text: currentQuestion }],
       },
     ];
 
     const requestBody = {
-      contents: currentHistory, 
+      contents: currentHistory,
       system_instruction: {
         parts: [{ text: `${REGLAS_IA}\n\nContexto:\n${CONTEXTO_IA}` }],
       },
@@ -176,8 +169,8 @@ const GeminiChatWidget = () => {
 
     try {
       const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody),
       });
 
@@ -186,22 +179,21 @@ const GeminiChatWidget = () => {
       }
 
       const data = await response.json();
-      
+
       if (!data.candidates || data.candidates.length === 0) {
         throw new Error("Respuesta no válida o bloqueada por seguridad.");
       }
 
       const textResponse = data.candidates[0].content.parts[0].text;
       setAiResponse(textResponse);
-      
+
       setHistory([
         ...currentHistory,
         {
-          role: 'model' as const,
+          role: "model" as const,
           parts: [{ text: textResponse }],
-        }
+        },
       ]);
-
     } catch (error) {
       console.error("Hubo un error al llamar a Gemini:", error);
       setAiResponse("Lo siento, algo salió mal. Inténtalo de nuevo.");
@@ -213,62 +205,54 @@ const GeminiChatWidget = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     callGeminiAPI(question);
-    setQuestion(''); 
+    setQuestion("");
   };
 
   return (
     <div className="fixed bottom-5 right-5 z-50">
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
         <PopoverTrigger asChild>
-          <Button
-            variant="secondary"
-            size="icon"
-            className="rounded-full h-12 w-12 
-                       bg-neutral-200 text-neutral-900 hover:bg-neutral-300
-                       dark:bg-neutral-800 dark:text-neutral-100 dark:hover:bg-neutral-700"
-          >
-            <MessageSquareWarning className="h-8 w-8" />
-          </Button>
+          <MessageSquareWarning size={18} className="cursor-pointer" />
         </PopoverTrigger>
         <PopoverContent
-          className="w-80 mr-4 flex flex-col gap-4 p-4
+          className="w-80 mr-4 flex flex-col gap-4 p-4 z-500000000000000
                      max-h-[80vh] 
                      bg-neutral-100 border border-neutral-300 text-neutral-900 
-                     dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-100" 
-          align="end"
-        >
-            <div className="space-y-2 flex-shrink-0">
-              <h4 className="font-medium leading-none">Ask the AI</h4>
-            </div>
+                     dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-100"
+          align="end">
+          <div className="space-y-2 flex-shrink-0">
+            <h4 className="font-medium leading-none">Ask the AI</h4>
+          </div>
 
-            <div className="flex-1 rounded-md border overflow-y-auto
+          <div
+            className="flex-1 rounded-md border overflow-y-auto
                             border-neutral-300 bg-neutral-50 p-3 text-sm
                             dark:border-neutral-700 dark:bg-neutral-800/50">
-              {loading && aiResponse === 'Thinking...' && (
-                <div className="flex items-center gap-2">
-                  <LoaderCircle className="h-4 w-4 animate-spin" />
-                  <span>Thinking...</span>
-                </div>
-              )}
-              {!aiResponse && <p>Waiting for your question...</p>}
-              {aiResponse && !loading && <p className="whitespace-pre-wrap">{aiResponse}</p>}
-            </div>
+            {loading && aiResponse === "Pensando..." && (
+              <div className="flex items-center gap-2">
+                <LoaderCircle className="h-4 w-4 animate-spin" />
+                <span>Thinking...</span>
+              </div>
+            )}
+            {!aiResponse && <p>Waiting for your question...</p>}
+            {aiResponse && !loading && <p className="whitespace-pre-wrap">{aiResponse}</p>}
+          </div>
 
-            <form onSubmit={handleSubmit} className="flex items-center gap-2 flex-shrink-0">
-              <Input
-                id="question"
-                placeholder="How can I help you?"
-                className="flex-1 
+          <form onSubmit={handleSubmit} className="flex items-center gap-2 flex-shrink-0">
+            <Input
+              id="question"
+              placeholder="How can I help you?"
+              className="flex-1 
                            bg-neutral-50 border-neutral-300 outline-none
                            dark:bg-neutral-800 dark:border-neutral-700 "
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                disabled={loading}
-              />
-              <Button type="submit" size="icon" disabled={loading || !question}>
-                <SendHorizonal className="h-4 w-4" />
-              </Button>
-            </form>
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              disabled={loading}
+            />
+            <Button type="submit" size="icon" disabled={loading || !question}>
+              <SendHorizonal className="h-4 w-4" />
+            </Button>
+          </form>
         </PopoverContent>
       </Popover>
     </div>
