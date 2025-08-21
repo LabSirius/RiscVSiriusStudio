@@ -209,13 +209,13 @@ const GeminiChatWidget = () => {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-50">
+    <div className="fixed bottom-5 right-5">
       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
         <PopoverTrigger asChild>
           <MessageSquareWarning size={18} className="cursor-pointer" />
         </PopoverTrigger>
         <PopoverContent
-          className="w-80 mr-4 flex flex-col gap-4 p-4 z-500000000000000
+          className="w-80 mr-4 flex flex-col gap-4 p-4 z-[10000]
                      max-h-[80vh] 
                      bg-neutral-100 border border-neutral-300 text-neutral-900 
                      dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-100"

@@ -65,7 +65,7 @@ export function SideBar() {
         setHoveringSidebar(false);
       }}
     >
-      <SidebarContent className="flex flex-col justify-between w-full h-full p-3">
+      <SidebarContent className="flex flex-col justify-between w-full h-full p-3 ">
         <div className="flex flex-col items-start gap-3">
           <p>Sections</p>
           {mainSections.map(
