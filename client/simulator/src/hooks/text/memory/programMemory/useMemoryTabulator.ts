@@ -69,13 +69,7 @@ export const useMemoryTabulator = ({
 
         const rowEl = row.getElement();
 
-        if (data.segment === 'program') {
-          rowEl.style.backgroundColor = '#D1E3E7';
-          rowEl.style.color = '#000';
-        } else if (data.segment === 'constants') {
-          rowEl.style.backgroundColor = '#FFE5B4';
-          rowEl.style.color = '#000';
-        }
+        
 
         const currentPcHex = (newPcRef.current * 4).toString(16).toUpperCase();
         if (data.address === currentPcHex) {
