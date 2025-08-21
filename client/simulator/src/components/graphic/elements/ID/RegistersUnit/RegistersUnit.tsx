@@ -28,7 +28,7 @@ export default function RegistersUnit() {
 
   return (
     <div className="w-full">
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full group">
         <h2 className=" titleInElement top-[15%] left-[82%]  -translate-x-[82%] -translate-y-[15%] !z-0 ">
           Registers Unit
         </h2>
@@ -42,7 +42,10 @@ export default function RegistersUnit() {
             </>
           )}
         </div>
-        <ClockTriangle />
+
+        <div className="group-hover:translate-y-[-.8rem] transition-all duration-200 ease-in">
+          <ClockTriangle />
+        </div>
       </div>
 
       {inputHandlers.map((handler) => (

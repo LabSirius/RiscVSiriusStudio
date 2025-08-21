@@ -43,7 +43,6 @@ export default function ImmGenerator() {
       </HoverCardTrigger>
       
       {isFeatureEnabled && (
-        // Se elimina el onMouseLeave que causaba conflictos
         <HoverCardContent className={`${showImmDecode ? 'p-0 w-[45rem]' : 'px-2 py-1 w-min flex justify-end bg-[#404040]'}`} side="top">
          
           {!showImmDecode && (
