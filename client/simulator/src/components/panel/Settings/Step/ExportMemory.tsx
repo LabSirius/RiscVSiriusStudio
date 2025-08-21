@@ -118,7 +118,7 @@ CONTENT BEGIN
             <DropdownMenuItem onClick={() => handleExport("mif")}>.mif</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <p className="text-gray">Memory (dataMemoryTable.program)</p>
+        <p className="text-gray">Memory</p>
       </div>
     </div>
   );
