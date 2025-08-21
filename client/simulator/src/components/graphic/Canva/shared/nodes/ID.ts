@@ -19,8 +19,8 @@ export const useIDNodes = (): Node[] => {
       style: {
         width: 740 + offsetXSize,
         height: 1330 + (isPipeline ? 140 : 0),
-        backgroundColor: "#FFF9C4",
-        border: "1px solid #FFF9C4",
+        backgroundColor: "#E3F2FD",
+        border: "1px solid #E3F2FD",
         borderRadius: 8,
       },
     },
@@ -135,7 +135,7 @@ export const useIDNodes = (): Node[] => {
           nodeBase("cu_ie", "cu_ie", "cu_ie", { x: 740 + offsetXSize, y: 1370.3 }, "ID", 36, 50),
           nodeBase("cu_id_exit", "cu_id_exit", "cu_id_exit", { x: 660, y: 1272 }, "ID", 90, 30),
           pivotNode("pivot39", { x: 620, y: 1365 }, "ID"),
-       
+
           nodeBase(
             "pivotJump11",
             "pivotJump11",
