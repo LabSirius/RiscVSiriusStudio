@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sideBar";
 import CircleActive from "./CircleActive";
 import { Sidebar, SidebarContent, SidebarMenuItem } from "@/components/ui/sideBar";
-import { Text, Search, Calculator, Info, Settings } from "lucide-react";
+import { Search, Calculator, Info, Settings } from "lucide-react";
 
 type SectionType = string;
 
@@ -37,11 +37,6 @@ export function SideBar() {
 
 
   const mainSections: SectionItem[] = [
-    {
-      name: "program",
-      icon: <Text />,
-      show: (operation === "uploadMemory"  || operation === "step")  ,
-    },
     {
       name: "search",
       icon: <Search />,

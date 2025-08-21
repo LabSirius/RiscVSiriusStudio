@@ -32,7 +32,6 @@ const ProgramMemoryTable = () => {
     searchInMemory,
     locatePc,
     setLocatePc,
-
   } = useMemoryTable();
 
   const { newPc, setNewPc, isFirstStep } = useSimulator();
@@ -42,7 +41,6 @@ const ProgramMemoryTable = () => {
   const isFirstStepRef = useRef(isFirstStep);
 
   const [showTable, setShowTable] = useState(false);
-
 
   useMemoryTabulator({
     tableContainerRef,
@@ -56,7 +54,6 @@ const ProgramMemoryTable = () => {
     setNewPc,
     setClickAddressInMemoryTable,
   });
-
 
   useSyncIsFirstStepRef({
     isCreatedMemoryTable,
@@ -79,7 +76,6 @@ const ProgramMemoryTable = () => {
     searchInMemory,
   });
 
-
   useLocatePcEffect({
     isCreatedMemoryTable,
     tableInstanceRef,
@@ -95,9 +91,12 @@ const ProgramMemoryTable = () => {
     setClickInEditorLine,
     dataMemoryTable,
   });
-return (
+  return (
     <>
-      <div className={`shadow-lg !min-h-min min-w-[37.36rem]  mx-4  relative ${!showTable && "hidden"}`}>
+      <div
+        className={`shadow-lg !min-h-min min-w-[37.36rem]  mx-4  relative ${
+          !showTable && "hidden"
+        }`}>
         <div
           className={`h-full  w-full transition-opacity ease-in 9000  ${
             isCreatedMemoryTable ? "opacity-100" : "opacity-0"
@@ -112,7 +111,6 @@ return (
             onClick={() => {
               setShowTable(false);
             }}
-           
             strokeWidth={1.5}
             className="absolute cursor-pointer right-[0rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] z-100 text-black"
           />
@@ -129,9 +127,8 @@ return (
           className={`h-full w-[1.6rem] cursor-pointer z-100 rounded-[.2rem] flex flex-col items-center uppercase group border 
     ${theme === "light" ? "bg-white border-gray-300" : "bg-[#1a1a1a] border-gray-700"}`}>
           <ArrowBigRightDash
- 
             strokeWidth={1.5}
-            className={`mt-[0.35rem] mb-3 transition ease-in-out  min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem]
+            className={`mt-[0.35rem] mb-1 transition ease-in-out  min-w-[.9rem] min-h-[.9rem] w-[.9rem] h-[.9rem]
       ${
         theme === "light"
           ? "text-gray-700 group-hover:text-gray-800"
@@ -139,18 +136,22 @@ return (
       }`}
           />
 
-          {"progmem".split("").map((char, index) => (
-            <span
-              key={index}
-              className={`text-[.55rem] font-bold leading-[1.15rem] transition ease-in-out 
-        ${
-          theme === "light"
-            ? "text-gray-700 group-hover:text-gray-800"
-            : "text-gray-400 group-hover:text-gray-500"
-        }`}>
-              {char === " " ? "\u00A0" : char}
-            </span>
-          ))}
+          {"program memory".split("").map((char, index) =>
+            char === " " ? (
+              <div key={index} className="h-2" /> 
+            ) : (
+              <span
+                key={index}
+                className={`text-[.45rem] font-bold leading-[.91rem] transition ease-in-out 
+          ${
+            theme === "light"
+              ? "text-gray-700 group-hover:text-gray-800"
+              : "text-gray-400 group-hover:text-gray-500"
+          }`}>
+                {char}
+              </span>
+            )
+          )}
         </div>
       )}
     </>

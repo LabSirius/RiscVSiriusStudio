@@ -387,7 +387,7 @@ export class SCCPU implements ICPU {
     result.wb = { result: add4Res, signal: "10" };
     return result;
   }
-
+  
   public getRegisterFile(): RegistersFile {
     return this.registers;
   }

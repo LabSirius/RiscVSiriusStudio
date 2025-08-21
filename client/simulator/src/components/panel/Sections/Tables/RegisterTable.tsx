@@ -141,7 +141,7 @@ const RegistersTable = () => {
     ${theme === "light" ? "bg-white border-gray-300" : "bg-[#1a1a1a] border-gray-700"}`}>
           <ArrowBigRightDash
             strokeWidth={1.5}
-            className={`mt-[0.35rem] mb-3 transition ease-in-out min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem]
+            className={`mt-[0.35rem] mb-1 transition ease-in-out min-w-[.9rem] min-h-[.9rem] w-[.9rem] h-[.9rem]
       ${
         theme === "light"
           ? "text-gray-700 group-hover:text-gray-800"
@@ -149,10 +149,10 @@ const RegistersTable = () => {
       }`}
           />
 
-          {"regs".split("").map((char, index) => (
+          {"registers".split("").map((char, index) => (
             <span
               key={index}
-              className={`text-[.55rem] font-bold leading-[1.15rem] transition ease-in-out
+              className={`text-[.45rem] font-bold leading-[.91rem] transition ease-in-out
         ${
           theme === "light"
             ? "text-gray-700 group-hover:text-gray-800"
