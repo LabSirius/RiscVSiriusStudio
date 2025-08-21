@@ -25,7 +25,7 @@ export const useIDNodes = (): Node[] => {
       },
     },
 
-    nodeBase("title-ID", "title", "Decode (ID)", { x: 10, y: 0 }, "ID", 740, 50),
+    nodeBase("title-ID", "title", "Decode (ID)", { x: 10, y: 0 }, "ID", 870, 50),
     nodeBase(
       "ruWr",
       "ruWr",
