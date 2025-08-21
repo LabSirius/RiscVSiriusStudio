@@ -35,7 +35,8 @@ const RegistersTable = () => {
     searchInRegisters,
   } = useRegistersTable();
 
-  const {     checkFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters} = useCustomOptionSimulate()
+  const { checkFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters } =
+    useCustomOptionSimulate();
   const [showTable, setShowTable] = useState(true);
 
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -47,7 +48,6 @@ const RegistersTable = () => {
   const [tableBuilt, setTableBuilt] = useState(false);
 
   const { isFirstStep } = useSimulator();
-  
 
   const viewTypeFormatterCustom = useMemo(
     () =>
@@ -137,27 +137,19 @@ const RegistersTable = () => {
       {!showTable && (
         <div
           onClick={() => setShowTable(true)}
-          className={`h-full w-[1.6rem] cursor-pointer rounded-[.2rem] border flex flex-col items-center uppercase group
-    ${theme === "light" ? "bg-white border-gray-300" : "bg-[#1a1a1a] border-gray-700"}`}>
+          className={`h-full w-[1.6rem] cursor-pointer rounded-[.2rem] border flex flex-col items-center uppercase hover:opacity-[0.9] transition-all ease-in-out duration-200
+    bg-[#FFF9C4] border-gray-700 text-black`}>
           <ArrowBigRightDash
             strokeWidth={1.5}
-            className={`mt-[0.35rem] mb-1 transition ease-in-out min-w-[.9rem] min-h-[.9rem] w-[.9rem] h-[.9rem]
-      ${
-        theme === "light"
-          ? "text-gray-700 group-hover:text-gray-800"
-          : "text-gray-400 group-hover:text-gray-300"
-      }`}
+            className={`mt-[0.35rem] mb-1  min-w-[.9rem] min-h-[.9rem] w-[.9rem] h-[.9rem]
+      `}
           />
 
           {"registers".split("").map((char, index) => (
             <span
               key={index}
-              className={`text-[.45rem] font-bold leading-[.91rem] transition ease-in-out
-        ${
-          theme === "light"
-            ? "text-gray-700 group-hover:text-gray-800"
-            : "text-gray-400 group-hover:text-gray-500"
-        }`}>
+              className={`text-[.45rem] font-bold leading-[.91rem]  ease-in-out   
+        `}>
               {char === " " ? "\u00A0" : char}
             </span>
           ))}

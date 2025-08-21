@@ -12,7 +12,7 @@ const ExecuteTunnel = () => {
      <h2 className="subtitleInTunnel ">
        Execute
       </h2>
-      <TunnelContainer color="#FFF9C4"/>
+      <TunnelContainer color="#E3F2FD"/>
    </div>
   )
 }

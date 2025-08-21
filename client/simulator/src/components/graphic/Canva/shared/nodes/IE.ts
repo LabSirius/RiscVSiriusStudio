@@ -23,9 +23,9 @@ export const useIENodes = (): Node[] => {
       style: {
         width: 680 + offsetXSize,
         height: 1330 + (isPipeline ? 140 : 0),
-        backgroundColor: "#FFF9C4",
-        border: "1px solid #FFF9C4",
-
+        
+        backgroundColor: "#E3F2FD",
+        border: "1px solid #E3F2FD",
         borderRadius: 8,
       },
     },
@@ -113,6 +113,7 @@ export const useIENodes = (): Node[] => {
           nodeBase("pivotJump9", "pivotJump9", "pivotJump9", { x: 842, y: 231 }, "IE", 47, 47),
 
           nodeBase("cu_ie_exit", "cu_ie_exit", "cu_ie_exit", { x: 100, y: 1272 }, "IE", 90, 30),
+
         ]
       : []),
   ];

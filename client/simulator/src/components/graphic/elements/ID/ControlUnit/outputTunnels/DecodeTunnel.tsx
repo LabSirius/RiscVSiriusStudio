@@ -11,7 +11,7 @@ const DecodeTunnel = () => {
       onMouseLeave={() => setOverlayDecodeActive(false)}
     >
       <h2 className="subtitleInTunnel">Decode</h2>
-      <TunnelContainer color="#E3F2FD"/>
+      <TunnelContainer color="#FFF9C4"/>
     </div>
   );
 };
