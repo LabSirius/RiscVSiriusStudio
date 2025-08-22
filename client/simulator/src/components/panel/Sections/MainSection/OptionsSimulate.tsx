@@ -13,10 +13,11 @@ const OptionsSimulate = () => {
 
 
   useEffect(() => {
+    console.log("QUE ES OPERAION", operation)
     if (operation === "uploadMemory") {
       setEnd(false);
     }
-  }, [operation]);
+  }, [operation, end]);
 
    useEffect(() => {
     if (dialog && dialog.stop) {
@@ -34,10 +35,11 @@ const OptionsSimulate = () => {
             theme === "light" ? "bg-gray-200" : "bg-black"
           }  rounded-sm mt-3`}>
           <SimulateAuto />
-          <GeminiChatWidget />
 
         </div>
       )}
+        <GeminiChatWidget />
+
     </>
   );
 };

@@ -124,7 +124,7 @@ const ProgramMemoryTable = () => {
       {!showTable && (
         <div
           onClick={() => setShowTable(true)}
-          className={`h-full w-[1.6rem] cursor-pointer z-100 rounded-[.2rem] flex flex-col items-center uppercase group border hover:opacity-[0.9] transition-all ease-in-out duration-200
+          className={`h-full w-[1.6rem] cursor-pointer  rounded-[.2rem] flex flex-col items-center uppercase group border hover:opacity-[0.9] transition-all ease-in-out duration-200
     bg-[#E3F2FD] border-gray-700 text-black`}>
           <ArrowBigRightDash
             strokeWidth={1.5}
