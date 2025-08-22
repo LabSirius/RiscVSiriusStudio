@@ -159,7 +159,10 @@ export class TextSimulator extends Simulator {
         asmList,
       },
       typeSimulator: this.simulatorType,
+        initialLine: inst.location.start.line
+
     });
+
 
     super.start();
 

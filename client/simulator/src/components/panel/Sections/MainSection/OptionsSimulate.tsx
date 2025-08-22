@@ -13,7 +13,6 @@ const OptionsSimulate = () => {
 
 
   useEffect(() => {
-    console.log("QUE ES OPERAION", operation)
     if (operation === "uploadMemory") {
       setEnd(false);
     }

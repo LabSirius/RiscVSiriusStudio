@@ -47,7 +47,6 @@ export const useMessageListener = () => {
             setModeSimulator(message.simulatorType);
             break;
           case "textProgram":
-            console.log("AQUI ENTRO", message.textProgram)
             setTextProgram(message.textProgram);
             break;
           case "uploadMemory":
@@ -65,11 +64,10 @@ export const useMessageListener = () => {
             setSizeMemory(message.payload.memory.length);
             setIsFirstStep(false);
             setOperation("uploadMemory");
+            setLineDecorationNumber(message.initialLine);
 
             break;
-          case "initialLine":
-            setLineDecorationNumber(message.lineDecorationNumber);
-            break;
+
           case "step":
             setNewPc(message.newPc);
             setCurrentInst(message.currentInst);
