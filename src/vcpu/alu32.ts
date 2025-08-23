@@ -116,8 +116,9 @@ export class ALU32 {
     const ba = BigInt(a);
     const bb = BigInt(b);
 
-    const br = ba * BigInt.asUintN(32, bb);
-    return BigInt.asIntN(32, br >> 32n);
+    const br = BigInt.asIntN(32, ba) * BigInt.asUintN(32, bb);
+    const bigResult = BigInt.asIntN(64, br);
+    return BigInt.asIntN(32, bigResult >> 32n);
   }
 
   public static mulu(a: string, b: string): BigInt {
@@ -125,7 +126,8 @@ export class ALU32 {
     const bb = BigInt(b);
 
     const br = BigInt.asUintN(32, ba) * BigInt.asUintN(32, bb);
-    return BigInt.asUintN(32, br >> 32n);
+    const bigResult = BigInt.asUintN(64, br);
+    return BigInt.asUintN(32, bigResult >> 32n);
   }
 
   public static div(a: string, b: string): BigInt {
