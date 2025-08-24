@@ -325,14 +325,14 @@ export class PipelineCPU implements ICPU {
       instruction, PC, PCP4,
       RUWr: this.id_ex_register.RUWr, DMWr: this.id_ex_register.DMWr,
       RUDataWrSrc: this.id_ex_register.RUDataWrSrc, DMCtrl: this.id_ex_register.DMCtrl,
-      ALURes, RUrs2: this.id_ex_register.RUrs2, RD: this.id_ex_register.RD,
+      ALURes, RUrs2: operandB, RD: this.id_ex_register.RD,
     };
     console.log(`[EX Stage] EX/MEM Register OUT ->`, newState);
     return { 
       newState: newState,
       branchDecision: {
         taken: branchTaken,
-        targetAddress: ALURes // La ALU calcula la dirección de destino para saltos
+        targetAddress: ALURes 
       }
     };
   }
