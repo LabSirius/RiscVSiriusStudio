@@ -101,11 +101,11 @@ export class PipelineCPU implements ICPU {
   private ex_mem_register: EXMEM_Register;
   private mem_wb_register: MEMWB_Register;
 
-  constructor(program: any[], memory: any[], memSize: number) {
-    this.program = program;
+  constructor(program: any[], dataMemory: any[], availableMemSize: number) {
+    this.program = program.filter((sc) => sc.kind === "SrcInstruction");
     this.registers = new RegistersFile();
-    this.dataMemory = new DataMemory(program.length * 4, memory.length, memSize);
-    this.dataMemory.uploadProgram(memory);
+    this.dataMemory = new DataMemory(program.length * 4, dataMemory.length, availableMemSize);
+    this.dataMemory.uploadProgram(dataMemory);
     this.controlUnit = new ControlUnit();
     this.immediateUnit = new ImmediateUnit();
     this.alu = new ProcessorALU();
@@ -117,8 +117,11 @@ export class PipelineCPU implements ICPU {
     this.id_ex_register = { ...NOP_DATA };
     this.ex_mem_register = { ...NOP_DATA };
     this.mem_wb_register = { ...NOP_DATA };
-    const programSize = program.length * 4;
-    this.registers.writeRegister("x2", intToBinary(programSize + memSize - 4));
+
+
+
+     const spAbsoluteAddress = this.dataMemory.availableSpInitialAddress;
+    this.registers.writeRegister("x2", intToBinary(spAbsoluteAddress));
   }
 
   public cycle(): PipelineCycleResult {

@@ -135,10 +135,8 @@ export class DataMemory {
   }
 
   public write(data: Array<string>, address: number) {
-    console.log("CAMBIOOOO", data, address)
     const lastAddress = address + data.length - 1;
     if (lastAddress > this.lastAddress()) {
-      console.log
       throw new Error("Data memory size exceeded.");
     }
     for (let i = 0; i < data.length; i++) {
