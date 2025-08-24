@@ -1,32 +1,53 @@
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
-import { useFormattedPC } from "@/hooks/graphic/useFormattedPC";
 import LabelValueWithHover from "../../LabelValueWithHover";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 const LabelValueContainer = () => {
+  const { currentMonocycletInst, pipelineValuesStages } = useCurrentInst();
+  const { typeSimulator } = useSimulator();
 
+  let decAddress = "--", binAddress = "--", hexAddress = "--";
+  let decInstruction = "--", binInstruction = "--", hexInstruction = "--";
 
-  const { currentMonocycletInst } = useCurrentInst();
+  if (typeSimulator === "monocycle") {
+    if (currentMonocycletInst) {
+      const addressValue = currentMonocycletInst.currentPc * 4;
+      binAddress = addressValue.toString(2).padStart(32, "0");
+      decAddress = addressValue.toString();
+      hexAddress = binaryToHex(binAddress).toUpperCase();
 
+      hexInstruction = currentMonocycletInst.encoding.hexEncoding.toUpperCase();
+      binInstruction = currentMonocycletInst.encoding.binEncoding;
+      decInstruction = binaryToInt(binInstruction).toString();
+    }
+  } else {
 
-  const formattedPC = useFormattedPC(currentMonocycletInst?.currentPc ?? 0);
+    if (pipelineValuesStages) {
 
-  if(!currentMonocycletInst) return
+      const instructionInIF = pipelineValuesStages.IF.instruction;
 
-  const addressValue = currentMonocycletInst?.currentPc * 4;
-  const binAddress = addressValue.toString(2).padStart(32, "0");
-  const decAddress = addressValue.toString();
-  const hexAddress = binaryToHex(binAddress).toUpperCase();
+      if (instructionInIF && instructionInIF.pc !== -1) {
+        const addressValue = pipelineValuesStages.ID.PC;
+        binAddress = addressValue.toString(2).padStart(32, "0");
+        decAddress = addressValue.toString();
+        hexAddress = binaryToHex(binAddress).toUpperCase();
 
-  const rawHexInstruction = currentMonocycletInst?.encoding.hexEncoding.toUpperCase();
-  const binInstruction = currentMonocycletInst?.encoding.binEncoding;
-  const decInstruction = binaryToInt(binInstruction);
+        const parsedInst = instructionInIF
+        if (parsedInst.encoding) {
+          hexInstruction = parsedInst.encoding.hexEncoding.toUpperCase();
+          binInstruction = parsedInst.encoding.binEncoding;
+          decInstruction = binaryToInt(binInstruction).toString();
+        }
+      }
+    }
+  }
 
   return (
     <>
       <LabelValueWithHover
         label="Address"
-        value={formattedPC}
+        value={`h'${hexAddress}`}
         decimal={decAddress}
         binary={binAddress}
         hex={hexAddress}
@@ -35,10 +56,10 @@ const LabelValueContainer = () => {
 
       <LabelValueWithHover
         label="Instruction"
-        value={`h'${rawHexInstruction}`}
+        value={`h'${hexInstruction}`}
         decimal={decInstruction}
         binary={binInstruction}
-        hex={rawHexInstruction}
+        hex={hexInstruction}
         positionClassName="top-[8rem] right-[.8rem]"
         input={false}
       />
