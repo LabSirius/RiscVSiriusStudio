@@ -19,7 +19,7 @@ export default function ALUBSrc() {
       <Handle  type="source"
                position={Position.Top}
                className='output-tunnel'
-               style={{ top:'-.4rem' } } />
+               style={{ top:'-.2rem' } } />
       </div>
 
         

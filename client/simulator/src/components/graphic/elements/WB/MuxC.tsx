@@ -26,7 +26,7 @@ export default function MuxC() {
     { id: "adder4", style: { top: "1.8rem" }, position: Position.Left },
     { id: "dataMemory", style: { top: "4.7rem" }, position: Position.Left },
     { id: "alu", style: { top: "7.5rem" }, position: Position.Left },
-    { id: "ruDataWrSrc", style: { top: "7rem" }, position: Position.Bottom },
+    { id: "ruDataWrSrc", style: { top: "7.3rem" }, position: Position.Bottom },
   ];
 
   const outputHandlers: HandlerConfig[] = [{ style: { right: ".8rem" }, position: Position.Right }];

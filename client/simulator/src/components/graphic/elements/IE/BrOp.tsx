@@ -9,14 +9,14 @@ export default function BrOp() {
     <div className='w-full'>
 
        <div className='relative w-full h-full'>
-       <h2 className={` titleInElement top-[.3rem] left-[25%] -translate-y-[25%] ${overlayExecuteActive && 'overlay-scale'}`}>BrOp</h2>
+       <h2 className={` titleInElement top-[.2rem] left-[20%] -translate-y-[25%] ${overlayExecuteActive && 'overlay-scale'}`}>BrOp</h2>
        </div>
 
        <div  className={`${overlayExecuteActive && 'overlay-moveX'}`} >
       <Handle  type="source"
                position={Position.Top}
                className='output-tunnel'
-               style={{ top:'-.4rem' } } />
+               style={{ top:'.1rem' } } />
        </div>
     </div>
     

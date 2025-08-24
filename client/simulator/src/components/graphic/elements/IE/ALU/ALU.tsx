@@ -23,6 +23,7 @@ export default function ALU() {
     id: "aluOp",
     position: Position.Bottom,
     className: "input",
+    style: { bottom: "-1.25rem" }
   };
 
   const outputHandlers: HandlerConfig[] = [
@@ -56,6 +57,7 @@ export default function ALU() {
         id={bottomInputHandler.id}
         position={bottomInputHandler.position}
         className={bottomInputHandler.className}
+         style={bottomInputHandler.style}
       />
 
       {outputHandlers.map((handler) => (
