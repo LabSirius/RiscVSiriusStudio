@@ -50,6 +50,7 @@ export const useMessageListener = () => {
             setTextProgram(message.textProgram);
             break;
           case "uploadMemory":
+            console.log("AQUI LLEGA UN MENSAJE", message)
             setDialog({
               title: "Configuration Info",
               description:
@@ -69,6 +70,8 @@ export const useMessageListener = () => {
             break;
 
           case "step":
+            console.log("AQUI LLEGA UN MENSAJE STEP", message)
+            
             setNewPc(message.newPc);
             setCurrentInst(message.currentInst);
             if (message.currentInst.asm?.toLowerCase() === "ebreak") {

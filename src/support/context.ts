@@ -290,6 +290,7 @@ export class RVContext {
   private initializeAndStartTextSimulator() {
     if (!this._currentDocument || !this._textWebview) return;
     const settings: SimulationParameters = { memorySize: 40 };
+     console.log("RVCONTEXT: Creating TextSimulator with type aaa:", this._simulatorType);
     this._simulator = new TextSimulator(
       this._simulatorType,
       settings,

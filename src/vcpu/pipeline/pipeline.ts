@@ -113,7 +113,7 @@ export class PipelineCPU implements ICPU {
      this.hazardDetectionUnit = new HazardDetectionUnit();
      this.branchUnit = new BranchUnit(); 
 
-    this.if_id_register = { instruction: null, PC: -1, PCP4: 0 };
+    this.if_id_register = { instruction: NOP_DATA.instruction, PC: -1, PCP4: 0 };
     this.id_ex_register = { ...NOP_DATA };
     this.ex_mem_register = { ...NOP_DATA };
     this.mem_wb_register = { ...NOP_DATA };
@@ -161,7 +161,7 @@ export class PipelineCPU implements ICPU {
       finalNextPC = parseInt(branchDecision.targetAddress, 2);
       
       final_newState_ID_EX = { ...NOP_DATA };
-      final_newState_IF_ID = { instruction: null, PC: -1, PCP4: 0 };
+      final_newState_IF_ID = {instruction: NOP_DATA.instruction, PC: -1, PCP4: 0 };
     }
 
     if (stallNeeded) {
@@ -196,6 +196,11 @@ export class PipelineCPU implements ICPU {
     if (PC_fe / 4 < this.program.length) {
       instruction = this.program[PC_fe / 4];
     }
+
+     if (!instruction) {
+      instruction = NOP_DATA.instruction;
+    }
+
     const PCP4 = PC_fe + 4;
 
     const newState_IF_ID = { instruction, PC: PC_fe, PCP4 };
@@ -236,7 +241,7 @@ export class PipelineCPU implements ICPU {
       RUDataWrSrc: controls.ru_data_wr_src,
       ALUOp: controls.alu_op,
       BrOp: controls.br_op,
-      DMCtrl: getFunct3(instruction) || "XXX",
+      DMCtrl: instruction.pc === -1 ? "XXX" : getFunct3(instruction),
       RUrs1,
       RUrs2,
       ImmExt,

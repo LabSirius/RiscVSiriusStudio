@@ -176,59 +176,91 @@ export class TextSimulator extends Simulator {
     });
   }
 
+
   public override step(): StepResult {
-    const stepResult = super.step();
-
-    if (this.simulatorType === "monocycle") {
-      const instruction = stepResult.instruction;
-      const result = stepResult.result as SCCPUResult;   
-
-      if (!instruction || Object.keys(instruction).length === 0) {
-        this.stop();
-        return { instruction: {}, result: defaultSCCPUResult };
-      }
-
-      instruction.currentPc = this.cpu.getPC();
-
-      if (writesRU(instruction.type, instruction.opcode)) {
-        this.cpu.getRegisterFile().writeRegister(instruction.rd.regeq, result.wb.result);
-        this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
-      }
-      if (readsDM(instruction.type, instruction.opcode)) {
-        this.notifyMemoryRead(parseInt(result.dm.address, 2), this.bytesToReadOrWrite(instruction));
-      }
-      if (writesDM(instruction.type, instruction.opcode)) {
-        this.writeResult(instruction, result);
-      }
-      if (branchesOrJumps(instruction.type, instruction.opcode)) {
-        this.cpu.jumpToInstruction(result.buMux.result);
-      } else {
-        this.cpu.nextInstruction();
-      }
-
-      this.updateTextUI(this.cpu.currentInstruction(), stepResult);
-
-      const isEbreak =
-        instruction.opcode === "1110011" &&
-        getFunct3(instruction) === "000" &&
-        instruction.encoding.imm12 === "000000000001";
-
-      if (isEbreak) {
-        this.stop();
-      }
-
-      return stepResult;
-    } else {
+    try {
+      console.log(`--- TextSimulator.step() CALLED! Mode: ${this.simulatorType} ---`);
       
-      const pipelineResult = stepResult.result as PipelineCycleResult;
+      const stepResult = super.step();
 
-      console.log("PipelineResult", pipelineResult);
+      if (this.simulatorType === "monocycle") {
+        const instruction = stepResult.instruction;
+        const result = stepResult.result as SCCPUResult;
+
+        if (!instruction || Object.keys(instruction).length === 0) {
+          this.stop();
+          return { instruction: {}, result: defaultSCCPUResult };
+        }
+
+        instruction.currentPc = this.cpu.getPC();
+
+        if (writesRU(instruction.type, instruction.opcode)) {
+          this.cpu.getRegisterFile().writeRegister(instruction.rd.regeq, result.wb.result);
+          this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
+        }
+        if (readsDM(instruction.type, instruction.opcode)) {
+          this.notifyMemoryRead(parseInt(result.dm.address, 2), this.bytesToReadOrWrite(instruction));
+        }
+        if (writesDM(instruction.type, instruction.opcode)) {
+          this.writeResult(instruction, result);
+        }
+        if (branchesOrJumps(instruction.type, instruction.opcode)) {
+          this.cpu.jumpToInstruction(result.buMux.result);
+        } else {
+          this.cpu.nextInstruction();
+        }
+
+        this.updateTextUI(this.cpu.currentInstruction(), stepResult);
+
+        const isEbreak =
+          instruction.opcode === "1110011" &&
+          getFunct3(instruction) === "000" &&
+          instruction.encoding.imm12 === "000000000001";
+
+        if (isEbreak) {
+          this.stop();
+        }
+      } else {
+        const pipelineResult = stepResult.result as PipelineCycleResult;
+
+        const wbInstruction = pipelineResult.WB;
+        if (wbInstruction.RUWr && wbInstruction.RD !== "X" && wbInstruction.RD !== "0") {
+          let dataToWrite: string;
+          switch (wbInstruction.RUDataWrSrc) {
+            case "01": dataToWrite = wbInstruction.MemReadData; break;
+            case "10": dataToWrite = wbInstruction.PCP4.toString(2).padStart(32, "0"); break;
+            default: dataToWrite = wbInstruction.ALURes; break;
+          }
+          this.notifyRegisterWrite(`x${wbInstruction.RD}`, dataToWrite);
+        }
+
+        const memInstructionData = pipelineResult.EX;
+        if (memInstructionData.instruction && memInstructionData.instruction.pc !== -1) {
+          const address = parseInt(memInstructionData.ALURes, 2);
+          const bytesToAccess = this.bytesToReadOrWrite(memInstructionData.instruction);
+          
+          if (memInstructionData.DMWr) {
+            this.notifyMemoryWrite(address, memInstructionData.RUrs2, bytesToAccess);
+          } else if (memInstructionData.RUDataWrSrc === '01') {
+            this.notifyMemoryRead(address, bytesToAccess);
+          }
+        }
+
+        this.webview.postMessage({
+          from: "extension",
+          operation: "step",
+          result: pipelineResult,
+        });
+      }
 
       return stepResult;
 
+    } catch (error) {
+      console.error("!!!!!!!!!!!! ERROR DETECTED IN step() !!!!!!!!!!", error);
+      this.stop();
+      return { instruction: {}, result: defaultSCCPUResult }; 
     }
   }
-
   public override stop(): void {
     super.stop();
     this.clearHighlight();
