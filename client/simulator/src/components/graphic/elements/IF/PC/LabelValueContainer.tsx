@@ -5,23 +5,23 @@ import { useFormattedPC } from "@/hooks/graphic/useFormattedPC";
 import LabelValueWithHover from "../../LabelValueWithHover";
 
 const LabelValueContainer = () => {
-  const { currentResult, currentInst } = useCurrentInst();
-  const formattedPC = useFormattedPC(currentInst.currentPc);
+  const { currentMonocycleResult, currentMonocycletInst } = useCurrentInst();
+  const formattedPC = useFormattedPC(currentMonocycletInst.currentPc);
 
   const [hexNextPC, setHexNextPC] = useState("");
   const [decNextPC, setDecNextPC] = useState("");
   const [binNextPC, setBinNextPC] = useState("");
 
   useEffect(() => {
-    if (currentResult?.buMux?.result) {
-      const bin = currentResult.buMux.result;
+    if (currentMonocycleResult?.buMux?.result) {
+      const bin = currentMonocycleResult.buMux.result;
       setHexNextPC(binaryToHex(bin).toUpperCase());
       setDecNextPC(binaryToInt(bin));
       setBinNextPC(bin.padStart(32, "0"));
     }
-  }, [currentResult]);
+  }, [currentMonocycleResult]);
 
-  const pcValue = parseInt(String(currentInst.currentPc), 2) * 4;
+  const pcValue = parseInt(String(currentMonocycletInst.currentPc), 2) * 4;
   const pcBin = pcValue.toString(2).padStart(32, "0");
   const pcDec = pcValue.toString();
   const pcHex = binaryToHex(pcBin).toUpperCase();

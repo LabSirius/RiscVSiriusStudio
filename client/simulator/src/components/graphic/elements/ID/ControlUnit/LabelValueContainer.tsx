@@ -5,20 +5,20 @@ import { useSimulator } from '@/context/shared/SimulatorContext';
 
 const LabelValueContainer = () => {
   const { typeSimulator} = useSimulator()
-    const { currentType, currentInst } = useCurrentInst();
+    const { currentType, currentMonocycletInst } = useCurrentInst();
 
   // OPCODE
-  const binOpcode = currentInst.opcode.padStart(7, '0');
+  const binOpcode = currentMonocycletInst.opcode.padStart(7, '0');
   const decOpcode = binaryToInt(binOpcode);
   const hexOpcode = binaryToHex(binOpcode).toUpperCase();
 
   // FUNCT3
-  const binFunct3 = currentInst.encoding.funct3?.padStart(3, '0') || '';
+  const binFunct3 = currentMonocycletInst.encoding.funct3?.padStart(3, '0') || '';
   const decFunct3 = binaryToInt(binFunct3);
   const hexFunct3 = binaryToHex(binFunct3).toUpperCase();
 
   // FUNCT7
-  const binFunct7 = currentInst.encoding.funct7?.padStart(7, '0') || '';
+  const binFunct7 = currentMonocycletInst.encoding.funct7?.padStart(7, '0') || '';
   const decFunct7 = binaryToInt(binFunct7);
   const hexFunct7 = binaryToHex(binFunct7).toUpperCase();
 

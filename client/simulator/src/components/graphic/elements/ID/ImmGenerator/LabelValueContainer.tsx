@@ -4,7 +4,7 @@ import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHov
 import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
 
 const LabelValueContainer = () => {
-  const { currentType, currentResult } = useCurrentInst();
+  const { currentType, currentMonocycleResult } = useCurrentInst();
 
   const [immHex, setImmHex] = useState("");
   const [immBin, setImmBin] = useState("");
@@ -15,9 +15,9 @@ const LabelValueContainer = () => {
   const [signalDec, setSignalDec] = useState("");
 
   useEffect(() => {
-    if (currentResult && currentResult.imm) {
-      const output = currentResult.imm.output;
-      const signal = currentResult.imm.signal;
+    if (currentMonocycleResult && currentMonocycleResult.imm) {
+      const output = currentMonocycleResult.imm.output;
+      const signal = currentMonocycleResult.imm.signal;
 
       setImmBin(output);
       setImmHex(binaryToHex(output).toUpperCase());
@@ -27,7 +27,7 @@ const LabelValueContainer = () => {
       setSignalHex(binaryToHex(signal).toUpperCase());
       setSignalDec(binaryToInt(signal));
     }
-  }, [currentResult]);
+  }, [currentMonocycleResult]);
 
   return (
     <>

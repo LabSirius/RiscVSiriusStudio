@@ -11,7 +11,7 @@ const DMCtrol: Record<string, string> = {
 };
 
 const LabelValueContainer = () => {
-  const { currentType, currentResult } = useCurrentInst();
+  const { currentType, currentMonocycleResult } = useCurrentInst();
     const { setReadInMemory } = useMemoryTable();
   
 
@@ -31,10 +31,10 @@ const LabelValueContainer = () => {
   const [controlSignal, setControlSignal] = useState("");
 
   useEffect(() => {
-    if (currentResult?.dm) {
-      const addr = currentResult.dm.address;
-      const wr = currentResult.dm.dataWr;
-      const rd = currentResult.dm.dataRd;
+    if (currentMonocycleResult?.dm) {
+      const addr = currentMonocycleResult.dm.address;
+      const wr = currentMonocycleResult.dm.dataWr;
+      const rd = currentMonocycleResult.dm.dataRd;
 
       setAddressHex(binaryToHex(addr).toUpperCase());
       setAddressBin(addr);
@@ -48,10 +48,10 @@ const LabelValueContainer = () => {
       setDataRdBin(rd);
       setDataRdDec(binaryToInt(rd));
 
-      setWriteSignal(currentResult.dm.writeSignal);
-      setControlSignal(currentResult.dm.controlSignal);
+      setWriteSignal(currentMonocycleResult.dm.writeSignal);
+      setControlSignal(currentMonocycleResult.dm.controlSignal);
     }
-  }, [currentResult]);
+  }, [currentMonocycleResult]);
 
   const isX = (val: string) => val.toUpperCase() === "X";
   const isXXX = (val: string) => val.toUpperCase() === "XXX";
@@ -67,7 +67,7 @@ const LabelValueContainer = () => {
         if(currentType === "S" || currentType === "L"){
           setReadInMemory({
             address: parseInt(addressDec, 10),
-            _length:  currentResult.dm.controlSignal === "000" ? 1 : currentResult.dm.controlSignal === "001" ? 2 : 4,
+            _length:  currentMonocycleResult.dm.controlSignal === "000" ? 1 : currentMonocycleResult.dm.controlSignal === "001" ? 2 : 4,
             value: "1"
           })
         }

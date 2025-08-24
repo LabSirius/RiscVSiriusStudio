@@ -5,10 +5,10 @@ import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHov
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
 function MuxD() {
-  const { currentResult } = useCurrentInst();
+  const { currentMonocycleResult } = useCurrentInst();
   const { operation } = useSimulator();
 
-  const signal = currentResult.buMux.signal;
+  const signal = currentMonocycleResult.buMux.signal;
 
 
 

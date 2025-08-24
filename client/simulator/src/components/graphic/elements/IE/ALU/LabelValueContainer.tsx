@@ -46,7 +46,7 @@ const aluOperations: Record<string, string> = {
 };
 
 const LabelValueContainer = () => {
-  const { currentType, currentResult } = useCurrentInst();
+  const { currentType, currentMonocycleResult } = useCurrentInst();
   const { setReadInMemory } = useMemoryTable();
 
 
@@ -63,10 +63,10 @@ const LabelValueContainer = () => {
   const [resDec, setResDec] = useState("");
 
   useEffect(() => {
-    if (currentResult?.alu) {
-      const a = currentResult.alu.a;
-      const b = currentResult.alu.b;
-      const res = currentResult.alu.result;
+    if (currentMonocycleResult?.alu) {
+      const a = currentMonocycleResult.alu.a;
+      const b = currentMonocycleResult.alu.b;
+      const res = currentMonocycleResult.alu.result;
 
       setAHex(binaryToHex(a).toUpperCase());
       setABin(a);
@@ -80,9 +80,9 @@ const LabelValueContainer = () => {
       setResBin(res);
       setResDec(binaryToInt(res));
     }
-  }, [currentResult]);
+  }, [currentMonocycleResult]);
 
-  const aluOp = currentResult?.alu?.operation ?? "";
+  const aluOp = currentMonocycleResult?.alu?.operation ?? "";
   const operationDescription = aluOperations[aluOp];
 
   return (
@@ -113,7 +113,7 @@ const LabelValueContainer = () => {
         if(currentType === "S" || currentType === "L"){
           setReadInMemory({
             address: parseInt(resDec, 10),
-            _length:  currentResult.dm.controlSignal === "000" ? 1 : currentResult.dm.controlSignal === "001" ? 2 : 4,
+            _length:  currentMonocycleResult.dm.controlSignal === "000" ? 1 : currentMonocycleResult.dm.controlSignal === "001" ? 2 : 4,
             value: "1"
           })
         }

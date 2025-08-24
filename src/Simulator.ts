@@ -279,10 +279,10 @@ export class TextSimulator extends Simulator {
 
   // --- UI Notification and Helper Methods ---
 
-  private updateTextUI(currentInst: any, result: StepResult) {
+  private updateTextUI(currentMonocycletInst: any, result: StepResult) {
     let line: number | undefined;
     try {
-      line = this.rvDoc.getLineForIR(currentInst);
+      line = this.rvDoc.getLineForIR(currentMonocycletInst);
     } catch {
       line = undefined;
       this.stop();
@@ -292,7 +292,7 @@ export class TextSimulator extends Simulator {
       from: "extension",
       operation: "step",
       newPc: this.cpu.getPC(),
-      currentInst: result.instruction,
+      currentMonocycletInst: result.instruction,
       result: result.result,
       lineDecorationNumber: line !== undefined ? line + 1 : -1,
     });

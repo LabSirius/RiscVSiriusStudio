@@ -4,7 +4,7 @@ import LabelValueWithHover from '../../LabelValueWithHover';
 import { binaryToInt, binaryToHex } from '@/utils/handlerConversions';
 
 const LabelValueContainer = () => {
-  const { currentType, currentInst, currentResult } = useCurrentInst();
+  const { currentType, currentMonocycletInst, currentMonocycleResult } = useCurrentInst();
 
   const [ruRs1Hex, setRuRs1Hex] = useState('');
   const [ruRs1Bin, setRuRs1Bin] = useState('');
@@ -19,11 +19,11 @@ const LabelValueContainer = () => {
   const [dataWriteDec, setDataWriteDec] = useState('');
 
   useEffect(() => {
-    if (currentResult?.ru) {
+    if (currentMonocycleResult?.ru) {
 
-      const rs1 = currentResult.ru.rs1;
-      const rs2 = currentResult.ru.rs2;
-      const data = currentResult.ru.dataWrite;
+      const rs1 = currentMonocycleResult.ru.rs1;
+      const rs2 = currentMonocycleResult.ru.rs2;
+      const data = currentMonocycleResult.ru.dataWrite;
 
       setRuRs1Hex(binaryToHex(rs1).toUpperCase());
       setRuRs1Bin(rs1);
@@ -37,19 +37,19 @@ const LabelValueContainer = () => {
       setDataWriteBin(data);
       setDataWriteDec(binaryToInt(data));
     }
-  }, [currentResult]);
+  }, [currentMonocycleResult]);
 
-  const writeSignal = currentResult.ru.writeSignal;
+  const writeSignal = currentMonocycleResult.ru.writeSignal;
 
   return (
     <>
       {!(currentType === 'J' || currentType === 'LUI' || currentType === 'AUIPC') && (
         <LabelValueWithHover
           label=""
-          value={`b'${currentInst.encoding.rs1}`}
-          decimal={binaryToInt(currentInst.encoding.rs1 || '')}
-          binary={currentInst.encoding.rs1 || ''}
-          hex={parseInt(currentInst.encoding.rs1 || '', 2).toString(16).toUpperCase()}
+          value={`b'${currentMonocycletInst.encoding.rs1}`}
+          decimal={binaryToInt(currentMonocycletInst.encoding.rs1 || '')}
+          binary={currentMonocycletInst.encoding.rs1 || ''}
+          hex={parseInt(currentMonocycletInst.encoding.rs1 || '', 2).toString(16).toUpperCase()}
           positionClassName="top-[1.4rem] left-[.8rem]"
         />
       )}
@@ -58,10 +58,10 @@ const LabelValueContainer = () => {
       {(currentType === 'R' || currentType === 'S' || currentType === 'B') && (
         <LabelValueWithHover
           label=""
-          value={`b'${currentInst.encoding.rs2}`}
-          decimal={binaryToInt(currentInst.encoding.rs2 || '')}
-          binary={currentInst.encoding.rs2 || ''}
-          hex={parseInt(currentInst.encoding.rs2!, 2).toString(16).toUpperCase()}
+          value={`b'${currentMonocycletInst.encoding.rs2}`}
+          decimal={binaryToInt(currentMonocycletInst.encoding.rs2 || '')}
+          binary={currentMonocycletInst.encoding.rs2 || ''}
+          hex={parseInt(currentMonocycletInst.encoding.rs2!, 2).toString(16).toUpperCase()}
           positionClassName="top-[6.6rem] left-[.8rem]"
         />
       )}
@@ -70,10 +70,10 @@ const LabelValueContainer = () => {
       {!(currentType === 'S' || currentType === 'B') && (
         <LabelValueWithHover
           label=""
-          value={`b'${currentInst.encoding.rd}`}
-          decimal={binaryToInt(currentInst.encoding.rd || '')}
-          binary={currentInst.encoding.rd || ''}
-          hex={parseInt(currentInst.encoding.rd || '', 2).toString(16).toUpperCase()}
+          value={`b'${currentMonocycletInst.encoding.rd}`}
+          decimal={binaryToInt(currentMonocycletInst.encoding.rd || '')}
+          binary={currentMonocycletInst.encoding.rd || ''}
+          hex={parseInt(currentMonocycletInst.encoding.rd || '', 2).toString(16).toUpperCase()}
           positionClassName="top-[12rem] left-[.8rem]"
         />
       )}
@@ -81,7 +81,7 @@ const LabelValueContainer = () => {
       {/* RU[xRS1] */}
       {!(currentType === 'J' || currentType === 'LUI' || currentType === 'AUIPC') && (
         <LabelValueWithHover
-          label={`RU[x${currentInst.rs1?.regenc}]`}
+          label={`RU[x${currentMonocycletInst.rs1?.regenc}]`}
           value={`h'${ruRs1Hex}`}
           decimal={ruRs1Dec}
           binary={ruRs1Bin}
@@ -94,7 +94,7 @@ const LabelValueContainer = () => {
       {/* RU[xRS2] */}
       {(currentType === 'R' || currentType === 'S' || currentType === 'B') && (
         <LabelValueWithHover
-          label={`RU[x${currentInst.rs2?.regenc}]`}
+          label={`RU[x${currentMonocycletInst.rs2?.regenc}]`}
           value={`h'${ruRs2Hex}`}
           decimal={ruRs2Dec}
           binary={ruRs2Bin}

@@ -1,7 +1,7 @@
 import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 
 const TypeUImmDecode = () => {
-  const { currentInst } = useCurrentInst();
+  const { currentMonocycletInst } = useCurrentInst();
   
 
   const topBlocks = [
@@ -43,7 +43,7 @@ const TypeUImmDecode = () => {
           className="absolute flex gap-[.82rem]"
           style={{ top: "2.7rem", left: block.left }}
         >
-          {Array.from(currentInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(currentMonocycletInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>
@@ -55,7 +55,7 @@ const TypeUImmDecode = () => {
           className="flex absolute gap-[.83rem]"
           style={{ bottom: "1.6rem", right: block.right }}
         >
-          {Array.from(currentInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(currentMonocycletInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>

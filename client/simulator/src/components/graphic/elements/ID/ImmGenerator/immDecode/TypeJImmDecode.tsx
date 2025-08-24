@@ -1,7 +1,7 @@
 import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 
 const TypeJImmDecode = () => {
-  const { currentInst } = useCurrentInst();
+  const { currentMonocycletInst } = useCurrentInst();
 
   const topBlocks = [
     { left: "2.5rem", slice: [1, 4] },
@@ -35,11 +35,11 @@ const TypeJImmDecode = () => {
         className="w-full h-full rounded-md"
       />
 
-      <p className='absolute top-[2.7rem] left-[1.26rem]'>{currentInst.encoding.binEncoding[0]}</p>
+      <p className='absolute top-[2.7rem] left-[1.26rem]'>{currentMonocycletInst.encoding.binEncoding[0]}</p>
 
-      <p className='absolute top-[2.7rem] left-[14.83rem]'>{currentInst.encoding.binEncoding[11]}</p>
+      <p className='absolute top-[2.7rem] left-[14.83rem]'>{currentMonocycletInst.encoding.binEncoding[11]}</p>
 
-      <p className='absolute bottom-[1.6rem] right-[18.53rem]'>{currentInst.encoding.binEncoding[11]}</p>
+      <p className='absolute bottom-[1.6rem] right-[18.53rem]'>{currentMonocycletInst.encoding.binEncoding[11]}</p>
 
       <p className='absolute bottom-[1.6rem] right-[4.96rem]'>0</p>
 
@@ -52,7 +52,7 @@ const TypeJImmDecode = () => {
           className="absolute flex gap-[.82rem]"
           style={{ top: "2.7rem", left: block.left }}
         >
-          {Array.from(currentInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(currentMonocycletInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>
@@ -65,7 +65,7 @@ const TypeJImmDecode = () => {
           style={{ bottom: "1.6rem", right: block.right }}
         >
           {Array.from({ length: 4 }).map((_, index) => (
-            <p key={index}>{currentInst.encoding.binEncoding[0]}</p>
+            <p key={index}>{currentMonocycletInst.encoding.binEncoding[0]}</p>
           ))}
         </div>
       ))}
@@ -76,7 +76,7 @@ const TypeJImmDecode = () => {
           className="flex absolute gap-[.84rem]"
           style={{ bottom: "1.6rem", right: block.right }}
         >
-          {Array.from(currentInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(currentMonocycletInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>

@@ -12,11 +12,11 @@ interface HandlerConfig {
 }
 
 export default function MuxC() {
-  const { currentResult, currentType } = useCurrentInst();
+  const { currentMonocycleResult, currentType } = useCurrentInst();
   const { operation, isEbreak } = useSimulator();
 
 
-  const signal = currentResult.wb.signal;
+  const signal = currentMonocycleResult.wb.signal;
   const hasX = signal.includes('X');
 
   const signalDec = hasX ? `${signal}` : binaryToInt(signal);
@@ -34,7 +34,7 @@ export default function MuxC() {
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
-        <MuxContainer3_1  signal={currentResult.wb.signal}/>
+        <MuxContainer3_1  signal={currentMonocycleResult.wb.signal}/>
         {(operation !== "uploadMemory" && !(currentType === "S" || currentType === "B" ) && !isEbreak) && 
           <div className="absolute bottom-[.3rem] left-[3.5rem]">
             <LabelValueWithHover

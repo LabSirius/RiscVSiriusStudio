@@ -13,7 +13,7 @@ const branchOperations: Record<string, string> = {
 };
 
 const LabelValueContainer = () => {
-  const { currentType, currentResult } = useCurrentInst();
+  const { currentType, currentMonocycleResult } = useCurrentInst();
 
   const [hexA, setHexA] = useState('');
   const [hexB, setHexB] = useState('');
@@ -33,11 +33,11 @@ const LabelValueContainer = () => {
   const [operationDesc, setOperationDesc] = useState<string | undefined>(undefined); // NUEVO
 
   useEffect(() => {
-    if (currentResult?.bu) {
-      const a = currentResult.bu.a;
-      const b = currentResult.bu.b;
-      const op = currentResult.bu.operation;
-      const res = currentResult.bu.result;
+    if (currentMonocycleResult?.bu) {
+      const a = currentMonocycleResult.bu.a;
+      const b = currentMonocycleResult.bu.b;
+      const op = currentMonocycleResult.bu.operation;
+      const res = currentMonocycleResult.bu.result;
 
       setHexA(binaryToHex(a).toUpperCase());
       setHexB(binaryToHex(b).toUpperCase());
@@ -62,7 +62,7 @@ const LabelValueContainer = () => {
       setResBin(res);
       setResDec(binaryToInt(res));
     }
-  }, [currentResult]);
+  }, [currentMonocycleResult]);
 
   const showZeroExtend = operationDesc === '01110' || operationDesc === '01111';
 
