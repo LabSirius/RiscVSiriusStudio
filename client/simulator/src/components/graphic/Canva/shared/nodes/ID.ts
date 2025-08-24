@@ -25,7 +25,7 @@ export const useIDNodes = (): Node[] => {
       },
     },
 
-    nodeBase("title-ID", "title", "Decode (ID)", { x: 10, y: 0 }, "ID", 740, 50),
+    nodeBase("title-ID", "title", "Decode (ID)", { x: 10, y: 0 }, "ID", 870, 50),
     nodeBase(
       "ruWr",
       "ruWr",
@@ -71,11 +71,11 @@ export const useIDNodes = (): Node[] => {
     pivotNode("pivot26", { x: shift(50), y: 976.5 }, "ID"),
     pivotNode("pivot27", { x: shift(50), y: 1169 + (isPipeline ? 130 : 0) }, "ID"),
     pivotNode("pivot28", { x: shift(100), y: 1169 + (isPipeline ? 130 : 0) }, "ID"),
-    pivotNode("pivot29", { x: shift(100), y: 1210 + (isPipeline ? 130 : 0) }, "ID"),
+    pivotNode("pivot29", { x: shift(100), y: 1226 + (isPipeline ? 130 : 0) }, "ID"),
     pivotNode("pivot30", { x: shift(270), y: 1169 + (isPipeline ? 130 : 0) }, "ID"),
-    pivotNode("pivot31", { x: shift(270), y: 1210 + (isPipeline ? 130 : 0) }, "ID"),
+    pivotNode("pivot31", { x: shift(270), y: 1226 + (isPipeline ? 130 : 0) }, "ID"),
     pivotNode("pivot32", { x: shift(450), y: 1169 + (isPipeline ? 130 : 0) }, "ID"),
-    pivotNode("pivot33", { x: shift(450), y: 1210 + (isPipeline ? 130 : 0) }, "ID"),
+    pivotNode("pivot33", { x: shift(450), y: 1226 + (isPipeline ? 130 : 0) }, "ID"),
 
     nodeBase(
       "pivotJump1",

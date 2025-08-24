@@ -1,13 +1,6 @@
-/* eslint-disable @typescript-eslint/naming-convention */ 
+/* eslint-disable @typescript-eslint/naming-convention */
 
-import {
-  getRs1,
-  getRs2,
-  getRd,
-  getFunct3,
-  isIJump,
-  isAUIPC,
-} from "../utilities/instructions";
+import { getRs1, getRs2, getRd, getFunct3, isIJump, isAUIPC } from "../utilities/instructions";
 import { intToBinary } from "../utilities/conversions";
 import { ICPU } from "./interface";
 import { RegistersFile, DataMemory, ProcessorALU } from "./components/components";
@@ -86,7 +79,7 @@ export class SCCPU implements ICPU {
   private dataMemory: DataMemory;
   private immediateUnit: ImmediateUnit;
   private alu: ProcessorALU;
-  private controlUnit: ControlUnit; // <-- Añadido
+  private controlUnit: ControlUnit;
   private pc: number;
 
   get program() {
@@ -96,18 +89,24 @@ export class SCCPU implements ICPU {
     return this.pc;
   }
 
-  public constructor(program: any[], memory: any[], memSize: number) {
+  public constructor(program: any[], dataMemory: any[], availableMemSize: number) {
+
+
+
     this._program = program.filter((sc) => sc.kind === "SrcInstruction");
     this.registers = new RegistersFile();
-    this.dataMemory = new DataMemory(program.length * 4, memory.length, memSize);
-    this.dataMemory.uploadProgram(memory);
+    this.dataMemory = new DataMemory(program.length * 4, dataMemory.length, availableMemSize);
+
+    this.dataMemory.uploadProgram(dataMemory);
     this.pc = 0;
     this.immediateUnit = new ImmediateUnit();
     this.alu = new ProcessorALU();
     this.controlUnit = new ControlUnit();
-    const programSize = program.length * 4;
-    this.registers.writeRegister("x2", intToBinary(programSize + memSize - 4));
+
+    const spAbsoluteAddress = this.dataMemory.availableSpInitialAddress;
+    this.registers.writeRegister("x2", intToBinary(spAbsoluteAddress));
   }
+
 
   public currentInstruction() {
     return this._program[this.pc];
@@ -224,8 +223,6 @@ export class SCCPU implements ICPU {
   }
 
   private readFromMemory(address: number, control: number): string {
-    console.log("data MEMORY SCCPU",this.dataMemory)
-
     let value = "";
     switch (control) {
       case 0: {
@@ -390,16 +387,14 @@ export class SCCPU implements ICPU {
     result.wb = { result: add4Res, signal: "10" };
     return result;
   }
-
+  
   public getRegisterFile(): RegistersFile {
     return this.registers;
   }
   public getDataMemory(): DataMemory {
-
     return this.dataMemory;
   }
   public replaceDataMemory(newMemory: any[]): void {
-
     if (!newMemory) {
       return;
     }
@@ -407,7 +402,7 @@ export class SCCPU implements ICPU {
     newMemory.forEach((group) => {
       flatMemory.push(group.value0, group.value1, group.value2, group.value3);
     });
-    (this.dataMemory as any).memory = flatMemory;
+    this.dataMemory.overwriteAvailableMemory(flatMemory);
   }
   public replaceRegisters(newRegisters: string[]): void {
     (this.registers as any).registers = newRegisters;

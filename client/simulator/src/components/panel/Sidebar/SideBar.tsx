@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sideBar";
 import CircleActive from "./CircleActive";
 import { Sidebar, SidebarContent, SidebarMenuItem } from "@/components/ui/sideBar";
-import { Text, Search, Calculator, Info, Settings } from "lucide-react";
+import { Search, Calculator, Info, Settings } from "lucide-react";
 
 type SectionType = string;
 
@@ -38,11 +38,6 @@ export function SideBar() {
 
   const mainSections: SectionItem[] = [
     {
-      name: "program",
-      icon: <Text />,
-      show: (operation === "uploadMemory"  || operation === "step")  ,
-    },
-    {
       name: "search",
       icon: <Search />,
       show: !(operation === "") && !(operation === "uploadMemory"),
@@ -70,7 +65,7 @@ export function SideBar() {
         setHoveringSidebar(false);
       }}
     >
-      <SidebarContent className="flex flex-col justify-between w-full h-full p-3">
+      <SidebarContent className="flex flex-col justify-between w-full h-full p-3 ">
         <div className="flex flex-col items-start gap-3">
           <p>Sections</p>
           {mainSections.map(

@@ -3,7 +3,7 @@ import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
-import "./tabulator.css";
+import "../tabulator.css";
 
 import { useTheme } from "@/components/ui/theme/theme-provider";
 
@@ -12,19 +12,16 @@ import { useLines } from "@/context/panel/LinesContext";
 import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 
 //Hooks
-import { useMemoryTabulator } from "@/hooks/text/memory/useMemoryTabulator";
-import { useMemoryResizeEffect } from "@/hooks/text/memory/useMemoryResizeEffect";
-import { useMemoryImportEffect } from "@/hooks/text/memory/useMemoryImportEffect";
-import { useSyncIsFirstStepRef } from "@/hooks/text/memory/useSyncIsFirstStepRef";
-import { useProgramCounterEffect } from "@/hooks/text/memory/useProgramCounterEffect";
-import { useMemorySearchFilterEffect } from "@/hooks/text/memory/useMemorySearchFilterEffect";
-import { useStackPointerEffect } from "@/hooks/text/memory/useStackPointerEffect";
-import { useMemoryCellWriteEffect } from "@/hooks/text/memory/useMemoryCellWriteEffect";
-import { useAnimateMemoryRead } from "@/hooks/text/memory/useAnimateMemoryRead";
-import { useLocatePcEffect } from "@/hooks/text/memory/useLocatePcEffect";
-import { useEditorClickAnimation } from "@/hooks/text/memory/useEditorClickAnimation";
+import { useMemoryTabulator } from "@/hooks/text/memory/availableMemory/useMemoryTabulator";
+import { useMemoryResizeEffect } from "@/hooks/text/memory/availableMemory/useMemoryResizeEffect";
+import { useMemoryImportEffect } from "@/hooks/text/memory/availableMemory/useMemoryImportEffect";
+import { useSyncIsFirstStepRef } from "@/hooks/text/memory/shared/useSyncIsFirstStepRef";
+import { useStackPointerEffect } from "@/hooks/text/memory/availableMemory/useStackPointerEffect";
+import { useMemoryCellWriteEffect } from "@/hooks/text/memory/availableMemory/useMemoryCellWriteEffect";
+import { useAnimateMemoryRead } from "@/hooks/text/memory/availableMemory/useAnimateMemoryRead";
+import { useMemorySearchFilterEffect } from "@/hooks/text/memory/shared/useMemorySearchFilterEffect";
 
-const MemoryTable = () => {
+const AvailableMemoryTable = () => {
   const { theme } = useTheme();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
@@ -39,25 +36,21 @@ const MemoryTable = () => {
     setSp,
     importMemory,
     setImportMemory,
-    searchInMemory,
     writeInMemory,
     setWriteInMemory,
     readInMemory,
     setReadInMemory,
-    locatePc,
-    setLocatePc,
-
+    searchInMemory
   } = useMemoryTable();
 
   const { newPc, setNewPc, isFirstStep } = useSimulator();
   const newPcRef = useRef(newPc);
 
   const { writeInRegister, setWriteInRegister } = useRegistersTable();
-  const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable } = useLines();
+  const { setClickAddressInMemoryTable } = useLines();
   const isFirstStepRef = useRef(isFirstStep);
 
   const [showTable, setShowTable] = useState(true);
-
 
   useMemoryTabulator({
     tableContainerRef,
@@ -83,6 +76,13 @@ const MemoryTable = () => {
     setWriteInRegister,
   });
 
+    useMemorySearchFilterEffect({
+      tableInstanceRef,
+      isCreatedMemoryTable,
+      newPc,
+      searchInMemory,
+    });
+
   useMemoryImportEffect({
     isCreatedMemoryTable,
     tableInstanceRef,
@@ -94,21 +94,6 @@ const MemoryTable = () => {
     isCreatedMemoryTable,
     isFirstStep,
     isFirstStepRef,
-  });
-
-  useProgramCounterEffect({
-    isCreatedMemoryTable,
-    dataMemoryTable,
-    newPc,
-    newPcRef,
-    tableInstanceRef,
-  });
-
-  useMemorySearchFilterEffect({
-    tableInstanceRef,
-    isCreatedMemoryTable,
-    newPc,
-    searchInMemory,
   });
 
   useStackPointerEffect({
@@ -134,27 +119,9 @@ const MemoryTable = () => {
     setReadInMemory,
   });
 
-  useLocatePcEffect({
-    isCreatedMemoryTable,
-    tableInstanceRef,
-    locatePc,
-    setLocatePc,
-    newPc,
-  });
-
-
-
-  useEditorClickAnimation({
-    isCreatedMemoryTable,
-    tableInstanceRef,
-    clickInEditorLine,
-    setClickInEditorLine,
-    dataMemoryTable,
-  });
-
   return (
     <>
-      <div className={`shadow-lg !min-h-min min-w-[37.36rem] relative ${!showTable && "hidden"}`}>
+      <div className={`shadow-lg !min-h-min min-w-[37.36rem]  mx-4  relative ${!showTable && "hidden"}`}>
         <div
           className={`h-full  w-full transition-opacity ease-in 9000  ${
             isCreatedMemoryTable ? "opacity-100" : "opacity-0"
@@ -169,9 +136,9 @@ const MemoryTable = () => {
             onClick={() => {
               setShowTable(false);
             }}
-            size={18}
+           
             strokeWidth={1.5}
-            className="absolute cursor-pointer right-[.13rem] top-[.4rem] z-100 text-black"
+            className="absolute cursor-pointer right-[0rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] z-100 text-black"
           />
         </div>
         {!isCreatedMemoryTable && (
@@ -183,28 +150,20 @@ const MemoryTable = () => {
       {!showTable && (
         <div
           onClick={() => setShowTable(true)}
-          className={`h-full w-[1.6rem] cursor-pointer z-100 rounded-[.2rem] flex flex-col items-center uppercase group border 
-    ${theme === "light" ? "bg-white border-gray-300" : "bg-[#1a1a1a] border-gray-700"}`}>
+          className={`h-full w-[1.6rem] cursor-pointer rounded-[.2rem] flex flex-col items-center uppercase  border hover:opacity-[0.9] transition-all ease-in-out duration-200
+    bg-[#E3F2FD] border-gray-700 text-black`}>
           <ArrowBigRightDash
-            size={18}
+ 
             strokeWidth={1.5}
-            className={`mt-[0.35rem] mb-3 transition ease-in-out 
-      ${
-        theme === "light"
-          ? "text-gray-700 group-hover:text-gray-800"
-          : "text-gray-400 group-hover:text-gray-300"
-      }`}
+            className={`mt-[0.35rem] mb-1   min-w-[.9rem] min-h-[.9rem] w-[.9rem] h-[.9rem]
+      `}
           />
 
-          {"mem".split("").map((char, index) => (
+          {"memory".split("").map((char, index) => (
             <span
               key={index}
-              className={`text-[.65rem] font-bold leading-[1.15rem] transition ease-in-out 
-        ${
-          theme === "light"
-            ? "text-gray-700 group-hover:text-gray-800"
-            : "text-gray-400 group-hover:text-gray-500"
-        }`}>
+              className={`text-[.45rem] font-bold leading-[.91rem] 
+        `}>
               {char === " " ? "\u00A0" : char}
             </span>
           ))}
@@ -214,4 +173,4 @@ const MemoryTable = () => {
   );
 };
 
-export default MemoryTable;
+export default AvailableMemoryTable;

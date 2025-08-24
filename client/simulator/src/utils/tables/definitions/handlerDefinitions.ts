@@ -18,6 +18,7 @@ import {
   validBinary,
   validAscii,
   toBinary,
+  hexToInt,
 } from "@/utils/handlerConversions";
 
 //  DEFINITION COLUMNS HANDLERS IN REGISTER TABLE
@@ -372,10 +373,15 @@ export const attachMemoryConversionToggle = (cell: CellComponent): void => {
       if (key === "b") {
         newContent = parseInt(cellValue, 16).toString(2);
         activeKey = "b";
-      } else if (key === "h") {
-        newContent = cellValue.toUpperCase();
-        activeKey = "h";
-      }
+      } else if (key === "s") {
+        const signedVal = hexToInt(cellValue);
+        newContent = signedVal.toString()
+        activeKey = "s";
+      } else if (key === "u") {
+        const signedVal = hexToInt(cellValue);
+        newContent = signedVal.toString()
+        activeKey = "u";
+      } 
     } else if (cell.getField().startsWith("value")) {
       switch (key) {
         case "b":

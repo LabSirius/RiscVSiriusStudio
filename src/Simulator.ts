@@ -144,35 +144,35 @@ export class TextSimulator extends Simulator {
 
     const asmList = this.rvDoc.ir?.instructions.map((instr) => instr.asm);
 
+
+
     this.webview.postMessage({
       from: "extension",
       operation: "uploadMemory",
       payload: {
-        memory: this.cpu.getDataMemory().getMemory(),
+        memory: this.cpu.getDataMemory().getAvailableMemory(),
+        program: this.cpu.getDataMemory().getProgramMemory(),
         codeSize: this.cpu.getDataMemory().codeSize,
-        constantsSize: this.cpu.getDataMemory().constantsSize,
+        m: this.cpu.getDataMemory().constantsSize,
         addressLine,
         symbols: this.rvDoc.ir?.symbols,
         asmList,
       },
       typeSimulator: this.simulatorType,
+        initialLine: inst.location.start.line
+
     });
+
 
     super.start();
 
-    const spValue = this.cpu.getDataMemory().spInitialAddress;
-
+    const spValue = this.cpu.getDataMemory().availableSpInitialAddress;
     this.webview.postMessage({
+      // Use 'this.webview' directly
       from: "extension",
       operation: "setRegister",
       register: "x2",
       value: intToBinary(spValue),
-    });
-
-    this.webview.postMessage({
-      from: "extension",
-      operation: "initialLine",
-      lineDecorationNumber: line !== undefined ? line + 1 : -1
     });
   }
 

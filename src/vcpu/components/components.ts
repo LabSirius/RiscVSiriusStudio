@@ -50,9 +50,17 @@ export class RegistersFile {
 
 //DATA MEMORY
 export class DataMemory {
-  private memory: Array<string>;
-  public getMemory(): Array<string> {
-    return [...this.memory];
+
+
+  private memory_program: Array<string>; //U
+  private memory_available: Array<string>; //U
+
+
+    public getProgramMemory(): Array<string> { //U
+    return [...this.memory_program];
+  }
+  public getAvailableMemory(): Array<string> { //U
+    return [...this.memory_available];
   }
 
   private codeAreaEnd: number;
@@ -60,12 +68,17 @@ export class DataMemory {
     return this.codeAreaEnd + 1;
   }
 
-  private size: number;
-  get memSize() {
-    return this.size;
+  private available_size: number; //U
+
+
+  get availableMemSize() {
+    return this.available_size; //U
   }
-  get spInitialAddress() {
-    return this.size - 4;
+
+
+ 
+   get availableSpInitialAddress() {
+    return this.availableMemSize - 4; //U
   }
 
   private _constantsSize: number;
@@ -73,30 +86,43 @@ export class DataMemory {
     return this._constantsSize;
   }
 
-  public constructor(programSize: number, codeSize: number, size: number) {
+
+  public overwriteAvailableMemory(newMemory: string[]): void {
+  this.memory_available = newMemory;
+  this.available_size = newMemory.length;
+}
+
+  public constructor(programSize : number, codeSize: number, size: number) {
     this.codeAreaEnd = codeSize - 1;
-    this._constantsSize = codeSize - programSize;
-    this.size = 0;
-    this.memory = [];
+    this._constantsSize =  codeSize - programSize;
+
+    this.available_size = 0; 
+
+    this.memory_program = []; //U
+    this.memory_available = []; //U
+
+
     this.resize(size);
   }
-
   public resize(size: number) {
-    this.size = size;
-    const totalSize = this.codeSize + this.memSize;
-    this.size = totalSize;
-    this.memory = new Array(totalSize).fill("00000000");
+    this.available_size = size; //U
+
+  
+    this.memory_program = new Array(this.codeSize).fill("00000000"); //U
+    this.memory_available = new Array(this.available_size).fill("00000000"); //U
+
   }
 
   public uploadProgram(memory: Array<any>) {
-    memory.forEach((mem) => {
-      const address = mem.memdef;
-      this.memory[address] = mem.binValue;
-    });
+      memory.forEach((mem) => {
+        const address = mem.memdef;
+
+        this.memory_program[address] = mem.binValue; //U
+      });
   }
 
   public lastAddress() {
-    return this.size - 1;
+    return this.available_size - 1;
   }
 
   public validAddress(address: number) {
@@ -109,33 +135,41 @@ export class DataMemory {
   }
 
   public write(data: Array<string>, address: number) {
+    console.log("CAMBIOOOO", data, address)
     const lastAddress = address + data.length - 1;
     if (lastAddress > this.lastAddress()) {
+      console.log
       throw new Error("Data memory size exceeded.");
     }
     for (let i = 0; i < data.length; i++) {
       if (data[i] === undefined) {
         throw new Error("Undefined data element");
       }
-      this.memory[address + i] = data[i]!;
+      this.memory_available[address + i] = data[i]!;
+
+
     }
   }
   public read(address: number, length: number): Array<string> {
+
     const lastAddress = address + length - 1;
+
     if (lastAddress > this.lastAddress()) {
       throw new Error("Data memory size exceeded.");
     }
     let data = [] as Array<string>;
     for (let i = 0; i < length; i++) {
-      const value = this.memory[address + i];
-      if (value !== undefined) {
-        data.push(value);
+      const valueAvailableMem =   this.memory_available[address + i]
+      if (valueAvailableMem !== undefined) {
+        data.push(valueAvailableMem);
       } else {
         throw new Error(`Invalid memory access at ${address + i}`);
       }
     }
+
     return data.reverse();
   }
+  
 }
 
 /**

@@ -2,7 +2,7 @@ import { useEffect, MutableRefObject, Dispatch, SetStateAction } from 'react';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 
 // Import all utility functions and types needed
-import { uploadMemory } from '@/utils/tables/handlersMemory';
+import { uploadAvailableMemory } from '@/utils/tables/handlersMemory';
 import { intTo32BitBinary, intToHex } from '@/utils/handlerConversions';
 import { sendMessage } from '@/components/Message/sendMessage';
 
@@ -38,7 +38,6 @@ export const useMemoryResizeEffect = ({
   tableInstanceRef,
   dataMemoryTable,
   sizeMemory,
-  setNewPc,
   setSp,
   setWriteInRegister,
   setDataMemoryTable,
@@ -46,31 +45,25 @@ export const useMemoryResizeEffect = ({
   useEffect(() => {
     if (!isCreatedMemoryTable) return;
     if (tableInstanceRef.current && dataMemoryTable) {
-      const newTotalSize = dataMemoryTable.codeSize + sizeMemory;
       let newMemory: string[] = [];
 
-      if (newTotalSize < dataMemoryTable.memory.length) {
-        newMemory = dataMemoryTable.memory.slice(0, newTotalSize);
-      } else if (newTotalSize > dataMemoryTable.memory.length) {
+      if (sizeMemory < dataMemoryTable.memory.length) {
+        newMemory = dataMemoryTable.memory.slice(0, sizeMemory);
+      } else if (sizeMemory > dataMemoryTable.memory.length) {
         newMemory = [
           ...dataMemoryTable.memory,
-          ...new Array(newTotalSize - dataMemoryTable.memory.length).fill('00000000'),
+          ...new Array(sizeMemory - dataMemoryTable.memory.length).fill('00000000'),
         ];
       } else {
         newMemory = dataMemoryTable.memory;
       }
 
-      uploadMemory(
+      uploadAvailableMemory(
         tableInstanceRef.current,
         newMemory,
-        dataMemoryTable.codeSize,
-        dataMemoryTable.constantsSize,
-        dataMemoryTable.symbols,
         () => {
-          setNewPc(0);
-
-          setSp(intToHex(newTotalSize - 4));
-          const newMemorySize = intTo32BitBinary(newTotalSize - 4);
+          setSp(intToHex(sizeMemory - 4));
+          const newMemorySize = intTo32BitBinary(sizeMemory - 4);
           setWriteInRegister({ registerName: 'x2', value: newMemorySize });
         }
       );
@@ -80,7 +73,7 @@ export const useMemoryResizeEffect = ({
         memory: newMemory,
       });
 
-      sendMessage({ event: 'memorySizeChanged', sizeMemory: newTotalSize - 4 });
+      sendMessage({ event: 'memorySizeChanged', sizeMemory: sizeMemory - 4 });
     }
 
  

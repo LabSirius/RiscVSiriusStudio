@@ -1,5 +1,3 @@
-
-
 import { useEffect, useRef } from "react";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useMemoryTable } from "@/context/shared/MemoryTableContext";
@@ -57,20 +55,19 @@ export const useMessageListener = () => {
               description:
                 "Before executing the first instruction, you can change the simulation settings.",
               stop: false,
-              chooseTypeSimulator: message.typeSimulator === 'monocycle' ? true : false,
+              chooseTypeSimulator: message.typeSimulator === "monocycle" ? true : false,
             });
             setTypeSimulator(message.typeSimulator);
             setSection("settings");
             setIsCreatedMemoryTable(false);
             setDataMemoryTable(message.payload);
-            setSizeMemory(message.payload.memory.length - message.payload.codeSize);
+            setSizeMemory(message.payload.memory.length);
             setIsFirstStep(false);
             setOperation("uploadMemory");
+            setLineDecorationNumber(message.initialLine);
 
             break;
-          case "initialLine":
-            setLineDecorationNumber(message.lineDecorationNumber);
-            break;
+
           case "step":
             setNewPc(message.newPc);
             setCurrentInst(message.currentInst);
@@ -86,11 +83,8 @@ export const useMessageListener = () => {
             }
 
             if (!isFirstStep) {
-              if (modeSimulatorRef.current === "graphic") {
-                setSection("program");
-              } else {
-                setSection("search");
-              }
+              setSection("search");
+
               setOperation("step");
               setIsFirstStep(true);
             }
@@ -112,7 +106,12 @@ export const useMessageListener = () => {
             setReadInMemory({ address: message.address, value: "1", _length: message._length });
             break;
           case "stop":
-            setDialog({ title: "Info", description: "The program has ended.", stop: true });
+            setDialog({
+              title: "Info",
+              description: "The program has ended.",
+              stop: true,
+              descerror: message.descerror,
+            });
             break;
           default:
             break;

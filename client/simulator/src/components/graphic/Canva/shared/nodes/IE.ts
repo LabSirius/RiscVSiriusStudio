@@ -23,13 +23,14 @@ export const useIENodes = (): Node[] => {
       style: {
         width: 680 + offsetXSize,
         height: 1330 + (isPipeline ? 140 : 0),
+        
         backgroundColor: "#E3F2FD",
         border: "1px solid #E3F2FD",
         borderRadius: 8,
       },
     },
 
-    nodeBase("title-IE", "title", "Execute (IE)", { x: 10, y: 0 }, "IE", 680, 50),
+    nodeBase("title-IE", "title", "Execute (IE)", { x: 10, y: 0 }, "IE", 670, 50),
     nodeBase("muxA", "muxA", "MUX A", { x: shift(165), y: 605 }, "IE", 65, 150),
     nodeBase("aluASrc", "aluASrc", "ALU A SRC", { x: shift(153), y: 535 }, "IE", 90, 30),
     nodeBase("muxB", "muxB", "MUX B", { x: shift(165), y: 780 }, "IE", 65, 150),

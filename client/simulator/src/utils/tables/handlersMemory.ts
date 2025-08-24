@@ -1,8 +1,8 @@
 import { chunk } from 'lodash';
 import { intToHex, binaryToHex,  } from '@/utils/handlerConversions';
-import { SymbolData } from '@/utils/tables/types';
 import { TabulatorFull as Tabulator, CellComponent, RowComponent } from 'tabulator-tables';
 import { MemoryRow } from '@/utils/tables/types';
+import { SymbolData } from '@/utils/tables/types';
 
 /**
  * This function performs the following tasks:
@@ -12,12 +12,9 @@ import { MemoryRow } from '@/utils/tables/types';
  * 4. Labels the symbols in the table.
  * 5. Resets the program counter to 0.
  */
-export const uploadMemory = (
+export const uploadAvailableMemory = (
   table: Tabulator,
   newMemory: string[],
-  newCodeSize: number,
-  newConstantsSize: number,
-  newSymbols: Record<string, SymbolData>,
   onComplete?: () => void
 ): void => {
 
@@ -27,9 +24,90 @@ export const uploadMemory = (
   const expectedRowCount = newMemory.length / 4;
   const maxAddress = (expectedRowCount - 1) * 4;
 
-  const programSize = newCodeSize - newConstantsSize;
+
+  // Generate main data
+  const mainRows = chunk(newMemory, 4).map((word, index) => {
+    const byteAddress = index * 4;
+    const address = intToHex(byteAddress).toUpperCase();
 
 
+
+    return {
+      address,
+      value0: word[0] || '00000000',
+      value1: word[1] || '00000000',
+      value2: word[2] || '00000000',
+      value3: word[3] || '00000000',
+      hex: word
+        .slice()
+        .reverse()
+        .map((byte) => binaryToHex(byte || '00000000').toUpperCase().padStart(2, '0'))
+        .join('-'),
+      info: '',
+    };
+  });
+
+  // Update main data
+  table.setData(mainRows);
+
+  // Add/Update Heap
+  const heapAddress = intToHex(0).toUpperCase();
+  const heapRow = table.getRow(heapAddress);
+
+  if (heapRow) {
+    heapRow.update({
+      info: '<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>'
+    });
+  } else {
+    table.addRow({
+      address: heapAddress,
+      value0: '00000000',
+      value1: '00000000',
+      value2: '00000000',
+      value3: '00000000',
+      info: '<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>',
+      hex: '00-00-00-00',
+      segment: '',
+    });
+  }
+
+  // Apply placeholder to empty info cells
+  table.getRows().forEach(row => {
+    const data = row.getData();
+    if (!data.info) {
+      row.getCell("info").getElement().innerHTML = '<div style="opacity:0">\u00A0</div>';
+    }
+  });
+
+  // Delete rows that are no longer needed
+  if (!isInitialLoad) {
+    const rowsToDelete = table.getRows()
+      .filter(row => {
+        const rowAddress = parseInt(row.getData().address, 16);
+        return rowAddress > maxAddress && !row.getData().info;
+      });
+
+    if (rowsToDelete.length) {
+      table.deleteRow(rowsToDelete.map(row => row.getData().address));
+    }
+  }
+  onComplete?.();
+}
+
+
+export const uploadProgramMemory = (
+  table: Tabulator,
+  newMemory: string[],
+  newCodeSize: number,
+  newConstantsSize: number,
+  newSymbols: Record<string, SymbolData>,
+  onComplete?: () => void
+): void => {
+
+  console.log(newConstantsSize)
+
+
+  
   // Generate main data
   const mainRows = chunk(newMemory, 4).map((word, index) => {
     const byteAddress = index * 4;
@@ -37,9 +115,11 @@ export const uploadMemory = (
 
     let segment = '';
 
-    if (byteAddress < programSize) {
+
+  
+    if (byteAddress < newCodeSize) {
       segment = 'program';
-    } else if (byteAddress < newCodeSize) {
+    }else{
       segment = 'constants';
     }
 
@@ -61,27 +141,7 @@ export const uploadMemory = (
 
   // Update main data
   table.setData(mainRows);
-
-  // Add/Update Heap
-  const heapAddress = intToHex(newCodeSize).toUpperCase();
-  const heapRow = table.getRow(heapAddress);
-
-  if (heapRow) {
-    heapRow.update({
-      info: '<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>'
-    });
-  } else {
-    table.addRow({
-      address: heapAddress,
-      value0: '00000000',
-      value1: '00000000',
-      value2: '00000000',
-      value3: '00000000',
-      info: '<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>',
-      hex: '00-00-00-00',
-      segment: '',
-    });
-  }
+  
 
   // Add/Update symbols
   Object.values(newSymbols).forEach(symbol => {
@@ -114,20 +174,11 @@ export const uploadMemory = (
     }
   });
 
-  // Delete rows that are no longer needed
-  if (!isInitialLoad) {
-    const rowsToDelete = table.getRows()
-      .filter(row => {
-        const rowAddress = parseInt(row.getData().address, 16);
-        return rowAddress > maxAddress && !row.getData().info;
-      });
-
-    if (rowsToDelete.length) {
-      table.deleteRow(rowsToDelete.map(row => row.getData().address));
-    }
-  }
   onComplete?.();
 }
+
+
+
 
 /**
  * This function updates the program counter in the memory table.

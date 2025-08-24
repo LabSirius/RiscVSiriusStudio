@@ -10,7 +10,7 @@ export default function RUDataWrSrc() {
     <div className="w-full">
       <div className="relative w-full h-full">
         <h2
-          className={` titleInElement top-[.6rem] left-[50%] -translate-[50%]   ${
+          className={` titleInElement top-[.3rem] left-[50%] -translate-[50%]   ${
             overlayWBActive && "overlay-scale"
           } ${(currentType === "S" || currentType === "B") && "!text-[#D3D3D3]"}`}>
           RUDataWrSrc

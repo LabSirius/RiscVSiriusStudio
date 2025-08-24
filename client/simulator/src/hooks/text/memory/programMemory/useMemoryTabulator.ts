@@ -2,7 +2,7 @@ import { useEffect, RefObject, MutableRefObject, Dispatch, SetStateAction } from
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
 import { getColumnMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 import {
-  uploadMemory,
+  uploadProgramMemory,
   setupEventListeners,
   animateArrowBetweenCells,
   createPCIcon,
@@ -67,21 +67,9 @@ export const useMemoryTabulator = ({
         const data = row.getData();
         if (!dataMemoryTable) return;
 
-        const spAddress = intToHex(dataMemoryTable.memory.length - 4).toUpperCase();
-        if (data.address === spAddress) return;
-
         const rowEl = row.getElement();
 
-        if (data.segment === 'program') {
-          rowEl.style.backgroundColor = '#D1E3E7';
-          rowEl.style.color = '#000';
-        } else if (data.segment === 'constants') {
-          rowEl.style.backgroundColor = '#FFE5B4';
-          rowEl.style.color = '#000';
-        } else {
-          rowEl.style.backgroundColor = '';
-          rowEl.style.color = '';
-        }
+        
 
         const currentPcHex = (newPcRef.current * 4).toString(16).toUpperCase();
         if (data.address === currentPcHex) {
@@ -100,9 +88,9 @@ export const useMemoryTabulator = ({
     tableInstanceRef.current.on('tableBuilt', () => {
       setIsCreatedMemoryTable(true);
       if (dataMemoryTable) {
-        uploadMemory(
+        uploadProgramMemory(
           tableInstanceRef.current!,
-          dataMemoryTable.memory,
+          dataMemoryTable.program,
           dataMemoryTable.codeSize,
           dataMemoryTable.constantsSize,
           dataMemoryTable.symbols,
