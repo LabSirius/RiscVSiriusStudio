@@ -28,6 +28,9 @@ export const useWBNodes = (): Node[] => {
 
     nodeBase("title-WB", "title", "Write back (WB)", { x: 10, y: 0 }, "WB", 290, 50),
 
+    nodeBase("instWBPipeline", "instWBPipeline", "instWBPipeline", { x: 40, y: 80 }, "WB", 370, 50),
+
+
     nodeBase("muxC", "muxC", "MUXC", { x: shift(90), y: 770 }, "WB", 65, 150),
 
     nodeBase("ruDataWrSrc", "ruDataWrSrc", "RUDataWrSrc", { x: shift(78), y: 960 }, "WB", 90, 30),

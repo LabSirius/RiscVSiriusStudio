@@ -118,6 +118,10 @@ import CU_ID_EXIT from "../../elements/pipeline/CU_ID_EXIT";
 import Pivot39 from "../../elements/ID/pivots/Pivot39";
 import StageSeparator from "../../elements/StageSeparator";
 import InstIFPipeline from "../../elements/IF/InstIFPipeline";
+import InstIDPipeline from "../../elements/ID/InstIDPipeline";
+import InstIEPipeline from "../../elements/IE/InstIEPipeline";
+import InstMEMPipeline from "../../elements/MEM/InstMEMPipeline";
+import InstWBPipeline from "../../elements/WB/InstWBPipeline";
 export const nodeTypes = {
   title: TitleText,
   // IF
@@ -134,6 +138,7 @@ export const nodeTypes = {
   immGenerator: ImmGenerator,
   immSrc: ImmSrc,
   ruWr: RUWr,
+  instIDPipeline: InstIDPipeline,
 
   //IE
   muxA: MuxA,
@@ -144,15 +149,19 @@ export const nodeTypes = {
   aluOp: ALUOp,
   branchUnit: BranchUnit,
   brOp: BrOp,
+  instIEPipeline: InstIEPipeline,
 
   //MEM
   dataMemory: DataMemory,
   dmWr: DMWR,
   dmCtrl: DMCtrl,
+  instMEMPipeline: InstMEMPipeline,
+
 
   //WB
   muxC: MuxC,
   ruDataWrSrc: RUDataWrSrc,
+  instWBPipeline: InstWBPipeline,
 
   //PITOVS
   pivot1: Pivot1,
@@ -243,18 +252,14 @@ export const nodeTypes = {
   cu_wb: CU_WB,
 
   cu_id_exit: CU_ID_EXIT,
-  cu_ie_exit:CU_IE_EXIT,
+  cu_ie_exit: CU_IE_EXIT,
   cu_mem_exit: CU_MEM_EXIT,
   cu_wb_exit: CU_WB_EXIT,
-
 
   stageSeparatorIF_ID: StageSeparator,
   stageSeparatorID_IE: StageSeparator,
   stageSeparatorIE_MEM: StageSeparator,
   stageSeparatorMEM_WB: StageSeparator,
-
-
-  
 };
 
 export const edgeTypes = {
