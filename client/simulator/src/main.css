@@ -458,12 +458,17 @@ h2 {
 }
 
 
-.custom-shadow {
+.custom-shadow,
+.custom-shadow-without-translate {
   transition: all 0.2s ease-in;
 }
 
 .custom-shadow:hover {
   transform: translateY(-.8rem);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45); 
+}
+
+.custom-shadow-without-translate:hover {
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45); 
 }
 

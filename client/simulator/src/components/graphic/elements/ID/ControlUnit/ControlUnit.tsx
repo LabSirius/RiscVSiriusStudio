@@ -1,8 +1,6 @@
-//import { Handle, Position } from "@xyflow/react";
 import ContainerSVG from "../../ContainerSVG";
 
 import Tunels from "./outputTunnels/Tunels";
-// // import LabelSlashConatiner from "./LabelSlashContainer";
 import LabelValueContainer from "./LabelValueContainer";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import CurrentInstructionInfo from "@/components/graphic/CurrentInstructionInfo";
@@ -19,7 +17,7 @@ export default function ControlUnit() {
       <div className="relative">
        <CurrentInstructionInfo />
 
-        <ContainerSVG height={typeSimulator === "monocycle" ? 5 : 7.5} active={true} />
+        <ContainerSVG height={typeSimulator === "monocycle" ? 5 : 7.5} active={true} translate={false} />
 
         {operation !== "uploadMemory" && (
           // <>
