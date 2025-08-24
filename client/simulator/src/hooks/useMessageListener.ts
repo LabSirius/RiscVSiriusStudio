@@ -71,12 +71,12 @@ export const useMessageListener = () => {
             console.log("AQUI LLEGA UN MENSAJE STEP", message.result)
             if(message.result.IF){
               console.log("IS PIPELINE")
-              setPipelineValuesStages(message)
+              setPipelineValuesStages(message.result)
               
             }else{
                setNewPc(message.newPc);
             setCurrentMonocycleInst(message.currentMonocycletInst);
-            if (message.currentMonocycletInst.asm?.toLowerCase() === "ebreak") {
+            if (message.currentMonocycletInst?.asm?.toLowerCase() === "ebreak") {
               setIsEbreak(true);
             }
 

@@ -4,16 +4,22 @@ import { useFormattedPC } from "@/hooks/graphic/useFormattedPC";
 import LabelValueWithHover from "../../LabelValueWithHover";
 
 const LabelValueContainer = () => {
-  const { currentMonocycletInst } = useCurrentInst();
-  const formattedPC = useFormattedPC(currentMonocycletInst.currentPc);
 
-  const addressValue = currentMonocycletInst.currentPc * 4;
+
+  const { currentMonocycletInst } = useCurrentInst();
+
+
+  const formattedPC = useFormattedPC(currentMonocycletInst?.currentPc ?? 0);
+
+  if(!currentMonocycletInst) return
+
+  const addressValue = currentMonocycletInst?.currentPc * 4;
   const binAddress = addressValue.toString(2).padStart(32, "0");
   const decAddress = addressValue.toString();
   const hexAddress = binaryToHex(binAddress).toUpperCase();
 
-  const rawHexInstruction = currentMonocycletInst.encoding.hexEncoding.toUpperCase();
-  const binInstruction = currentMonocycletInst.encoding.binEncoding;
+  const rawHexInstruction = currentMonocycletInst?.encoding.hexEncoding.toUpperCase();
+  const binInstruction = currentMonocycletInst?.encoding.binEncoding;
   const decInstruction = binaryToInt(binInstruction);
 
   return (

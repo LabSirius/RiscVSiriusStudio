@@ -3,6 +3,8 @@ import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 const TypeSImmDecode = () => {
   const { currentMonocycletInst } = useCurrentInst();
 
+  if(!currentMonocycletInst) return
+
   const topBlocks = [
     { left: "1.1rem", slice: [0, 4] },
     { left: "6.1rem", slice: [4, 7] },
@@ -50,7 +52,7 @@ const TypeSImmDecode = () => {
           style={{ bottom: "1.6rem", right: block.right }}
         >
           {Array.from({ length: 4 }).map((_, index) => (
-            <p key={index}>{currentMonocycletInst.encoding.binEncoding[0]}</p>
+            <p key={index}>{currentMonocycletInst?.encoding.binEncoding[0]}</p>
           ))}
         </div>
       ))}
@@ -61,7 +63,7 @@ const TypeSImmDecode = () => {
           className="flex absolute gap-[.84rem]"
           style={{ bottom: "1.6rem", right: block.right }}
         >
-          {Array.from(currentMonocycletInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(currentMonocycletInst?.encoding.binEncoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>

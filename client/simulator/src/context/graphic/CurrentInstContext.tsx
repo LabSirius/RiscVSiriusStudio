@@ -1,8 +1,22 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 
+interface NOPInstruction {
+  asm: 'NOP';
+  pc: -1;
+  inst?: undefined;
+  type?: undefined;
+  opcode?: undefined;
+  encoding?: undefined;
+  rs1?: undefined;
+  rs2?: undefined;
+  rd?: undefined;
+  instruction?: undefined;
+  currentPc?: undefined;
+  pseudoasm?: undefined;
+}
 
-interface CurrentInstState {
+interface ParsedInstruction {
   type: string;
   opcode: string;
   asm: string;
@@ -15,16 +29,17 @@ interface CurrentInstState {
     rs2?: string;
     rd?: string;
   };
-  rs1?: {
-    regenc: string;
-  };
-  rs2?: {
-    regenc: string;
-  };
+  rs1?: { regname: string; regeq: string; regenc: string; };
+  rs2?: { regname: string; regeq: string; regenc: string; };
+  rd?: { regname: string; regeq: string; regenc: string; };
   instruction: string;
   currentPc: number;
   pseudoasm?: string;
+  pc: number;
+  inst: number;
 }
+
+type Instruction = ParsedInstruction | NOPInstruction;
 
 interface ResultState {
   alu: { a: string; b: string; operation: string; result: string };
@@ -38,11 +53,12 @@ interface ResultState {
   wb: { signal: string };
 }
 
+
+
+const NOP_INSTRUCTION_OBJECT: NOPInstruction = { asm: "NOP", pc: -1 };
+
 const NOP_DATA = {
-  instruction: { 
-    asm: "NOP", pc: -1, encoding: undefined,
-    rd: undefined, rs1: undefined, rs2: undefined,
-  } as unknown,
+  instruction: NOP_INSTRUCTION_OBJECT,
   PC: -1, PCP4: 0, RUWr: false, ALUASrc: false, ALUBSrc: false, DMWr: false,
   RUDataWrSrc: "XX", ALUOp: "XXXXX", BrOp: "XXXXX", DMCtrl: "XXX",
   RUrs1: "X".padStart(32, "X"), RUrs2: "X".padStart(32, "X"),
@@ -51,7 +67,7 @@ const NOP_DATA = {
 };
 
 interface IDEX_Register {
-  instruction: unknown;
+  instruction: Instruction;
   PC: number;
   PCP4: number;
   RUWr: boolean;
@@ -71,7 +87,7 @@ interface IDEX_Register {
 }
 
 interface EXMEM_Register {
-  instruction: unknown;
+  instruction: Instruction;
   PC: number;
   PCP4: number;
   RUWr: boolean;
@@ -84,7 +100,7 @@ interface EXMEM_Register {
 }
 
 interface MEMWB_Register {
-  instruction: unknown;
+  instruction: Instruction;
   PC: number;
   PCP4: number;
   RUWr: boolean;
@@ -95,7 +111,7 @@ interface MEMWB_Register {
 }
 
 export type PipelineCycleResult = {
-  IF: { instruction: unknown; PC: number; PCP4: number };
+  IF: { instruction: Instruction; PC: number; PCP4: number };
   ID: IDEX_Register;
   EX: EXMEM_Register;
   MEM: MEMWB_Register;
@@ -103,13 +119,7 @@ export type PipelineCycleResult = {
 };
 
 
-
-const initialCurrentInstState: CurrentInstState = {
-  type: "", opcode: "", asm: "",
-  encoding: { hexEncoding: "", binEncoding: "", funct3: "", funct7: "", rs1: "", rs2: "", rd: "" },
-  rs1: { regenc: "" }, rs2: { regenc: "" },
-  instruction: "", currentPc: 0, pseudoasm: ""
-};
+const initialMonocycleInst: ParsedInstruction | null = null;
 
 const initialResultState: ResultState = {
   alu: { a: "", b: "", operation: "", result: "" },
@@ -124,7 +134,7 @@ const initialResultState: ResultState = {
 };
 
 const initialPipelineValues: PipelineCycleResult = {
-  IF: { instruction: NOP_DATA.instruction, PC: -1, PCP4: 0 },
+  IF: { instruction: NOP_INSTRUCTION_OBJECT, PC: -1, PCP4: 0 },
   ID: { ...NOP_DATA },
   EX: { ...NOP_DATA },
   MEM: { ...NOP_DATA },
@@ -132,10 +142,9 @@ const initialPipelineValues: PipelineCycleResult = {
 };
 
 
-
 interface CurrentInstContextType {
-  currentMonocycletInst: CurrentInstState;
-  setCurrentMonocycleInst: React.Dispatch<React.SetStateAction<CurrentInstState>>;
+  currentMonocycletInst: ParsedInstruction | null;
+  setCurrentMonocycleInst: React.Dispatch<React.SetStateAction<ParsedInstruction | null>>;
   currentType: string;
   setCurrentType: React.Dispatch<React.SetStateAction<string>>;
   currentMonocycleResult: ResultState;
@@ -145,22 +154,22 @@ interface CurrentInstContextType {
 }
 
 const CurrentInstContext = createContext<CurrentInstContextType>({
-  currentMonocycletInst: initialCurrentInstState, 
+  currentMonocycletInst: initialMonocycleInst,
   setCurrentMonocycleInst: () => {},
   currentType: "",
   setCurrentType: () => {},
-  currentMonocycleResult: initialResultState, 
+  currentMonocycleResult: initialResultState,
   setCurrentMonocycleResult: () => {},
-  pipelineValuesStages: initialPipelineValues, 
+  pipelineValuesStages: initialPipelineValues,
   setPipelineValuesStages: () => {},
 });
 
 export const useCurrentInst = () => useContext(CurrentInstContext);
 
 export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
-  const [currentMonocycletInst, setCurrentMonocycleInst] = useState<CurrentInstState>(initialCurrentInstState);
-  const [currentMonocycleResult, setCurrentMonocycleResult] = useState<ResultState>(initialResultState);
+  const [currentMonocycletInst, setCurrentMonocycleInst] = useState<ParsedInstruction | null>(initialMonocycleInst);
   const [currentType, setCurrentType] = useState<string>("");
+  const [currentMonocycleResult, setCurrentMonocycleResult] = useState<ResultState>(initialResultState);
   const [pipelineValuesStages, setPipelineValuesStages] = useState<PipelineCycleResult>(initialPipelineValues);
 
   return (

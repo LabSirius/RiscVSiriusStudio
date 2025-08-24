@@ -16,7 +16,7 @@ function MuxA() {
   const { operation, isEbreak,  } = useSimulator();
 
 
-  const islui = currentMonocycletInst.instruction === "lui"
+  const islui = currentMonocycletInst?.instruction === "lui"
 
   const signal = currentMonocycleResult.alua.signal;
 

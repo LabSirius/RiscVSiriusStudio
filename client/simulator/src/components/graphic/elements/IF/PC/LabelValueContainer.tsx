@@ -6,7 +6,10 @@ import LabelValueWithHover from "../../LabelValueWithHover";
 
 const LabelValueContainer = () => {
   const { currentMonocycleResult, currentMonocycletInst } = useCurrentInst();
-  const formattedPC = useFormattedPC(currentMonocycletInst.currentPc);
+
+  
+ const formattedPC = useFormattedPC(currentMonocycletInst?.currentPc ?? 0);
+
 
   const [hexNextPC, setHexNextPC] = useState("");
   const [decNextPC, setDecNextPC] = useState("");
@@ -21,7 +24,7 @@ const LabelValueContainer = () => {
     }
   }, [currentMonocycleResult]);
 
-  const pcValue = parseInt(String(currentMonocycletInst.currentPc), 2) * 4;
+  const pcValue = parseInt(String(currentMonocycletInst?.currentPc), 2) * 4;
   const pcBin = pcValue.toString(2).padStart(32, "0");
   const pcDec = pcValue.toString();
   const pcHex = binaryToHex(pcBin).toUpperCase();

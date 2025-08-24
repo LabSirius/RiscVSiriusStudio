@@ -117,6 +117,7 @@ import CU_WB_EXIT from "../../elements/pipeline/CU_WB_EXIT";
 import CU_ID_EXIT from "../../elements/pipeline/CU_ID_EXIT";
 import Pivot39 from "../../elements/ID/pivots/Pivot39";
 import StageSeparator from "../../elements/StageSeparator";
+import InstIFPipeline from "../../elements/IF/InstIFPipeline";
 export const nodeTypes = {
   title: TitleText,
   // IF
@@ -125,6 +126,7 @@ export const nodeTypes = {
   instructionMemory: InstructionMemory,
   four: Four,
   muxD: MuxD,
+  instIFPipeline: InstIFPipeline,
 
   //ID
   registerUnit: RegistersUnit,
@@ -250,6 +252,9 @@ export const nodeTypes = {
   stageSeparatorID_IE: StageSeparator,
   stageSeparatorIE_MEM: StageSeparator,
   stageSeparatorMEM_WB: StageSeparator,
+
+
+  
 };
 
 export const edgeTypes = {

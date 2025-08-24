@@ -30,8 +30,8 @@ export interface SimulatorContextProps {
 const SimulatorContext = createContext<SimulatorContextProps | undefined>(undefined);
 
 export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [typeSimulator, setTypeSimulator] = useState<string>("monocycle"); // "monocycle" | "pipeline"
-  const [modeSimulator, setModeSimulator] = useState<string>("text"); // "text" | "graphic"
+  const [typeSimulator, setTypeSimulator] = useState<string>("pipeline"); // "monocycle" | "pipeline"
+  const [modeSimulator, setModeSimulator] = useState<string>("graphic"); // "text" | "graphic"
   const [textProgram, setTextProgram] = useState<string>("");
   const [operation, setOperation] = useState<string>("");
   const [isFirstStep, setIsFirstStep] = useState<boolean>(false);
@@ -67,6 +67,7 @@ export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children 
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSimulator = (): SimulatorContextProps => {
   const context = useContext(SimulatorContext);
   if (!context) {

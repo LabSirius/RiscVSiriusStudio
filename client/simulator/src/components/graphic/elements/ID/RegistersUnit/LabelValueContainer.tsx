@@ -46,10 +46,10 @@ const LabelValueContainer = () => {
       {!(currentType === 'J' || currentType === 'LUI' || currentType === 'AUIPC') && (
         <LabelValueWithHover
           label=""
-          value={`b'${currentMonocycletInst.encoding.rs1}`}
-          decimal={binaryToInt(currentMonocycletInst.encoding.rs1 || '')}
-          binary={currentMonocycletInst.encoding.rs1 || ''}
-          hex={parseInt(currentMonocycletInst.encoding.rs1 || '', 2).toString(16).toUpperCase()}
+          value={`b'${currentMonocycletInst?.encoding.rs1}`}
+          decimal={binaryToInt(currentMonocycletInst?.encoding.rs1 || '')}
+          binary={currentMonocycletInst?.encoding.rs1 || ''}
+          hex={parseInt(currentMonocycletInst?.encoding.rs1 || '', 2).toString(16).toUpperCase()}
           positionClassName="top-[1.4rem] left-[.8rem]"
         />
       )}
@@ -58,10 +58,10 @@ const LabelValueContainer = () => {
       {(currentType === 'R' || currentType === 'S' || currentType === 'B') && (
         <LabelValueWithHover
           label=""
-          value={`b'${currentMonocycletInst.encoding.rs2}`}
-          decimal={binaryToInt(currentMonocycletInst.encoding.rs2 || '')}
-          binary={currentMonocycletInst.encoding.rs2 || ''}
-          hex={parseInt(currentMonocycletInst.encoding.rs2!, 2).toString(16).toUpperCase()}
+          value={`b'${currentMonocycletInst?.encoding.rs2}`}
+          decimal={binaryToInt(currentMonocycletInst?.encoding.rs2 || '')}
+          binary={currentMonocycletInst?.encoding.rs2 || ''}
+          hex={parseInt(currentMonocycletInst?.encoding.rs2!, 2).toString(16).toUpperCase()}
           positionClassName="top-[6.6rem] left-[.8rem]"
         />
       )}
@@ -70,10 +70,10 @@ const LabelValueContainer = () => {
       {!(currentType === 'S' || currentType === 'B') && (
         <LabelValueWithHover
           label=""
-          value={`b'${currentMonocycletInst.encoding.rd}`}
-          decimal={binaryToInt(currentMonocycletInst.encoding.rd || '')}
-          binary={currentMonocycletInst.encoding.rd || ''}
-          hex={parseInt(currentMonocycletInst.encoding.rd || '', 2).toString(16).toUpperCase()}
+          value={`b'${currentMonocycletInst?.encoding.rd}`}
+          decimal={binaryToInt(currentMonocycletInst?.encoding.rd || '')}
+          binary={currentMonocycletInst?.encoding.rd || ''}
+          hex={parseInt(currentMonocycletInst?.encoding.rd || '', 2).toString(16).toUpperCase()}
           positionClassName="top-[12rem] left-[.8rem]"
         />
       )}
@@ -81,7 +81,7 @@ const LabelValueContainer = () => {
       {/* RU[xRS1] */}
       {!(currentType === 'J' || currentType === 'LUI' || currentType === 'AUIPC') && (
         <LabelValueWithHover
-          label={`RU[x${currentMonocycletInst.rs1?.regenc}]`}
+          label={`RU[x${currentMonocycletInst?.rs1?.regenc}]`}
           value={`h'${ruRs1Hex}`}
           decimal={ruRs1Dec}
           binary={ruRs1Bin}
@@ -94,7 +94,7 @@ const LabelValueContainer = () => {
       {/* RU[xRS2] */}
       {(currentType === 'R' || currentType === 'S' || currentType === 'B') && (
         <LabelValueWithHover
-          label={`RU[x${currentMonocycletInst.rs2?.regenc}]`}
+          label={`RU[x${currentMonocycletInst?.rs2?.regenc}]`}
           value={`h'${ruRs2Hex}`}
           decimal={ruRs2Dec}
           binary={ruRs2Bin}
