@@ -50,7 +50,6 @@ export const useMessageListener = () => {
             setTextProgram(message.textProgram);
             break;
           case "uploadMemory":
-            console.log("AQUI LLEGA UN MENSAJE", message)
             setDialog({
               title: "Configuration Info",
               description:
@@ -68,7 +67,6 @@ export const useMessageListener = () => {
             setLineDecorationNumber(message.initialLine);
 
             break;
-
           case "step":
             console.log("AQUI LLEGA UN MENSAJE STEP", message.result)
             if(message.result.IF){
