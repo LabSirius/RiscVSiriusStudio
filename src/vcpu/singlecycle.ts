@@ -219,6 +219,7 @@ export class SCCPU implements ICPU {
       result.bu = { ...defaultBUResult, result: "0", operation: "00XXX" };
       result.buMux = { signal: "0", result: add4Res.toString(2) };
     }
+
     return result;
   }
 

@@ -23,6 +23,7 @@ const NOP_DATA = {
   RUrs1: "X".padStart(32, "X"),
   RUrs2: "X".padStart(32, "X"),
   ImmExt: "X".padStart(32, "X"),
+  ImmSRC: "X",
   RD: "X",
   rs1: "X",
   rs2: "X",
@@ -45,6 +46,7 @@ interface IDEX_Register {
   RUrs1: string;
   RUrs2: string;
   ImmExt: string;
+  ImmSRC: string;
   RD: string;
   rs1: string;
   rs2: string;
@@ -253,6 +255,7 @@ export class PipelineCPU implements ICPU {
       RUrs1,
       RUrs2,
       ImmExt,
+      ImmSRC: controls.imm_src, 
       RD: instruction.rd ? instruction.rd.regeq.substring(1) : "X",
       rs1: instruction.rs1 ? instruction.rs1.regeq.substring(1) : "X",
       rs2: instruction.rs2 ? instruction.rs2.regeq.substring(1) : "X",

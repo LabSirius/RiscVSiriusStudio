@@ -11,7 +11,7 @@ import { useSimulator } from "@/context/shared/SimulatorContext";
 
 export default function ImmGenerator() {
   const { operation, isEbreak } = useSimulator();
-  const { currentType } = useCurrentInst();
+  const { currentType, pipelineValuesStages } = useCurrentInst();
 
   const [showImmDecode, setShowImmDecode] = useState(false);
   const [isCardOpen, setIsCardOpen] = useState(false);
@@ -23,7 +23,9 @@ export default function ImmGenerator() {
     setIsCardOpen(open);
   };
 
-  const isFeatureEnabled = currentType !== "R" && operation !== "uploadMemory" && !isEbreak;
+  const isTypeR = currentType === "R" || pipelineValuesStages.ID.instruction.type === "R"
+
+  const isFeatureEnabled = !isTypeR && operation !== "uploadMemory" && !isEbreak;
 
   return (
     <HoverCard open={isCardOpen} onOpenChange={handleOpenChange} openDelay={0}>

@@ -14,6 +14,7 @@ interface NOPInstruction {
   instruction?: undefined;
   currentPc?: undefined;
   pseudoasm?: undefined;
+  ImmSRC?: undefined
 }
 
 export interface ParsedInstruction {
@@ -37,6 +38,7 @@ export interface ParsedInstruction {
   pseudoasm?: string;
   pc: number;
   inst: number;
+  ImmSRC?: string;
 }
 
 type Instruction = ParsedInstruction | NOPInstruction;
@@ -64,7 +66,8 @@ const NOP_DATA = {
   RUrs1: "X".padStart(32, "X"), RUrs2: "X".padStart(32, "X"),
   ImmExt: "X".padStart(32, "X"), RD: "X", rs1: "X", rs2: "X",
   ALURes: "X".padStart(32, "X"), MemReadData: "X".padStart(32, "X"),
-  dataToWrite: "X".padStart(32, "X")
+  dataToWrite: "X".padStart(32, "X"),
+  ImmSRC: "X"
 };
 
 interface IDEX_Register {
@@ -82,6 +85,7 @@ interface IDEX_Register {
   RUrs1: string;
   RUrs2: string;
   ImmExt: string;
+  ImmSRC: string
   RD: string;
   rs1: string;
   rs2: string;
