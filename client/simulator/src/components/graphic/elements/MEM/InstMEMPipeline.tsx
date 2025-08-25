@@ -10,7 +10,7 @@ const InstMEMPipeline = () => {
   return (
     <div className=" flex items-center gap-5 ml-1 h-full bg-[#66939E] px-[1.2rem] py-[.7rem] rounded-[.6rem] text-white max-w-max">
       <p className="text-[1.8rem]">{pipelineValuesStages.MEM.instruction.asm}</p>
-       <p className="text-[1.6rem]">PC: <span className="text-[1.8rem]">{pipelineValuesStages.MEM.instruction.inst ?? "--"}</span></p>
+       {pipelineValuesStages.MEM.instruction.pc !== -1 &&  <p className="text-[1.6rem]">PC: <span className="text-[1.8rem]">{pipelineValuesStages.MEM.instruction.inst }</span></p>}
     </div>
   );
 };
