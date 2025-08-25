@@ -28,7 +28,8 @@ export const useMessageListener = () => {
     setIsEbreak,
   } = useSimulator();
   const { setWriteInRegister } = useRegistersTable();
-  const { setCurrentMonocycleInst, setCurrentMonocycleResult, setPipelineValuesStages } = useCurrentInst();
+  const { setCurrentMonocycleInst, setCurrentMonocycleResult, setPipelineValuesStages } =
+    useCurrentInst();
 
   const { setLineDecorationNumber, setClickInEditorLine } = useLines();
   const { setDialog } = useDialog();
@@ -68,27 +69,24 @@ export const useMessageListener = () => {
 
             break;
           case "step":
-            console.log("AQUI LLEGA UN MENSAJE STEP", message.result)
-            if(message.result.IF){
-              console.log("IS PIPELINE")
-              setPipelineValuesStages(message.result)
-              
-            }else{
-               setNewPc(message.newPc);
-            setCurrentMonocycleInst(message.currentMonocycletInst);
-            if (message.currentMonocycletInst?.asm?.toLowerCase() === "ebreak") {
-              setIsEbreak(true);
-            }
-
-            setCurrentMonocycleResult(message.result);
-            if (message.lineDecorationNumber !== undefined) {
-              setLineDecorationNumber(message.lineDecorationNumber);
+            console.log("AQUI LLEGA UN MENSAJE STEP", message.result);
+            if (message.result.IF) {
+              console.log("IS PIPELINE");
+              setPipelineValuesStages(message.result);
             } else {
-              setLineDecorationNumber(-1);
-            }
-            }
+              setNewPc(message.newPc);
+              setCurrentMonocycleInst(message.currentMonocycletInst);
+              if (message.currentMonocycletInst?.asm?.toLowerCase() === "ebreak") {
+                setIsEbreak(true);
+              }
 
-           
+              setCurrentMonocycleResult(message.result);
+              if (message.lineDecorationNumber !== undefined) {
+                setLineDecorationNumber(message.lineDecorationNumber);
+              } else {
+                setLineDecorationNumber(-1);
+              }
+            }
 
             if (!isFirstStep) {
               setSection("search");

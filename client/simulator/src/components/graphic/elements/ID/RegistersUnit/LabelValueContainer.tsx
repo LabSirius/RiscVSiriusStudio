@@ -22,6 +22,7 @@ const LabelValueContainer = () => {
   };
 
   let showWriteFields = false;
+  let showWriteSignal = false;
 
   if (typeSimulator === "monocycle") {
     if (currentMonocycletInst && currentMonocycleResult) {
@@ -84,6 +85,7 @@ const LabelValueContainer = () => {
 
       const { instructionType } = displayData;
       showWriteFields = !(instructionType === "S" || instructionType === "B");
+      showWriteSignal = true;
     }
   } else {
     if (pipelineValuesStages) {
@@ -129,7 +131,15 @@ const LabelValueContainer = () => {
       }
 
       const wbStage = pipelineValuesStages.WB;
-      if (wbStage && wbStage.instruction) {
+
+
+
+      if(instructionInID.pc !== -1 ){
+        showWriteSignal = true; 
+      }else{
+        showWriteSignal = wbStage.RUWr  
+      }
+      if (wbStage && wbStage.instruction ) {
         displayData.writeSignal = wbStage.RUWr ? "1" : "0";
 
         if (wbStage.RUWr) {
@@ -151,6 +161,7 @@ const LabelValueContainer = () => {
             };
           }
         }
+
         showWriteFields = wbStage.RUWr;
       }
     }
@@ -225,7 +236,7 @@ const LabelValueContainer = () => {
           positionClassName="top-[16rem] left-[.8rem]"
         />
       )}
-      {displayData.writeSignal && (
+      {showWriteSignal && (
         <LabelValueWithHover
           label=""
           value={`b'${displayData.writeSignal}`}

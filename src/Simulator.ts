@@ -144,8 +144,6 @@ export class TextSimulator extends Simulator {
 
     const asmList = this.rvDoc.ir?.instructions.map((instr) => instr.asm);
 
-
-
     this.webview.postMessage({
       from: "extension",
       operation: "uploadMemory",
@@ -159,10 +157,8 @@ export class TextSimulator extends Simulator {
         asmList,
       },
       typeSimulator: this.simulatorType,
-       initialLine: inst?.location?.start?.line ?? -1
-
+      initialLine: inst?.location?.start?.line ?? -1,
     });
-
 
     super.start();
 
@@ -176,11 +172,10 @@ export class TextSimulator extends Simulator {
     });
   }
 
-
   public override step(): StepResult {
     try {
       console.log(`--- TextSimulator.step() CALLED! Mode: ${this.simulatorType} ---`);
-      
+
       const stepResult = super.step();
 
       if (this.simulatorType === "monocycle") {
@@ -199,7 +194,10 @@ export class TextSimulator extends Simulator {
           this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
         }
         if (readsDM(instruction.type, instruction.opcode)) {
-          this.notifyMemoryRead(parseInt(result.dm.address, 2), this.bytesToReadOrWrite(instruction));
+          this.notifyMemoryRead(
+            parseInt(result.dm.address, 2),
+            this.bytesToReadOrWrite(instruction)
+          );
         }
         if (writesDM(instruction.type, instruction.opcode)) {
           this.writeResult(instruction, result);
@@ -225,23 +223,17 @@ export class TextSimulator extends Simulator {
 
         const wbInstruction = pipelineResult.WB;
         if (wbInstruction.RUWr && wbInstruction.RD !== "X" && wbInstruction.RD !== "0") {
-          let dataToWrite: string;
-          switch (wbInstruction.RUDataWrSrc) {
-            case "01": dataToWrite = wbInstruction.MemReadData; break;
-            case "10": dataToWrite = wbInstruction.PCP4.toString(2).padStart(32, "0"); break;
-            default: dataToWrite = wbInstruction.ALURes; break;
-          }
-          this.notifyRegisterWrite(`x${wbInstruction.RD}`, dataToWrite);
+          this.notifyRegisterWrite(`x${wbInstruction.RD}`, wbInstruction.dataToWrite);
         }
 
         const memInstructionData = pipelineResult.EX;
         if (memInstructionData.instruction && memInstructionData.instruction.pc !== -1) {
           const address = parseInt(memInstructionData.ALURes, 2);
           const bytesToAccess = this.bytesToReadOrWrite(memInstructionData.instruction);
-          
+
           if (memInstructionData.DMWr) {
             this.notifyMemoryWrite(address, memInstructionData.RUrs2, bytesToAccess);
-          } else if (memInstructionData.RUDataWrSrc === '01') {
+          } else if (memInstructionData.RUDataWrSrc === "01") {
             this.notifyMemoryRead(address, bytesToAccess);
           }
         }
@@ -254,11 +246,10 @@ export class TextSimulator extends Simulator {
       }
 
       return stepResult;
-
     } catch (error) {
       console.error("!!!!!!!!!!!! ERROR DETECTED IN step() !!!!!!!!!!", error);
       this.stop();
-      return { instruction: {}, result: defaultSCCPUResult }; 
+      return { instruction: {}, result: defaultSCCPUResult };
     }
   }
   public override stop(): void {
