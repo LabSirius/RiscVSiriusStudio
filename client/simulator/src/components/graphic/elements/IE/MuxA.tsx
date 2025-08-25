@@ -12,50 +12,49 @@ interface HandlerConfig {
 }
 
 function MuxA() {
-  const { currentMonocycleResult, currentMonocycletInst } = useCurrentInst();
-  const { operation, isEbreak,  } = useSimulator();
+  const { currentMonocycleResult, currentMonocycletInst, pipelineValuesStages } = useCurrentInst();
+  const { operation, isEbreak, typeSimulator } = useSimulator();
 
+  let signal: string;
+  let islui: boolean;
 
-  const islui = currentMonocycletInst?.instruction === "lui"
-
-  const signal = currentMonocycleResult.alua.signal;
+  if (typeSimulator === 'pipeline') {
+    const exStage = pipelineValuesStages?.EX;
+    
+    if (exStage?.instruction) {
+      if (exStage.instruction.pc === -1) {
+        signal = '-';
+        islui = false;
+      } else {
+        signal = exStage.ALUASrc ? '1' : '0';
+        islui = exStage.instruction.instruction === "lui";
+      }
+    } else {
+      signal = 'X';
+      islui = false;
+    }
+  } else {
+    islui = currentMonocycletInst?.instruction === "lui";
+    signal = currentMonocycleResult?.alua?.signal || 'X';
+  }
 
   const handlers: HandlerConfig[] = [
-    {
-      id: "pc",
-      type: "target",
-      position: Position.Left,
-      style: { top: "2.8rem" },
-    },
-    {
-      id: "registersUnitA",
-      type: "target",
-      position: Position.Left,
-      style: { top: "6.8rem" },
-    },
-    {
-      id: "aluASrc",
-      type: "target",
-      position: Position.Top,
-      style: { top: "1.5rem" },
-    },
-    {
-      id: "muxA_output",
-      type: "source",
-      position: Position.Right,
-      style: { right: ".8rem" },
-    },
+    { id: "pc", type: "target", position: Position.Left, style: { top: "2.8rem" } },
+    { id: "registersUnitA", type: "target", position: Position.Left, style: { top: "6.8rem" } },
+    { id: "aluASrc", type: "target", position: Position.Top, style: { top: "1.5rem" } },
+    { id: "muxA_output", type: "source", position: Position.Right, style: { right: ".8rem" } },
   ];
 
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
-        <MuxContainer signal={currentMonocycleResult.alua.signal} islui={islui}/>
+        <MuxContainer signal={signal} islui={islui} />
+        
         {operation !== "uploadMemory" && !isEbreak && (
           <div className="absolute top-[-2.7rem] left-[3.5rem]">
             <LabelValueWithHover
               label=""
-              value={`b'${signal}`}
+              value={signal === '-' ? signal : `b'${signal}`}
               decimal={signal}
               binary={signal}
               hex={signal}

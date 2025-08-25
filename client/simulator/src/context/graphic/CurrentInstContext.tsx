@@ -1,8 +1,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
-
 interface NOPInstruction {
-  asm: 'NOP';
+  asm: "NOP";
   pc: -1;
   inst?: undefined;
   type?: undefined;
@@ -14,7 +13,9 @@ interface NOPInstruction {
   instruction?: undefined;
   currentPc?: undefined;
   pseudoasm?: undefined;
-  ImmSRC?: undefined
+  ImmSRC?: undefined;
+  ALUInputA?: undefined;
+  ALUInputB?: undefined;
 }
 
 export interface ParsedInstruction {
@@ -30,9 +31,9 @@ export interface ParsedInstruction {
     rs2?: string;
     rd?: string;
   };
-  rs1?: { regname: string; regeq: string; regenc: string; };
-  rs2?: { regname: string; regeq: string; regenc: string; };
-  rd?: { regname: string; regeq: string; regenc: string; };
+  rs1?: { regname: string; regeq: string; regenc: string };
+  rs2?: { regname: string; regeq: string; regenc: string };
+  rd?: { regname: string; regeq: string; regenc: string };
   instruction: string;
   currentPc: number;
   pseudoasm?: string;
@@ -50,24 +51,43 @@ interface ResultState {
   ru: { rs1: string; rs2: string; dataWrite: string; writeSignal: string };
   imm: { output: string; signal: string };
   bu: { a: string; b: string; operation: string; result: string };
-  dm: { address: string; dataRd: string; dataWr: string; controlSignal: string; writeSignal: string };
+  dm: {
+    address: string;
+    dataRd: string;
+    dataWr: string;
+    controlSignal: string;
+    writeSignal: string;
+  };
   buMux: { result: string; signal: string };
   wb: { signal: string };
 }
-
-
 
 const NOP_INSTRUCTION_OBJECT: NOPInstruction = { asm: "NOP", pc: -1 };
 
 const NOP_DATA = {
   instruction: NOP_INSTRUCTION_OBJECT,
-  PC: -1, PCP4: 0, RUWr: false, ALUASrc: false, ALUBSrc: false, DMWr: false,
-  RUDataWrSrc: "XX", ALUOp: "XXXXX", BrOp: "XXXXX", DMCtrl: "XXX",
-  RUrs1: "X".padStart(32, "X"), RUrs2: "X".padStart(32, "X"),
-  ImmExt: "X".padStart(32, "X"), RD: "X", rs1: "X", rs2: "X",
-  ALURes: "X".padStart(32, "X"), MemReadData: "X".padStart(32, "X"),
+  PC: -1,
+  PCP4: 0,
+  RUWr: false,
+  ALUASrc: false,
+  ALUBSrc: false,
+  DMWr: false,
+  RUDataWrSrc: "XX",
+  ALUOp: "XXXXX",
+  BrOp: "XXXXX",
+  DMCtrl: "XXX",
+  RUrs1: "X".padStart(32, "X"),
+  RUrs2: "X".padStart(32, "X"),
+  ImmExt: "X".padStart(32, "X"),
+  RD: "X",
+  rs1: "X",
+  rs2: "X",
+  ALURes: "X".padStart(32, "X"),
+  MemReadData: "X".padStart(32, "X"),
   dataToWrite: "X".padStart(32, "X"),
-  ImmSRC: "X"
+  ImmSRC: "X",
+  ALUInputA: "X".padStart(32, "X"),
+  ALUInputB: "X".padStart(32, "X"),
 };
 
 interface IDEX_Register {
@@ -85,7 +105,7 @@ interface IDEX_Register {
   RUrs1: string;
   RUrs2: string;
   ImmExt: string;
-  ImmSRC: string
+  ImmSRC: string;
   RD: string;
   rs1: string;
   rs2: string;
@@ -102,6 +122,10 @@ interface EXMEM_Register {
   ALURes: string;
   RUrs2: string;
   RD: string;
+  ALUInputA: string;
+  ALUInputB: string;
+  ALUASrc: boolean;
+  ALUBSrc: boolean;
 }
 
 interface MEMWB_Register {
@@ -117,9 +141,9 @@ interface MEMWB_Register {
 
 interface WB_Register {
   instruction: Instruction;
-  RD: string;         
-  dataToWrite: string; 
-  RUWr: boolean;      
+  RD: string;
+  dataToWrite: string;
+  RUWr: boolean;
 }
 
 export type PipelineCycleResult = {
@@ -129,7 +153,6 @@ export type PipelineCycleResult = {
   MEM: MEMWB_Register;
   WB: WB_Register;
 };
-
 
 const initialMonocycleInst: ParsedInstruction | null = null;
 
@@ -152,7 +175,6 @@ const initialPipelineValues: PipelineCycleResult = {
   MEM: { ...NOP_DATA },
   WB: { ...NOP_DATA },
 };
-
 
 interface CurrentInstContextType {
   currentMonocycletInst: ParsedInstruction | null;
@@ -179,10 +201,14 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
 export const useCurrentInst = () => useContext(CurrentInstContext);
 
 export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
-  const [currentMonocycletInst, setCurrentMonocycleInst] = useState<ParsedInstruction | null>(initialMonocycleInst);
+  const [currentMonocycletInst, setCurrentMonocycleInst] = useState<ParsedInstruction | null>(
+    initialMonocycleInst
+  );
   const [currentType, setCurrentType] = useState<string>("");
-  const [currentMonocycleResult, setCurrentMonocycleResult] = useState<ResultState>(initialResultState);
-  const [pipelineValuesStages, setPipelineValuesStages] = useState<PipelineCycleResult>(initialPipelineValues);
+  const [currentMonocycleResult, setCurrentMonocycleResult] =
+    useState<ResultState>(initialResultState);
+  const [pipelineValuesStages, setPipelineValuesStages] =
+    useState<PipelineCycleResult>(initialPipelineValues);
 
   return (
     <CurrentInstContext.Provider
@@ -195,8 +221,7 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
         setCurrentMonocycleResult,
         pipelineValuesStages,
         setPipelineValuesStages,
-      }}
-    >
+      }}>
       {children}
     </CurrentInstContext.Provider>
   );

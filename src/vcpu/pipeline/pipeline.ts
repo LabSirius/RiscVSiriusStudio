@@ -28,6 +28,8 @@ const NOP_DATA = {
   rs1: "X",
   rs2: "X",
   ALURes: "X".padStart(32, "X"),
+  ALUInputA: "X".padStart(32, "X"),
+  ALUInputB: "X".padStart(32, "X"),
   MemReadData: "X".padStart(32, "X"),
 };
 
@@ -63,6 +65,12 @@ interface EXMEM_Register {
   ALURes: string;
   RUrs2: string;
   RD: string;
+
+  ALUASrc: boolean;
+  ALUBSrc: boolean;
+  ALUOp: string;
+  ALUInputA: string;
+  ALUInputB: string;
 }
 
 interface MEMWB_Register {
@@ -264,7 +272,7 @@ export class PipelineCPU implements ICPU {
     return newState;
   }
 
-  private executeEX(forwardingSignals: ForwardingSignals): { newState: EXMEM_Register, branchDecision: { taken: boolean, targetAddress: string } } {
+ private executeEX(forwardingSignals: ForwardingSignals): { newState: EXMEM_Register, branchDecision: { taken: boolean, targetAddress: string } } {
     const {
       instruction,
       PC,
@@ -280,9 +288,17 @@ export class PipelineCPU implements ICPU {
       rs1,
       rs2,
     } = this.id_ex_register;
+    
     if (PC === -1) {
       console.log(`[EX Stage] NOP`);
-      return { newState: { ...NOP_DATA }, branchDecision: { taken: false, targetAddress: "0" } };
+      const nopState: EXMEM_Register = { 
+        ...NOP_DATA, 
+        ALUASrc: false, 
+        ALUBSrc: false,
+        ALUInputA: "X".padStart(32, "X"),
+        ALUInputB: "X".padStart(32, "X"),
+      };
+      return { newState: nopState, branchDecision: { taken: false, targetAddress: "0" } };
     }
     console.log(`[EX Stage] Processing: "${instruction.asm}" (PC=${PC})`);
 
@@ -337,12 +353,24 @@ export class PipelineCPU implements ICPU {
     );
     console.log(`[EX Stage] ALU Result: ${ALURes}`);
 
+
      const newState: EXMEM_Register = {
       instruction, PC, PCP4,
-      RUWr: this.id_ex_register.RUWr, DMWr: this.id_ex_register.DMWr,
-      RUDataWrSrc: this.id_ex_register.RUDataWrSrc, DMCtrl: this.id_ex_register.DMCtrl,
-      ALURes, RUrs2: operandB, RD: this.id_ex_register.RD,
+      RUWr: this.id_ex_register.RUWr, 
+      DMWr: this.id_ex_register.DMWr,
+      RUDataWrSrc: this.id_ex_register.RUDataWrSrc, 
+      DMCtrl: this.id_ex_register.DMCtrl,
+      ALURes, 
+      RUrs2: operandB, 
+      RD: this.id_ex_register.RD,
+
+      ALUASrc,
+      ALUBSrc,
+      ALUOp,
+      ALUInputA: finalOperandA,
+      ALUInputB: finalOperandB,
     };
+
     console.log(`[EX Stage] EX/MEM Register OUT ->`, newState);
     return { 
       newState: newState,
@@ -352,6 +380,7 @@ export class PipelineCPU implements ICPU {
       }
     };
   }
+  
 
   private executeMEM(): MEMWB_Register {
     const { instruction, PC, PCP4, DMWr, DMCtrl, ALURes, RUrs2, RD } = this.ex_mem_register;
