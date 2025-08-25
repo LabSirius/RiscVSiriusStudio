@@ -16,7 +16,7 @@ interface NOPInstruction {
   pseudoasm?: undefined;
 }
 
-interface ParsedInstruction {
+export interface ParsedInstruction {
   type: string;
   opcode: string;
   asm: string;
@@ -64,6 +64,7 @@ const NOP_DATA = {
   RUrs1: "X".padStart(32, "X"), RUrs2: "X".padStart(32, "X"),
   ImmExt: "X".padStart(32, "X"), RD: "X", rs1: "X", rs2: "X",
   ALURes: "X".padStart(32, "X"), MemReadData: "X".padStart(32, "X"),
+  dataToWrite: "X".padStart(32, "X")
 };
 
 interface IDEX_Register {
@@ -110,12 +111,19 @@ interface MEMWB_Register {
   RD: string;
 }
 
+interface WB_Register {
+  instruction: Instruction;
+  RD: string;         
+  dataToWrite: string; 
+  RUWr: boolean;      
+}
+
 export type PipelineCycleResult = {
   IF: { instruction: Instruction; PC: number; PCP4: number };
   ID: IDEX_Register;
   EX: EXMEM_Register;
   MEM: MEMWB_Register;
-  WB: MEMWB_Register;
+  WB: WB_Register;
 };
 
 

@@ -74,12 +74,20 @@ interface MEMWB_Register {
   RD: string;
 }
 
+
+interface WB_Register {
+  instruction: any;
+  RD: string;         
+  dataToWrite: string; 
+  RUWr: boolean;      
+}
+
 export type PipelineCycleResult = {
   IF: { instruction: any; PC: number; PCP4: number };
   ID: IDEX_Register;
   EX: EXMEM_Register;
   MEM: MEMWB_Register;
-  WB: MEMWB_Register; 
+  WB: WB_Register
 };
 
 export class PipelineCPU implements ICPU {
@@ -145,7 +153,7 @@ export class PipelineCPU implements ICPU {
       this.if_id_register.instruction?.rs2?.regeq.substring(1) || "X"
     );
 
-    const writebackAction = this.executeWB();
+    const { writeAction, wbState } = this.executeWB();
     const newState_MEM_WB = this.executeMEM();
     const { newState: newState_EX_MEM, branchDecision } = this.executeEX(forwardingSignals);
     const newState_ID_EX = this.executeID();
@@ -177,14 +185,14 @@ export class PipelineCPU implements ICPU {
       this.pc = finalNextPC;
     }
 
-    writebackAction();
+    writeAction();
 
     return {
       IF: this.if_id_register,
       ID: this.id_ex_register,
       EX: this.ex_mem_register,
       MEM: this.mem_wb_register,
-      WB: this.mem_wb_register, 
+      WB: wbState, 
     };
   }
 
@@ -425,35 +433,46 @@ export class PipelineCPU implements ICPU {
     return newState;
   }
 
-  private executeWB(): () => void {
-    const { instruction, PC, PCP4, RUWr, RUDataWrSrc, ALURes, MemReadData, RD } =
+  private executeWB(): { writeAction: () => void; wbState: WB_Register } {
+    const { instruction, PC, RUWr, RUDataWrSrc, ALURes, MemReadData, RD } =
       this.mem_wb_register;
+
+    const defaultState: WB_Register = {
+        instruction: NOP_DATA.instruction,
+        RD: "X",
+        dataToWrite: "X".padStart(32, "X"),
+        RUWr: false,
+    };
+
     if (instruction.pc === -1) {
       console.log(`[WB Stage] NOP`);
-      return () => {};
+      return { writeAction: () => {}, wbState: defaultState };
     }
     console.log(`[WB Stage] Processing: "${instruction.asm}" (PC=${PC})`);
 
+    let dataToWrite: string;
+    switch (RUDataWrSrc) {
+      case "00":
+        dataToWrite = ALURes;
+        break;
+      case "01":
+        dataToWrite = MemReadData;
+        break;
+      case "10":
+        dataToWrite = (this.mem_wb_register.PCP4).toString(2).padStart(32, "0");
+        break;
+      default:
+        dataToWrite = "X".padStart(32, "X");
+        break;
+    }
+
     const writeAction = () => {
       if (RUWr) {
-        let dataToWrite: string;
         switch (RUDataWrSrc) {
-          case "00":
-            dataToWrite = ALURes;
-            console.log(`[WB Stage] Data source: ALU Result (${dataToWrite})`);
-            break;
-          case "01":
-            dataToWrite = MemReadData;
-            console.log(`[WB Stage] Data source: Memory Read Data (${dataToWrite})`);
-            break;
-          case "10":
-            dataToWrite = PCP4.toString(2).padStart(32, "0");
-            console.log(`[WB Stage] Data source: PC+4 (${dataToWrite})`);
-            break;
-          default:
-            dataToWrite = "X".padStart(32, "X");
-            console.log(`[WB Stage] Data source: Unknown`);
-            break;
+          case "00": console.log(`[WB Stage] Data source: ALU Result (${dataToWrite})`); break;
+          case "01": console.log(`[WB Stage] Data source: Memory Read Data (${dataToWrite})`); break;
+          case "10": console.log(`[WB Stage] Data source: PC+4 (${dataToWrite})`); break;
+          default: console.log(`[WB Stage] Data source: Unknown`); break;
         }
         if (RD !== "X" && RD !== "0") {
           const rdRegName = `x${RD}`;
@@ -467,7 +486,15 @@ export class PipelineCPU implements ICPU {
         console.log(`[WB Stage] No write to Register Unit (RUWr=false).`);
       }
     };
-    return writeAction;
+
+    const wbState: WB_Register = {
+      instruction,
+      RD,
+      dataToWrite,
+      RUWr,
+    };
+
+    return { writeAction, wbState };
   }
 
   public getDataMemory(): DataMemory {

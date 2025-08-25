@@ -1,130 +1,240 @@
-import { useEffect, useState } from 'react';
-import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
-import LabelValueWithHover from '../../LabelValueWithHover';
-import { binaryToInt, binaryToHex } from '@/utils/handlerConversions';
+import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
+import LabelValueWithHover from "../../LabelValueWithHover";
+import { binaryToInt, binaryToHex } from "@/utils/handlerConversions";
+import { useSimulator } from "@/context/shared/SimulatorContext";
+import { ParsedInstruction } from "@/context/graphic/CurrentInstContext";
 
 const LabelValueContainer = () => {
-  const { currentType, currentMonocycletInst, currentMonocycleResult } = useCurrentInst();
+  const { currentMonocycletInst, currentMonocycleResult, pipelineValuesStages } = useCurrentInst();
+  const { typeSimulator } = useSimulator();
 
-  const [ruRs1Hex, setRuRs1Hex] = useState('');
-  const [ruRs1Bin, setRuRs1Bin] = useState('');
-  const [ruRs1Dec, setRuRs1Dec] = useState('');
+  const displayData = {
+    instructionType: "",
+    rs1Address: { bin: "", dec: "", hex: "" },
+    rs2Address: { bin: "", dec: "", hex: "" },
+    rdAddress: { bin: "", dec: "", hex: "" },
+    rs1Value: { bin: "", dec: "", hex: "" },
+    rs2Value: { bin: "", dec: "", hex: "" },
+    dataWrite: { bin: "", dec: "", hex: "" },
+    writeSignal: "",
+    rs1Regenc: "",
+    rs2Regenc: "",
+  };
 
-  const [ruRs2Hex, setRuRs2Hex] = useState('');
-  const [ruRs2Bin, setRuRs2Bin] = useState('');
-  const [ruRs2Dec, setRuRs2Dec] = useState('');
+  let showWriteFields = false;
 
-  const [dataWriteHex, setDataWriteHex] = useState('');
-  const [dataWriteBin, setDataWriteBin] = useState('');
-  const [dataWriteDec, setDataWriteDec] = useState('');
+  if (typeSimulator === "monocycle") {
+    if (currentMonocycletInst && currentMonocycleResult) {
+      const inst = currentMonocycletInst;
+      const result = currentMonocycleResult;
 
-  useEffect(() => {
-    if (currentMonocycleResult?.ru) {
+      displayData.instructionType = inst.type;
+      displayData.rs1Regenc = inst.rs1?.regenc ?? "";
+      displayData.rs2Regenc = inst.rs2?.regenc ?? "";
 
-      const rs1 = currentMonocycleResult.ru.rs1;
-      const rs2 = currentMonocycleResult.ru.rs2;
-      const data = currentMonocycleResult.ru.dataWrite;
+      const rs1AddrBin = inst.encoding.rs1 || "";
+      if (rs1AddrBin)
+        displayData.rs1Address = {
+          bin: rs1AddrBin,
+          dec: binaryToInt(rs1AddrBin).toString(),
+          hex: parseInt(rs1AddrBin, 2).toString(16).toUpperCase(),
+        };
 
-      setRuRs1Hex(binaryToHex(rs1).toUpperCase());
-      setRuRs1Bin(rs1);
-      setRuRs1Dec(binaryToInt(rs1));
+      const rs2AddrBin = inst.encoding.rs2 || "";
+      if (rs2AddrBin)
+        displayData.rs2Address = {
+          bin: rs2AddrBin,
+          dec: binaryToInt(rs2AddrBin).toString(),
+          hex: parseInt(rs2AddrBin, 2).toString(16).toUpperCase(),
+        };
 
-      setRuRs2Hex(binaryToHex(rs2).toUpperCase());
-      setRuRs2Bin(rs2);
-      setRuRs2Dec(binaryToInt(rs2));
+      const rdAddrBin = inst.encoding.rd || "";
+      if (rdAddrBin)
+        displayData.rdAddress = {
+          bin: rdAddrBin,
+          dec: binaryToInt(rdAddrBin).toString(),
+          hex: parseInt(rdAddrBin, 2).toString(16).toUpperCase(),
+        };
 
-      setDataWriteHex(binaryToHex(data).toUpperCase());
-      setDataWriteBin(data);
-      setDataWriteDec(binaryToInt(data));
+      const rs1ValBin = result.ru.rs1;
+      if (rs1ValBin)
+        displayData.rs1Value = {
+          bin: rs1ValBin,
+          dec: binaryToInt(rs1ValBin).toString(),
+          hex: binaryToHex(rs1ValBin).toUpperCase(),
+        };
+
+      const rs2ValBin = result.ru.rs2;
+      if (rs2ValBin)
+        displayData.rs2Value = {
+          bin: rs2ValBin,
+          dec: binaryToInt(rs2ValBin).toString(),
+          hex: binaryToHex(rs2ValBin).toUpperCase(),
+        };
+
+      const dataWriteBin = result.ru.dataWrite;
+      if (dataWriteBin)
+        displayData.dataWrite = {
+          bin: dataWriteBin,
+          dec: binaryToInt(dataWriteBin).toString(),
+          hex: binaryToHex(dataWriteBin).toUpperCase(),
+        };
+
+      displayData.writeSignal = result.ru.writeSignal;
+
+      const { instructionType } = displayData;
+      showWriteFields = !(instructionType === "S" || instructionType === "B");
     }
-  }, [currentMonocycleResult]);
+  } else {
+    if (pipelineValuesStages) {
+      const instructionInID = pipelineValuesStages.ID.instruction;
+      if (instructionInID && instructionInID.pc !== -1) {
+        const parsedInst = instructionInID as ParsedInstruction;
 
-  const writeSignal = currentMonocycleResult.ru.writeSignal;
+        displayData.instructionType = parsedInst.type;
+        displayData.rs1Regenc = parsedInst.rs1?.regenc ?? "";
+        displayData.rs2Regenc = parsedInst.rs2?.regenc ?? "";
 
+        const rs1AddrBin = parsedInst.encoding?.rs1 || "";
+        if (rs1AddrBin)
+          displayData.rs1Address = {
+            bin: rs1AddrBin,
+            dec: binaryToInt(rs1AddrBin).toString(),
+            hex: parseInt(rs1AddrBin, 2).toString(16).toUpperCase(),
+          };
+
+        const rs2AddrBin = parsedInst.encoding?.rs2 || "";
+        if (rs2AddrBin)
+          displayData.rs2Address = {
+            bin: rs2AddrBin,
+            dec: binaryToInt(rs2AddrBin).toString(),
+            hex: parseInt(rs2AddrBin, 2).toString(16).toUpperCase(),
+          };
+
+        const rs1ValBin = pipelineValuesStages.ID.RUrs1;
+        if (!rs1ValBin.includes("X"))
+          displayData.rs1Value = {
+            bin: rs1ValBin,
+            dec: binaryToInt(rs1ValBin).toString(),
+            hex: binaryToHex(rs1ValBin).toUpperCase(),
+          };
+
+        const rs2ValBin = pipelineValuesStages.ID.RUrs2;
+        if (!rs2ValBin.includes("X"))
+          displayData.rs2Value = {
+            bin: rs2ValBin,
+            dec: binaryToInt(rs2ValBin).toString(),
+            hex: binaryToHex(rs2ValBin).toUpperCase(),
+          };
+      }
+
+      const wbStage = pipelineValuesStages.WB;
+      if (wbStage && wbStage.instruction) {
+        displayData.writeSignal = wbStage.RUWr ? "1" : "0";
+
+        if (wbStage.RUWr) {
+          const dataWriteBin = wbStage.dataToWrite;
+          if (!dataWriteBin.includes("X")) {
+            displayData.dataWrite = {
+              bin: dataWriteBin,
+              dec: binaryToInt(dataWriteBin).toString(),
+              hex: binaryToHex(dataWriteBin).toUpperCase(),
+            };
+          }
+
+          const rdAddrBin = wbStage.instruction.encoding?.rd || "";
+          if (rdAddrBin) {
+            displayData.rdAddress = {
+              bin: rdAddrBin,
+              dec: binaryToInt(rdAddrBin).toString(),
+              hex: parseInt(rdAddrBin, 2).toString(16).toUpperCase(),
+            };
+          }
+        }
+        showWriteFields = wbStage.RUWr;
+      }
+    }
+  }
+
+  const { instructionType } = displayData;
   return (
     <>
-      {!(currentType === 'J' || currentType === 'LUI' || currentType === 'AUIPC') && (
+      {displayData.rs1Address.bin &&
+        !(instructionType === "J" || instructionType === "LUI" || instructionType === "AUIPC") && (
+          <LabelValueWithHover
+            label=""
+            value={`b'${displayData.rs1Address.bin}`}
+            decimal={displayData.rs1Address.dec}
+            binary={displayData.rs1Address.bin}
+            hex={displayData.rs1Address.hex}
+            positionClassName="top-[1.4rem] left-[.8rem]"
+          />
+        )}
+      {displayData.rs2Address.bin &&
+        (instructionType === "R" || instructionType === "S" || instructionType === "B") && (
+          <LabelValueWithHover
+            label=""
+            value={`b'${displayData.rs2Address.bin}`}
+            decimal={displayData.rs2Address.dec}
+            binary={displayData.rs2Address.bin}
+            hex={displayData.rs2Address.hex}
+            positionClassName="top-[6.6rem] left-[.8rem]"
+          />
+        )}
+      {displayData.rdAddress.bin && showWriteFields && (
         <LabelValueWithHover
           label=""
-          value={`b'${currentMonocycletInst?.encoding.rs1}`}
-          decimal={binaryToInt(currentMonocycletInst?.encoding.rs1 || '')}
-          binary={currentMonocycletInst?.encoding.rs1 || ''}
-          hex={parseInt(currentMonocycletInst?.encoding.rs1 || '', 2).toString(16).toUpperCase()}
-          positionClassName="top-[1.4rem] left-[.8rem]"
-        />
-      )}
-
-      {/* RS2 */}
-      {(currentType === 'R' || currentType === 'S' || currentType === 'B') && (
-        <LabelValueWithHover
-          label=""
-          value={`b'${currentMonocycletInst?.encoding.rs2}`}
-          decimal={binaryToInt(currentMonocycletInst?.encoding.rs2 || '')}
-          binary={currentMonocycletInst?.encoding.rs2 || ''}
-          hex={parseInt(currentMonocycletInst?.encoding.rs2!, 2).toString(16).toUpperCase()}
-          positionClassName="top-[6.6rem] left-[.8rem]"
-        />
-      )}
-
-      {/* RD */}
-      {!(currentType === 'S' || currentType === 'B') && (
-        <LabelValueWithHover
-          label=""
-          value={`b'${currentMonocycletInst?.encoding.rd}`}
-          decimal={binaryToInt(currentMonocycletInst?.encoding.rd || '')}
-          binary={currentMonocycletInst?.encoding.rd || ''}
-          hex={parseInt(currentMonocycletInst?.encoding.rd || '', 2).toString(16).toUpperCase()}
+          value={`b'${displayData.rdAddress.bin}`}
+          decimal={displayData.rdAddress.dec}
+          binary={displayData.rdAddress.bin}
+          hex={displayData.rdAddress.hex}
           positionClassName="top-[12rem] left-[.8rem]"
         />
       )}
-
-      {/* RU[xRS1] */}
-      {!(currentType === 'J' || currentType === 'LUI' || currentType === 'AUIPC') && (
-        <LabelValueWithHover
-          label={`RU[x${currentMonocycletInst?.rs1?.regenc}]`}
-          value={`h'${ruRs1Hex}`}
-          decimal={ruRs1Dec}
-          binary={ruRs1Bin}
-          hex={ruRs1Hex}
-          positionClassName="bottom-[9rem] right-[.8rem]"
-          input={false}
-        />
-      )}
-
-      {/* RU[xRS2] */}
-      {(currentType === 'R' || currentType === 'S' || currentType === 'B') && (
-        <LabelValueWithHover
-          label={`RU[x${currentMonocycletInst?.rs2?.regenc}]`}
-          value={`h'${ruRs2Hex}`}
-          decimal={ruRs2Dec}
-          binary={ruRs2Bin}
-          hex={ruRs2Hex}
-          positionClassName="bottom-[1.2rem] right-[.8rem]"
-          input={false}
-        />
-      )}
-
-      {/* DataWr */}
-      {!(currentType === 'S' || currentType === 'B') && (
+      {displayData.rs1Value.bin &&
+        !(instructionType === "J" || instructionType === "LUI" || instructionType === "AUIPC") && (
+          <LabelValueWithHover
+            label={`RU[x${displayData.rs1Regenc}]`}
+            value={`h'${displayData.rs1Value.hex}`}
+            decimal={displayData.rs1Value.dec}
+            binary={displayData.rs1Value.bin}
+            hex={displayData.rs1Value.hex}
+            positionClassName="bottom-[9rem] right-[.8rem]"
+            input={false}
+          />
+        )}
+      {displayData.rs2Value.bin &&
+        (instructionType === "R" || instructionType === "S" || instructionType === "B") && (
+          <LabelValueWithHover
+            label={`RU[x${displayData.rs2Regenc}]`}
+            value={`h'${displayData.rs2Value.hex}`}
+            decimal={displayData.rs2Value.dec}
+            binary={displayData.rs2Value.bin}
+            hex={displayData.rs2Value.hex}
+            positionClassName="bottom-[1.2rem] right-[.8rem]"
+            input={false}
+          />
+        )}
+      {displayData.dataWrite.bin && showWriteFields && (
         <LabelValueWithHover
           label="DataWr"
-          value={`h'${dataWriteHex}`}
-          decimal={dataWriteDec}
-          binary={dataWriteBin}
-          hex={dataWriteHex}
+          value={`h'${displayData.dataWrite.hex}`}
+          decimal={displayData.dataWrite.dec}
+          binary={displayData.dataWrite.bin}
+          hex={displayData.dataWrite.hex}
           positionClassName="top-[16rem] left-[.8rem]"
         />
       )}
-
-      {/* Write signal */}
-      <LabelValueWithHover
-        label=""
-        value={`b'${writeSignal}`}
-        decimal={writeSignal}
-        binary={writeSignal}
-        hex={writeSignal}
-        positionClassName="bottom-[2.2rem] left-[.8rem]"
-      />
+      {displayData.writeSignal && (
+        <LabelValueWithHover
+          label=""
+          value={`b'${displayData.writeSignal}`}
+          decimal={displayData.writeSignal}
+          binary={displayData.writeSignal}
+          hex={displayData.writeSignal}
+          positionClassName="bottom-[2.2rem] left-[.8rem]"
+        />
+      )}
     </>
   );
 };

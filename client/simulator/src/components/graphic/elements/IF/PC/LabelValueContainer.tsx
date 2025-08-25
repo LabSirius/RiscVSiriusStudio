@@ -13,7 +13,7 @@ const LabelValueContainer = () => {
 
   if (typeSimulator === "monocycle") {
     if (currentMonocycletInst) {
-      const pcValue = currentMonocycletInst.currentPc;
+      const pcValue = currentMonocycletInst.currentPc * 4;
       pcBin = pcValue.toString(2).padStart(32, "0");
       pcDec = pcValue.toString();
       pcHex = binaryToHex(pcBin).toUpperCase();
