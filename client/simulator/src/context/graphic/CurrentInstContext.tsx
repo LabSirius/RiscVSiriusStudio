@@ -126,6 +126,7 @@ interface EXMEM_Register {
   ALUInputB: string;
   ALUASrc: boolean;
   ALUBSrc: boolean;
+  ALUOp: string
 }
 
 interface MEMWB_Register {

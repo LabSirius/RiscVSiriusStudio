@@ -3,6 +3,7 @@ import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import LabelValueWithHover from "@/components/graphic/elements/LabelValueWithHover";
 import { binaryToHex, binaryToInt } from "@/utils/handlerConversions";
 import { useMemoryTable } from "@/context/shared/MemoryTableContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 const aluOperations: Record<string, string> = {
   "0000": "+",
@@ -46,104 +47,92 @@ const aluOperations: Record<string, string> = {
 };
 
 const LabelValueContainer = () => {
-  const { currentType, currentMonocycleResult } = useCurrentInst();
+  const { currentType, currentMonocycleResult, pipelineValuesStages } = useCurrentInst();
+  const { typeSimulator } = useSimulator();
   const { setReadInMemory } = useMemoryTable();
 
-
-  const [aHex, setAHex] = useState("");
-  const [aBin, setABin] = useState("");
-  const [aDec, setADec] = useState("");
-
-  const [bHex, setBHex] = useState("");
-  const [bBin, setBBin] = useState("");
-  const [bDec, setBDec] = useState("");
-
-  const [resHex, setResHex] = useState("");
-  const [resBin, setResBin] = useState("");
-  const [resDec, setResDec] = useState("");
+  const [aHex, setAHex] = useState(""); const [aBin, setABin] = useState(""); const [aDec, setADec] = useState("");
+  const [bHex, setBHex] = useState(""); const [bBin, setBBin] = useState(""); const [bDec, setBDec] = useState("");
+  const [resHex, setResHex] = useState(""); const [resBin, setResBin] = useState(""); const [resDec, setResDec] = useState("");
+  const [aluOp, setAluOp] = useState("");
+  const [operationDescription, setOperationDescription] = useState("");
+  const [activeInstructionType, setActiveInstructionType] = useState("");
 
   useEffect(() => {
-    if (currentMonocycleResult?.alu) {
-      const a = currentMonocycleResult.alu.a;
-      const b = currentMonocycleResult.alu.b;
-      const res = currentMonocycleResult.alu.result;
+    const setNopValues = () => {
+      setABin("--"); setBBin("--"); setResBin("--");
+      setAHex("--"); setBHex("--"); setResHex("--");
+      setADec("--"); setBDec("--"); setResDec("--");
+      setAluOp("-----"); setOperationDescription("");
+      setActiveInstructionType("");
+    };
 
-      setAHex(binaryToHex(a).toUpperCase());
-      setABin(a);
-      setADec(binaryToInt(a));
+    if (typeSimulator === 'pipeline') {
+      const exStage = pipelineValuesStages?.EX;
+      if (exStage?.instruction?.pc === -1) {
+        setNopValues();
+      } else if (exStage) {
+        setActiveInstructionType(exStage.instruction.type!);
+        const { ALUInputA: a, ALUInputB: b, ALURes: res, ALUOp: op } = exStage;
 
-      setBHex(binaryToHex(b).toUpperCase());
-      setBBin(b);
-      setBDec(binaryToInt(b));
+        setABin(a); setAHex(binaryToHex(a).toUpperCase()); setADec(binaryToInt(a));
+        setBBin(b); setBHex(binaryToHex(b).toUpperCase()); setBDec(binaryToInt(b));
+        setResBin(res); setResHex(binaryToHex(res).toUpperCase()); setResDec(binaryToInt(res));
+        setAluOp(op); setOperationDescription(aluOperations[op]);
+      }
+    } else { 
+      setActiveInstructionType(currentType);
+      if (currentMonocycleResult?.alu) {
+        const { a, b, result: res, operation: op } = currentMonocycleResult.alu;
 
-      setResHex(binaryToHex(res).toUpperCase());
-      setResBin(res);
-      setResDec(binaryToInt(res));
+        setABin(a); setAHex(binaryToHex(a).toUpperCase()); setADec(binaryToInt(a));
+        setBBin(b); setBHex(binaryToHex(b).toUpperCase()); setBDec(binaryToInt(b));
+        setResBin(res); setResHex(binaryToHex(res).toUpperCase()); setResDec(binaryToInt(res));
+        setAluOp(op); setOperationDescription(aluOperations[op]);
+      }
     }
-  }, [currentMonocycleResult]);
+  }, [typeSimulator, currentMonocycleResult, pipelineValuesStages, currentType]);
 
-  const aluOp = currentMonocycleResult?.alu?.operation ?? "";
-  const operationDescription = aluOperations[aluOp];
+  const handleMemoryClick = () => {
+    let instruction, resultDecimal, dmCtrl;
+    if (typeSimulator === 'pipeline') {
+      const exStage = pipelineValuesStages?.EX;
+      if (!exStage) return;
+      instruction = exStage.instruction;
+      resultDecimal = exStage.ALURes ? binaryToInt(exStage.ALURes).toString() : "0";
+      dmCtrl = exStage.DMCtrl;
+    } else {
+      instruction = { type: currentType };
+      resultDecimal = resDec;
+      dmCtrl = currentMonocycleResult?.dm?.controlSignal;
+    }
+    
+    if (instruction?.type === "S" || instruction?.type === "L") {
+      setReadInMemory({
+        address: parseInt(resultDecimal, 10),
+        _length: dmCtrl === "000" ? 1 : dmCtrl === "001" ? 2 : 4,
+        value: "1"
+      });
+    }
+  };
 
   return (
     <>
       {/* A */}
-      {!(currentType === "LUI") && (
-        <LabelValueWithHover
-          label="A"
-          value={`h'${aHex}`}
-          decimal={aDec}
-          binary={aBin}
-          hex={aHex}
-          positionClassName="top-[3.4rem] left-[.8rem]"
-        />
+      {activeInstructionType !== "LUI" && (
+        <LabelValueWithHover label="A" value={`h'${aHex}`} decimal={aDec} binary={aBin} hex={aHex} positionClassName="top-[3.4rem] left-[.8rem]" />
       )}
 
       {/* B */}
-      <LabelValueWithHover
-        label="B"
-        value={`h'${bHex}`}
-        decimal={bDec}
-        binary={bBin}
-        hex={bHex}
-        positionClassName="top-[13.9rem] left-[.8rem]"
-      />
+      <LabelValueWithHover label="B" value={`h'${bHex}`} decimal={bDec} binary={bBin} hex={bHex} positionClassName="top-[13.9rem] left-[.8rem]" />
 
-      <div className="z-1000" onClick={() => {
-        if(currentType === "S" || currentType === "L"){
-          setReadInMemory({
-            address: parseInt(resDec, 10),
-            _length:  currentMonocycleResult.dm.controlSignal === "000" ? 1 : currentMonocycleResult.dm.controlSignal === "001" ? 2 : 4,
-            value: "1"
-          })
-        }
-      }}>
-
-
+      <div className="z-1000" onClick={handleMemoryClick}>
         {/* ALU Result */}
-      <LabelValueWithHover
-        label="ALURes"
-        value={`h'${resHex}`}
-        decimal={resDec}
-        binary={resBin}
-        hex={resHex}
-        input={false}
-        positionClassName="top-[9.8rem] right-[.8rem]"
-      />
-
+        <LabelValueWithHover label="ALURes" value={`h'${resHex}`} decimal={resDec} binary={resBin} hex={resHex} input={false} positionClassName="top-[9.8rem] right-[.8rem]" />
       </div>
       
-
-      {/* ALU operation code (with description) */}
-      <LabelValueWithHover
-        label=""
-        value={`b'${aluOp}`}
-        decimal={binaryToInt(aluOp)}
-        binary={aluOp}
-        hex={parseInt(aluOp, 2).toString(16).toUpperCase()}
-        input={false}
-        positionClassName="bottom-[-6rem] right-[-.8rem]"
-      />
+      {/* ALU operation code */}
+      <LabelValueWithHover label="" value={aluOp.includes('-') ? aluOp : `b'${aluOp}`} decimal={binaryToInt(aluOp)} binary={aluOp} hex={parseInt(aluOp, 2).toString(16).toUpperCase()} input={false} positionClassName="bottom-[-6rem] right-[-.8rem]" />
 
       {operationDescription && (
         <div className="absolute text-black transform z-1000 top-[52%] left-[13%] -translate-x-[13%] -translate-y-[50%] text-center">
