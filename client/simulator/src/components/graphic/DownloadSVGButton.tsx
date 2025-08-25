@@ -12,7 +12,7 @@ function downloadImage(dataUrl: string) {
 const imageWidth = 1920;
 const imageHeight = 1080;
 
-function DownloadButton() {
+function DownloadSVGButton() {
   const { getNodes, getEdges, setEdges } = useReactFlow();
 
   const onClick = () => {
@@ -113,4 +113,4 @@ function DownloadButton() {
   );
 }
 
-export default DownloadButton;
+export default DownloadSVGButton;

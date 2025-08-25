@@ -1,6 +1,6 @@
 import { Controls } from '@xyflow/react';
 import { RedoDot, Ban, RotateCcw, ZoomIn, ZoomOut, Fullscreen, Copy } from 'lucide-react';
-import DownloadButton from '../DownloadButton';
+import DownloadSVGButton from '../DownloadSVGButton';
 import { sendMessage } from '@/components/Message/sendMessage';
 import { useDialog } from '@/context/panel/DialogContext';
 import { useEffect, useState } from 'react';
@@ -10,6 +10,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
+import DownloadPNGButton from '../DownloadPNGButton';
 
 interface CustomControlsProps {
   onToggleMinimap: () => void;
@@ -105,7 +106,8 @@ export default function CustomControls({
         
         <HoverCardContent side="right" align="center" className="w-auto p-0 ml-2 border-none bg-transparent">
           <div className="flex bg-white rounded-lg shadow-md react-flow__controls">
-            <DownloadButton />
+            <DownloadSVGButton />
+            <DownloadPNGButton />
           </div>
         </HoverCardContent>
       </HoverCard>
