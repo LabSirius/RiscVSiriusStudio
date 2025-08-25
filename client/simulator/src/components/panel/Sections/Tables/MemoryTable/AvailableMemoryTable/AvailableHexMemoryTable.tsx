@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 import { useRef, useState } from "react";
 import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
@@ -9,7 +16,7 @@ import { useTheme } from "@/components/ui/theme/theme-provider";
 
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";
 import { useLines } from "@/context/panel/LinesContext";
-import { ArrowBigLeftDash, ArrowBigRightDash, Binary } from "lucide-react";
+import { ArrowBigLeftDash, ArrowBigRightDash, Binary, Menu } from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
@@ -132,7 +139,7 @@ const AvailableHexMemoryTable = ({setWithBin, withBin}: AvailableMemoryTable ) =
 
   return (
     <>
-      <div className={`shadow-lg !min-h-min min-w-[16.7rem] mx-4 relative ${(!showTable || withBin)&& "hidden"}`}>
+      <div className={`shadow-lg !min-h-min min-w-[16.7rem] mx-4 relative ${(!showTable || withBin) && "hidden"}`}>
         <div
           className={`h-full w-full transition-opacity ease-in 9000 ${
             isCreatedMemoryTable ? "opacity-100" : "opacity-0"
@@ -146,20 +153,28 @@ const AvailableHexMemoryTable = ({setWithBin, withBin}: AvailableMemoryTable ) =
           
           <HoverCard openDelay={200} closeDelay={100}>
             <HoverCardTrigger asChild>
-              <ArrowBigLeftDash
-                onClick={() => setShowTable(false)}
+              <Menu
                 strokeWidth={1.5}
                 className="absolute cursor-pointer right-[0rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] z-100 text-black hover:scale-110 transition-transform"
               />
             </HoverCardTrigger>
             <HoverCardContent side="right" align="center" className="w-auto p-1 border rounded-md shadow-lg ml-2 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm">
-              <button
-                onClick={() => setWithBin(prev => !prev)}
-                title="Toggle Binary"
-                className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
-              >
-                <Binary strokeWidth={1.5} className="w-5 h-5 text-black dark:text-white" />
-              </button>
+              <div className="flex items-center space-x-1">
+                <button
+                  onClick={() => setWithBin(prev => !prev)}
+                  title="Toggle Binary"
+                  className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                >
+                  <Binary strokeWidth={1.5} className="w-5 h-5 text-black dark:text-white" />
+                </button>
+                <button
+                  onClick={() => setShowTable(false)}
+                  title="Hide Table"
+                  className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                >
+                  <ArrowBigLeftDash strokeWidth={1.5} className="w-5 h-5 text-black dark:text-white" />
+                </button>
+              </div>
             </HoverCardContent>
           </HoverCard>
 
@@ -170,7 +185,7 @@ const AvailableHexMemoryTable = ({setWithBin, withBin}: AvailableMemoryTable ) =
           </div>
         )}
       </div>
-      {!showTable && withBin && (
+      {!showTable && !withBin && (
         <div
           onClick={() => setShowTable(true)}
           className={`h-full w-[1.6rem] cursor-pointer rounded-[.2rem] flex flex-col items-center uppercase border hover:opacity-[0.9] transition-all ease-in-out duration-200

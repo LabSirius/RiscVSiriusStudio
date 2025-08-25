@@ -10,7 +10,7 @@ import { useState } from "react";
 const Tables = () => {
   const { typeSimulator, modeSimulator } = useSimulator();
 
-  const [withBin, setWithBin] = useState(false);
+  const [withBin, setWithBin] = useState(true);
 
   return (
     <div className="flex gap-0 overflow-hidden min-w-min">
