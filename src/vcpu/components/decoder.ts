@@ -42,6 +42,7 @@ export class ControlUnit {
       alu_op: "00000",
       br_op: "00XXX",
       imm_src: "X",
+      
     };
 
     switch (type) {
@@ -105,6 +106,7 @@ export class ControlUnit {
         signals.alu_op = "00000";
         signals.br_op = "1XXXX";
         signals.imm_src = "110";
+        
 
         break;
     }

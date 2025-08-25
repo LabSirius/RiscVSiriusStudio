@@ -36,7 +36,6 @@ export interface ParsedInstruction {
   pseudoasm?: string;
   pc: number;
   inst: number;
-  ImmSRC?: string;
 }
 
 type Instruction = ParsedInstruction | NOPInstruction;
@@ -92,6 +91,10 @@ const NOP_DATA = {
   Address: "X".padStart(32, "X"),
   MemWriteData: "X".padStart(32, "X"),
   MemReadData: "X".padStart(32, "X"),
+
+  Opcode: "XXXXXXX",
+  Funct3: "XXX",
+  Funct7: "XXXXXXX",
 };
 
 interface IDEX_Register {
@@ -113,6 +116,10 @@ interface IDEX_Register {
   RD: string;
   rs1: string;
   rs2: string;
+
+  Opcode: string;
+  Funct3: string;
+  Funct7: string;
 }
 
 interface EXMEM_Register {
@@ -131,7 +138,7 @@ interface EXMEM_Register {
   ALUASrc: boolean;
   ALUBSrc: boolean;
   ALUOp: string;
-  BrOp: string
+  BrOp: string;
   BranchInputRS1: string;
   BranchInputRS2: string;
   BranchResult: string;
@@ -158,7 +165,7 @@ interface WB_Register {
   RD: string;
   dataToWrite: string;
   RUWr: boolean;
-  RUDataWrSrc: string
+  RUDataWrSrc: string;
 }
 
 export type PipelineCycleResult = {

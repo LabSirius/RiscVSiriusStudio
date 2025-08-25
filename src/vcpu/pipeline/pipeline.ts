@@ -39,6 +39,10 @@ const NOP_DATA = {
   Address: "X".padStart(32, "X"),
   MemWriteData: "X".padStart(32, "X"),
 
+    Opcode: "XXXXXXX",
+  Funct3: "XXX",
+  Funct7: "XXXXXXX",
+
 };
 
 interface IDEX_Register {
@@ -60,6 +64,10 @@ interface IDEX_Register {
   RD: string;
   rs1: string;
   rs2: string;
+
+  Opcode: string;
+  Funct3: string;
+  Funct7: string;
 }
 
 interface EXMEM_Register {
@@ -84,6 +92,7 @@ interface EXMEM_Register {
   BranchInputRS1: string;
   BranchInputRS2: string;
   BranchResult: string;
+
 }
 
 interface MEMWB_Register {
@@ -261,6 +270,12 @@ export class PipelineCPU implements ICPU {
     const rs2Addr = instruction.rs2?.regeq;
     const RUrs1 = rs1Addr ? this.registers.readRegisterFromName(rs1Addr) : "X".padStart(32, "X");
     const RUrs2 = rs2Addr ? this.registers.readRegisterFromName(rs2Addr) : "X".padStart(32, "X");
+
+    const opcode = instruction.opcode ?? 'XXXXXXX';
+    const funct3 = instruction.encoding?.funct3 ?? 'XXX';
+    const funct7 = instruction.encoding?.funct7 ?? 'XXXXXXX';
+
+
     console.log(
       `[ID Stage] Read Registers: rs1(${rs1Addr || "N/A"}) -> ${RUrs1} | rs2(${
         rs2Addr || "N/A"
@@ -286,6 +301,11 @@ export class PipelineCPU implements ICPU {
       RD: instruction.rd ? instruction.rd.regeq.substring(1) : "X",
       rs1: instruction.rs1 ? instruction.rs1.regeq.substring(1) : "X",
       rs2: instruction.rs2 ? instruction.rs2.regeq.substring(1) : "X",
+
+
+      Opcode: opcode,
+      Funct3: funct3,
+      Funct7: funct7,
     };
     console.log(`[ID Stage] ID/EX Register OUT ->`, newState);
     return newState;
