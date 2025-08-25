@@ -28,11 +28,9 @@ const LabelValueContainer = () => {
     if (currentMonocycletInst && currentMonocycleResult) {
       const inst = currentMonocycletInst;
       const result = currentMonocycleResult;
-
       displayData.instructionType = inst.type;
       displayData.rs1Regenc = inst.rs1?.regenc ?? "";
       displayData.rs2Regenc = inst.rs2?.regenc ?? "";
-
       const rs1AddrBin = inst.encoding.rs1 || "";
       if (rs1AddrBin)
         displayData.rs1Address = {
@@ -40,7 +38,6 @@ const LabelValueContainer = () => {
           dec: binaryToInt(rs1AddrBin).toString(),
           hex: parseInt(rs1AddrBin, 2).toString(16).toUpperCase(),
         };
-
       const rs2AddrBin = inst.encoding.rs2 || "";
       if (rs2AddrBin)
         displayData.rs2Address = {
@@ -48,7 +45,6 @@ const LabelValueContainer = () => {
           dec: binaryToInt(rs2AddrBin).toString(),
           hex: parseInt(rs2AddrBin, 2).toString(16).toUpperCase(),
         };
-
       const rdAddrBin = inst.encoding.rd || "";
       if (rdAddrBin)
         displayData.rdAddress = {
@@ -56,7 +52,6 @@ const LabelValueContainer = () => {
           dec: binaryToInt(rdAddrBin).toString(),
           hex: parseInt(rdAddrBin, 2).toString(16).toUpperCase(),
         };
-
       const rs1ValBin = result.ru.rs1;
       if (rs1ValBin)
         displayData.rs1Value = {
@@ -64,7 +59,6 @@ const LabelValueContainer = () => {
           dec: binaryToInt(rs1ValBin).toString(),
           hex: binaryToHex(rs1ValBin).toUpperCase(),
         };
-
       const rs2ValBin = result.ru.rs2;
       if (rs2ValBin)
         displayData.rs2Value = {
@@ -72,7 +66,6 @@ const LabelValueContainer = () => {
           dec: binaryToInt(rs2ValBin).toString(),
           hex: binaryToHex(rs2ValBin).toUpperCase(),
         };
-
       const dataWriteBin = result.ru.dataWrite;
       if (dataWriteBin)
         displayData.dataWrite = {
@@ -80,9 +73,7 @@ const LabelValueContainer = () => {
           dec: binaryToInt(dataWriteBin).toString(),
           hex: binaryToHex(dataWriteBin).toUpperCase(),
         };
-
       displayData.writeSignal = result.ru.writeSignal;
-
       const { instructionType } = displayData;
       showWriteFields = !(instructionType === "S" || instructionType === "B");
       showWriteSignal = true;
@@ -92,11 +83,9 @@ const LabelValueContainer = () => {
       const instructionInID = pipelineValuesStages.ID.instruction;
       if (instructionInID && instructionInID.pc !== -1) {
         const parsedInst = instructionInID as ParsedInstruction;
-
         displayData.instructionType = parsedInst.type;
         displayData.rs1Regenc = parsedInst.rs1?.regenc ?? "";
         displayData.rs2Regenc = parsedInst.rs2?.regenc ?? "";
-
         const rs1AddrBin = parsedInst.encoding?.rs1 || "";
         if (rs1AddrBin)
           displayData.rs1Address = {
@@ -104,7 +93,6 @@ const LabelValueContainer = () => {
             dec: binaryToInt(rs1AddrBin).toString(),
             hex: parseInt(rs1AddrBin, 2).toString(16).toUpperCase(),
           };
-
         const rs2AddrBin = parsedInst.encoding?.rs2 || "";
         if (rs2AddrBin)
           displayData.rs2Address = {
@@ -112,7 +100,6 @@ const LabelValueContainer = () => {
             dec: binaryToInt(rs2AddrBin).toString(),
             hex: parseInt(rs2AddrBin, 2).toString(16).toUpperCase(),
           };
-
         const rs1ValBin = pipelineValuesStages.ID.RUrs1;
         if (!rs1ValBin.includes("X"))
           displayData.rs1Value = {
@@ -120,7 +107,6 @@ const LabelValueContainer = () => {
             dec: binaryToInt(rs1ValBin).toString(),
             hex: binaryToHex(rs1ValBin).toUpperCase(),
           };
-
         const rs2ValBin = pipelineValuesStages.ID.RUrs2;
         if (!rs2ValBin.includes("X"))
           displayData.rs2Value = {
@@ -128,40 +114,37 @@ const LabelValueContainer = () => {
             dec: binaryToInt(rs2ValBin).toString(),
             hex: binaryToHex(rs2ValBin).toUpperCase(),
           };
+      } else {
+        const nopValue = { bin: "-", dec: "-", hex: "-" };
+        displayData.rs1Address = nopValue;
+        displayData.rs2Address = nopValue;
+        displayData.rs1Value = nopValue;
+        displayData.rs2Value = nopValue;
       }
-
       const wbStage = pipelineValuesStages.WB;
-
-
-
-      if(instructionInID.pc !== -1 ){
-        showWriteSignal = true; 
-      }else{
-        showWriteSignal = wbStage.RUWr  
+      if (instructionInID?.pc !== -1) {
+        showWriteSignal = true;
+      } else if (wbStage) {
+        showWriteSignal = wbStage.RUWr;
       }
-      if (wbStage && wbStage.instruction ) {
+      if (wbStage && wbStage.instruction) {
         displayData.writeSignal = wbStage.RUWr ? "1" : "0";
-
         if (wbStage.RUWr) {
           const dataWriteBin = wbStage.dataToWrite;
-          if (!dataWriteBin.includes("X")) {
+          if (!dataWriteBin.includes("X"))
             displayData.dataWrite = {
               bin: dataWriteBin,
               dec: binaryToInt(dataWriteBin).toString(),
               hex: binaryToHex(dataWriteBin).toUpperCase(),
             };
-          }
-
           const rdAddrBin = wbStage.instruction.encoding?.rd || "";
-          if (rdAddrBin) {
+          if (rdAddrBin)
             displayData.rdAddress = {
               bin: rdAddrBin,
               dec: binaryToInt(rdAddrBin).toString(),
               hex: parseInt(rdAddrBin, 2).toString(16).toUpperCase(),
             };
-          }
         }
-
         showWriteFields = wbStage.RUWr;
       }
     }
@@ -174,24 +157,30 @@ const LabelValueContainer = () => {
         !(instructionType === "J" || instructionType === "LUI" || instructionType === "AUIPC") && (
           <LabelValueWithHover
             label=""
-            value={`b'${displayData.rs1Address.bin}`}
+            value={displayData.rs1Address.bin === "-" ? "-" : `b'${displayData.rs1Address.bin}`}
             decimal={displayData.rs1Address.dec}
             binary={displayData.rs1Address.bin}
             hex={displayData.rs1Address.hex}
             positionClassName="top-[1.4rem] left-[.8rem]"
           />
         )}
+
+
       {displayData.rs2Address.bin &&
-        (instructionType === "R" || instructionType === "S" || instructionType === "B") && (
+        (displayData.rs2Address.bin === "-" ||
+          instructionType === "R" ||
+          instructionType === "S" ||
+          instructionType === "B") && (
           <LabelValueWithHover
             label=""
-            value={`b'${displayData.rs2Address.bin}`}
+            value={displayData.rs2Address.bin === "-" ? "-" : `b'${displayData.rs2Address.bin}`}
             decimal={displayData.rs2Address.dec}
             binary={displayData.rs2Address.bin}
             hex={displayData.rs2Address.hex}
             positionClassName="top-[6.6rem] left-[.8rem]"
           />
         )}
+
       {displayData.rdAddress.bin && showWriteFields && (
         <LabelValueWithHover
           label=""
@@ -202,11 +191,12 @@ const LabelValueContainer = () => {
           positionClassName="top-[12rem] left-[.8rem]"
         />
       )}
+
       {displayData.rs1Value.bin &&
         !(instructionType === "J" || instructionType === "LUI" || instructionType === "AUIPC") && (
           <LabelValueWithHover
             label={`RU[x${displayData.rs1Regenc}]`}
-            value={`h'${displayData.rs1Value.hex}`}
+            value={displayData.rs1Value.bin === "-" ? "-" : `h'${displayData.rs1Value.hex}`}
             decimal={displayData.rs1Value.dec}
             binary={displayData.rs1Value.bin}
             hex={displayData.rs1Value.hex}
@@ -214,11 +204,15 @@ const LabelValueContainer = () => {
             input={false}
           />
         )}
+
       {displayData.rs2Value.bin &&
-        (instructionType === "R" || instructionType === "S" || instructionType === "B") && (
+        (displayData.rs2Value.bin === "-" ||
+          instructionType === "R" ||
+          instructionType === "S" ||
+          instructionType === "B") && (
           <LabelValueWithHover
             label={`RU[x${displayData.rs2Regenc}]`}
-            value={`h'${displayData.rs2Value.hex}`}
+            value={displayData.rs2Value.bin === "-" ? "-" : `h'${displayData.rs2Value.hex}`}
             decimal={displayData.rs2Value.dec}
             binary={displayData.rs2Value.bin}
             hex={displayData.rs2Value.hex}
@@ -226,6 +220,7 @@ const LabelValueContainer = () => {
             input={false}
           />
         )}
+
       {displayData.dataWrite.bin && showWriteFields && (
         <LabelValueWithHover
           label="DataWr"
@@ -236,6 +231,7 @@ const LabelValueContainer = () => {
           positionClassName="top-[16rem] left-[.8rem]"
         />
       )}
+
       {showWriteSignal && (
         <LabelValueWithHover
           label=""
