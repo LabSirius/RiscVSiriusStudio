@@ -13,9 +13,6 @@ interface NOPInstruction {
   instruction?: undefined;
   currentPc?: undefined;
   pseudoasm?: undefined;
-  ImmSRC?: undefined;
-  ALUInputA?: undefined;
-  ALUInputB?: undefined;
 }
 
 export interface ParsedInstruction {
@@ -75,6 +72,9 @@ const NOP_DATA = {
   RUDataWrSrc: "XX",
   ALUOp: "XXXXX",
   BrOp: "XXXXX",
+  BranchInputRS1: "X".padStart(32, "X"),
+  BranchInputRS2: "X".padStart(32, "X"),
+  BranchResult: "0",
   DMCtrl: "XXX",
   RUrs1: "X".padStart(32, "X"),
   RUrs2: "X".padStart(32, "X"),
@@ -126,7 +126,11 @@ interface EXMEM_Register {
   ALUInputB: string;
   ALUASrc: boolean;
   ALUBSrc: boolean;
-  ALUOp: string
+  ALUOp: string;
+  BrOp: string
+  BranchInputRS1: string;
+  BranchInputRS2: string;
+  BranchResult: string;
 }
 
 interface MEMWB_Register {

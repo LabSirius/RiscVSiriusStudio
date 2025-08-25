@@ -19,6 +19,9 @@ const NOP_DATA = {
   RUDataWrSrc: "XX",
   ALUOp: "XXXXX",
   BrOp: "XXXXX",
+  BranchInputRS1: "X".padStart(32, "X"),
+  BranchInputRS2: "X".padStart(32, "X"),
+  BranchResult: "0",
   DMCtrl: "XXX",
   RUrs1: "X".padStart(32, "X"),
   RUrs2: "X".padStart(32, "X"),
@@ -31,6 +34,7 @@ const NOP_DATA = {
   ALUInputA: "X".padStart(32, "X"),
   ALUInputB: "X".padStart(32, "X"),
   MemReadData: "X".padStart(32, "X"),
+
 };
 
 interface IDEX_Register {
@@ -71,6 +75,11 @@ interface EXMEM_Register {
   ALUOp: string;
   ALUInputA: string;
   ALUInputB: string;
+
+  BrOp: string;
+  BranchInputRS1: string;
+  BranchInputRS2: string;
+  BranchResult: string;
 }
 
 interface MEMWB_Register {
@@ -344,7 +353,14 @@ export class PipelineCPU implements ICPU {
     const ALURes = this.alu.execute(finalOperandA, finalOperandB, ALUOp);
 
 
+     const isBranchOrJump = BrOp.substring(0, 2) === "01" || BrOp.substring(0, 2) === "10" || BrOp.substring(0, 2) === "11";
+    
+    const branchInput1 = isBranchOrJump ? operandA : "X".padStart(32, "X");
+    const branchInput2 = isBranchOrJump ? operandB : "X".padStart(32, "X");
+
     const branchTaken = this.branchUnit.evaluate(BrOp, operandA, operandB);
+    const branchResult = isBranchOrJump ? (branchTaken ? "1" : "0") : "X";
+
     console.log(`[EX Stage] Branch Unit decision for BrOp=${BrOp}: ${branchTaken ? 'TAKE BRANCH' : 'DO NOT TAKE'}`);
 
     console.log(`[EX Stage] Branch control signal received: BrOp=${BrOp}`);
@@ -369,6 +385,11 @@ export class PipelineCPU implements ICPU {
       ALUOp,
       ALUInputA: finalOperandA,
       ALUInputB: finalOperandB,
+
+       BrOp,
+      BranchInputRS1: branchInput1,
+      BranchInputRS2: branchInput2,
+      BranchResult: branchResult,
     };
 
     console.log(`[EX Stage] EX/MEM Register OUT ->`, newState);
