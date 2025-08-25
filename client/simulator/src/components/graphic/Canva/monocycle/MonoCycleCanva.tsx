@@ -1,20 +1,20 @@
-import { useState, MouseEvent } from "react";
+import { useState, MouseEvent, useEffect } from "react"; // ---> 1. IMPORTAMOS useEffect
 import { ReactFlow, Edge, useReactFlow, Background, MiniMap } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-export type AppEdge = Edge & { disabled?: boolean }
+export type AppEdge = Edge & { disabled?: boolean };
 
-import { useProcessorFlow } from "../hooks/useProcessorFlow"; 
+import { useProcessorFlow } from "../hooks/useProcessorFlow";
 
 import { nodeTypes, edgeTypes } from "../shared/constants";
-import { baseEdges } from "./edges/baseEdges"; 
+import { baseEdges } from "./edges/baseEdges";
 
-import { animateLineClick,  animateLineHover } from "../shared/conexions-controller/animateLine"; 
+import { animateLineClick, animateLineHover } from "../shared/conexions-controller/animateLine";
 import CustomControls from "../../custom/CustomControls";
 
-
-
 import ActiveConexionsController from "../shared/conexions-controller/ActiveConexionsController";
+
+import { useCustomOptionSimulate } from "@/context/shared/CustomOptionSimulate"; 
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
@@ -32,7 +32,22 @@ export default function MonocycleCanva() {
     minimapVisible,
   } = useProcessorFlow(baseEdges);
 
-  const { updateEdge } = useReactFlow();
+  const { fitView, updateEdge } = useReactFlow();
+  const { fitViewTrigger } = useCustomOptionSimulate();
+
+ useEffect(() => {
+    if (fitViewTrigger > 0) {
+
+      setTimeout(() => {
+        fitView({ 
+          duration: 400, 
+
+          padding: 0.01
+        });
+      }, 0); 
+    }
+  }, [fitViewTrigger, fitView]);
+
   const [selectedGroup, setSelectedGroup] = useState<string[][]>([]);
 
   const handleEdgeClick = (_event: MouseEvent<Element>, edge: Edge): void => {
