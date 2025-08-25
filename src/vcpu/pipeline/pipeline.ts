@@ -107,7 +107,8 @@ interface WB_Register {
   instruction: any;
   RD: string;         
   dataToWrite: string; 
-  RUWr: boolean;      
+  RUWr: boolean;
+  RUDataWrSrc: string;      
 }
 
 export type PipelineCycleResult = {
@@ -510,6 +511,7 @@ export class PipelineCPU implements ICPU {
         RD: "X",
         dataToWrite: "X".padStart(32, "X"),
         RUWr: false,
+        RUDataWrSrc: "XX",
     };
 
     if (instruction.pc === -1) {
@@ -560,6 +562,7 @@ export class PipelineCPU implements ICPU {
       RD,
       dataToWrite,
       RUWr,
+      RUDataWrSrc,
     };
 
     return { writeAction, wbState };

@@ -158,6 +158,7 @@ interface WB_Register {
   RD: string;
   dataToWrite: string;
   RUWr: boolean;
+  RUDataWrSrc: string
 }
 
 export type PipelineCycleResult = {

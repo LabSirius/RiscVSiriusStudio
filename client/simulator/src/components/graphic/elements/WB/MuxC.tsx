@@ -12,13 +12,24 @@ interface HandlerConfig {
 }
 
 export default function MuxC() {
-  const { currentMonocycleResult, currentType } = useCurrentInst();
-  const { operation, isEbreak } = useSimulator();
+  const { currentMonocycleResult, currentType, pipelineValuesStages } = useCurrentInst();
+  const { operation, isEbreak, typeSimulator } = useSimulator();
 
+  let signal: string;
+  let activeCurrentType: string;
 
-  const signal = currentMonocycleResult.wb.signal;
+  if (typeSimulator === 'pipeline') {
+    const wbStage = pipelineValuesStages?.WB;
+      const rawSignal = wbStage?.RUDataWrSrc || 'XX';
+
+    signal = rawSignal === 'XX' ? '-' : rawSignal;
+    activeCurrentType = wbStage?.instruction?.type || '';
+  } else {
+    signal = currentMonocycleResult?.wb?.signal || 'XX';
+    activeCurrentType = currentType;
+  }
+
   const hasX = signal.includes('X');
-
   const signalDec = hasX ? `${signal}` : binaryToInt(signal);
   const signalHex = hasX ? `${signal}` : parseInt(signal, 2).toString(16).toUpperCase();
 
@@ -28,14 +39,14 @@ export default function MuxC() {
     { id: "alu", style: { top: "7.5rem" }, position: Position.Left },
     { id: "ruDataWrSrc", style: { top: "7.3rem" }, position: Position.Bottom },
   ];
-
   const outputHandlers: HandlerConfig[] = [{ style: { right: ".8rem" }, position: Position.Right }];
 
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
-        <MuxContainer3_1  signal={currentMonocycleResult.wb.signal}/>
-        {(operation !== "uploadMemory" && !(currentType === "S" || currentType === "B" ) && !isEbreak) && 
+        <MuxContainer3_1 signal={signal} />
+        
+        {(operation !== "uploadMemory" && !(activeCurrentType === "S" || activeCurrentType === "B" ) && !isEbreak) && 
           <div className="absolute bottom-[.3rem] left-[3.5rem]">
             <LabelValueWithHover
               label=""
@@ -51,24 +62,11 @@ export default function MuxC() {
       </div>
 
       {inputHandlers.map((handler, index) => (
-        <Handle
-          key={handler.id || `input-${index}`}
-          type="target"
-          id={handler.id}
-          position={handler.position}
-          className="input"
-          style={handler.style}
-        />
+        <Handle key={handler.id || `input-${index}`} type="target" id={handler.id} position={handler.position} className="input" style={handler.style} />
       ))}
 
       {outputHandlers.map((handler, index) => (
-        <Handle
-          key={`output-${index}`}
-          type="source"
-          position={handler.position}
-          className="output"
-          style={handler.style}
-        />
+        <Handle key={`output-${index}`} type="source" position={handler.position} className="output" style={handler.style} />
       ))}
     </div>
   );
