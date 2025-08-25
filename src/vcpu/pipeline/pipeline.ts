@@ -15,14 +15,13 @@ const NOP_DATA = {
   RUWr: false,
   ALUASrc: false,
   ALUBSrc: false,
-  DMWr: false,
+ 
   RUDataWrSrc: "XX",
   ALUOp: "XXXXX",
   BrOp: "XXXXX",
   BranchInputRS1: "X".padStart(32, "X"),
   BranchInputRS2: "X".padStart(32, "X"),
   BranchResult: "0",
-  DMCtrl: "XXX",
   RUrs1: "X".padStart(32, "X"),
   RUrs2: "X".padStart(32, "X"),
   ImmExt: "X".padStart(32, "X"),
@@ -33,7 +32,12 @@ const NOP_DATA = {
   ALURes: "X".padStart(32, "X"),
   ALUInputA: "X".padStart(32, "X"),
   ALUInputB: "X".padStart(32, "X"),
+
+   DMWr: false,
+  DMCtrl: "XXX",
   MemReadData: "X".padStart(32, "X"),
+  Address: "X".padStart(32, "X"),
+  MemWriteData: "X".padStart(32, "X"),
 
 };
 
@@ -91,6 +95,11 @@ interface MEMWB_Register {
   ALURes: string;
   MemReadData: string;
   RD: string;
+
+  Address: string;
+  MemWriteData: string;
+  DMWr: boolean;
+  DMCtrl: string;
 }
 
 
@@ -407,7 +416,7 @@ export class PipelineCPU implements ICPU {
     const { instruction, PC, PCP4, DMWr, DMCtrl, ALURes, RUrs2, RD } = this.ex_mem_register;
     if (instruction.pc === -1) {
       console.log(`[MEM Stage] NOP`);
-      return { ...NOP_DATA };
+      return { ...NOP_DATA,  DMWr: false, RUWr: false };
     }
     console.log(`[MEM Stage] Processing: "${instruction.asm}" (PC=${PC})`);
     const address = parseInt(ALURes, 2);
@@ -472,6 +481,8 @@ export class PipelineCPU implements ICPU {
       console.log(`[MEM Stage] No memory operation.`);
     }
 
+    const memWriteValue = DMWr ? RUrs2 : "X".padStart(32, "X");
+
     const newState: MEMWB_Register = {
       instruction,
       PC,
@@ -481,6 +492,10 @@ export class PipelineCPU implements ICPU {
       ALURes,
       MemReadData: memReadData,
       RD,
+      Address: ALURes,
+      MemWriteData: memWriteValue,
+      DMWr,
+      DMCtrl,
     };
     console.log(`[MEM Stage] MEM/WB Register OUT ->`, newState);
     return newState;

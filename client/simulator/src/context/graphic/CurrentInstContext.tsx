@@ -68,14 +68,12 @@ const NOP_DATA = {
   RUWr: false,
   ALUASrc: false,
   ALUBSrc: false,
-  DMWr: false,
   RUDataWrSrc: "XX",
   ALUOp: "XXXXX",
   BrOp: "XXXXX",
   BranchInputRS1: "X".padStart(32, "X"),
   BranchInputRS2: "X".padStart(32, "X"),
   BranchResult: "0",
-  DMCtrl: "XXX",
   RUrs1: "X".padStart(32, "X"),
   RUrs2: "X".padStart(32, "X"),
   ImmExt: "X".padStart(32, "X"),
@@ -83,11 +81,17 @@ const NOP_DATA = {
   rs1: "X",
   rs2: "X",
   ALURes: "X".padStart(32, "X"),
-  MemReadData: "X".padStart(32, "X"),
   dataToWrite: "X".padStart(32, "X"),
   ImmSRC: "X",
   ALUInputA: "X".padStart(32, "X"),
   ALUInputB: "X".padStart(32, "X"),
+
+  DMWr: false,
+
+  DMCtrl: "XXX",
+  Address: "X".padStart(32, "X"),
+  MemWriteData: "X".padStart(32, "X"),
+  MemReadData: "X".padStart(32, "X"),
 };
 
 interface IDEX_Register {
@@ -140,8 +144,13 @@ interface MEMWB_Register {
   RUWr: boolean;
   RUDataWrSrc: string;
   ALURes: string;
-  MemReadData: string;
   RD: string;
+
+  MemReadData: string;
+  Address: string;
+  MemWriteData: string;
+  DMWr: boolean;
+  DMCtrl: string;
 }
 
 interface WB_Register {
