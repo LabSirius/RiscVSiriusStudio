@@ -12,48 +12,44 @@ interface HandlerConfig {
 }
 
 function MuxB() {
-  const { currentMonocycleResult } = useCurrentInst();
-  const { operation, isEbreak } = useSimulator();
+  const { currentMonocycleResult, pipelineValuesStages } = useCurrentInst();
+  const { operation, isEbreak, typeSimulator } = useSimulator();
 
+  let signal: string;
 
-  const signal = currentMonocycleResult.alub.signal;
+  if (typeSimulator === 'pipeline') {
+    const exStage = pipelineValuesStages?.EX;
+
+    if (exStage?.instruction) {
+      if (exStage.instruction.pc === -1) {
+        signal = '-';
+      } else {
+        signal = exStage.ALUBSrc ? '1' : '0';
+      }
+    } else {
+      signal = 'X';
+    }
+  } else {
+    signal = currentMonocycleResult?.alub?.signal || 'X';
+  }
 
   const handlers: HandlerConfig[] = [
-    {
-      id: "registersUnitB",
-      type: "target",
-      position: Position.Left,
-      style: { top: "2.8rem" },
-    },
-    {
-      id: "immGenerator",
-      type: "target",
-      position: Position.Left,
-      style: { top: "6.8rem" },
-    },
-    {
-      id: "aluBSrc",
-      type: "target",
-      position: Position.Bottom,
-      style: { top: "7rem" },
-    },
-    {
-      id: "muxB_output",
-      type: "source",
-      position: Position.Right,
-      style: { right: ".8rem" },
-    },
+    { id: "registersUnitB", type: "target", position: Position.Left, style: { top: "2.8rem" } },
+    { id: "immGenerator", type: "target", position: Position.Left, style: { top: "6.8rem" } },
+    { id: "aluBSrc", type: "target", position: Position.Bottom, style: { top: "7rem" } },
+    { id: "muxB_output", type: "source", position: Position.Right, style: { right: ".8rem" } },
   ];
 
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
-        <MuxContainer   signal={currentMonocycleResult.alub.signal === "0" ? "1" : "0"}/>
+        <MuxContainer signal={signal === "0" ? "1" : "0"} />
+        
         {operation !== "uploadMemory" && !isEbreak && (
           <div className="absolute bottom-[.8rem] left-[3.5rem]">
             <LabelValueWithHover
               label=""
-              value={`b'${signal}`}
+              value={signal === '-' ? signal : `b'${signal}`}
               decimal={signal}
               binary={signal}
               hex={signal}
