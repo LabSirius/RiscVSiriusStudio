@@ -80,7 +80,7 @@ export abstract class Simulator {
   public resizeMemory(newSize: number): void {
     if (this.configured) throw new Error("Cannot resize memory after configuration");
     this.cpu.getDataMemory().resize(newSize);
-    this.cpu.getRegisterFile().writeRegister("x2", intToBinary(newSize));
+    this.cpu.getRegisterFile().writeRegister("x2", intToBinary(newSize-4));
   }
 
   public replaceMemory(newMemory: string[]): void {
