@@ -7,7 +7,7 @@ import ImportMemory from "./ImportMemory";
 const ManualConfig = () => {
 
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-7 ">
       <p className="flex text-gray-400 text-md">
         Press
         <span className="inline mx-2 text-slate-400">
@@ -25,7 +25,7 @@ const ManualConfig = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 " id="input-change-memory-size-2">
         <p className="font-semibold">Memory size (In bytes)</p>
         <MemorySizeInput />
       </div>
