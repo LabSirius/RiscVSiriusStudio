@@ -38,7 +38,6 @@ interface AvailableMemoryTable {
 }
 
 const AvailableHexMemoryTable = ({setWithBin, withBin}: AvailableMemoryTable ) => {
-  console.log(withBin,setWithBin)
 
   const { theme } = useTheme();
   const tableContainerRef = useRef<HTMLDivElement>(null);

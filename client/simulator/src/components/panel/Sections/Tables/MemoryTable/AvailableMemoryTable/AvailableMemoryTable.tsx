@@ -38,7 +38,6 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
 
-  console.log(withBin, setWithBin)
 
   const {
     isCreatedMemoryTable,

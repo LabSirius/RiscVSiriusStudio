@@ -219,7 +219,6 @@ export class TextSimulator extends Simulator {
 
       return stepResult;
     } else {
-      console.log("Pipeline step executed in TextSimulator.");
       return stepResult;
     }
   }

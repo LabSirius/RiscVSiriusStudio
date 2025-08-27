@@ -330,7 +330,6 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
   };
   directives = {};
   
-  console.log('First pass!.');
   let options = {
     pc: 0
   };
@@ -377,7 +376,6 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
   counters.instCountData = counters.instcounter * 4;
   counters.instcounter = 0;
   updateMemdefData();
-  console.log('Second pass!.');
   let parserOutput;
   try {
     parserOutput = parse(inputSrc, {
@@ -394,7 +392,6 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     retError.extra = obj;
     return retError;
   }
-  console.log('Success!.');
 
   let memory = constructMemory(parserOutput, dataTable);
   memory = fillEndMemory(memory);
@@ -414,6 +411,5 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     info: 'Success',
     extra: undefined
   };
-  console.log(result);
   return result;
 }

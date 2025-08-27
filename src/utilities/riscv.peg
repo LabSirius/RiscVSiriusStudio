@@ -559,11 +559,7 @@
   constantTable = options.constantTable;
   dataTable = options.dataTable;
   simOptions = options.options;
-  if(isFirstPass) {
-    console.log("First pass of the parser.");
-  } else {
-    console.log("Second pass of the parser.");
-  }
+  
 }
 
   Start = Program
@@ -1308,7 +1304,6 @@
     if (isFirstPass) { return undefined; }
     const value = getPosLabel(lbl["name"]);
     const value13 = applyBitMask(value, (1 << 13) - 1)
-    console.log("lo(symbol): ", value, value13,location());
     return value13;
   }
   / "%" _ "pcrel_lo" _ "(" _ lbl:Identifier _ ")"
@@ -1316,7 +1311,6 @@
     if (isFirstPass) { return undefined; }
     const value = getPosLabel(lbl["name"]);
     const value13 = applyBitMask((value - location()*4), 0xFFF);
-    console.log("pcrel_lo: ", value13);
     return value13;
   }
   
@@ -1327,7 +1321,6 @@
     if (isFirstPass) { return undefined; }
     const value = symbol["value"]
     const value20 = shiftRightLogical((value - location() * 4 + 0x800), 12);
-    console.log("pcrel_hi: ", value20);
     return value20;
   }
   
@@ -1338,7 +1331,6 @@
     const mask = ((1 << 20) - 1) << 12;
     const valueMask = applyBitMask(value, mask);
     const value20 = shiftRightLogical(valueMask, 12);
-    console.log("hi(symbol): ", value, value20, location());
     return value20;
   }
 
