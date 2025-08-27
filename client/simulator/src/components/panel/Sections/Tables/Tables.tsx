@@ -13,7 +13,7 @@ const Tables = () => {
   const [withBin, setWithBin] = useState(true);
 
   return (
-    <div className="flex gap-0 overflow-hidden min-w-min">
+    <div className="flex gap-0 overflow-hidden min-w-min" >
       <RegisterTable />
 
         <AvailableMemoryTable withBin={withBin} setWithBin={setWithBin} />

@@ -116,6 +116,7 @@ const RegistersTable = () => {
     <>
       <div
         ref={tableContainerRef}
+        id="registerTable"
         className={`shadow-lg min-h-min max-h-[calc(100dvh-2.3rem)] mx-4 ${
           !showTable && "hidden"
         } min-w-[22.7rem] relative `}>
@@ -127,6 +128,7 @@ const RegistersTable = () => {
               className={`w-full  h-full ${theme === "light" ? "theme-light" : "theme-dark"}`}
             />
             <ArrowBigLeftDash
+            id="closeRT"
               onClick={() => setShowTable(false)}
               strokeWidth={1.5}
               className="absolute right-[.13rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] text-black cursor-pointer"
