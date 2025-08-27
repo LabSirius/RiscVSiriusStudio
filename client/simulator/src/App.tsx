@@ -10,6 +10,7 @@ import Providers from "./providers";
 const App = () => {
   const { modeSimulator, typeSimulator } = useSimulator();
 
+  
   return (
     <Providers>
       <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
