@@ -21,9 +21,10 @@ const Tables = () => {
 
         <AvailableHexMemoryTable withBin={withBin} setWithBin={setWithBin} />
 
-        </div>
         
       <ProgramMemoryTable />
+        </div>
+
       {modeSimulator !== "text" && <ProgramSection />}
       {typeSimulator === "pipeline" && <StagesPipeline />}
     </div>
