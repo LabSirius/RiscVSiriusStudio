@@ -148,7 +148,9 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
           />
           <HoverCard openDelay={200} closeDelay={100}>
             <HoverCardTrigger asChild>
+
               <Menu
+              id="optionsAvailableMemoryTable"
                 strokeWidth={1.5}
                 className="absolute cursor-pointer right-[0rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] z-100 text-black hover:scale-110 transition-transform"
               />
@@ -163,6 +165,7 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
                   <Binary strokeWidth={1.5} className="w-5 h-5 text-black dark:text-white" />
                 </button>
                 <button
+                  
                   onClick={() => setShowTable(false)}
                   title="Hide Table"
                   className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
