@@ -12,7 +12,6 @@ export class LineTracker {
       if (this._editor) {
         const line = this._editorselection.active.line;
         if (line !== this._currentLine) {
-          console.log(`Line changed to ${line}`);
           this._currentLine = line;
           this._onDidChangeActiveLines.fire();
         }
@@ -31,7 +30,6 @@ export class LineTracker {
   }
 
   private onActiveTextEditorChanged(editor: TextEditor | undefined) {
-    console.log("Text editor changed", editor);
     if (editor === this._editor) {
       return;
     }

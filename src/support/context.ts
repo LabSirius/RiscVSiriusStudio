@@ -385,7 +385,6 @@ export class RVContext {
         this.memoryChanged(message.value);
         break;
       default:
-        console.log("[Mainview - unknown event]", message);
         break;
     }
   }

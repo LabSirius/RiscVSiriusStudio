@@ -9,14 +9,12 @@ export async function activateMessageListenerForRegistersView(
   webview.onDidReceiveMessage((message: any) => {
     switch (message.command) {
       case "log":
-        console.log(message.object);
         break;
       case "event":
         context.dispatchMainViewEvent(message.object);
         break;
       default:
         console.log(message);
-        logger().info("info", message.obj);
         break;
     }
   });
