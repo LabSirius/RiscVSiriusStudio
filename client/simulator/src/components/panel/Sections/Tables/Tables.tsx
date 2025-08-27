@@ -16,9 +16,13 @@ const Tables = () => {
     <div className="flex gap-0 overflow-hidden min-w-min" >
       <RegisterTable />
 
-        <AvailableMemoryTable withBin={withBin} setWithBin={setWithBin} />
+        <div  className="flex gap-0 overflow-hidden min-w-min" id="memoryTables">
+          <AvailableMemoryTable withBin={withBin} setWithBin={setWithBin} />
 
         <AvailableHexMemoryTable withBin={withBin} setWithBin={setWithBin} />
+
+        </div>
+        
       <ProgramMemoryTable />
       {modeSimulator !== "text" && <ProgramSection />}
       {typeSimulator === "pipeline" && <StagesPipeline />}
