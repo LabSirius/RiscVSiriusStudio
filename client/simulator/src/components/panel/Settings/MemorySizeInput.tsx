@@ -67,7 +67,7 @@ const MemorySizeInput = ({ disabled = false }: MemorySizeInputProps) => {
         disabled={disabled}
         className={`relative rounded-lg border ${
           error ? "border-red-500" : "border-gray-400"
-        } ${disabled ? "cursor-not-allowed" : "cursor-pointer"} z-[2] bg-transparent py-2 pr-2 pl-[2.3rem] w-full`}
+        } ${disabled ? "cursor-not-allowed" : "cursor-pointer"} z-[0] bg-transparent py-2 pr-2 pl-[2.3rem] w-full`}
         type="number"
         value={inputValue}
         min="32"
