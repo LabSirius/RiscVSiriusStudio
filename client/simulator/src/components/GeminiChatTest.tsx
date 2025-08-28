@@ -5,6 +5,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 const CONTEXTO_IA = `
   ### Base de Conocimiento Avanzada:  Monociclo RV32
 
@@ -235,7 +238,11 @@ const GeminiChatWidget = () => {
               </div>
             )}
             {!aiResponse && <p>Waiting for your question...</p>}
-            {aiResponse && !loading && <p className="whitespace-pre-wrap">{aiResponse}</p>}
+            {aiResponse && !loading && (
+              <div className="prose-sm prose dark:prose-invert max-w-none">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{aiResponse}</ReactMarkdown>
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleSubmit} className="flex items-center gap-2 flex-shrink-0">
