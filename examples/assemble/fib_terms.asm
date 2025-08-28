@@ -1,3 +1,13 @@
+# Generate Fibonacci Terms in RISC-V Assembly
+# This program calculates the first six terms of the Fibonacci sequence
+#
+#  Register Usage:
+#  - x1: Previous Fibonacci number (F[n-1])
+#  - x2: Current Fibonacci number (F[n])
+#  - x3: Next Fibonacci number (F[n+1])
+#  
+#  Fibonacci Sequence Generated: 0, 1, 1, 2, 3, 5, 8
+
 addi x1, x0, 0 # x1 = 0
 addi x2, x0, 1 # x2 = 1
 
