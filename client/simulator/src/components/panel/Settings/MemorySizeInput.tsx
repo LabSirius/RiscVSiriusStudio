@@ -58,7 +58,10 @@ const MemorySizeInput = ({ disabled = false }: MemorySizeInputProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="relative" noValidate>
+     <div className="flex flex-col gap-3 " id="change-memory-size">
+        <p className="font-semibold">Memory size (In bytes)</p>
+
+      <form onSubmit={handleSubmit} className="relative" noValidate>
       <div className="absolute top-1/2 left-[0.6rem] -translate-y-1/2 text-gray-400">
         <Grid2x2Plus strokeWidth={1} width={20} height={20} />
       </div>
@@ -84,6 +87,9 @@ const MemorySizeInput = ({ disabled = false }: MemorySizeInputProps) => {
         </div>
       )}
     </form>
+
+    </div>
+    
   );
 };
 

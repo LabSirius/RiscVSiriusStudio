@@ -80,26 +80,6 @@ export const useTutorial = () => {
     },
   ];
 
-
-  const programInMonaco = [
-    {
-      element: "#monaco-editor",
-      popover: {
-        title: "Program ",
-        description: "Here you can see the program you are running.",
-      },
-    },
-    {
-    element: ".driver-first-valid-line",
-    popover: {
-      title: "Instruction",
-      description: 'The instruction that was executed will be highlighted, and if you click on an instruction, it will be reflected in the program memory table.  <span style="color: #009688;">program memory table. </span>"' ,
-    },
-  },
-    
-  ];
-
-
   const memoryTablesSteps = [
     {
       element: "#memoryTables",
@@ -224,6 +204,62 @@ export const useTutorial = () => {
     },
   ];
 
+  const programInMonaco = [
+    {
+      element: "#monaco-editor",
+      popover: {
+        title: "Program ",
+        description: "Here you can see the program you are running.",
+      },
+    },
+    {
+      element: ".driver-first-valid-line",
+      popover: {
+        title: "Instruction",
+        description:
+          'The instruction that was executed will be highlighted, and if you click on an instruction, it will be reflected in the program memory table.  <span style="color: #009688;">program memory table. </span>"',
+      },
+    },
+  ];
+
+  const settingsSection = [
+    {
+      element: "#settings-section",
+      popover: {
+        title: "Settings ",
+        description: "In this section you can modify simulator settings.",
+      },
+    },
+    {
+      element: "#import-data",
+      popover: {
+        title: "Import data in tables",
+        description: "Import data into log tables and available memory",
+      },
+    },
+    {
+      element: "#change-memory-size",
+      popover: {
+        title: "Change memory size",
+        description: "You can change the size of the available memory table",
+      },
+    },
+    {
+      element: "#export-data",
+      popover: {
+        title: "Export data",
+        description: "You can export data from tables",
+      },
+    },
+    {
+      element: "#custom-options",
+      popover: {
+        title: "Custom options",
+        description: "During execution you can modify these options",
+      },
+    },
+  ];
+
   useEffect(() => {
     if (!showTuto) return;
 
@@ -231,8 +267,12 @@ export const useTutorial = () => {
       smoothScroll: true,
       showProgress: true,
 
-      steps: [...registerTableSteps, ...memoryTablesSteps, ...(modeSimulator === "graphic" ? programInMonaco : []), ],
-      
+      steps: [
+        ...registerTableSteps,
+        ...memoryTablesSteps,
+        ...(modeSimulator === "graphic" ? programInMonaco : []),
+        ...settingsSection,
+      ],
     });
 
     driverObj.drive();
