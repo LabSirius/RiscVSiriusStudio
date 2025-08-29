@@ -9,11 +9,14 @@ import SwitchAutoFocusOnNewLine from "../Settings/SwitchAutoFocusOnNewLine";
 const SettingsSection = () => {
   const { operation } = useSimulator();
   return (
-    <div className="mt-1 section-container" id="settings-section">
-      <div className="flex flex-col gap-8">
+    <div className="mt-1 section-container !gap-8" id="settings-section">
         
-        {operation === "uploadMemory" && <ManualConfig />}
-        {operation === "step" && <StepConfig />}
+        <div hidden={operation !== "uploadMemory"}>
+          <ManualConfig />
+        </div>
+        <div hidden={operation !== "step"}>
+          <StepConfig />
+        </div>
 
         <div className="flex flex-col gap-2" id="export-data">
           <p>Export data</p>
@@ -27,7 +30,6 @@ const SettingsSection = () => {
           <SwitchSeeRegistersChanged />
           <SwitchAutoFocusOnNewLine />
         </div>
-      </div>
     </div>
   );
 };
