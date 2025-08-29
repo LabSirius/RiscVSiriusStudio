@@ -65,7 +65,7 @@ const ProgramSection = () => {
       range,
       options: {
         isWholeLine: true,
-        className: 'highlighted-line',
+        className: 'highlighted-line driver-first-valid-line',
       }
     }];
 
@@ -74,13 +74,14 @@ const ProgramSection = () => {
     if(switchAutoFocusOnNewLine){
        editor.revealLineInCenterIfOutsideViewport(lineDecorationNumber);
     }
-
     return () => {
       if (editor) {
         editor.deltaDecorations(decorationsRef.current, []);
       }
     };
   }, [lineDecorationNumber, editor, switchAutoFocusOnNewLine]);
+
+
 
   useEffect(() => {
     if (!editor || clickAddressInMemoryTable === -1 || !monacoRef.current) return;
@@ -155,7 +156,7 @@ const ProgramSection = () => {
   };
 
   return (
-    <div className="h-full">
+    <div className="h-full" id='monaco-editor'>
       <div 
         ref={wrapperRef} 
         className={`h-full mt-1  flex relative ${!showEditor && "hidden"}  `}

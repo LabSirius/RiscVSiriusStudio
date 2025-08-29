@@ -5,7 +5,7 @@ import { useSimulator } from "../context/shared/SimulatorContext";
 import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 
 export const useTutorial = () => {
-  const { showTuto, setShowTuto } = useSimulator();
+  const { showTuto, setShowTuto, modeSimulator } = useSimulator();
 
   const { setShowProgramTable } = useMemoryTable();
 
@@ -79,6 +79,26 @@ export const useTutorial = () => {
       },
     },
   ];
+
+
+  const programInMonaco = [
+    {
+      element: "#monaco-editor",
+      popover: {
+        title: "Program ",
+        description: "Here you can see the program you are running.",
+      },
+    },
+    {
+    element: ".driver-first-valid-line",
+    popover: {
+      title: "Instruction",
+      description: 'The instruction that was executed will be highlighted, and if you click on an instruction, it will be reflected in the program memory table.  <span style="color: #009688;">program memory table. </span>"' ,
+    },
+  },
+    
+  ];
+
 
   const memoryTablesSteps = [
     {
@@ -211,7 +231,8 @@ export const useTutorial = () => {
       smoothScroll: true,
       showProgress: true,
 
-      steps: [...registerTableSteps, ...memoryTablesSteps],
+      steps: [...registerTableSteps, ...memoryTablesSteps, ...(modeSimulator === "graphic" ? programInMonaco : []), ],
+      
     });
 
     driverObj.drive();
