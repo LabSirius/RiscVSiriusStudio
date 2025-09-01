@@ -313,18 +313,45 @@ export const useTutorial = () => {
     const programInMonacowsidebar = programInMonaco.map(addSidebarHidingLogic);
     const settingsSectionwsidebar = settingsSection.map(addSidebarHidingLogic);
 
+
+     const allSteps = [
+      ...registerTableSteps,
+      ...memoryTablesSteps,
+      ...(modeSimulator === "graphic" ? programInMonacowsidebar : []),
+      ...settingsSectionwsidebar,
+      ...optionsSimulate,
+    ];
+
+
+     const visibleSteps = allSteps.filter(step => document.querySelector(step.element as string));
+
+    if (visibleSteps.length === 0) {
+      setShowTuto(false);
+      return;
+    }
+
+    const observer = new MutationObserver(() => {
+      if (!document.querySelector('.driver-overlay')) {
+        setShowTuto(false);
+        observer.disconnect(); 
+      }
+    });
+
+    observer.observe(document.body, { childList: true });
+
     const driverObj = driver({
       smoothScroll: true,
       showProgress: true,
 
-      steps: [
-        ...registerTableSteps,
-        ...memoryTablesSteps,
-        ...(modeSimulator === "graphic" ? programInMonacowsidebar : []),
-        ...settingsSectionwsidebar,
-        ...optionsSimulate
-      ],
+      steps: visibleSteps,
+
+
+      
+
+      
     });
+
+    
 
     driverObj.drive();
   }, [showTuto, setShowTuto]);

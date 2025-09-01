@@ -100,7 +100,8 @@ const Dialog = () => {
         </AlertDialogHeader>
         <AlertDialogFooter className="flex w-full gap-5 items-center">
 
-          <AlertDialogAction onClick={() => setShowTuto(true)} className="!bg-transparent !border-none text-[.8rem] underline text-[#3A6973] cursor-pointer">Show tutorial</AlertDialogAction>
+            {!dialog?.stop && (<AlertDialogAction onClick={() => setShowTuto(true)} className="!bg-transparent !border-none text-[.8rem] underline text-[#3A6973] cursor-pointer">Show tutorial</AlertDialogAction>)}
+          
 
 
           <AlertDialogAction >Accept</AlertDialogAction>
