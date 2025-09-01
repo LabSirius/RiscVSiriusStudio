@@ -308,51 +308,58 @@ export const useTutorial = () => {
   ];
 
 
-  useEffect(() => {
-    // Si el tour está activo y estamos en la sección incorrecta, la cambiamos.
-    if (showTuto && operation === "uploadMemory" && section === "help") {
-      console.log("Cambiando sección de 'help' a 'settings'...");
-      setSection("settings");
-    }
-  }, [showTuto, operation, section, setSection]); // Vigila estos estados
 
-  useEffect(() => {
+ useEffect(() => {
     if (!showTuto) return;
 
-    const programInMonacowsidebar = programInMonaco.map(addSidebarHidingLogic);
-    const settingsSectionwsidebar = settingsSection.map(addSidebarHidingLogic);
-
-    const allSteps = [
-      ...registerTableSteps,
-      ...memoryTablesSteps,
-      ...(modeSimulator === "graphic" ? programInMonacowsidebar : []),
-      ...settingsSectionwsidebar,
-      ...optionsSimulate,
-    ];
-
-    const visibleSteps = allSteps.filter((step) => document.querySelector(step.element as string));
-
-    if (visibleSteps.length === 0) {
-      setShowTuto(false);
-      return;
+    if (showTuto && operation === "uploadMemory" && section === "help") {
+      setSection("settings");
     }
 
-    const observer = new MutationObserver(() => {
-      if (!document.querySelector(".driver-overlay")) {
+    const tourTimer = setTimeout(() => {
+      const programInMonacowsidebar = programInMonaco.map(addSidebarHidingLogic);
+      const settingsSectionwsidebar = settingsSection.map(addSidebarHidingLogic);
+
+      const allSteps = [
+        ...registerTableSteps,
+        ...memoryTablesSteps,
+        ...(modeSimulator === "graphic" ? programInMonacowsidebar : []),
+        ...settingsSectionwsidebar,
+        ...optionsSimulate,
+      ];
+
+      const visibleSteps = allSteps.filter((step) => document.querySelector(step.element as string));
+
+      if (visibleSteps.length === 0) {
         setShowTuto(false);
-        observer.disconnect();
+        return;
       }
-    });
 
-    observer.observe(document.body, { childList: true });
+      const observer = new MutationObserver(() => {
+        if (!document.querySelector(".driver-overlay")) {
+          setShowTuto(false);
+          observer.disconnect();
+        }
+      });
 
-    const driverObj = driver({
-      smoothScroll: true,
-      showProgress: true,
+      observer.observe(document.body, { childList: true });
 
-      steps: visibleSteps,
-    });
+      const driverObj = driver({
+        smoothScroll: true,
+        showProgress: true,
+        steps: visibleSteps,
+      });
 
-    driverObj.drive();
+      driverObj.drive();
+    }, 0); 
+
+    return () => {
+      clearTimeout(tourTimer);
+      
+      const observerNode = document.querySelector('.driver-overlay');
+      if (!observerNode) {
+         // 
+      }
+    };
   }, [showTuto, setShowTuto, operation, section, modeSimulator, setShowProgramTable]);
 };
