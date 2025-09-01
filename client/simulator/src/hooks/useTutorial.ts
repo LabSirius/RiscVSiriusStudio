@@ -22,7 +22,7 @@ const addSidebarHidingLogic = (step: DriveStep): DriveStep => {
 };
 
 export const useTutorial = () => {
-  const { showTuto, setShowTuto, modeSimulator } = useSimulator();
+  const { showTuto, setShowTuto, modeSimulator, operation, section, setSection } = useSimulator();
 
   const { setShowProgramTable } = useMemoryTable();
 
@@ -280,13 +280,13 @@ export const useTutorial = () => {
     },
   ];
 
-
   const optionsSimulate = [
     {
       element: "#button-sidebar",
       popover: {
         title: "Sections",
-        description: 'If you hover over the icon, sections that you can visit will be displayed. <span style="color: #009688;">They change depending on whether you have already started the simulation or are still in the configuration stage. </span>',
+        description:
+          'If you hover over the icon, sections that you can visit will be displayed. <span style="color: #009688;">They change depending on whether you have already started the simulation or are still in the configuration stage. </span>',
       },
     },
     {
@@ -307,14 +307,22 @@ export const useTutorial = () => {
     },
   ];
 
+
+  useEffect(() => {
+    // Si el tour está activo y estamos en la sección incorrecta, la cambiamos.
+    if (showTuto && operation === "uploadMemory" && section === "help") {
+      console.log("Cambiando sección de 'help' a 'settings'...");
+      setSection("settings");
+    }
+  }, [showTuto, operation, section, setSection]); // Vigila estos estados
+
   useEffect(() => {
     if (!showTuto) return;
 
     const programInMonacowsidebar = programInMonaco.map(addSidebarHidingLogic);
     const settingsSectionwsidebar = settingsSection.map(addSidebarHidingLogic);
 
-
-     const allSteps = [
+    const allSteps = [
       ...registerTableSteps,
       ...memoryTablesSteps,
       ...(modeSimulator === "graphic" ? programInMonacowsidebar : []),
@@ -322,8 +330,7 @@ export const useTutorial = () => {
       ...optionsSimulate,
     ];
 
-
-     const visibleSteps = allSteps.filter(step => document.querySelector(step.element as string));
+    const visibleSteps = allSteps.filter((step) => document.querySelector(step.element as string));
 
     if (visibleSteps.length === 0) {
       setShowTuto(false);
@@ -331,9 +338,9 @@ export const useTutorial = () => {
     }
 
     const observer = new MutationObserver(() => {
-      if (!document.querySelector('.driver-overlay')) {
+      if (!document.querySelector(".driver-overlay")) {
         setShowTuto(false);
-        observer.disconnect(); 
+        observer.disconnect();
       }
     });
 
@@ -344,15 +351,8 @@ export const useTutorial = () => {
       showProgress: true,
 
       steps: visibleSteps,
-
-
-      
-
-      
     });
 
-    
-
     driverObj.drive();
-  }, [showTuto, setShowTuto]);
+  }, [showTuto, setShowTuto, operation, section, modeSimulator, setShowProgramTable]);
 };

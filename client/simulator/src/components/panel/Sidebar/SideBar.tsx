@@ -21,6 +21,7 @@ interface SectionItem {
   show: boolean;
 }
 const MenuItem: React.FC<MenuItemProps> = ({ sectionName, currentSection, setSection, children }) => (
+
   <SidebarMenuItem className="flex items-center gap-1">
     <a onClick={() => setSection(sectionName)} className="cursor-pointer">
       <Button variant="outline" size="icon">
@@ -34,6 +35,8 @@ const MenuItem: React.FC<MenuItemProps> = ({ sectionName, currentSection, setSec
 export function SideBar() {
   const { operation, section, setSection } = useSimulator();
   const { setOpen, setHoveringSidebar } = useSidebar();
+
+
 
 
   const mainSections: SectionItem[] = [
