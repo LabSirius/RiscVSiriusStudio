@@ -1,8 +1,25 @@
 import { useEffect } from "react";
-import { driver } from "driver.js";
+import { driver, DriveStep } from "driver.js";
 import "driver.js/dist/driver.css";
 import { useSimulator } from "../context/shared/SimulatorContext";
 import { useMemoryTable } from "@/context/shared/MemoryTableContext";
+
+const addSidebarHidingLogic = (step: DriveStep): DriveStep => {
+  const originalOnHighlightStarted = step.onHighlightStarted;
+  const originalOnDeselected = step.onDeselected;
+
+  return {
+    ...step,
+    onHighlightStarted: (...args) => {
+      document.querySelector("#sidebar")?.classList.add("hidden");
+      originalOnHighlightStarted?.(...args);
+    },
+    onDeselected: (...args) => {
+      document.querySelector("#sidebar")?.classList.remove("hidden");
+      originalOnDeselected?.(...args);
+    },
+  };
+};
 
 export const useTutorial = () => {
   const { showTuto, setShowTuto, modeSimulator } = useSimulator();
@@ -230,6 +247,7 @@ export const useTutorial = () => {
         description: "In this section you can modify simulator settings.",
       },
     },
+
     {
       element: "#import-data",
       popover: {
@@ -237,6 +255,7 @@ export const useTutorial = () => {
         description: "Import data into log tables and available memory",
       },
     },
+
     {
       element: "#change-memory-size",
       popover: {
@@ -244,6 +263,7 @@ export const useTutorial = () => {
         description: "You can change the size of the available memory table",
       },
     },
+
     {
       element: "#export-data",
       popover: {
@@ -263,6 +283,9 @@ export const useTutorial = () => {
   useEffect(() => {
     if (!showTuto) return;
 
+    const programInMonacowsidebar = programInMonaco.map(addSidebarHidingLogic);
+    const settingsSectionwsidebar = settingsSection.map(addSidebarHidingLogic);
+
     const driverObj = driver({
       smoothScroll: true,
       showProgress: true,
@@ -270,8 +293,8 @@ export const useTutorial = () => {
       steps: [
         ...registerTableSteps,
         ...memoryTablesSteps,
-        ...(modeSimulator === "graphic" ? programInMonaco : []),
-        ...settingsSection,
+        ...(modeSimulator === "graphic" ? programInMonacowsidebar : []),
+        ...settingsSectionwsidebar,
       ],
     });
 
