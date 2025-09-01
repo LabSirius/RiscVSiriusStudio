@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 const CONTEXTO_IA = `
   ### Base de Conocimiento Avanzada:  Monociclo RV32
@@ -145,6 +146,9 @@ const GeminiChatWidget = () => {
   const [loading, setLoading] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const { textProgram} = useSimulator()
+
+  console.log(textProgram)
 
   const callGeminiAPI = async (currentQuestion: string) => {
     if (!currentQuestion) return;
