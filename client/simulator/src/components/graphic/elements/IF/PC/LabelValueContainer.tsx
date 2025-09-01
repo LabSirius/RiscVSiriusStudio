@@ -21,10 +21,12 @@ const LabelValueContainer = () => {
     }
   }, [currentResult]);
 
-  const pcValue = parseInt(String(currentInst.currentPc), 2) * 4;
+  const pcValue = currentInst.currentPc * 4;
   const pcBin = pcValue.toString(2).padStart(32, "0");
   const pcDec = pcValue.toString();
   const pcHex = binaryToHex(pcBin).toUpperCase();
+
+
 
   return (
     <>

@@ -2,6 +2,9 @@
 # Input:  a0 = dividend, a1 = divisor
 # Output: a0 = quotient
 
+li a0, 16
+li a1, 4
+
 div_sub:
     li t0, 0          # t0 = quotient
 
@@ -13,4 +16,4 @@ div_loop:
 
 div_done:
     mv a0, t0             # move quotient to a0 (return value)
-    ret
+    ebreak
