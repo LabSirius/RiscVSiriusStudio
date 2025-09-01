@@ -26,7 +26,7 @@ const SimulateAuto = () => {
   return (
     <>
       <HoverCard>
-        <HoverCardTrigger>
+        <HoverCardTrigger id="simulate-auto">
           {simulateAuto ? (
             <TimerOff
               size={18}

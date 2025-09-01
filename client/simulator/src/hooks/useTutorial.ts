@@ -280,6 +280,33 @@ export const useTutorial = () => {
     },
   ];
 
+
+  const optionsSimulate = [
+    {
+      element: "#button-sidebar",
+      popover: {
+        title: "Sections",
+        description: 'If you hover over the icon, sections that you can visit will be displayed. <span style="color: #009688;">They change depending on whether you have already started the simulation or are still in the configuration stage. </span>',
+      },
+    },
+    {
+      element: "#simulate-auto",
+      popover: {
+        title: "Simulate automatically",
+        description:
+          'By clicking you can activate/deactivate the automatic simulation, and you can regulate the speed if you hold the hover."',
+      },
+    },
+    {
+      element: "#gemini-chat",
+      popover: {
+        title: "AI Chat",
+        description:
+          'You can ask the AI ​​questions about RISCV instructions and the simulator in general."',
+      },
+    },
+  ];
+
   useEffect(() => {
     if (!showTuto) return;
 
@@ -295,6 +322,7 @@ export const useTutorial = () => {
         ...memoryTablesSteps,
         ...(modeSimulator === "graphic" ? programInMonacowsidebar : []),
         ...settingsSectionwsidebar,
+        ...optionsSimulate
       ],
     });
 
