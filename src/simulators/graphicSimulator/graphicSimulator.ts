@@ -5,7 +5,8 @@ import { UIManager } from "./uiManager";
 provideVSCodeDesignSystem().register(allComponents);
 
 const vscode = acquireVsCodeApi();
-window.addEventListener("load", main, { passive: true });
+
+main();
 
 /**
  * Log functionality. The logger that is actually used is in the extension. This
@@ -31,8 +32,12 @@ function dispatch(event: MessageEvent) {
   log({ msg: "Dispatching message", data: event.data });
   const data = event.data;
 
+
+
   switch (data.from) {
     case "extension": {
+
+      
       const { from, ...newData } = data;
       UIManager.getInstance()._sendMessageToReact(newData);
       break;
