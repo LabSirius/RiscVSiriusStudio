@@ -1596,7 +1596,7 @@ function peg$parse(input, options) {
     if (value === undefined){
       value = getConstantValue(lbl["name"]);
     }
-    if (value && isImm21(value)) {
+    if (value !== undefined && isImm21(value)) {
         return value;
     }
     return error("Expecting 21 bit representable value [-1048576, 1048575]. Got " + lbl.name); 
@@ -8529,7 +8529,7 @@ function peg$parse(input, options) {
   constantTable = options.constantTable;
   dataTable = options.dataTable;
   simOptions = options.options;
- 
+  
 
   peg$result = peg$startRuleFunction();
 
