@@ -92,7 +92,7 @@ const ProgramMemoryTable = () => {
     dataMemoryTable,
   });
   return (
-    <div id="programTable">
+    <>
       <div
         className={`shadow-lg !min-h-min min-w-[37.36rem]  mx-4  relative ${
           !showProgramTable && "hidden"
@@ -102,6 +102,7 @@ const ProgramMemoryTable = () => {
             isCreatedMemoryTable ? "opacity-100" : "opacity-0"
           }`}>
           <div
+          id="programTable"
             ref={tableContainerRef}
             className={`w-full h-full overflow-x-hidden ${
               theme === "light" ? "theme-light" : "theme-dark"
@@ -146,7 +147,7 @@ const ProgramMemoryTable = () => {
           )}
         </div>
       )}
-    </div>
+    </>
   );
 };
 
