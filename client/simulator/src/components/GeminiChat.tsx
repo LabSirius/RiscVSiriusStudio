@@ -169,7 +169,7 @@ const GeminiChatWidget = () => {
         </PopoverTrigger>
         <PopoverContent
           ref={popoverRef}
-          className="w-80 mr-4 flex flex-col gap-4 p-4 z-[10000] relative
+          className="w-80 mr-4 flex flex-col gap-4 p-4 z-[10000] relative max-h-[90vh] 
                      bg-neutral-100 border border-neutral-300 text-neutral-900 
                      dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-100"
           align="end">
