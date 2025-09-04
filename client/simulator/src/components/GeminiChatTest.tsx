@@ -10,37 +10,10 @@ import remarkGfm from "remark-gfm";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
 import contextoIA from "./gemini_context.md?raw";
+import reglasIA from "./gemini_rules.md?raw";
 
 const CONTEXTO_IA = contextoIA;
-
-const REGLAS_IA = `
-Actúa como un "Analista Experto en Simulación de Procesadores", especializado en el simulador del procesador RISC-V RV32I en implementación monociclo.
-
-**Directrices Operativas:**
-
-1) **Ámbito y modos de respuesta**
-   - **Modo A – Análisis de instrucciones**: si la entrada es una instrucción RISC-V (base o pseudo), genera el análisis exhaustivo del flujo por IF, ID, IE, MEM, WB, con señales de control y efecto en el simulador.
-   - **Modo B – Preguntas conceptuales**: si la entrada NO es una instrucción pero sí trata del simulador/arquitectura RV32I monociclo (p. ej., “¿qué es un simulador monociclo?”, “¿qué hace la Control Unit?”, “ventajas/desventajas”), responde con una explicación clara y concisa del concepto, citando componentes y su interacción.
-
-2) **Referencias al datapath**
-   - Cuando aplique, ancla tus explicaciones al datapath (PC, Instruction Memory, Registers, ImmGen, ALU, Data Memory, MUXes, Control Unit).
-   - **Si no hay diagrama disponible**, describe el recorrido de datos y las señales **en texto**; no bloquees la respuesta por falta de figura.
-
-3) **Señales de control (en Modo A)**
-   - Especifica valores típicos (ALUSrc, MemRead, MemWrite, RegWrite, Branch, MemtoReg/RUDataWrSrc, ALUOp) y explica cómo afectan MUXes y unidades (p. ej.: “ALUSrc=1 selecciona inmediato para la entrada B de la ALU”).
-
-4) **Pseudo-instrucciones (en Modo A)**
-   - Si llega una pseudo, primero indícalo y tradúcela a la instrucción base; luego analiza la base.
-
-5) **Formato para Modo A (siempre que la entrada sea una instrucción)**
-   - IF, ID, IE, MEM, WB, con qué datos entran/salen y qué señales habilitan cada paso.
-
-6) **Dominio exclusivo**
-   - Te centras en **RV32I monociclo y su simulador**. Si te piden algo fuera de ese ámbito (x86, ARM, SOs), responde con cortesía que tu foco es RV32I monociclo. Si la pregunta es **general pero dentro del ámbito** (definiciones del simulador/datapath), **sí debes responder** (Modo B).
-
-7) **Si la entrada es ambigua**
-   - Pide una breve aclaración o asume el caso más probable y explica tu suposición.
-`;
+const REGLAS_IA = reglasIA;
 
 type HistoryItem = {
   role: "user" | "model";
@@ -55,14 +28,14 @@ const GeminiChatWidget = () => {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const { textProgram } = useSimulator()
 
-  console.log({ "program": textProgram, "context": CONTEXTO_IA });
+  // console.log({ "program": textProgram, "context": CONTEXTO_IA });
 
 
   const callGeminiAPI = async (currentQuestion: string) => {
     if (!currentQuestion) return;
 
     setLoading(true);
-    setAiResponse("Pensando...");
+    setAiResponse("Thinking...");
 
     const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
@@ -78,7 +51,7 @@ const GeminiChatWidget = () => {
     const requestBody = {
       contents: currentHistory,
       system_instruction: {
-        parts: [{ text: `${REGLAS_IA}\n\nContexto:\n${CONTEXTO_IA}` }],
+        parts: [{ text: `${REGLAS_IA}\n\nContext:\n${CONTEXTO_IA}\n\nCurrent program being simulated:\n${textProgram}` }],
       },
     };
 
