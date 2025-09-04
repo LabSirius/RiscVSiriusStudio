@@ -9,11 +9,12 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
-import contextoIA from "./gemini_context.md?raw";
-import reglasIA from "./gemini_rules.md?raw";
+import AIContext from "./gemini_context.md?raw";
+import AIRules from "./gemini_rules.md?raw";
+import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 
-const CONTEXTO_IA = contextoIA;
-const REGLAS_IA = reglasIA;
+const aiContext = AIContext;
+const aiRules = AIRules;
 
 type HistoryItem = {
   role: "user" | "model";
@@ -27,8 +28,9 @@ const GeminiChatWidget = () => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const { textProgram } = useSimulator()
+  const { currentInst } = useCurrentInst()
 
-  // console.log({ "program": textProgram, "context": CONTEXTO_IA });
+  // console.log({ "program": textProgram, "context": aiContext });
 
 
   const callGeminiAPI = async (currentQuestion: string) => {
@@ -51,7 +53,13 @@ const GeminiChatWidget = () => {
     const requestBody = {
       contents: currentHistory,
       system_instruction: {
-        parts: [{ text: `${REGLAS_IA}\n\nContext:\n${CONTEXTO_IA}\n\nCurrent program being simulated:\n${textProgram}` }],
+        parts: [{
+          text: `
+          Rules:${aiRules}
+          Context:${aiContext}
+          Current program being simulated:${textProgram}
+          Curent instruction being executed:${JSON.stringify(currentInst)}
+          ` }],
       },
     };
 
