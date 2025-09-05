@@ -5,9 +5,9 @@
 
 @plugin "tailwindcss-animate";
 
-@theme{
-  --color-primary: #E5E7EB;
-  --color-secondary: #E5E7EB;
+@theme {
+  --color-primary: #e5e7eb;
+  --color-secondary: #e5e7eb;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -16,10 +16,8 @@ html {
   font-size: 16px !important;
 }
 
-
-
 .monospace {
-  font-family:  "Courier New";
+  font-family: "Courier New";
 }
 
 #app {
@@ -27,16 +25,13 @@ html {
   height: 100vh;
 }
 
-
-
 body {
-  max-height: 100dvh ;
+  max-height: 100dvh;
   overflow: hidden;
   min-width: 100vh;
   margin: 0;
-  padding: 0rem 0rem 1rem 0rem ;
+  padding: 0rem 0rem 1rem 0rem;
 }
-
 
 :root {
   --radius: 0.625rem;
@@ -107,7 +102,6 @@ body {
   --sidebar-ring: oklch(0.553 0.013 58.071);
 }
 
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -155,25 +149,21 @@ body {
   }
 }
 
-
 /* Panel */
-
 
 li {
   list-style: none;
 }
 
-a{
-  font-size: .8rem;
+a {
+  font-size: 0.8rem;
   color: var(--color-primary);
   font-weight: 500;
-  
 }
 
-a:hover{
+a:hover {
   color: var(--color-primary);
 }
-
 
 @keyframes fadeInTop {
   0% {
@@ -190,12 +180,9 @@ a:hover{
   animation: fadeInTop 0.8s;
 }
 
-.section-container{
+.section-container {
   @apply flex h-full overflow-y-scroll overflow-x-hidden flex-1 flex-col gap-4 min-w-[25rem] max-w-[25em] px-4 pb-[3rem] pr-[2rem];
-
 }
-
-
 
 .left-animation {
   animation: left-move 2s linear infinite;
@@ -210,32 +197,29 @@ a:hover{
   }
 }
 
-
-
-.animate-cell, .animate-pc {
+.animate-cell,
+.animate-pc {
   animation: opcity 1s ease-out forwards;
 }
 
-.written-cell{
+.written-cell {
   font-weight: 550;
-  color: #3A6973;
+  color: #3a6973;
 }
-.written-cell-dark{
+.written-cell-dark {
   font-weight: 570 !important;
-  color: #ABC5CA;
+  color: #abc5ca;
 }
 
-.animate-row{
+.animate-row {
   animation: opcity 1s ease-in-out;
-
 }
 
-
-@keyframes opcity{
-  0%{
+@keyframes opcity {
+  0% {
     opacity: 0.3;
   }
-  100%{
+  100% {
     opacity: 1;
   }
 }
@@ -245,14 +229,12 @@ a:hover{
 }
 
 .address-margin-decoration {
-  background-color: #FFA500;
+  background-color: #ffa500;
   width: 12px !important;
   height: 10px;
-  margin-left: .3rem ;
+  margin-left: 0.3rem;
   clip-path: polygon(18% 8%, 74% 8%, 100% 50%, 75% 90%, 18% 90%);
 }
-
-
 
 @layer utilities {
   .hide-scrollbar {
@@ -266,12 +248,12 @@ a:hover{
 
 /* Graphic */
 
-.titleSection{
+.titleSection {
   font-size: var(--title-section-font-size);
-  color: var( --title-section-color);
+  color: var(--title-section-color);
 }
 
-.borderElementContainer{
+.borderElementContainer {
   border-width: var(--border-width-element-container);
 }
 
@@ -286,7 +268,8 @@ a:hover{
   font-size: var(--subtitle-label-in-element-font-size);
   color: var(--subtitle-labal-in-element-color);
 }
-.numberLabelInElement, .numBitsInput  {
+.numberLabelInElement,
+.numBitsInput {
   @apply transform z-2 italic;
 }
 .numberLabelInElement {
@@ -295,7 +278,7 @@ a:hover{
 }
 
 .subtitleInTunnel {
-  @apply  absolute transform z-2 italic top-[50%] left-[.4rem] -translate-y-[50%];
+  @apply absolute transform z-2 italic top-[50%] left-[.4rem] -translate-y-[50%];
   font-size: var(--subtitle-in-tunnel-font-size);
   color: var(--subtitle-in-tunnel-color);
 }
@@ -306,14 +289,16 @@ a:hover{
 }
 
 .input {
-  background-color: var(--input-color) !important
+  background-color: var(--input-color) !important;
 }
 
 .output {
-  background-color: var(--output-color) !important
+  background-color: var(--output-color) !important;
 }
 
-.input, .output, .output-tunnel{
+.input,
+.output,
+.output-tunnel {
   width: var(--input-output-tunnel-size) !important;
   height: var(--input-output-tunnel-size) !important;
 }
@@ -325,36 +310,32 @@ a:hover{
 
 .output-tunnel {
   @apply relative;
-  background-color: var(--output-tunnel-color) ;
+  background-color: var(--output-tunnel-color);
   clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
 }
 
 .output-tunnel::before {
   content: "";
   position: absolute;
-  inset: -3px; 
-  background: black; 
+  inset: -3px;
+  background: black;
   clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  z-index: -1; 
+  z-index: -1;
 }
 
 .output-tunnel::after {
   content: "";
   position: absolute;
-  inset: 1px; 
-  background: #FFFFAA; 
+  inset: 1px;
+  background: #ffffaa;
   clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-  z-index: 0; 
+  z-index: 0;
 }
-
-
-
 
 h2 {
   margin: 0;
   padding: 0;
 }
-
 
 @keyframes scaleOverlay {
   0% {
@@ -368,11 +349,9 @@ h2 {
   }
 }
 
-
 .overlay-scale {
   animation: scaleOverlay 1s ease-in-out infinite;
 }
-
 
 @keyframes triangle-jump {
   0% {
@@ -390,10 +369,9 @@ h2 {
   animation: triangle-jump 0.25s ease-out;
 }
 
-
-
 @keyframes moveY {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   25% {
@@ -410,14 +388,13 @@ h2 {
   }
 }
 
-
 .overlay-moveY {
   animation: moveY 1s ease-in-out infinite;
 }
 
-
 @keyframes moveX {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
   25% {
@@ -436,7 +413,7 @@ h2 {
 
 .overlay-moveX-t {
   animation: moveX 1s ease-in-out infinite;
-  margin-top: -.4rem;
+  margin-top: -0.4rem;
 }
 
 .overlay-moveX {
@@ -444,9 +421,9 @@ h2 {
   margin-top: -1.2rem;
 }
 
-
 @keyframes pulse-border {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -458,33 +435,107 @@ h2 {
   animation: pulse-border 1.5s infinite ease-in-out;
 }
 
-
 .custom-shadow,
 .custom-shadow-without-translate {
   transition: all 0.2s ease-in;
 }
 
 .custom-shadow:hover {
-  transform: translateY(-.8rem);
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45); 
+  transform: translateY(-0.8rem);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
 }
 
 .custom-shadow-without-translate:hover {
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45); 
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
 }
 
 .polygon-shadow {
   transition: filter 0.2s ease-in;
-  filter: none; 
+  filter: none;
 }
 
 .polygon-shadow:hover {
-  filter: url(#shadow); 
+  filter: url(#shadow);
 }
 
 .svg-container-lift:hover .polygon-shadow {
-    transition: transform 0.2s ease-in, filter 0.2s ease-in;
-    filter: url(#shadow);
+  transition: transform 0.2s ease-in, filter 0.2s ease-in;
+  filter: url(#shadow);
 }
 
 
+
+
+.prose {
+  font-size: 0.8rem; 
+  color: #D1D5DB;
+  line-height: 1.6;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: #FFFFFF;
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+}
+.prose h1 { font-size: 1.3em; }  
+.prose h2 { font-size: 1.1em; }  
+.prose h3 { font-size: 0.95em; } 
+
+.prose strong {
+  color: #FFFFFF;
+  font-weight: 600;
+}
+.prose a {
+  color: #60A5FA;
+  text-decoration: underline;
+}
+
+.prose p {
+  line-height: 1.7; 
+  margin-bottom: 1.25em; 
+}
+.prose a:hover {
+  color: #93C5FD;
+}
+
+.prose ul, .prose ol {
+  margin-left: 1.25rem;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.prose li {
+  margin-top: 0.5em;
+}
+.prose ul > li::marker {
+  color: #60A5FA;
+}
+
+.prose pre {
+  background-color: #2d2d2d !important; 
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-top: 1.2em;
+  margin-bottom: 1.2em;
+}
+
+.prose code {
+  font-size: 0.65rem !important; 
+  font-family: "Fira Code", "Cascadia Code", "Consolas", monospace !important;
+  color: #d4d4d4 !important;
+  background-color: transparent !important; 
+}
+
+.prose :not(pre) > code {
+  background-color: #374151 !important; 
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-weight: 500;
+}
+
+.prose code .comment {
+  color: #6a9955 !important;
+  font-style: italic;
+}

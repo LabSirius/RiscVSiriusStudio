@@ -13,17 +13,16 @@ const Tables = () => {
   const [withBin, setWithBin] = useState(true);
 
   return (
-    <div className="flex gap-0 overflow-hidden min-w-min" >
+    <div className="flex gap-0 overflow-hidden min-w-min">
       <RegisterTable />
 
-        <div  className="flex gap-0 overflow-hidden min-w-min" id="memoryTables">
-          <AvailableMemoryTable withBin={withBin} setWithBin={setWithBin} />
+      <div className="flex gap-0 overflow-hidden min-w-min" id="memoryTables">
+        <AvailableMemoryTable withBin={withBin} setWithBin={setWithBin} />
 
         <AvailableHexMemoryTable withBin={withBin} setWithBin={setWithBin} />
 
-        
-      <ProgramMemoryTable />
-        </div>
+        <ProgramMemoryTable />
+      </div>
 
       {modeSimulator !== "text" && <ProgramSection />}
       {typeSimulator === "pipeline" && <StagesPipeline />}

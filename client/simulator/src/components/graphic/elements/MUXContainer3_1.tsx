@@ -1,6 +1,6 @@
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
-function Mux3_1({ signal }: { signal: string }) {
+function Mux3_1({ signal, isEbreak }: { signal: string, isEbreak: boolean }) {
   const { operation } = useSimulator();
   const isUploadMemory = operation === "uploadMemory";
 
@@ -27,7 +27,7 @@ function Mux3_1({ signal }: { signal: string }) {
         />
       </svg>
 
-      {!isUploadMemory && (signal === "00" || signal === "10") && (
+      {!isUploadMemory && (signal === "00" || signal === "10") && !isEbreak && (
         <div
           style={{ transform: signal === "00" ? "" : "scaleY(-1)" }}
           className={`absolute transform ${

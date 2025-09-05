@@ -56,8 +56,11 @@ export abstract class Simulator {
   }
 
   public start(): void {
-    console.log("Simulator started");
+    console.log("Simulator configured and ready. Waiting for webview signal...");
   }
+  
+  public abstract sendInitialData(): void;
+
 
   public step(): StepResult {
     if (!this.configured) {
@@ -125,9 +128,12 @@ export class TextSimulator extends Simulator {
   // --- Public Override Methods ---
   public override async start(): Promise<void> {
     await this.makeEditorReadOnly();
-
-    // The mainView check is now simplified because 'this.webview' is guaranteed to be the correct one
     this.listenToEditorClicks();
+    super.start();
+  }
+
+  public override sendInitialData(): void {
+    
     const inst = this.cpu.currentInstruction();
     let line = this.rvDoc.getLineForIR(inst);
     if (line === undefined) {
@@ -144,8 +150,6 @@ export class TextSimulator extends Simulator {
 
     const asmList = this.rvDoc.ir?.instructions.map((instr) => instr.asm);
 
-
-
     this.webview.postMessage({
       from: "extension",
       operation: "uploadMemory",
@@ -159,16 +163,11 @@ export class TextSimulator extends Simulator {
         asmList,
       },
       typeSimulator: this.simulatorType,
-        initialLine: inst.location.start.line
-
+      initialLine: inst.location.start.line
     });
-
-
-    super.start();
 
     const spValue = this.cpu.getDataMemory().availableSpInitialAddress;
     this.webview.postMessage({
-      // Use 'this.webview' directly
       from: "extension",
       operation: "setRegister",
       register: "x2",
@@ -228,18 +227,13 @@ export class TextSimulator extends Simulator {
     this.clearHighlight();
     this.makeEditorWritable();
     this.context.clearDecorations();
-    // Dispose of the selection listener when the simulator stops
     if (this.selectionListenerDisposable) {
       this.selectionListenerDisposable.dispose();
       this.selectionListenerDisposable = undefined;
     }
-
-    // No need for mainView check, 'this.webview' is used in sendToWebview
     commands.executeCommand("setContext", "ext.isSimulating", false);
     this.sendToWebview({ operation: "stop" });
   }
-
-  // --- UI Notification and Helper Methods ---
 
   private updateTextUI(currentInst: any, result: StepResult) {
     let line: number | undefined;
@@ -355,8 +349,6 @@ export class TextSimulator extends Simulator {
     });
   }
 
-  // Helper methods
-
   public async makeEditorReadOnly() {
     const editor = this.rvDoc.editor;
     if (!editor) {
@@ -379,7 +371,6 @@ export class TextSimulator extends Simulator {
 
   private listenToEditorClicks() {
     if (this.selectionListenerDisposable) {
-      // Already listening
       return;
     }
 
@@ -415,7 +406,7 @@ export class TextSimulator extends Simulator {
   private clearHighlight() {
     if (this.currentHighlight) {
       this.currentHighlight.dispose();
-      this.currentHighlight = undefined; // Set to undefined after disposing
+      this.currentHighlight = undefined;
     }
   }
 }
@@ -435,10 +426,16 @@ export class GraphicSimulator extends TextSimulator {
   }
 
   public override async start(): Promise<void> {
-    await super.start(); // Calls TextSimulator's start, which now uses 'this.webview'
+    await super.start();
+  }
+  
+  public override sendInitialData(): void {
 
-    // These methods now use the GraphicSimulator's 'this.webview' (inherited from Simulator)
+ 
     this.sendSimulatorTypeToView("graphic");
+
+    super.sendInitialData();
+
     this.sendTextProgramToView(this.rvDoc.getText());
   }
 

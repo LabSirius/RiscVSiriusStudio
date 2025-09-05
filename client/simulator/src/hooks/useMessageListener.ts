@@ -41,6 +41,7 @@ export const useMessageListener = () => {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
+
       if (message?.from === "UIManager") {
         switch (message.operation) {
           case "simulatorType":

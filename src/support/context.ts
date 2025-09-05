@@ -1,4 +1,3 @@
-
 import {
   commands,
   Disposable,
@@ -255,7 +254,9 @@ export class RVContext {
     );
     this._isSimulating = true;
     commands.executeCommand("setContext", "ext.isSimulating", true);
+
     await this._simulator.start();
+
     panel.reveal(panel.viewColumn);
   }
 
@@ -300,6 +301,7 @@ export class RVContext {
     this._isSimulating = true;
     commands.executeCommand("setContext", "ext.isSimulating", true);
     this._simulator.start();
+    (this._simulator as TextSimulator).sendInitialData();
   }
 
   // =================================================================
@@ -343,6 +345,12 @@ export class RVContext {
    * @param message The message object from the webview.
    */
   public dispatchMainViewEvent(message: any) {
+
+    if (message.event === 'webviewReady') {
+      this._simulator?.sendInitialData();
+      return;
+    }
+    
     if (message.event === "clickOpenRISCVCard") {
       RiscCardPanel.riscCard(this.extensionContext.extensionUri);
       return;
@@ -350,18 +358,16 @@ export class RVContext {
 
     if (!this._simulator) return;
 
+
     switch (message.event) {
       case "monocycle":
         this._simulatorType = "monocycle";
-        // Do nothing, as monocycle is the default initial state.
         break;
       case "pipeline":
-        // Switch to pipeline mode by updating the type and resetting.
         if (this._simulatorType === "monocycle") {
           this._simulatorType = "pipeline";
           this.resetSimulator();
         }
-
         break;
       case "reset":
         this.resetSimulator();
@@ -389,9 +395,6 @@ export class RVContext {
     }
   }
 
-  // =================================================================
-  //  7. Internal State & Helpers
-  // =================================================================
 
   /** Builds the Intermediate Representation from the current document. */
   private buildCurrentDocument() {
