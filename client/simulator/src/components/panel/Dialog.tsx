@@ -19,7 +19,7 @@ import { sendMessage } from "../Message/sendMessage";
 const Dialog = () => {
   const { dialog, setDialog } = useDialog();
   const [open, setOpen] = useState(false);
-  const {modeSimulator, typeSimulator, setTypeSimulator, setShowTuto } = useSimulator();
+  const { modeSimulator, typeSimulator, setTypeSimulator, setShowTuto } = useSimulator();
 
   // This logic is fine, no changes needed here.
   // It handles the selection but doesn't close the dialog, which is correct
@@ -60,7 +60,7 @@ const Dialog = () => {
           <AlertDialogDescription className="text-base text-start text-foreground">
             <div className="text-xs mt-1">{dialog?.description}</div>
 
-            {dialog?.isReset && (
+            {(dialog?.isReset && modeSimulator !== "text") && !dialog?.stop && (
               <div className="py-4">
                 {/* 1. Title for the simulator type selection. */}
                 <p className="mb-3 font-medium text-[.8rem]">Choose Type Simulator</p>
