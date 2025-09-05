@@ -148,7 +148,9 @@ export class TextSimulator extends Simulator {
         return { line, jump };
       }) || [];
 
+
     const asmList = this.rvDoc.ir?.instructions.map((instr) => instr.asm);
+
 
     this.webview.postMessage({
       from: "extension",
@@ -163,7 +165,7 @@ export class TextSimulator extends Simulator {
         asmList,
       },
       typeSimulator: this.simulatorType,
-      initialLine: inst.location.start.line
+      initialLine: inst.location?.start?.line ?? -1
     });
 
     const spValue = this.cpu.getDataMemory().availableSpInitialAddress;
