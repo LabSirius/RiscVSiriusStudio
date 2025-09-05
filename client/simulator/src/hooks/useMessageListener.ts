@@ -42,7 +42,6 @@ export const useMessageListener = () => {
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
 
-      console.log("VAN A LLEGAR MENSAJES", message)
       if (message?.from === "UIManager") {
         switch (message.operation) {
           case "simulatorType":

@@ -463,55 +463,79 @@ h2 {
   filter: url(#shadow);
 }
 
+
+
+
 .prose {
-  font-size: 0.7rem;
-  color: #e5e7eb;
+  font-size: 0.8rem; 
+  color: #D1D5DB;
+  line-height: 1.6;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: #FFFFFF;
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+}
+.prose h1 { font-size: 1.3em; }  
+.prose h2 { font-size: 1.1em; }  
+.prose h3 { font-size: 0.95em; } 
+
+.prose strong {
+  color: #FFFFFF;
+  font-weight: 600;
+}
+.prose a {
+  color: #60A5FA;
+  text-decoration: underline;
+}
+
+.prose p {
+  line-height: 1.7; 
+  margin-bottom: 1.25em; 
+}
+.prose a:hover {
+  color: #93C5FD;
+}
+
+.prose ul, .prose ol {
+  margin-left: 1.25rem;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.prose li {
+  margin-top: 0.5em;
+}
+.prose ul > li::marker {
+  color: #60A5FA;
 }
 
 .prose pre {
-  background-color: #2d2d2d !important;
-
+  background-color: #2d2d2d !important; 
   white-space: pre-wrap !important;
-  word-break: break-all !important;
-  background-color: #2d2d2d !important;
-
+  word-break: break-word !important;
   padding: 1rem;
   border-radius: 0.5rem;
+  margin-top: 1.2em;
+  margin-bottom: 1.2em;
 }
 
 .prose code {
-  font-size: 0.6rem !important;
+  font-size: 0.65rem !important; 
   font-family: "Fira Code", "Cascadia Code", "Consolas", monospace !important;
-  background-color: transparent !important;
-  color: #c5c5c5 !important;
+  color: #d4d4d4 !important;
+  background-color: transparent !important; 
+}
+
+.prose :not(pre) > code {
+  background-color: #374151 !important; 
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-weight: 500;
 }
 
 .prose code .comment {
   color: #6a9955 !important;
-  font-style: italic;
-  font-size: 0.55rem !important;
-}
-
-.prose pre code .punctuation.definition.comment {
-  color: #6a9955 !important;
-}
-
-.prose pre code .keyword,
-.prose pre code .storage.type,
-.prose pre code .entity.name.function {
-  color: #569cd6 !important;
-}
-
-.prose pre code .string {
-  color: #ce9178 !important;
-}
-
-.prose pre code .constant.numeric {
-  color: #b5cea8 !important;
-}
-
-.prose *[data-mdx-code-comment] {
-  color: #6a9955 !important;
-  font-size: 0.65rem !important;
   font-style: italic;
 }
