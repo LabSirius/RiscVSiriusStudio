@@ -80,7 +80,7 @@ const Dialog = () => {
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="pipeline" id="r_pipeline" />
                     <Label htmlFor="r_pipeline" className="cursor-pointer">
-                      Pipeline
+                      Pipeline <span className="text-[.6rem] bg-blue-400 p-1 rounded-[0.4rem] ">Beta</span>
                     </Label>
                   </div>
                 </RadioGroup>
