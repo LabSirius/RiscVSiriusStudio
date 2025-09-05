@@ -60,7 +60,7 @@ const Dialog = () => {
           <AlertDialogDescription className="text-base text-start text-foreground">
             <div className="text-xs mt-1">{dialog?.description}</div>
 
-            {dialog?.chooseTypeSimulator && (
+            {dialog?.isReset && (
               <div className="py-4">
                 {/* 1. Title for the simulator type selection. */}
                 <p className="mb-3 font-medium text-[.8rem]">Choose Type Simulator</p>

@@ -93,8 +93,8 @@ export class RVContext {
     this.disposables.push(
       commands.registerCommand("rv-simulator.simulate", async () => {
         if (this._graphicWebviewPanel) {
-          this._graphicWebviewPanel.reveal(ViewColumn.One);
-          return;
+            this._graphicWebviewPanel.reveal(ViewColumn.One);
+            return;
         }
         const environmentReady = await this.prepareForGraphicSimulation();
         if (!environmentReady) return;
@@ -107,7 +107,7 @@ export class RVContext {
         this.initializeAndStartTextSimulator();
       }),
       commands.registerCommand("rv-simulator.simulateStep", () => this.step()),
-      commands.registerCommand("rv-simulator.simulateReset", () => this.resetSimulator()),
+      commands.registerCommand("rv-simulator.simulateReset", () => this.resetSimulator({ isHardReset: true })),
       commands.registerCommand("rv-simulator.simulateStop", () => {
         this.stop();
         this._graphicWebviewPanel?.dispose();
@@ -136,10 +136,7 @@ export class RVContext {
             activateMessageListenerForRegistersView(webviewView.webview, this);
             webviewView.onDidDispose(() => {
               this._textWebview = undefined;
-              if (
-                this._simulator instanceof TextSimulator &&
-                !(this._simulator instanceof GraphicSimulator)
-              ) {
+              if (this._simulator instanceof TextSimulator && !(this._simulator instanceof GraphicSimulator)) {
                 this.cleanupSimulator({ sendStopMessage: true });
               }
             });
@@ -187,9 +184,7 @@ export class RVContext {
 
   private async createAndConfigureGraphicPanel(): Promise<WebviewPanel> {
     const panel = window.createWebviewPanel(
-      "riscCard",
-      "RISC-V Graphic Simulator",
-      ViewColumn.One,
+      "riscCard", "RISC-V Graphic Simulator", ViewColumn.One,
       {
         enableScripts: true,
         retainContextWhenHidden: true,
@@ -207,36 +202,27 @@ export class RVContext {
       this.cleanupSimulator({ sendStopMessage: true });
       this._hasWebviewInitialized = false;
     });
-    panel.webview.html = await getHtmlForGraphicSimulator(
-      panel.webview,
-      this.extensionContext.extensionUri
-    );
+    panel.webview.html = await getHtmlForGraphicSimulator(panel.webview, this.extensionContext.extensionUri);
     activateMessageListenerForRegistersView(panel.webview, this);
     return panel;
   }
 
-  private async initializeAndStartGraphicSimulator(panel: WebviewPanel) {
+  private async initializeAndStartGraphicSimulator(panel: WebviewPanel, options?: { isHardReset: boolean }) {
     if (!this._currentDocument?.ir) {
-      this.buildCurrentDocument();
-      if (!this._currentDocument?.ir) {
-        window.showErrorMessage("Failed to build the document. Cannot start simulation.");
-        return;
-      }
+        this.buildCurrentDocument();
+        if(!this._currentDocument?.ir) {
+            window.showErrorMessage("Failed to build the document. Cannot start simulation.");
+            return;
+        }
     }
     const settings: SimulationParameters = { memorySize: 40 };
-    this._simulator = new GraphicSimulator(
-      this._simulatorType,
-      settings,
-      this._currentDocument,
-      this,
-      panel.webview
-    );
+    this._simulator = new GraphicSimulator(this._simulatorType, settings, this._currentDocument, this, panel.webview);
     this._isSimulating = true;
     commands.executeCommand("setContext", "ext.isSimulating", true);
     await this._simulator.start();
 
     if (this._hasWebviewInitialized) {
-      this._simulator.sendInitialData();
+      this._simulator.sendInitialData({ isHardReset: options?.isHardReset ?? false });
     }
     panel.reveal(panel.viewColumn);
   }
@@ -250,9 +236,7 @@ export class RVContext {
     }
     if (!this._textWebview) {
       commands.executeCommand("rv-simulator.riscv.focus");
-      window.showWarningMessage(
-        "Text simulator view is now open. Please press 'Text Simulate' again."
-      );
+      window.showWarningMessage("Text simulator view is now open. Please press 'Text Simulate' again.");
       return false;
     }
     this._graphicWebviewPanel?.dispose();
@@ -262,20 +246,14 @@ export class RVContext {
     return !!(this._currentDocument && this._currentDocument.ir);
   }
 
-  private initializeAndStartTextSimulator() {
+  private initializeAndStartTextSimulator(options?: { isHardReset: boolean }) {
     if (!this._currentDocument?.ir || !this._textWebview) return;
     const settings: SimulationParameters = { memorySize: 40 };
-    this._simulator = new TextSimulator(
-      this._simulatorType,
-      settings,
-      this._currentDocument,
-      this,
-      this._textWebview
-    );
+    this._simulator = new TextSimulator(this._simulatorType, settings, this._currentDocument, this, this._textWebview);
     this._isSimulating = true;
     commands.executeCommand("setContext", "ext.isSimulating", true);
     this._simulator.start();
-    this._simulator.sendInitialData();
+    this._simulator.sendInitialData({ isHardReset: options?.isHardReset ?? false });
   }
 
   // =================================================================
@@ -290,7 +268,7 @@ export class RVContext {
     this.cleanupSimulator({ sendStopMessage: true });
   }
 
-  private async resetSimulator() {
+  private async resetSimulator(options: { isHardReset: boolean }) {
     if (!this._simulator || !this._currentDocument) return;
     const wasGraphic = this._simulator instanceof GraphicSimulator;
     const wasText = this._simulator instanceof TextSimulator;
@@ -298,10 +276,10 @@ export class RVContext {
     this.cleanupSimulator({ sendStopMessage: false });
 
     if (wasGraphic && this._graphicWebviewPanel) {
-      await this.initializeAndStartGraphicSimulator(this._graphicWebviewPanel);
+      await this.initializeAndStartGraphicSimulator(this._graphicWebviewPanel, options);
     } else if (wasText) {
       this.buildCurrentDocument();
-      this.initializeAndStartTextSimulator();
+      this.initializeAndStartTextSimulator(options);
     }
   }
 
@@ -310,8 +288,8 @@ export class RVContext {
   // =================================================================
 
   public async dispatchMainViewEvent(message: any) {
-    if (message.event === "webviewReady") {
-      this._simulator?.sendInitialData();
+    if (message.event === 'webviewReady') {
+      this._simulator?.sendInitialData({ isHardReset: true });
       this._hasWebviewInitialized = true;
       return;
     }
@@ -324,18 +302,18 @@ export class RVContext {
       case "pipeline":
         if (this._simulatorType === "monocycle") {
           this._simulatorType = "pipeline";
-          await this.resetSimulator();
+          await this.resetSimulator({ isHardReset: false });
         }
         break;
       case "reset":
-        await this.resetSimulator();
+        await this.resetSimulator({ isHardReset: true });
         break;
       case "stop":
         this.stop();
         break;
       case "step":
         if (!this._simulator) {
-          await this.resetSimulator();
+            await this.resetSimulator({ isHardReset: true });
         }
         this.step();
         break;
@@ -353,26 +331,26 @@ export class RVContext {
   }
 
   private handleSimulatorEvents(message: any) {
-    switch (message.event) {
-      case "monocycle":
-        if (this._simulatorType === "pipeline") {
-          this._simulatorType = "monocycle";
-          this.resetSimulator();
-        }
-        break;
-      case "clickInInstruction":
-        this.animateLine(message.value);
-        break;
-      case "memorySizeChanged":
-        this.memorySizeChanged(message.value);
-        break;
-      case "registersChanged":
-        this.registersChanged(message.value);
-        break;
-      case "memoryChanged":
-        this.memoryChanged(message.value);
-        break;
-    }
+      switch(message.event) {
+        case "monocycle":
+            if (this._simulatorType === "pipeline") {
+                this._simulatorType = "monocycle";
+                this.resetSimulator({ isHardReset: false });
+            }
+            break;
+        case "clickInInstruction":
+            this.animateLine(message.value);
+            break;
+        case "memorySizeChanged":
+            this.memorySizeChanged(message.value);
+            break;
+        case "registersChanged":
+            this.registersChanged(message.value);
+            break;
+        case "memoryChanged":
+            this.memoryChanged(message.value);
+            break;
+      }
   }
 
   private buildCurrentDocument() {
@@ -401,18 +379,10 @@ export class RVContext {
     this._encoderDecorator = undefined;
   }
 
-  private animateLine(line: number) {
-    this._simulator?.animateLine(line);
-  }
-  private memorySizeChanged(newSize: number) {
-    this._simulator?.resizeMemory(newSize);
-  }
-  private registersChanged(newRegisters: string[]) {
-    this._simulator?.replaceRegisters(newRegisters);
-  }
-  private memoryChanged(newMemory: []) {
-    this._simulator?.replaceMemory(newMemory);
-  }
+  private animateLine(line: number) { this._simulator?.animateLine(line); }
+  private memorySizeChanged(newSize: number) { this._simulator?.resizeMemory(newSize); }
+  private registersChanged(newRegisters: string[]) { this._simulator?.replaceRegisters(newRegisters); }
+  private memoryChanged(newMemory: []) { this._simulator?.replaceMemory(newMemory); }
   public resetEncoderDecorator(editor: TextEditor): void {
     this._encoderDecorator?.clearDecorations(editor);
     this._encoderDecorator = undefined;

@@ -56,7 +56,7 @@ export abstract class Simulator {
     console.log("Simulator configured and ready. Waiting for webview signal...");
   }
 
-  public abstract sendInitialData(): void;
+  public abstract sendInitialData(options?: { isHardReset: boolean }): void;
 
   public step(): StepResult {
     if (!this.configured) {
@@ -123,7 +123,7 @@ export class TextSimulator extends Simulator {
     super.start();
   }
 
-  public override sendInitialData(): void {
+  public override sendInitialData(options?: { isHardReset: boolean }): void {
     const inst = this.cpu.currentInstruction();
     let line = this.rvDoc.getLineForIR(inst);
     if (line === undefined) {
@@ -152,6 +152,7 @@ export class TextSimulator extends Simulator {
         payload,
         typeSimulator: this.simulatorType,
         initialLine: inst.location?.start?.line ?? -1,
+        isReset: options?.isHardReset ?? false, 
       });
     } catch (error) {
       console.error(
@@ -402,9 +403,9 @@ export class GraphicSimulator extends TextSimulator {
     await super.start();
   }
 
-  public override sendInitialData(): void {
+  public override sendInitialData(options?: { isHardReset: boolean }): void {
     this.sendSimulatorTypeToView("graphic");
-    super.sendInitialData();
+    super.sendInitialData(options); 
     this.sendTextProgramToView(this.rvDoc.getText());
   }
 

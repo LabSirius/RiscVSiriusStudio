@@ -52,12 +52,13 @@ export const useMessageListener = () => {
             setTextProgram(message.textProgram);
             break;
           case "uploadMemory":
+
             setDialog({
               title: "Configuration Info",
               description:
                 "Before executing the first instruction, you can change the simulation settings.",
               stop: false,
-              chooseTypeSimulator: message.typeSimulator === "monocycle" ? true : false,
+              isReset: message.isReset,
             });
             setTypeSimulator(message.typeSimulator);
             setSection("settings");
