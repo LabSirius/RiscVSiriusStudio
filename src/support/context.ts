@@ -45,16 +45,12 @@ export class RVContext {
   private _isSimulating = false;
   private _simulator: Simulator | undefined;
   private _madeReadonlyOnce = false;
+  private _hasWebviewInitialized = false;
 
   // =================================================================
   //  1. Singleton and Constructor
   // =================================================================
 
-  /**
-   * Creates or returns the single instance of the RVContext.
-   * @param context The extension context from VS Code.
-   * @returns The singleton instance of RVContext.
-   */
   static create(context: ExtensionContext): RVContext {
     if (!RVContext.#instance) {
       RVContext.#instance = new RVContext(context);
@@ -93,42 +89,33 @@ export class RVContext {
   //  3. Extension Setup
   // =================================================================
 
-  /**
-   * Registers all commands for the extension.
-   */
   private registerCommands() {
     this.disposables.push(
-      // --- Graphic Simulator Command ---
       commands.registerCommand("rv-simulator.simulate", async () => {
+        if (this._graphicWebviewPanel) {
+          this._graphicWebviewPanel.reveal(ViewColumn.One);
+          return;
+        }
         const environmentReady = await this.prepareForGraphicSimulation();
         if (!environmentReady) return;
-
         const panel = await this.createAndConfigureGraphicPanel();
         await this.initializeAndStartGraphicSimulator(panel);
       }),
-
-      // --- Text Simulator Command ---
       commands.registerCommand("rv-simulator.textSimulate", () => {
         const environmentReady = this.prepareForTextSimulation();
         if (!environmentReady) return;
-
         this.initializeAndStartTextSimulator();
       }),
-
-      // --- Simulation Control Commands ---
       commands.registerCommand("rv-simulator.simulateStep", () => this.step()),
       commands.registerCommand("rv-simulator.simulateReset", () => this.resetSimulator()),
       commands.registerCommand("rv-simulator.simulateStop", () => {
-        this.cleanupSimulator();
+        this.stop();
         this._graphicWebviewPanel?.dispose();
       }),
       commands.registerCommand("rv-simulator.build", () => this.buildCurrentDocument())
     );
   }
 
-  /**
-   * Registers the provider for the text-based simulator view (bottom panel).
-   */
   private registerWebviewProvider() {
     commands.executeCommand("rv-simulator.riscv.focus");
     this.disposables.push(
@@ -153,7 +140,7 @@ export class RVContext {
                 this._simulator instanceof TextSimulator &&
                 !(this._simulator instanceof GraphicSimulator)
               ) {
-                this.cleanupSimulator();
+                this.cleanupSimulator({ sendStopMessage: true });
               }
             });
           },
@@ -163,9 +150,6 @@ export class RVContext {
     );
   }
 
-  /**
-   * Sets up listeners for editor-related events.
-   */
   private setupEditorListeners() {
     this.disposables.push(
       window.onDidChangeActiveTextEditor((editor) => {
@@ -187,10 +171,6 @@ export class RVContext {
   //  4. Simulation Lifecycle Handlers
   // =================================================================
 
-  /**
-   * Prepares the environment for a graphic simulation.
-   * @returns `true` if the environment is ready, `false` otherwise.
-   */
   private async prepareForGraphicSimulation(): Promise<boolean> {
     this._madeReadonlyOnce = false;
     const editor = window.activeTextEditor;
@@ -199,16 +179,12 @@ export class RVContext {
       return false;
     }
     await commands.executeCommand("workbench.action.closePanel");
-    this.cleanupSimulator();
+    this.cleanupSimulator({ sendStopMessage: false });
     this._graphicWebviewPanel?.dispose();
     this.buildCurrentDocument();
     return !!(this._currentDocument && this._currentDocument.ir);
   }
 
-  /**
-   * Creates and configures the webview panel for the graphic simulator.
-   * @returns The created `WebviewPanel`.
-   */
   private async createAndConfigureGraphicPanel(): Promise<WebviewPanel> {
     const panel = window.createWebviewPanel(
       "riscCard",
@@ -228,7 +204,8 @@ export class RVContext {
     panel.onDidDispose(() => {
       this._graphicWebviewPanel = undefined;
       if (this._isSimulating) this._simulator?.makeEditorWritable();
-      this.cleanupSimulator();
+      this.cleanupSimulator({ sendStopMessage: true });
+      this._hasWebviewInitialized = false;
     });
     panel.webview.html = await getHtmlForGraphicSimulator(
       panel.webview,
@@ -238,12 +215,14 @@ export class RVContext {
     return panel;
   }
 
-  /**
-   * Initializes and starts the graphic simulator instance.
-   * @param panel The webview panel where the simulator will be displayed.
-   */
   private async initializeAndStartGraphicSimulator(panel: WebviewPanel) {
-    if (!this._currentDocument) return;
+    if (!this._currentDocument?.ir) {
+      this.buildCurrentDocument();
+      if (!this._currentDocument?.ir) {
+        window.showErrorMessage("Failed to build the document. Cannot start simulation.");
+        return;
+      }
+    }
     const settings: SimulationParameters = { memorySize: 40 };
     this._simulator = new GraphicSimulator(
       this._simulatorType,
@@ -254,16 +233,14 @@ export class RVContext {
     );
     this._isSimulating = true;
     commands.executeCommand("setContext", "ext.isSimulating", true);
-
     await this._simulator.start();
 
+    if (this._hasWebviewInitialized) {
+      this._simulator.sendInitialData();
+    }
     panel.reveal(panel.viewColumn);
   }
 
-  /**
-   * Prepares the environment for a text simulation.
-   * @returns `true` if the environment is ready, `false` otherwise.
-   */
   private prepareForTextSimulation(): boolean {
     this._madeReadonlyOnce = false;
     const editor = window.activeTextEditor;
@@ -279,19 +256,15 @@ export class RVContext {
       return false;
     }
     this._graphicWebviewPanel?.dispose();
-    this.cleanupSimulator();
+    this.cleanupSimulator({ sendStopMessage: true });
     commands.executeCommand("rv-simulator.riscv.focus");
     this.buildCurrentDocument();
     return !!(this._currentDocument && this._currentDocument.ir);
   }
 
-  /**
-   * Initializes and starts the text simulator instance.
-   */
   private initializeAndStartTextSimulator() {
-    if (!this._currentDocument || !this._textWebview) return;
+    if (!this._currentDocument?.ir || !this._textWebview) return;
     const settings: SimulationParameters = { memorySize: 40 };
-     console.log("RVCONTEXT: Creating TextSimulator with type aaa:", this._simulatorType);
     this._simulator = new TextSimulator(
       this._simulatorType,
       settings,
@@ -302,38 +275,33 @@ export class RVContext {
     this._isSimulating = true;
     commands.executeCommand("setContext", "ext.isSimulating", true);
     this._simulator.start();
-    (this._simulator as TextSimulator).sendInitialData();
+    this._simulator.sendInitialData();
   }
 
   // =================================================================
   //  5. Simulation Control
   // =================================================================
 
-  /** Handles a single simulation step. */
   private step() {
     this._simulator?.step();
   }
 
-  /** Stops the current simulation. */
   private stop() {
-    this.cleanupSimulator();
+    this.cleanupSimulator({ sendStopMessage: true });
   }
 
-  /**
-   * Resets the simulation. This correctly handles UI focus by recreating the view.
-   */
-  private resetSimulator() {
-    if (!this._simulator) return;
+  private async resetSimulator() {
+    if (!this._simulator || !this._currentDocument) return;
     const wasGraphic = this._simulator instanceof GraphicSimulator;
     const wasText = this._simulator instanceof TextSimulator;
 
-    this.cleanupSimulator();
+    this.cleanupSimulator({ sendStopMessage: false });
 
-    if (wasGraphic) {
-      this._graphicWebviewPanel?.dispose();
-      setTimeout(() => commands.executeCommand("rv-simulator.simulate"), 100);
+    if (wasGraphic && this._graphicWebviewPanel) {
+      await this.initializeAndStartGraphicSimulator(this._graphicWebviewPanel);
     } else if (wasText) {
-      commands.executeCommand("rv-simulator.textSimulate");
+      this.buildCurrentDocument();
+      this.initializeAndStartTextSimulator();
     }
   }
 
@@ -341,43 +309,56 @@ export class RVContext {
   //  6. Event Dispatching
   // =================================================================
 
-  /**
-   * Handles all incoming messages from the webview UI.
-   * @param message The message object from the webview.
-   */
-  public dispatchMainViewEvent(message: any) {
-
-    if (message.event === 'webviewReady') {
+  public async dispatchMainViewEvent(message: any) {
+    if (message.event === "webviewReady") {
       this._simulator?.sendInitialData();
+      this._hasWebviewInitialized = true;
       return;
     }
-    
     if (message.event === "clickOpenRISCVCard") {
       RiscCardPanel.riscCard(this.extensionContext.extensionUri);
       return;
     }
 
-    if (!this._simulator) return;
-
-
     switch (message.event) {
-      case "monocycle":
-        this._simulatorType = "monocycle";
-        break;
       case "pipeline":
         if (this._simulatorType === "monocycle") {
           this._simulatorType = "pipeline";
-          this.resetSimulator();
+          await this.resetSimulator();
         }
         break;
       case "reset":
-        this.resetSimulator();
-        break;
-      case "step":
-        this.step();
+        await this.resetSimulator();
         break;
       case "stop":
         this.stop();
+        break;
+      case "step":
+        if (!this._simulator) {
+          await this.resetSimulator();
+        }
+        this.step();
+        break;
+      case "monocycle":
+      case "clickInInstruction":
+      case "memorySizeChanged":
+      case "registersChanged":
+      case "memoryChanged":
+        if (!this._simulator) return;
+        this.handleSimulatorEvents(message);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private handleSimulatorEvents(message: any) {
+    switch (message.event) {
+      case "monocycle":
+        if (this._simulatorType === "pipeline") {
+          this._simulatorType = "monocycle";
+          this.resetSimulator();
+        }
         break;
       case "clickInInstruction":
         this.animateLine(message.value);
@@ -391,13 +372,9 @@ export class RVContext {
       case "memoryChanged":
         this.memoryChanged(message.value);
         break;
-      default:
-        break;
     }
   }
 
-
-  /** Builds the Intermediate Representation from the current document. */
   private buildCurrentDocument() {
     const editor = window.activeTextEditor;
     if (editor?.document.languageId === "riscvasm") {
@@ -407,16 +384,14 @@ export class RVContext {
     }
   }
 
-  /** Cleans up the current simulator instance and its decorations. */
-  private cleanupSimulator() {
+  private cleanupSimulator(options?: { sendStopMessage: boolean }) {
     if (!this._simulator) return;
     commands.executeCommand("setContext", "ext.isSimulating", false);
     const simulatorToStop = this._simulator;
-    simulatorToStop.stop();
+    simulatorToStop.stop(options);
     this.clearDecorations();
   }
 
-  /** Clears all decorations from the editor. */
   public clearDecorations() {
     this._isSimulating = false;
     this._simulator = undefined;
@@ -426,27 +401,18 @@ export class RVContext {
     this._encoderDecorator = undefined;
   }
 
-  /** Animates a specific line in the editor. */
   private animateLine(line: number) {
     this._simulator?.animateLine(line);
   }
-
-  /** Resizes the data memory of the simulator. */
   private memorySizeChanged(newSize: number) {
     this._simulator?.resizeMemory(newSize);
   }
-
-  /** Replaces the entire register file with new data. */
   private registersChanged(newRegisters: string[]) {
     this._simulator?.replaceRegisters(newRegisters);
   }
-
-  /** Replaces the entire data memory with new data. */
   private memoryChanged(newMemory: []) {
     this._simulator?.replaceMemory(newMemory);
   }
-
-  /** Resets the encoder decorator. */
   public resetEncoderDecorator(editor: TextEditor): void {
     this._encoderDecorator?.clearDecorations(editor);
     this._encoderDecorator = undefined;
