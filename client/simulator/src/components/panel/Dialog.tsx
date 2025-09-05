@@ -19,7 +19,7 @@ import { sendMessage } from "../Message/sendMessage";
 const Dialog = () => {
   const { dialog, setDialog } = useDialog();
   const [open, setOpen] = useState(false);
-  const { typeSimulator, setTypeSimulator, setShowTuto } = useSimulator();
+  const {modeSimulator, typeSimulator, setTypeSimulator, setShowTuto } = useSimulator();
 
   // This logic is fine, no changes needed here.
   // It handles the selection but doesn't close the dialog, which is correct
@@ -77,20 +77,21 @@ const Dialog = () => {
                   </div>
 
                   {/* 4. Structure for "Pipeline" radio item. */}
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="pipeline" id="r_pipeline" />
-                    <Label htmlFor="r_pipeline" className="cursor-pointer">
-                      Pipeline <span className="text-[.6rem] bg-blue-400 p-1 rounded-[0.4rem] ">Beta</span>
-                    </Label>
-                  </div>
+                  {modeSimulator === "graphic" && (
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="pipeline" id="r_pipeline" />
+                      <Label htmlFor="r_pipeline" className="cursor-pointer">
+                        Pipeline{" "}
+                        <span className="text-[.6rem] bg-blue-400 p-1 rounded-[0.4rem] ">Beta</span>
+                      </Label>
+                    </div>
+                  )}
                 </RadioGroup>
               </div>
             )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex w-full gap-5 items-center">
-          
-
           {!dialog?.stop && (
             <AlertDialogAction
               onClick={() => setShowTuto(true)}
@@ -99,7 +100,7 @@ const Dialog = () => {
             </AlertDialogAction>
           )}
 
-         <AlertDialogAction onClick={handleAccept}>Accept</AlertDialogAction>
+          <AlertDialogAction onClick={handleAccept}>Accept</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
