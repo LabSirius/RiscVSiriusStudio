@@ -92,7 +92,6 @@ export const useMemoryTabulator = ({
           tableInstanceRef.current!,
           dataMemoryTable.program,
           dataMemoryTable.codeSize,
-          dataMemoryTable.constantsSize,
           dataMemoryTable.symbols,
           () => {
             setSp(intToHex(dataMemoryTable.memory.length - 4));

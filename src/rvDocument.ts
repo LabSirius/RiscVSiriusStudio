@@ -64,7 +64,6 @@ export class RVDocument {
         e.document === this.editor.document &&
         rvContext.configurationManager.getEncoderUpdatePolicy() === 'On change'
       ) {
-        console.log("build and decorate trigger by document change");
         // TODO: this event is triggered twice, this can affect performance. I
         // need to investigate further.
         this.buildAndDecorate(rvContext);
@@ -76,16 +75,13 @@ export class RVDocument {
         e === this.editor.document &&
         rvContext.configurationManager.getEncoderUpdatePolicy() === 'On save'
       ) {
-        console.log("build and decorate trigger by document save");
         this.buildAndDecorate(rvContext);
       }
     });
 
-    console.log("Creating new riscv document from ", this.getFileName());
   }
 
   public async buildAndDecorate(rvContext: RVContext) {
-    console.log("Document changed, rebuilding IR");
     if (!rvContext.encoderDecorator) { return; }
     this.build();
     if (!this.editor) {

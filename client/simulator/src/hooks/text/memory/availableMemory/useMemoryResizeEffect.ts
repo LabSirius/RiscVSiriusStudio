@@ -73,7 +73,7 @@ export const useMemoryResizeEffect = ({
         memory: newMemory,
       });
 
-      sendMessage({ event: 'memorySizeChanged', sizeMemory: sizeMemory - 4 });
+      sendMessage({ event: 'memorySizeChanged', sizeMemory: sizeMemory});
     }
 
  

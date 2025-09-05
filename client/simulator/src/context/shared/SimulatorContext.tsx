@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 export interface SimulatorContextProps {
-
   typeSimulator: string;
   setTypeSimulator: React.Dispatch<React.SetStateAction<string>>;
 
@@ -25,6 +24,9 @@ export interface SimulatorContextProps {
 
   isEbreak: boolean;
   setIsEbreak: React.Dispatch<React.SetStateAction<boolean>>;
+
+  showTuto: boolean;
+  setShowTuto: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SimulatorContext = createContext<SimulatorContextProps | undefined>(undefined);
@@ -39,6 +41,7 @@ export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [newPc, setNewPc] = useState<number>(0);
   const [simulateAuto, setSimulateAuto] = useState<boolean>(false);
   const [isEbreak, setIsEbreak] = useState<boolean>(false);
+  const [showTuto, setShowTuto] = useState<boolean>(false);
 
   return (
     <SimulatorContext.Provider
@@ -60,7 +63,9 @@ export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children 
         simulateAuto,
         setSimulateAuto,
         isEbreak,
-        setIsEbreak, 
+        setIsEbreak,
+        showTuto,
+        setShowTuto,
       }}>
       {children}
     </SimulatorContext.Provider>

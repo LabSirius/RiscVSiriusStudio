@@ -48,7 +48,7 @@ function MuxA() {
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
-        <MuxContainer signal={signal} islui={islui} />
+        <MuxContainer signal={signal} islui={islui}  isEbreak={isEbreak}  />
         
         {operation !== "uploadMemory" && !isEbreak && (
           <div className="absolute top-[-2.7rem] left-[3.5rem]">

@@ -409,8 +409,6 @@ export class SCCPU implements ICPU {
     (this.registers as any).registers = newRegisters;
   }
   public printInfo() {
-    console.log("CPU state");
-    console.log("Registers");
     this.registers.printRegisters();
   }
 }

@@ -1,0 +1,42 @@
+# .github/workflows/build-vsix.yml
+
+name: Build VSIX Package
+
+# TRIGGER: This workflow now runs only on pushes to the "publish" branch
+on:
+  push:
+    branches: [ main ] # Changed from 'main' to 'publish'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    steps:
+    # 1. Checkout the repository so the workflow can access your code
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # 2. Setup Node.js, which is required for running npm/vsce
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24' # Use a specific LTS version of Node.js
+
+    # 3. Install project dependencies
+    - name: Install Dependencies
+      run: npm install
+
+    # 4. Install vsce globally in the runner environment
+    - name: Install vsce
+      run: npm install -g @vscode/vsce
+
+    # 5. Build the VSIX package
+    - name: Build VSIX
+      run: vsce package --no-yarn
+
+    # 6. Upload the generated VSIX file as a build artifact
+    - name: Upload VSIX Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: extension-vsix # The name of the artifact
+        path: "*.vsix" # A wildcard path to find the generated .vsix file

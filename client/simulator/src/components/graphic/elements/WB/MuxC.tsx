@@ -44,8 +44,9 @@ export default function MuxC() {
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
-        <MuxContainer3_1 signal={signal} />
         
+        
+        <MuxContainer3_1  signal={signal} isEbreak={isEbreak}/>
         {(operation !== "uploadMemory" && !(activeCurrentType === "S" || activeCurrentType === "B" ) && !isEbreak) && 
           <div className="absolute bottom-[.3rem] left-[3.5rem]">
             <LabelValueWithHover

@@ -186,6 +186,7 @@ function SidebarTrigger({ className, ...props }: React.ComponentProps<typeof But
   return (
 
     <Button
+     id="button-sidebar"
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       variant="ghost"

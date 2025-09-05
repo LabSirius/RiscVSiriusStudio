@@ -8,17 +8,19 @@ import { useState } from "react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import ImmDecode from "./immDecode/ImmDecode";
 import { useSimulator } from "@/context/shared/SimulatorContext";
+import { useTheme } from "@/components/ui/theme/theme-provider";
 
 export default function ImmGenerator() {
   const { operation, isEbreak } = useSimulator();
   const { currentType, pipelineValuesStages } = useCurrentInst();
+  const { theme } = useTheme(); 
 
   const [showImmDecode, setShowImmDecode] = useState(false);
   const [isCardOpen, setIsCardOpen] = useState(false);
 
-  const handleOpenChange = (open : boolean) => {
+  const handleOpenChange = (open: boolean) => {
     if (!open && showImmDecode) {
-      return; 
+      return;
     }
     setIsCardOpen(open);
   };
@@ -32,21 +34,45 @@ export default function ImmGenerator() {
       <HoverCardTrigger asChild>
         <div className="w-full">
           <div className="relative w-full h-full">
-            <h2 className={`!z-0 titleInElement top-[25%] left-[30%] -translate-x-[15%] -translate-y-[25%] ${!isFeatureEnabled && '!text-[#D3D3D3]'}`}>
+            <h2
+              className={`!z-0 titleInElement top-[25%] left-[30%] -translate-x-[15%] -translate-y-[25%] ${
+                !isFeatureEnabled && "!text-[#D3D3D3]"
+              }`}
+            >
               Imm Generator
             </h2>
             <ContainerSVG height={9.6} active={isFeatureEnabled} />
             {isFeatureEnabled && <LabelValueContainer />}
           </div>
-          <Handle type="target" id="[31:7]" position={Position.Left} className="input" style={{ top: "2.7rem" }} />
-          <Handle type="target" id="immSrc" position={Position.Left} className="input" style={{ top: "7rem" }} />
+          <Handle
+            type="target"
+            id="[31:7]"
+            position={Position.Left}
+            className="input"
+            style={{ top: "2.7rem" }}
+          />
+          <Handle
+            type="target"
+            id="immSrc"
+            position={Position.Left}
+            className="input"
+            style={{ top: "7rem" }}
+          />
           <Handle type="source" position={Position.Right} className="output" />
         </div>
       </HoverCardTrigger>
-      
+
       {isFeatureEnabled && (
-        <HoverCardContent className={`${showImmDecode ? 'p-0 w-[45rem]' : 'px-2 py-1 w-min flex justify-end bg-[#404040]'}`} side="top">
-         
+        <HoverCardContent
+          side="top"
+          className={`${
+            showImmDecode
+              ? "p-0 w-[45rem]"
+              : `px-2 py-1 w-min flex justify-end ${
+                  theme === "light" ? "bg-[#f5f5f5] text-black" : "bg-[#404040] text-white"
+                }`
+          }`}
+        >
           {!showImmDecode && (
             <PanelTopClose
               size={20}
@@ -54,23 +80,22 @@ export default function ImmGenerator() {
               onClick={() => setShowImmDecode(true)}
             />
           )}
-          
+
           {showImmDecode && (
             <div className="relative">
-              <X 
-                size={22} 
+              <X
+                size={22}
                 className="absolute top-2 right-2 cursor-pointer text-white p-1 hover:scale-[0.95] transition-transform  bg-red-400 rounded-lg z-[1000000]"
                 onClick={() => {
                   setShowImmDecode(false);
                   setIsCardOpen(false);
                 }}
               />
-              <ImmDecode /> 
+              <ImmDecode />
             </div>
           )}
-        
         </HoverCardContent>
-      )} 
+      )}
     </HoverCard>
   );
 }

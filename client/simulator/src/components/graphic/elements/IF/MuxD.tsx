@@ -7,7 +7,8 @@ import { binaryToInt } from "@/utils/handlerConversions";
 
 function MuxD() {
   const { currentMonocycleResult, pipelineValuesStages } = useCurrentInst();
-  const { operation, typeSimulator } = useSimulator();
+  const { operation, typeSimulator, isEbreak } = useSimulator();
+
 
   let signal: string;
 
@@ -30,7 +31,7 @@ function MuxD() {
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full rotate-90">
-        <MuxContainer signal={signal === '0' ? '1' : signal === '1' ? '0' : signal} />
+        <MuxContainer signal={signal === '0' ? '1' : signal === '1' ? '0' : signal} isEbreak={isEbreak}/>
         
         {operation !== "uploadMemory" && (
           <div className="absolute top-[-2rem] left-[3rem] " style={{ transform: "rotate(-90deg)" }}>

@@ -21,6 +21,7 @@ interface SectionItem {
   show: boolean;
 }
 const MenuItem: React.FC<MenuItemProps> = ({ sectionName, currentSection, setSection, children }) => (
+
   <SidebarMenuItem className="flex items-center gap-1">
     <a onClick={() => setSection(sectionName)} className="cursor-pointer">
       <Button variant="outline" size="icon">
@@ -34,6 +35,8 @@ const MenuItem: React.FC<MenuItemProps> = ({ sectionName, currentSection, setSec
 export function SideBar() {
   const { operation, section, setSection } = useSimulator();
   const { setOpen, setHoveringSidebar } = useSidebar();
+
+
 
 
   const mainSections: SectionItem[] = [
@@ -56,6 +59,7 @@ export function SideBar() {
 
   return (
     <Sidebar
+    id="sidebar"
       onMouseEnter={() => {
         setOpen(true);
         setHoveringSidebar(true);
@@ -65,7 +69,7 @@ export function SideBar() {
         setHoveringSidebar(false);
       }}
     >
-      <SidebarContent className="flex flex-col justify-between w-full h-full p-3 ">
+      <SidebarContent className="flex flex-col justify-between w-full h-full p-3 " >
         <div className="flex flex-col items-start gap-3">
           <p>Sections</p>
           {mainSections.map(

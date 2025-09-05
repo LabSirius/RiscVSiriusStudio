@@ -863,7 +863,6 @@ function peg$parse(input, options) {
     return buildList(head, tail, 1);
   };
   var peg$f2 = function(lbl) { 
-    // console.log("label declaration: ", lbl);
     let ret = lbl;
     ret["kind"] = "SrcLabel";
     ret["location"] = location();
@@ -983,7 +982,6 @@ function peg$parse(input, options) {
       return handleIInstruction(name, rd, rs1, imm, location()); 
     };
   var peg$f19 = function(rd, rs1, imm) {
-      console.log("Assembler modifier!");
       return handleIInstruction('addi', rd, rs1, imm, location());
     };
   var peg$f20 = function(name, rd, offset, rs1) { 
@@ -1012,7 +1010,6 @@ function peg$parse(input, options) {
     };
   var peg$f26 = function(rd, imm) {
       if (isFirstPass) { return undefined; }
-      console.log("assembler identifier");
       return handleUInstruction('lui', rd, imm, location());
     };
   var peg$f27 = function(name, rd, offset) { 
@@ -1155,7 +1152,6 @@ function peg$parse(input, options) {
     const pointsTo = labelTable[label];
     const value = pointsTo['memdef'];
     const value13 = ((1 << 13) - 1) & value;
-    console.log("lo(symbol): ", value, value13,location());
     return value13;
   };
   var peg$f55 = function(lbl) {

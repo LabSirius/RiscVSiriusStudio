@@ -19,7 +19,7 @@ import { sendMessage } from "../Message/sendMessage";
 const Dialog = () => {
   const { dialog, setDialog } = useDialog();
   const [open, setOpen] = useState(false);
-  const { typeSimulator, setTypeSimulator } = useSimulator();
+  const { typeSimulator, setTypeSimulator, setShowTuto } = useSimulator();
 
   // This logic is fine, no changes needed here.
   // It handles the selection but doesn't close the dialog, which is correct
@@ -40,8 +40,7 @@ const Dialog = () => {
     setOpen(false);
     setDialog(undefined);
 
-      sendMessage({ event: typeSimulator });
-    
+    sendMessage({ event: typeSimulator });
   };
 
   return (
@@ -89,8 +88,18 @@ const Dialog = () => {
             )}
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
+        <AlertDialogFooter className="flex w-full gap-5 items-center">
           <AlertDialogAction onClick={handleAccept}>Accept</AlertDialogAction>
+
+          {!dialog?.stop && (
+            <AlertDialogAction
+              onClick={() => setShowTuto(true)}
+              className="!bg-transparent !border-none text-[.8rem] underline text-[#3A6973] cursor-pointer">
+              Show tutorial
+            </AlertDialogAction>
+          )}
+
+          <AlertDialogAction>Accept</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

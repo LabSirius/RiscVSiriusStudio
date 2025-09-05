@@ -99,12 +99,10 @@ export const uploadProgramMemory = (
   table: Tabulator,
   newMemory: string[],
   newCodeSize: number,
-  newConstantsSize: number,
   newSymbols: Record<string, SymbolData>,
   onComplete?: () => void
 ): void => {
 
-  console.log(newConstantsSize)
 
 
   

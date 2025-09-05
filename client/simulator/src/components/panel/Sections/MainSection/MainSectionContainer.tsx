@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import MainSection from './MainSection';
+import { useCustomOptionSimulate } from '@/context/shared/CustomOptionSimulate';
 
 const MainSectionContainer: React.FC = () => {
+
+  const { requestFitView } = useCustomOptionSimulate();
+
   const [height, setHeight] = useState<number>(() => window.innerHeight * 0.35);
   const [isResizing, setIsResizing] = useState<boolean>(false);
   const [startY, setStartY] = useState<number>(0);
@@ -25,6 +29,7 @@ const MainSectionContainer: React.FC = () => {
 
   const handleMouseUp = () => {
     setIsResizing(false);
+    requestFitView(); 
   };
 
   useEffect(() => {

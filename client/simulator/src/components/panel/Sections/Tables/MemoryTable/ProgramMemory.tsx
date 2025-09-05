@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
@@ -32,6 +32,7 @@ const ProgramMemoryTable = () => {
     searchInMemory,
     locatePc,
     setLocatePc,
+    showProgramTable, setShowProgramTable
   } = useMemoryTable();
 
   const { newPc, setNewPc, isFirstStep } = useSimulator();
@@ -40,7 +41,6 @@ const ProgramMemoryTable = () => {
   const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable } = useLines();
   const isFirstStepRef = useRef(isFirstStep);
 
-  const [showTable, setShowTable] = useState(false);
 
   useMemoryTabulator({
     tableContainerRef,
@@ -95,13 +95,14 @@ const ProgramMemoryTable = () => {
     <>
       <div
         className={`shadow-lg !min-h-min min-w-[37.36rem]  mx-4  relative ${
-          !showTable && "hidden"
+          !showProgramTable && "hidden"
         }`}>
         <div
           className={`h-full  w-full transition-opacity ease-in 9000  ${
             isCreatedMemoryTable ? "opacity-100" : "opacity-0"
           }`}>
           <div
+          id="programTable"
             ref={tableContainerRef}
             className={`w-full h-full overflow-x-hidden ${
               theme === "light" ? "theme-light" : "theme-dark"
@@ -109,7 +110,7 @@ const ProgramMemoryTable = () => {
           />
           <ArrowBigLeftDash
             onClick={() => {
-              setShowTable(false);
+              setShowProgramTable(false);
             }}
             strokeWidth={1.5}
             className="absolute cursor-pointer right-[0rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] z-100 text-black"
@@ -121,9 +122,9 @@ const ProgramMemoryTable = () => {
           </div>
         )}
       </div>
-      {!showTable && (
+      {!showProgramTable && (
         <div
-          onClick={() => setShowTable(true)}
+          onClick={() => setShowProgramTable(true)}
           className={`h-full w-[1.6rem] cursor-pointer  rounded-[.2rem] flex flex-col items-center uppercase group border hover:opacity-[0.9] transition-all ease-in-out duration-200
     bg-[#E3F2FD] border-gray-700 text-black`}>
           <ArrowBigRightDash
