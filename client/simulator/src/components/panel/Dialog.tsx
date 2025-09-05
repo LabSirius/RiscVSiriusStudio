@@ -89,7 +89,7 @@ const Dialog = () => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex w-full gap-5 items-center">
-          <AlertDialogAction onClick={handleAccept}>Accept</AlertDialogAction>
+          
 
           {!dialog?.stop && (
             <AlertDialogAction
@@ -99,7 +99,7 @@ const Dialog = () => {
             </AlertDialogAction>
           )}
 
-          <AlertDialogAction>Accept</AlertDialogAction>
+         <AlertDialogAction onClick={handleAccept}>Accept</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

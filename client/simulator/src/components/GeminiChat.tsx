@@ -24,7 +24,7 @@ const GeminiChatWidget = () => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const { textProgram } = useSimulator();
-  const { currentInst } = useCurrentInst();
+  const { currentMonocycleResult } = useCurrentInst();
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -118,7 +118,7 @@ const GeminiChatWidget = () => {
           Rules:${aiRules}
           Context:${aiContext}
           Current program being simulated:${textProgram}
-          Curent instruction being executed:${JSON.stringify(currentInst)}
+          Curent instruction being executed:${JSON.stringify(currentMonocycleResult)}
           ` }],
       },
     };
