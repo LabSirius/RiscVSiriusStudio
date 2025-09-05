@@ -347,7 +347,6 @@ export class RVContext {
   public dispatchMainViewEvent(message: any) {
 
     if (message.event === 'webviewReady') {
-      console.log("[Context] Señal 'webviewReady' recibida. Enviando datos iniciales al simulador.");
       this._simulator?.sendInitialData();
       return;
     }

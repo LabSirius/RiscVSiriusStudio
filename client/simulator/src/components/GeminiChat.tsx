@@ -20,13 +20,13 @@ type HistoryItem = {
 
 const GeminiChatWidget = () => {
   const [question, setQuestion] = useState("");
-  const [aiResponse, setAiResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const { textProgram } = useSimulator();
   const { currentInst } = useCurrentInst();
 
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const [isResizing, setIsResizing] = useState<string | null>(null);
   const dragStartInfo = useRef({ x: 0, y: 0, width: 0, height: 0 });
@@ -90,25 +90,28 @@ const GeminiChatWidget = () => {
     };
   }, [isResizing, handleMouseMove, handleMouseUp]);
 
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [history, loading]);
+
   const callGeminiAPI = async (currentQuestion: string) => {
     if (!currentQuestion) return;
 
+    const userMessage: HistoryItem = {
+      role: "user" as const,
+      parts: [{ text: currentQuestion }],
+    };
+    const updatedHistory = [...history, userMessage];
+    setHistory(updatedHistory);
     setLoading(true);
-    setAiResponse("Thinking...");
 
     const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-    const currentHistory = [
-      ...history,
-      {
-        role: "user" as const,
-        parts: [{ text: currentQuestion }],
-      },
-    ];
-
     const requestBody = {
-      contents: currentHistory,
+      contents: updatedHistory,
       system_instruction: {
         parts: [{
           text: `
@@ -138,18 +141,20 @@ const GeminiChatWidget = () => {
       }
 
       const textResponse = data.candidates[0].content.parts[0].text;
-      setAiResponse(textResponse);
+      
+      const modelMessage: HistoryItem = {
+        role: "model" as const,
+        parts: [{ text: textResponse }],
+      };
+      setHistory([...updatedHistory, modelMessage]);
 
-      setHistory([
-        ...currentHistory,
-        {
-          role: "model" as const,
-          parts: [{ text: textResponse }],
-        },
-      ]);
     } catch (error) {
       console.error("Hubo un error al llamar a Gemini:", error);
-      setAiResponse("Lo siento, algo salió mal. Inténtalo de nuevo.");
+      const errorMessage: HistoryItem = {
+        role: "model" as const,
+        parts: [{ text: "Lo siento, algo salió mal. Inténtalo de nuevo." }],
+      };
+      setHistory([...updatedHistory, errorMessage]);
     } finally {
       setLoading(false);
     }
@@ -192,19 +197,37 @@ const GeminiChatWidget = () => {
           </div>
 
           <div
-            className="flex-1 rounded-md border overflow-y-auto
-                            border-neutral-300 bg-neutral-50 p-3 text-sm
-                            dark:border-neutral-700 dark:bg-neutral-800/50">
-            {loading && aiResponse === "Thinking..." && (
+            ref={chatContainerRef}
+            className="flex-1 rounded-md border overflow-y-auto p-3 text-sm
+                       border-neutral-300 bg-neutral-50
+                       dark:border-neutral-700 dark:bg-neutral-800/50"
+          >
+            {history.length === 0 && !loading ? (
+              <p>Waiting for your question...</p>
+            ) : (
+              history.map((item, index) => (
+                <div key={index} className="mb-4">
+                  {item.role === 'user' ? (
+                    <div className="text-right">
+                      <p className="inline-block bg-blue-500 text-white rounded-lg px-3 py-2">
+                        {item.parts[0].text}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="prose-sm prose dark:prose-invert max-w-none">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {item.parts[0].text}
+                      </ReactMarkdown>
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+            
+            {loading && (
               <div className="flex items-center gap-2">
                 <LoaderCircle className="h-4 w-4 animate-spin" />
                 <span>Thinking...</span>
-              </div>
-            )}
-            {!aiResponse && <p>Waiting for your question...</p>}
-            {aiResponse && !loading && (
-              <div className="prose-sm prose dark:prose-invert max-w-none">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{aiResponse}</ReactMarkdown>
               </div>
             )}
           </div>

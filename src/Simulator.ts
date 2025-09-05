@@ -430,7 +430,6 @@ export class GraphicSimulator extends TextSimulator {
   }
   
   public override sendInitialData(): void {
-    console.log("[Backend] Enviando datos iniciales para GraphicSimulator en el orden correcto...");
 
  
     this.sendSimulatorTypeToView("graphic");
