@@ -1,9 +1,13 @@
 import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
 
 const TypeSImmDecode = () => {
-  const { currentMonocycletInst } = useCurrentInst();
+  const { currentMonocycletInst, pipelineValuesStages } = useCurrentInst();
 
-  if(!currentMonocycletInst) return
+  const instruction = currentMonocycletInst || pipelineValuesStages?.ID?.instruction;
+  if (!instruction) return null;
+
+  const encoding = instruction.encoding?.binEncoding;
+  if (!encoding) return null;
 
   const topBlocks = [
     { left: "1.1rem", slice: [0, 4] },
@@ -33,13 +37,14 @@ const TypeSImmDecode = () => {
         className="w-full h-full rounded-md"
       />
 
+      {/* Top blocks */}
       {topBlocks.map((block, idx) => (
         <div
           key={`top-${idx}`}
           className="absolute flex gap-[.82rem]"
           style={{ top: "2.7rem", left: block.left }}
         >
-          {Array.from(currentMonocycletInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(encoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>
@@ -52,7 +57,7 @@ const TypeSImmDecode = () => {
           style={{ bottom: "1.6rem", right: block.right }}
         >
           {Array.from({ length: 4 }).map((_, index) => (
-            <p key={index}>{currentMonocycletInst?.encoding.binEncoding[0]}</p>
+            <p key={index}>{encoding[0]}</p>
           ))}
         </div>
       ))}
@@ -63,7 +68,7 @@ const TypeSImmDecode = () => {
           className="flex absolute gap-[.84rem]"
           style={{ bottom: "1.6rem", right: block.right }}
         >
-          {Array.from(currentMonocycletInst?.encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(encoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>

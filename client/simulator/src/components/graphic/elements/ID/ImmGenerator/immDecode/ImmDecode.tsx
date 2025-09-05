@@ -6,17 +6,20 @@ import TypeUImmDecode from './TypeUImmDecode';
 import TypeJImmDecode from './TypeJImmDecode';
 
 const ImmDecode = () => {
-  const { currentType } = useCurrentInst();
+  const { currentType, pipelineValuesStages } = useCurrentInst();
+
+  const type = currentType || pipelineValuesStages?.ID?.instruction?.type;
+
+
   return (
     <>
-      {(currentType === "I" || currentType === "L" || currentType === "JALR"  ) && ( <TypeIImmDecode />) }
-      {(currentType === "S") && ( <TypeSImmDecode />) }
-      {(currentType === "B") && ( <TypeBImmDecode />) }
-      {(currentType === "LUI" || currentType === "AUIPC" ) && ( <TypeUImmDecode />) }
-      {(currentType === "J") && ( <TypeJImmDecode />) }
-
+      {(type === "I" || type === "L" || type === "JALR") && <TypeIImmDecode />}
+      {type === "S" && <TypeSImmDecode />}
+      {type === "B" && <TypeBImmDecode />}
+      {(type === "LUI" || type === "AUIPC") && <TypeUImmDecode />}
+      {type === "J" && <TypeJImmDecode />}
     </>
   );
-}
+};
 
-export default ImmDecode
+export default ImmDecode;

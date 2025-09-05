@@ -1,9 +1,13 @@
-import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
+import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 
 const TypeJImmDecode = () => {
-  const { currentMonocycletInst } = useCurrentInst();
-  if(!currentMonocycletInst) return
+  const { currentMonocycletInst, pipelineValuesStages } = useCurrentInst();
 
+  const instruction = currentMonocycletInst || pipelineValuesStages?.ID?.instruction;
+  if (!instruction) return null;
+
+  const encoding = instruction.encoding?.binEncoding;
+  if (!encoding) return null;
 
   const topBlocks = [
     { left: "2.5rem", slice: [1, 4] },
@@ -17,7 +21,6 @@ const TypeJImmDecode = () => {
     { right: "39.54rem" },
     { right: "34.55rem" },
     { right: "29.65rem" },
-
   ];
 
   const bottomDataBlocks = [
@@ -26,7 +29,6 @@ const TypeJImmDecode = () => {
     { right: "14.77rem", slice: [1, 4] },
     { right: "9.87rem", slice: [4, 8] },
     { right: "6.2rem", slice: [8, 11] },
-
   ];
 
   return (
@@ -37,29 +39,26 @@ const TypeJImmDecode = () => {
         className="w-full h-full rounded-md"
       />
 
-      <p className='absolute top-[2.7rem] left-[1.26rem]'>{currentMonocycletInst?.encoding.binEncoding[0]}</p>
+      {/* Bits individuales */}
+      <p className="absolute top-[2.7rem] left-[1.26rem]">{encoding[0]}</p>
+      <p className="absolute top-[2.7rem] left-[14.83rem]">{encoding[11]}</p>
+      <p className="absolute bottom-[1.6rem] right-[18.53rem]">{encoding[11]}</p>
+      <p className="absolute bottom-[1.6rem] right-[4.96rem]">0</p>
 
-      <p className='absolute top-[2.7rem] left-[14.83rem]'>{currentMonocycletInst?.encoding.binEncoding[11]}</p>
-
-      <p className='absolute bottom-[1.6rem] right-[18.53rem]'>{currentMonocycletInst?.encoding.binEncoding[11]}</p>
-
-      <p className='absolute bottom-[1.6rem] right-[4.96rem]'>0</p>
-
-
-
-
+      {/* Top blocks */}
       {topBlocks.map((block, idx) => (
         <div
           key={`top-${idx}`}
           className="absolute flex gap-[.82rem]"
           style={{ top: "2.7rem", left: block.left }}
         >
-          {Array.from(currentMonocycletInst?.encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(encoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>
       ))}
 
+      {/* Bottom repeated blocks (copian el bit[0]) */}
       {bottomRepeatedBlocks.map((block, idx) => (
         <div
           key={`bottom-repeated-${idx}`}
@@ -67,24 +66,23 @@ const TypeJImmDecode = () => {
           style={{ bottom: "1.6rem", right: block.right }}
         >
           {Array.from({ length: 4 }).map((_, index) => (
-            <p key={index}>{currentMonocycletInst?.encoding.binEncoding[0]}</p>
+            <p key={index}>{encoding[0]}</p>
           ))}
         </div>
       ))}
 
+      {/* Bottom data blocks */}
       {bottomDataBlocks.map((block, idx) => (
         <div
           key={`bottom--${idx}`}
           className="flex absolute gap-[.84rem]"
           style={{ bottom: "1.6rem", right: block.right }}
         >
-          {Array.from(currentMonocycletInst?.encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(encoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>
       ))}
-
-
     </div>
   );
 };

@@ -1,9 +1,13 @@
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 
 const TypeUImmDecode = () => {
-  const { currentMonocycletInst } = useCurrentInst();
+  const { currentMonocycletInst, pipelineValuesStages } = useCurrentInst();
 
-  if (!currentMonocycletInst) return;
+  const instruction = currentMonocycletInst || pipelineValuesStages?.ID?.instruction;
+  if (!instruction) return null;
+
+  const encoding = instruction.encoding?.binEncoding;
+  if (!encoding) return null;
 
   const topBlocks = [
     { left: "1.15rem", slice: [0, 4] },
@@ -21,43 +25,49 @@ const TypeUImmDecode = () => {
     { right: "19.8rem", slice: [16, 20] },
   ];
 
-  const bottomRepeatedBlocks = [{ right: "14.8rem" }, { right: "9.89rem" }, { right: "4.93rem" }];
+  const bottomRepeatedBlocks = [
+    { right: "14.8rem" },
+    { right: "9.89rem" },
+    { right: "4.93rem" },
+  ];
 
   return (
     <div className="w-full z-100000 max-h-[30rem] text-[.75rem] text-black overflow-hidden font-mono relative">
       <img src="immTypeUDecode.svg" alt="immDecode" className="w-full h-full rounded-md" />
 
+      {/* Top blocks */}
       {topBlocks.map((block, idx) => (
         <div
           key={`top-${idx}`}
           className="absolute flex gap-[.82rem]"
-          style={{ top: "2.7rem", left: block.left }}>
-          {Array.from(currentMonocycletInst?.encoding.binEncoding)
-            .slice(...block.slice)
-            .map((item, index) => (
-              <p key={index}>{item}</p>
-            ))}
+          style={{ top: "2.7rem", left: block.left }}
+        >
+          {Array.from(encoding).slice(...block.slice).map((item, index) => (
+            <p key={index}>{item}</p>
+          ))}
         </div>
       ))}
 
+      {/* Bottom data blocks */}
       {bottomDataBlocks.map((block, idx) => (
         <div
           key={`bottom--${idx}`}
           className="flex absolute gap-[.83rem]"
-          style={{ bottom: "1.6rem", right: block.right }}>
-          {Array.from(currentMonocycletInst?.encoding.binEncoding)
-            .slice(...block.slice)
-            .map((item, index) => (
-              <p key={index}>{item}</p>
-            ))}
+          style={{ bottom: "1.6rem", right: block.right }}
+        >
+          {Array.from(encoding).slice(...block.slice).map((item, index) => (
+            <p key={index}>{item}</p>
+          ))}
         </div>
       ))}
 
+      {/* Zeros extendidos */}
       {bottomRepeatedBlocks.map((block, idx) => (
         <div
           key={`bottom-repeated-${idx}`}
           className="absolute flex gap-[.81rem]"
-          style={{ bottom: "1.6rem", right: block.right }}>
+          style={{ bottom: "1.6rem", right: block.right }}
+        >
           {Array.from({ length: 4 }).map((_, index) => (
             <p key={index}>0</p>
           ))}

@@ -25,9 +25,15 @@ export default function ImmGenerator() {
     setIsCardOpen(open);
   };
 
-  const isTypeR = currentType === "R" || pipelineValuesStages.ID.instruction.type === "R"
+  const isNop =
+    pipelineValuesStages?.ID?.instruction?.pc === -1 
 
-  const isFeatureEnabled = !isTypeR && operation !== "uploadMemory" && !isEbreak;
+  const isTypeR =
+    currentType === "R" ||
+    pipelineValuesStages?.ID?.instruction?.type === "R";
+
+  const isFeatureEnabled =
+    !isTypeR && !isNop && operation !== "uploadMemory" && !isEbreak;
 
   return (
     <HoverCard open={isCardOpen} onOpenChange={handleOpenChange} openDelay={0}>
@@ -69,7 +75,9 @@ export default function ImmGenerator() {
             showImmDecode
               ? "p-0 w-[45rem]"
               : `px-2 py-1 w-min flex justify-end ${
-                  theme === "light" ? "bg-[#f5f5f5] text-black" : "bg-[#404040] text-white"
+                  theme === "light"
+                    ? "bg-[#f5f5f5] text-black"
+                    : "bg-[#404040] text-white"
                 }`
           }`}
         >
