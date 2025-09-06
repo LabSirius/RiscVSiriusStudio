@@ -126,6 +126,7 @@ export type PipelineCycleResult = {
 };
 
 export class PipelineCPU implements ICPU {
+  private executionFinished: boolean = false;
   private readonly program: any[];
   private dataMemory: DataMemory;
   private registers: RegistersFile;
@@ -214,6 +215,16 @@ export class PipelineCPU implements ICPU {
       this.id_ex_register = final_newState_ID_EX;
       this.if_id_register = final_newState_IF_ID;
       this.pc = finalNextPC;
+    }
+
+    const isFinished =
+      this.if_id_register.instruction.pc === -1 &&
+      this.id_ex_register.PC === -1 &&
+      this.ex_mem_register.PC === -1 &&
+      this.mem_wb_register.PC === -1;
+
+    if (isFinished) {
+      this.executionFinished = true;
     }
 
     writeAction();
@@ -618,8 +629,9 @@ export class PipelineCPU implements ICPU {
     return this.if_id_register.instruction || {};
   }
   public finished(): boolean {
-    return false;
+    return this.executionFinished;
   }
+
   public jumpToInstruction(address: string): void {
     console.warn(`jumpToInstruction(${address}) not yet implemented for pipeline.`);
   }
