@@ -19,7 +19,7 @@ import { sendMessage } from "../Message/sendMessage";
 const Dialog = () => {
   const { dialog, setDialog } = useDialog();
   const [open, setOpen] = useState(false);
-  const { modeSimulator, typeSimulator, setTypeSimulator, setShowTuto } = useSimulator();
+  const { typeSimulator, setTypeSimulator, setShowTuto } = useSimulator();
 
 
   const handleSelection = (newType: string) => {
@@ -41,7 +41,6 @@ const Dialog = () => {
     sendMessage({ event: typeSimulator });
   };
 
-  console.log("AQUIIII QUE ES USRESET", dialog?.isReset);
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -77,7 +76,7 @@ const Dialog = () => {
                   </div>
 
                   {/* 4. Structure for "Pipeline" radio item. */}
-                  {modeSimulator === "graphic" && (
+                 
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="pipeline" id="r_pipeline" />
                       <Label htmlFor="r_pipeline" className="cursor-pointer">
@@ -85,7 +84,6 @@ const Dialog = () => {
                         <span className="text-[.6rem] bg-blue-400 p-1 rounded-[0.4rem] ">Beta</span>
                       </Label>
                     </div>
-                  )}
                 </RadioGroup>
               </div>
             )}

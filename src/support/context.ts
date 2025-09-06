@@ -318,6 +318,12 @@ export class RVContext {
         this.step();
         break;
       case "monocycle":
+        if (this._simulatorType === "pipeline") {
+          this._simulatorType = "monocycle";
+          await this.resetSimulator({ isHardReset: false });
+        }
+        break;
+      
       case "clickInInstruction":
       case "memorySizeChanged":
       case "registersChanged":
