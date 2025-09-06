@@ -15,7 +15,7 @@ const NOP_DATA = {
   RUWr: false,
   ALUASrc: false,
   ALUBSrc: false,
- 
+
   RUDataWrSrc: "XX",
   ALUOp: "XXXXX",
   BrOp: "XXXXX",
@@ -33,16 +33,15 @@ const NOP_DATA = {
   ALUInputA: "X".padStart(32, "X"),
   ALUInputB: "X".padStart(32, "X"),
 
-   DMWr: false,
+  DMWr: false,
   DMCtrl: "XXX",
   MemReadData: "X".padStart(32, "X"),
   Address: "X".padStart(32, "X"),
   MemWriteData: "X".padStart(32, "X"),
 
-    Opcode: "XXXXXXX",
+  Opcode: "XXXXXXX",
   Funct3: "XXX",
   Funct7: "XXXXXXX",
-
 };
 
 interface IDEX_Register {
@@ -92,7 +91,6 @@ interface EXMEM_Register {
   BranchInputRS1: string;
   BranchInputRS2: string;
   BranchResult: string;
-
 }
 
 interface MEMWB_Register {
@@ -111,13 +109,12 @@ interface MEMWB_Register {
   DMCtrl: string;
 }
 
-
 interface WB_Register {
   instruction: any;
-  RD: string;         
-  dataToWrite: string; 
+  RD: string;
+  dataToWrite: string;
   RUWr: boolean;
-  RUDataWrSrc: string;      
+  RUDataWrSrc: string;
 }
 
 export type PipelineCycleResult = {
@@ -125,7 +122,7 @@ export type PipelineCycleResult = {
   ID: IDEX_Register;
   EX: EXMEM_Register;
   MEM: MEMWB_Register;
-  WB: WB_Register
+  WB: WB_Register;
 };
 
 export class PipelineCPU implements ICPU {
@@ -136,8 +133,8 @@ export class PipelineCPU implements ICPU {
   private immediateUnit: ImmediateUnit;
   private alu: ProcessorALU;
   private forwardingUnit: ForwardingUnit;
-   private hazardDetectionUnit: HazardDetectionUnit;
-   private branchUnit: BranchUnit; 
+  private hazardDetectionUnit: HazardDetectionUnit;
+  private branchUnit: BranchUnit;
 
   private clockCycles: number = 0;
   private pc: number = 0;
@@ -156,24 +153,21 @@ export class PipelineCPU implements ICPU {
     this.immediateUnit = new ImmediateUnit();
     this.alu = new ProcessorALU();
     this.forwardingUnit = new ForwardingUnit();
-     this.hazardDetectionUnit = new HazardDetectionUnit();
-     this.branchUnit = new BranchUnit(); 
+    this.hazardDetectionUnit = new HazardDetectionUnit();
+    this.branchUnit = new BranchUnit();
 
     this.if_id_register = { instruction: NOP_DATA.instruction, PC: -1, PCP4: 0 };
     this.id_ex_register = { ...NOP_DATA };
     this.ex_mem_register = { ...NOP_DATA };
     this.mem_wb_register = { ...NOP_DATA };
 
-
-
-     const spAbsoluteAddress = this.dataMemory.availableSpInitialAddress;
+    const spAbsoluteAddress = this.dataMemory.availableSpInitialAddress;
     this.registers.writeRegister("x2", intToBinary(spAbsoluteAddress));
   }
 
   public cycle(): PipelineCycleResult {
     this.clockCycles++;
     console.log(`\n--- [Pipeline CPU] Clock Cycle: ${this.clockCycles} ---`);
-
 
     const forwardingSignals = this.forwardingUnit.detect(
       this.id_ex_register.rs1,
@@ -186,7 +180,7 @@ export class PipelineCPU implements ICPU {
 
     const stallNeeded = this.hazardDetectionUnit.detect(
       this.id_ex_register.RUDataWrSrc, // Is the instruction in EX a Load?
-      this.id_ex_register.RD,          // ¿A qué registro escribe?
+      this.id_ex_register.RD, // ¿A qué registro escribe?
       this.if_id_register.instruction?.rs1?.regeq.substring(1) || "X", // What register does the instruction read at ID?
       this.if_id_register.instruction?.rs2?.regeq.substring(1) || "X"
     );
@@ -197,17 +191,16 @@ export class PipelineCPU implements ICPU {
     const newState_ID_EX = this.executeID();
     const { newState_IF_ID, nextPC } = this.executeIF();
 
-     
     let finalNextPC = nextPC;
     let final_newState_ID_EX = newState_ID_EX;
     let final_newState_IF_ID = newState_IF_ID;
 
-     if (branchDecision.taken) {
+    if (branchDecision.taken) {
       console.log(`[Pipeline] BRANCH TAKEN! Updating PC and flushing IF/ID stages.`);
       finalNextPC = parseInt(branchDecision.targetAddress, 2);
-      
+
       final_newState_ID_EX = { ...NOP_DATA };
-      final_newState_IF_ID = {instruction: NOP_DATA.instruction, PC: -1, PCP4: 0 };
+      final_newState_IF_ID = { instruction: NOP_DATA.instruction, PC: -1, PCP4: 0 };
     }
 
     if (stallNeeded) {
@@ -216,7 +209,7 @@ export class PipelineCPU implements ICPU {
       this.mem_wb_register = newState_MEM_WB;
       this.ex_mem_register = newState_EX_MEM;
     } else {
-       this.mem_wb_register = newState_MEM_WB;
+      this.mem_wb_register = newState_MEM_WB;
       this.ex_mem_register = newState_EX_MEM;
       this.id_ex_register = final_newState_ID_EX;
       this.if_id_register = final_newState_IF_ID;
@@ -230,11 +223,9 @@ export class PipelineCPU implements ICPU {
       ID: this.id_ex_register,
       EX: this.ex_mem_register,
       MEM: this.mem_wb_register,
-      WB: wbState, 
+      WB: wbState,
     };
   }
-
-
 
   private executeIF(): { newState_IF_ID: any; nextPC: number } {
     const PC_fe = this.pc;
@@ -243,7 +234,7 @@ export class PipelineCPU implements ICPU {
       instruction = this.program[PC_fe / 4];
     }
 
-     if (!instruction) {
+    if (!instruction) {
       instruction = NOP_DATA.instruction;
     }
 
@@ -263,6 +254,18 @@ export class PipelineCPU implements ICPU {
       console.log("[ID Stage] NOP");
       return { ...NOP_DATA };
     }
+
+    if (instruction.pc === -1) {
+      console.log("[ID Stage] NOP detected, injecting clean bubble.");
+
+      const cleanNopData = {
+        ...NOP_DATA,
+        RUrs1: "0".padStart(32, "0"),
+        RUrs2: "0".padStart(32, "0"),
+        ImmExt: "0".padStart(32, "0"),
+      };
+      return cleanNopData;
+    }
     console.log(`[ID Stage] Processing: "${instruction.asm}" (PC=${PC})`);
     const controls = this.controlUnit.generate(instruction);
     const ImmExt = this.immediateUnit.generate(instruction);
@@ -271,10 +274,9 @@ export class PipelineCPU implements ICPU {
     const RUrs1 = rs1Addr ? this.registers.readRegisterFromName(rs1Addr) : "X".padStart(32, "X");
     const RUrs2 = rs2Addr ? this.registers.readRegisterFromName(rs2Addr) : "X".padStart(32, "X");
 
-    const opcode = instruction.opcode ?? 'XXXXXXX';
-    const funct3 = instruction.encoding?.funct3 ?? 'XXX';
-    const funct7 = instruction.encoding?.funct7 ?? 'XXXXXXX';
-
+    const opcode = instruction.opcode ?? "XXXXXXX";
+    const funct3 = instruction.encoding?.funct3 ?? "XXX";
+    const funct7 = instruction.encoding?.funct7 ?? "XXXXXXX";
 
     console.log(
       `[ID Stage] Read Registers: rs1(${rs1Addr || "N/A"}) -> ${RUrs1} | rs2(${
@@ -297,11 +299,10 @@ export class PipelineCPU implements ICPU {
       RUrs1,
       RUrs2,
       ImmExt,
-      ImmSRC: controls.imm_src, 
+      ImmSRC: controls.imm_src,
       RD: instruction.rd ? instruction.rd.regeq.substring(1) : "X",
       rs1: instruction.rs1 ? instruction.rs1.regeq.substring(1) : "X",
       rs2: instruction.rs2 ? instruction.rs2.regeq.substring(1) : "X",
-
 
       Opcode: opcode,
       Funct3: funct3,
@@ -311,7 +312,10 @@ export class PipelineCPU implements ICPU {
     return newState;
   }
 
- private executeEX(forwardingSignals: ForwardingSignals): { newState: EXMEM_Register, branchDecision: { taken: boolean, targetAddress: string } } {
+  private executeEX(forwardingSignals: ForwardingSignals): {
+    newState: EXMEM_Register;
+    branchDecision: { taken: boolean; targetAddress: string };
+  } {
     const {
       instruction,
       PC,
@@ -327,12 +331,12 @@ export class PipelineCPU implements ICPU {
       rs1,
       rs2,
     } = this.id_ex_register;
-    
+
     if (PC === -1) {
       console.log(`[EX Stage] NOP`);
-      const nopState: EXMEM_Register = { 
-        ...NOP_DATA, 
-        ALUASrc: false, 
+      const nopState: EXMEM_Register = {
+        ...NOP_DATA,
+        ALUASrc: false,
         ALUBSrc: false,
         ALUInputA: "X".padStart(32, "X"),
         ALUInputB: "X".padStart(32, "X"),
@@ -382,16 +386,22 @@ export class PipelineCPU implements ICPU {
     const finalLogB = ALUBSrc ? "(from ImmExt)" : logB;
     const ALURes = this.alu.execute(finalOperandA, finalOperandB, ALUOp);
 
+    const isBranchOrJump =
+      BrOp.substring(0, 2) === "01" ||
+      BrOp.substring(0, 2) === "10" ||
+      BrOp.substring(0, 2) === "11";
 
-     const isBranchOrJump = BrOp.substring(0, 2) === "01" || BrOp.substring(0, 2) === "10" || BrOp.substring(0, 2) === "11";
-    
     const branchInput1 = isBranchOrJump ? operandA : "X".padStart(32, "X");
     const branchInput2 = isBranchOrJump ? operandB : "X".padStart(32, "X");
 
     const branchTaken = this.branchUnit.evaluate(BrOp, operandA, operandB);
     const branchResult = isBranchOrJump ? (branchTaken ? "1" : "0") : "X";
 
-    console.log(`[EX Stage] Branch Unit decision for BrOp=${BrOp}: ${branchTaken ? 'TAKE BRANCH' : 'DO NOT TAKE'}`);
+    console.log(
+      `[EX Stage] Branch Unit decision for BrOp=${BrOp}: ${
+        branchTaken ? "TAKE BRANCH" : "DO NOT TAKE"
+      }`
+    );
 
     console.log(`[EX Stage] Branch control signal received: BrOp=${BrOp}`);
     console.log(
@@ -399,15 +409,16 @@ export class PipelineCPU implements ICPU {
     );
     console.log(`[EX Stage] ALU Result: ${ALURes}`);
 
-
-     const newState: EXMEM_Register = {
-      instruction, PC, PCP4,
-      RUWr: this.id_ex_register.RUWr, 
+    const newState: EXMEM_Register = {
+      instruction,
+      PC,
+      PCP4,
+      RUWr: this.id_ex_register.RUWr,
       DMWr: this.id_ex_register.DMWr,
-      RUDataWrSrc: this.id_ex_register.RUDataWrSrc, 
+      RUDataWrSrc: this.id_ex_register.RUDataWrSrc,
       DMCtrl: this.id_ex_register.DMCtrl,
-      ALURes, 
-      RUrs2: operandB, 
+      ALURes,
+      RUrs2: operandB,
       RD: this.id_ex_register.RD,
 
       ALUASrc,
@@ -416,28 +427,27 @@ export class PipelineCPU implements ICPU {
       ALUInputA: finalOperandA,
       ALUInputB: finalOperandB,
 
-       BrOp,
+      BrOp,
       BranchInputRS1: branchInput1,
       BranchInputRS2: branchInput2,
       BranchResult: branchResult,
     };
 
     console.log(`[EX Stage] EX/MEM Register OUT ->`, newState);
-    return { 
+    return {
       newState: newState,
       branchDecision: {
         taken: branchTaken,
-        targetAddress: ALURes 
-      }
+        targetAddress: ALURes,
+      },
     };
   }
-  
 
   private executeMEM(): MEMWB_Register {
     const { instruction, PC, PCP4, DMWr, DMCtrl, ALURes, RUrs2, RD } = this.ex_mem_register;
     if (instruction.pc === -1) {
       console.log(`[MEM Stage] NOP`);
-      return { ...NOP_DATA,  DMWr: false, RUWr: false };
+      return { ...NOP_DATA, DMWr: false, RUWr: false };
     }
     console.log(`[MEM Stage] Processing: "${instruction.asm}" (PC=${PC})`);
     const address = parseInt(ALURes, 2);
@@ -523,15 +533,14 @@ export class PipelineCPU implements ICPU {
   }
 
   private executeWB(): { writeAction: () => void; wbState: WB_Register } {
-    const { instruction, PC, RUWr, RUDataWrSrc, ALURes, MemReadData, RD } =
-      this.mem_wb_register;
+    const { instruction, PC, RUWr, RUDataWrSrc, ALURes, MemReadData, RD } = this.mem_wb_register;
 
     const defaultState: WB_Register = {
-        instruction: NOP_DATA.instruction,
-        RD: "X",
-        dataToWrite: "X".padStart(32, "X"),
-        RUWr: false,
-        RUDataWrSrc: "XX",
+      instruction: NOP_DATA.instruction,
+      RD: "X",
+      dataToWrite: "X".padStart(32, "X"),
+      RUWr: false,
+      RUDataWrSrc: "XX",
     };
 
     if (instruction.pc === -1) {
@@ -549,7 +558,7 @@ export class PipelineCPU implements ICPU {
         dataToWrite = MemReadData;
         break;
       case "10":
-        dataToWrite = (this.mem_wb_register.PCP4).toString(2).padStart(32, "0");
+        dataToWrite = this.mem_wb_register.PCP4.toString(2).padStart(32, "0");
         break;
       default:
         dataToWrite = "X".padStart(32, "X");
@@ -559,10 +568,18 @@ export class PipelineCPU implements ICPU {
     const writeAction = () => {
       if (RUWr) {
         switch (RUDataWrSrc) {
-          case "00": console.log(`[WB Stage] Data source: ALU Result (${dataToWrite})`); break;
-          case "01": console.log(`[WB Stage] Data source: Memory Read Data (${dataToWrite})`); break;
-          case "10": console.log(`[WB Stage] Data source: PC+4 (${dataToWrite})`); break;
-          default: console.log(`[WB Stage] Data source: Unknown`); break;
+          case "00":
+            console.log(`[WB Stage] Data source: ALU Result (${dataToWrite})`);
+            break;
+          case "01":
+            console.log(`[WB Stage] Data source: Memory Read Data (${dataToWrite})`);
+            break;
+          case "10":
+            console.log(`[WB Stage] Data source: PC+4 (${dataToWrite})`);
+            break;
+          default:
+            console.log(`[WB Stage] Data source: Unknown`);
+            break;
         }
         if (RD !== "X" && RD !== "0") {
           const rdRegName = `x${RD}`;
