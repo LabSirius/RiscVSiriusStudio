@@ -166,7 +166,7 @@ export class PipelineCPU implements ICPU {
     this.registers.writeRegister("x2", intToBinary(spAbsoluteAddress));
   }
 
-  public cycle(): PipelineCycleResult {
+ public cycle(): PipelineCycleResult {
     this.clockCycles++;
     console.log(`\n--- [Pipeline CPU] Clock Cycle: ${this.clockCycles} ---`);
 
@@ -186,36 +186,23 @@ export class PipelineCPU implements ICPU {
       this.if_id_register.instruction?.rs2?.regeq.substring(1) || "X"
     );
 
-    let branchHazardStall = false;
+    let blindSpotStall = false;
     const instrInID = this.if_id_register.instruction;
-    const isBranchInID = instrInID?.type === "B";
+    
+    if (instrInID?.kind === "SrcInstruction" && instrInID.pc !== -1) {
+        const rs1_id = instrInID.rs1?.regeq.substring(1) || "X";
+        const rs2_id = instrInID.rs2?.regeq.substring(1) || "X";
+        const instrInWB = this.mem_wb_register;
 
-
-    if (isBranchInID) {
-      const rs1_id = instrInID?.rs1?.regeq.substring(1) || "X";
-      const rs2_id = instrInID?.rs2?.regeq.substring(1) || "X";
-      const rd_ex = this.id_ex_register.RD;
-      const rd_mem = this.ex_mem_register.RD;
-
-      if (
-        this.id_ex_register.RUWr &&
-        rd_ex !== "0" &&
-        rd_ex !== "X" &&
-        (rd_ex === rs1_id || rd_ex === rs2_id)
-      ) {
-        branchHazardStall = true;
-      } else if (
-        this.ex_mem_register.RUWr &&
-        rd_mem !== "0" &&
-        rd_mem !== "X" &&
-        (rd_mem === rs1_id || rd_mem === rs2_id)
-      ) {
-        branchHazardStall = true;
-      } else {
-      }
+       
+        if (instrInWB.RUWr && instrInWB.RD !== '0' && instrInWB.RD !== 'X' && (instrInWB.RD === rs1_id || instrInWB.RD === rs2_id)) {
+            console.log(`[HazardController] BLIND SPOT HAZARD DETECTED (ID/WB)! Stalling.`);
+            blindSpotStall = true;
+        }
     }
 
-    const stallNeeded = loadUseStall || branchHazardStall;
+    const stallNeeded = loadUseStall || blindSpotStall;
+    
 
     const { writeAction, wbState } = this.executeWB();
     const newState_MEM_WB = this.executeMEM();
@@ -228,21 +215,27 @@ export class PipelineCPU implements ICPU {
     let final_newState_IF_ID = newState_IF_ID;
 
     if (branchDecision.taken) {
+      console.log(`[Pipeline] BRANCH TAKEN! Updating PC and flushing IF/ID stages.`);
       finalNextPC = parseInt(branchDecision.targetAddress, 2);
       final_newState_ID_EX = { ...NOP_DATA };
       final_newState_IF_ID = { instruction: NOP_DATA.instruction, PC: -1, PCP4: 0 };
     }
-
+    
     if (stallNeeded) {
-      this.id_ex_register = { ...NOP_DATA };
-      this.mem_wb_register = newState_MEM_WB;
-      this.ex_mem_register = newState_EX_MEM;
+        this.pc = this.pc; 
+        this.if_id_register = this.if_id_register;
+
+        // INYECTA la burbuja en la etapa EX
+        this.id_ex_register = { ...NOP_DATA };
+
+        this.ex_mem_register = newState_EX_MEM;
+        this.mem_wb_register = newState_MEM_WB;
     } else {
-      this.mem_wb_register = newState_MEM_WB;
-      this.ex_mem_register = newState_EX_MEM;
-      this.id_ex_register = final_newState_ID_EX;
-      this.if_id_register = final_newState_IF_ID;
-      this.pc = finalNextPC;
+        this.pc = finalNextPC;
+        this.if_id_register = final_newState_IF_ID;
+        this.id_ex_register = final_newState_ID_EX;
+        this.ex_mem_register = newState_EX_MEM;
+        this.mem_wb_register = newState_MEM_WB;
     }
 
     const isFinished =
