@@ -179,12 +179,48 @@ export class PipelineCPU implements ICPU {
       this.mem_wb_register.RUWr
     );
 
-    const stallNeeded = this.hazardDetectionUnit.detect(
-      this.id_ex_register.RUDataWrSrc, // Is the instruction in EX a Load?
-      this.id_ex_register.RD, // ¿A qué registro escribe?
-      this.if_id_register.instruction?.rs1?.regeq.substring(1) || "X", // What register does the instruction read at ID?
+
+    const loadUseStall = this.hazardDetectionUnit.detect(
+      this.id_ex_register.RUDataWrSrc,
+      this.id_ex_register.RD,
+      this.if_id_register.instruction?.rs1?.regeq.substring(1) || "X",
       this.if_id_register.instruction?.rs2?.regeq.substring(1) || "X"
     );
+
+    let branchHazardStall = false;
+    const instrInID = this.if_id_register.instruction;
+    const isBranchInID = instrInID?.type === "B";
+    
+    console.log(`\n--- [DEBUG Stall Logic] ---`);
+    console.log(`[DEBUG Stall] Checking for branch in ID. Is branch? ${isBranchInID}`);
+
+    if (isBranchInID) {
+        const rs1_id = instrInID?.rs1?.regeq.substring(1) || "X";
+        const rs2_id = instrInID?.rs2?.regeq.substring(1) || "X";
+        const rd_ex = this.id_ex_register.RD;
+        const rd_mem = this.ex_mem_register.RD;
+
+        console.log(`[DEBUG Stall] Branch detected. Analyzing dependencies...`);
+        console.log(`[DEBUG Stall]   - Branch in ID needs: rs1=${rs1_id}, rs2=${rs2_id}`);
+        console.log(`[DEBUG Stall]   - Instr in EX writes to: rd=${rd_ex} (Write Enabled=${this.id_ex_register.RUWr})`);
+        console.log(`[DEBUG Stall]   - Instr in MEM writes to: rd=${rd_mem} (Write Enabled=${this.ex_mem_register.RUWr})`);
+
+        if (this.id_ex_register.RUWr && rd_ex !== '0' && rd_ex !== 'X' && (rd_ex === rs1_id || rd_ex === rs2_id)) {
+            console.log(`[DEBUG Stall]   -> HAZARD FOUND with EX stage!`);
+            branchHazardStall = true;
+        } 
+        else if (this.ex_mem_register.RUWr && rd_mem !== '0' && rd_mem !== 'X' && (rd_mem === rs1_id || rd_mem === rs2_id)) {
+            console.log(`[DEBUG Stall]   -> HAZARD FOUND with MEM stage!`); 
+            branchHazardStall = true;
+        } else {
+             console.log(`[DEBUG Stall]   -> No hazard found with EX or MEM stages.`);
+        }
+    }
+
+    const stallNeeded = loadUseStall || branchHazardStall;
+    console.log(`[DEBUG Stall] Final Decision: stallNeeded = ${stallNeeded}`); 
+    console.log(`--- [END DEBUG Stall Logic] ---\n`); 
+
 
     const { writeAction, wbState } = this.executeWB();
     const newState_MEM_WB = this.executeMEM();
@@ -199,13 +235,11 @@ export class PipelineCPU implements ICPU {
     if (branchDecision.taken) {
       console.log(`[Pipeline] BRANCH TAKEN! Updating PC and flushing IF/ID stages.`);
       finalNextPC = parseInt(branchDecision.targetAddress, 2);
-
       final_newState_ID_EX = { ...NOP_DATA };
       final_newState_IF_ID = { instruction: NOP_DATA.instruction, PC: -1, PCP4: 0 };
     }
 
     if (stallNeeded) {
-      // Inject a bubble (NOP) into the EX stage.
       this.id_ex_register = { ...NOP_DATA };
       this.mem_wb_register = newState_MEM_WB;
       this.ex_mem_register = newState_EX_MEM;
