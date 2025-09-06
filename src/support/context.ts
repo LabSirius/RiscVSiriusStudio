@@ -151,12 +151,12 @@ export class RVContext {
     this.disposables.push(
       window.onDidChangeActiveTextEditor((editor) => {
         if (this._simulator && this._isSimulating) this.buildCurrentDocument();
-        // if (editor?.document.languageId === "riscvasm") {
-        //   if (!this._isSimulating && !this._madeReadonlyOnce) {
-        //     commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
-        //     this._madeReadonlyOnce = true;
-        //   }
-        // }
+        if (editor?.document.languageId === "riscvasm") {
+          if (!this._isSimulating && !this._madeReadonlyOnce) {
+            commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
+            this._madeReadonlyOnce = true;
+          }
+        }
       })
     );
     this.extensionContext.subscriptions.push({
@@ -199,7 +199,7 @@ export class RVContext {
     panel.onDidDispose(() => {
       this._graphicWebviewPanel = undefined;
       if (this._isSimulating) this._simulator?.makeEditorWritable();
-      this.cleanupSimulator({ sendStopMessage: true });
+      this.cleanupSimulator({ sendStopMessage: true, isReset: false });
       this._hasWebviewInitialized = false;
     });
     panel.webview.html = await getHtmlForGraphicSimulator(panel.webview, this.extensionContext.extensionUri);
@@ -265,7 +265,7 @@ export class RVContext {
   }
 
   private stop() {
-    this.cleanupSimulator({ sendStopMessage: true });
+    this.cleanupSimulator({ sendStopMessage: true, isReset: false });
   }
 
   private async resetSimulator(options: { isHardReset: boolean }) {
@@ -273,7 +273,7 @@ export class RVContext {
     const wasGraphic = this._simulator instanceof GraphicSimulator;
     const wasText = this._simulator instanceof TextSimulator;
 
-    this.cleanupSimulator({ sendStopMessage: false });
+    this.cleanupSimulator({ sendStopMessage: false,  isReset: true });
 
     if (wasGraphic && this._graphicWebviewPanel) {
       await this.initializeAndStartGraphicSimulator(this._graphicWebviewPanel, { ...options, isRestart: true });
@@ -362,7 +362,7 @@ export class RVContext {
     }
   }
 
-  private cleanupSimulator(options?: { sendStopMessage: boolean }) {
+  private cleanupSimulator(options?: { sendStopMessage: boolean, isReset?: boolean }) {
     if (!this._simulator) return;
     commands.executeCommand("setContext", "ext.isSimulating", false);
     const simulatorToStop = this._simulator;

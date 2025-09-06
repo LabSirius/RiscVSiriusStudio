@@ -67,7 +67,7 @@ export abstract class Simulator {
     return { instruction, result };
   }
 
-  public stop(options?: { sendStopMessage: boolean }): void {
+  public stop(options?: { sendStopMessage: boolean, isReset?: boolean  }): void {
     console.log("Simulator stopped");
   }
 
@@ -245,7 +245,12 @@ export class TextSimulator extends Simulator {
     }
   }
 
-  public override stop(options?: { sendStopMessage: boolean }): void {
+  public override stop(options?: { sendStopMessage: boolean, isReset?: boolean }): void {
+
+    if(!options?.isReset){
+    this.makeEditorWritable();
+    }
+
     super.stop(options);
     this.clearHighlight();
     this.context.clearDecorations();
