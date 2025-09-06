@@ -150,6 +150,7 @@ export class DataMemory {
   }
   public read(address: number, length: number): Array<string> {
 
+
     const lastAddress = address + length - 1;
 
     if (lastAddress > this.lastAddress()) {

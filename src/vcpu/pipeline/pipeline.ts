@@ -225,7 +225,6 @@ export class PipelineCPU implements ICPU {
         this.pc = this.pc; 
         this.if_id_register = this.if_id_register;
 
-        // INYECTA la burbuja en la etapa EX
         this.id_ex_register = { ...NOP_DATA };
 
         this.ex_mem_register = newState_EX_MEM;
@@ -504,7 +503,6 @@ export class PipelineCPU implements ICPU {
           console.log(
             `[MEM Stage] DataMemory.write called at address ${address} with ${bytesToWrite.length} byte(s)`
           );
-          console.log("new MEMORY", this.getDataMemory());
         }
       } else {
         console.error(
@@ -665,7 +663,8 @@ export class PipelineCPU implements ICPU {
     newMemory.forEach((group) => {
       flatMemory.push(group.value0, group.value1, group.value2, group.value3);
     });
-    (this.dataMemory as any).memory = flatMemory;
+    (this.dataMemory as any).memory_available = flatMemory;
+    console.log("new MEMORY", this.getDataMemory());
   }
   public replaceRegisters(newRegisters: string[]): void {
     (this.registers as any).registers = newRegisters;
