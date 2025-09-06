@@ -664,7 +664,6 @@ export class PipelineCPU implements ICPU {
       flatMemory.push(group.value0, group.value1, group.value2, group.value3);
     });
     (this.dataMemory as any).memory_available = flatMemory;
-    console.log("new MEMORY", this.getDataMemory());
   }
   public replaceRegisters(newRegisters: string[]): void {
     (this.registers as any).registers = newRegisters;
