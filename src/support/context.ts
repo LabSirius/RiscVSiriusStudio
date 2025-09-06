@@ -99,12 +99,12 @@ export class RVContext {
         const environmentReady = await this.prepareForGraphicSimulation();
         if (!environmentReady) return;
         const panel = await this.createAndConfigureGraphicPanel();
-        await this.initializeAndStartGraphicSimulator(panel);
+        await this.initializeAndStartGraphicSimulator(panel, { isRestart: false });
       }),
       commands.registerCommand("rv-simulator.textSimulate", () => {
         const environmentReady = this.prepareForTextSimulation();
         if (!environmentReady) return;
-        this.initializeAndStartTextSimulator();
+        this.initializeAndStartTextSimulator({ isRestart: false });
       }),
       commands.registerCommand("rv-simulator.simulateStep", () => this.step()),
       commands.registerCommand("rv-simulator.simulateReset", () => this.resetSimulator({ isHardReset: true })),
@@ -198,7 +198,7 @@ export class RVContext {
     this._graphicWebviewPanel = panel;
     panel.onDidDispose(() => {
       this._graphicWebviewPanel = undefined;
-      // if (this._isSimulating) this._simulator?.makeEditorWritable();
+      if (this._isSimulating) this._simulator?.makeEditorWritable();
       this.cleanupSimulator({ sendStopMessage: true });
       this._hasWebviewInitialized = false;
     });
@@ -207,7 +207,7 @@ export class RVContext {
     return panel;
   }
 
-  private async initializeAndStartGraphicSimulator(panel: WebviewPanel, options?: { isHardReset: boolean }) {
+  private async initializeAndStartGraphicSimulator(panel: WebviewPanel, options?: { isHardReset?: boolean; isRestart?: boolean }) {
     if (!this._currentDocument?.ir) {
         this.buildCurrentDocument();
         if(!this._currentDocument?.ir) {
@@ -219,7 +219,7 @@ export class RVContext {
     this._simulator = new GraphicSimulator(this._simulatorType, settings, this._currentDocument, this, panel.webview);
     this._isSimulating = true;
     commands.executeCommand("setContext", "ext.isSimulating", true);
-    await this._simulator.start();
+    await this._simulator.start({ isRestart: options?.isRestart ?? false });
 
     if (this._hasWebviewInitialized) {
       this._simulator.sendInitialData({ isHardReset: options?.isHardReset ?? false });
@@ -246,13 +246,13 @@ export class RVContext {
     return !!(this._currentDocument && this._currentDocument.ir);
   }
 
-  private initializeAndStartTextSimulator(options?: { isHardReset: boolean }) {
+  private initializeAndStartTextSimulator(options?: { isHardReset?: boolean; isRestart?: boolean  }) {
     if (!this._currentDocument?.ir || !this._textWebview) return;
     const settings: SimulationParameters = { memorySize: 40 };
     this._simulator = new TextSimulator(this._simulatorType, settings, this._currentDocument, this, this._textWebview);
     this._isSimulating = true;
     commands.executeCommand("setContext", "ext.isSimulating", true);
-    this._simulator.start();
+    this._simulator.start({ isRestart: options?.isRestart ?? false });
     this._simulator.sendInitialData({ isHardReset: options?.isHardReset ?? false });
   }
 
@@ -276,10 +276,10 @@ export class RVContext {
     this.cleanupSimulator({ sendStopMessage: false });
 
     if (wasGraphic && this._graphicWebviewPanel) {
-      await this.initializeAndStartGraphicSimulator(this._graphicWebviewPanel, options);
+      await this.initializeAndStartGraphicSimulator(this._graphicWebviewPanel, { ...options, isRestart: true });
     } else if (wasText) {
       this.buildCurrentDocument();
-      this.initializeAndStartTextSimulator(options);
+      this.initializeAndStartTextSimulator({ ...options, isRestart: true });
     }
   }
 

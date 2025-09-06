@@ -52,7 +52,7 @@ export abstract class Simulator {
     return this._configured;
   }
 
-  public start(): void {
+  public start(options?: { isRestart?: boolean }): void {
     console.log("Simulator configured and ready. Waiting for webview signal...");
   }
 
@@ -97,7 +97,8 @@ export abstract class Simulator {
   public abstract animateLine(line: number): void;
   public abstract sendSimulatorTypeToView(simulatorType: string): void;
   public abstract sendTextProgramToView(textProgram: string): void;
-  // public abstract makeEditorWritable(): Promise<void>;
+  public abstract makeEditorWritable(): Promise<void>;
+  public abstract makeEditorReadOnly(): Promise<void>;
 }
 
 /**
@@ -117,10 +118,19 @@ export class TextSimulator extends Simulator {
     super(simulatorType, settings, rvDoc, context, webview);
   }
 
-  public override async start(): Promise<void> {
+  public override async start(options?: { isRestart?: boolean }): Promise<void> {
+
+
+    console.log("AQUI PROBAMOS", options?.isRestart);
+
+    if(!options?.isRestart){
+
+   
     await this.makeEditorReadOnly();
+    }
+    
     this.listenToEditorClicks();
-    super.start();
+    super.start(options);
   }
 
   public override sendInitialData(options?: { isHardReset: boolean }): void {
@@ -152,7 +162,7 @@ export class TextSimulator extends Simulator {
         payload,
         typeSimulator: this.simulatorType,
         initialLine: inst.location?.start?.line ?? -1,
-        isReset: options?.isHardReset ?? false, 
+        isReset: options?.isHardReset ?? false,
       });
     } catch (error) {
       console.error(
@@ -238,7 +248,6 @@ export class TextSimulator extends Simulator {
   public override stop(options?: { sendStopMessage: boolean }): void {
     super.stop(options);
     this.clearHighlight();
-    // this.makeEditorWritable();
     this.context.clearDecorations();
     if (this.selectionListenerDisposable) {
       this.selectionListenerDisposable.dispose();
@@ -272,18 +281,12 @@ export class TextSimulator extends Simulator {
   private bytesToReadOrWrite(instruction: any): number {
     const funct3 = getFunct3(instruction);
     switch (funct3) {
-      case "000":
-        return 1;
-      case "001":
-        return 2;
-      case "010":
-        return 4;
-      case "100":
-        return 1;
-      case "101":
-        return 2;
-      default:
-        throw new Error("Cannot deduce bytes to write from funct3");
+      case "000": return 1;
+      case "001": return 2;
+      case "010": return 4;
+      case "100": return 1;
+      case "101": return 2;
+      default: throw new Error("Cannot deduce bytes to write from funct3");
     }
   }
 
@@ -291,9 +294,7 @@ export class TextSimulator extends Simulator {
     const bytesToWrite = this.bytesToReadOrWrite(instruction);
     const addressNum = parseInt(result.dm.address, 2);
     if (result.dm.dataWr.length < 32) result.dm.dataWr = result.dm.dataWr.padStart(32, "0");
-    if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) {
-      throw new Error(`Cannot write to address ${addressNum.toString(16)}.`);
-    }
+    if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) { throw new Error(`Cannot write to address ${addressNum.toString(16)}.`); }
     this.notifyMemoryWrite(addressNum, result.dm.dataWr, bytesToWrite);
     const chunks = result.dm.dataWr.match(/.{1,8}/g) as string[];
     this.cpu.getDataMemory().write(chunks.reverse(), addressNum);
@@ -301,82 +302,52 @@ export class TextSimulator extends Simulator {
 
   public override animateLine(line: number): void {
     const editor = this.rvDoc.editor;
-    if (!editor) {
-      return;
-    }
-    const blink = window.createTextEditorDecorationType({
-      isWholeLine: true,
-      backgroundColor: "rgba(58, 108, 115, 0.3)",
-    });
+    if (!editor) { return; }
+    const blink = window.createTextEditorDecorationType({ isWholeLine: true, backgroundColor: "rgba(58, 108, 115, 0.3)" });
     const range = editor.document.lineAt(line - 1).range;
     let show = true;
-    const intervalId = setInterval(() => {
-      editor.setDecorations(blink, show ? [range] : []);
-      show = !show;
-    }, 250);
-    setTimeout(() => {
-      clearInterval(intervalId);
-      editor.setDecorations(blink, []);
-      blink.dispose();
-    }, 1000);
+    const intervalId = setInterval(() => { editor.setDecorations(blink, show ? [range] : []); show = !show; }, 250);
+    setTimeout(() => { clearInterval(intervalId); editor.setDecorations(blink, []); blink.dispose(); }, 1000);
   }
 
-  public override sendSimulatorTypeToView(simulatorType: string): void {
-    this.sendToWebview({ operation: "simulatorType", simulatorType });
-  }
-  public override sendTextProgramToView(textProgram: string): void {
-    this.sendToWebview({ operation: "textProgram", textProgram });
-  }
-  public override notifyRegisterWrite(register: string, value: string): void {
-    this.sendToWebview({ operation: "setRegister", register, value });
-  }
-  public override notifyMemoryRead(address: number, length: number): void {
-    this.sendToWebview({ operation: "readMemory", address, _length: length });
-  }
-  public override notifyMemoryWrite(address: number, value: string, length: number): void {
-    this.sendToWebview({ operation: "writeMemory", address, value, _length: length });
-  }
+  public override sendSimulatorTypeToView(simulatorType: string): void { this.sendToWebview({ operation: "simulatorType", simulatorType }); }
+  public override sendTextProgramToView(textProgram: string): void { this.sendToWebview({ operation: "textProgram", textProgram }); }
+  public override notifyRegisterWrite(register: string, value: string): void { this.sendToWebview({ operation: "setRegister", register, value }); }
+  public override notifyMemoryRead(address: number, length: number): void { this.sendToWebview({ operation: "readMemory", address, _length: length }); }
+  public override notifyMemoryWrite(address: number, value: string, length: number): void { this.sendToWebview({ operation: "writeMemory", address, value, _length: length }); }
+  
   public async makeEditorReadOnly() {
     const editor = this.rvDoc.editor;
-    if (!editor) {
-      return;
-    }
+    if (!editor) { return; }
     await window.showTextDocument(editor.document, editor.viewColumn);
     await commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
   }
-  // public async makeEditorWritable() {
-  //   const editor = this.rvDoc.editor;
-  //   if (!editor) {
-  //     return;
-  //   }
-  //   await commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
-  // }
+
+  public async makeEditorWritable() {
+    const editor = this.rvDoc.editor;
+    if (!editor) { return; }
+    await commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
+  }
+
   private listenToEditorClicks() {
-    if (this.selectionListenerDisposable) {
-      return;
-    }
+    if (this.selectionListenerDisposable) { return; }
     this.selectionListenerDisposable = window.onDidChangeTextEditorSelection((event) => {
       const line = event.selections?.[0]?.active.line;
-      if (line !== undefined) {
-        this.sendToWebview({ operation: "clickInLine", lineNumber: line + 1 });
-      }
+      if (line !== undefined) { this.sendToWebview({ operation: "clickInLine", lineNumber: line + 1 }); }
     });
   }
+
   private highlightLine(lineNumber: number): void {
     const editor = this.rvDoc.editor;
     if (editor) {
-      if (this.currentHighlight) {
-        this.currentHighlight.dispose();
-      }
-      this.currentHighlight = window.createTextEditorDecorationType({
-        backgroundColor: "rgba(209, 227, 231, 0.5)",
-        isWholeLine: true,
-      });
+      if (this.currentHighlight) { this.currentHighlight.dispose(); }
+      this.currentHighlight = window.createTextEditorDecorationType({ backgroundColor: "rgba(209, 227, 231, 0.5)", isWholeLine: true });
       const range = editor.document.lineAt(lineNumber).range;
       editor.revealRange(range);
       editor.setDecorations(this.currentHighlight, [{ range, hoverMessage: "Selected line" }]);
     }
   }
+
   private clearHighlight() {
     if (this.currentHighlight) {
       this.currentHighlight.dispose();
@@ -399,20 +370,16 @@ export class GraphicSimulator extends TextSimulator {
     super(simulatorType, settings, rvDoc, context, webview);
   }
 
-  public override async start(): Promise<void> {
-    await super.start();
+  public override async start(options?: { isRestart?: boolean }): Promise<void> {
+    await super.start(options);
   }
 
   public override sendInitialData(options?: { isHardReset: boolean }): void {
     this.sendSimulatorTypeToView("graphic");
-    super.sendInitialData(options); 
+    super.sendInitialData(options);
     this.sendTextProgramToView(this.rvDoc.getText());
   }
 
-  public override sendSimulatorTypeToView(simulatorType: string): void {
-    this.sendToWebview({ operation: "simulatorType", simulatorType });
-  }
-  public override sendTextProgramToView(textProgram: string): void {
-    this.sendToWebview({ operation: "textProgram", textProgram });
-  }
+  public override sendSimulatorTypeToView(simulatorType: string): void { this.sendToWebview({ operation: "simulatorType", simulatorType }); }
+  public override sendTextProgramToView(textProgram: string): void { this.sendToWebview({ operation: "textProgram", textProgram }); }
 }
