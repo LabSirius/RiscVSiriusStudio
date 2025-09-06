@@ -151,12 +151,12 @@ export class RVContext {
     this.disposables.push(
       window.onDidChangeActiveTextEditor((editor) => {
         if (this._simulator && this._isSimulating) this.buildCurrentDocument();
-        if (editor?.document.languageId === "riscvasm") {
-          if (!this._isSimulating && !this._madeReadonlyOnce) {
-            commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
-            this._madeReadonlyOnce = true;
-          }
-        }
+        // if (editor?.document.languageId === "riscvasm") {
+        //   if (!this._isSimulating && !this._madeReadonlyOnce) {
+        //     commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
+        //     this._madeReadonlyOnce = true;
+        //   }
+        // }
       })
     );
     this.extensionContext.subscriptions.push({
@@ -198,7 +198,7 @@ export class RVContext {
     this._graphicWebviewPanel = panel;
     panel.onDidDispose(() => {
       this._graphicWebviewPanel = undefined;
-      if (this._isSimulating) this._simulator?.makeEditorWritable();
+      // if (this._isSimulating) this._simulator?.makeEditorWritable();
       this.cleanupSimulator({ sendStopMessage: true });
       this._hasWebviewInitialized = false;
     });

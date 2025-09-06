@@ -97,7 +97,7 @@ export abstract class Simulator {
   public abstract animateLine(line: number): void;
   public abstract sendSimulatorTypeToView(simulatorType: string): void;
   public abstract sendTextProgramToView(textProgram: string): void;
-  public abstract makeEditorWritable(): Promise<void>;
+  // public abstract makeEditorWritable(): Promise<void>;
 }
 
 /**
@@ -238,7 +238,7 @@ export class TextSimulator extends Simulator {
   public override stop(options?: { sendStopMessage: boolean }): void {
     super.stop(options);
     this.clearHighlight();
-    this.makeEditorWritable();
+    // this.makeEditorWritable();
     this.context.clearDecorations();
     if (this.selectionListenerDisposable) {
       this.selectionListenerDisposable.dispose();
@@ -344,13 +344,13 @@ export class TextSimulator extends Simulator {
     await window.showTextDocument(editor.document, editor.viewColumn);
     await commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
   }
-  public async makeEditorWritable() {
-    const editor = this.rvDoc.editor;
-    if (!editor) {
-      return;
-    }
-    await commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
-  }
+  // public async makeEditorWritable() {
+  //   const editor = this.rvDoc.editor;
+  //   if (!editor) {
+  //     return;
+  //   }
+  //   await commands.executeCommand("workbench.action.files.toggleActiveEditorReadonlyInSession");
+  // }
   private listenToEditorClicks() {
     if (this.selectionListenerDisposable) {
       return;
