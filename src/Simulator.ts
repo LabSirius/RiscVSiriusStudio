@@ -300,6 +300,8 @@ export class TextSimulator extends Simulator {
         return 1;
       case "101":
         return 2;
+      case "XXX":
+        return 0;
       default:
         throw new Error("Cannot deduce bytes to write from funct3");
     }

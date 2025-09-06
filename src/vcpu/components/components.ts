@@ -298,23 +298,17 @@ export class BranchUnit {
    */
   public evaluate(brOp: string, val1: string, val2: string): boolean {
 
-    const opType = brOp.substring(0, 2);
-
-    if (opType === "10" || opType === "11") {
-      // Corresponds to 2'b1x in Verilog (JAL, JALR)
-      return true; // Unconditional jump
+    if (brOp.substring(0, 1) === "1") {
+      return true; 
     }
 
-    if (opType === "01") {
-      // Corresponds to 2'b01 in Verilog (Conditional Branches)
+    if (brOp.substring(0, 2) === "01") {
       const num1_signed = BigInt.asIntN(32, BigInt(`0b${val1}`));
       const num2_signed = BigInt.asIntN(32, BigInt(`0b${val2}`));
-      // -------------------------
-
       const num1_unsigned = BigInt(`0b${val1}`);
       const num2_unsigned = BigInt(`0b${val2}`);
 
-      const condition = brOp.substring(2, 5); // Gets funct3
+      const condition = brOp.substring(2, 5); // Obtiene el funct3 para la condición
       switch (condition) {
         case "000":
           return num1_signed === num2_signed; // BEQ
@@ -333,7 +327,7 @@ export class BranchUnit {
       }
     }
 
-    // Default case, includes 2'b00 from Verilog (not a branch).
+    // Si no es ni incondicional ni condicional (ej. "00XXX"), no es un salto.
     return false;
   }
 }
