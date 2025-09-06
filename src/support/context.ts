@@ -104,7 +104,7 @@ export class RVContext {
       commands.registerCommand("rv-simulator.textSimulate", () => {
         const environmentReady = this.prepareForTextSimulation();
         if (!environmentReady) return;
-        this.initializeAndStartTextSimulator({ isRestart: false });
+        this.initializeAndStartTextSimulator({ isHardReset: true, isRestart: false });
       }),
       commands.registerCommand("rv-simulator.simulateStep", () => this.step()),
       commands.registerCommand("rv-simulator.simulateReset", () => this.resetSimulator({ isHardReset: true })),
