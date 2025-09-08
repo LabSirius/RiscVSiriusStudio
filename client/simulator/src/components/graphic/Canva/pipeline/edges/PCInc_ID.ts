@@ -43,7 +43,7 @@ export const PCInc_ID: Edge[] = [
   },
 
   {
-    id: "pivotJump11->pivotJump11",
+    id: "pivotJump11->pivotJump1",
     source: "pivotJump11",
     target: "pivotJump1",
     type: "step"

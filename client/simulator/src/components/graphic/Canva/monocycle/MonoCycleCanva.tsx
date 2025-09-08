@@ -14,7 +14,7 @@ import CustomControls from "../../custom/CustomControls";
 
 import ActiveConexionsController from "../shared/conexions-controller/ActiveConexionsController";
 
-import { useCustomOptionSimulate } from "@/context/shared/CustomOptionSimulate"; 
+import { useCustomOptionSimulate } from "@/context/shared/CustomOptionSimulate";
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
@@ -35,16 +35,15 @@ export default function MonocycleCanva() {
   const { fitView, updateEdge } = useReactFlow();
   const { fitViewTrigger } = useCustomOptionSimulate();
 
- useEffect(() => {
+  useEffect(() => {
     if (fitViewTrigger > 0) {
-
       setTimeout(() => {
-        fitView({ 
-          duration: 400, 
+        fitView({
+          duration: 400,
 
-          padding: 0.01
+          padding: 0.01,
         });
-      }, 0); 
+      }, 0);
     }
   }, [fitViewTrigger, fitView]);
 
@@ -56,6 +55,8 @@ export default function MonocycleCanva() {
   };
 
   const handleEdgeMouseEnter = (_event: MouseEvent<Element>, edge: Edge): void => {
+    console.log("Hovered edge only:", edge.id);
+
     if ((edge as AppEdge).disabled) return;
     animateLineHover(updateEdge, edge, edges, true);
   };
@@ -84,8 +85,7 @@ export default function MonocycleCanva() {
       maxZoom={2}
       panOnDrag={isInteractive}
       elementsSelectable={isInteractive}
-      fitView={false}
-    >
+      fitView={false}>
       <Background color="#000000" gap={20} size={2} />
       {minimapVisible && <MiniMap />}
       <CustomControls {...controlHandlers} />

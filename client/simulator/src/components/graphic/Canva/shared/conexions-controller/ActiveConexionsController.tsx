@@ -1,13 +1,24 @@
 import { useEffect, useRef } from 'react';
 import { Edge } from '@xyflow/react';
-import { useDataConexions } from './useDataConexions'; 
+import { useDataMonocycleConexions } from './useDataMonocycleConexions'; 
+import { useSimulator } from '@/context/shared/SimulatorContext';
+import { useDataPipelineConexions } from './useDataPipelineConexions';
 
 interface DataPathControllerProps {
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
 }
 
 const DataPathController: React.FC<DataPathControllerProps> = ({ setEdges }) => {
-  const disabledEdges = useDataConexions();
+
+  const { typeSimulator} = useSimulator();
+
+  const monoDisabledEdges = useDataMonocycleConexions();
+  const pipelineDisabledEdges = useDataPipelineConexions();
+
+  const disabledEdges =
+    typeSimulator === "monocycle" ? monoDisabledEdges : pipelineDisabledEdges;
+
+
   const previousDisabledEdgesRef = useRef<string[]>([]);
 
   useEffect(() => {
