@@ -85,6 +85,13 @@ export const im_funct7 = [
 
 
 
+// ID-EX
+export const ru_rurs1_IE = ["registersUnit->rurs1_ie"]
+export const ru_rurs2_IE = ["registersUnit->rurs2_ie"]
+export const immGen_immExit_IE= ["immGenerator->immext_ie"]
+
+
+
 export const muxC_rd = ["muxC->pivot11", "pivot11->pivot12", "pivot12->registersUnit"];
 
 export const RUWr_wb = ["ruWr->registersUnit"];
