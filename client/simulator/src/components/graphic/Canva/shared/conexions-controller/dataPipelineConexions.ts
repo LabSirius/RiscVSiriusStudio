@@ -37,6 +37,14 @@ export const im_rs2 = [
 ];
 
 
+export const im_rd = [
+  "inst_id->pivot3",
+  "pivot3->pivot26",
+  "pivot26->pivot38",
+  "pivot38->rd_ie"
+]
+
+
   //imm generator
 export const im_immGen = [
   "pivot3->pivot26",
@@ -92,6 +100,28 @@ export const immGen_immExit_IE= ["immGenerator->immext_ie"]
 
 
 
+//EX STAGE
+  //mux A
+export const rs1_muxA = ["rurs1_ie->pivotJump4", "pivotJump4->pivot4", "pivot4->muxA"];
+export const pc_muxA = [
+  "pc_ie->pivotJump2",
+  "pivot1->pivotJump2",
+  "pivotJump2->pivotJump3",
+  "pivotJump3->muxA",
+];
+export const aluASrc_muxA = ["aluASrc->muxA"];
+
+  //mux b
+export const rs2_muxB = ["rurs2_ie->pivot2", "pivot2->muxB"];
+export const immGen_muxB = ["immext_ie->pivotJump5", "pivotJump5->pivot10", "pivot10->muxB"];
+export const aluBSrc_muxB = ["aluBSrc->muxB"];
+
+
+
+
+
+
+
 export const muxC_rd = ["muxC->pivot11", "pivot11->pivot12", "pivot12->registersUnit"];
 
 export const RUWr_wb = ["ruWr->registersUnit"];
@@ -99,26 +129,6 @@ export const RUWr_wb = ["ruWr->registersUnit"];
 
 
 
-
-//MUXA
-export const rs1_muxA = ["registersUnit->pivotJump4", "pivotJump4->pivot4", "pivot4->muxA"];
-
-export const pc_muxA = [
-  "pc->pivot25",
-  "pivot25->pivot1",
-  "pivot1->pivotJump2",
-  "pivotJump2->pivotJump3",
-  "pivotJump3->muxA",
-];
-
-export const aluASrc_muxA = ["aluASrc->muxA"];
-
-//MUXB
-export const rs2_muxB = ["registersUnit->pivot2", "pivot2->muxB"];
-
-export const immGen_muxB = ["immGenerator->pivotJump5", "pivotJump5->pivot10", "pivot10->muxB"];
-
-export const aluBSrc_muxB = ["aluBSrc->muxB"];
 
 //ALU
 export const muxA_aluA = ["muxA->alu"];

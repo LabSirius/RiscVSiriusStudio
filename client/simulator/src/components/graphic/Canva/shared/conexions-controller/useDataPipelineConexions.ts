@@ -8,11 +8,9 @@ const allEdges = [...new Set(allConexions.flat())];
 export const useDataPipelineConexions = () => {
   const { pipelineValuesStages } = useCurrentInst();
 
-
   const IFType = pipelineValuesStages.IF.instruction?.type;
   const IDType = pipelineValuesStages.ID.instruction?.type;
   const IEType = pipelineValuesStages.EX.instruction?.type;
-
 
   const disabledEdges = useMemo(() => {
     const enabledEdges: string[] = [];
@@ -29,62 +27,146 @@ export const useDataPipelineConexions = () => {
       );
     }
 
-
     if (IDType) {
       enabledEdges.push(...conexion.pcIncID_pcIncIE, ...conexion.pcID_pcEX);
 
       switch (IDType) {
         case "R":
           enabledEdges.push(
-            ...conexion.im_rs1, ...conexion.im_rs2, ...conexion.im_opcode,
-            ...conexion.im_funct3, ...conexion.im_funct7, ...conexion.ru_rurs1_IE,
-            ...conexion.ru_rurs2_IE
+            ...conexion.im_rs1,
+            ...conexion.im_rs2,
+            ...conexion.im_opcode,
+            ...conexion.im_funct3,
+            ...conexion.im_funct7,
+            ...conexion.ru_rurs1_IE,
+            ...conexion.ru_rurs2_IE,
+            ...conexion.im_rd
           );
           break;
         case "I":
           enabledEdges.push(
-            ...conexion.im_rs1, ...conexion.im_immGen, ...conexion.immSrc_immGen,
-            ...conexion.im_opcode, ...conexion.im_funct3, ...conexion.ru_rurs1_IE, ...conexion.immGen_immExit_IE
+            ...conexion.im_rs1,
+            ...conexion.im_immGen,
+            ...conexion.immSrc_immGen,
+            ...conexion.im_opcode,
+            ...conexion.im_funct3,
+            ...conexion.ru_rurs1_IE,
+            ...conexion.immGen_immExit_IE,
+            ...conexion.im_rd
           );
           break;
         case "S":
           enabledEdges.push(
-            ...conexion.im_rs1, ...conexion.im_rs2, ...conexion.im_immGen,
-            ...conexion.immSrc_immGen, ...conexion.im_opcode, ...conexion.im_funct3,
-            ...conexion.ru_rurs1_IE, ...conexion.ru_rurs2_IE, ...conexion.immGen_immExit_IE
+            ...conexion.im_rs1,
+            ...conexion.im_rs2,
+            ...conexion.im_immGen,
+            ...conexion.immSrc_immGen,
+            ...conexion.im_opcode,
+            ...conexion.im_funct3,
+            ...conexion.ru_rurs1_IE,
+            ...conexion.ru_rurs2_IE,
+            ...conexion.immGen_immExit_IE
           );
           break;
         case "B":
           enabledEdges.push(
-            ...conexion.im_rs1, ...conexion.im_rs2, ...conexion.im_immGen,
-            ...conexion.immSrc_immGen, ...conexion.im_opcode, ...conexion.im_funct3,
-            ...conexion.ru_rurs1_IE, ...conexion.ru_rurs2_IE, ...conexion.immGen_immExit_IE
+            ...conexion.im_rs1,
+            ...conexion.im_rs2,
+            ...conexion.im_immGen,
+            ...conexion.immSrc_immGen,
+            ...conexion.im_opcode,
+            ...conexion.im_funct3,
+            ...conexion.ru_rurs1_IE,
+            ...conexion.ru_rurs2_IE,
+            ...conexion.immGen_immExit_IE
           );
           break;
         case "J":
           enabledEdges.push(
-            ...conexion.im_immGen, ...conexion.immSrc_immGen, ...conexion.im_opcode, ...conexion.immGen_immExit_IE
+            ...conexion.im_immGen,
+            ...conexion.immSrc_immGen,
+            ...conexion.im_opcode,
+            ...conexion.immGen_immExit_IE,
+            ...conexion.im_rd
           );
           break;
         case "U":
           enabledEdges.push(
-            ...conexion.im_immGen, ...conexion.immSrc_immGen, ...conexion.im_opcode, ...conexion.immGen_immExit_IE
+            ...conexion.im_immGen,
+            ...conexion.immSrc_immGen,
+            ...conexion.im_opcode,
+            ...conexion.immGen_immExit_IE,
+            ...conexion.im_rd
           );
+
           break;
       }
     } else if (IEType) {
-
-      enabledEdges.push(...conexion.pcIncID_pcIncIE, ...conexion.pcID_pcEX, ...conexion.immGen_immExit_IE)
+      enabledEdges.push(
+        ...conexion.pcIncID_pcIncIE,
+        ...conexion.pcID_pcEX,
+        ...conexion.immGen_immExit_IE
+      );
     }
-    
+
+    switch (IEType) {
+      case "R":
+        enabledEdges.push(
+          ...conexion.aluASrc_muxA,
+          ...conexion.rs1_muxA,
+          ...conexion.aluBSrc_muxB,
+          ...conexion.rs2_muxB
+        );
+
+        break;
+      case "I":
+        enabledEdges.push(
+          ...conexion.aluASrc_muxA,
+          ...conexion.rs1_muxA,
+          ...conexion.aluBSrc_muxB,
+          ...conexion.immGen_muxB
+        );
+
+        break;
+
+      case "S":
+        enabledEdges.push(
+          ...conexion.aluASrc_muxA,
+          ...conexion.rs1_muxA,
+          ...conexion.aluBSrc_muxB,
+          ...conexion.immGen_muxB
+        );
+        break;
+
+      case "B":
+        enabledEdges.push(
+          ...conexion.aluASrc_muxA,
+          ...conexion.pc_muxA,
+          ...conexion.aluBSrc_muxB,
+          ...conexion.immGen_muxB
+        );
+        break;
+
+      case "J":
+        enabledEdges.push(
+          ...conexion.aluASrc_muxA,
+          ...conexion.pc_muxA,
+          ...conexion.aluBSrc_muxB,
+          ...conexion.immGen_muxB
+        );
+        break;
+
+      case "U":
+        enabledEdges.push(...conexion.aluBSrc_muxB, ...conexion.immGen_muxB);
+        break;
+    }
+
     if (IEType) {
-        //
+      //
     }
-
 
     const enabledSet = new Set(enabledEdges);
     return allEdges.filter((edge) => !enabledSet.has(edge));
-
   }, [IFType, IDType, IEType]);
 
   return disabledEdges;
