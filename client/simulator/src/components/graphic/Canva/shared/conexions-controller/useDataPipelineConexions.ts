@@ -101,11 +101,18 @@ export const useDataPipelineConexions = () => {
 
           break;
       }
-    } else if (IEType) {
-      enabledEdges.push(
+    } 
+
+
+
+
+    if (IEType) {
+       enabledEdges.push(
         ...conexion.pcIncID_pcIncIE,
         ...conexion.pcID_pcEX,
-        ...conexion.immGen_immExit_IE
+        ...conexion.immGen_immExit_IE,
+        ...conexion.pcIncIE_pcIncMem,
+        ...conexion.rdIE_rdMEM
       );
     }
 
@@ -158,12 +165,16 @@ export const useDataPipelineConexions = () => {
 
       case "U":
         enabledEdges.push(...conexion.aluBSrc_muxB, ...conexion.immGen_muxB);
+
+        if (pipelineValuesStages.EX.instruction.opcode === "0110111") {
+          enabledEdges.push();
+        } else {
+          enabledEdges.push(...conexion.aluASrc_muxA, ...conexion.pc_muxA);
+        }
         break;
     }
 
-    if (IEType) {
-      //
-    }
+    
 
     const enabledSet = new Set(enabledEdges);
     return allEdges.filter((edge) => !enabledSet.has(edge));

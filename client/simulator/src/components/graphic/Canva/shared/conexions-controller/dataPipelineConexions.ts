@@ -117,6 +117,12 @@ export const immGen_muxB = ["immext_ie->pivotJump5", "pivotJump5->pivot10", "piv
 export const aluBSrc_muxB = ["aluBSrc->muxB"];
 
 
+//EX-MEM
+
+export const pcIncIE_pcIncMem= ["pcinc_ie->pivotJump8", "pivotJump8->pivotJump9", "pivotJump9->pcinc_mem"]
+export const rdIE_rdMEM = ["rd_ie->rd_mem"]
+
+
 
 
 
