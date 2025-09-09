@@ -21,15 +21,27 @@ export const useDataPipelineConexions = () => {
         ...conexion.pc_adder4,
         ...conexion.four_adder4,
         ...conexion.pc_im,
-        ...conexion.im_instID,
-        ...conexion.pc_pc_ID,
-        ...conexion.adder4_pcIncID
+        ...conexion.im_instID
       );
+
+      switch (IFType) {
+        case "J":
+          enabledEdges.push(...conexion.adder4_pcIncID, ...conexion.pc_pc_ID);
+
+          break;
+        case "B":
+          enabledEdges.push(...conexion.pc_pc_ID);
+
+          break;
+        case "U":
+          if (pipelineValuesStages.EX.instruction.opcode === "0010111") {
+            enabledEdges.push(...conexion.pc_pc_ID);
+          }
+
+          break;
+      }
     }
-
     if (IDType) {
-      enabledEdges.push(...conexion.pcIncID_pcIncIE, ...conexion.pcID_pcEX);
-
       switch (IDType) {
         case "R":
           enabledEdges.push(
@@ -78,7 +90,8 @@ export const useDataPipelineConexions = () => {
             ...conexion.im_funct3,
             ...conexion.ru_rurs1_IE,
             ...conexion.ru_rurs2_IE,
-            ...conexion.immGen_immExit_IE
+            ...conexion.immGen_immExit_IE,
+            ...conexion.pcID_pcEX
           );
           break;
         case "J":
@@ -87,7 +100,9 @@ export const useDataPipelineConexions = () => {
             ...conexion.immSrc_immGen,
             ...conexion.im_opcode,
             ...conexion.immGen_immExit_IE,
-            ...conexion.im_rd
+            ...conexion.im_rd,
+            ...conexion.pcIncID_pcIncIE,
+            ...conexion.pcID_pcEX
           );
           break;
         case "U":
@@ -99,82 +114,96 @@ export const useDataPipelineConexions = () => {
             ...conexion.im_rd
           );
 
+          if (pipelineValuesStages.ID.instruction.opcode === "0010111") {
+            //AUIPC
+            enabledEdges.push(...conexion.pcID_pcEX);
+          }
           break;
       }
-    } 
-
-
-
+    }
 
     if (IEType) {
-       enabledEdges.push(
-        ...conexion.pcIncID_pcIncIE,
-        ...conexion.pcID_pcEX,
-        ...conexion.immGen_immExit_IE,
-        ...conexion.pcIncIE_pcIncMem,
-        ...conexion.rdIE_rdMEM
-      );
+      enabledEdges.push(...conexion.bu_muxD);
+
+      if(pipelineValuesStages.EX.BranchResult === "1"){
+        enabledEdges.push(...conexion.alu_muxD)
+      }
+
+      console.log()
+      switch (IEType) {
+        case "R":
+          enabledEdges.push(
+            ...conexion.aluASrc_muxA,
+            ...conexion.rs1_muxA,
+            ...conexion.aluBSrc_muxB,
+            ...conexion.rs2_muxB,
+            ...conexion.rdIE_rdMEM,
+            ...conexion.alu_aluresMem,
+          );
+
+          break;
+        case "I":
+          enabledEdges.push(
+            ...conexion.aluASrc_muxA,
+            ...conexion.rs1_muxA,
+            ...conexion.aluBSrc_muxB,
+            ...conexion.immGen_muxB,
+            ...conexion.rdIE_rdMEM,
+            ...conexion.alu_aluresMem
+          );
+
+          break;
+
+        case "S":
+          enabledEdges.push(
+            ...conexion.aluASrc_muxA,
+            ...conexion.rs1_muxA,
+            ...conexion.aluBSrc_muxB,
+            ...conexion.immGen_muxB,
+            ...conexion.rs2_ruRs2Mem,
+            ...conexion.alu_aluresMem
+          );
+          break;
+
+        case "B":
+          enabledEdges.push(
+            ...conexion.aluASrc_muxA,
+            ...conexion.pc_muxA,
+            ...conexion.aluBSrc_muxB,
+            ...conexion.immGen_muxB,
+            ...conexion.RUrs1_bu,
+            ...conexion.RUrs2_bu
+          );
+          break;
+
+        case "J":
+          enabledEdges.push(
+            ...conexion.aluASrc_muxA,
+            ...conexion.pc_muxA,
+            ...conexion.aluBSrc_muxB,
+            ...conexion.immGen_muxB,
+            ...conexion.pcIncIE_pcIncMem,
+            ...conexion.rdIE_rdMEM,
+            ...conexion.alu_aluresMem,
+          );
+          break;
+
+        case "U":
+          enabledEdges.push(
+            ...conexion.aluBSrc_muxB,
+            ...conexion.immGen_muxB,
+            ...conexion.rdIE_rdMEM,
+            ...conexion.alu_aluresMem
+          );
+
+          if (pipelineValuesStages.EX.instruction.opcode === "0110111") {
+            enabledEdges.push();
+          } else {
+            enabledEdges.push(...conexion.aluASrc_muxA, ...conexion.pc_muxA);
+          }
+          break;
+      }
     }
-
-    switch (IEType) {
-      case "R":
-        enabledEdges.push(
-          ...conexion.aluASrc_muxA,
-          ...conexion.rs1_muxA,
-          ...conexion.aluBSrc_muxB,
-          ...conexion.rs2_muxB
-        );
-
-        break;
-      case "I":
-        enabledEdges.push(
-          ...conexion.aluASrc_muxA,
-          ...conexion.rs1_muxA,
-          ...conexion.aluBSrc_muxB,
-          ...conexion.immGen_muxB
-        );
-
-        break;
-
-      case "S":
-        enabledEdges.push(
-          ...conexion.aluASrc_muxA,
-          ...conexion.rs1_muxA,
-          ...conexion.aluBSrc_muxB,
-          ...conexion.immGen_muxB
-        );
-        break;
-
-      case "B":
-        enabledEdges.push(
-          ...conexion.aluASrc_muxA,
-          ...conexion.pc_muxA,
-          ...conexion.aluBSrc_muxB,
-          ...conexion.immGen_muxB
-        );
-        break;
-
-      case "J":
-        enabledEdges.push(
-          ...conexion.aluASrc_muxA,
-          ...conexion.pc_muxA,
-          ...conexion.aluBSrc_muxB,
-          ...conexion.immGen_muxB
-        );
-        break;
-
-      case "U":
-        enabledEdges.push(...conexion.aluBSrc_muxB, ...conexion.immGen_muxB);
-
-        if (pipelineValuesStages.EX.instruction.opcode === "0110111") {
-          enabledEdges.push();
-        } else {
-          enabledEdges.push(...conexion.aluASrc_muxA, ...conexion.pc_muxA);
-        }
-        break;
-    }
-
-    
 
     const enabledSet = new Set(enabledEdges);
     return allEdges.filter((edge) => !enabledSet.has(edge));
