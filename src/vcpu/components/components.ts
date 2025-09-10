@@ -50,69 +50,71 @@ export class RegistersFile {
 
 //DATA MEMORY
 export class DataMemory {
-
-
   private memory_program: Array<string>; //U
   private memory_available: Array<string>; //U
 
-
-    public getProgramMemory(): Array<string> { //U
+  public getProgramMemory(): Array<string> {
+    //U
     return [...this.memory_program];
   }
-  public getAvailableMemory(): Array<string> { //U
+  public getAvailableMemory(): Array<string> {
+    //U
     return [...this.memory_available];
   }
 
-  private codeAreaEnd: number;
-
-
   private available_size: number; //U
-
 
   get availableMemSize() {
     return this.available_size; //U
   }
 
+  private directives: any[];
+  private directives_size: number;
 
- 
-   get availableSpInitialAddress() {
-    return this.availableMemSize - 4; //U
+
+  get availableSpInitialAddress() {
+    return this.availableMemSize + this.directives_size - 4; //U
   }
 
-
-
   public overwriteAvailableMemory(newMemory: string[]): void {
-  this.memory_available = newMemory;
-  this.available_size = newMemory.length;
-}
+    this.memory_available = newMemory;
+    this.available_size = newMemory.length;
+  }
 
-  public constructor( directivesSize: number, available_size: number) {
-
-    this.codeAreaEnd = directivesSize - 1;
-
-    this.available_size = 0; 
+  public constructor(directives: any, available_size: number) {
+    this.available_size = 0;
     this.memory_program = []; //U
     this.memory_available = []; //U
 
+    this.directives = directives;
+    this.directives_size = 0;
+
     this.resize(available_size);
   }
-  
-  public resize(available_size: number) {
-    this.available_size = available_size; 
-    this.memory_available = new Array(this.available_size).fill("00000000"); //U
 
+  public resize(available_size: number) {
+    this.available_size = available_size;
+    this.directives_size = this.directives.length;
+
+    const directiveValues = this.directives
+      .sort((a, b) => a.memdef - b.memdef)
+      .map((d) => d.binValue);
+
+    const zeros = new Array(this.available_size).fill("00000000");
+
+    this.memory_available = [...directiveValues, ...zeros];
   }
 
-   public uploadProgram(memory: Array<any>) {
-      memory.forEach((mem) => {
-        const address = mem.memdef;
+  public uploadProgram(memory: Array<any>) {
+    memory.forEach((mem) => {
+      const address = mem.memdef;
 
-        this.memory_program[address] = mem.binValue; //U
-      });
+      this.memory_program[address] = mem.binValue; //U
+    });
   }
 
   public lastAddress() {
-    return this.available_size - 1;
+    return this.available_size +   this.directives_size  - 1;
   }
 
   public validAddress(address: number) {
@@ -134,13 +136,9 @@ export class DataMemory {
         throw new Error("Undefined data element");
       }
       this.memory_available[address + i] = data[i]!;
-
-
     }
   }
   public read(address: number, length: number): Array<string> {
-
-
     const lastAddress = address + length - 1;
 
     if (lastAddress > this.lastAddress()) {
@@ -148,7 +146,7 @@ export class DataMemory {
     }
     let data = [] as Array<string>;
     for (let i = 0; i < length; i++) {
-      const valueAvailableMem =   this.memory_available[address + i]
+      const valueAvailableMem = this.memory_available[address + i];
       if (valueAvailableMem !== undefined) {
         data.push(valueAvailableMem);
       } else {
@@ -158,7 +156,6 @@ export class DataMemory {
 
     return data.reverse();
   }
-  
 }
 
 /**
@@ -288,9 +285,8 @@ export class BranchUnit {
    * @returns `true` if the branch should be taken, `false` otherwise.
    */
   public evaluate(brOp: string, val1: string, val2: string): boolean {
-
     if (brOp.substring(0, 1) === "1") {
-      return true; 
+      return true;
     }
 
     if (brOp.substring(0, 2) === "01") {
