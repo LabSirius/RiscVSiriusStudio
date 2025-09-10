@@ -89,12 +89,12 @@ export class SCCPU implements ICPU {
     return this.pc;
   }
 
-  public constructor(program: any[], programMemory: any[], directives: any[], availableMemSize: number) {
+  public constructor(program: any[], programMemory: any[], writableDirectives: any[], readOnlyDirectives: any[], availableMemSize: number) {
 
 
     this._program = program.filter((sc) => sc.kind === "SrcInstruction");
     this.registers = new RegistersFile();
-    this.dataMemory = new DataMemory(directives, availableMemSize);
+    this.dataMemory = new DataMemory(writableDirectives, readOnlyDirectives, availableMemSize);
 
     this.pc = 0;
     this.immediateUnit = new ImmediateUnit();

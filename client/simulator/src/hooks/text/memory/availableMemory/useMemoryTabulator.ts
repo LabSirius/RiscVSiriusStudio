@@ -29,6 +29,8 @@ interface UseMemoryTabulatorProps {
   dataMemoryTable: any;
 
   directivesWritableSize: number | null | undefined
+
+  directivesReadOnlySize : number | null | undefined
 }
 
 /**
@@ -44,7 +46,8 @@ export const useMemoryTabulator = ({
   setIsCreatedMemoryTable,
   dataMemoryTable,
   isFirstStepRef,
-  directivesWritableSize
+  directivesWritableSize,
+  directivesReadOnlySize
 
 }: UseMemoryTabulatorProps): void => {
   useEffect(() => {
@@ -70,7 +73,12 @@ export const useMemoryTabulator = ({
 
         const rowEl = row.getElement();
 
-        if(data.segment === "directivesWritableSize"){
+        if(data.segment === "directivesReadOnlySize"){
+           rowEl.style.backgroundColor = "#A3A5B2"
+          rowEl.style.color = "#000"
+
+        }
+        else if(data.segment === "directivesWritableSize"){
           rowEl.style.backgroundColor = "#D1E3E7"
           rowEl.style.color = "#000"
         }else{
@@ -90,7 +98,8 @@ export const useMemoryTabulator = ({
         uploadAvailableMemory(
           tableInstanceRef.current!,
           dataMemoryTable.memory,
-          directivesWritableSize
+          directivesWritableSize,
+        directivesReadOnlySize
         );
       }
       setupEventListeners(tableInstanceRef.current!);

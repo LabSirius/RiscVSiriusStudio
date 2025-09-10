@@ -145,10 +145,10 @@ export class PipelineCPU implements ICPU {
   private ex_mem_register: EXMEM_Register;
   private mem_wb_register: MEMWB_Register;
 
-  constructor(program: any[], programMemory: any[], directives: any[], availableMemSize: number) {
+  constructor(program: any[], programMemory: any[], writableDirectives: any[], readOnlyDirectives: any[], availableMemSize: number) {
     this.program = program.filter((sc) => sc.kind === "SrcInstruction");
     this.registers = new RegistersFile();
-    this.dataMemory = new DataMemory( directives.length, availableMemSize);
+     this.dataMemory = new DataMemory(writableDirectives, readOnlyDirectives, availableMemSize);
     this.dataMemory.uploadProgram(programMemory);
     this.controlUnit = new ControlUnit();
     this.immediateUnit = new ImmediateUnit();

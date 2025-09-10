@@ -9,6 +9,7 @@ interface MemoryData {
   memory: string[];
   program: string[];
   directivesWritableSize: number;
+  directivesReadOnlySize: number;
   // eslint-disable-next-line @typeFscript-eslint/no-explicit-any
   symbols: Record<string, any>;
   addressLine: AddressLine[];

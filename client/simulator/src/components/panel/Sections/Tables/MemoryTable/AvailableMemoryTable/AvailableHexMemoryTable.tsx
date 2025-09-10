@@ -80,7 +80,9 @@ const AvailableHexMemoryTable = ({setWithBin, withBin}: AvailableMemoryTable ) =
     setSp,
     setNewPc,
     setClickAddressInMemoryTable,
-    directivesWritableSize: dataMemoryTable?.directivesWritableSize
+    directivesWritableSize: dataMemoryTable?.directivesWritableSize,
+    directivesReadOnlySize: dataMemoryTable?.directivesReadOnlySize
+
   });
 
   useMemoryResizeEffect({
@@ -92,8 +94,8 @@ const AvailableHexMemoryTable = ({setWithBin, withBin}: AvailableMemoryTable ) =
     setNewPc,
     setSp,
     setWriteInRegister,
-    directivesWritableSize: dataMemoryTable?.directivesWritableSize
-
+    directivesWritableSize: dataMemoryTable?.directivesWritableSize,
+    directivesReadOnlySize: dataMemoryTable?.directivesReadOnlySize
   });
 
   useMemorySearchFilterEffect({

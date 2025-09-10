@@ -68,12 +68,15 @@ export class DataMemory {
     return this.available_size; //U
   }
 
-  private directives: any[];
+  private writableDirectives: any[];
   public writableDirectives_size: number;
+
+  private readOnlyDirectives: any[];
+  public readOnlyDirectives_size: number;
 
 
   get availableSpInitialAddress() {
-    return this.availableMemSize + this.writableDirectives_size - 4; //U
+    return this.availableMemSize + this.writableDirectives_size + this.readOnlyDirectives_size  - 4; //U
   }
 
   public overwriteAvailableMemory(newMemory: string[]): void {
@@ -81,28 +84,39 @@ export class DataMemory {
     this.available_size = newMemory.length;
   }
 
-  public constructor(directives: any, available_size: number) {
+  public constructor(writableDirectives: any, readOnlyDirectives : any, available_size: number) {
     this.available_size = 0;
     this.memory_program = []; //U
     this.memory_available = []; //U
 
-    this.directives = directives;
+    this.writableDirectives = writableDirectives;
     this.writableDirectives_size = 0;
+
+
+     this.readOnlyDirectives = readOnlyDirectives;
+    this.readOnlyDirectives_size = 0;
+
+
 
     this.resize(available_size);
   }
 
   public resize(available_size: number) {
     this.available_size = available_size;
-    this.writableDirectives_size = this.directives.length;
+    this.writableDirectives_size = this.writableDirectives.length;
+    this.readOnlyDirectives_size = this.readOnlyDirectives.length;
 
-    const directiveValues = this.directives
+     const readOnlyDirectives = this.readOnlyDirectives
+      .sort((a, b) => a.memdef - b.memdef)
+      .map((d) => d.binValue);
+
+    const writableDirectiveValues = this.writableDirectives
       .sort((a, b) => a.memdef - b.memdef)
       .map((d) => d.binValue);
 
     const zeros = new Array(this.available_size).fill("00000000");
 
-    this.memory_available = [...directiveValues, ...zeros];
+    this.memory_available = [...readOnlyDirectives, ...writableDirectiveValues, ...zeros];
   }
 
   public uploadProgram(memory: Array<any>) {
@@ -114,7 +128,7 @@ export class DataMemory {
   }
 
   public lastAddress() {
-    return this.available_size +   this.writableDirectives_size  - 1;
+    return this.available_size +   this.writableDirectives_size +this.readOnlyDirectives_size  - 1;
   }
 
   public validAddress(address: number) {

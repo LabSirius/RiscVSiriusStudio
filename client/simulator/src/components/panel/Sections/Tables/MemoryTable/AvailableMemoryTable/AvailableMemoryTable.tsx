@@ -79,7 +79,9 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
     setSp,
     setNewPc,
     setClickAddressInMemoryTable,
-    directivesWritableSize: dataMemoryTable?.directivesWritableSize
+    directivesWritableSize: dataMemoryTable?.directivesWritableSize,
+    directivesReadOnlySize: dataMemoryTable?.directivesReadOnlySize
+    
   });
 
   useEffect(() => {
@@ -98,7 +100,9 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
     setNewPc,
     setSp,
     setWriteInRegister,
-    directivesWritableSize: dataMemoryTable?.directivesWritableSize
+    directivesWritableSize: dataMemoryTable?.directivesWritableSize,
+    directivesReadOnlySize: dataMemoryTable?.directivesReadOnlySize
+
 
   });
 
