@@ -335,8 +335,9 @@ function normMemory(memory: Memory[]): Memory[] {
 }
 
 export type InternalRepresentation = {
-  instructions: Array<any>;
-  symbols: Array<any>;
+  instructions: Array<any>,
+  symbols: Array<any>,
+  memory: Memory[],
   readOnlyMemory: Memory[],
   writableMemory: Memory[],
   programMemory: Memory[],
@@ -447,10 +448,12 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
       options: options,
       readOnlyMemory: readOnlymemory,
       writableMemory: writableMemory,
-      programMemory: programMemory      
+      programMemory: programMemory,
+      memory: programMemory
     },
     info: 'Success',
     extra: undefined
   };
+  console.log(result);
   return result;
 }
