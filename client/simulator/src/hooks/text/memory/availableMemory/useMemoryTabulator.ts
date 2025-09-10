@@ -74,12 +74,12 @@ export const useMemoryTabulator = ({
         const rowEl = row.getElement();
 
         if(data.segment === "directivesReadOnlySize"){
-           rowEl.style.backgroundColor = "#A3A5B2"
+           rowEl.style.backgroundColor = "#B0B8C4"
           rowEl.style.color = "#000"
 
         }
         else if(data.segment === "directivesWritableSize"){
-          rowEl.style.backgroundColor = "#D1E3E7"
+          rowEl.style.backgroundColor = "#C5D9E0"
           rowEl.style.color = "#000"
         }else{
           rowEl.style.backgroundColor = '';
