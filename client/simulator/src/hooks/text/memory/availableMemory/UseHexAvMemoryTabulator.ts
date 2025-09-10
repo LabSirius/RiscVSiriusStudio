@@ -27,6 +27,8 @@ interface UseHexAvMemoryTabulatorProps {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataMemoryTable: any;
+
+  directivesWritableSize: number | null | undefined
 }
 
 /**
@@ -43,6 +45,7 @@ export const UseHexAvMemoryTabulator = ({
   dataMemoryTable,
   isFirstStepRef,
   setSp,
+  directivesWritableSize
 }: UseHexAvMemoryTabulatorProps): void => {
   useEffect(() => {
 
@@ -79,6 +82,7 @@ export const UseHexAvMemoryTabulator = ({
         uploadAvailableMemory(
           tableInstanceRef.current!,
           dataMemoryTable.memory,
+          directivesWritableSize,
           () => {
             setSp(intToHex(dataMemoryTable.memory.length - 4));
           }

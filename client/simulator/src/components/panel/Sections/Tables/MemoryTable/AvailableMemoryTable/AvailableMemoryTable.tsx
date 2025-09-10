@@ -79,6 +79,7 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
     setSp,
     setNewPc,
     setClickAddressInMemoryTable,
+    directivesWritableSize: dataMemoryTable?.directivesWritableSize
   });
 
   useEffect(() => {
@@ -97,6 +98,8 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
     setNewPc,
     setSp,
     setWriteInRegister,
+    directivesWritableSize: dataMemoryTable?.directivesWritableSize
+
   });
 
     useMemorySearchFilterEffect({

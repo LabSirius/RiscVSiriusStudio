@@ -8,9 +8,8 @@ interface AddressLine {
 interface MemoryData {
   memory: string[];
   program: string[];
-  codeSize: number;
-  constantsSize: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  directivesWritableSize: number;
+  // eslint-disable-next-line @typeFscript-eslint/no-explicit-any
   symbols: Record<string, any>;
   addressLine: AddressLine[];
   asmList: string[];

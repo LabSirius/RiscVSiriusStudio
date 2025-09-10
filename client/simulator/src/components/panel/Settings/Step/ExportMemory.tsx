@@ -17,7 +17,7 @@ const ExportMemory = () => {
   const [_, setFileUrl] = useState<string | null>(null);
 
   const handleExport = (format: "hex" | "mif") => {
-    const { constantsSize, asmList = [] } = dataMemoryTable || {};
+    const {  asmList = [] } = dataMemoryTable || {};
 
     if (!dataMemoryTable.program || dataMemoryTable.program.length === 0) return;
 
@@ -40,7 +40,7 @@ const ExportMemory = () => {
       fileContent = hexBytes.join("\n");
       fileName = "program_memory.hex";
     } else if (format === "mif") {
-      const instructionCount = (dataMemoryTable.program.length - (constantsSize || 0)) / 4;
+      const instructionCount = (dataMemoryTable.program.length );
       const totalWords = dataMemoryTable.program.length / 4;
 
       const calculateDepth = (words: number): number => {

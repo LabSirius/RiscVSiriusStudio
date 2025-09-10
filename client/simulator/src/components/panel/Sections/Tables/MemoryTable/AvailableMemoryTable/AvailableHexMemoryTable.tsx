@@ -80,6 +80,7 @@ const AvailableHexMemoryTable = ({setWithBin, withBin}: AvailableMemoryTable ) =
     setSp,
     setNewPc,
     setClickAddressInMemoryTable,
+    directivesWritableSize: dataMemoryTable?.directivesWritableSize
   });
 
   useMemoryResizeEffect({
@@ -91,6 +92,8 @@ const AvailableHexMemoryTable = ({setWithBin, withBin}: AvailableMemoryTable ) =
     setNewPc,
     setSp,
     setWriteInRegister,
+    directivesWritableSize: dataMemoryTable?.directivesWritableSize
+
   });
 
   useMemorySearchFilterEffect({
@@ -157,19 +160,19 @@ const AvailableHexMemoryTable = ({setWithBin, withBin}: AvailableMemoryTable ) =
                 className="absolute cursor-pointer right-[0rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] z-100 text-black hover:scale-110 transition-transform"
               />
             </HoverCardTrigger>
-            <HoverCardContent side="right" align="center" className="w-auto p-1 border rounded-md shadow-lg ml-2 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm">
+            <HoverCardContent side="right" align="center" className="w-auto p-1 ml-2 border rounded-md shadow-lg bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm">
               <div className="flex items-center space-x-1">
                 <button
                   onClick={() => setWithBin(prev => !prev)}
                   title="Toggle Binary"
-                  className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                  className="p-1 transition-colors rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700"
                 >
                   <Binary strokeWidth={1.5} className="w-5 h-5 text-black dark:text-white" />
                 </button>
                 <button
                   onClick={() => setShowTable(false)}
                   title="Hide Table"
-                  className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                  className="p-1 transition-colors rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700"
                 >
                   <ArrowBigLeftDash strokeWidth={1.5} className="w-5 h-5 text-black dark:text-white" />
                 </button>

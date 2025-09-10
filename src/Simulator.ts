@@ -146,7 +146,7 @@ export class TextSimulator extends Simulator {
     const payload = {
       memory: this.cpu.getDataMemory().getAvailableMemory(),
       program: this.cpu.getDataMemory().getProgramMemory(),
-      codeSize: this.cpu.getDataMemory().codeSize,
+      directivesWritableSize: this.cpu.getDataMemory().writableDirectives_size,
       m: this.cpu.getDataMemory().constantsSize,
       addressLine,
       symbols: this.rvDoc.ir?.symbols,

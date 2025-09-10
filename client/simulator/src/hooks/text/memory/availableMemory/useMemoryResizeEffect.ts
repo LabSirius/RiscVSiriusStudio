@@ -26,6 +26,8 @@ interface UseMemoryResizeEffectProps {
   dataMemoryTable: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setDataMemoryTable: Dispatch<SetStateAction<any>>;
+
+  directivesWritableSize: number | null | undefined
 }
 
 /**
@@ -41,6 +43,7 @@ export const useMemoryResizeEffect = ({
   setSp,
   setWriteInRegister,
   setDataMemoryTable,
+  directivesWritableSize
 }: UseMemoryResizeEffectProps): void => {
   useEffect(() => {
     if (!isCreatedMemoryTable) return;
@@ -61,6 +64,8 @@ export const useMemoryResizeEffect = ({
       uploadAvailableMemory(
         tableInstanceRef.current,
         newMemory,
+    directivesWritableSize,
+
         () => {
           setSp(intToHex(sizeMemory - 4));
           const newMemorySize = intTo32BitBinary(sizeMemory - 4);
