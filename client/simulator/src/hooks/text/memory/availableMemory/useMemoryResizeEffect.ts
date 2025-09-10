@@ -1,10 +1,10 @@
-import { useEffect, MutableRefObject, Dispatch, SetStateAction } from 'react';
-import { TabulatorFull as Tabulator } from 'tabulator-tables';
+import { useEffect, MutableRefObject, Dispatch, SetStateAction } from "react";
+import { TabulatorFull as Tabulator } from "tabulator-tables";
 
 // Import all utility functions and types needed
-import { uploadAvailableMemory } from '@/utils/tables/handlersMemory';
-import { intTo32BitBinary, intToHex } from '@/utils/handlerConversions';
-import { sendMessage } from '@/components/Message/sendMessage';
+import { uploadAvailableMemory } from "@/utils/tables/handlersMemory";
+import { intTo32BitBinary, intToHex } from "@/utils/handlerConversions";
+import { sendMessage } from "@/components/Message/sendMessage";
 
 // Define the shape of the object for setWriteInRegister
 interface WriteInRegisterPayload {
@@ -27,7 +27,9 @@ interface UseMemoryResizeEffectProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setDataMemoryTable: Dispatch<SetStateAction<any>>;
 
-  directivesWritableSize: number | null | undefined
+  directivesWritableSize: number | null | undefined;
+
+  directivesReadOnlySize: number | null | undefined;
 }
 
 /**
@@ -43,7 +45,8 @@ export const useMemoryResizeEffect = ({
   setSp,
   setWriteInRegister,
   setDataMemoryTable,
-  directivesWritableSize
+  directivesWritableSize,
+  directivesReadOnlySize,
 }: UseMemoryResizeEffectProps): void => {
   useEffect(() => {
     if (!isCreatedMemoryTable) return;
@@ -55,7 +58,7 @@ export const useMemoryResizeEffect = ({
       } else if (sizeMemory > dataMemoryTable.memory.length) {
         newMemory = [
           ...dataMemoryTable.memory,
-          ...new Array(sizeMemory - dataMemoryTable.memory.length).fill('00000000'),
+          ...new Array(sizeMemory - dataMemoryTable.memory.length).fill("00000000"),
         ];
       } else {
         newMemory = dataMemoryTable.memory;
@@ -64,12 +67,13 @@ export const useMemoryResizeEffect = ({
       uploadAvailableMemory(
         tableInstanceRef.current,
         newMemory,
-    directivesWritableSize,
+        directivesWritableSize,
+        directivesReadOnlySize,
 
         () => {
           setSp(intToHex(sizeMemory - 4));
           const newMemorySize = intTo32BitBinary(sizeMemory - 4);
-          setWriteInRegister({ registerName: 'x2', value: newMemorySize });
+          setWriteInRegister({ registerName: "x2", value: newMemorySize });
         }
       );
 
@@ -78,10 +82,9 @@ export const useMemoryResizeEffect = ({
         memory: newMemory,
       });
 
-      sendMessage({ event: 'memorySizeChanged', sizeMemory: sizeMemory});
+      sendMessage({ event: "memorySizeChanged", sizeMemory: sizeMemory });
     }
 
- 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sizeMemory]);
 };

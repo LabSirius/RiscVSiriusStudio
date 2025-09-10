@@ -41,10 +41,11 @@ export abstract class Simulator {
     if (!rvDoc.ir) {
       throw new Error("RVDocument has no IR");
     }
+
     if (simulatorType === "pipeline") {
-      this.cpu = new PipelineCPU(rvDoc.ir.instructions,  rvDoc.ir.programMemory, rvDoc.ir.writableMemory, params.memorySize);
+      this.cpu = new PipelineCPU(rvDoc.ir.instructions,  rvDoc.ir.programMemory, rvDoc.ir.writableMemory, rvDoc.ir.readOnlyMemory, params.memorySize);
     } else {
-      this.cpu = new SCCPU(rvDoc.ir.instructions, rvDoc.ir.programMemory, rvDoc.ir.writableMemory, params.memorySize);
+      this.cpu = new SCCPU(rvDoc.ir.instructions, rvDoc.ir.programMemory, rvDoc.ir.writableMemory, rvDoc.ir.readOnlyMemory  ,params.memorySize);
     }
   }
 
@@ -120,7 +121,6 @@ export class TextSimulator extends Simulator {
   }
 
   public override async start(options?: { isRestart?: boolean }): Promise<void> {
-    console.log("AQUI PROBAMOS", options?.isRestart);
 
     if (!options?.isRestart) {
       await this.makeEditorReadOnly();
@@ -147,7 +147,9 @@ export class TextSimulator extends Simulator {
       memory: this.cpu.getDataMemory().getAvailableMemory(),
       program: this.cpu.getDataMemory().getProgramMemory(),
       directivesWritableSize: this.cpu.getDataMemory().writableDirectives_size,
-      m: this.cpu.getDataMemory().constantsSize,
+      directivesReadOnlySize: this.cpu.getDataMemory().readOnlyDirectives_size,
+
+   
       addressLine,
       symbols: this.rvDoc.ir?.symbols,
       asmList,

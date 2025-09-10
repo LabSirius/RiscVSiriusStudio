@@ -16,6 +16,7 @@ export const uploadAvailableMemory = (
   table: Tabulator,
   newMemory: string[],
   directivesWritableSize: number | null  | undefined,
+  directivesReadOnlySize: number | null  | undefined,
   onComplete?: () => void,
  
   
@@ -26,7 +27,6 @@ export const uploadAvailableMemory = (
   const maxAddress = (expectedRowCount - 1) * 4;
 
 
-   console.log("DIRECTIVES", directivesWritableSize )
 
   // Generate main data
   const mainRows = chunk(newMemory, 4).map((word, index) => {
@@ -35,8 +35,10 @@ export const uploadAvailableMemory = (
 
     let segment = '';
    
-
-    if(directivesWritableSize && byteAddress < directivesWritableSize){
+    if(directivesReadOnlySize && byteAddress < directivesReadOnlySize){
+      segment = "directivesReadOnlySize"
+    }
+    else if(directivesWritableSize && (byteAddress - (directivesReadOnlySize ?? 0)) < directivesWritableSize ){
 
       segment = "directivesWritableSize"
     }else{

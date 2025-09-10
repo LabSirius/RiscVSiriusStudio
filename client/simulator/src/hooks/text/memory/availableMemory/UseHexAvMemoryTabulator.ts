@@ -29,6 +29,8 @@ interface UseHexAvMemoryTabulatorProps {
   dataMemoryTable: any;
 
   directivesWritableSize: number | null | undefined
+
+  directivesReadOnlySize: number | null | undefined
 }
 
 /**
@@ -45,7 +47,8 @@ export const UseHexAvMemoryTabulator = ({
   dataMemoryTable,
   isFirstStepRef,
   setSp,
-  directivesWritableSize
+  directivesWritableSize,
+  directivesReadOnlySize
 }: UseHexAvMemoryTabulatorProps): void => {
   useEffect(() => {
 
@@ -83,6 +86,8 @@ export const UseHexAvMemoryTabulator = ({
           tableInstanceRef.current!,
           dataMemoryTable.memory,
           directivesWritableSize,
+          directivesReadOnlySize,
+
           () => {
             setSp(intToHex(dataMemoryTable.memory.length - 4));
           }
