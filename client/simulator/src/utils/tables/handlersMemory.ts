@@ -1,8 +1,8 @@
-import { chunk } from 'lodash';
-import { intToHex, binaryToHex,  } from '@/utils/handlerConversions';
-import { TabulatorFull as Tabulator, CellComponent, RowComponent } from 'tabulator-tables';
-import { MemoryRow } from '@/utils/tables/types';
-import { SymbolData } from '@/utils/tables/types';
+import { chunk } from "lodash";
+import { intToHex, binaryToHex } from "@/utils/handlerConversions";
+import { TabulatorFull as Tabulator, CellComponent, RowComponent } from "tabulator-tables";
+import { MemoryRow } from "@/utils/tables/types";
+import { SymbolData } from "@/utils/tables/types";
 
 /**
  * This function performs the following tasks:
@@ -15,51 +15,49 @@ import { SymbolData } from '@/utils/tables/types';
 export const uploadAvailableMemory = (
   table: Tabulator,
   newMemory: string[],
-  directivesWritableSize: number | null  | undefined,
-  directivesReadOnlySize: number | null  | undefined,
-  onComplete?: () => void,
- 
-  
+  directivesWritableSize: number | null | undefined,
+  directivesReadOnlySize: number | null | undefined,
+  onComplete?: () => void
 ): void => {
-
   const isInitialLoad = table.getData().length === 0;
   const expectedRowCount = newMemory.length / 4;
   const maxAddress = (expectedRowCount - 1) * 4;
-
-
 
   // Generate main data
   const mainRows = chunk(newMemory, 4).map((word, index) => {
     const byteAddress = index * 4;
     const address = intToHex(byteAddress).toUpperCase();
 
-    let segment = '';
-   
-    if(directivesReadOnlySize && byteAddress < directivesReadOnlySize){
-      segment = "directivesReadOnlySize"
+    let segment = "";
+
+    if (directivesReadOnlySize && byteAddress < directivesReadOnlySize) {
+      segment = "directivesReadOnlySize";
+    } else if (
+      directivesWritableSize &&
+      byteAddress - (directivesReadOnlySize ?? 0) < directivesWritableSize
+    ) {
+      segment = "directivesWritableSize";
+    } else {
+      segment = "memory";
     }
-    else if(directivesWritableSize && (byteAddress - (directivesReadOnlySize ?? 0)) < directivesWritableSize ){
-
-      segment = "directivesWritableSize"
-    }else{
-      segment = "program"
-    }
-
-
 
     return {
       address,
-      value0: word[0] || '00000000',
-      value1: word[1] || '00000000',
-      value2: word[2] || '00000000',
-      value3: word[3] || '00000000',
+      value0: word[0] || "00000000",
+      value1: word[1] || "00000000",
+      value2: word[2] || "00000000",
+      value3: word[3] || "00000000",
       hex: word
         .slice()
         .reverse()
-        .map((byte) => binaryToHex(byte || '00000000').toUpperCase().padStart(2, '0'))
-        .join('-'),
-      info: '',
-      segment
+        .map((byte) =>
+          binaryToHex(byte || "00000000")
+            .toUpperCase()
+            .padStart(2, "0")
+        )
+        .join("-"),
+      info: "",
+      segment,
     };
   });
 
@@ -72,23 +70,23 @@ export const uploadAvailableMemory = (
 
   if (heapRow) {
     heapRow.update({
-      info: '<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>'
+      info: '<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>',
     });
   } else {
     table.addRow({
       address: heapAddress,
-      value0: '00000000',
-      value1: '00000000',
-      value2: '00000000',
-      value3: '00000000',
+      value0: "00000000",
+      value1: "00000000",
+      value2: "00000000",
+      value3: "00000000",
       info: '<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">Heap</span>',
-      hex: '00-00-00-00',
-      segment: '',
+      hex: "00-00-00-00",
+      segment: "",
     });
   }
 
   // Apply placeholder to empty info cells
-  table.getRows().forEach(row => {
+  table.getRows().forEach((row) => {
     const data = row.getData();
     if (!data.info) {
       row.getCell("info").getElement().innerHTML = '<div style="opacity:0">\u00A0</div>';
@@ -97,91 +95,79 @@ export const uploadAvailableMemory = (
 
   // Delete rows that are no longer needed
   if (!isInitialLoad) {
-    const rowsToDelete = table.getRows()
-      .filter(row => {
-        const rowAddress = parseInt(row.getData().address, 16);
-        return rowAddress > maxAddress && !row.getData().info;
-      });
+    const rowsToDelete = table.getRows().filter((row) => {
+      const rowAddress = parseInt(row.getData().address, 16);
+      return rowAddress > maxAddress && !row.getData().info;
+    });
 
     if (rowsToDelete.length) {
-      table.deleteRow(rowsToDelete.map(row => row.getData().address));
+      table.deleteRow(rowsToDelete.map((row) => row.getData().address));
     }
   }
   onComplete?.();
-}
-
+};
 
 export const uploadProgramMemory = (
   table: Tabulator,
   newMemory: string[],
-  newCodeSize: number,
   newSymbols: Record<string, SymbolData>,
   onComplete?: () => void
 ): void => {
-
-
-
-  
   // Generate main data
   const mainRows = chunk(newMemory, 4).map((word, index) => {
     const byteAddress = index * 4;
     const address = intToHex(byteAddress).toUpperCase();
 
-    let segment = '';
-
-
-  
-    if (byteAddress < newCodeSize) {
-      segment = 'program';
-    }else{
-      segment = 'constants';
-    }
+    let segment = "program";
 
     return {
       address,
-      value0: word[0] || '00000000',
-      value1: word[1] || '00000000',
-      value2: word[2] || '00000000',
-      value3: word[3] || '00000000',
+      value0: word[0] || "00000000",
+      value1: word[1] || "00000000",
+      value2: word[2] || "00000000",
+      value3: word[3] || "00000000",
       hex: word
         .slice()
         .reverse()
-        .map((byte) => binaryToHex(byte || '00000000').toUpperCase().padStart(2, '0'))
-        .join('-'),
-      info: '',
-      segment, 
+        .map((byte) =>
+          binaryToHex(byte || "00000000")
+            .toUpperCase()
+            .padStart(2, "0")
+        )
+        .join("-"),
+      info: "",
+      segment,
     };
   });
 
   // Update main data
   table.setData(mainRows);
-  
 
   // Add/Update symbols
-  Object.values(newSymbols).forEach(symbol => {
+  Object.values(newSymbols).forEach((symbol) => {
     const symbolAddress = intToHex(symbol.memdef).toUpperCase();
     const symbolRow = table.getRow(symbolAddress);
 
     if (symbolRow) {
       symbolRow.update({
-        info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`
+        info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`,
       });
     } else {
       table.addRow({
         address: symbolAddress,
-        value0: '00000000',
-        value1: '00000000',
-        value2: '00000000',
-        value3: '00000000',
+        value0: "00000000",
+        value1: "00000000",
+        value2: "00000000",
+        value3: "00000000",
         info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`,
-        hex: '00-00-00-00',
-        segment: '',
+        hex: "00-00-00-00",
+        segment: "",
       });
     }
   });
 
   // Apply placeholder to empty info cells
-  table.getRows().forEach(row => {
+  table.getRows().forEach((row) => {
     const data = row.getData();
     if (!data.info) {
       row.getCell("info").getElement().innerHTML = '<div style="opacity:0">\u00A0</div>';
@@ -189,23 +175,20 @@ export const uploadProgramMemory = (
   });
 
   onComplete?.();
-}
-
-
-
+};
 
 /**
  * This function updates the program counter in the memory table.
  * It adds an icon to the row corresponding to the new program counter.
  */
 export const createPCIcon = (): HTMLElement => {
-    const icon = document.createElement('span');
-    icon.className = 'pc-icon';
-    icon.style.position = 'absolute';
-    icon.style.top = '51%';
-    icon.style.right = '5px';
-    icon.style.transform = 'translateY(-50%)';
-    icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+  const icon = document.createElement("span");
+  icon.className = "pc-icon";
+  icon.style.position = "absolute";
+  icon.style.top = "51%";
+  icon.style.right = "5px";
+  icon.style.transform = "translateY(-50%)";
+  icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
                            fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
                            class="lucide lucide-locate">
                            <line x1="2" x2="5" y1="12" y2="12"></line>
@@ -214,53 +197,48 @@ export const createPCIcon = (): HTMLElement => {
                            <line x1="12" x2="12" y1="19" y2="22"></line>
                            <circle cx="12" cy="12" r="7"></circle>
                          </svg>`;
-    return icon;
-  };
-  
-  export const updatePC = (
-    newPC: number,
-    tableInstanceRef: React.MutableRefObject<Tabulator | null>
-  ): void => {
+  return icon;
+};
 
+export const updatePC = (
+  newPC: number,
+  tableInstanceRef: React.MutableRefObject<Tabulator | null>
+): void => {
+  const targetValue = (newPC * 4).toString(16).toUpperCase();
+  tableInstanceRef.current?.getRows().forEach((row) => {
+    const cell = row.getCell("address");
+    if (cell) {
+      const cellElement = cell.getElement();
 
-    const targetValue = (newPC * 4).toString(16).toUpperCase();  
-    tableInstanceRef.current?.getRows().forEach((row) => {
-      const cell = row.getCell("address");
-      if (cell) {
-        const cellElement = cell.getElement();
-  
-        const value = cell.getValue();
-  
-        while (cellElement.firstChild) {
-          cellElement.removeChild(cellElement.firstChild);
-        }
-  
-        const span = document.createElement("span");
-        span.className = "address-value";
-        span.innerText = value;
-        cellElement.appendChild(span);
+      const value = cell.getValue();
+
+      while (cellElement.firstChild) {
+        cellElement.removeChild(cellElement.firstChild);
       }
-    });
-  
-    const foundRows = tableInstanceRef.current?.searchRows("address", "=", targetValue) || [];
-    if (foundRows.length === 0) return;
-  
-    const cell = foundRows[0].getCell("address");
-    if (!cell) return;
-  
-    const cellElement = cell.getElement();
-    cellElement.style.position = "relative";
-  
-    const pcIcon = createPCIcon();
-    cellElement.appendChild(pcIcon);
-  
-    cellElement.classList.add("animate-pc");
-    void cellElement.offsetWidth;
-    setTimeout(() => cellElement.classList.remove("animate-pc"), 300);
-  };
-  
 
+      const span = document.createElement("span");
+      span.className = "address-value";
+      span.innerText = value;
+      cellElement.appendChild(span);
+    }
+  });
 
+  const foundRows = tableInstanceRef.current?.searchRows("address", "=", targetValue) || [];
+  if (foundRows.length === 0) return;
+
+  const cell = foundRows[0].getCell("address");
+  if (!cell) return;
+
+  const cellElement = cell.getElement();
+  cellElement.style.position = "relative";
+
+  const pcIcon = createPCIcon();
+  cellElement.appendChild(pcIcon);
+
+  cellElement.classList.add("animate-pc");
+  void cellElement.offsetWidth;
+  setTimeout(() => cellElement.classList.remove("animate-pc"), 300);
+};
 
 /**
  * Updates the stack pointer (SP) in the table using the instance reference.
@@ -286,7 +264,6 @@ export const setSP = (
   // Converts the numeric value to an uppercase hexadecimal address
   const address = intToHex(spValue).toUpperCase();
 
-
   // Updates the corresponding row to show the SP mark
   if (tableInstanceRef.current) {
     const targetRow = tableInstanceRef.current.getRow(address);
@@ -300,10 +277,6 @@ export const setSP = (
   return address;
 };
 
-  
-
-
-
 /**
  *  This function updates the hexadecimal value of a memory row.
  * It computes the hexadecimal value from the binary values of the row.
@@ -311,84 +284,74 @@ export const setSP = (
  */
 
 export const updateHexValue = (row: RowComponent): void => {
-    const rowData = row.getData() as MemoryRow;
-    const fields: (keyof MemoryRow)[] = ['value3', 'value2', 'value1', 'value0'];
-    const hexValue = fields
-      .map(field => {
-        const valueStr = rowData[field] !== undefined ? String(rowData[field]) : '0';
-        return parseInt(valueStr, 2).toString(16).padStart(2, '0');
-      })
-      .join('-');
-    row.update({ hex: hexValue });
+  const rowData = row.getData() as MemoryRow;
+  const fields: (keyof MemoryRow)[] = ["value3", "value2", "value1", "value0"];
+  const hexValue = fields
+    .map((field) => {
+      const valueStr = rowData[field] !== undefined ? String(rowData[field]) : "0";
+      return parseInt(valueStr, 2).toString(16).padStart(2, "0");
+    })
+    .join("-");
+  row.update({ hex: hexValue });
 };
 
-
-
 export const setupEventListeners = (table: Tabulator): void => {
-    table.on('cellEdited', (cell: CellComponent) => {
-      if (cell.getField().startsWith('value')) {
-        updateHexValue(cell.getRow());
-      }
-    });
-  };
-
+  table.on("cellEdited", (cell: CellComponent) => {
+    if (cell.getField().startsWith("value")) {
+      updateHexValue(cell.getRow());
+    }
+  });
+};
 
 /**
  * This function toggles the visibility of the hexadecimal column in the memory table.
  */
-export function toggleHexColumn(
-  tableInstance: Tabulator,
-  showHexadecimal: boolean
-): void {
+export function toggleHexColumn(tableInstance: Tabulator, showHexadecimal: boolean): void {
   const hexColumn = tableInstance.getColumn("hex");
 
-    if (showHexadecimal) {
-      hexColumn.show();
-    } else {
-      hexColumn.hide();
-    }
-  
+  if (showHexadecimal) {
+    hexColumn.show();
+  } else {
+    hexColumn.hide();
+  }
 }
 
 /**
  * Filters the memory table by checking if any of the specified fields contain the search string.
  * The fields include "address", "value3", "value2", "value1", "value0", and "hex".
- * 
+ *
  * Performance improvements:
  * - When the search input is empty, the filter is cleared and the cell styles are reset
  *   using requestAnimationFrame, avoiding a synchronous iteration over all rows.
  * - When a non-empty search is applied, only the active (visible) rows are processed for highlighting.
  */
-export function filterMemoryData(searchInput: string, table: React.MutableRefObject<Tabulator | null>): void {
+export function filterMemoryData(
+  searchInput: string,
+  table: React.MutableRefObject<Tabulator | null>
+): void {
   // Convert search input to lowercase and trim whitespace.
   const lowerSearch = searchInput.trim().toLowerCase();
   const fieldsToSearch = ["address", "value3", "value2", "value1", "value0", "hex"];
 
   // If the search input is empty, clear the filter and restore the full dataset.
-  if (lowerSearch === '') {
+  if (lowerSearch === "") {
     table.current?.clearFilter(true);
     return;
   }
 
   // Apply filter: only keep rows where at least one specified field contains the search input.
   table.current?.setFilter((data) =>
-    fieldsToSearch.some(field => {
+    fieldsToSearch.some((field) => {
       const cellVal = data[field];
       return cellVal !== undefined && cellVal.toString().toLowerCase().includes(lowerSearch);
     })
   );
 }
 
-
-
-
-
-
-
 /**
  * This function writes a value to a memory cell in the table.
  * It updates the corresponding row with the new value and highlights the cell.
- * 
+ *
  * @param tableInstance - Tabulator instance of the memory table.
  * @param address - Memory address to write to.
  * @param leng - Length of the value to write (1, 2, or 4 bytes).
@@ -418,7 +381,7 @@ export const writeInMemoryCell = (
   const updateCell = (
     cell: HTMLElement | null,
     segment: string,
-    key: 'value0' | 'value1' | 'value2' | 'value3'
+    key: "value0" | "value1" | "value2" | "value3"
   ) => {
     if (!cell) return;
     cell.innerHTML = `<b>${segment}</b>`;
@@ -427,26 +390,26 @@ export const writeInMemoryCell = (
 
   if (leng === 1) {
     const segment = value.substring(24, 32);
-    updateCell(cell0, segment, 'value0');
+    updateCell(cell0, segment, "value0");
   } else if (leng === 2) {
     const lower16 = value.substring(16, 32);
-    updateCell(cell1, lower16.substring(0, 8), 'value1');
-    updateCell(cell0, lower16.substring(8, 16), 'value0');
+    updateCell(cell1, lower16.substring(0, 8), "value1");
+    updateCell(cell0, lower16.substring(8, 16), "value0");
   } else if (leng === 4) {
-    updateCell(cell3, value.substring(0, 8), 'value3');
-    updateCell(cell2, value.substring(8, 16), 'value2');
-    updateCell(cell1, value.substring(16, 24), 'value1');
-    updateCell(cell0, value.substring(24, 32), 'value0');
+    updateCell(cell3, value.substring(0, 8), "value3");
+    updateCell(cell2, value.substring(8, 16), "value2");
+    updateCell(cell1, value.substring(16, 24), "value1");
+    updateCell(cell0, value.substring(24, 32), "value0");
   }
 
   row.update(newData);
 
   const currentData = row.getData();
-  const hexParts = ['value3', 'value2', 'value1', 'value0'].map((field) => {
+  const hexParts = ["value3", "value2", "value1", "value0"].map((field) => {
     const binary: string = currentData[field];
-    return parseInt(binary, 2).toString(16).padStart(2, '0');
+    return parseInt(binary, 2).toString(16).padStart(2, "0");
   });
-  row.update({ hex: hexParts.join('-').toUpperCase() });
+  row.update({ hex: hexParts.join("-").toUpperCase() });
 
   animateMemoryCell(tableInstance, address, leng, false, theme);
 };
@@ -456,9 +419,8 @@ export const animateMemoryCell = (
   address: number,
   leng: number,
   onlyRead: boolean,
-  theme? : string
+  theme?: string
 ): void => {
-  
   const hexAddress = address.toString(16).toUpperCase();
   const row = tableInstance.getRow(hexAddress);
   if (!row) return;
@@ -468,41 +430,33 @@ export const animateMemoryCell = (
   );
   const cellsToAnimate = leng === 4 ? binaryCells : binaryCells.slice(-leng);
 
-  
-  cellsToAnimate.forEach(cell => {
-
-    if(onlyRead) {
-      cell.classList.add('animate-cell');
-    }else{
-      if(theme === 'light') cell.classList.add('animate-cell', 'written-cell')
-        else cell.classList.add('animate-cell', 'written-cell-dark')
+  cellsToAnimate.forEach((cell) => {
+    if (onlyRead) {
+      cell.classList.add("animate-cell");
+    } else {
+      if (theme === "light") cell.classList.add("animate-cell", "written-cell");
+      else cell.classList.add("animate-cell", "written-cell-dark");
     }
-    
   });
   setTimeout(() => {
-    cellsToAnimate.forEach(cell => cell.classList.remove('animate-cell'));
+    cellsToAnimate.forEach((cell) => cell.classList.remove("animate-cell"));
   }, 500);
-  tableInstance.scrollToRow(hexAddress, 'center', true);
+  tableInstance.scrollToRow(hexAddress, "center", true);
 };
 
-
-export const animateRow = (
-  tableInstance: Tabulator,
-  address: number,
-
-): void => {
+export const animateRow = (tableInstance: Tabulator, address: number): void => {
   const hexAddress = address.toString(16).toUpperCase();
   const row = tableInstance.getRow(hexAddress);
   if (!row) return;
   const rowElement = row.getElement();
 
-  rowElement.classList.add('animate-row');
-  
+  rowElement.classList.add("animate-row");
+
   setTimeout(() => {
-    rowElement.classList.remove('animate-row');
+    rowElement.classList.remove("animate-row");
   }, 500);
 
-  tableInstance.scrollToRow(hexAddress, 'top', true);
+  tableInstance.scrollToRow(hexAddress, "top", true);
 };
 
 export function animateArrowBetweenCells(
@@ -541,7 +495,7 @@ export function animateArrowBetweenCells(
   const marker = document.createElementNS(svgNS, "marker");
 
   container.style.position = "absolute";
-  container.style.left = `${startX+12}px`;
+  container.style.left = `${startX + 12}px`;
   container.style.top = `${startY}px`;
   container.style.transformOrigin = "0 0";
   container.style.transform = `rotate(${angle}deg)`;
@@ -550,15 +504,13 @@ export function animateArrowBetweenCells(
   } else {
     container.style.transform = `rotate(${angle}deg)`;
   }
-  
+
   container.style.pointerEvents = "none";
   container.style.zIndex = "1000";
-
 
   svg.setAttribute("width", `${distance + 50}px`);
   svg.setAttribute("height", "24px");
   svg.style.overflow = "visible";
-  
 
   marker.setAttribute("id", "arrowhead");
   marker.setAttribute("viewBox", "0 0 32 32");
@@ -589,11 +541,7 @@ export function animateArrowBetweenCells(
   container.appendChild(svg);
   document.body.appendChild(container);
 
-  
-
   setTimeout(() => {
     container.remove();
   }, 500);
-
-
 }
