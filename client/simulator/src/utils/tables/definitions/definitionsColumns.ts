@@ -97,7 +97,7 @@ export const getColumnMemoryDefinitions = (isFirstStepRef: MutableRefObject<bool
       editable: function (cell) {
         const rowData = cell.getRow().getData();
         const isEditableStep = !isFirstStepRef.current;
-        const isCodeSegment = rowData.segment === 'program' || rowData.segment === 'constants';
+        const isCodeSegment = rowData.segment === 'program' || rowData.segment === 'directivesReadOnlySize';
         return isEditableStep && !isCodeSegment;
       },
       
@@ -165,7 +165,7 @@ export const getColumnMemoryDefinitions = (isFirstStepRef: MutableRefObject<bool
       editable: function (cell) {
         const rowData = cell.getRow().getData();
         const isEditableStep = !isFirstStepRef.current;
-        const isCodeSegment = rowData.segment === 'program' || rowData.segment === 'constants';
+        const isCodeSegment = rowData.segment === 'program' || rowData.segment === 'directivesReadOnlySize';
         return isEditableStep && !isCodeSegment;
       },
       
