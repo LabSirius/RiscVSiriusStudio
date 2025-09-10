@@ -15,7 +15,9 @@ export default function ControlUnit() {
         Control Unit
       </h2>
       <div className="relative">
-       <CurrentInstructionInfo />
+       
+        {typeSimulator === "monocycle" && <CurrentInstructionInfo /> }
+
 
         <ContainerSVG height={typeSimulator === "monocycle" ? 5 : 7.5} active={true} translate={false} />
 

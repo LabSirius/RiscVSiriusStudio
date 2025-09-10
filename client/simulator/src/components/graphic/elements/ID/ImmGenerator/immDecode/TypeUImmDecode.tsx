@@ -1,8 +1,13 @@
-import { useCurrentInst } from '@/context/graphic/CurrentInstContext';
+import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 
 const TypeUImmDecode = () => {
-  const { currentInst } = useCurrentInst();
-  
+  const { currentMonocycletInst, pipelineValuesStages } = useCurrentInst();
+
+  const instruction = currentMonocycletInst || pipelineValuesStages?.ID?.instruction;
+  if (!instruction) return null;
+
+  const encoding = instruction.encoding?.binEncoding;
+  if (!encoding) return null;
 
   const topBlocks = [
     { left: "1.15rem", slice: [0, 4] },
@@ -10,10 +15,7 @@ const TypeUImmDecode = () => {
     { left: "11.1rem", slice: [8, 12] },
     { left: "16.1rem", slice: [12, 16] },
     { left: "21.1rem", slice: [16, 20] },
-
   ];
-
-
 
   const bottomDataBlocks = [
     { right: "39.55rem", slice: [0, 4] },
@@ -31,37 +33,36 @@ const TypeUImmDecode = () => {
 
   return (
     <div className="w-full z-100000 max-h-[30rem] text-[.75rem] text-black overflow-hidden font-mono relative">
-      <img
-        src="immTypeUDecode.svg"
-        alt="immDecode"
-        className="w-full h-full rounded-md"
-      />
+      <img src="immTypeUDecode.svg" alt="immDecode" className="w-full h-full rounded-md" />
 
+      {/* Top blocks */}
       {topBlocks.map((block, idx) => (
         <div
           key={`top-${idx}`}
           className="absolute flex gap-[.82rem]"
           style={{ top: "2.7rem", left: block.left }}
         >
-          {Array.from(currentInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(encoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>
       ))}
 
+      {/* Bottom data blocks */}
       {bottomDataBlocks.map((block, idx) => (
         <div
           key={`bottom--${idx}`}
           className="flex absolute gap-[.83rem]"
           style={{ bottom: "1.6rem", right: block.right }}
         >
-          {Array.from(currentInst.encoding.binEncoding).slice(...block.slice).map((item, index) => (
+          {Array.from(encoding).slice(...block.slice).map((item, index) => (
             <p key={index}>{item}</p>
           ))}
         </div>
       ))}
 
-        {bottomRepeatedBlocks.map((block, idx) => (
+      {/* Zeros extendidos */}
+      {bottomRepeatedBlocks.map((block, idx) => (
         <div
           key={`bottom-repeated-${idx}`}
           className="absolute flex gap-[.81rem]"

@@ -4,8 +4,8 @@ interface DialogObject {
   title: string;
   description: string;
   stop?: boolean;
-  chooseTypeSimulator?: boolean
   descerror?: string
+  isReset?: boolean
 }
 
 interface DialogContextProps {

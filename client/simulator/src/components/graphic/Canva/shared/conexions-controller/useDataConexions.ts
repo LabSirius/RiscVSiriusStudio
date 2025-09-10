@@ -8,13 +8,13 @@ const allEdges = [...new Set(allConexions.flat())];
 
 export const useDataConexions = () => {
   const { typeSimulator } = useSimulator();
-  const { currentInst, currentResult, setCurrentType } = useCurrentInst();
+  const { currentMonocycletInst, currentMonocycleResult, setCurrentType } = useCurrentInst();
 
   const disabledEdges = useMemo(() => {
-    if (!currentInst) return [];
+    if (!currentMonocycletInst) return [];
 
     let enabledEdges: string[] = [];
-    const currentInstruction = currentInst;
+    const currentInstruction = currentMonocycletInst;
 
     switch (currentInstruction.type) {
       case "R":
@@ -257,7 +257,7 @@ export const useDataConexions = () => {
           ...conexion.rs2_bu,
           ...conexion.brOp_bu,
         ];
-        if (currentResult.buMux.signal === "1") {
+        if (currentMonocycleResult.buMux.signal === "1") {
           enabledEdges.push(...conexion.alu_muxD);
         } else {
           enabledEdges.push(...conexion.adder4_muxD);
@@ -385,7 +385,7 @@ export const useDataConexions = () => {
 
     const enabledSet = new Set(enabledEdges);
     return allEdges.filter((edge) => !enabledSet.has(edge));
-  }, [currentInst, currentResult, typeSimulator, setCurrentType]);
+  }, [currentMonocycletInst, currentMonocycleResult, typeSimulator, setCurrentType]);
 
   return disabledEdges;
 };

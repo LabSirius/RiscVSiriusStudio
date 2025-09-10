@@ -28,7 +28,8 @@ export const useMessageListener = () => {
     setIsEbreak,
   } = useSimulator();
   const { setWriteInRegister } = useRegistersTable();
-  const { setCurrentInst, setCurrentResult } = useCurrentInst();
+  const { setCurrentMonocycleInst, setCurrentMonocycleResult, setPipelineValuesStages } =
+    useCurrentInst();
 
   const { setLineDecorationNumber, setClickInEditorLine } = useLines();
   const { setDialog } = useDialog();
@@ -51,12 +52,13 @@ export const useMessageListener = () => {
             setTextProgram(message.textProgram);
             break;
           case "uploadMemory":
+
             setDialog({
               title: "Configuration Info",
               description:
                 "Before executing the first instruction, you can change the simulation settings.",
               stop: false,
-              chooseTypeSimulator: message.typeSimulator === "monocycle" ? true : false,
+              isReset: message.isReset,
             });
             setTypeSimulator(message.typeSimulator);
             setSection("settings");
@@ -68,19 +70,24 @@ export const useMessageListener = () => {
             setLineDecorationNumber(message.initialLine);
 
             break;
-
           case "step":
-            setNewPc(message.newPc);
-            setCurrentInst(message.currentInst);
-            if (message.currentInst.asm?.toLowerCase() === "ebreak") {
-              setIsEbreak(true);
-            }
-
-            setCurrentResult(message.result);
-            if (message.lineDecorationNumber !== undefined) {
-              setLineDecorationNumber(message.lineDecorationNumber);
+            console.log("AQUI LLEGA UN MENSAJE STEP", message.result);
+            if (message.result.IF) {
+              console.log("IS PIPELINE");
+              setPipelineValuesStages(message.result);
             } else {
-              setLineDecorationNumber(-1);
+              setNewPc(message.newPc);
+              setCurrentMonocycleInst(message.currentMonocycletInst);
+              if (message.currentMonocycletInst?.asm?.toLowerCase() === "ebreak") {
+                setIsEbreak(true);
+              }
+
+              setCurrentMonocycleResult(message.result);
+              if (message.lineDecorationNumber !== undefined) {
+                setLineDecorationNumber(message.lineDecorationNumber);
+              } else {
+                setLineDecorationNumber(-1);
+              }
             }
 
             if (!isFirstStep) {
