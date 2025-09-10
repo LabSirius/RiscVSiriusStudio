@@ -72,8 +72,20 @@ export const UseHexAvMemoryTabulator = ({
         if (data.address === spAddress) return;
 
         const rowEl = row.getElement();
-        rowEl.style.backgroundColor = '';
+       if(data.segment === "directivesReadOnlySize"){
+           rowEl.style.backgroundColor = "#B0B8C4"
+          rowEl.style.color = "#000"
+
+        }
+        else if(data.segment === "directivesWritableSize"){
+          rowEl.style.backgroundColor = "#C5D9E0"
+          rowEl.style.color = "#000"
+        }else{
+          rowEl.style.backgroundColor = '';
         rowEl.style.color = '';
+
+        }
+        
 
       },
       initialSort: [{ column: 'address', dir: 'desc' }],
