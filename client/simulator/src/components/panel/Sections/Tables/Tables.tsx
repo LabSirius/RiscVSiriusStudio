@@ -1,6 +1,6 @@
 import RegisterTable from "./RegisterTable";
 import AvailableMemoryTable from "./MemoryTable/AvailableMemoryTable/AvailableMemoryTable";
-import StagesPipeline from "./StagesPipeline";
+// import StagesPipeline from "./StagesPipeline";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import ProgramMemoryTable from "./MemoryTable/ProgramMemory";
 import ProgramSection from "../ProgramSection";
@@ -8,7 +8,8 @@ import AvailableHexMemoryTable from "./MemoryTable/AvailableMemoryTable/Availabl
 import { useState } from "react";
 
 const Tables = () => {
-  const { typeSimulator, modeSimulator } = useSimulator();
+
+  const {  modeSimulator } = useSimulator();
 
   const [withBin, setWithBin] = useState(true);
 
@@ -25,7 +26,7 @@ const Tables = () => {
       </div>
 
       {modeSimulator !== "text" && <ProgramSection />}
-      {typeSimulator === "pipeline" && <StagesPipeline />}
+      {/* {typeSimulator === "pipeline" && <StagesPipeline />} */}
     </div>
   );
 };

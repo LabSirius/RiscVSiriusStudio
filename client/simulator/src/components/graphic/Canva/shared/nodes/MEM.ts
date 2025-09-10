@@ -27,6 +27,8 @@ export const useMEMNodes = (): Node[] => {
     },
 
     nodeBase("title-MEM", "title", "Memory (MEM)", { x: 10, y: 0 }, "MEM", 565, 50),
+    nodeBase("instMEMPipeline", "instMEMPipeline", "instMEMPipeline", { x: 110, y: 80 }, "MEM", 565, 50),
+
     nodeBase("dataMemory", "dataMemory", "Data Memory", { x: shift(200), y: 635 }, "MEM", 325, 320),
     nodeBase("dmWr", "dmWr", "DMWR", { x: shift(243), y: 555 }, "MEM", 90, 30),
     nodeBase("dmCtrl", "dmCtrl", "DMCtrl", { x: shift(385), y: 555 }, "MEM", 90, 30),

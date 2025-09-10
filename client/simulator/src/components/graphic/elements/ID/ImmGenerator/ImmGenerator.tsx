@@ -11,9 +11,9 @@ import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useTheme } from "@/components/ui/theme/theme-provider";
 
 export default function ImmGenerator() {
-  const { operation, isEbreak } = useSimulator();
-  const { currentType } = useCurrentInst();
-  const { theme } = useTheme(); 
+  const { operation, isEbreak, modeSimulator } = useSimulator();
+  const { currentType, pipelineValuesStages } = useCurrentInst();
+  const { theme } = useTheme();
 
   const [showImmDecode, setShowImmDecode] = useState(false);
   const [isCardOpen, setIsCardOpen] = useState(false);
@@ -25,7 +25,12 @@ export default function ImmGenerator() {
     setIsCardOpen(open);
   };
 
-  const isFeatureEnabled = currentType !== "R" && operation !== "uploadMemory" && !isEbreak;
+  const isNop =
+    modeSimulator === "pipeline" ? pipelineValuesStages?.ID?.instruction?.pc === -1 : false;
+
+  const isTypeR = currentType === "R" || pipelineValuesStages?.ID?.instruction?.type === "R";
+
+  const isFeatureEnabled = !isTypeR && !isNop && operation !== "uploadMemory" && !isEbreak;
 
   return (
     <HoverCard open={isCardOpen} onOpenChange={handleOpenChange} openDelay={0}>
@@ -35,8 +40,7 @@ export default function ImmGenerator() {
             <h2
               className={`!z-0 titleInElement top-[25%] left-[30%] -translate-x-[15%] -translate-y-[25%] ${
                 !isFeatureEnabled && "!text-[#D3D3D3]"
-              }`}
-            >
+              }`}>
               Imm Generator
             </h2>
             <ContainerSVG height={9.6} active={isFeatureEnabled} />
@@ -69,8 +73,7 @@ export default function ImmGenerator() {
               : `px-2 py-1 w-min flex justify-end ${
                   theme === "light" ? "bg-[#f5f5f5] text-black" : "bg-[#404040] text-white"
                 }`
-          }`}
-        >
+          }`}>
           {!showImmDecode && (
             <PanelTopClose
               size={20}

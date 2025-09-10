@@ -1,12 +1,12 @@
 main:
    li x1, -32
-   li x2, -48
-   li x3, 34
+   li x3, 8
+   li x4, 20
 
-   sw x1, 3(sp)
-   sh x2, 4(sp)
-   sb x3, 5(sp)
+   sw x1, -4(sp)
+   sh x3, -8(sp)
+   sb x4, -12(sp)
    
-   lw x4, 3(sp)
-   lh x5, 4(sp)
-   lb x6, 5(sp)
+   lw x5, -4(sp)
+   lh x6, -8(sp)
+   lb x7, -12(sp)

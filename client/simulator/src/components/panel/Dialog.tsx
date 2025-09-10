@@ -10,25 +10,23 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { Info, Lock, Settings } from "lucide-react";
+import { Info, Settings } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useSimulator } from "@/context/shared/SimulatorContext";
-// import { sendMessage } from "../Message/sendMessage";
+import { sendMessage } from "../Message/sendMessage";
 
 const Dialog = () => {
-  const { dialog } = useDialog();
+  const { dialog, setDialog } = useDialog();
   const [open, setOpen] = useState(false);
-  const { typeSimulator, setShowTuto } = useSimulator();
+  const { typeSimulator, setTypeSimulator, setShowTuto } = useSimulator();
 
-  // This logic is fine, no changes needed here.
-  // It handles the selection but doesn't close the dialog, which is correct
-  // since the user confirms with the "Accept" button.
-  // const handleSelection = (newType: string) => {
-  //   if (newType) {
-  //     setTypeSimulator(newType as "monocycle" | "pipeline");
-  //   }
-  // };
+
+  const handleSelection = (newType: string) => {
+    if (newType) {
+      setTypeSimulator(newType as "monocycle" | "pipeline");
+    }
+  };
 
   useEffect(() => {
     if (dialog) {
@@ -36,13 +34,13 @@ const Dialog = () => {
     }
   }, [dialog]);
 
-  // const handleAccept = () => {
-  //   setOpen(false);
-  //   setDialog(undefined);
+  const handleAccept = () => {
+    setOpen(false);
+    setDialog(undefined);
 
-  //     sendMessage({ event: typeSimulator });
-    
-  // };
+    sendMessage({ event: typeSimulator });
+  };
+
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -61,22 +59,14 @@ const Dialog = () => {
           <AlertDialogDescription className="text-base text-start text-foreground">
             <div className="text-xs mt-1">{dialog?.description}</div>
 
-            {dialog?.descerror && (
-              <div className="flex flex-col mt-4">
-                <p className="text-red-400 text-xs">ERROR:</p>
-                <p className="text-xs">{dialog.descerror}</p>
-
-              </div>
-            )}
-
-            {dialog?.chooseTypeSimulator && (
+            {dialog?.isReset  && !dialog?.stop && (
               <div className="py-4">
                 {/* 1. Title for the simulator type selection. */}
                 <p className="mb-3 font-medium text-[.8rem]">Choose Type Simulator</p>
 
                 <RadioGroup
                   value={typeSimulator}
-                  // onValueChange={handleSelection}
+                  onValueChange={handleSelection}
                   className="space-y-2">
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="monocycle" id="r_monocycle" />
@@ -86,25 +76,29 @@ const Dialog = () => {
                   </div>
 
                   {/* 4. Structure for "Pipeline" radio item. */}
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="pipeline" id="r_pipeline" disabled />
-                    <Label htmlFor="r_pipeline" className="cursor-pointer text-gray-500 flex items-center gap-3">
-                      <p>Pipeline</p>
-                      <Lock size={20} strokeWidth={1}/>
-                    </Label>
-                  </div>
+                 
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="pipeline" id="r_pipeline" />
+                      <Label htmlFor="r_pipeline" className="cursor-pointer">
+                        Pipeline{" "}
+                        <span className="text-[.6rem] bg-blue-400 p-1 rounded-[0.4rem] ">Beta</span>
+                      </Label>
+                    </div>
                 </RadioGroup>
               </div>
             )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex w-full gap-5 items-center">
+          {!dialog?.stop && (
+            <AlertDialogAction
+              onClick={() => setShowTuto(true)}
+              className="!bg-transparent !border-none text-[.8rem] underline text-[#3A6973] cursor-pointer">
+              Show tutorial
+            </AlertDialogAction>
+          )}
 
-            {!dialog?.stop && (<AlertDialogAction onClick={() => setShowTuto(true)} className="!bg-transparent !border-none text-[.8rem] underline text-[#3A6973] cursor-pointer">Show tutorial</AlertDialogAction>)}
-          
-
-
-          <AlertDialogAction >Accept</AlertDialogAction>
+          <AlertDialogAction onClick={handleAccept}>Accept</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
