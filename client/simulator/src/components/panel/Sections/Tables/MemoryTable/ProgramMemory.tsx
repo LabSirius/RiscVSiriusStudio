@@ -36,6 +36,8 @@ const ProgramMemoryTable = () => {
   } = useMemoryTable();
 
   const { newPc, setNewPc, isFirstStep } = useSimulator();
+
+
   const newPcRef = useRef(newPc);
 
   const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable } = useLines();
@@ -63,7 +65,6 @@ const ProgramMemoryTable = () => {
 
   useProgramCounterEffect({
     isCreatedMemoryTable,
-    dataMemoryTable,
     newPc,
     newPcRef,
     tableInstanceRef,

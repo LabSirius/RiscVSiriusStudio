@@ -12,7 +12,6 @@ interface UseProgramCounterEffectProps {
   tableInstanceRef: MutableRefObject<Tabulator | null>;
   // Usamos 'any' para dataMemoryTable para máxima compatibilidad sin conocer su tipo exacto.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dataMemoryTable: any;
 }
 
 /**
@@ -23,19 +22,17 @@ interface UseProgramCounterEffectProps {
  */
 export const useProgramCounterEffect = ({
   isCreatedMemoryTable,
-  dataMemoryTable,
   newPc,
   newPcRef,
   tableInstanceRef,
 }: UseProgramCounterEffectProps): void => {
   useEffect(() => {
+
     if (!isCreatedMemoryTable) return;
-    if (dataMemoryTable?.codeSize !== undefined) {
+
       newPcRef.current = newPc;
-      if (!(newPc * 4 >= dataMemoryTable?.codeSize - dataMemoryTable?.constantsSize)) {
         updatePC(newPc, { current: tableInstanceRef.current });
-      }
-    }
+    
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newPc, isCreatedMemoryTable]);
