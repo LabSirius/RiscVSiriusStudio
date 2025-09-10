@@ -42,7 +42,7 @@ export const useMemoryTabulator = ({
   setIsCreatedMemoryTable,
   dataMemoryTable,
   isFirstStepRef,
-  setSp,
+
 }: UseMemoryTabulatorProps): void => {
   useEffect(() => {
 
@@ -79,9 +79,6 @@ export const useMemoryTabulator = ({
         uploadAvailableMemory(
           tableInstanceRef.current!,
           dataMemoryTable.memory,
-          () => {
-            setSp(intToHex(dataMemoryTable.memory.length - 4));
-          }
         );
       }
       setupEventListeners(tableInstanceRef.current!);

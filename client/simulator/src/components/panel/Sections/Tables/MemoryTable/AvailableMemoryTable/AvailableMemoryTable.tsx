@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
@@ -24,6 +24,7 @@ import { useStackPointerEffect } from "@/hooks/text/memory/availableMemory/useSt
 import { useMemoryCellWriteEffect } from "@/hooks/text/memory/availableMemory/useMemoryCellWriteEffect";
 import { useAnimateMemoryRead } from "@/hooks/text/memory/availableMemory/useAnimateMemoryRead";
 import { useMemorySearchFilterEffect } from "@/hooks/text/memory/shared/useMemorySearchFilterEffect";
+import { intToHex } from "@/utils/handlerConversions";
 
 
 
@@ -65,6 +66,8 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
 
   const [showTable, setShowTable] = useState(true);
 
+  
+
   useMemoryTabulator({
     tableContainerRef,
     tableInstanceRef,
@@ -77,6 +80,13 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
     setNewPc,
     setClickAddressInMemoryTable,
   });
+
+  useEffect(() => {
+
+    if (dataMemoryTable && dataMemoryTable.memory) {
+      setSp(intToHex(dataMemoryTable.memory.length - 4));
+    }
+  }, [dataMemoryTable, setSp]); 
 
   useMemoryResizeEffect({
     isCreatedMemoryTable,
@@ -155,12 +165,12 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
                 className="absolute cursor-pointer right-[0rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] z-100 text-black hover:scale-110 transition-transform"
               />
             </HoverCardTrigger>
-            <HoverCardContent side="right" align="center" className="w-auto p-1 border rounded-md shadow-lg ml-2 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm">
+            <HoverCardContent side="right" align="center" className="w-auto p-1 ml-2 border rounded-md shadow-lg bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm">
               <div className="flex items-center space-x-1">
                 <button
                   onClick={() => setWithBin(prev => !prev)}
                   title="Toggle Binary"
-                  className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                  className="p-1 transition-colors rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700"
                 >
                   <Binary strokeWidth={1.5} className="w-5 h-5 text-black dark:text-white" />
                 </button>
@@ -168,7 +178,7 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
                   
                   onClick={() => setShowTable(false)}
                   title="Hide Table"
-                  className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors"
+                  className="p-1 transition-colors rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700"
                 >
                   <ArrowBigLeftDash strokeWidth={1.5} className="w-5 h-5 text-black dark:text-white" />
                 </button>

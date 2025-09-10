@@ -2,14 +2,17 @@ import Providers from "./providers";
 
 import AppComponent from "./components/AppComponent";
 import { sendMessage } from "./components/Message/sendMessage";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const App = () => {
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
     sendMessage({ event: "webviewReady" });
-
-    return;
+    setReady(true);
   }, []);
+
+  if (!ready) return null; 
 
   return (
     <Providers>
@@ -17,5 +20,6 @@ const App = () => {
     </Providers>
   );
 };
+
 
 export default App;
