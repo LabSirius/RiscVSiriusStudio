@@ -94,17 +94,17 @@ export class SCCPU implements ICPU {
 
     this._program = program.filter((sc) => sc.kind === "SrcInstruction");
     this.registers = new RegistersFile();
-    this.dataMemory = new DataMemory(directives.length, availableMemSize);
+    this.dataMemory = new DataMemory(directives, availableMemSize);
 
     this.pc = 0;
     this.immediateUnit = new ImmediateUnit();
     this.alu = new ProcessorALU();
     this.controlUnit = new ControlUnit();
 
+    this.dataMemory.uploadProgram(programMemory);
+
     const spAbsoluteAddress = this.dataMemory.availableSpInitialAddress;
     this.registers.writeRegister("x2", intToBinary(spAbsoluteAddress));
-
-    this.dataMemory.uploadProgram(programMemory);
   }
 
 
