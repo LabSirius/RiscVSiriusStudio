@@ -1,5 +1,6 @@
 import { parse } from './riscv';
 import { binaryToHex, hexToBin } from './conversions';
+import { read } from 'fs';
 
 type Align = {
   start: number,
@@ -15,7 +16,8 @@ type Data = {
   memdef: number,
   value: string | string[],
   typeAlign: string,
-  align: Align
+  align: Align,
+  writable: boolean
 };
 
 type Constant = {
@@ -31,9 +33,12 @@ let labelTable = {};
 let constantTable: Constant[] = [];
 let directives = {};
 let dataTable: Record<string, Data> = {};
+let readOnlyData: Record<string, Data> = {};
+let writableData: Record<string, Data> = {};
 let counters = {
   instcounter: 0,
-  instCountData: 0
+  instCountData: 0,
+  dataRD: 0
 };
 
 function anyCommonElement<T>(...arrays: T[][]): [boolean, any] {
@@ -73,6 +78,16 @@ function setInstCountData(end: number): void {
   counters.instCountData += end; 
 }
 
+function setDataCounter(end: number): void {
+  counters.dataRD += end; 
+}
+
+function organiceData(): void{
+  Object.keys(dataTable).forEach( (element) => 
+    dataTable[element]?.writable ? writableData[element] = dataTable[element] : readOnlyData[element] = dataTable[element]!
+  );
+}
+
 function alignAddress(addr: number, alignment: number): number {
   if (addr % alignment === 0){
       return addr;
@@ -86,46 +101,46 @@ function endAligment(addr: number, alignment: number): number {
 
 function resolveAlign(align: string, value: any): Align {
   let end: number = 0;
-  let start = counters.instCountData;
+  let start = counters.dataRD;
   let sum;
   switch (align) {
     case ".word":
       start = alignAddress(start, 4);
       end = (start + 3);
-      setInstCountData(4);
+      setDataCounter(4);
       break;
 
     case ".string":
       sum = resolveAlignString(value);
       end = start + sum - 1;
-      setInstCountData(sum);
+      setDataCounter(sum);
       break;
 
     case ".asciz":
       sum = resolveAlignString(value);
       end = start + sum - 1;
-      setInstCountData(sum);
+      setDataCounter(sum);
       break;
 
     case ".half":
       start = alignAddress(start, 2);
       end = start + 1;
-      setInstCountData(3);
+      setDataCounter(3);
       break;
     
     case ".2byte":
       end = start + 1;
-      setInstCountData(3);
+      setDataCounter(3);
       break;
     
     case ".4byte":
       end = start + 3;
-      setInstCountData(4);
+      setDataCounter(4);
       break;
     
     case ".byte":
       end = start + 1;
-      setInstCountData(2);
+      setDataCounter(2);
       break;
 
     default:
@@ -148,8 +163,8 @@ function setValueData(name: string): void {
   data["memdef"] = valueAlign.start;
 }
 
-function updateMemdefData(): void {
-  Object.keys(dataTable).forEach( (element) => {
+function updateMemdefData(data: Record<string, Data>): void {
+  Object.keys(data).forEach( (element) => {
     setValueData(element);
   });
 }
@@ -213,9 +228,15 @@ function fillMemory(data: Data, before: number | undefined, memory: Memory[]): [
   let mem: Memory[] = [];
 
   if (Array.isArray(data.value)){
-    const last = memory[ memory.length - 1];
-    if (last !== undefined){
-      mem = constructMemoryFromAsciiList(data.value, last.memdef);
+    let last: Memory | undefined;
+    if (memory.length === 0){
+      mem = constructMemoryFromAsciiList(data.value, -1);
+    }
+    else{
+      last = memory[ memory.length - 1];
+      if (last !== undefined){
+        mem = constructMemoryFromAsciiList(data.value, last.memdef);
+      }
     }
   }
   else {
@@ -268,13 +289,17 @@ function getMemoryFromList(binList: string[], hexList: string[], start: number):
   return mem;  
 }
 
-function constructMemory(instructions: any[], data: Record<string, Data>): Memory[] {
+function constructProgramMemory(instructions: any[]): Memory[] {
   let memory: Memory[] = [];
-  instructions.forEach((element) => 
-    memory = memory.concat(constructMemoryFromInst(element))
-  );
+  instructions.forEach((element) => {
+    memory = memory.concat(constructMemoryFromInst(element));
+  });
+  return memory;
+}
 
-  let before: number | undefined = memory[ memory.length -1 ]?.memdef;
+function constructMemory(data: Record<string, Data>, start: number = 0): Memory[] {
+  let memory: Memory[] = [];
+  let before: number | undefined = start;
 
   Object.keys(data).forEach((key) => [before, memory] = fillMemory(data[key]!, before, memory));
   return memory;
@@ -303,10 +328,18 @@ function fillEndMemory(memory: Memory[]): Memory[] {
   return memory;
 }
 
+function normMemory(memory: Memory[]): Memory[] {
+  memory = fillEndMemory(memory);
+  memory = reorderMemory(memory);
+  return memory;
+}
+
 export type InternalRepresentation = {
   instructions: Array<any>;
   symbols: Array<any>;
-  memory: Memory[],
+  readOnlyMemory: Memory[],
+  writableMemory: Memory[],
+  programMemory: Memory[],
   directives: Record<string, any[]>,
   dataTable: Record<string, Data>,
   constants: Constant[]
@@ -326,7 +359,8 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
   labelTable = {};
   counters = {
     instcounter: 0,
-    instCountData: 0
+    instCountData: 0,
+    dataRD: 0
   };
   directives = {};
   
@@ -375,7 +409,9 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
   }
   counters.instCountData = counters.instcounter * 4;
   counters.instcounter = 0;
-  updateMemdefData();
+  organiceData();
+  updateMemdefData(readOnlyData);
+  updateMemdefData(writableData);
   let parserOutput;
   try {
     parserOutput = parse(inputSrc, {
@@ -393,9 +429,13 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
     return retError;
   }
 
-  let memory = constructMemory(parserOutput, dataTable);
-  memory = fillEndMemory(memory);
-  memory = reorderMemory(memory);
+  let readOnlymemory = constructMemory(readOnlyData);
+  let writableMemory = constructMemory(writableData, counters.dataRD);
+  let programMemory = constructProgramMemory(parserOutput);
+  
+  readOnlymemory = normMemory(readOnlymemory);
+  writableMemory = normMemory(writableMemory);
+  programMemory = normMemory(programMemory);
 
   const result = {
     success: true,
@@ -405,8 +445,9 @@ export function compile(inputSrc: string, inputName: string): ParserResult {
       directives: directives,
       dataTable: dataTable,
       options: options,
-      memory: memory
-      
+      readOnlyMemory: readOnlymemory,
+      writableMemory: writableMemory,
+      programMemory: programMemory      
     },
     info: 'Success',
     extra: undefined
