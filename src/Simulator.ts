@@ -42,9 +42,9 @@ export abstract class Simulator {
       throw new Error("RVDocument has no IR");
     }
     if (simulatorType === "pipeline") {
-      this.cpu = new PipelineCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
+      this.cpu = new PipelineCPU(rvDoc.ir.instructions,  rvDoc.ir.programMemory, rvDoc.ir.writableMemory, params.memorySize);
     } else {
-      this.cpu = new SCCPU(rvDoc.ir.instructions, rvDoc.ir.memory, params.memorySize);
+      this.cpu = new SCCPU(rvDoc.ir.instructions, rvDoc.ir.programMemory, rvDoc.ir.writableMemory, params.memorySize);
     }
   }
 

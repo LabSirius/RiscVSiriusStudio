@@ -104,8 +104,8 @@ export const useMemoryTabulator = ({
         if (cell.getField() === 'address') {
           const address = cell.getValue();
           const intAdress = Number(hexToInt(address)) / 4;
-          if (dataMemoryTable?.codeSize) {
-            if (intAdress * 4 < dataMemoryTable?.codeSize) {
+         
+           
               const instruction = dataMemoryTable?.addressLine[intAdress];
               if (instruction) {
                 setClickAddressInMemoryTable(instruction.line);
@@ -120,8 +120,8 @@ export const useMemoryTabulator = ({
                   }
                 }
               }
-            }
-          }
+            
+          
         }
       });
 

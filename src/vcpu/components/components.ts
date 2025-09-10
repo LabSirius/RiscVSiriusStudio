@@ -64,9 +64,7 @@ export class DataMemory {
   }
 
   private codeAreaEnd: number;
-  get codeSize() {
-    return this.codeAreaEnd + 1;
-  }
+
 
   private available_size: number; //U
 
@@ -81,10 +79,6 @@ export class DataMemory {
     return this.availableMemSize - 4; //U
   }
 
-  private _constantsSize: number;
-  get constantsSize(): number {
-    return this._constantsSize;
-  }
 
 
   public overwriteAvailableMemory(newMemory: string[]): void {
@@ -92,28 +86,24 @@ export class DataMemory {
   this.available_size = newMemory.length;
 }
 
-  public constructor(programSize : number, codeSize: number, size: number) {
-    this.codeAreaEnd = codeSize - 1;
-    this._constantsSize =  codeSize - programSize;
+  public constructor( directivesSize: number, available_size: number) {
+
+    this.codeAreaEnd = directivesSize - 1;
 
     this.available_size = 0; 
-
     this.memory_program = []; //U
     this.memory_available = []; //U
 
-
-    this.resize(size);
+    this.resize(available_size);
   }
-  public resize(size: number) {
-    this.available_size = size; //U
-
   
-    this.memory_program = new Array(this.codeSize).fill("00000000"); //U
+  public resize(available_size: number) {
+    this.available_size = available_size; 
     this.memory_available = new Array(this.available_size).fill("00000000"); //U
 
   }
 
-  public uploadProgram(memory: Array<any>) {
+   public uploadProgram(memory: Array<any>) {
       memory.forEach((mem) => {
         const address = mem.memdef;
 
