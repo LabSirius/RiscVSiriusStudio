@@ -69,11 +69,11 @@ export class DataMemory {
   }
 
   private directives: any[];
-  private directives_size: number;
+  public writableDirectives_size: number;
 
 
   get availableSpInitialAddress() {
-    return this.availableMemSize + this.directives_size - 4; //U
+    return this.availableMemSize + this.writableDirectives_size - 4; //U
   }
 
   public overwriteAvailableMemory(newMemory: string[]): void {
@@ -87,14 +87,14 @@ export class DataMemory {
     this.memory_available = []; //U
 
     this.directives = directives;
-    this.directives_size = 0;
+    this.writableDirectives_size = 0;
 
     this.resize(available_size);
   }
 
   public resize(available_size: number) {
     this.available_size = available_size;
-    this.directives_size = this.directives.length;
+    this.writableDirectives_size = this.directives.length;
 
     const directiveValues = this.directives
       .sort((a, b) => a.memdef - b.memdef)
@@ -114,7 +114,7 @@ export class DataMemory {
   }
 
   public lastAddress() {
-    return this.available_size +   this.directives_size  - 1;
+    return this.available_size +   this.writableDirectives_size  - 1;
   }
 
   public validAddress(address: number) {

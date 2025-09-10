@@ -15,20 +15,33 @@ import { SymbolData } from '@/utils/tables/types';
 export const uploadAvailableMemory = (
   table: Tabulator,
   newMemory: string[],
-  onComplete?: () => void
+  directivesWritableSize: number | null  | undefined,
+  onComplete?: () => void,
+ 
+  
 ): void => {
 
-
-  
   const isInitialLoad = table.getData().length === 0;
   const expectedRowCount = newMemory.length / 4;
   const maxAddress = (expectedRowCount - 1) * 4;
 
 
+   console.log("DIRECTIVES", directivesWritableSize )
+
   // Generate main data
   const mainRows = chunk(newMemory, 4).map((word, index) => {
     const byteAddress = index * 4;
     const address = intToHex(byteAddress).toUpperCase();
+
+    let segment = '';
+   
+
+    if(directivesWritableSize && byteAddress < directivesWritableSize){
+
+      segment = "directivesWritableSize"
+    }else{
+      segment = "program"
+    }
 
 
 
@@ -44,6 +57,7 @@ export const uploadAvailableMemory = (
         .map((byte) => binaryToHex(byte || '00000000').toUpperCase().padStart(2, '0'))
         .join('-'),
       info: '',
+      segment
     };
   });
 

@@ -27,6 +27,8 @@ interface UseMemoryTabulatorProps {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataMemoryTable: any;
+
+  directivesWritableSize: number | null | undefined
 }
 
 /**
@@ -42,6 +44,7 @@ export const useMemoryTabulator = ({
   setIsCreatedMemoryTable,
   dataMemoryTable,
   isFirstStepRef,
+  directivesWritableSize
 
 }: UseMemoryTabulatorProps): void => {
   useEffect(() => {
@@ -66,8 +69,16 @@ export const useMemoryTabulator = ({
         if (data.address === spAddress) return;
 
         const rowEl = row.getElement();
-        rowEl.style.backgroundColor = '';
+
+        if(data.segment === "directivesWritableSize"){
+          rowEl.style.backgroundColor = "#D1E3E7"
+          rowEl.style.color = "#000"
+        }else{
+          rowEl.style.backgroundColor = '';
         rowEl.style.color = '';
+
+        }
+        
 
       },
       initialSort: [{ column: 'address', dir: 'desc' }],
@@ -79,6 +90,7 @@ export const useMemoryTabulator = ({
         uploadAvailableMemory(
           tableInstanceRef.current!,
           dataMemoryTable.memory,
+          directivesWritableSize
         );
       }
       setupEventListeners(tableInstanceRef.current!);
