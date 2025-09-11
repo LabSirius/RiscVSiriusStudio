@@ -68,6 +68,7 @@ export const im_funct7 = [
   "pivot27->pivot28",
   "pivot28->pivot29",
   "pivot28->pivot30",
+  "pivot30->pivot31",
   "pivot30->pivot32",
   "pivot32->pivot33",
 ];
