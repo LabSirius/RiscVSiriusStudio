@@ -11,7 +11,7 @@ import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useTheme } from "@/components/ui/theme/theme-provider";
 
 export default function ImmGenerator() {
-  const { operation, isEbreak, modeSimulator } = useSimulator();
+  const { operation, isEbreak, typeSimulator } = useSimulator();
   const { currentType, pipelineValuesStages } = useCurrentInst();
   const { theme } = useTheme();
 
@@ -26,11 +26,11 @@ export default function ImmGenerator() {
   };
 
   const isNop =
-    modeSimulator === "pipeline" ? pipelineValuesStages?.ID?.instruction?.pc === -1 : false;
+    typeSimulator === "pipeline" ? pipelineValuesStages?.ID?.instruction?.pc === -1 : false;
 
   const isTypeR = currentType === "R" || pipelineValuesStages?.ID?.instruction?.type === "R";
 
-  const isFeatureEnabled = !isTypeR && !isNop && operation !== "uploadMemory" && !isEbreak;
+  const isFeatureEnabled = !isTypeR && !isNop && !isEbreak;
 
   return (
     <HoverCard open={isCardOpen} onOpenChange={handleOpenChange} openDelay={0}>
@@ -39,11 +39,11 @@ export default function ImmGenerator() {
           <div className="relative w-full h-full">
             <h2
               className={`!z-0 titleInElement top-[25%] left-[30%] -translate-x-[15%] -translate-y-[25%] ${
-                !isFeatureEnabled && "!text-[#D3D3D3]"
+                !isFeatureEnabled && !(operation === "uploadMemory")  && "!text-[#D3D3D3]"
               }`}>
               Imm Generator
             </h2>
-            <ContainerSVG height={9.6} active={isFeatureEnabled} />
+            <ContainerSVG height={9.6} active={isFeatureEnabled || operation === "uploadMemory"} />
             {isFeatureEnabled && <LabelValueContainer />}
           </div>
           <Handle
@@ -64,7 +64,7 @@ export default function ImmGenerator() {
         </div>
       </HoverCardTrigger>
 
-      {isFeatureEnabled && (
+      {isFeatureEnabled && operation !== "uploadMemory" && (
         <HoverCardContent
           side="top"
           className={`${
