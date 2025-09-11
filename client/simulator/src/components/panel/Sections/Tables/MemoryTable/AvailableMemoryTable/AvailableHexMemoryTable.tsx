@@ -77,7 +77,6 @@ const AvailableHexMemoryTable = ({setWithBin, withBin}: AvailableMemoryTable ) =
     dataMemoryTable,
     newPcRef,
     isFirstStepRef,
-    setSp,
     setNewPc,
     setClickAddressInMemoryTable,
     directivesWritableSize: dataMemoryTable?.directivesWritableSize,

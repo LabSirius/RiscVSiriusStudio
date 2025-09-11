@@ -20,7 +20,6 @@ interface UseHexAvMemoryTabulatorProps {
   isCreatedMemoryTable: boolean;
 
   setIsCreatedMemoryTable: Dispatch<SetStateAction<boolean>>;
-  setSp: Dispatch<SetStateAction<string>>;
   setNewPc: Dispatch<SetStateAction<number>>;
 
   setClickAddressInMemoryTable: (line: number) => void;
