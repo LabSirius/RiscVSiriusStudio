@@ -12,11 +12,12 @@ export const useDataPipelineConexions = () => {
   const IDType = pipelineValuesStages.ID.instruction?.type;
   const IEType = pipelineValuesStages.EX.instruction?.type;
   const MEMtype = pipelineValuesStages.MEM.instruction?.type;
+  const WBtype = pipelineValuesStages.WB.instruction?.type;
 
   const disabledEdges = useMemo(() => {
     const enabledEdges: string[] = [];
 
-    if (!IFType && !IDType && !IEType && !MEMtype) return [];
+    if (!IFType && !IDType && !IEType && !MEMtype && !WBtype) return [];
 
     enabledEdges.push(...conexion.bu_muxD);
 
@@ -221,54 +222,84 @@ export const useDataPipelineConexions = () => {
           }
           break;
       }
-
-
-
-      
     }
 
     if (MEMtype) {
-        switch (MEMtype) {
-          case "R":
-            enabledEdges.push(...conexion.aluResMEM_aluResWB, ...conexion.rdMEM_rdWB);
+      switch (MEMtype) {
+        case "R":
+          enabledEdges.push(...conexion.aluResMEM_aluResWB, ...conexion.rdMEM_rdWB);
 
-            break;
-          case "I":
-            enabledEdges.push(...conexion.rdMEM_rdWB);
+          break;
+        case "I":
+          enabledEdges.push(...conexion.rdMEM_rdWB);
 
-            console.log("HOLa")
+          console.log("HOLa");
 
-            //L
-            if (pipelineValuesStages.MEM.instruction.opcode === "0000011") {
-              console.log("ES TIPO L");
-              enabledEdges.push(...conexion.aluResMEM_dm, ...conexion.dm_dmDataRdWB);
-            } else {
-              console.log("NO TIPO L");
+          //L
+          if (pipelineValuesStages.MEM.instruction.opcode === "0000011") {
+            enabledEdges.push(
+              ...conexion.aluResMEM_dm,
+              ...conexion.dm_dmDataRdWB,
+              ...conexion.dmCtrl_dm
+            );
+          } else {
+            enabledEdges.push(...conexion.aluResMEM_aluResWB);
+          }
 
-              enabledEdges.push(...conexion.aluResMEM_aluResWB);
-            }
+          break;
 
-            break;
+        case "S":
+          enabledEdges.push(
+            ...conexion.aluResMEM_dm,
+            ...conexion.Rurs2MEM_dm,
+            ...conexion.dmWr_dm,
+            ...conexion.dmCtrl_dm
+          );
+          break;
 
-          case "S":
-            enabledEdges.push(...conexion.aluResMEM_dm, ...conexion.Rurs2MEM_dm);
-            break;
+        case "J":
+          enabledEdges.push(...conexion.pcIncMEM_pcIncWb, ...conexion.rdMEM_rdWB);
+          break;
 
-          case "J":
-            enabledEdges.push(...conexion.pcIncMEM_pcIncWb, ...conexion.rdMEM_rdWB);
-            break;
+        case "U":
+          enabledEdges.push(...conexion.aluResMEM_aluResWB, ...conexion.rdMEM_rdWB);
 
-          case "U":
-            enabledEdges.push(...conexion.aluResMEM_aluResWB, ...conexion.rdMEM_rdWB);
-
-            if (pipelineValuesStages.EX.instruction.opcode === "0110111") {
-              enabledEdges.push();
-            } else {
-              enabledEdges.push(...conexion.aluASrc_muxA, ...conexion.pc_muxA);
-            }
-            break;
-        }
+          if (pipelineValuesStages.EX.instruction.opcode === "0110111") {
+            enabledEdges.push();
+          } else {
+            enabledEdges.push(...conexion.aluASrc_muxA, ...conexion.pc_muxA);
+          }
+          break;
       }
+    }
+
+    if (WBtype) {
+      switch (WBtype) {
+        case "R":
+          enabledEdges.push(...conexion.aluResWB_muxC, ...conexion.rdWB_ru);
+
+          break;
+        case "I":
+          enabledEdges.push(...conexion.rdWB_ru);
+
+          if (pipelineValuesStages.WB.instruction.opcode === "0000011") {
+            enabledEdges.push(...conexion.dmDataRdWB_muxC);
+          } else {
+            enabledEdges.push(...conexion.aluResWB_muxC);
+          }
+
+          break;
+
+        case "J":
+          enabledEdges.push(...conexion.pcID_muxC, ...conexion.rdWB_ru);
+          break;
+
+        case "U":
+          enabledEdges.push(...conexion.aluResWB_muxC, ...conexion.rdWB_ru);
+
+          break;
+      }
+    }
 
     const enabledSet = new Set(enabledEdges);
     return allEdges.filter((edge) => !enabledSet.has(edge));
