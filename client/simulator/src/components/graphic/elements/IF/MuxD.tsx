@@ -16,7 +16,7 @@ function MuxD() {
     const exStage = pipelineValuesStages?.EX;
     if (exStage?.instruction) {
       if (exStage.instruction.pc === -1) {
-        signal = '-'; 
+        signal = '0'; 
       } else {
         const rawResult = exStage.BranchResult;
         signal = rawResult === 'X' ? '0' : rawResult;

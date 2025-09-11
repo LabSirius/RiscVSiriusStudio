@@ -47,13 +47,13 @@ const LabelValueContainer = () => {
           setShowOp(true);
           setBinA("--");
           setBinB("--");
-          setResBin("-");
+          setResBin("0");
           setHexA("--");
           setHexB("--");
-          setResHex("-");
+          setResHex("0");
           setDecA("--");
           setDecB("--");
-          setResDec("-");
+          setResDec("0");
           setOpBin("-----");
           setOpHex("-----");
           setOpDec("-----");
