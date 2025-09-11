@@ -224,6 +224,9 @@ export const rdWB_ru = ["rd_wb->pivot37", "pivot37->pivot36", "pivot36->pivot35"
 export const ruDataWrSrc_muxC = ["ruDataWrSrc->muxC"]
 
 
+export const muxC_rd = ["muxC->pivot11", "pivot11->pivot12", "pivot12->registersUnit"]
+
+
 
 
 

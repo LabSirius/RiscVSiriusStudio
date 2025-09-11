@@ -78,6 +78,7 @@ export class ControlUnit {
         signals.dm_wr = true;
         signals.alu_op = "00000";
         signals.imm_src = "001";
+        signals.ru_data_wr_src = "XX";
         break;
 
       case "B":
@@ -85,6 +86,7 @@ export class ControlUnit {
         signals.alub_src = true;
         signals.br_op = "01" + getFunct3(instruction);
         signals.imm_src = "101";
+        signals.ru_data_wr_src = "XX";
         break;
 
       case "U":

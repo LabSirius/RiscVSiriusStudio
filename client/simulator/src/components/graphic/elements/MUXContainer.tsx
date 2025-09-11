@@ -1,9 +1,20 @@
+import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
-function Mux2_1({signal, islui, isEbreak} : {signal: string, islui?: boolean, isEbreak: boolean}) {
-  const { operation } = useSimulator();
+function Mux2_1({
+  signal,
+  islui,
+  isEbreak,
+  ismuxD,
+}: {
+  signal: string;
+  islui?: boolean;
+  isEbreak: boolean;
+  ismuxD?: boolean;
+}) {
+  const { operation, typeSimulator } = useSimulator();
   const isUploadMemory = operation === "uploadMemory";
-
+  const { pipelineValuesStages } = useCurrentInst();
 
   return (
     <div className="relative">
@@ -28,20 +39,30 @@ function Mux2_1({signal, islui, isEbreak} : {signal: string, islui?: boolean, is
         />
       </svg>
 
-      {!isUploadMemory && !islui && !isEbreak &&(
-        <div style={{ transform: signal === "0" ? "" : "scaleY(-1)" }} className={`absolute transform ${signal === "0" ? "top-[5.8rem]" : "top-[3.7rem]" } -translate-y-1/2 ` }>
-        <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" >
-          <path
-            id="signal-path-1"
-            d="M0 40 H25 V8 H50"
-            stroke="#3B59B6"
-            stroke-width="4"
-            fill="none"
-          />
-        </svg>
-      </div>
-      )}
-      
+      {!isUploadMemory &&
+        (!ismuxD
+          ? typeSimulator === "pipeline"
+            ? pipelineValuesStages.EX.instruction.pc !== -1
+            : true
+          : true) &&
+        !islui &&
+        !isEbreak && (
+          <div
+            style={{ transform: signal === "0" ? "" : "scaleY(-1)" }}
+            className={`absolute transform ${
+              signal === "0" ? "top-[5.8rem]" : "top-[3.7rem]"
+            } -translate-y-1/2 `}>
+            <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+              <path
+                id="signal-path-1"
+                d="M0 40 H25 V8 H50"
+                stroke="#3B59B6"
+                stroke-width="4"
+                fill="none"
+              />
+            </svg>
+          </div>
+        )}
     </div>
   );
 }

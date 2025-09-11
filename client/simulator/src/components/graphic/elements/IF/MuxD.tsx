@@ -31,7 +31,7 @@ function MuxD() {
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full rotate-90">
-        <MuxContainer signal={signal === '0' ? '1' : signal === '1' ? '0' : signal} isEbreak={isEbreak}/>
+        <MuxContainer signal={signal === '0' ? '1' : signal === '1' ? '0' : signal} isEbreak={isEbreak} ismuxD={true}/>
         
         {operation !== "uploadMemory" && (
           <div className="absolute top-[-2rem] left-[3rem] " style={{ transform: "rotate(-90deg)" }}>
