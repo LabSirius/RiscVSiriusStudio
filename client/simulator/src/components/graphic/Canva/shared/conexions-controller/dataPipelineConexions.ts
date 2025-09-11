@@ -186,13 +186,22 @@ export const aluResMEM_aluResWB = ["alures_mem->pivot34", "pivot34->pivot8", "pi
 export const rdMEM_rdWB = ["rd_mem->rd_wb"]
 
 
+export const dmWr_dm = ["dmWr->dataMemory"];
+
+export const dmCtrl_dm = ["dmCtrl->dataMemory"];
 
 
 
 
+//WB
+export const pcID_muxC = ["pcinc_wb->pivot13", "pivot13->muxC"]
+
+export const dmDataRdWB_muxC = ["dmdatard_wb->muxC"]
+
+export const aluResWB_muxC = ["alures_wb->pivot9", "pivot9->muxC"]
 
 
-
+export const rdWB_ru = ["rd_wb->pivot37", "pivot37->pivot36", "pivot36->pivot35", "pivot35->registersUnit[11:7]"]
 
 
 
@@ -234,9 +243,7 @@ export const rs2_dm = [
   "pivot6->dataMemory",
 ];
 
-export const dmWr_dm = ["dmWr->dataMemory"];
 
-export const dmCtrl_dm = ["dmCtrl->dataMemory"];
 
 //MUX C
 export const adder4_muxC = [
