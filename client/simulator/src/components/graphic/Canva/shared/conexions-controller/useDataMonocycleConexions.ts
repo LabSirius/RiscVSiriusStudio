@@ -1,14 +1,14 @@
 import { useMemo } from "react";
-import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
-import * as conexion from "./dataConexions";
+import * as conexion from "./dataMonocycleConexions";
 
 const allConexions = Object.values(conexion);
 const allEdges = [...new Set(allConexions.flat())];
 
-export const useDataConexions = () => {
-  const { typeSimulator } = useSimulator();
+export const useDataMonocycleConexions = () => {
   const { currentMonocycletInst, currentMonocycleResult, setCurrentType } = useCurrentInst();
+
+
 
   const disabledEdges = useMemo(() => {
     if (!currentMonocycletInst) return [];
@@ -379,13 +379,11 @@ export const useDataConexions = () => {
         break;
     }
 
-    if (typeSimulator === "pipeline") {
-      // LOGIC
-    }
+    
 
     const enabledSet = new Set(enabledEdges);
     return allEdges.filter((edge) => !enabledSet.has(edge));
-  }, [currentMonocycletInst, currentMonocycleResult, typeSimulator, setCurrentType]);
+  }, [currentMonocycletInst, currentMonocycleResult, setCurrentType]);
 
   return disabledEdges;
 };

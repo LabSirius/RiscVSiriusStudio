@@ -1,5 +1,5 @@
 import { Edge } from "@xyflow/react";
-import * as dataConexions from "./dataConexions";
+import * as dataConexions from "./dataMonocycleConexions";
 
 const allConexions = Object.values(dataConexions);
 const edgeGroups: Record<string, string[]> = {};
@@ -19,7 +19,6 @@ export const animateLineHover = (
   edges: Edge[],
   animated: boolean = true
 ): void => {
-  console.log("Hovered edge only:", edge.id);
   const idsToUpdate = edgeGroups[edge.id];
 
   idsToUpdate?.forEach((id) => {
