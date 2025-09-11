@@ -138,7 +138,7 @@ export const useDataPipelineConexions = () => {
     }
 
     if (IEType) {
-      enabledEdges.push(...conexion.aluOp_alu, ...conexion.brop_bu)
+      enabledEdges.push(...conexion.aluOp_alu, ...conexion.brop_bu);
       switch (IEType) {
         case "R":
           enabledEdges.push(
@@ -234,12 +234,11 @@ export const useDataPipelineConexions = () => {
         case "I":
           enabledEdges.push(...conexion.rdMEM_rdWB);
 
-
           //L
           if (pipelineValuesStages.MEM.instruction.opcode === "0000011") {
             enabledEdges.push(
               ...conexion.aluResMEM_dm,
-            ...conexion.dmWr_dm,
+              ...conexion.dmWr_dm,
 
               ...conexion.dm_dmDataRdWB,
               ...conexion.dmCtrl_dm
@@ -278,11 +277,16 @@ export const useDataPipelineConexions = () => {
     if (WBtype) {
       switch (WBtype) {
         case "R":
-          enabledEdges.push(...conexion.aluResWB_muxC, ...conexion.rdWB_ru, ...conexion.ruDataWrSrc_muxC);
+          enabledEdges.push(
+            ...conexion.aluResWB_muxC,
+            ...conexion.rdWB_ru,
+            ...conexion.ruDataWrSrc_muxC,
+            ...conexion.muxC_rd
+          );
 
           break;
         case "I":
-          enabledEdges.push(...conexion.rdWB_ru,  ...conexion.ruDataWrSrc_muxC);
+          enabledEdges.push(...conexion.rdWB_ru, ...conexion.ruDataWrSrc_muxC, ...conexion.muxC_rd);
 
           if (pipelineValuesStages.WB.instruction.opcode === "0000011") {
             enabledEdges.push(...conexion.dmDataRdWB_muxC);
@@ -293,11 +297,21 @@ export const useDataPipelineConexions = () => {
           break;
 
         case "J":
-          enabledEdges.push(...conexion.pcID_muxC, ...conexion.rdWB_ru,  ...conexion.ruDataWrSrc_muxC);
+          enabledEdges.push(
+            ...conexion.pcID_muxC,
+            ...conexion.rdWB_ru,
+            ...conexion.ruDataWrSrc_muxC,
+            ...conexion.muxC_rd
+          );
           break;
 
         case "U":
-          enabledEdges.push(...conexion.aluResWB_muxC, ...conexion.rdWB_ru,  ...conexion.ruDataWrSrc_muxC);
+          enabledEdges.push(
+            ...conexion.aluResWB_muxC,
+            ...conexion.rdWB_ru,
+            ...conexion.ruDataWrSrc_muxC,
+            ...conexion.muxC_rd
+          );
 
           break;
       }
