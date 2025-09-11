@@ -1,7 +1,7 @@
 
 
 //IF STAGE
-export const pc_pc_ID = ["pivot1->pc_id"]
+export const pc_pc_ID = ["pc->pivot25","pivot25->pivot1", "pivot1->pc_id"]
 export const muxD_pc = ["muxD->pc_fe", "pc_fe->pc"]
 
 export const pc_adder4 = ["pc->pivot25", "pivot25->pivot1", "pivot1->adder4"];
@@ -15,7 +15,6 @@ export const adder4_muxD = [
     "pivot18->pivot19",
     "pivot19->muxD"
 ]
-
 
 
 //IF-ID
@@ -57,6 +56,7 @@ export const im_rd = [
 
   //imm generator
 export const im_immGen = [
+  "inst_id->pivot3",
   "pivot3->pivot26",
   "pivot26->pivotJump11",
   "pivotJump11->pivotJump1",

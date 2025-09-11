@@ -1,4 +1,4 @@
-import { useState, MouseEvent, useEffect } from "react"; // ---> 1. IMPORTAMOS useEffect
+import { useState, MouseEvent, useEffect } from "react";
 import { ReactFlow, Edge, useReactFlow, Background, MiniMap } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -9,7 +9,7 @@ import { useProcessorFlow } from "../hooks/useProcessorFlow";
 import { nodeTypes, edgeTypes } from "../shared/constants";
 import { baseEdges } from "./edges/baseEdges";
 
-import { animateLineClick, animateLineHover } from "../shared/conexions-controller/animateLine";
+import { animateLineClick, animateLineHover, useEdgeGroups } from "../shared/conexions-controller/animateLine";
 import CustomControls from "../../custom/CustomControls";
 
 import ActiveConexionsController from "../shared/conexions-controller/ActiveConexionsController";
@@ -34,13 +34,13 @@ export default function MonocycleCanva() {
 
   const { fitView, updateEdge } = useReactFlow();
   const { fitViewTrigger } = useCustomOptionSimulate();
+  const edgeGroups = useEdgeGroups();
 
   useEffect(() => {
     if (fitViewTrigger > 0) {
       setTimeout(() => {
         fitView({
           duration: 400,
-
           padding: 0.01,
         });
       }, 0);
@@ -50,20 +50,19 @@ export default function MonocycleCanva() {
   const [selectedGroup, setSelectedGroup] = useState<string[][]>([]);
 
   const handleEdgeClick = (_event: MouseEvent<Element>, edge: Edge): void => {
-    const updatedGroups = animateLineClick(updateEdge, edge, edges, selectedGroup);
+    const updatedGroups = animateLineClick(updateEdge, edge, edges, selectedGroup, edgeGroups);
     setSelectedGroup(updatedGroups);
   };
 
   const handleEdgeMouseEnter = (_event: MouseEvent<Element>, edge: Edge): void => {
     console.log("Hovered edge only:", edge.id);
-
     if ((edge as AppEdge).disabled) return;
-    animateLineHover(updateEdge, edge, edges, true);
+    animateLineHover(updateEdge, edge, edges, edgeGroups, true);
   };
 
   const handleEdgeMouseLeave = (_event: MouseEvent<Element>, edge: Edge): void => {
     if ((edge as AppEdge).disabled) return;
-    animateLineHover(updateEdge, edge, edges, false);
+    animateLineHover(updateEdge, edge, edges, edgeGroups, false);
   };
 
   return (

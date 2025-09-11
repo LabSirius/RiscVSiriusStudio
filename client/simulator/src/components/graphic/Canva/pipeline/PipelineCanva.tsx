@@ -8,7 +8,7 @@ export type AppEdge = Edge & { disabled?: boolean };
 import { nodeTypes, edgeTypes } from "../shared/constants";
 import { baseEdges } from "./edges/baseEdges";
 
-import { animateLineClick, animateLineHover } from "../shared/conexions-controller/animateLine";
+import { animateLineClick, animateLineHover, useEdgeGroups } from "../shared/conexions-controller/animateLine";
 
 import CustomControls from "../../custom/CustomControls";
 
@@ -35,21 +35,23 @@ export default function PipelineCanva() {
   const { updateEdge } = useReactFlow();
   const [selectedGroup, setSelectedGroup] = useState<string[][]>([]);
 
+
+  const edgeGroups = useEdgeGroups();
+
   const handleEdgeClick = (_event: MouseEvent<Element>, edge: Edge): void => {
-    const updatedGroups = animateLineClick(updateEdge, edge, edges, selectedGroup);
+    const updatedGroups = animateLineClick(updateEdge, edge, edges, selectedGroup, edgeGroups);
     setSelectedGroup(updatedGroups);
   };
 
   const handleEdgeMouseEnter = (_event: MouseEvent<Element>, edge: Edge): void => {
-  console.log("Hovered edge only:", edge.id);
-
+    console.log("Hovered edge only:", edge.id);
     if ((edge as AppEdge).disabled) return;
-    animateLineHover(updateEdge, edge, edges, true);
+    animateLineHover(updateEdge, edge, edges, edgeGroups, true);
   };
 
   const handleEdgeMouseLeave = (_event: MouseEvent<Element>, edge: Edge): void => {
     if ((edge as AppEdge).disabled) return;
-    animateLineHover(updateEdge, edge, edges, false);
+    animateLineHover(updateEdge, edge, edges, edgeGroups, false);
   };
 
   return (
