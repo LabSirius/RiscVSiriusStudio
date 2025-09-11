@@ -9,8 +9,7 @@ interface DataPathControllerProps {
 }
 
 const DataPathController: React.FC<DataPathControllerProps> = ({ setEdges }) => {
-
-  const { typeSimulator} = useSimulator();
+  const { typeSimulator, operation } = useSimulator();
 
   const monoDisabledEdges = useDataMonocycleConexions();
   const pipelineDisabledEdges = useDataPipelineConexions();
@@ -18,10 +17,24 @@ const DataPathController: React.FC<DataPathControllerProps> = ({ setEdges }) => 
   const disabledEdges =
     typeSimulator === "monocycle" ? monoDisabledEdges : pipelineDisabledEdges;
 
-
   const previousDisabledEdgesRef = useRef<string[]>([]);
 
   useEffect(() => {
+    // 👇 Si operation === "uploadMemory" → resetear todas las conexiones
+    if (operation === "uploadMemory") {
+      setEdges(prevEdges =>
+        prevEdges.map(edge => ({
+          ...edge,
+          disabled: false,
+          style: { ...edge.style, stroke: "#3B59B6" }, // color default
+          data: { ...edge.data, selected: false }, // quitar selección
+        }))
+      );
+      previousDisabledEdgesRef.current = [];
+      return; // evitamos la lógica de disabledEdges
+    }
+
+    // 👇 lógica normal
     setEdges(prevEdges => {
       const resetEdges = prevEdges.map(edge => {
         if (
@@ -47,11 +60,12 @@ const DataPathController: React.FC<DataPathControllerProps> = ({ setEdges }) => 
         }
         return edge;
       });
+
       return newEdges;
     });
 
     previousDisabledEdgesRef.current = disabledEdges;
-  }, [disabledEdges, setEdges]);
+  }, [disabledEdges, setEdges, operation]); // 👈 agregamos operation como dependencia
   
   return null; 
 };

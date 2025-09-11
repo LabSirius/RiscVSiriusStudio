@@ -3,7 +3,7 @@ import ContainerSVG from "../../ContainerSVG";
 import { Handle, Position } from "@xyflow/react";
 import LabelValueContainer from "./LabelValueContainer";
 import { PanelTopClose, X } from "lucide-react";
-import { useState } from "react";
+import {  useState } from "react";
 
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import ImmDecode from "./immDecode/ImmDecode";
@@ -32,6 +32,10 @@ export default function ImmGenerator() {
 
   const isFeatureEnabled = !isTypeR && !isNop && !isEbreak;
 
+
+  
+
+
   return (
     <HoverCard open={isCardOpen} onOpenChange={handleOpenChange} openDelay={0}>
       <HoverCardTrigger asChild>
@@ -44,9 +48,11 @@ export default function ImmGenerator() {
               Imm Generator
             </h2>
             <ContainerSVG height={9.6} active={isFeatureEnabled || operation === "uploadMemory"} />
-            {isFeatureEnabled && <LabelValueContainer />}
+            {isFeatureEnabled && !(operation === "uploadMemory") &&  <LabelValueContainer />}
           </div>
-          <Handle
+
+        
+             <Handle
             type="target"
             id="[31:7]"
             position={Position.Left}
@@ -61,6 +67,8 @@ export default function ImmGenerator() {
             style={{ top: "7rem" }}
           />
           <Handle type="source" position={Position.Right} className="output" />
+
+         
         </div>
       </HoverCardTrigger>
 

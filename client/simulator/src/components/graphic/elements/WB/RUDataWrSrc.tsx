@@ -2,17 +2,21 @@ import { Handle, Position } from "@xyflow/react";
 
 import { useOverlay } from "@/context/graphic/OverlayContext";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
 export default function RUDataWrSrc() {
   const { overlayWBActive } = useOverlay();
-  const { currentType } = useCurrentInst();
+  const { typeSimulator} = useSimulator()
+  const { currentType, pipelineValuesStages } = useCurrentInst();
+
+  const inactive = typeSimulator === "pipeline" ?  pipelineValuesStages.WB.instruction.type === "S" ||  pipelineValuesStages.WB.instruction.type === "B" : (currentType === "S" || currentType === "B")
   return (
     <div className="w-full">
       <div className="relative w-full h-full">
         <h2
           className={` titleInElement top-[.3rem] left-[50%] -translate-[50%]   ${
             overlayWBActive && "overlay-scale"
-          } ${(currentType === "S" || currentType === "B") && "!text-[#D3D3D3]"}`}>
+          } ${inactive && "!text-[#D3D3D3]"}`}>
           RUDataWrSrc
         </h2>
       </div>
