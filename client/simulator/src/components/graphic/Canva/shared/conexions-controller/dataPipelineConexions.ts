@@ -142,10 +142,22 @@ export const bu_muxD = [
     "pivot15->muxD"
 ]
 
+export const brop_bu = ["brOp->branchUnit"]
+
 
  //alu
 
  export const alu_aluresMem = ["alu->pivot7", "pivot7->alures_mem"]
+ //ALU
+export const muxA_aluA = ["muxA->alu"];
+
+export const muxB_aluB = ["muxB->alu"];
+
+export const aluOp_alu = ["aluOp->ALU"]
+
+
+
+
 
  //MUX D
 export const alu_muxD = [
@@ -209,60 +221,7 @@ export const rdWB_ru = ["rd_wb->pivot37", "pivot37->pivot36", "pivot36->pivot35"
 
 
 
-
-
-
-export const muxC_rd = ["muxC->pivot11", "pivot11->pivot12", "pivot12->registersUnit"];
-
-export const RUWr_wb = ["ruWr->registersUnit"];
-
-
-
-
-
-//ALU
-export const muxA_aluA = ["muxA->alu"];
-
-export const muxB_aluB = ["muxB->alu"];
-
-export const aluOp_alu = ["aluOp->ALU"];
-
-//BRANCH
-export const rs1_bu = ["registersUnit->pivotJump4", "pivotJump4->pivot4", "pivot4->branchUnit"];
-
-export const rs2_bu = ["registersUnit->pivot2", "pivot2->branchUnit"];
-
-export const brOp_bu = ["brOp->branchUnit"];
-
-
-
-export const rs2_dm = [
-  "registersUnit->pivot2",
-  "pivot2->pivot5",
-  "pivot5->pivot6",
-  "pivot6->dataMemory",
-];
-
-
-
-//MUX C
-export const adder4_muxC = [
-  "adder4->pivot18",
-  "pivot18->pivotJump8",
-  "pivotJump8->pivotJump9",
-  "pivotJump9->pivot13",
-  "pivot13->muxC",
-];
-
-export const dm_muxC = [
-    "dataMemory->muxC"
-]
-
-
-
-export const ruDataWrSrc_muxC = [
-    "ruDataWrSrc->muxC"
-]
+export const ruDataWrSrc_muxC = ["ruDataWrSrc->muxC"]
 
 
 
