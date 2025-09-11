@@ -1,3 +1,4 @@
+import { useState, MouseEvent, useEffect } from "react"; 
 import { ReactFlow, useReactFlow, Edge, Background, MiniMap } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -9,12 +10,11 @@ import { nodeTypes, edgeTypes } from "../shared/constants";
 import { baseEdges } from "./edges/baseEdges";
 
 import { animateLineClick, animateLineHover, useEdgeGroups } from "../shared/conexions-controller/animateLine";
-
 import CustomControls from "../../custom/CustomControls";
 
-import { useState, MouseEvent } from "react";
-
 import ActiveConexionsController from "../shared/conexions-controller/ActiveConexionsController";
+
+import { useCustomOptionSimulate } from "@/context/shared/CustomOptionSimulate";
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
@@ -32,11 +32,22 @@ export default function PipelineCanva() {
     minimapVisible,
   } = useProcessorFlow(baseEdges);
 
-  const { updateEdge } = useReactFlow();
+  const { fitView, updateEdge } = useReactFlow();
+  const { fitViewTrigger } = useCustomOptionSimulate(); 
+
   const [selectedGroup, setSelectedGroup] = useState<string[][]>([]);
-
-
   const edgeGroups = useEdgeGroups();
+
+  useEffect(() => {
+    if (fitViewTrigger > 0) {
+      setTimeout(() => {
+        fitView({
+          duration: 400,
+          padding: 0.01,
+        });
+      }, 0);
+    }
+  }, [fitViewTrigger, fitView]);
 
   const handleEdgeClick = (_event: MouseEvent<Element>, edge: Edge): void => {
     const updatedGroups = animateLineClick(updateEdge, edge, edges, selectedGroup, edgeGroups);
