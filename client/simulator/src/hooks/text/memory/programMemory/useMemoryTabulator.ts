@@ -7,7 +7,7 @@ import {
   animateArrowBetweenCells,
   createPCIcon,
 } from '@/utils/tables/handlersMemory';
-import { intToHex, hexToInt, binaryToIntTwoComplement } from '@/utils/handlerConversions';
+import { hexToInt, binaryToIntTwoComplement } from '@/utils/handlerConversions';
 import { sendMessage } from '@/components/Message/sendMessage';
 
 /**
@@ -45,7 +45,6 @@ export const useMemoryTabulator = ({
   dataMemoryTable,
   newPcRef,
   isFirstStepRef,
-  setSp,
   setNewPc,
   setClickAddressInMemoryTable,
 }: UseMemoryTabulatorProps): void => {
@@ -93,7 +92,7 @@ export const useMemoryTabulator = ({
           dataMemoryTable.program,
           dataMemoryTable.symbols,
           () => {
-            setSp(intToHex(dataMemoryTable.memory.length - 4));
+
             setNewPc(0);
           }
         );

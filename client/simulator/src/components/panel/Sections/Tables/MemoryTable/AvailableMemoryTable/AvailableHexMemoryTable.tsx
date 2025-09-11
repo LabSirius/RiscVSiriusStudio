@@ -124,6 +124,7 @@ const AvailableHexMemoryTable = ({setWithBin, withBin}: AvailableMemoryTable ) =
     writeInRegister,
     sp,
     setSp,
+    dataMemoryTable
   });
 
   useMemoryCellWriteEffect({
