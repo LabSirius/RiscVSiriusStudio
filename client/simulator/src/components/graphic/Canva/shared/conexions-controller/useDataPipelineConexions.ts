@@ -57,6 +57,8 @@ export const useDataPipelineConexions = () => {
       }
     }
     if (IDType) {
+
+      enabledEdges.push(...conexion._id)
       switch (IDType) {
         case "R":
           enabledEdges.push(
@@ -138,7 +140,7 @@ export const useDataPipelineConexions = () => {
     }
 
     if (IEType) {
-      enabledEdges.push(...conexion.aluOp_alu, ...conexion.brop_bu);
+      enabledEdges.push(...conexion.aluOp_alu, ...conexion.brop_bu, ...conexion._ie, ...conexion.cuIE_cuMEM1, ...conexion.cuIE_cuMEM2);
       switch (IEType) {
         case "R":
           enabledEdges.push(
@@ -226,6 +228,7 @@ export const useDataPipelineConexions = () => {
     }
 
     if (MEMtype) {
+      enabledEdges.push(...conexion._mem, ...conexion.cuMEM_cuWB)
       switch (MEMtype) {
         case "R":
           enabledEdges.push(...conexion.aluResMEM_aluResWB, ...conexion.rdMEM_rdWB);
@@ -275,6 +278,7 @@ export const useDataPipelineConexions = () => {
     }
 
     if (WBtype) {
+      enabledEdges.push(...conexion._wb)
       switch (WBtype) {
         case "R":
           enabledEdges.push(

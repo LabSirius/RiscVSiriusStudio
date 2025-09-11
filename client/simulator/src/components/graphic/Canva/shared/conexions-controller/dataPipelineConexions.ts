@@ -28,6 +28,8 @@ export const pcID_pcEX = ["pc_id->pc_ie"]
 
 //ID STAGE
 
+export const _id = ["pivot39->cu_id_exit"]
+
   //registers unit
 export const im_rs1 = [
   "inst_id->pivot3",
@@ -107,8 +109,15 @@ export const ru_rurs2_IE = ["registersUnit->rurs2_ie"]
 export const immGen_immExit_IE= ["immGenerator->immext_ie"]
 
 
+export const cuIE_cuMEM1 = ["cu_ie->cu_me1"]
+export const cuIE_cuMEM2 = ["cu_ie->cu_me2"]
+
+
 
 //EX STAGE
+
+export const _ie = ["cu_ie->cu_ie_exit"]
+
   //mux A
 export const rs1_muxA = ["rurs1_ie->pivotJump4", "pivotJump4->pivot4", "pivot4->muxA"];
 export const pc_muxA = [
@@ -179,6 +188,8 @@ export const rdIE_rdMEM = ["rd_ie->rd_mem"]
 
 //MEM
 
+export const _mem = ["cu_mem->cu_mem_exit"] 
+
 export const aluResMEM_dm = ["alures_mem->pivot34", "pivot34->dataMemory"]
 
 export const Rurs2MEM_dm = ["rurs2_mem->pivot6", "pivot6->dataMemory"]
@@ -191,6 +202,9 @@ export const dm_dmDataRdWB  = ["dataMemory->dmdatard_wb"]
 
 
 //MEM-WB
+
+export const   cuMEM_cuWB = ["cu_mem->cu_wb"]
+
 export const pcIncMEM_pcIncWb= ["pcinc_mem->pcinc_wb"]
 
 export const aluResMEM_aluResWB = ["alures_mem->pivot34", "pivot34->pivot8", "pivot8->pivotJump6", "pivotJump6->alures_wb" ]
@@ -206,6 +220,9 @@ export const dmCtrl_dm = ["dmCtrl->dataMemory"];
 
 
 //WB
+
+export const _wb = ["cu_wb->cu_wb_exit"];
+
 export const pcID_muxC = ["pcinc_wb->pivot13", "pivot13->muxC"]
 
 export const dmDataRdWB_muxC = ["dmdatard_wb->muxC"]
