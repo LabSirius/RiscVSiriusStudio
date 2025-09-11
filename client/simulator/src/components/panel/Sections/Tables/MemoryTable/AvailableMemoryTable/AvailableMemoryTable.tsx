@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import {   useRef, useState } from "react";
 import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
@@ -24,7 +24,6 @@ import { useStackPointerEffect } from "@/hooks/text/memory/availableMemory/useSt
 import { useMemoryCellWriteEffect } from "@/hooks/text/memory/availableMemory/useMemoryCellWriteEffect";
 import { useAnimateMemoryRead } from "@/hooks/text/memory/availableMemory/useAnimateMemoryRead";
 import { useMemorySearchFilterEffect } from "@/hooks/text/memory/shared/useMemorySearchFilterEffect";
-import { intToHex } from "@/utils/handlerConversions";
 
 
 
@@ -66,6 +65,9 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
 
   const [showTable, setShowTable] = useState(true);
 
+
+  
+
   
 
   useMemoryTabulator({
@@ -76,20 +78,15 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
     dataMemoryTable,
     newPcRef,
     isFirstStepRef,
-    setSp,
+
     setNewPc,
     setClickAddressInMemoryTable,
     directivesWritableSize: dataMemoryTable?.directivesWritableSize,
-    directivesReadOnlySize: dataMemoryTable?.directivesReadOnlySize
+    directivesReadOnlySize: dataMemoryTable?.directivesReadOnlySize,
+
     
   });
 
-  useEffect(() => {
-
-    if (dataMemoryTable && dataMemoryTable.memory) {
-      setSp(intToHex(dataMemoryTable.memory.length - 4));
-    }
-  }, [dataMemoryTable, setSp]); 
 
   useMemoryResizeEffect({
     isCreatedMemoryTable,
@@ -132,6 +129,7 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
     writeInRegister,
     sp,
     setSp,
+    dataMemoryTable
   });
 
   useMemoryCellWriteEffect({

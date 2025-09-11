@@ -71,9 +71,7 @@ export const useMessageListener = () => {
 
             break;
           case "step":
-            console.log("AQUI LLEGA UN MENSAJE STEP", message.result);
             if (message.result.IF) {
-              console.log("IS PIPELINE");
               setPipelineValuesStages(message.result);
             } else {
               setNewPc(message.newPc);

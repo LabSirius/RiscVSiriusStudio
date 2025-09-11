@@ -4,6 +4,7 @@ import { getColumnMemoryDefinitions } from '@/utils/tables/definitions/definitio
 import {
   uploadAvailableMemory,
   setupEventListeners,
+
 } from '@/utils/tables/handlersMemory';
 import { intToHex } from '@/utils/handlerConversions';
 import { sendMessage } from '@/components/Message/sendMessage';
@@ -20,7 +21,6 @@ interface UseMemoryTabulatorProps {
   isCreatedMemoryTable: boolean;
 
   setIsCreatedMemoryTable: Dispatch<SetStateAction<boolean>>;
-  setSp: Dispatch<SetStateAction<string>>;
   setNewPc: Dispatch<SetStateAction<number>>;
 
   setClickAddressInMemoryTable: (line: number) => void;
@@ -31,6 +31,8 @@ interface UseMemoryTabulatorProps {
   directivesWritableSize: number | null | undefined
 
   directivesReadOnlySize : number | null | undefined
+
+
 }
 
 /**
@@ -47,7 +49,8 @@ export const useMemoryTabulator = ({
   dataMemoryTable,
   isFirstStepRef,
   directivesWritableSize,
-  directivesReadOnlySize
+  directivesReadOnlySize,
+
 
 }: UseMemoryTabulatorProps): void => {
   useEffect(() => {
@@ -101,7 +104,11 @@ export const useMemoryTabulator = ({
           directivesWritableSize,
         directivesReadOnlySize
         );
+        
       }
+
+ 
+
       setupEventListeners(tableInstanceRef.current!);
     });
 

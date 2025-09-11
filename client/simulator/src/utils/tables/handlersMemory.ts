@@ -118,7 +118,7 @@ export const uploadProgramMemory = (
     const byteAddress = index * 4;
     const address = intToHex(byteAddress).toUpperCase();
 
-    let segment = "program";
+    const segment = "program";
 
     return {
       address,
@@ -253,30 +253,29 @@ export const setSP = (
   tableInstanceRef: React.MutableRefObject<Tabulator | null>,
   prevSP?: string
 ): string => {
-  // Clears the SP mark in the previous row, if it exists
+
+  // Limpiar etiqueta anterior
   if (prevSP && tableInstanceRef.current) {
     const prevRow = tableInstanceRef.current.getRow(prevSP.toUpperCase());
     if (prevRow) {
       prevRow.update({ info: "" });
-    }
+    } 
   }
 
-  // Converts the numeric value to an uppercase hexadecimal address
+  // Poner etiqueta nueva
   const address = intToHex(spValue).toUpperCase();
-
-  // Updates the corresponding row to show the SP mark
   if (tableInstanceRef.current) {
     const targetRow = tableInstanceRef.current.getRow(address);
     if (targetRow) {
       targetRow.update({
         info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">SP</span>`,
       });
+    } else {
     }
   }
 
   return address;
 };
-
 /**
  *  This function updates the hexadecimal value of a memory row.
  * It computes the hexadecimal value from the binary values of the row.

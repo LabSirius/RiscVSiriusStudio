@@ -46,7 +46,6 @@ export const UseHexAvMemoryTabulator = ({
   setIsCreatedMemoryTable,
   dataMemoryTable,
   isFirstStepRef,
-  setSp,
   directivesWritableSize,
   directivesReadOnlySize
 }: UseHexAvMemoryTabulatorProps): void => {
@@ -100,9 +99,7 @@ export const UseHexAvMemoryTabulator = ({
           directivesWritableSize,
           directivesReadOnlySize,
 
-          () => {
-            setSp(intToHex(dataMemoryTable.memory.length - 4));
-          }
+      
         );
       }
       setupEventListeners(tableInstanceRef.current!);
