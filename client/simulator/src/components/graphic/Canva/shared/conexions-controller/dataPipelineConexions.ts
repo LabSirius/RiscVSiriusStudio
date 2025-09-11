@@ -10,6 +10,14 @@ export const four_adder4 = ["four->adder4"];
 export const pc_im = ["pc->pivot25", "pivot25->instMemory"];
 
 
+export const adder4_muxD = [
+    "adder4->pivot18",
+    "pivot18->pivot19",
+    "pivot19->muxD"
+]
+
+
+
 //IF-ID
 export const im_instID = ["instructionMemory->inst_id"]
 export const adder4_pcIncID = ["adder4->pivot18", "pivot18->pcinc_de"]
@@ -157,6 +165,28 @@ export const rdIE_rdMEM = ["rd_ie->rd_mem"]
 
 
 
+//MEM
+
+export const aluResMEM_dm = ["alures_mem->pivot34", "pivot34->dataMemory"]
+
+export const Rurs2MEM_dm = ["rurs2_mem->pivot6", "pivot6->dataMemory"]
+
+
+export const dm_dmDataRdWB  = ["dataMemory->dmdatard_wb"]
+
+
+
+
+
+//MEM-WB
+export const pcIncMEM_pcIncWb= ["pcinc_mem->pcinc_wb"]
+
+export const aluResMEM_aluResWB = ["alures_mem->pivot34", "pivot34->pivot8", "pivot8->pivotJump6", "pivotJump6->alures_wb" ]
+
+export const rdMEM_rdWB = ["rd_mem->rd_wb"]
+
+
+
 
 
 
@@ -230,9 +260,4 @@ export const ruDataWrSrc_muxC = [
 
 
 
-export const adder4_muxD = [
-    "adder4->pivot18",
-    "pivot18->pivot19",
-    "pivot19->muxD"
-]
 
