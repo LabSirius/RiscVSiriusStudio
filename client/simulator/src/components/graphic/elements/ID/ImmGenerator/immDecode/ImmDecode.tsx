@@ -4,11 +4,13 @@ import TypeSImmDecode from './TypeSImmDecode';
 import TypeBImmDecode from './TypeBImmDecode';
 import TypeUImmDecode from './TypeUImmDecode';
 import TypeJImmDecode from './TypeJImmDecode';
+import { useSimulator } from '@/context/shared/SimulatorContext';
 
 const ImmDecode = () => {
+  const { typeSimulator} = useSimulator()
   const { currentType, pipelineValuesStages } = useCurrentInst();
 
-  const type = currentType || pipelineValuesStages?.ID?.instruction?.type;
+  const type = typeSimulator === "pipeline" ? pipelineValuesStages?.ID?.instruction?.type : currentType 
 
 
   return (
