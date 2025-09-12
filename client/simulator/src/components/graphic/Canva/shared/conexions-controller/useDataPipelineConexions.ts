@@ -279,18 +279,20 @@ export const useDataPipelineConexions = () => {
 
     if (WBtype) {
       enabledEdges.push(...conexion._wb)
+
       switch (WBtype) {
         case "R":
           enabledEdges.push(
             ...conexion.aluResWB_muxC,
             ...conexion.rdWB_ru,
             ...conexion.ruDataWrSrc_muxC,
-            ...conexion.muxC_rd
+            ...conexion.muxC_rd,
+            ...conexion.ruWr_ru
           );
 
           break;
         case "I":
-          enabledEdges.push(...conexion.rdWB_ru, ...conexion.ruDataWrSrc_muxC, ...conexion.muxC_rd);
+          enabledEdges.push(...conexion.rdWB_ru, ...conexion.ruDataWrSrc_muxC, ...conexion.muxC_rd, ...conexion.ruWr_ru);
 
           if (pipelineValuesStages.WB.instruction.opcode === "0000011") {
             enabledEdges.push(...conexion.dmDataRdWB_muxC);
@@ -305,7 +307,8 @@ export const useDataPipelineConexions = () => {
             ...conexion.pcID_muxC,
             ...conexion.rdWB_ru,
             ...conexion.ruDataWrSrc_muxC,
-            ...conexion.muxC_rd
+            ...conexion.muxC_rd,
+            ...conexion.ruWr_ru
           );
           break;
 
@@ -314,7 +317,8 @@ export const useDataPipelineConexions = () => {
             ...conexion.aluResWB_muxC,
             ...conexion.rdWB_ru,
             ...conexion.ruDataWrSrc_muxC,
-            ...conexion.muxC_rd
+            ...conexion.muxC_rd,
+            ...conexion.ruWr_ru
           );
 
           break;

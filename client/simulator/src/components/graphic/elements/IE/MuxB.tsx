@@ -40,12 +40,15 @@ function MuxB() {
     { id: "muxB_output", type: "source", position: Position.Right, style: { right: ".8rem" } },
   ];
 
+    const isActive = operation === "uploadMemory" || ( typeSimulator === "pipeline" ? pipelineValuesStages.EX.instruction.pc !== -1 : true)
+
+
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
         <MuxContainer signal={signal === "0" ? "1" : "0"}   isEbreak={isEbreak}/>
         
-        {operation !== "uploadMemory" && !isEbreak && (
+        {operation !== "uploadMemory" && !isEbreak && isActive && (
           <div className="absolute bottom-[.8rem] left-[3.5rem]">
             <LabelValueWithHover
               label=""
