@@ -4,6 +4,7 @@ import LabelSlashContainer from "./LabelSlashContainer";
 import LabelValueContainer from "./LabelValueContainer";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import ClockTriangle from "@/components/graphic/ClockTriangle";
+import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 
 interface HandlerConfig {
   id: string;
@@ -11,7 +12,8 @@ interface HandlerConfig {
 }
 
 export default function RegistersUnit() {
-  const { operation, isEbreak } = useSimulator();
+  const { operation, isEbreak, typeSimulator } = useSimulator();
+  const {pipelineValuesStages} = useCurrentInst()
 
   const inputHandlers: HandlerConfig[] = [
     { id: "[19:15]", top: "3.15rem" },
@@ -26,16 +28,19 @@ export default function RegistersUnit() {
     { id: "muxB", top: "24.36rem" },
   ];
 
+
+  const isActive = operation === "uploadMemory" || ( typeSimulator === "pipeline" ? (pipelineValuesStages.ID.instruction.pc !== -1 || (pipelineValuesStages.WB.instruction.type !== "S" && pipelineValuesStages.WB.instruction.type !== "B" &&  pipelineValuesStages.WB.instruction.pc !== -1 )) : true)
+
   return (
     <div className="w-full">
       <div className="relative w-full h-full group">
-        <h2 className=" titleInElement top-[15%] left-[82%]  -translate-x-[82%] -translate-y-[15%] !z-0 ">
+        <h2 className={` titleInElement top-[15%] left-[82%]  -translate-x-[82%] -translate-y-[15%] !z-0 ${(isEbreak || !isActive) && "!text-[#D3D3D3]"}`}>
           Registers Unit
         </h2>
         <div className="relative">
-          <ContainerSVG height={28} active={!isEbreak} />
+          <ContainerSVG height={28} active={!isEbreak && isActive} />
 
-          {operation !== "uploadMemory" && !isEbreak && (
+          {operation !== "uploadMemory" && !isEbreak  && isActive && (
             <>
               <LabelSlashContainer />
               <LabelValueContainer />

@@ -45,12 +45,16 @@ function MuxA() {
     { id: "muxA_output", type: "source", position: Position.Right, style: { right: ".8rem" } },
   ];
 
+
+    const isActive = operation === "uploadMemory" || ( typeSimulator === "pipeline" ? pipelineValuesStages.EX.instruction.pc !== -1 : true)
+
+
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
         <MuxContainer signal={signal} islui={islui}  isEbreak={isEbreak}  />
         
-        {operation !== "uploadMemory" && !isEbreak && (
+        {operation !== "uploadMemory" && !isEbreak && isActive &&  (
           <div className="absolute top-[-2.7rem] left-[3.5rem]">
             <LabelValueWithHover
               label=""

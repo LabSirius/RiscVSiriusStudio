@@ -41,11 +41,14 @@ export default function MuxC() {
   ];
   const outputHandlers: HandlerConfig[] = [{ style: { right: ".8rem" }, position: Position.Right }];
 
+  const isNop = typeSimulator === "pipeline" && pipelineValuesStages.WB.instruction.pc === -1
+
+
   return (
     <div className="relative w-full h-full">
       <div className="relative w-full h-full">
         <MuxContainer3_1 signal={signal} isEbreak={isEbreak} />
-        {operation !== "uploadMemory" &&
+        {operation !== "uploadMemory" &&   !isNop && 
           !(activeCurrentType === "S" || activeCurrentType === "B") &&
           !isEbreak && (
             <div className="absolute bottom-[.3rem] left-[3.5rem]">

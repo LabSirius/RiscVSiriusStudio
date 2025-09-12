@@ -9,7 +9,7 @@ export default function RUDataWrSrc() {
   const { typeSimulator} = useSimulator()
   const { currentType, pipelineValuesStages } = useCurrentInst();
 
-  const inactive = typeSimulator === "pipeline" ?  pipelineValuesStages.WB.instruction.type === "S" ||  pipelineValuesStages.WB.instruction.type === "B" : (currentType === "S" || currentType === "B")
+  const inactive = typeSimulator === "pipeline" ?  pipelineValuesStages.WB.instruction.type === "S" ||  pipelineValuesStages.WB.instruction.type === "B"  || pipelineValuesStages.WB.instruction.pc === -1 : (currentType === "S" || currentType === "B")
   return (
     <div className="w-full">
       <div className="relative w-full h-full">

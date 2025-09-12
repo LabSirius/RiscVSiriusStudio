@@ -53,6 +53,8 @@ export const im_rd = [
   "pivot38->rd_ie"
 ]
 
+export const ruWr_ru = ["ruWr->registersUnit"]
+
 
   //imm generator
 export const im_immGen = [
