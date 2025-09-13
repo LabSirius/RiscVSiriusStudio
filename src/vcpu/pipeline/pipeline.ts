@@ -111,6 +111,7 @@ interface MEMWB_Register {
 
 interface WB_Register {
   instruction: any;
+  PC: number;
   RD: string;
   dataToWrite: string;
   RUWr: boolean;
@@ -567,6 +568,7 @@ export class PipelineCPU implements ICPU {
 
     const defaultState: WB_Register = {
       instruction: NOP_DATA.instruction,
+      PC: -1, 
       RD: "X",
       dataToWrite: "X".padStart(32, "X"),
       RUWr: false,
@@ -626,6 +628,7 @@ export class PipelineCPU implements ICPU {
 
     const wbState: WB_Register = {
       instruction,
+      PC,
       RD,
       dataToWrite,
       RUWr,

@@ -161,6 +161,7 @@ interface MEMWB_Register {
 }
 
 interface WB_Register {
+  PC: number,
   instruction: Instruction;
   RD: string;
   dataToWrite: string;
