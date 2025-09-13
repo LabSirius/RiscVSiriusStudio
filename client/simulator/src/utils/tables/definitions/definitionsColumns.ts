@@ -235,7 +235,7 @@ export const getPipelineColumnDefinitions = (): ColumnDefinition[] => {
     vertAlign: "middle",
     headerSort: false,
     cssClass: "monospace",
-    minWidth: 160,
+    width: 160,
     formatter: pipelineCellFormatter, 
   };
 
