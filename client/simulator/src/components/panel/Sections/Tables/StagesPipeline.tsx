@@ -31,7 +31,7 @@ const StagesPipeline = () => {
   return (
     <>
       <div
-        className={`shadow-lg !min-h-min min-w-[37.36rem]  mx-4  relative ${
+        className={`shadow-lg !min-h-min min-w-[51.36rem]  mx-4  relative ${
           !showTable && "hidden"
         }`}>
         <div className={`h-full  w-full transition-opacity ease-in 9000`}>
