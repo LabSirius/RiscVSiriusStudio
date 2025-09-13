@@ -214,3 +214,36 @@ export const getColumnMemoryDefinitions = (isFirstStepRef: MutableRefObject<bool
     return columns;
   };
   
+
+const pipelineCellFormatter = (cell: CellComponent): string => {
+  const data = cell.getValue();
+
+  if (!data || data.pc === -1) {
+    return `<div class="cell-stall">-</div>`;
+  }
+
+  return `
+    <div class="cell-pc">${data.pc}</div>
+    <div class="cell-asm">${data.asm}</div>
+  `;
+};
+
+export const getPipelineColumnDefinitions = (): ColumnDefinition[] => {
+  const defaultColumnAttrs: ColumnDefinition = {
+    title: "",
+    hozAlign: "center",
+    vertAlign: "middle",
+    headerSort: false,
+    cssClass: "monospace",
+    minWidth: 160,
+    formatter: pipelineCellFormatter, 
+  };
+
+  return [
+    { ...defaultColumnAttrs, title: "IF", field: "IF" },
+    { ...defaultColumnAttrs, title: "ID", field: "ID" },
+    { ...defaultColumnAttrs, title: "EX", field: "EX" },
+    { ...defaultColumnAttrs, title: "MEM", field: "MEM" },
+    { ...defaultColumnAttrs, title: "WB", field: "WB" },
+  ];
+};
