@@ -65,7 +65,9 @@ export const uploadAvailableMemory = (
   table.setData(mainRows);
 
   // Add/Update Heap
-  const heapAddress = intToHex(0).toUpperCase();
+
+  console.log((directivesWritableSize ?? 0) + ( directivesReadOnlySize ?? 0))
+  const heapAddress = intToHex((directivesWritableSize ?? 0) + ( directivesReadOnlySize ?? 0)).toUpperCase();
   const heapRow = table.getRow(heapAddress);
 
   if (heapRow) {
@@ -270,7 +272,6 @@ export const setSP = (
       targetRow.update({
         info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">SP</span>`,
       });
-    } else {
     }
   }
 
