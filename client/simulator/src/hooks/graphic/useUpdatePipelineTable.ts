@@ -25,7 +25,6 @@ export const useUpdatePipelineTable = ({
     }
 
 
-    console.log("DATOS DEL PIPELINE RECIBIDOS:", pipelineValuesStages);
 
     /**
      * Función auxiliar que ahora retorna un objeto { pc, asm } para cada etapa.

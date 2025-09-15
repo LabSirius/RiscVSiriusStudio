@@ -13,6 +13,7 @@ interface NOPInstruction {
   instruction?: undefined;
   currentPc?: undefined;
   pseudoasm?: undefined;
+  HazardMessage?: undefined
 }
 
 export interface ParsedInstruction {
@@ -95,6 +96,7 @@ const NOP_DATA = {
   Opcode: "XXXXXXX",
   Funct3: "XXX",
   Funct7: "XXXXXXX",
+
 };
 
 interface IDEX_Register {
@@ -120,6 +122,8 @@ interface IDEX_Register {
   Opcode: string;
   Funct3: string;
   Funct7: string;
+
+
 }
 
 interface EXMEM_Register {
@@ -142,6 +146,7 @@ interface EXMEM_Register {
   BranchInputRS1: string;
   BranchInputRS2: string;
   BranchResult: string;
+  HazardMessage?: undefined
 }
 
 interface MEMWB_Register {

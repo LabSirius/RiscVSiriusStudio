@@ -15,6 +15,9 @@ export default function ALU() {
   const { operation, isEbreak, typeSimulator } = useSimulator();
   const { pipelineValuesStages } = useCurrentInst();
 
+
+  console.log("AQUIII", pipelineValuesStages)
+
   const leftInputHandlers: HandlerConfig[] = [
     { id: "muxA", position: Position.Left, className: "input", style: { top: "6.7rem" } },
     { id: "muxB", position: Position.Left, className: "input", style: { top: "16.57rem" } },
