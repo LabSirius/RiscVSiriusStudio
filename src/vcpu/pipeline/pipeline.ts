@@ -511,7 +511,7 @@ export class PipelineCPU implements ICPU {
       BranchInputRS2: branchInput2,
       BranchResult: branchResult,
 
-       HazardMessage: [HazardMessage, ...hazardMessages].filter(Boolean).join(" | ") || undefined,
+       HazardMessage: hazardMessages.length > 0 ? hazardMessages.join(" | ") : undefined,
     };
 
     console.log(`[EX Stage] EX/MEM Register OUT ->`, newState);
@@ -607,7 +607,7 @@ export class PipelineCPU implements ICPU {
       MemWriteData: memWriteValue,
       DMWr,
       DMCtrl,
-      HazardMessage
+      HazardMessage: undefined
     };
     console.log(`[MEM Stage] MEM/WB Register OUT ->`, newState);
     return newState;
@@ -684,7 +684,7 @@ export class PipelineCPU implements ICPU {
       dataToWrite,
       RUWr,
       RUDataWrSrc,
-      HazardMessage
+      HazardMessage: undefined
     };
 
     return { writeAction, wbState };
