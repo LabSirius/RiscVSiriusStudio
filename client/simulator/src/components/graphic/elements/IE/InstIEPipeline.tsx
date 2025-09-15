@@ -1,6 +1,6 @@
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
-import { Info, X } from "lucide-react";   // 👈 importa también la X
+import { Info, X } from "lucide-react";  
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useState } from "react";
