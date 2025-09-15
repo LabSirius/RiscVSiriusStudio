@@ -25,7 +25,7 @@ export const useIDNodes = (): Node[] => {
       },
     },
 
-    nodeBase("title-ID", "title", "Decode (ID)", { x: 10, y: 0 }, "ID", isPipeline ? 800 :870, 50),
+    nodeBase("title-ID", "title", "Decode (ID)", { x: 10, y: 0 }, "ID", isPipeline ? 800 : 700, 50),
 
     nodeBase("instIDPipeline", "instIDPipeline", "instIDPipeline", { x: 65, y: 10 }, "ID", 730, 50),
 
