@@ -189,12 +189,25 @@ export class PipelineCPU implements ICPU {
       this.mem_wb_register.RUWr
     );
 
+
+    let stallHazardMessage: string | undefined = undefined;
+
     const loadUseStall = this.hazardDetectionUnit.detect(
       this.id_ex_register.RUDataWrSrc,
       this.id_ex_register.RD,
       this.if_id_register.instruction?.rs1?.regeq.substring(1) || "X",
       this.if_id_register.instruction?.rs2?.regeq.substring(1) || "X"
     );
+
+
+    if (loadUseStall) {
+      const stalledInstrAsm = this.if_id_register.instruction.asm;
+      const stalledInstrPC = this.if_id_register.PC;
+      const loadInstrAsm = this.id_ex_register.instruction.asm;
+      const loadInstrPC = this.id_ex_register.PC;
+      const targetReg = `x${this.id_ex_register.RD}`;
+      stallHazardMessage = `**Load-Use Hazard**: The instruction (PC=${stalledInstrPC}) \`'${stalledInstrAsm}'\` is stalled. It depends on the result of (PC=${loadInstrPC}) \`'${loadInstrAsm}'\`, which won't be available from memory in time for register ${targetReg}. A bubble (NOP) is inserted.`;
+    }
 
     let blindSpotStall = false;
     const instrInID = this.if_id_register.instruction;
@@ -206,12 +219,19 @@ export class PipelineCPU implements ICPU {
 
        
         if (instrInWB.RUWr && instrInWB.RD !== '0' && instrInWB.RD !== 'X' && (instrInWB.RD === rs1_id || instrInWB.RD === rs2_id)) {
-            console.log(`[HazardController] BLIND SPOT HAZARD DETECTED (ID/WB)! Stalling.`);
             blindSpotStall = true;
+            const stalledInstrAsm = this.if_id_register.instruction.asm;
+            const stalledInstrPC = this.if_id_register.PC;
+            const writerInstrAsm = this.mem_wb_register.instruction.asm;
+            const writerInstrPC = this.mem_wb_register.PC;
+            stallHazardMessage = `**Data Hazard (ID/WB)**: Stalling (PC=${stalledInstrPC}) \`'${stalledInstrAsm}'\`. Its source register is being written by (PC=${writerInstrPC}) \`'${writerInstrAsm}'\` in the WB stage. Forwarding is not possible for this specific case, requiring a bubble (NOP).`;
+
         }
     }
 
     const stallNeeded = loadUseStall || blindSpotStall;
+
+    
     
 
     const { writeAction, wbState } = this.executeWB();
@@ -235,7 +255,7 @@ export class PipelineCPU implements ICPU {
         this.pc = this.pc; 
         this.if_id_register = this.if_id_register;
 
-        this.id_ex_register = { ...NOP_DATA };
+        this.id_ex_register = { ...NOP_DATA, HazardMessage: stallHazardMessage };
 
         this.ex_mem_register = newState_EX_MEM;
         this.mem_wb_register = newState_MEM_WB;
@@ -371,6 +391,7 @@ export class PipelineCPU implements ICPU {
       RD,
       rs1,
       rs2,
+      HazardMessage 
     } = this.id_ex_register;
 
     if (PC === -1) {
@@ -381,10 +402,10 @@ export class PipelineCPU implements ICPU {
         ALUBSrc: false,
         ALUInputA: "X".padStart(32, "X"),
         ALUInputB: "X".padStart(32, "X"),
+        HazardMessage
       };
       return { newState: nopState, branchDecision: { taken: false, targetAddress: "0" } };
     }
-    console.log(`[EX Stage] Processing: "${instruction.asm}" (PC=${PC})`);
 
     let operandA = RUrs1;
     let operandB = RUrs2;
@@ -397,7 +418,7 @@ export class PipelineCPU implements ICPU {
         operandA = this.ex_mem_register.ALURes;
         logA = "(Forwarded from MEM)";
          hazardMessages.push(
-                `**Data Hazard on rs1 (x${rs1})**: Forwarding result from \`'${this.ex_mem_register.instruction.asm}'\` (MEM stage).`
+            `**Data Hazard on rs1 (x${rs1})**: Forwarding result from (PC=${this.ex_mem_register.PC}) \`'${this.ex_mem_register.instruction.asm}'\` (MEM stage).`
         );
         break;
       case ForwardingSource.FROM_WB_STAGE:
@@ -407,9 +428,9 @@ export class PipelineCPU implements ICPU {
           operandA = this.mem_wb_register.ALURes;
            
         }
-        hazardMessages.push(
-                `**Data Hazard on rs1 (x${rs1})**: Forwarding result from \`'${this.mem_wb_register.instruction.asm}'\` (WB stage).`
-            );
+         hazardMessages.push(
+            `**Data Hazard on rs1 (x${rs1})**: Forwarding result from (PC=${this.mem_wb_register.PC}) \`'${this.mem_wb_register.instruction.asm}'\` (WB stage).`
+        );
 
          
         break;
@@ -418,9 +439,9 @@ export class PipelineCPU implements ICPU {
     switch (forwardingSignals.forwardB) {
       case ForwardingSource.FROM_MEM_STAGE:
         operandB = this.ex_mem_register.ALURes;
-         hazardMessages.push(
-                `**Data Hazard on rs2 (x${rs2})**: Forwarding result from \`'${this.ex_mem_register.instruction.asm}'\` (MEM stage).`
-            );
+          hazardMessages.push(
+            `**Data Hazard on rs2 (x${rs2})**: Forwarding result from (PC=${this.ex_mem_register.PC}) \`'${this.ex_mem_register.instruction.asm}'\` (MEM stage).`
+        );
         logB = "(Forwarded from MEM)";
         break;
       case ForwardingSource.FROM_WB_STAGE:
@@ -432,8 +453,8 @@ export class PipelineCPU implements ICPU {
           
         }
         hazardMessages.push(
-                `**Data Hazard on rs2 (x${rs2})**: Forwarding result from \`'${this.mem_wb_register.instruction.asm}'\` (WB stage).`
-            );
+            `**Data Hazard on rs2 (x${rs2})**: Forwarding result from (PC=${this.mem_wb_register.PC}) \`'${this.mem_wb_register.instruction.asm}'\` (WB stage).`
+        );
         break;
     }
 
@@ -489,7 +510,7 @@ export class PipelineCPU implements ICPU {
       BranchInputRS2: branchInput2,
       BranchResult: branchResult,
 
-       HazardMessage: hazardMessages.length > 0 ? hazardMessages.join(" | ") : undefined,
+       HazardMessage: [HazardMessage, ...hazardMessages].filter(Boolean).join(" | ") || undefined,
     };
 
     console.log(`[EX Stage] EX/MEM Register OUT ->`, newState);
@@ -503,10 +524,10 @@ export class PipelineCPU implements ICPU {
   }
 
   private executeMEM(): MEMWB_Register {
-    const { instruction, PC, PCP4, DMWr, DMCtrl, ALURes, RUrs2, RD } = this.ex_mem_register;
+    const { instruction, PC, PCP4, DMWr, DMCtrl, ALURes, RUrs2, RD, HazardMessage } = this.ex_mem_register;
     if (instruction.pc === -1) {
       console.log(`[MEM Stage] NOP`);
-      return { ...NOP_DATA, DMWr: false, RUWr: false };
+      return { ...NOP_DATA, DMWr: false, RUWr: false, HazardMessage };
     }
     console.log(`[MEM Stage] Processing: "${instruction.asm}" (PC=${PC})`);
     const address = parseInt(ALURes, 2);
@@ -585,13 +606,14 @@ export class PipelineCPU implements ICPU {
       MemWriteData: memWriteValue,
       DMWr,
       DMCtrl,
+      HazardMessage
     };
     console.log(`[MEM Stage] MEM/WB Register OUT ->`, newState);
     return newState;
   }
 
   private executeWB(): { writeAction: () => void; wbState: WB_Register } {
-    const { instruction, PC, RUWr, RUDataWrSrc, ALURes, MemReadData, RD } = this.mem_wb_register;
+    const { instruction, PC, RUWr, RUDataWrSrc, ALURes, MemReadData, RD, HazardMessage } = this.mem_wb_register;
 
     const defaultState: WB_Register = {
       instruction: NOP_DATA.instruction,
@@ -600,6 +622,7 @@ export class PipelineCPU implements ICPU {
       dataToWrite: "X".padStart(32, "X"),
       RUWr: false,
       RUDataWrSrc: "XX",
+      HazardMessage
     };
 
     if (instruction.pc === -1) {
@@ -660,6 +683,7 @@ export class PipelineCPU implements ICPU {
       dataToWrite,
       RUWr,
       RUDataWrSrc,
+      HazardMessage
     };
 
     return { writeAction, wbState };

@@ -122,6 +122,8 @@ interface IDEX_Register {
   Opcode: string;
   Funct3: string;
   Funct7: string;
+  HazardMessage?: undefined
+
 
 
 }
@@ -163,6 +165,8 @@ interface MEMWB_Register {
   MemWriteData: string;
   DMWr: boolean;
   DMCtrl: string;
+  HazardMessage?: undefined
+
 }
 
 interface WB_Register {
@@ -172,6 +176,8 @@ interface WB_Register {
   dataToWrite: string;
   RUWr: boolean;
   RUDataWrSrc: string;
+  HazardMessage?: undefined
+
 }
 
 export type PipelineCycleResult = {

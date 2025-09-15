@@ -16,7 +16,7 @@ export default function ALU() {
   const { pipelineValuesStages } = useCurrentInst();
 
 
-  console.log("AQUIII", pipelineValuesStages)
+  console.log(pipelineValuesStages)
 
   const leftInputHandlers: HandlerConfig[] = [
     { id: "muxA", position: Position.Left, className: "input", style: { top: "6.7rem" } },
