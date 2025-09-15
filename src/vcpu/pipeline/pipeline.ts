@@ -407,6 +407,7 @@ export class PipelineCPU implements ICPU {
       return { newState: nopState, branchDecision: { taken: false, targetAddress: "0" } };
     }
 
+
     let operandA = RUrs1;
     let operandB = RUrs2;
     let logA = "(from RUrs1)";
