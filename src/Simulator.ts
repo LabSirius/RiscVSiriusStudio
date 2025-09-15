@@ -229,13 +229,21 @@ export class TextSimulator extends Simulator {
         }
         const memInstructionData = pipelineResult.EX;
         if (memInstructionData.instruction && memInstructionData.instruction.pc !== -1) {
-          const address = parseInt(memInstructionData.ALURes, 2);
+
+           const isMemoryOperation = memInstructionData.DMWr || memInstructionData.RUDataWrSrc === "01";
+
+           if(isMemoryOperation){
+
+            const address = parseInt(memInstructionData.ALURes, 2);
           const bytesToAccess = this.bytesToReadOrWrite(memInstructionData.instruction);
           if (memInstructionData.DMWr) {
             this.notifyMemoryWrite(address, memInstructionData.RUrs2, bytesToAccess);
           } else if (memInstructionData.RUDataWrSrc === "01") {
             this.notifyMemoryRead(address, bytesToAccess);
           }
+
+           }
+          
         }
         this.webview.postMessage({ from: "extension", operation: "step", result: pipelineResult });
          if (this.cpu.finished()) {
