@@ -181,7 +181,7 @@ interface WB_Register {
 }
 
 export type PipelineCycleResult = {
-  IF: { instruction: Instruction; PC: number; PCP4: number };
+  IF: { instruction: Instruction; PC: number; PCP4: number,   HazardMessage?: undefined  };
   ID: IDEX_Register;
   EX: EXMEM_Register;
   MEM: MEMWB_Register;
