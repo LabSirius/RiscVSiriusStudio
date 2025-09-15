@@ -1,8 +1,9 @@
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
-import { Info } from "lucide-react";
+import { Info, X } from "lucide-react";   // 👈 importa también la X
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useState } from "react";
 
 import {
   Popover,
@@ -13,6 +14,7 @@ import {
 const InstIEPipeline = () => {
   const { typeSimulator, operation } = useSimulator();
   const { pipelineValuesStages } = useCurrentInst();
+  const [isOpen, setIsOpen] = useState(false);  
 
   if (typeSimulator === "monocycle" || operation === "uploadMemory") {
     return null;
@@ -32,13 +34,17 @@ const InstIEPipeline = () => {
       )}
 
       {pipelineValuesStages.EX.HazardMessage && (
-        <Popover>
+        <Popover open={isOpen} onOpenChange={setIsOpen}>
           <PopoverTrigger asChild>
             <button
               aria-label="Show hazard details"
               className="absolute top-1/2 -translate-y-1/2 right-[-3.4rem] cursor-pointer"
             >
-              <Info size={46} className="text-red-400" />
+              {isOpen ? (
+                <X size={46} className="text-black" /> 
+              ) : (
+                <Info size={46} className="text-red-400" />
+              )}
             </button>
           </PopoverTrigger>
 
