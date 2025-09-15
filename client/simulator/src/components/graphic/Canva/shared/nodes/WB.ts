@@ -17,6 +17,7 @@ export const useWBNodes = (): Node[] => {
       position: { x: 870 + 730 + 680 + 565 + offsetX, y: 0 },
       draggable: false,
       zIndex: -1,
+      selectable: false,   
       style: {
         width: 290 + (isPipeline ? 80 : 0),
         height: 1330 + (isPipeline ? 140 : 0),

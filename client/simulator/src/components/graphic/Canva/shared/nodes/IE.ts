@@ -19,6 +19,7 @@ export const useIENodes = (): Node[] => {
       data: { label: "Section 3" },
       position: { x: 870 + 730 + (isPipeline ? 130 : 0), y: 0 },
       draggable: false,
+      selectable: false,   
       zIndex: 3,
       style: {
         width: 680 + offsetXSize,

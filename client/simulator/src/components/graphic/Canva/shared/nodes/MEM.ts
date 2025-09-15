@@ -17,6 +17,7 @@ export const useMEMNodes = (): Node[] => {
       data: { label: "Section 4" },
       position: { x: 870 + 730 + 680 + offsetX, y: 0 },
       draggable: false,
+      selectable: false,   
       zIndex: 0,
       style: {
         width: 565 + offsetXSize,
