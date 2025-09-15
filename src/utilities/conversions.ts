@@ -53,9 +53,12 @@ export function binaryToHex(binary: string): string {
  * @returns ascii representation
  */
 export function binaryToAscii(binary: string): string {
+   if (!binary) { 
+    return '';   
+  }
   const wordCodes = binary.match(/.{1,8}/g);
   if (!wordCodes) {
-    return 'fix me!!';
+    return ''; 
   }
   const word = wordCodes.map((code) => {
     const asc = parseInt(code, 2);
