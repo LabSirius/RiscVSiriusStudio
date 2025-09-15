@@ -1,16 +1,56 @@
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
+import { Info } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const InstIEPipeline = () => {
-  const { typeSimulator, operation} = useSimulator();
+  const { typeSimulator, operation } = useSimulator();
   const { pipelineValuesStages } = useCurrentInst();
 
-  if (typeSimulator === "monocycle" || operation === "uploadMemory") return;
+  if (typeSimulator === "monocycle" || operation === "uploadMemory") {
+    return null;
+  }
+
+  const hazardMessage = pipelineValuesStages.EX.HazardMessage
+    ? (pipelineValuesStages.EX.HazardMessage as string).split(" | ").join("\n\n")
+    : "";
 
   return (
-    <div className=" flex items-center gap-5 ml-1 h-full bg-[#66939E] px-[1.2rem] py-[.7rem] rounded-[.6rem] text-white max-w-max">
+    <div className="relative flex items-center gap-5 ml-1 h-full bg-[#66939E] px-[1.2rem] py-[.7rem] rounded-[.6rem] text-white max-w-max">
       <p className="text-[1.8rem]">{pipelineValuesStages.EX.instruction.asm}</p>
-       {pipelineValuesStages.EX.instruction.pc !== -1 &&  <p className="text-[1.6rem]">PC: <span className="text-[1.8rem]">{pipelineValuesStages.EX.instruction.inst }</span></p>}
+      {pipelineValuesStages.EX.instruction.pc !== -1 && (
+        <p className="text-[1.6rem]">
+          PC: <span className="text-[1.8rem]">{pipelineValuesStages.EX.instruction.inst}</span>
+        </p>
+      )}
+
+      {pipelineValuesStages.EX.HazardMessage && (
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              aria-label="Show hazard details"
+              className="absolute top-1/2 -translate-y-1/2 right-[-3.4rem] cursor-pointer"
+            >
+              <Info size={46} className="text-red-400" />
+            </button>
+          </PopoverTrigger>
+
+          <PopoverContent className="w-auto max-w-md" side="right" align="start">
+            <div className="prose-sm prose dark:prose-invert max-w-none !text-[.7rem]">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {hazardMessage}
+              </ReactMarkdown>
+            </div>
+          </PopoverContent>
+        </Popover>
+      )}
     </div>
   );
 };

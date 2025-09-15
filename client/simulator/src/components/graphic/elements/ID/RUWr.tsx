@@ -11,14 +11,7 @@ export default function RUWr() {
 
   const isActive = operation === "uploadMemory" || ( typeSimulator === "pipeline" ? pipelineValuesStages.WB.instruction.pc !== -1 && (pipelineValuesStages.WB.instruction.type !== "S" && pipelineValuesStages.WB.instruction.type !== "B") : true)
 
-  console.log("RUWr check =>", {
-  operation,
-  typeSimulator,
-  pc: pipelineValuesStages.WB.instruction.pc,
-  type: pipelineValuesStages.WB.instruction.type,
-  isActive
-});
-
+  
 
   return (
     <div className={`w-full`}>

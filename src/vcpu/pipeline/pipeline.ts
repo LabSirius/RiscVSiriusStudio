@@ -42,6 +42,8 @@ const NOP_DATA = {
   Opcode: "XXXXXXX",
   Funct3: "XXX",
   Funct7: "XXXXXXX",
+
+  HazardMessage: undefined,
 };
 
 interface IDEX_Register {
@@ -67,6 +69,7 @@ interface IDEX_Register {
   Opcode: string;
   Funct3: string;
   Funct7: string;
+  HazardMessage?: string;
 }
 
 interface EXMEM_Register {
@@ -91,6 +94,8 @@ interface EXMEM_Register {
   BranchInputRS1: string;
   BranchInputRS2: string;
   BranchResult: string;
+
+  HazardMessage?: string; 
 }
 
 interface MEMWB_Register {
@@ -107,6 +112,8 @@ interface MEMWB_Register {
   MemWriteData: string;
   DMWr: boolean;
   DMCtrl: string;
+
+   HazardMessage?: string;
 }
 
 interface WB_Register {
@@ -116,10 +123,12 @@ interface WB_Register {
   dataToWrite: string;
   RUWr: boolean;
   RUDataWrSrc: string;
+
+   HazardMessage?: string;
 }
 
 export type PipelineCycleResult = {
-  IF: { instruction: any; PC: number; PCP4: number };
+  IF: { instruction: any; PC: number; PCP4: number, HazardMessage?: string  };
   ID: IDEX_Register;
   EX: EXMEM_Register;
   MEM: MEMWB_Register;
@@ -381,34 +390,50 @@ export class PipelineCPU implements ICPU {
     let operandB = RUrs2;
     let logA = "(from RUrs1)";
     let logB = "(from RUrs2)";
+    const hazardMessages: string[] = [];
 
     switch (forwardingSignals.forwardA) {
       case ForwardingSource.FROM_MEM_STAGE:
         operandA = this.ex_mem_register.ALURes;
         logA = "(Forwarded from MEM)";
+         hazardMessages.push(
+                `**Data Hazard on rs1 (x${rs1})**: Forwarding result from \`'${this.ex_mem_register.instruction.asm}'\` (MEM stage).`
+        );
         break;
       case ForwardingSource.FROM_WB_STAGE:
         if (this.mem_wb_register.RUDataWrSrc === "01") {
           operandA = this.mem_wb_register.MemReadData;
         } else {
           operandA = this.mem_wb_register.ALURes;
+           
         }
-        logA = "(Forwarded from WB)";
+        hazardMessages.push(
+                `**Data Hazard on rs1 (x${rs1})**: Forwarding result from \`'${this.mem_wb_register.instruction.asm}'\` (WB stage).`
+            );
+
+         
         break;
     }
 
     switch (forwardingSignals.forwardB) {
       case ForwardingSource.FROM_MEM_STAGE:
         operandB = this.ex_mem_register.ALURes;
+         hazardMessages.push(
+                `**Data Hazard on rs2 (x${rs2})**: Forwarding result from \`'${this.ex_mem_register.instruction.asm}'\` (MEM stage).`
+            );
         logB = "(Forwarded from MEM)";
         break;
       case ForwardingSource.FROM_WB_STAGE:
         if (this.mem_wb_register.RUDataWrSrc === "01") {
           operandB = this.mem_wb_register.MemReadData;
+          
         } else {
           operandB = this.mem_wb_register.ALURes;
+          
         }
-        logB = "(Forwarded from WB)";
+        hazardMessages.push(
+                `**Data Hazard on rs2 (x${rs2})**: Forwarding result from \`'${this.mem_wb_register.instruction.asm}'\` (WB stage).`
+            );
         break;
     }
 
@@ -463,6 +488,8 @@ export class PipelineCPU implements ICPU {
       BranchInputRS1: branchInput1,
       BranchInputRS2: branchInput2,
       BranchResult: branchResult,
+
+       HazardMessage: hazardMessages.length > 0 ? hazardMessages.join(" | ") : undefined,
     };
 
     console.log(`[EX Stage] EX/MEM Register OUT ->`, newState);
