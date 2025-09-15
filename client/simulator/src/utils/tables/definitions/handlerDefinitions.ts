@@ -65,7 +65,7 @@ export const valueRegisterEditor = (
 ) => {
   const { value, viewType } = cell.getRow().getData();
   const editor = document.createElement("input");
-  editor.className = "px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400";
+  editor.className = "px-2 py-1 border rounded register-editor focus:outline-none focus:ring-2 focus:ring-blue-400"
 
   if (viewType === 2) {
     editor.value = value;
