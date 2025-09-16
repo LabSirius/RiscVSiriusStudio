@@ -226,7 +226,7 @@ export const dmCtrl_dm = ["dmCtrl->dataMemory"];
 
 export const _wb = ["cu_wb->cu_wb_exit"];
 
-export const pcID_muxC = ["pcinc_wb->pivot13", "pivot13->muxC"]
+export const pcIncWB_muxC = ["pcinc_wb->pivot13", "pivot13->muxC"]
 
 export const dmDataRdWB_muxC = ["dmdatard_wb->muxC"]
 

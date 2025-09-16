@@ -128,8 +128,7 @@ interface WB_Register {
 }
 
 export type PipelineCycleResult = {
-  
-  IF: { instruction: any; PC: number; PCP4: number; HazardMessage?: string,  };
+  IF: { instruction: any; PC: number; PCP4: number; HazardMessage?: string };
   ID: IDEX_Register;
   EX: EXMEM_Register;
   MEM: MEMWB_Register;
@@ -151,7 +150,7 @@ export class PipelineCPU implements ICPU {
   private clockCycles: number = 0;
   private pc: number = 0;
 
-  private if_id_register: { instruction: any; PC: number; PCP4: number, HazardMessage?: string; };
+  private if_id_register: { instruction: any; PC: number; PCP4: number; HazardMessage?: string };
   private id_ex_register: IDEX_Register;
   private ex_mem_register: EXMEM_Register;
   private mem_wb_register: MEMWB_Register;
@@ -256,8 +255,13 @@ export class PipelineCPU implements ICPU {
 
       const branchMessage = `**Control Hazard**: Branch (PC=${branchInstrPC}) \`'${branchInstrAsm}'\` was taken. Flushing incorrectly fetched instructions and redirecting PC to ${targetAddress}.`;
       finalNextPC = parseInt(branchDecision.targetAddress, 2);
-       final_newState_ID_EX = { ...NOP_DATA, HazardMessage: branchMessage };
-    final_newState_IF_ID = { instruction: NOP_DATA.instruction, PC: -1, PCP4: 0, HazardMessage: branchMessage };
+      final_newState_ID_EX = { ...NOP_DATA, HazardMessage: branchMessage };
+      final_newState_IF_ID = {
+        instruction: NOP_DATA.instruction,
+        PC: -1,
+        PCP4: 0,
+        HazardMessage: branchMessage,
+      };
     }
 
     if (stallNeeded) {
@@ -319,7 +323,7 @@ export class PipelineCPU implements ICPU {
   }
 
   private executeID(): IDEX_Register {
-    const { instruction, PC, PCP4 , HazardMessage} = this.if_id_register;
+    const { instruction, PC, PCP4, HazardMessage } = this.if_id_register;
     if (!instruction) {
       console.log("[ID Stage] NOP");
       return { ...NOP_DATA, HazardMessage };
@@ -333,7 +337,7 @@ export class PipelineCPU implements ICPU {
         RUrs1: "0".padStart(32, "0"),
         RUrs2: "0".padStart(32, "0"),
         ImmExt: "0".padStart(32, "0"),
-        HazardMessage
+        HazardMessage,
       };
       return cleanNopData;
     }
@@ -470,10 +474,7 @@ export class PipelineCPU implements ICPU {
     const finalLogB = ALUBSrc ? "(from ImmExt)" : logB;
     const ALURes = this.alu.execute(finalOperandA, finalOperandB, ALUOp);
 
-    const isBranchOrJump =
-      BrOp.substring(0, 2) === "01" ||
-      BrOp.substring(0, 2) === "10" ||
-      BrOp.substring(0, 2) === "11";
+    const isBranchOrJump = BrOp.substring(0, 1) === "1" || BrOp.substring(0, 2) === "01";
 
     const branchInput1 = isBranchOrJump ? operandA : "X".padStart(32, "X");
     const branchInput2 = isBranchOrJump ? operandB : "X".padStart(32, "X");
