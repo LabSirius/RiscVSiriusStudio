@@ -46,6 +46,11 @@ const NOP_DATA = {
   HazardMessage: undefined,
 };
 
+const EMPTY_DATA = {
+  ...NOP_DATA,
+  instruction: { asm: "-", pc: -1 },
+};
+
 interface IDEX_Register {
   instruction: any;
   PC: number;
@@ -173,10 +178,10 @@ export class PipelineCPU implements ICPU {
     this.hazardDetectionUnit = new HazardDetectionUnit();
     this.branchUnit = new BranchUnit();
 
-    this.if_id_register = { instruction: NOP_DATA.instruction, PC: -1, PCP4: 0 };
-    this.id_ex_register = { ...NOP_DATA };
-    this.ex_mem_register = { ...NOP_DATA };
-    this.mem_wb_register = { ...NOP_DATA };
+    this.if_id_register = { instruction: EMPTY_DATA.instruction, PC: -1, PCP4: 0 };
+    this.id_ex_register = { ...EMPTY_DATA };
+    this.ex_mem_register = { ...EMPTY_DATA };
+    this.mem_wb_register = { ...EMPTY_DATA };
 
     const spAbsoluteAddress = this.dataMemory.availableSpInitialAddress;
     this.registers.writeRegister("x2", intToBinary(spAbsoluteAddress));
@@ -216,7 +221,7 @@ export class PipelineCPU implements ICPU {
     let blindSpotStall = false;
     const instrInID = this.if_id_register.instruction;
 
-    if (instrInID?.kind === "SrcInstruction" && instrInID.pc !== -1) {
+    if (!loadUseStall && instrInID?.kind === "SrcInstruction" && instrInID.pc !== -1) {
       const rs1_id = instrInID.rs1?.regeq.substring(1) || "X";
       const rs2_id = instrInID.rs2?.regeq.substring(1) || "X";
       const instrInWB = this.mem_wb_register;
@@ -254,7 +259,7 @@ export class PipelineCPU implements ICPU {
       const targetAddress = parseInt(branchDecision.targetAddress, 2);
 
       const branchMessage = `**Control Hazard**: Branch (PC=${branchInstrPC}) \`'${branchInstrAsm}'\` was taken. Flushing incorrectly fetched instructions and redirecting PC to ${targetAddress}.`;
-      finalNextPC = parseInt(branchDecision.targetAddress, 2);
+      finalNextPC = targetAddress;
       final_newState_ID_EX = { ...NOP_DATA, HazardMessage: branchMessage };
       final_newState_IF_ID = {
         instruction: NOP_DATA.instruction,
@@ -309,38 +314,42 @@ export class PipelineCPU implements ICPU {
     }
 
     if (!instruction) {
-      instruction = NOP_DATA.instruction;
+      instruction = EMPTY_DATA.instruction;
     }
 
     const PCP4 = PC_fe + 4;
 
     const newState_IF_ID = { instruction, PC: PC_fe, PCP4 };
-    console.log(
-      `[IF Stage] Fetching PC=${PC_fe}. Instruction: "${instruction?.asm || "STALL/END"}"`
-    );
+    console.log(`[IF Stage] Fetching PC=${PC_fe}. Instruction: "${instruction?.asm || "STALL/END"}"`);
 
     return { newState_IF_ID, nextPC: PC_fe + 4 };
   }
 
   private executeID(): IDEX_Register {
-    const { instruction, PC, PCP4, HazardMessage } = this.if_id_register;
+    const { instruction, PC, PCP4, HazardMessage } = this.if_id_register as any;
+
     if (!instruction) {
-      console.log("[ID Stage] NOP");
-      return { ...NOP_DATA, HazardMessage };
+      console.log("[ID Stage] Empty");
+      return { ...EMPTY_DATA, HazardMessage };
     }
 
     if (instruction.pc === -1) {
-      console.log("[ID Stage] NOP detected, injecting clean bubble.");
-
-      const cleanNopData = {
-        ...NOP_DATA,
-        RUrs1: "0".padStart(32, "0"),
-        RUrs2: "0".padStart(32, "0"),
-        ImmExt: "0".padStart(32, "0"),
-        HazardMessage,
-      };
-      return cleanNopData;
+      if (instruction.asm === "NOP") {
+        console.log("[ID Stage] NOP detected, propagating bubble.");
+        const cleanNopData = {
+          ...NOP_DATA,
+          RUrs1: "0".padStart(32, "0"),
+          RUrs2: "0".padStart(32, "0"),
+          ImmExt: "0".padStart(32, "0"),
+          HazardMessage,
+        };
+        return cleanNopData;
+      } else {
+        console.log("[ID Stage] Empty stage detected.");
+        return { ...EMPTY_DATA, HazardMessage };
+      }
     }
+
     console.log(`[ID Stage] Processing: "${instruction.asm}" (PC=${PC})`);
     const controls = this.controlUnit.generate(instruction);
     const ImmExt = this.immediateUnit.generate(instruction);
@@ -352,12 +361,6 @@ export class PipelineCPU implements ICPU {
     const opcode = instruction.opcode ?? "XXXXXXX";
     const funct3 = instruction.encoding?.funct3 ?? "XXX";
     const funct7 = instruction.encoding?.funct7 ?? "XXXXXXX";
-
-    console.log(
-      `[ID Stage] Read Registers: rs1(${rs1Addr || "N/A"}) -> ${RUrs1} | rs2(${
-        rs2Addr || "N/A"
-      }) -> ${RUrs2}`
-    );
 
     const newState: IDEX_Register = {
       instruction,
@@ -378,10 +381,10 @@ export class PipelineCPU implements ICPU {
       RD: instruction.rd ? instruction.rd.regeq.substring(1) : "X",
       rs1: instruction.rs1 ? instruction.rs1.regeq.substring(1) : "X",
       rs2: instruction.rs2 ? instruction.rs2.regeq.substring(1) : "X",
-
       Opcode: opcode,
       Funct3: funct3,
       Funct7: funct7,
+      HazardMessage: HazardMessage,
     };
     console.log(`[ID Stage] ID/EX Register OUT ->`, newState);
     return newState;
@@ -409,28 +412,26 @@ export class PipelineCPU implements ICPU {
     } = this.id_ex_register;
 
     if (PC === -1) {
-      console.log(`[EX Stage] NOP`);
-      const nopState: EXMEM_Register = {
-        ...NOP_DATA,
+      const emptyOrNopData = instruction.asm === "NOP" ? NOP_DATA : EMPTY_DATA;
+      console.log(`[EX Stage] ${emptyOrNopData.instruction.asm}`);
+      const resultState: EXMEM_Register = {
+        ...emptyOrNopData,
         ALUASrc: false,
         ALUBSrc: false,
         ALUInputA: "X".padStart(32, "X"),
         ALUInputB: "X".padStart(32, "X"),
         HazardMessage,
       };
-      return { newState: nopState, branchDecision: { taken: false, targetAddress: "0" } };
+      return { newState: resultState, branchDecision: { taken: false, targetAddress: "0" } };
     }
 
     let operandA = RUrs1;
     let operandB = RUrs2;
-    let logA = "(from RUrs1)";
-    let logB = "(from RUrs2)";
     const hazardMessages: string[] = [];
 
     switch (forwardingSignals.forwardA) {
       case ForwardingSource.FROM_MEM_STAGE:
         operandA = this.ex_mem_register.ALURes;
-        logA = "(Forwarded from MEM)";
         hazardMessages.push(
           `**Data Hazard on rs1 (x${rs1})**: Forwarding result from (PC=${this.ex_mem_register.PC}) \`'${this.ex_mem_register.instruction.asm}'\` (MEM stage).`
         );
@@ -444,7 +445,6 @@ export class PipelineCPU implements ICPU {
         hazardMessages.push(
           `**Data Hazard on rs1 (x${rs1})**: Forwarding result from (PC=${this.mem_wb_register.PC}) \`'${this.mem_wb_register.instruction.asm}'\` (WB stage).`
         );
-
         break;
     }
 
@@ -454,7 +454,6 @@ export class PipelineCPU implements ICPU {
         hazardMessages.push(
           `**Data Hazard on rs2 (x${rs2})**: Forwarding result from (PC=${this.ex_mem_register.PC}) \`'${this.ex_mem_register.instruction.asm}'\` (MEM stage).`
         );
-        logB = "(Forwarded from MEM)";
         break;
       case ForwardingSource.FROM_WB_STAGE:
         if (this.mem_wb_register.RUDataWrSrc === "01") {
@@ -468,10 +467,8 @@ export class PipelineCPU implements ICPU {
         break;
     }
 
-    const finalOperandA = ALUASrc ? PC.toString(2).padStart(32, "0") : operandA;
+    const finalOperandA = ALUASrc ? intToBinary(PC) : operandA;
     const finalOperandB = ALUBSrc ? ImmExt : operandB;
-    const finalLogA = ALUASrc ? "(from PC)" : logA;
-    const finalLogB = ALUBSrc ? "(from ImmExt)" : logB;
     const ALURes = this.alu.execute(finalOperandA, finalOperandB, ALUOp);
 
     const isBranchOrJump = BrOp.substring(0, 1) === "1" || BrOp.substring(0, 2) === "01";
@@ -481,18 +478,6 @@ export class PipelineCPU implements ICPU {
 
     const branchTaken = this.branchUnit.evaluate(BrOp, operandA, operandB);
     const branchResult = isBranchOrJump ? (branchTaken ? "1" : "0") : "X";
-
-    console.log(
-      `[EX Stage] Branch Unit decision for BrOp=${BrOp}: ${
-        branchTaken ? "TAKE BRANCH" : "DO NOT TAKE"
-      }`
-    );
-
-    console.log(`[EX Stage] Branch control signal received: BrOp=${BrOp}`);
-    console.log(
-      `[EX Stage] ALU Inputs:\n      Operand A: ${finalOperandA} ${finalLogA}\n      Operand B: ${finalOperandB} ${finalLogB}\n      ALU Op: ${ALUOp}`
-    );
-    console.log(`[EX Stage] ALU Result: ${ALURes}`);
 
     const newState: EXMEM_Register = {
       instruction,
@@ -505,22 +490,18 @@ export class PipelineCPU implements ICPU {
       ALURes,
       RUrs2: operandB,
       RD: this.id_ex_register.RD,
-
       ALUASrc,
       ALUBSrc,
       ALUOp,
       ALUInputA: finalOperandA,
       ALUInputB: finalOperandB,
-
       BrOp,
       BranchInputRS1: branchInput1,
       BranchInputRS2: branchInput2,
       BranchResult: branchResult,
-
       HazardMessage: hazardMessages.length > 0 ? hazardMessages.join(" | ") : undefined,
     };
 
-    console.log(`[EX Stage] EX/MEM Register OUT ->`, newState);
     return {
       newState: newState,
       branchDecision: {
@@ -534,8 +515,9 @@ export class PipelineCPU implements ICPU {
     const { instruction, PC, PCP4, DMWr, DMCtrl, ALURes, RUrs2, RD, HazardMessage } =
       this.ex_mem_register;
     if (instruction.pc === -1) {
-      console.log(`[MEM Stage] NOP`);
-      return { ...NOP_DATA, DMWr: false, RUWr: false, HazardMessage };
+      const emptyOrNopData = instruction.asm === "NOP" ? NOP_DATA : EMPTY_DATA;
+      console.log(`[MEM Stage] ${emptyOrNopData.instruction.asm}`);
+      return { ...emptyOrNopData, DMWr: false, RUWr: false, HazardMessage };
     }
     console.log(`[MEM Stage] Processing: "${instruction.asm}" (PC=${PC})`);
     const address = parseInt(ALURes, 2);
@@ -545,61 +527,43 @@ export class PipelineCPU implements ICPU {
       if (chunks[2] && chunks[3]) {
         let bytesToWrite: string[] = [];
         switch (DMCtrl) {
-          case "000":
+          case "000": // sb
             bytesToWrite = [chunks[3]];
             break;
-          case "001":
+          case "001": // sh
             bytesToWrite = [chunks[2], chunks[3]];
             break;
-          case "010":
+          case "010": // sw
             bytesToWrite = chunks;
             break;
         }
         if (bytesToWrite.length > 0) {
           this.dataMemory.write(bytesToWrite.reverse(), address);
-          console.log(
-            `[MEM Stage] DataMemory.write called at address ${address} with ${bytesToWrite.length} byte(s)`
-          );
         }
-      } else {
-        console.error(
-          `[MEM Stage] Error: Dato para Store (RUrs2) no tiene el formato de 32 bits esperado.`
-        );
       }
     } else if (this.ex_mem_register.RUDataWrSrc === "01") {
       switch (DMCtrl) {
-        case "000": {
-          const v = this.dataMemory.read(address, 1).join("");
-          memReadData = v.padStart(32, v.at(0) || "0");
+        case "000": { // lb
+          const val = this.dataMemory.read(address, 1).join("");
+          memReadData = val.padStart(32, val.charAt(0));
           break;
         }
-        case "001": {
-          const v = this.dataMemory.read(address, 2).join("");
-          memReadData = v.padStart(32, v.at(0) || "0");
+        case "001": { // lh
+          const val = this.dataMemory.read(address, 2).join("");
+          memReadData = val.padStart(32, val.charAt(0));
           break;
         }
-        case "010": {
-          const v = this.dataMemory.read(address, 4);
-          memReadData = v.join("");
+        case "010": // lw
+          memReadData = this.dataMemory.read(address, 4).join("");
           break;
-        }
-        case "100": {
-          const v = this.dataMemory.read(address, 1).join("");
-          memReadData = v.padStart(32, "0");
+        case "100": // lbu
+          memReadData = this.dataMemory.read(address, 1).join("").padStart(32, "0");
           break;
-        }
-        case "101": {
-          const v = this.dataMemory.read(address, 2).join("");
-          memReadData = v.padStart(32, "0");
+        case "101": // lhu
+          memReadData = this.dataMemory.read(address, 2).join("").padStart(32, "0");
           break;
-        }
       }
-      console.log(`[MEM Stage] DataMemory.read from address ${address} -> ${memReadData}`);
-    } else {
-      console.log(`[MEM Stage] No memory operation.`);
     }
-
-    const memWriteValue = DMWr ? RUrs2 : "X".padStart(32, "X");
 
     const newState: MEMWB_Register = {
       instruction,
@@ -611,21 +575,21 @@ export class PipelineCPU implements ICPU {
       MemReadData: memReadData,
       RD,
       Address: ALURes,
-      MemWriteData: memWriteValue,
+      MemWriteData: DMWr ? RUrs2 : "X".padStart(32, "X"),
       DMWr,
       DMCtrl,
       HazardMessage: undefined,
     };
-    console.log(`[MEM Stage] MEM/WB Register OUT ->`, newState);
     return newState;
   }
 
   private executeWB(): { writeAction: () => void; wbState: WB_Register } {
     const { instruction, PC, RUWr, RUDataWrSrc, ALURes, MemReadData, RD, HazardMessage } =
       this.mem_wb_register;
-
+      
+    const emptyOrNopData = instruction.asm === "NOP" ? NOP_DATA : EMPTY_DATA;
     const defaultState: WB_Register = {
-      instruction: NOP_DATA.instruction,
+      instruction: emptyOrNopData.instruction,
       PC: -1,
       RD: "X",
       dataToWrite: "X".padStart(32, "X"),
@@ -635,9 +599,10 @@ export class PipelineCPU implements ICPU {
     };
 
     if (instruction.pc === -1) {
-      console.log(`[WB Stage] NOP`);
+      console.log(`[WB Stage] ${emptyOrNopData.instruction.asm}`);
       return { writeAction: () => {}, wbState: defaultState };
     }
+    
     console.log(`[WB Stage] Processing: "${instruction.asm}" (PC=${PC})`);
 
     let dataToWrite: string;
@@ -649,7 +614,7 @@ export class PipelineCPU implements ICPU {
         dataToWrite = MemReadData;
         break;
       case "10":
-        dataToWrite = this.mem_wb_register.PCP4.toString(2).padStart(32, "0");
+        dataToWrite = intToBinary(this.mem_wb_register.PCP4);
         break;
       default:
         dataToWrite = "X".padStart(32, "X");
@@ -657,31 +622,8 @@ export class PipelineCPU implements ICPU {
     }
 
     const writeAction = () => {
-      if (RUWr) {
-        switch (RUDataWrSrc) {
-          case "00":
-            console.log(`[WB Stage] Data source: ALU Result (${dataToWrite})`);
-            break;
-          case "01":
-            console.log(`[WB Stage] Data source: Memory Read Data (${dataToWrite})`);
-            break;
-          case "10":
-            console.log(`[WB Stage] Data source: PC+4 (${dataToWrite})`);
-            break;
-          default:
-            console.log(`[WB Stage] Data source: Unknown`);
-            break;
-        }
-        if (RD !== "X" && RD !== "0") {
-          const rdRegName = `x${RD}`;
-          this.registers.writeRegister(rdRegName, dataToWrite);
-          console.log(`[WB Stage] SUCCESS: Wrote to ${rdRegName} <- ${dataToWrite}`);
-          console.log("new REGISTER", this.getRegisterFile());
-        } else {
-          console.log(`[WB Stage] Write to register x0 or invalid register suppressed.`);
-        }
-      } else {
-        console.log(`[WB Stage] No write to Register Unit (RUWr=false).`);
+      if (RUWr && RD !== "0" && RD !== "X") {
+        this.registers.writeRegister(`x${RD}`, dataToWrite);
       }
     };
 
