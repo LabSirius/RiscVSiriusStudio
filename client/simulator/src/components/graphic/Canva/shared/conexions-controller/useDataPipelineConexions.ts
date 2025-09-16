@@ -279,9 +279,11 @@ export const useDataPipelineConexions = () => {
 
     if (WBtype) {
       enabledEdges.push(...conexion._wb)
+      console.log("ENTRO")
 
       switch (WBtype) {
         case "R":
+          console.log("ES TIPO R")
           enabledEdges.push(
             ...conexion.aluResWB_muxC,
             ...conexion.rdWB_ru,
@@ -327,7 +329,7 @@ export const useDataPipelineConexions = () => {
 
     const enabledSet = new Set(enabledEdges);
     return allEdges.filter((edge) => !enabledSet.has(edge));
-  }, [IFType, IDType, IEType]);
+  }, [pipelineValuesStages]);
 
   return disabledEdges;
 };
