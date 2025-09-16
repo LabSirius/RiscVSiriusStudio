@@ -219,7 +219,7 @@ const pipelineCellFormatter = (cell: CellComponent): string => {
   const data = cell.getValue();
 
   if (!data || data.pc === -1) {
-    return `<div class="cell-stall">-</div>`;
+    return `<div class="cell-stall">${data.asm}</div>`;
   }
 
   return `
