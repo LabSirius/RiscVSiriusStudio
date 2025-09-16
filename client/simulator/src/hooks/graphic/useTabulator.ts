@@ -5,11 +5,13 @@ import { getPipelineColumnDefinitions } from '@/utils/tables/definitions/definit
 interface UseInitializePipelineTableProps {
   tableContainerRef: RefObject<HTMLDivElement | null> ;
   tabulatorInstance: MutableRefObject<Tabulator | null>;
+  isCreatedMemoryTable: boolean
 }
 
 export const useInitializePipelineTable = ({
   tableContainerRef,
   tabulatorInstance,
+  isCreatedMemoryTable
 }: UseInitializePipelineTableProps): void => {
   useEffect(() => {
     if (!tableContainerRef.current || tabulatorInstance.current) {
@@ -32,5 +34,5 @@ export const useInitializePipelineTable = ({
       tabulatorInstance.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); 
+  }, [isCreatedMemoryTable]); 
 };

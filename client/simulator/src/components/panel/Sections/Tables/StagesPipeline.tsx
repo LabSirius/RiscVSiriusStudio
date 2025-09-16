@@ -7,11 +7,14 @@ import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 
 import { useInitializePipelineTable } from "@/hooks/graphic/useTabulator";
 import { useUpdatePipelineTable } from "@/hooks/graphic/useUpdatePipelineTable";
+import { useMemoryTable } from "@/context/shared/MemoryTableContext"; 
 
 const StagesPipeline = () => {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tabulatorInstance = useRef<Tabulator | null>(null);
   const rowCounterRef = useRef<number>(0);
+
+  const {isCreatedMemoryTable} = useMemoryTable()
 
   const [showTable, setShowTable] = useState(false);
   const { pipelineValuesStages } = useCurrentInst();
@@ -20,6 +23,7 @@ const StagesPipeline = () => {
   useInitializePipelineTable({
     tableContainerRef,
     tabulatorInstance,
+    isCreatedMemoryTable
   });
 
   useUpdatePipelineTable({
