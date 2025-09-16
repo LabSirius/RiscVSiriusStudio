@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { Edge } from '@xyflow/react';
 import { useDataMonocycleConexions } from './useDataMonocycleConexions'; 
 import { useSimulator } from '@/context/shared/SimulatorContext';
@@ -12,62 +12,43 @@ const DataPathController: React.FC<DataPathControllerProps> = ({ setEdges }) => 
   const { typeSimulator, operation } = useSimulator();
 
   const monoDisabledEdges = useDataMonocycleConexions();
-  const pipelineDisabledEdges = useDataPipelineConexions();
+  const pipelineDisabledEdges = useDataPipelineConexions(); 
 
   const disabledEdges =
     typeSimulator === "monocycle" ? monoDisabledEdges : pipelineDisabledEdges;
 
-  const previousDisabledEdgesRef = useRef<string[]>([]);
 
   useEffect(() => {
-    // 👇 Si operation === "uploadMemory" → resetear todas las conexiones
     if (operation === "uploadMemory") {
       setEdges(prevEdges =>
         prevEdges.map(edge => ({
           ...edge,
           disabled: false,
-          style: { ...edge.style, stroke: "#3B59B6" }, // color default
-          data: { ...edge.data, selected: false }, // quitar selección
+          style: { ...edge.style, stroke: "#3B59B6" },
+          data: { ...edge.data, selected: false },
         }))
       );
-      previousDisabledEdgesRef.current = [];
-      return; // evitamos la lógica de disabledEdges
+      return; 
     }
 
-    // 👇 lógica normal
-    setEdges(prevEdges => {
-      const resetEdges = prevEdges.map(edge => {
-        if (
-          previousDisabledEdgesRef.current.includes(edge.id) &&
-          !disabledEdges.includes(edge.id)
-        ) {
-          return {
-            ...edge,
-            disabled: false,
-            style: { ...edge.style, stroke: edge.data?.selected ? "#E91E63" : "#3B59B6" },
-          };
-        }
-        return edge;
-      });
+    setEdges(prevEdges =>
+      prevEdges.map(edge => {
+        const isDisabled = disabledEdges.includes(edge.id);
 
-      const newEdges = resetEdges.map(edge => {
-        if (disabledEdges.includes(edge.id)) {
-          return {
-            ...edge,
-            disabled: true,
-            style: { ...edge.style, stroke: "#D3D3D3" },
-          };
-        }
-        return edge;
-      });
+        const strokeColor = isDisabled
+          ? "#D3D3D3" 
+          : edge.data?.selected ? "#E91E63" : "#3B59B6"; 
 
-      return newEdges;
-    });
+        return {
+          ...edge,
+          disabled: isDisabled,
+          style: { ...edge.style, stroke: strokeColor },
+        };
+      })
+    );
+  }, [disabledEdges, operation, setEdges]);
 
-    previousDisabledEdgesRef.current = disabledEdges;
-  }, [disabledEdges, setEdges, operation]); // 👈 agregamos operation como dependencia
-  
-  return null; 
+  return null;
 };
 
 export default DataPathController;
