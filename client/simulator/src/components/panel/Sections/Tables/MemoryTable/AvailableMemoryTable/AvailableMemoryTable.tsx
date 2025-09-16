@@ -1,4 +1,4 @@
-import {   useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useSimulator } from "@/context/shared/SimulatorContext";
@@ -10,11 +10,7 @@ import { useTheme } from "@/components/ui/theme/theme-provider";
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";
 import { useLines } from "@/context/panel/LinesContext";
 import { ArrowBigLeftDash, ArrowBigRightDash, Binary, Menu } from "lucide-react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 import { useMemoryTabulator } from "@/hooks/text/memory/availableMemory/useMemoryTabulator";
 import { useMemoryResizeEffect } from "@/hooks/text/memory/availableMemory/useMemoryResizeEffect";
@@ -25,19 +21,15 @@ import { useMemoryCellWriteEffect } from "@/hooks/text/memory/availableMemory/us
 import { useAnimateMemoryRead } from "@/hooks/text/memory/availableMemory/useAnimateMemoryRead";
 import { useMemorySearchFilterEffect } from "@/hooks/text/memory/shared/useMemorySearchFilterEffect";
 
-
-
 interface AvailableMemoryTable {
   withBin: boolean;
   setWithBin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-
-const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
+const AvailableMemoryTable = ({ withBin, setWithBin }: AvailableMemoryTable) => {
   const { theme } = useTheme();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const tableInstanceRef = useRef<Tabulator | null>(null);
-
 
   const {
     isCreatedMemoryTable,
@@ -53,7 +45,7 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
     setWriteInMemory,
     readInMemory,
     setReadInMemory,
-    searchInMemory
+    searchInMemory,
   } = useMemoryTable();
 
   const { newPc, setNewPc, isFirstStep } = useSimulator();
@@ -64,11 +56,6 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
   const isFirstStepRef = useRef(isFirstStep);
 
   const [showTable, setShowTable] = useState(true);
-
-
-  
-
-  
 
   useMemoryTabulator({
     tableContainerRef,
@@ -83,10 +70,7 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
     setClickAddressInMemoryTable,
     directivesWritableSize: dataMemoryTable?.directivesWritableSize,
     directivesReadOnlySize: dataMemoryTable?.directivesReadOnlySize,
-
-    
   });
-
 
   useMemoryResizeEffect({
     isCreatedMemoryTable,
@@ -98,17 +82,15 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
     setSp,
     setWriteInRegister,
     directivesWritableSize: dataMemoryTable?.directivesWritableSize,
-    directivesReadOnlySize: dataMemoryTable?.directivesReadOnlySize
-
-
+    directivesReadOnlySize: dataMemoryTable?.directivesReadOnlySize,
   });
 
-    useMemorySearchFilterEffect({
-      tableInstanceRef,
-      isCreatedMemoryTable,
-      newPc,
-      searchInMemory,
-    });
+  useMemorySearchFilterEffect({
+    tableInstanceRef,
+    isCreatedMemoryTable,
+    newPc,
+    searchInMemory,
+  });
 
   useMemoryImportEffect({
     isCreatedMemoryTable,
@@ -129,7 +111,7 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
     writeInRegister,
     sp,
     setSp,
-    dataMemoryTable
+    dataMemoryTable,
   });
 
   useMemoryCellWriteEffect({
@@ -149,13 +131,16 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
 
   return (
     <>
-      <div className={`shadow-lg !min-h-min min-w-[37.36rem]  mx-4  relative ${(!showTable || !withBin) && "hidden"}`}>
+      <div
+        className={`shadow-lg !min-h-min min-w-[37.36rem]  mx-4  relative ${
+          (!showTable || !withBin) && "hidden"
+        }`}>
         <div
           className={`h-full  w-full transition-opacity ease-in 9000  ${
             isCreatedMemoryTable ? "opacity-100" : "opacity-0"
           }`}>
           <div
-           id="availableMemoryTable"
+            id="availableMemoryTable"
             ref={tableContainerRef}
             className={`w-full h-full overflow-x-hidden ${
               theme === "light" ? "theme-light" : "theme-dark"
@@ -163,34 +148,35 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
           />
           <HoverCard openDelay={200} closeDelay={100}>
             <HoverCardTrigger asChild>
-
               <Menu
-              id="optionsAvailableMemoryTable"
+                id="optionsAvailableMemoryTable"
                 strokeWidth={1.5}
                 className="absolute cursor-pointer right-[0rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] z-100 text-black hover:scale-110 transition-transform"
               />
             </HoverCardTrigger>
-            <HoverCardContent side="right" align="center" className="w-auto p-1 ml-2 border rounded-md shadow-lg bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm">
+            <HoverCardContent
+              side="right"
+              align="center"
+              className="w-auto p-1 ml-2 border rounded-md shadow-lg bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm">
               <div className="flex items-center space-x-1">
                 <button
-                  onClick={() => setWithBin(prev => !prev)}
+                  onClick={() => setWithBin((prev) => !prev)}
                   title="Toggle Binary"
-                  className="p-1 transition-colors rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700"
-                >
+                  className="p-1 transition-colors rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700">
                   <Binary strokeWidth={1.5} className="w-5 h-5 text-black dark:text-white" />
                 </button>
                 <button
-                  
                   onClick={() => setShowTable(false)}
                   title="Hide Table"
-                  className="p-1 transition-colors rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700"
-                >
-                  <ArrowBigLeftDash strokeWidth={1.5} className="w-5 h-5 text-black dark:text-white" />
+                  className="p-1 transition-colors rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700">
+                  <ArrowBigLeftDash
+                    strokeWidth={1.5}
+                    className="w-5 h-5 text-black dark:text-white"
+                  />
                 </button>
               </div>
             </HoverCardContent>
           </HoverCard>
-
         </div>
         {!isCreatedMemoryTable && (
           <div className="absolute inset-0">
@@ -204,7 +190,6 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
           className={`h-full w-[1.6rem] cursor-pointer rounded-[.2rem] flex flex-col items-center uppercase  border hover:opacity-[0.9] transition-all ease-in-out duration-200
     bg-[#E3F2FD] border-gray-700 text-black`}>
           <ArrowBigRightDash
- 
             strokeWidth={1.5}
             className={`mt-[0.35rem] mb-1   min-w-[.9rem] min-h-[.9rem] w-[.9rem] h-[.9rem]
       `}
@@ -225,5 +210,3 @@ const AvailableMemoryTable = ({withBin, setWithBin} : AvailableMemoryTable) => {
 };
 
 export default AvailableMemoryTable;
-
-
