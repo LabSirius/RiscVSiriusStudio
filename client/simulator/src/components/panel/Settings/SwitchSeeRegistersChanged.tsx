@@ -12,7 +12,7 @@ export function SwitchSeeRegistersChanged() {
     }
   
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2" >
        <SwitchPrimitive.Root
             data-slot="switch"
             checked={checkFixedRegisters}

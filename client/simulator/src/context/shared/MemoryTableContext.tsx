@@ -7,9 +7,10 @@ interface AddressLine {
 
 interface MemoryData {
   memory: string[];
-  codeSize: number;
-  constantsSize: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  program: string[];
+  directivesWritableSize: number;
+  directivesReadOnlySize: number;
+  // eslint-disable-next-line @typeFscript-eslint/no-explicit-any
   symbols: Record<string, any>;
   addressLine: AddressLine[];
   asmList: string[];
@@ -64,6 +65,9 @@ export interface MemoryTableContextProps {
 
   locatePc: boolean;
   setLocatePc: React.Dispatch<React.SetStateAction<boolean>>;
+
+  showProgramTable: boolean;
+  setShowProgramTable: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const MemoryTableContext = createContext<MemoryTableContextProps | undefined>(undefined);
@@ -87,7 +91,7 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
     _length: 0,
   });
   const [locatePc, setLocatePc] = useState<boolean>(false);
-
+  const [showProgramTable, setShowProgramTable] = useState(false);
 
   return (
     <MemoryTableContext.Provider
@@ -112,7 +116,8 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
         setReadInMemory,
         locatePc,
         setLocatePc,
-
+        showProgramTable,
+        setShowProgramTable,
       }}>
       {children}
     </MemoryTableContext.Provider>

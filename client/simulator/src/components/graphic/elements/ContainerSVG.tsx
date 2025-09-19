@@ -4,12 +4,13 @@ import { useSimulator } from '@/context/shared/SimulatorContext';
 interface ContainerProps {
   height: number;
   active?: boolean;
+  translate?: boolean
 }
 
-const Container: FC<ContainerProps> = ({ height, active = false }) => {
+const Container: FC<ContainerProps> = ({ height, active = false, translate = true}) => {
   const { operation } = useSimulator();
 
-  const isUploadMemory = operation === "uploadMemory";
+  const isUploadMemory = operation === "uploadMemory"; 
   const borderColor = active ? '#555555' : isUploadMemory ? '#AAAAAA' : '#D3D3D3';
 
   return (
@@ -20,7 +21,7 @@ const Container: FC<ContainerProps> = ({ height, active = false }) => {
       <div
         className={`
           absolute rounded-[20px] borderElementContainer
-          custom-shadow
+          ${translate ? "custom-shadow" : "custom-shadow-without-translate"}
           ${isUploadMemory ? 'animate-border-pulse' : ''}
         `}
         style={{

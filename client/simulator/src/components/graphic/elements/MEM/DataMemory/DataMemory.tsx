@@ -11,8 +11,8 @@ interface HandlerConfig {
 }
 
 export default function DataMemory() {
-  const { currentType } = useCurrentInst();
-  const { operation, isFirstStep, isEbreak} = useSimulator();
+  const { currentType, pipelineValuesStages } = useCurrentInst();
+  const { operation, isFirstStep, isEbreak, typeSimulator} = useSimulator();
 
   const inputHandlers: HandlerConfig[] = [
     { id: 'dmWr', left: '5.5rem' },
@@ -25,15 +25,19 @@ export default function DataMemory() {
     { top: '13.13rem' },
   ];
 
+
+
+  const isActive = typeSimulator === "pipeline" ?    pipelineValuesStages.MEM.instruction.type === "S" || (pipelineValuesStages.MEM.instruction.type === "I" && pipelineValuesStages.MEM.instruction.opcode === "0000011") : currentType === "L" || currentType === "S"
+
   return (
     <div className='w-full'>
 
       <div className='relative w-full h-full'>
-        <h2 className={`!z-0  titleInElement top-[15%] left-[50%] -translate-x-[50%] -translate-y-[15%] ${!(currentType === "L" || currentType === "S" || !isFirstStep) && '!text-[#D3D3D3]'  }`}>
+        <h2 className={`!z-0  titleInElement top-[15%] left-[50%] -translate-x-[50%] -translate-y-[15%] ${!(isActive|| !isFirstStep) && '!text-[#D3D3D3]'  }`}>
           Data Memory
         </h2>
-        <ContainerSVG height={19.9} active={currentType === "L" || currentType === "S"} />
-        {(operation !== "uploadMemory") && !isEbreak && <LabelValueContainer /> }
+        <ContainerSVG height={19.9} active={isActive} />
+        {(operation !== "uploadMemory") && !isEbreak &&isActive && <LabelValueContainer /> }
       </div>
 
       {inputHandlers.map((handler, index) => (

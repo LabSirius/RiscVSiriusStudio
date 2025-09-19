@@ -3,21 +3,22 @@ import SimulateAuto from "./SimulateAuto";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useDialog } from "@/context/panel/DialogContext";
 import { useTheme } from "@/components/ui/theme/theme-provider";
+import GeminiChatWidget from "@/components/GeminiChat";
 
 const OptionsSimulate = () => {
   const { operation, setSimulateAuto } = useSimulator();
   const [end, setEnd] = useState(false);
   const { dialog } = useDialog();
-  const { theme} = useTheme();
+  const { theme } = useTheme();
 
 
   useEffect(() => {
     if (operation === "uploadMemory") {
       setEnd(false);
     }
-  }, [operation]);
+  }, [operation, end]);
 
-   useEffect(() => {
+  useEffect(() => {
     if (dialog && dialog.stop) {
       setSimulateAuto(false);
       setEnd(true);
@@ -29,12 +30,14 @@ const OptionsSimulate = () => {
     <>
       {operation !== "" && !end && (
         <div
-          className={`flex flex-col gap-6 items-center px-2 py-4 ${
-            theme === "light" ? "bg-gray-200" : "bg-black"
-          }  rounded-sm mt-3`}>
+          className={`flex flex-col gap-6 items-center px-2 py-4 ${theme === "light" ? "bg-gray-200" : "bg-black"
+            }  rounded-sm mt-3`}>
           <SimulateAuto />
+
         </div>
       )}
+      <GeminiChatWidget />
+
     </>
   );
 };

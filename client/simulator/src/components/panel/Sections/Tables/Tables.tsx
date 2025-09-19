@@ -1,15 +1,32 @@
 import RegisterTable from "./RegisterTable";
-import MemoryTable from "./MemoryTable";
+import AvailableMemoryTable from "./MemoryTable/AvailableMemoryTable/AvailableMemoryTable";
 import StagesPipeline from "./StagesPipeline";
 import { useSimulator } from "@/context/shared/SimulatorContext";
+import ProgramMemoryTable from "./MemoryTable/ProgramMemory";
+import ProgramSection from "../ProgramSection";
+import AvailableHexMemoryTable from "./MemoryTable/AvailableMemoryTable/AvailableHexMemoryTable";
+import { useState } from "react";
 
 const Tables = () => {
-  const { typeSimulator } = useSimulator();
+  const { modeSimulator, typeSimulator } = useSimulator();
+
+  const [withBin, setWithBin] = useState(true);
+
   return (
-    <div className="flex gap-5 overflow-hidden min-w-min">
+    <div className="flex gap-0 overflow-hidden min-w-min">
       <RegisterTable />
-      <MemoryTable />
-      {typeSimulator === "pipeline" && (<StagesPipeline />)}
+
+      <div className="flex gap-0 overflow-hidden min-w-min" id="memoryTables">
+        <AvailableMemoryTable withBin={withBin} setWithBin={setWithBin} />
+
+        <AvailableHexMemoryTable withBin={withBin} setWithBin={setWithBin} />
+
+        <ProgramMemoryTable />
+      </div>
+
+      {typeSimulator === "pipeline" && <StagesPipeline />}
+
+      {modeSimulator !== "text" && <ProgramSection />}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { Handle, Position } from "@xyflow/react";
 import ContainerSVG from "../../ContainerSVG";
 import LabelValueContainer from "./LabelValueContainer";
 import { useSimulator } from "@/context/shared/SimulatorContext";
+import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 
 interface HandlerConfig {
   id: string;
@@ -11,8 +12,11 @@ interface HandlerConfig {
 }
 
 export default function ALU() {
-  const { operation, isEbreak } = useSimulator();
-  
+  const { operation, isEbreak, typeSimulator } = useSimulator();
+  const { pipelineValuesStages } = useCurrentInst();
+
+
+  console.log(pipelineValuesStages)
 
   const leftInputHandlers: HandlerConfig[] = [
     { id: "muxA", position: Position.Left, className: "input", style: { top: "6.7rem" } },
@@ -23,20 +27,25 @@ export default function ALU() {
     id: "aluOp",
     position: Position.Bottom,
     className: "input",
+    style: { bottom: "-1.25rem" },
   };
 
   const outputHandlers: HandlerConfig[] = [
-    { id: "dataMemory", position: Position.Right, className: "output",  style: { top: "12.82rem" } },
+    { id: "dataMemory", position: Position.Right, className: "output", style: { top: "12.82rem" } },
   ];
+
+  const isActive =
+    operation === "uploadMemory" ||
+    (typeSimulator === "pipeline" ? pipelineValuesStages.EX.instruction.pc !== -1 : true);
 
   return (
     <div className="w-full">
       <div className="relative w-full h-full">
-        <h2 className="titleInElement top-[1.95rem] left-[50%] transform -translate-x-[50%] !z-0 ">
+        <h2 className={`titleInElement top-[1.95rem] left-[50%] transform -translate-x-[50%] !z-0  ${(isEbreak || !isActive) && "!text-[#D3D3D3]"}`}>
           ALU
         </h2>
-        <ContainerSVG height={22.9} active={!isEbreak} />
-        {operation !== "uploadMemory" && !isEbreak && <LabelValueContainer />}
+        <ContainerSVG height={22.9} active={!isEbreak && isActive} />
+        {operation !== "uploadMemory" && !isEbreak && isActive && <LabelValueContainer />}
       </div>
 
       {leftInputHandlers.map((handler) => (
@@ -56,6 +65,7 @@ export default function ALU() {
         id={bottomInputHandler.id}
         position={bottomInputHandler.position}
         className={bottomInputHandler.className}
+        style={bottomInputHandler.style}
       />
 
       {outputHandlers.map((handler) => (

@@ -1,25 +1,39 @@
 import { Edge } from "@xyflow/react";
-import * as dataConexions from "./dataConexions";
+import { useSimulator } from "@/context/shared/SimulatorContext";
+import * as dataMonocycleConexions from "./dataMonocycleConexions";
+import * as dataPipelineConexions from "./dataPipelineConexions";
 
-const allConexions = Object.values(dataConexions);
-const edgeGroups: Record<string, string[]> = {};
+const buildEdgeGroups = (conexions: Record<string, string[]>) => {
+  const allConexions = Object.values(conexions);
+  const groups: Record<string, string[]> = {};
 
-for (const path of allConexions) {
-  for (const edgeId of path) {
-    if (!edgeGroups[edgeId]) {
-      edgeGroups[edgeId] = [];
+  for (const path of allConexions) {
+    for (const edgeId of path) {
+      if (!groups[edgeId]) {
+        groups[edgeId] = [];
+      }
+      groups[edgeId].push(...path);
     }
-    edgeGroups[edgeId].push(...path);
   }
-}
+  return groups;
+};
 
+export const useEdgeGroups = () => {
+  const { typeSimulator } = useSimulator();
+
+  return typeSimulator === "monocycle"
+    ? buildEdgeGroups(dataMonocycleConexions)
+    : buildEdgeGroups(dataPipelineConexions);
+};
+
+// 🔵 hover
 export const animateLineHover = (
   updateEdge: (id: string, newEdge: Partial<Edge>) => void,
   edge: Edge,
   edges: Edge[],
+  edgeGroups: Record<string, string[]>,
   animated: boolean = true
 ): void => {
-  console.log("Hovered edge only:", edge.id);
   const idsToUpdate = edgeGroups[edge.id];
 
   idsToUpdate?.forEach((id) => {
@@ -33,11 +47,13 @@ export const animateLineHover = (
   });
 };
 
+// 🔴 click
 export const animateLineClick = (
   updateEdge: (id: string, newEdge: Partial<Edge>) => void,
   edge: Edge,
   edges: Edge[],
   selectedGroups: string[][],
+  edgeGroups: Record<string, string[]>,
   animated: boolean = false
 ): string[][] => {
   const groupToToggle = edgeGroups[edge.id] ?? [];
@@ -51,6 +67,7 @@ export const animateLineClick = (
       (group) => !group.every((id) => groupToToggle.includes(id))
     );
     const allStillSelected = new Set(remainingGroups.flat());
+
     groupToToggle.forEach((id) => {
       if (!allStillSelected.has(id)) {
         const currentEdge = edges.find((e) => e.id === id);
@@ -62,6 +79,7 @@ export const animateLineClick = (
         });
       }
     });
+
     return remainingGroups;
   }
 

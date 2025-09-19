@@ -97,7 +97,7 @@ export const getColumnMemoryDefinitions = (isFirstStepRef: MutableRefObject<bool
       editable: function (cell) {
         const rowData = cell.getRow().getData();
         const isEditableStep = !isFirstStepRef.current;
-        const isCodeSegment = rowData.segment === 'program' || rowData.segment === 'constants';
+        const isCodeSegment = rowData.segment === 'program' || rowData.segment === 'directivesReadOnlySize';
         return isEditableStep && !isCodeSegment;
       },
       
@@ -148,3 +148,102 @@ export const getColumnMemoryDefinitions = (isFirstStepRef: MutableRefObject<bool
   
 
   
+
+  export const getColumnHexMemoryDefinitions = (isFirstStepRef: MutableRefObject<boolean> ): ColumnDefinition[]=>{
+    const defaultAttrs: ColumnDefinition = {
+      title: '',
+      visible: true,
+      headerSort: false,
+      headerHozAlign: 'center',
+      formatter: 'html',
+      cssClass: 'monospace',
+    };
+    const frozenAttrs: ColumnDefinition = { ...defaultAttrs, frozen: true };
+    const editableAttrs: ColumnDefinition = {
+      ...frozenAttrs,
+      editor: binaryMemEditor,
+      editable: function (cell) {
+        const rowData = cell.getRow().getData();
+        const isEditableStep = !isFirstStepRef.current;
+        const isCodeSegment = rowData.segment === 'program' || rowData.segment === 'directivesReadOnlySize';
+        return isEditableStep && !isCodeSegment;
+      },
+      
+      cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
+    };
+  
+    const columns: ColumnDefinition[] = [
+      { ...defaultAttrs, visible: false, field: 'index' },
+      {
+        ...frozenAttrs,
+        title: 'Info',
+        field: 'info',
+        width: 60,
+        formatter: (cell) =>
+          `<span class="block whitespace-nowrap overflow-hidden truncate text-white ">${cell.getValue()}</span>`,
+        tooltip: (e: MouseEvent, cell: CellComponent, onRendered: (cb: () => void) => void) =>
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          createTooltip(e, cell, onRendered) as any,
+      },
+      {
+        ...frozenAttrs,
+        title: 'Addr.',
+        field: 'address',
+        sorter: (a: string, b: string) => parseInt(a, 16) - parseInt(b, 16),
+        headerSort: true,
+        width: 75,
+        formatter: (cell) =>
+          `<span class="address-value">${(cell.getValue() as string).toUpperCase()}</span>`,
+        cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
+      },
+      { ...editableAttrs, title: '0x3', field: 'value3', width: 83, visible: false },
+      { ...editableAttrs, title: '0x2', field: 'value2', width: 83, visible: false},
+      { ...editableAttrs, title: '0x1', field: 'value1', width: 83, visible: false },
+      { ...editableAttrs, title: '0x0', field: 'value0', width: 83, visible: false },
+      {
+         ...frozenAttrs,
+        title: 'HEX',
+         field: 'hex',
+         width: 110,
+         formatter: (cell) =>
+        `<span class="hex-value">${(cell.getValue() as string).toUpperCase()}</span>`,
+       }
+    ];
+  
+  
+    return columns;
+  };
+  
+
+const pipelineCellFormatter = (cell: CellComponent): string => {
+  const data = cell.getValue();
+
+  if (!data || data.pc === -1) {
+    return `<div class="cell-stall">${data.asm}</div>`;
+  }
+
+  return `
+    <div class="cell-pc">${data.pc}</div>
+    <div class="cell-asm">${data.asm}</div>
+  `;
+};
+
+export const getPipelineColumnDefinitions = (): ColumnDefinition[] => {
+  const defaultColumnAttrs: ColumnDefinition = {
+    title: "",
+    hozAlign: "center",
+    vertAlign: "middle",
+    headerSort: false,
+    cssClass: "monospace",
+    width: 160,
+    formatter: pipelineCellFormatter, 
+  };
+
+  return [
+    { ...defaultColumnAttrs, title: "IF", field: "IF" },
+    { ...defaultColumnAttrs, title: "ID", field: "ID" },
+    { ...defaultColumnAttrs, title: "EX", field: "EX" },
+    { ...defaultColumnAttrs, title: "MEM", field: "MEM" },
+    { ...defaultColumnAttrs, title: "WB", field: "WB" },
+  ];
+};

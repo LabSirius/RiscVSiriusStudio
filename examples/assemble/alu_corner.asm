@@ -110,6 +110,60 @@ sltu x11, x2,  x1          # x11= 1 (1 <u 0xFFFFFFFF = true)
 sltu x12, x4,  x5          # x12= 0 (0x80000000 <u 0x7FFFFFFF = false)
 sltu x13, x3,  x3          # x13= 0 (0 <u 0)
 
+# --- Additional Test Cases ---
+
+# ADDI corner cases
+addi x14, x1, 1            # x14 = 0x00000000 (-1 + 1 = 0)
+addi x15, x5, 1            # x15 = 0x80000000 (MAX_INT + 1 = MIN_INT, overflow)
+addi x16, x4, -1           # x16 = 0x7FFFFFFF (MIN_INT - 1 = MAX_INT, overflow)
+addi x17, x3, 0            # x17 = 0x00000000 (0 + 0 = 0)
+
+# SLLI corner cases
+slli x18, x2, 31           # x18 = 0x80000000 (1 << 31)
+slli x19, x2, 0            # x19 = 0x00000001 (1 << 0)
+slli x20, x1, 1            # x20 = 0xFFFFFFFE (-1 << 1 = -2)
+
+# SRLI corner cases
+srli x21, x1, 31           # x21 = 0x00000001 (0xFFFFFFFF >> 31)
+srli x22, x4, 31           # x22 = 0x00000001 (0x80000000 >> 31)
+srli x23, x2, 0            # x23 = 0x00000001 (1 >> 0)
+
+# SRAI corner cases
+srai x24, x1, 31           # x24 = 0xFFFFFFFF (-1 >>a 31)
+srai x25, x4, 31           # x25 = 0xFFFFFFFF (MIN_INT >>a 31)
+srai x26, x5, 31           # x26 = 0x00000000 (MAX_INT >>a 31)
+srai x27, x2, 0            # x27 = 0x00000001 (1 >>a 0)
+
+# ANDI corner cases
+andi x28, x1, 0            # x28 = 0x00000000 (0xFFFFFFFF & 0 = 0)
+andi x29, x1, -1           # x29 = 0xFFFFFFFF (0xFFFFFFFF & -1 = 0xFFFFFFFF)
+andi x30, x5, 0x7FFFFFFF   # x30 = 0x7FFFFFFF (MAX_INT & MAX_INT = MAX_INT)
+
+# ORI corner cases
+ori  x8,  x1, 0            # x8 = 0xFFFFFFFF (0xFFFFFFFF | 0 = 0xFFFFFFFF)
+ori  x9,  x3, 0            # x9 = 0x00000000 (0 | 0 = 0)
+ori  x10, x4, 0x7FFFFFFF   # x10 = 0xFFFFFFFF (MIN_INT | MAX_INT = -1)
+
+# XORI corner cases
+xori x11, x1, 0            # x11 = 0xFFFFFFFF (0xFFFFFFFF ^ 0 = 0xFFFFFFFF)
+xori x12, x1, -1           # x12 = 0x00000000 (0xFFFFFFFF ^ 0xFFFFFFFF = 0)
+xori x13, x4, 0x7FFFFFFF   # x13 = 0xFFFFFFFF (MIN_INT ^ MAX_INT = -1)
+
+# SLTI corner cases
+slti x14, x4, -1           # x14 = 1 (MIN_INT < -1)
+slti x15, x5, 0            # x15 = 0 (MAX_INT < 0)
+slti x16, x3, 1            # x16 = 1 (0 < 1)
+
+# SLTIU corner cases
+sltiu x17, x1, 1           # x17 = 0 (0xFFFFFFFF <u 1 = false)
+sltiu x18, x2, 0xFFFFFFFF  # x18 = 1 (1 <u 0xFFFFFFFF = true)
+sltiu x19, x4, 0x7FFFFFFF  # x19 = 0 (0x80000000 <u 0x7FFFFFFF = false)
+
+# More general cases
+add x20, x0, x2            # x20 = 1 (Test x0 as operand)
+sub x21, x0, x2            # x21 = -1 (Test x0 as operand)
+mul x22, x0, x2            # x22 = 0 (Test x0 as operand)
+
 nop                        # no effect on registers
 
 ebreak                     # program end / breakpoint

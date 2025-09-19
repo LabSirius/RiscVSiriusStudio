@@ -262,13 +262,13 @@ export function getRd(instruction: any) {
   return instruction.rd.regeq;
 }
 
-export function getFunct3(instruction: any) {
-  if (!usesFunct3(instruction.type)) {
-    throw new Error(
-      'Instruction of type ' + instruction.type + ' does not have funct3 field'
-    );
+export function getFunct3(instruction: any): string {
+  
+  if (instruction.encoding?.funct3) {
+    return instruction.encoding.funct3;
   }
-  return instruction.encoding.funct3;
+
+  return "XXX";
 }
 
 export function getFunct7(instruction: any) {

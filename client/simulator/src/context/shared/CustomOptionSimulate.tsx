@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useCallback } from "react";
 
 export interface CustomOptionSimulateProps {
   checkFixedRegisters: boolean;
@@ -9,6 +9,11 @@ export interface CustomOptionSimulateProps {
 
   switchAutoFocusOnNewLine: boolean;
   setSwitchAutoFocusOnNewLine: React.Dispatch<React.SetStateAction<boolean>>;
+
+  fitViewTrigger: number;
+  requestFitView: () => void; 
+
+
 }
 
 const CustomOptionSimulate = createContext<CustomOptionSimulateProps | undefined>(undefined);
@@ -19,6 +24,12 @@ export const CustomOptionSimulateProvider: React.FC<{ children: ReactNode }> = (
 
   const [switchAutoFocusOnNewLine, setSwitchAutoFocusOnNewLine] = useState<boolean>(true);
 
+  const [fitViewTrigger, setFitViewTrigger] = useState<number>(0);
+
+  const requestFitView = useCallback(() => {
+    setFitViewTrigger((prev) => prev + 1);
+  }, []);
+
   return (
     <CustomOptionSimulate.Provider
       value={{
@@ -28,6 +39,8 @@ export const CustomOptionSimulateProvider: React.FC<{ children: ReactNode }> = (
         setFixedchangedRegisters,
         switchAutoFocusOnNewLine,
         setSwitchAutoFocusOnNewLine,
+        fitViewTrigger,
+        requestFitView,
       }}>
       {children}
     </CustomOptionSimulate.Provider>

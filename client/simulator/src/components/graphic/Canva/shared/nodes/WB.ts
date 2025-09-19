@@ -17,6 +17,7 @@ export const useWBNodes = (): Node[] => {
       position: { x: 870 + 730 + 680 + 565 + offsetX, y: 0 },
       draggable: false,
       zIndex: -1,
+      selectable: false,   
       style: {
         width: 290 + (isPipeline ? 80 : 0),
         height: 1330 + (isPipeline ? 140 : 0),
@@ -26,7 +27,10 @@ export const useWBNodes = (): Node[] => {
       },
     },
 
-    nodeBase("title-WB", "title", "Write back (WB)", { x: 10, y: 0 }, "WB", 300, 50),
+    nodeBase("title-WB", "title", "Write back (WB)", { x: 10, y: 0 }, "WB", 290, 50),
+
+    nodeBase("instWBPipeline", "instWBPipeline", "instWBPipeline", { x: 40, y: 80 }, "WB", 370, 50),
+
 
     nodeBase("muxC", "muxC", "MUXC", { x: shift(90), y: 770 }, "WB", 65, 150),
 

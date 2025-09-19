@@ -4,19 +4,24 @@ import TypeSImmDecode from './TypeSImmDecode';
 import TypeBImmDecode from './TypeBImmDecode';
 import TypeUImmDecode from './TypeUImmDecode';
 import TypeJImmDecode from './TypeJImmDecode';
+import { useSimulator } from '@/context/shared/SimulatorContext';
 
 const ImmDecode = () => {
-  const { currentType } = useCurrentInst();
+  const { typeSimulator} = useSimulator()
+  const { currentType, pipelineValuesStages } = useCurrentInst();
+
+  const type = typeSimulator === "pipeline" ? pipelineValuesStages?.ID?.instruction?.type : currentType 
+
+
   return (
     <>
-      {(currentType === "I" || currentType === "L" || currentType === "JALR"  ) && ( <TypeIImmDecode />) }
-      {(currentType === "S") && ( <TypeSImmDecode />) }
-      {(currentType === "B") && ( <TypeBImmDecode />) }
-      {(currentType === "LUI" || currentType === "AUIPC" ) && ( <TypeUImmDecode />) }
-      {(currentType === "J") && ( <TypeJImmDecode />) }
-
+      {(type === "I" || type === "L" || type === "JALR") && <TypeIImmDecode />}
+      {type === "S" && <TypeSImmDecode />}
+      {type === "B" && <TypeBImmDecode />}
+      {(type === "LUI" || type === "AUIPC") && <TypeUImmDecode />}
+      {type === "J" && <TypeJImmDecode />}
     </>
   );
-}
+};
 
-export default ImmDecode
+export default ImmDecode;

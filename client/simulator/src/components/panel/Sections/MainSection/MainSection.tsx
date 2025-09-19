@@ -6,7 +6,6 @@ import Sidebar from "@/components/panel/Sidebar/SideBar";
 
 import { useSimulator } from "@/context/shared/SimulatorContext";
 
-import ProgramSection from "../ProgramSection";
 import ConvertSection from "../ConvertSection";
 import Tables from "../Tables/Tables";
 import SettingsSection from "../SettingsSection";
@@ -62,18 +61,14 @@ const MainSection = () => {
           {operation === "uploadMemory" &&
             (section === "settings" ? (
               <SettingsSection />
-            ) : section === "program" ? (
-              <ProgramSection />
-            ) : section === "convert" ? (
+            ): section === "convert" ? (
               <ConvertSection />
             ) : (
               <HelpSection />
             ))}
 
           {operation === "step" &&
-            (section === "program" ? (
-              <ProgramSection />
-            ) : section === "search" ? (
+            (section === "search" ? (
               <SearchSection />
             ) : section === "convert" ? (
               <ConvertSection />

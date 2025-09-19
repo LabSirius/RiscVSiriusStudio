@@ -1,0 +1,15 @@
+title: RiscV Sirius Studio
+description: YOUR DESCRIPTION
+theme: just-the-docs
+
+nav_enabled: true
+
+callouts:
+  warning:
+    title: Warning
+    color: red
+
+url: https://gustavogutierrezutp.github.io
+
+aux_links: # remove if you don't want this link to appear on your pages
+  Sirius research group: http://sirius.utp.edu.co

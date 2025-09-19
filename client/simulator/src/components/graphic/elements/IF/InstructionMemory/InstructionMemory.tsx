@@ -17,9 +17,9 @@ export default function InstructionMemory() {
         <div className="relative">
           <ContainerSVG height={15} active={true} />
 
-          {operation !== "uploadMemory" && typeSimulator === "monocycle" && (
+          {operation !== "uploadMemory"  && (
             <>
-              <div className="absolute bottom-[7.4rem] right-[-2.5rem]">
+              <div className={`absolute bottom-[7.4rem] ${typeSimulator === "pipeline" ? "right-[-1rem]" : "right-[-2.5rem]"}`}>
                 <LabelSlash number={32} />
               </div>
               <LabelValueContainer />

@@ -1,5 +1,6 @@
 import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import LabelValue from "@/components/graphic/LabelValue";
+import { useTheme } from "@/components/ui/theme/theme-provider";
 
 interface Props {
   label: string;
@@ -24,6 +25,8 @@ const LabelValueWithHover = ({
   positionClassName,
   input = true,
 }: Props) => {
+  const { theme } = useTheme();
+
   return (
     <div className={`absolute ${positionClassName}`}>
       <HoverCard>
@@ -32,9 +35,11 @@ const LabelValueWithHover = ({
             <LabelValue label={label} value={value} input={input} />
           </div>
         </HoverCardTrigger>
-        <HoverCardContent className="!rounded-sm !px-2 !py-1 flex gap-[1rem] bg-[#404040] w-full !b-[.2rem]">
+        <HoverCardContent
+          className={`!rounded-sm !px-2 !py-1 flex gap-[1rem] w-full !b-[.2rem]
+            ${theme === "light" ? "bg-[#f5f5f5] text-black" : "bg-[#404040] text-white"}`}
+        >
           <p className="!text-[.6rem]">d'{decimal}</p>
-
           <p className="!text-[.6rem]">b'{binary}</p>
           <p className="!text-[.6rem]">h'{hex}</p>
         </HoverCardContent>

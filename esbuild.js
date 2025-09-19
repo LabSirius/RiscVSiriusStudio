@@ -90,16 +90,13 @@ const textSimulatorSimulator = {
 const watchConfig = {
   watch: {
     onRebuild(error, result) {
-      console.log("[watch] build started");
       if (error) {
         error.errors.forEach((error) =>
           console.error(
             `> ${error.location.file}:${error.location.line}:${error.location.column}: error: ${error.text}`
           )
         );
-      } else {
-        console.log("[watch] build finished");
-      }
+      } 
     },
   },
 };
@@ -110,7 +107,6 @@ const watchConfig = {
   try {
     if (args.includes("--watch")) {
       // Build and watch extension and webview code
-      console.log("[watch] build started");
       await build({
         ...extensionConfig,
         ...watchConfig,
@@ -127,13 +123,12 @@ const watchConfig = {
         ...registersviewConfigTextSimulator,
         ...watchConfig,
       });
-      console.log("[watch] build finished");
+      ("[watch] build finished");
     } else {
       // Build extension and webview code
       await build(extensionConfig);
       await build(graphicSimulatorConfig);
       await build(textSimulatorSimulator);
-      console.log("build complete");
     }
   } catch (err) {
     process.stderr.write(err.stderr);

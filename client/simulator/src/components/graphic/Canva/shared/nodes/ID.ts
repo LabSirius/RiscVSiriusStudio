@@ -15,6 +15,7 @@ export const useIDNodes = (): Node[] => {
       data: { label: "Section 2" },
       position: { x: 870 + (isPipeline ? 50 : 0), y: 0 },
       draggable: false,
+      selectable: false,   
       zIndex: 5,
       style: {
         width: 740 + offsetXSize,
@@ -25,7 +26,10 @@ export const useIDNodes = (): Node[] => {
       },
     },
 
-    nodeBase("title-ID", "title", "Decode (ID)", { x: 10, y: 0 }, "ID", 740, 50),
+    nodeBase("title-ID", "title", "Decode (ID)", { x: 10, y: 0 }, "ID", isPipeline ? 800 : 700, 50),
+
+    nodeBase("instIDPipeline", "instIDPipeline", "instIDPipeline", { x: 65, y: 10 }, "ID", 730, 50),
+
     nodeBase(
       "ruWr",
       "ruWr",
@@ -69,13 +73,13 @@ export const useIDNodes = (): Node[] => {
     pivotNode("pivot21", { x: shift(50), y: 483 }, "ID"),
     pivotNode("pivot22", { x: shift(50), y: 643 }, "ID"),
     pivotNode("pivot26", { x: shift(50), y: 976.5 }, "ID"),
-    pivotNode("pivot27", { x: shift(50), y: 1169 + (isPipeline ? 130 : 0) }, "ID"),
-    pivotNode("pivot28", { x: shift(100), y: 1169 + (isPipeline ? 130 : 0) }, "ID"),
-    pivotNode("pivot29", { x: shift(100), y: 1210 + (isPipeline ? 130 : 0) }, "ID"),
-    pivotNode("pivot30", { x: shift(270), y: 1169 + (isPipeline ? 130 : 0) }, "ID"),
-    pivotNode("pivot31", { x: shift(270), y: 1210 + (isPipeline ? 130 : 0) }, "ID"),
-    pivotNode("pivot32", { x: shift(450), y: 1169 + (isPipeline ? 130 : 0) }, "ID"),
-    pivotNode("pivot33", { x: shift(450), y: 1210 + (isPipeline ? 130 : 0) }, "ID"),
+    pivotNode("pivot27", { x: shift(50), y: 1169 + (isPipeline ? 110 : 0) }, "ID"),
+    pivotNode("pivot28", { x: shift(100), y: 1169 + (isPipeline ? 110 : 0) }, "ID"),
+    pivotNode("pivot29", { x: shift(100), y: 1226 + (isPipeline ? 110 : 0) }, "ID"),
+    pivotNode("pivot30", { x: shift(270), y: 1169 + (isPipeline ? 110 : 0) }, "ID"),
+    pivotNode("pivot31", { x: shift(270), y: 1226 + (isPipeline ? 110 : 0) }, "ID"),
+    pivotNode("pivot32", { x: shift(450), y: 1169 + (isPipeline ? 110 : 0) }, "ID"),
+    pivotNode("pivot33", { x: shift(450), y: 1226 + (isPipeline ? 110 : 0) }, "ID"),
 
     nodeBase(
       "pivotJump1",

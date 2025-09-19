@@ -42,10 +42,10 @@
     return list.filter(item => item !== undefined);
   }
 
-  function buildList(head, tail: Array, index: Number) {
+  function buildList(head: any[] | any, tail: any[], index: Number) {
     if (Array.isArray(head)){
       if (tail.length === 0){
-        return head;
+        return clearList(head);
       }
       tail.unshift([[], head[1]]);
       head = head[0];
@@ -147,6 +147,10 @@
   function shiftLeftLogical(val: number , shift: number): number { return val << shift; }
   
   function shiftRightLogical(val: number , shift: number): number { return val >> shift; }
+
+  function shiftRightArith(val: number, shift: number): number {
+    return val >>> shift;
+  }
   
   function applyBitMask(val: number, mask: number): number { return val & mask; }
 
@@ -162,6 +166,18 @@
   
   function toBinaryString(value, bitlength) {
     return toRadix(value,2).slice(bitlength * -1);
+  }
+
+  function descomposeNumber(value: number): number[] {
+    let lower12 = applyBitMask(value, 0xFFF);
+    let upper20 = shiftRightArith(value, 12);
+    upper20 = applyBitMask(upper20, 0xFFFFF);
+
+     if ((lower12 & 0x800) !== 0) {
+        upper20 += 1;
+        lower12 = lower12 - 0x1000;
+    }
+    return [upper20, lower12];
   }
   
   function encodingAsHex(binenc) {
@@ -1499,8 +1515,10 @@ function peg$parse(input, options) {
       }
       const imm = symbol["value"];
       let complementInstruction;
-      if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rd, shiftRightLogical(imm, 12), location(), true); }
-      const mainInstruction = handleIInstruction('addi', rd, rd, applyBitMask(imm, 0xFFF), location(), true);
+      const [upper20, lower12] = descomposeNumber(imm);
+
+      if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rd, upper20, location(), true); }
+      const mainInstruction = handleIInstruction('addi', rd, rd, lower12, location(), true);
       return [complementInstruction, mainInstruction];
     };
   var peg$f55 = function(rd, symbol) {
@@ -1509,9 +1527,16 @@ function peg$parse(input, options) {
         return undefined;
       }
       const imm = symbol["value"];
+      const [upper20, lower12] = descomposeNumber(imm);
+
       let complementInstruction;
-      if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('lui', rd, shiftRightLogical(imm, 12), location(), true); }
-      const mainInstruction = handleIInstruction('addi', rd, regEnc('0'), applyBitMask(imm, 0xFFF), location(), true);
+      let mainInstruction;
+      if (isDoubleInst(symbol)){ 
+        complementInstruction = handleUInstruction('lui', rd, upper20, location(), true); 
+        mainInstruction = handleIInstruction('addi', rd, rd, lower12, location(), true);
+      } else {
+        mainInstruction = handleIInstruction('addi', rd, regEnc('0'), lower12, location(), true);
+      }
       return [complementInstruction, mainInstruction];
     };
   var peg$f56 = function(name, rd, symbol) { 
@@ -1520,9 +1545,11 @@ function peg$parse(input, options) {
       return undefined;
     }
     const imm = symbol["value"];
+    const [upper20, lower12] = descomposeNumber(imm);
+
     let complementInstruction;
-    if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rd, shiftRightLogical(imm, 12), location(), true); }
-    const mainInstruction = handleIInstruction(name, rd, rd, applyBitMask(imm, 0xFFF), location(), true);
+    if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rd, upper20, location(), true); }
+    const mainInstruction = handleIInstruction(name, rd, rd, lower12, location(), true);
     return [complementInstruction, mainInstruction];
   };
   var peg$f57 = function(name, rd, symbol, rt) { 
@@ -1531,9 +1558,11 @@ function peg$parse(input, options) {
       return undefined;
     }
     const imm = symbol["value"];
+    const [upper20, lower12] = descomposeNumber(imm);
+
     let complementInstruction;
-    if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rt, shiftRightLogical(imm, 12), location(), true); }
-    const mainInstruction = handleSInstruction(name, rd, applyBitMask(imm, 0xFFF), rt, location(), true);
+    if (isDoubleInst(symbol)){ complementInstruction = handleUInstruction('auipc', rt, upper20, location(), true); }
+    const mainInstruction = handleSInstruction(name, rd, lower12, rt, location(), true);
     return [complementInstruction, mainInstruction];
   };
   var peg$f58 = function(val) {
@@ -1567,7 +1596,7 @@ function peg$parse(input, options) {
     if (value === undefined){
       value = getConstantValue(lbl["name"]);
     }
-    if (value && isImm21(value)) {
+    if (value !== undefined && isImm21(value)) {
         return value;
     }
     return error("Expecting 21 bit representable value [-1048576, 1048575]. Got " + lbl.name); 
@@ -1664,21 +1693,18 @@ function peg$parse(input, options) {
     if (isFirstPass) { return undefined; }
     const value = getPosLabel(lbl["name"]);
     const value13 = applyBitMask(value, (1 << 13) - 1)
-    console.log("lo(symbol): ", value, value13,location());
     return value13;
   };
   var peg$f80 = function(lbl) {
     if (isFirstPass) { return undefined; }
     const value = getPosLabel(lbl["name"]);
     const value13 = applyBitMask((value - location()*4), 0xFFF);
-    console.log("pcrel_lo: ", value13);
     return value13;
   };
   var peg$f81 = function(symbol) {
     if (isFirstPass) { return undefined; }
     const value = symbol["value"]
     const value20 = shiftRightLogical((value - location() * 4 + 0x800), 12);
-    console.log("pcrel_hi: ", value20);
     return value20;
   };
   var peg$f82 = function(lbl) {
@@ -1687,7 +1713,6 @@ function peg$parse(input, options) {
     const mask = ((1 << 20) - 1) << 12;
     const valueMask = applyBitMask(value, mask);
     const value20 = shiftRightLogical(valueMask, 12);
-    console.log("hi(symbol): ", value, value20, location());
     return value20;
   };
   var peg$f83 = function(reg) {
@@ -8504,11 +8529,7 @@ function peg$parse(input, options) {
   constantTable = options.constantTable;
   dataTable = options.dataTable;
   simOptions = options.options;
-  if(isFirstPass) {
-    console.log("First pass of the parser.");
-  } else {
-    console.log("Second pass of the parser.");
-  }
+  
 
   peg$result = peg$startRuleFunction();
 

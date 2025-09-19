@@ -48,57 +48,87 @@ export class RegistersFile {
   }
 }
 
-
-
 //DATA MEMORY
 export class DataMemory {
-  private memory: Array<string>;
-  public getMemory(): Array<string> {
-    return [...this.memory];
+  private memory_program: Array<string>; //U
+  private memory_available: Array<string>; //U
+
+  public getProgramMemory(): Array<string> {
+    //U
+    return [...this.memory_program];
   }
-  
-  private codeAreaEnd: number;
-  get codeSize() {
-    return this.codeAreaEnd + 1;
+  public getAvailableMemory(): Array<string> {
+    //U
+    return [...this.memory_available];
   }
 
-  private size: number;
-  get memSize() {
-    return this.size;
-  }
-  get spInitialAddress() {
-    return this.size - 4;
+  private available_size: number; //U
+
+  get availableMemSize() {
+    return this.available_size; //U
   }
 
-  private _constantsSize: number;
-  get constantsSize() : number {
-    return this._constantsSize;
+  private writableDirectives: any[];
+  public writableDirectives_size: number;
+
+  private readOnlyDirectives: any[];
+  public readOnlyDirectives_size: number;
+
+
+  get availableSpInitialAddress() {
+    return this.availableMemSize + this.writableDirectives_size + this.readOnlyDirectives_size  - 4; //U
   }
 
-  public constructor(programSize : number, codeSize: number, size: number) {
-    this.codeAreaEnd = codeSize - 1;
-    this._constantsSize =  codeSize - programSize;
-    this.size = 0;
-    this.memory = [];
-    this.resize(size);
+  public overwriteAvailableMemory(newMemory: string[]): void {
+    this.memory_available = newMemory;
+    this.available_size = newMemory.length;
   }
 
-  public resize(size: number) {
-    this.size = size;
-    const totalSize = this.codeSize + this.memSize;
-    this.size = totalSize;
-    this.memory = new Array(totalSize).fill("00000000");
+  public constructor(writableDirectives: any, readOnlyDirectives : any, available_size: number) {
+    this.available_size = 0;
+    this.memory_program = []; //U
+    this.memory_available = []; //U
+
+    this.writableDirectives = writableDirectives;
+    this.writableDirectives_size = 0;
+
+
+     this.readOnlyDirectives = readOnlyDirectives;
+    this.readOnlyDirectives_size = 0;
+
+
+
+    this.resize(available_size);
+  }
+
+  public resize(available_size: number) {
+    this.available_size = available_size;
+    this.writableDirectives_size = this.writableDirectives.length;
+    this.readOnlyDirectives_size = this.readOnlyDirectives.length;
+
+     const readOnlyDirectives = this.readOnlyDirectives
+      .sort((a, b) => a.memdef - b.memdef)
+      .map((d) => d.binValue);
+
+    const writableDirectiveValues = this.writableDirectives
+      .sort((a, b) => a.memdef - b.memdef)
+      .map((d) => d.binValue);
+
+    const zeros = new Array(this.available_size).fill("00000000");
+
+    this.memory_available = [...readOnlyDirectives, ...writableDirectiveValues, ...zeros];
   }
 
   public uploadProgram(memory: Array<any>) {
-      memory.forEach((mem) => {
-        const address = mem.memdef;
-        this.memory[address] = mem.binValue;
-      });
+    memory.forEach((mem) => {
+      const address = mem.memdef;
+
+      this.memory_program[address] = mem.binValue; //U
+    });
   }
-  
+
   public lastAddress() {
-    return this.size - 1;
+    return this.available_size +   this.writableDirectives_size +this.readOnlyDirectives_size  - 1;
   }
 
   public validAddress(address: number) {
@@ -119,27 +149,28 @@ export class DataMemory {
       if (data[i] === undefined) {
         throw new Error("Undefined data element");
       }
-      this.memory[address + i] = data[i]!;
+      this.memory_available[address + i] = data[i]!;
     }
   }
   public read(address: number, length: number): Array<string> {
     const lastAddress = address + length - 1;
+
     if (lastAddress > this.lastAddress()) {
       throw new Error("Data memory size exceeded.");
     }
     let data = [] as Array<string>;
     for (let i = 0; i < length; i++) {
-      const value = this.memory[address + i];
-      if (value !== undefined) {
-        data.push(value);
+      const valueAvailableMem = this.memory_available[address + i];
+      if (valueAvailableMem !== undefined) {
+        data.push(valueAvailableMem);
       } else {
         throw new Error(`Invalid memory access at ${address + i}`);
       }
     }
+
     return data.reverse();
   }
 }
-
 
 /**
  * Simulates the main Arithmetic Logic Unit of the processor.
@@ -157,25 +188,62 @@ export class ProcessorALU {
     const numB = "0b" + B;
     let result: BigInt = 0n;
     switch (ALUOp) {
-      case "00000": result = ALU32.addition(numA, numB); break;
-      case "01000": result = ALU32.subtraction(numA, numB); break;
-      case "00100": result = ALU32.xor(numA, numB); break;
-      case "00110": result = ALU32.or(numA, numB); break;
-      case "00111": result = ALU32.and(numA, numB); break;
-      case "00001": result = ALU32.shiftLeft(numA, numB); break;
-      case "00101": result = ALU32.shiftRight(numA, numB); break;
-      case "01101": result = ALU32.shiftRightA(numA, numB); break;
-      case "00010": result = ALU32.lessThan(numA, numB); break;
-      case "00011": result = ALU32.lessThanU(numA, numB); break;
-      case "10000": result = ALU32.mul(numA, numB); break;
-      case "10001": result = ALU32.mulh(numA, numB); break;
-      case "10010": result = ALU32.mulsu(numA, numB); break;
-      case "10011": result = ALU32.mulu(numA, numB); break;
-      case "10100": result = ALU32.div(numA, numB); break;
-      case "10101": result = ALU32.divu(numA, numB); break;
-      case "10110": result = ALU32.rem(numA, numB); break;
-      case "10111": result = ALU32.remu(numA, numB); break;
-      default: result = 0n;
+      case "00000":
+        result = ALU32.addition(numA, numB);
+        break;
+      case "01000":
+        result = ALU32.subtraction(numA, numB);
+        break;
+      case "00100":
+        result = ALU32.xor(numA, numB);
+        break;
+      case "00110":
+        result = ALU32.or(numA, numB);
+        break;
+      case "00111":
+        result = ALU32.and(numA, numB);
+        break;
+      case "00001":
+        result = ALU32.shiftLeft(numA, numB);
+        break;
+      case "00101":
+        result = ALU32.shiftRight(numA, numB);
+        break;
+      case "01101":
+        result = ALU32.shiftRightA(numA, numB);
+        break;
+      case "00010":
+        result = ALU32.lessThan(numA, numB);
+        break;
+      case "00011":
+        result = ALU32.lessThanU(numA, numB);
+        break;
+      case "10000":
+        result = ALU32.mul(numA, numB);
+        break;
+      case "10001":
+        result = ALU32.mulh(numA, numB);
+        break;
+      case "10010":
+        result = ALU32.mulsu(numA, numB);
+        break;
+      case "10011":
+        result = ALU32.mulu(numA, numB);
+        break;
+      case "10100":
+        result = ALU32.div(numA, numB);
+        break;
+      case "10101":
+        result = ALU32.divu(numA, numB);
+        break;
+      case "10110":
+        result = ALU32.rem(numA, numB);
+        break;
+      case "10111":
+        result = ALU32.remu(numA, numB);
+        break;
+      default:
+        result = 0n;
     }
     return this.toTwosComplement(result, 32);
   }
@@ -183,23 +251,84 @@ export class ProcessorALU {
   private toTwosComplement(n: any, len: any): string {
     n = BigInt(n);
     len = Number(len);
-    if (!Number.isInteger(len)) { throw Error("`len` must be an integer"); }
-    if (len <= 0) { throw Error("`len` must be greater than zero"); }
+    if (!Number.isInteger(len)) {
+      throw Error("`len` must be an integer");
+    }
+    if (len <= 0) {
+      throw Error("`len` must be greater than zero");
+    }
     if (n >= 0) {
       n = n.toString(2);
-      if (n.length > len) { throw Error("out of range"); }
+      if (n.length > len) {
+        throw Error("out of range");
+      }
       return n.padStart(len, "0");
     }
     n = (-n).toString(2);
-    if (!(n.length < len || n === "1".padEnd(len, "0"))) { throw Error("out of range"); }
+    if (!(n.length < len || n === "1".padEnd(len, "0"))) {
+      throw Error("out of range");
+    }
     let invert = false;
-    return n.split("").reverse().map((bit: any) => {
-        if (invert) { return bit === "0" ? "1" : "0"; }
-        if (bit === "0") { return bit; }
+    return n
+      .split("")
+      .reverse()
+      .map((bit: any) => {
+        if (invert) {
+          return bit === "0" ? "1" : "0";
+        }
+        if (bit === "0") {
+          return bit;
+        }
         invert = true;
         return bit;
-      }).reverse().join("").padStart(len, "1");
+      })
+      .reverse()
+      .join("")
+      .padStart(len, "1");
   }
 }
 
+/** Implements the Branch Unit logic.
+ */
+export class BranchUnit {
+  /**
+   * English: Evaluates if a branch condition is met.
+   * @param brOp The 5-bit Branch Operation control signal.
+   * @param val1 The first value for comparison (from rs1).
+   * @param val2 The second value for comparison (from rs2).
+   * @returns `true` if the branch should be taken, `false` otherwise.
+   */
+  public evaluate(brOp: string, val1: string, val2: string): boolean {
+    if (brOp.substring(0, 1) === "1") {
+      return true;
+    }
 
+    if (brOp.substring(0, 2) === "01") {
+      const num1_signed = BigInt.asIntN(32, BigInt(`0b${val1}`));
+      const num2_signed = BigInt.asIntN(32, BigInt(`0b${val2}`));
+      const num1_unsigned = BigInt(`0b${val1}`);
+      const num2_unsigned = BigInt(`0b${val2}`);
+
+      const condition = brOp.substring(2, 5); // Obtiene el funct3 para la condición
+      switch (condition) {
+        case "000":
+          return num1_signed === num2_signed; // BEQ
+        case "001":
+          return num1_signed !== num2_signed; // BNE
+        case "100":
+          return num1_signed < num2_signed; // BLT
+        case "101":
+          return num1_signed >= num2_signed; // BGE
+        case "110":
+          return num1_unsigned < num2_unsigned; // BLTU
+        case "111":
+          return num1_unsigned >= num2_unsigned; // BGEU
+        default:
+          return false;
+      }
+    }
+
+    // Si no es ni incondicional ni condicional (ej. "00XXX"), no es un salto.
+    return false;
+  }
+}
