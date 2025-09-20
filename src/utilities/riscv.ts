@@ -168,16 +168,41 @@
     return toRadix(value,2).slice(bitlength * -1);
   }
 
-  function descomposeNumber(value: number): number[] {
-    let lower12 = applyBitMask(value, 0xFFF);
+  function getUpper20(value: number): number {
     let upper20 = shiftRightArith(value, 12);
     upper20 = applyBitMask(upper20, 0xFFFFF);
 
-     if ((lower12 & 0x800) !== 0) {
+    if ((value & 0x800) !== 0) {
         upper20 += 1;
+    }
+    return upper20;
+  }
+
+  function getLower12(value: number): number {
+    let lower12 = applyBitMask(value, 0xFFF);
+    if ((lower12 & 0x800) !== 0) {
         lower12 = lower12 - 0x1000;
     }
+    return lower12;
+  }
+
+  function descomposeNumber(value: number): number[] {
+    let lower12 = getLower12(value);
+    let upper20 = getUpper20(value);
+    
     return [upper20, lower12];
+  }
+
+  function getLabelOrDirDataOrConst(name: string): number {
+    let value = getPosLabel(name);
+    if (value === undefined){
+      value = getDirFromData(name);
+    }
+    if (value === undefined){
+      value = getConstantValue(name);
+    }
+    return value;
+    
   }
   
   function encodingAsHex(binenc) {
@@ -1691,28 +1716,38 @@ function peg$parse(input, options) {
         %lo(symbol): The low 12 bits of absolute address for symbol.
     */
     if (isFirstPass) { return undefined; }
-    const value = getPosLabel(lbl["name"]);
-    const value13 = applyBitMask(value, (1 << 13) - 1)
+    const value = getLabelOrDirDataOrConst(lbl["name"]);
+    if (value === undefined){
+      return error(`Identifier name is not valid: ${lbl.name}`);
+    }
+    const value13 = getLower12(value);
     return value13;
   };
   var peg$f80 = function(lbl) {
     if (isFirstPass) { return undefined; }
-    const value = getPosLabel(lbl["name"]);
-    const value13 = applyBitMask((value - location()*4), 0xFFF);
+    const value = getLabelOrDirDataOrConst(lbl["name"]);
+    if (value === undefined){
+      return error(`Identifier name is not valid: ${lbl.name}`);
+    }
+    const value13 = getLower12(value - location()*4);
     return value13;
   };
-  var peg$f81 = function(symbol) {
+  var peg$f81 = function(lbl) {
     if (isFirstPass) { return undefined; }
-    const value = symbol["value"]
-    const value20 = shiftRightLogical((value - location() * 4 + 0x800), 12);
+    const value = getLabelOrDirDataOrConst(lbl["name"]);
+    if (value === undefined){
+      return error(`Identifier name is not valid: ${lbl.name}`);
+    }
+    const value20 = getUpper20(value - location() * 4 + 0x800);
     return value20;
   };
   var peg$f82 = function(lbl) {
     if (isFirstPass) { return undefined; }
-    const value = getPosLabel(lbl["name"]);
-    const mask = ((1 << 20) - 1) << 12;
-    const valueMask = applyBitMask(value, mask);
-    const value20 = shiftRightLogical(valueMask, 12);
+    const value = getLabelOrDirDataOrConst(lbl["name"]);
+    if (value === undefined){
+      return error(`Identifier name is not valid: ${lbl.name}`);
+    }
+    const value20 = getUpper20(value);
     return value20;
   };
   var peg$f83 = function(reg) {
@@ -4413,7 +4448,7 @@ function peg$parse(input, options) {
         }
         if (s5 !== peg$FAILED) {
           s6 = peg$parse_();
-          s7 = peg$parseSymbol();
+          s7 = peg$parseIdentifier();
           if (s7 !== peg$FAILED) {
             s8 = peg$parse_();
             if (input.charCodeAt(peg$currPos) === 41) {
