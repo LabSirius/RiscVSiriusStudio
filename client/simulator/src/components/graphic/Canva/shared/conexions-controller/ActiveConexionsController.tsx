@@ -3,6 +3,7 @@ import { Edge } from '@xyflow/react';
 import { useDataMonocycleConexions } from './useDataMonocycleConexions'; 
 import { useSimulator } from '@/context/shared/SimulatorContext';
 import { useDataPipelineConexions } from './useDataPipelineConexions';
+import { useActiveEdges } from '@/context/graphic/ActiveEdgesContext';
 
 interface DataPathControllerProps {
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
@@ -10,12 +11,20 @@ interface DataPathControllerProps {
 
 const DataPathController: React.FC<DataPathControllerProps> = ({ setEdges }) => {
   const { typeSimulator, operation } = useSimulator();
+  const { setActiveEdges } = useActiveEdges(); 
 
-  const monoDisabledEdges = useDataMonocycleConexions();
-  const pipelineDisabledEdges = useDataPipelineConexions(); 
+   const { enabledEdges: monoEnabledEdges, disabledEdges: monoDisabledEdges } = useDataMonocycleConexions();
+   const { enabledEdges: pipelineEnabledEdges, disabledEdges: pipelineDisabledEdges } = useDataPipelineConexions(); 
 
-  const disabledEdges =
-    typeSimulator === "monocycle" ? monoDisabledEdges : pipelineDisabledEdges;
+ const enabledEdges = typeSimulator === "monocycle" ? monoEnabledEdges : pipelineEnabledEdges;
+  const disabledEdges = typeSimulator === "monocycle" ? monoDisabledEdges : pipelineDisabledEdges;
+
+
+  useEffect(() => {
+    if (enabledEdges) {
+      setActiveEdges(enabledEdges);
+    }
+  }, [enabledEdges, setActiveEdges]); 
 
 
   useEffect(() => {

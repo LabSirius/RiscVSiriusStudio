@@ -14,24 +14,24 @@ export const useDataPipelineConexions = () => {
   const MEMtype = pipelineValuesStages.MEM.instruction?.type;
   const WBtype = pipelineValuesStages.WB.instruction?.type;
 
-  const disabledEdges = useMemo(() => {
-    const enabledEdges: string[] = [];
+  const { enabledEdges, disabledEdges }  = useMemo(() => {
+    const calculatedEnabledEdges: string[] = [];
 
-    if (!IFType && !IDType && !IEType && !MEMtype && !WBtype) return [];
+    if (!IFType && !IDType && !IEType && !MEMtype && !WBtype) return { enabledEdges: [], disabledEdges: allEdges };
 
-    enabledEdges.push(...conexion.bu_muxD);
+    calculatedEnabledEdges.push(...conexion.bu_muxD);
 
     if (
       pipelineValuesStages.EX.BranchResult === "0" ||
       pipelineValuesStages.EX.BranchResult === "X"
     ) {
-      enabledEdges.push(...conexion.adder4_muxD);
+      calculatedEnabledEdges.push(...conexion.adder4_muxD);
     } else {
-      enabledEdges.push(...conexion.alu_muxD);
+      calculatedEnabledEdges.push(...conexion.alu_muxD);
     }
 
     if (IFType) {
-      enabledEdges.push(
+      calculatedEnabledEdges.push(
         ...conexion.muxD_pc,
         ...conexion.pc_adder4,
         ...conexion.four_adder4,
@@ -42,30 +42,30 @@ export const useDataPipelineConexions = () => {
         case "I":
           if (pipelineValuesStages.IF.instruction.opcode === "1100111") {
             //JALR
-            enabledEdges.push(...conexion.adder4_pcIncID);
+            calculatedEnabledEdges.push(...conexion.adder4_pcIncID);
           }
           break;
         case "J":
-          enabledEdges.push(...conexion.adder4_pcIncID, ...conexion.pc_pc_ID);
+          calculatedEnabledEdges.push(...conexion.adder4_pcIncID, ...conexion.pc_pc_ID);
 
           break;
         case "B":
-          enabledEdges.push(...conexion.pc_pc_ID);
+          calculatedEnabledEdges.push(...conexion.pc_pc_ID);
 
           break;
         case "U":
           if (pipelineValuesStages.EX.instruction.opcode === "0010111") {
-            enabledEdges.push(...conexion.pc_pc_ID);
+            calculatedEnabledEdges.push(...conexion.pc_pc_ID);
           }
 
           break;
       }
     }
     if (IDType) {
-      enabledEdges.push(...conexion._id);
+      calculatedEnabledEdges.push(...conexion._id);
       switch (IDType) {
         case "R":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.im_rs1,
             ...conexion.im_rs2,
             ...conexion.im_opcode,
@@ -77,7 +77,7 @@ export const useDataPipelineConexions = () => {
           );
           break;
         case "I":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.im_rs1,
             ...conexion.im_immGen,
             ...conexion.immSrc_immGen,
@@ -90,12 +90,12 @@ export const useDataPipelineConexions = () => {
 
           if (pipelineValuesStages.ID.instruction.opcode === "1100111") {
             //JALR
-            enabledEdges.push(...conexion.pcIncID_pcIncIE);
+            calculatedEnabledEdges.push(...conexion.pcIncID_pcIncIE);
           }
 
           break;
         case "S":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.im_rs1,
             ...conexion.im_rs2,
             ...conexion.im_immGen,
@@ -108,7 +108,7 @@ export const useDataPipelineConexions = () => {
           );
           break;
         case "B":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.im_rs1,
             ...conexion.im_rs2,
             ...conexion.im_immGen,
@@ -122,7 +122,7 @@ export const useDataPipelineConexions = () => {
           );
           break;
         case "J":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.im_immGen,
             ...conexion.immSrc_immGen,
             ...conexion.im_opcode,
@@ -133,7 +133,7 @@ export const useDataPipelineConexions = () => {
           );
           break;
         case "U":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.im_immGen,
             ...conexion.immSrc_immGen,
             ...conexion.im_opcode,
@@ -143,14 +143,14 @@ export const useDataPipelineConexions = () => {
 
           if (pipelineValuesStages.ID.instruction.opcode === "0010111") {
             //AUIPC
-            enabledEdges.push(...conexion.pcID_pcEX);
+            calculatedEnabledEdges.push(...conexion.pcID_pcEX);
           }
           break;
       }
     }
 
     if (IEType) {
-      enabledEdges.push(
+      calculatedEnabledEdges.push(
         ...conexion.aluOp_alu,
         ...conexion.brop_bu,
         ...conexion._ie,
@@ -159,7 +159,7 @@ export const useDataPipelineConexions = () => {
       );
       switch (IEType) {
         case "R":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.aluASrc_muxA,
             ...conexion.rs1_muxA,
             ...conexion.muxA_aluA,
@@ -172,7 +172,7 @@ export const useDataPipelineConexions = () => {
 
           break;
         case "I":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.aluASrc_muxA,
             ...conexion.rs1_muxA,
             ...conexion.muxA_aluA,
@@ -184,15 +184,15 @@ export const useDataPipelineConexions = () => {
 
           if (pipelineValuesStages.EX.instruction.opcode === "1100111") {
             //JALR
-            enabledEdges.push(...conexion.pcIncIE_pcIncMem);
+            calculatedEnabledEdges.push(...conexion.pcIncIE_pcIncMem);
           } else {
-            enabledEdges.push(...conexion.alu_aluresMem);
+            calculatedEnabledEdges.push(...conexion.alu_aluresMem);
           }
 
           break;
 
         case "S":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.aluASrc_muxA,
             ...conexion.rs1_muxA,
             ...conexion.muxA_aluA,
@@ -205,7 +205,7 @@ export const useDataPipelineConexions = () => {
           break;
 
         case "B":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.aluASrc_muxA,
             ...conexion.pc_muxA,
             ...conexion.muxA_aluA,
@@ -218,7 +218,7 @@ export const useDataPipelineConexions = () => {
           break;
 
         case "J":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.aluASrc_muxA,
             ...conexion.pc_muxA,
             ...conexion.muxA_aluA,
@@ -231,7 +231,7 @@ export const useDataPipelineConexions = () => {
           break;
 
         case "U":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.aluBSrc_muxB,
             ...conexion.immGen_muxB,
             ...conexion.rdIE_rdMEM,
@@ -240,32 +240,32 @@ export const useDataPipelineConexions = () => {
 
           if (pipelineValuesStages.EX.instruction.opcode === "0110111") {
             //LUI
-            enabledEdges.push();
+            calculatedEnabledEdges.push();
           } else {
-            enabledEdges.push(...conexion.aluASrc_muxA, ...conexion.pc_muxA, ...conexion.muxA_aluA);
+            calculatedEnabledEdges.push(...conexion.aluASrc_muxA, ...conexion.pc_muxA, ...conexion.muxA_aluA);
           }
           break;
       }
     }
 
     if (MEMtype) {
-      enabledEdges.push(...conexion._mem, ...conexion.cuMEM_cuWB);
+      calculatedEnabledEdges.push(...conexion._mem, ...conexion.cuMEM_cuWB);
       switch (MEMtype) {
         case "R":
-          enabledEdges.push(...conexion.aluResMEM_aluResWB, ...conexion.rdMEM_rdWB);
+          calculatedEnabledEdges.push(...conexion.aluResMEM_aluResWB, ...conexion.rdMEM_rdWB);
 
           break;
         case "I":
-          enabledEdges.push(...conexion.rdMEM_rdWB);
+          calculatedEnabledEdges.push(...conexion.rdMEM_rdWB);
 
           //L
 
           if (pipelineValuesStages.MEM.instruction.opcode === "1100111") {
             //JALR
-            enabledEdges.push(...conexion.pcIncMEM_pcIncWb);
+            calculatedEnabledEdges.push(...conexion.pcIncMEM_pcIncWb);
           } else if (pipelineValuesStages.MEM.instruction.opcode === "0000011") {
             // L
-            enabledEdges.push(
+            calculatedEnabledEdges.push(
               ...conexion.aluResMEM_dm,
               ...conexion.dmWr_dm,
 
@@ -273,13 +273,13 @@ export const useDataPipelineConexions = () => {
               ...conexion.dmCtrl_dm
             );
           } else {
-            enabledEdges.push(...conexion.aluResMEM_aluResWB);
+            calculatedEnabledEdges.push(...conexion.aluResMEM_aluResWB);
           }
 
           break;
 
         case "S":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.aluResMEM_dm,
             ...conexion.Rurs2MEM_dm,
             ...conexion.dmWr_dm,
@@ -288,29 +288,29 @@ export const useDataPipelineConexions = () => {
           break;
 
         case "J":
-          enabledEdges.push(...conexion.pcIncMEM_pcIncWb, ...conexion.rdMEM_rdWB);
+          calculatedEnabledEdges.push(...conexion.pcIncMEM_pcIncWb, ...conexion.rdMEM_rdWB);
           break;
 
         case "U":
-          enabledEdges.push(...conexion.aluResMEM_aluResWB, ...conexion.rdMEM_rdWB);
+          calculatedEnabledEdges.push(...conexion.aluResMEM_aluResWB, ...conexion.rdMEM_rdWB);
 
           if (pipelineValuesStages.EX.instruction.opcode === "0110111") {
-            enabledEdges.push();
+            calculatedEnabledEdges.push();
           } else {
-            enabledEdges.push(...conexion.aluASrc_muxA, ...conexion.pc_muxA);
+            calculatedEnabledEdges.push(...conexion.aluASrc_muxA, ...conexion.pc_muxA);
           }
           break;
       }
     }
 
     if (WBtype) {
-      enabledEdges.push(...conexion._wb);
+      calculatedEnabledEdges.push(...conexion._wb);
       console.log("ENTRO");
 
       switch (WBtype) {
         case "R":
           console.log("ES TIPO R");
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.aluResWB_muxC,
             ...conexion.rdWB_ru,
             ...conexion.ruDataWrSrc_muxC,
@@ -320,7 +320,7 @@ export const useDataPipelineConexions = () => {
 
           break;
         case "I":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.rdWB_ru,
             ...conexion.ruDataWrSrc_muxC,
             ...conexion.muxC_rd,
@@ -329,17 +329,17 @@ export const useDataPipelineConexions = () => {
 
           if (pipelineValuesStages.WB.instruction.opcode === "1100111") {
             //JALR
-            enabledEdges.push(...conexion.pcIncWB_muxC,);
+            calculatedEnabledEdges.push(...conexion.pcIncWB_muxC,);
           } else if (pipelineValuesStages.WB.instruction.opcode === "0000011") {
-            enabledEdges.push(...conexion.dmDataRdWB_muxC);
+            calculatedEnabledEdges.push(...conexion.dmDataRdWB_muxC);
           } else {
-            enabledEdges.push(...conexion.aluResWB_muxC);
+            calculatedEnabledEdges.push(...conexion.aluResWB_muxC);
           }
 
           break;
 
         case "J":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.pcIncWB_muxC,
             ...conexion.rdWB_ru,
             ...conexion.ruDataWrSrc_muxC,
@@ -349,7 +349,7 @@ export const useDataPipelineConexions = () => {
           break;
 
         case "U":
-          enabledEdges.push(
+          calculatedEnabledEdges.push(
             ...conexion.aluResWB_muxC,
             ...conexion.rdWB_ru,
             ...conexion.ruDataWrSrc_muxC,
@@ -361,9 +361,14 @@ export const useDataPipelineConexions = () => {
       }
     }
 
-    const enabledSet = new Set(enabledEdges);
-    return allEdges.filter((edge) => !enabledSet.has(edge));
+    const enabledSet = new Set(calculatedEnabledEdges);
+    const calculatedDisabledEdges = allEdges.filter((edge) => !enabledSet.has(edge));
+
+    return {
+        enabledEdges: calculatedEnabledEdges,
+        disabledEdges: calculatedDisabledEdges
+    };
   }, [pipelineValuesStages]);
 
-  return disabledEdges;
+  return { enabledEdges, disabledEdges };
 };

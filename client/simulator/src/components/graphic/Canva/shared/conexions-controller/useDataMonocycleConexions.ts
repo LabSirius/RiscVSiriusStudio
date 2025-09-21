@@ -10,16 +10,16 @@ export const useDataMonocycleConexions = () => {
 
 
 
-  const disabledEdges = useMemo(() => {
-    if (!currentMonocycletInst) return [];
+  const { enabledEdges, disabledEdges } = useMemo(() => {
+    if (!currentMonocycletInst) return { enabledEdges: [], disabledEdges: allEdges };;
 
-    let enabledEdges: string[] = [];
+    let calculatedEnabledEdges: string[] = [];
     const currentInstruction = currentMonocycletInst;
 
     switch (currentInstruction.type) {
       case "R":
         setCurrentType("R");
-        enabledEdges = [
+        calculatedEnabledEdges = [
           ...conexion.adder4_muxD,
           ...conexion.bu_muxD,
 
@@ -58,7 +58,7 @@ export const useDataMonocycleConexions = () => {
       case "I":
         if (currentInstruction.opcode === "0010011") {
           setCurrentType("I");
-          enabledEdges = [
+          calculatedEnabledEdges = [
             ...conexion.adder4_muxD,
             ...conexion.bu_muxD,
 
@@ -96,7 +96,7 @@ export const useDataMonocycleConexions = () => {
           ];
         } else if (currentInstruction.opcode === "0000011") {
           setCurrentType("L");
-          enabledEdges = [
+          calculatedEnabledEdges = [
             ...conexion.adder4_muxD,
             ...conexion.bu_muxD,
 
@@ -140,7 +140,7 @@ export const useDataMonocycleConexions = () => {
           ];
         } else if (currentInstruction.opcode === "1100111") {
           setCurrentType("JALR");
-          enabledEdges = [
+          calculatedEnabledEdges = [
             ...conexion.alu_muxD,
             ...conexion.bu_muxD,
 
@@ -183,7 +183,7 @@ export const useDataMonocycleConexions = () => {
 
       case "S":
         setCurrentType("S");
-        enabledEdges = [
+        calculatedEnabledEdges = [
           ...conexion.adder4_muxD,
           ...conexion.bu_muxD,
 
@@ -224,7 +224,7 @@ export const useDataMonocycleConexions = () => {
 
       case "B": // BEQ, BNE, etc.
         setCurrentType("B");
-        enabledEdges = [
+        calculatedEnabledEdges = [
           ...conexion.bu_muxD,
 
           ...conexion.muxD_pc,
@@ -258,15 +258,15 @@ export const useDataMonocycleConexions = () => {
           ...conexion.brOp_bu,
         ];
         if (currentMonocycleResult.buMux.signal === "1") {
-          enabledEdges.push(...conexion.alu_muxD);
+          calculatedEnabledEdges.push(...conexion.alu_muxD);
         } else {
-          enabledEdges.push(...conexion.adder4_muxD);
+          calculatedEnabledEdges.push(...conexion.adder4_muxD);
         }
         break;
 
       case "J": // JAL
         setCurrentType("J");
-        enabledEdges = [
+        calculatedEnabledEdges = [
           ...conexion.alu_muxD,
           ...conexion.bu_muxD,
 
@@ -307,7 +307,7 @@ export const useDataMonocycleConexions = () => {
         if (currentInstruction.opcode === "0110111") {
           // LUI
           setCurrentType("LUI");
-          enabledEdges = [
+          calculatedEnabledEdges = [
             ...conexion.adder4_muxD,
             ...conexion.bu_muxD,
 
@@ -341,7 +341,7 @@ export const useDataMonocycleConexions = () => {
         } else if (currentInstruction.opcode === "0010111") {
           // AUIPC
           setCurrentType("AUIPC");
-          enabledEdges = [
+          calculatedEnabledEdges = [
             ...conexion.adder4_muxD,
             ...conexion.bu_muxD,
 
@@ -381,9 +381,14 @@ export const useDataMonocycleConexions = () => {
 
     
 
-    const enabledSet = new Set(enabledEdges);
-    return allEdges.filter((edge) => !enabledSet.has(edge));
+   const enabledSet = new Set(calculatedEnabledEdges);
+   const calculatedDisabledEdges = allEdges.filter((edge) => !enabledSet.has(edge));
+
+    return {
+      enabledEdges: calculatedEnabledEdges,
+      disabledEdges: calculatedDisabledEdges
+    };
   }, [currentMonocycletInst, currentMonocycleResult, setCurrentType]);
 
-  return disabledEdges;
+  return { enabledEdges, disabledEdges };
 };
