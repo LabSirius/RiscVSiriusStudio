@@ -16,7 +16,7 @@ const imageHeight = 1080;
 
 const ACTIVE_EDGE_STYLE = {
   stroke: '#3B59B6', 
-  strokeWidth: '3.5px',
+  strokeWidth: '4px',
 };
 
 function DownloadSVGButton() {
