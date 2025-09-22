@@ -3,10 +3,10 @@ import { toBlob } from 'html-to-image';
 import { useState, forwardRef } from 'react';
 import { useActiveEdges } from '@/context/graphic/ActiveEdgesContext';
 import { Copy } from 'lucide-react';
+import { toast } from 'sonner'; 
 
 const imageWidth = 1920;
 const padding = 50;
-
 
 const ACTIVE_EDGE_STYLE = {
   stroke: '#3B59B6',
@@ -38,13 +38,12 @@ const CopyToClipboardButton = forwardRef<
 
       try {
         const reactFlowViewport = document.querySelector('.react-flow__viewport') as HTMLElement;
-        if (!reactFlowViewport) throw new Error('React Flow viewport no encontrado');
+        if (!reactFlowViewport) throw new Error('React Flow viewport not found');
 
         const nodes = getNodes();
-        if (nodes.length === 0) throw new Error('No hay nodos para copiar');
+        if (nodes.length === 0) throw new Error('No nodes to copy');
         
         const nodesBounds = getNodesBounds(nodes);
-
         const scale = imageWidth / (nodesBounds.width + padding);
         const imageHeight = (nodesBounds.height + padding) * scale;
 
@@ -60,16 +59,19 @@ const CopyToClipboardButton = forwardRef<
             },
         });
 
-        if (!blob) throw new Error('No se pudo generar la imagen blob');
+        if (!blob) throw new Error('Could not generate image blob');
 
         await navigator.clipboard.write([
             new ClipboardItem({ 'image/png': blob })
         ]);
         
-        console.log("¡Imagen copiada al portapapeles!");
+        // ✨ NUEVO: Mostramos la notificación de éxito
+        toast.success('Image copied to clipboard!');
 
       } catch (error) {
-        console.error('Error al copiar la imagen:', error);
+        console.error('Error copying image:', error);
+        // ✨ NUEVO: Mostramos una notificación de error
+        toast.error('Failed to copy image.');
       } finally {
         setEdges(originalEdges);
         setIsLoading(false);
