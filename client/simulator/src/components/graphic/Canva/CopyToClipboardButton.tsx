@@ -1,19 +1,20 @@
 import { useReactFlow, getNodesBounds } from '@xyflow/react';
 import { toBlob } from 'html-to-image';
 import { useState, forwardRef } from 'react';
-import { useActiveEdges } from '@/context/graphic/ActiveEdgesContext'; 
+import { useActiveEdges } from '@/context/graphic/ActiveEdgesContext';
 import { Copy } from 'lucide-react';
 
 const imageWidth = 1920;
-const imageHeight = 1080;
+const padding = 50;
+
 
 const ACTIVE_EDGE_STYLE = {
- stroke: '#3B59B6',
- strokeWidth: '4px',
+  stroke: '#3B59B6',
+  strokeWidth: '4px',
 };
 
 const CopyToClipboardButton = forwardRef<
-  HTMLButtonElement, 
+  HTMLButtonElement,
   React.ComponentPropsWithoutRef<'button'>
 >(
   (props, ref) => {
@@ -44,15 +45,18 @@ const CopyToClipboardButton = forwardRef<
         
         const nodesBounds = getNodesBounds(nodes);
 
+        const scale = imageWidth / (nodesBounds.width + padding);
+        const imageHeight = (nodesBounds.height + padding) * scale;
+
         const blob = await toBlob(reactFlowViewport, {
             backgroundColor: '#F7F9FB',
             width: imageWidth,
-            height: imageHeight,
+            height: imageHeight, 
             filter: (node) => !node?.classList?.contains('react-flow__controls'),
             style: {
                 width: `${imageWidth}px`,
-                height: `${imageHeight}px`,
-                transform: `scale(${imageWidth / (nodesBounds.width + 50)}) translate(${-nodesBounds.x + 25}px, ${-nodesBounds.y + 25}px)`,
+                height: `${imageHeight}px`, 
+                transform: `scale(${scale}) translate(${-nodesBounds.x + padding / 2}px, ${-nodesBounds.y + padding / 2}px)`,
             },
         });
 
