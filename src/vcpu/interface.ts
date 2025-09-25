@@ -12,4 +12,6 @@ export interface ICPU {
   getDataMemory(): any;
   replaceDataMemory(newMemory: any[]): void;
   replaceRegisters(newRegisters: string[]): void;
+  getProgram(): any[];
+
 }

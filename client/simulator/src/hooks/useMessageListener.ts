@@ -13,6 +13,7 @@ export const useMessageListener = () => {
     setSizeMemory,
     setReadInMemory,
     setIsCreatedMemoryTable,
+    setTypesInstruction
   } = useMemoryTable();
 
   const {
@@ -52,7 +53,7 @@ export const useMessageListener = () => {
             setTextProgram(message.textProgram);
             break;
           case "uploadMemory":
-
+        
             setDialog({
               title: "Configuration Info",
               description:
@@ -64,6 +65,7 @@ export const useMessageListener = () => {
             setSection("settings");
             setIsCreatedMemoryTable(false);
             setDataMemoryTable(message.payload);
+            setTypesInstruction(message.typesInstruction)
             setSizeMemory(message.payload.memory.length);
             setIsFirstStep(false);
             setOperation("uploadMemory");
@@ -140,5 +142,6 @@ export const useMessageListener = () => {
     setIsFirstStep,
     setDialog,
     setIsCreatedMemoryTable,
+  
   ]);
 };
