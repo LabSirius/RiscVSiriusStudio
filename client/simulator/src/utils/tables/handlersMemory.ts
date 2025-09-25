@@ -113,6 +113,7 @@ export const uploadProgramMemory = (
   table: Tabulator,
   newMemory: string[],
   newSymbols: Record<string, SymbolData>,
+  typesInstruction: { type: string }[],
   onComplete?: () => void
 ): void => {
   // Generate main data

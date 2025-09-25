@@ -29,6 +29,8 @@ interface UseMemoryTabulatorProps {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataMemoryTable: any;
+
+  typesInstruction: { type: string }[];
 }
 
 /**
@@ -43,6 +45,7 @@ export const useMemoryTabulator = ({
   isCreatedMemoryTable,
   setIsCreatedMemoryTable,
   dataMemoryTable,
+  typesInstruction,
   newPcRef,
   isFirstStepRef,
   setNewPc,
@@ -91,6 +94,7 @@ export const useMemoryTabulator = ({
           tableInstanceRef.current!,
           dataMemoryTable.program,
           dataMemoryTable.symbols,
+          typesInstruction,
           () => {
 
             setNewPc(0);
