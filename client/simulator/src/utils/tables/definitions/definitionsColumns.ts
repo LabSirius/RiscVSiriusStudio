@@ -262,7 +262,7 @@ export const getColumnMemoryDefinitions = (isFirstStepRef: MutableRefObject<bool
           `<span class="address-value">${(cell.getValue() as string).toUpperCase()}</span>`,
         cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
       },
-      { ...editableAttrs, title: 'Instruction encoding', field: 'instructionencoding', width: 340 },
+      { ...editableAttrs, title: 'Instruction encoding', field: 'instructionencoding', width: 340, hozAlign: 'right' },
       {
          ...frozenAttrs,
         title: 'HEX',
