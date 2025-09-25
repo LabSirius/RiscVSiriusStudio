@@ -159,13 +159,13 @@ const colorizeInstruction = (binary32bit: string, type: string): string => {
       break;
     case 'B-TYPE':
        parts = [
-        { value: bits.substring(0, 1), class: segmentClasses.imm },
-        { value: bits.substring(1, 7), class: segmentClasses.imm },
+
+        { value: bits.substring(0, 7), class: segmentClasses.imm },
         { value: bits.substring(7, 12), class: segmentClasses.rs2 },
         { value: bits.substring(12, 17), class: segmentClasses.rs1 },
         { value: bits.substring(17, 20), class: segmentClasses.funct3 },
-        { value: bits.substring(20, 24), class: segmentClasses.imm },
-        { value: bits.substring(24, 25), class: segmentClasses.imm },
+    
+        { value: bits.substring(20, 25), class: segmentClasses.imm },
         { value: bits.substring(25, 32), class: segmentClasses.opcode },
       ];
       break;
@@ -178,10 +178,7 @@ const colorizeInstruction = (binary32bit: string, type: string): string => {
       break;
     case 'J-TYPE':
        parts = [
-        { value: bits.substring(0, 1), class: segmentClasses.imm },
-        { value: bits.substring(1, 11), class: segmentClasses.imm },
-        { value: bits.substring(11, 12), class: segmentClasses.imm },
-        { value: bits.substring(12, 20), class: segmentClasses.imm },
+        { value: bits.substring(0, 20), class: segmentClasses.imm },
         { value: bits.substring(20, 25), class: segmentClasses.rd },
         { value: bits.substring(25, 32), class: segmentClasses.opcode },
       ];
