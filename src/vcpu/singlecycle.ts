@@ -82,12 +82,18 @@ export class SCCPU implements ICPU {
   private controlUnit: ControlUnit;
   private pc: number;
 
+
   get program() {
     return this._program;
   }
   public getPC() {
     return this.pc;
   }
+
+   public getProgram(): any[] {
+    return this.program;
+  }
+
 
   public constructor(program: any[], programMemory: any[], writableDirectives: any[], readOnlyDirectives: any[], availableMemSize: number) {
 

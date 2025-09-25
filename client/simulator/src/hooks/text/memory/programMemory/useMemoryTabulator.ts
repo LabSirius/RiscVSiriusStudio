@@ -1,6 +1,6 @@
 import { useEffect, RefObject, MutableRefObject, Dispatch, SetStateAction } from 'react';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
-import { getColumnMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
+import { getColumnProgramMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 import {
   uploadProgramMemory,
   setupEventListeners,
@@ -29,6 +29,8 @@ interface UseMemoryTabulatorProps {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataMemoryTable: any;
+
+  typesInstruction: { type: string }[];
 }
 
 /**
@@ -43,6 +45,7 @@ export const useMemoryTabulator = ({
   isCreatedMemoryTable,
   setIsCreatedMemoryTable,
   dataMemoryTable,
+  typesInstruction,
   newPcRef,
   isFirstStepRef,
   setNewPc,
@@ -61,7 +64,7 @@ export const useMemoryTabulator = ({
       layout: 'fitColumns',
       index: 'address',
       data: [],
-      columns: getColumnMemoryDefinitions(isFirstStepRef),
+      columns: getColumnProgramMemoryDefinitions(isFirstStepRef),
       rowFormatter: function (row) {
         const data = row.getData();
         if (!dataMemoryTable) return;
@@ -91,6 +94,7 @@ export const useMemoryTabulator = ({
           tableInstanceRef.current!,
           dataMemoryTable.program,
           dataMemoryTable.symbols,
+          typesInstruction,
           () => {
 
             setNewPc(0);
