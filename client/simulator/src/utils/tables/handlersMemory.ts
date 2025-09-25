@@ -125,62 +125,60 @@ const colorizeInstruction = (binary32bit: string, type: string): string => {
   const bits = binary32bit;
   if (bits.length !== 32) return binary32bit;
 
-  let parts: { value: string; class: string }[] = [];
+  let parts: { value: string; class: string; label: string }[] = [];
 
   switch (type.toUpperCase()) {
     case 'R-TYPE':
       parts = [
-        { value: bits.substring(0, 7), class: segmentClasses.funct7 },
-        { value: bits.substring(7, 12), class: segmentClasses.rs2 },
-        { value: bits.substring(12, 17), class: segmentClasses.rs1 },
-        { value: bits.substring(17, 20), class: segmentClasses.funct3 },
-        { value: bits.substring(20, 25), class: segmentClasses.rd },
-        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+        { value: bits.substring(0, 7), class: segmentClasses.funct7, label: 'funct7' },
+        { value: bits.substring(7, 12), class: segmentClasses.rs2, label: 'rs2' },
+        { value: bits.substring(12, 17), class: segmentClasses.rs1, label: 'rs1' },
+        { value: bits.substring(17, 20), class: segmentClasses.funct3, label: 'funct3' },
+        { value: bits.substring(20, 25), class: segmentClasses.rd, label: 'rd' },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode, label: 'opcode' },
       ];
       break;
     case 'I-TYPE':
       parts = [
-        { value: bits.substring(0, 12), class: segmentClasses.imm },
-        { value: bits.substring(12, 17), class: segmentClasses.rs1 },
-        { value: bits.substring(17, 20), class: segmentClasses.funct3 },
-        { value: bits.substring(20, 25), class: segmentClasses.rd },
-        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+        { value: bits.substring(0, 12), class: segmentClasses.imm, label: 'imm[11:0]' },
+        { value: bits.substring(12, 17), class: segmentClasses.rs1, label: 'rs1' },
+        { value: bits.substring(17, 20), class: segmentClasses.funct3, label: 'funct3' },
+        { value: bits.substring(20, 25), class: segmentClasses.rd, label: 'rd' },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode, label: 'opcode' },
       ];
       break;
     case 'S-TYPE':
        parts = [
-        { value: bits.substring(0, 7), class: segmentClasses.imm },
-        { value: bits.substring(7, 12), class: segmentClasses.rs2 },
-        { value: bits.substring(12, 17), class: segmentClasses.rs1 },
-        { value: bits.substring(17, 20), class: segmentClasses.funct3 },
-        { value: bits.substring(20, 25), class: segmentClasses.imm },
-        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+        { value: bits.substring(0, 7), class: segmentClasses.imm, label: 'imm[11:5]' },
+        { value: bits.substring(7, 12), class: segmentClasses.rs2, label: 'rs2' },
+        { value: bits.substring(12, 17), class: segmentClasses.rs1, label: 'rs1' },
+        { value: bits.substring(17, 20), class: segmentClasses.funct3, label: 'funct3' },
+        { value: bits.substring(20, 25), class: segmentClasses.imm, label: 'imm[4:0]' },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode, label: 'opcode' },
       ];
       break;
     case 'B-TYPE':
        parts = [
-
-        { value: bits.substring(0, 7), class: segmentClasses.imm },
-        { value: bits.substring(7, 12), class: segmentClasses.rs2 },
-        { value: bits.substring(12, 17), class: segmentClasses.rs1 },
-        { value: bits.substring(17, 20), class: segmentClasses.funct3 },
-    
-        { value: bits.substring(20, 25), class: segmentClasses.imm },
-        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+        { value: bits.substring(0, 7), class: segmentClasses.imm, label: 'imm[12|10:5]' },
+        { value: bits.substring(7, 12), class: segmentClasses.rs2, label: 'rs2' },
+        { value: bits.substring(12, 17), class: segmentClasses.rs1, label: 'rs1' },
+        { value: bits.substring(17, 20), class: segmentClasses.funct3, label: 'funct3' },
+        { value: bits.substring(20, 25), class: segmentClasses.imm, label: 'imm[4:1|11]' },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode, label: 'opcode' },
       ];
       break;
     case 'U-TYPE':
        parts = [
-        { value: bits.substring(0, 20), class: segmentClasses.imm },
-        { value: bits.substring(20, 25), class: segmentClasses.rd },
-        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+        { value: bits.substring(0, 20), class: segmentClasses.imm, label: 'imm[31:12]' },
+        { value: bits.substring(20, 25), class: segmentClasses.rd, label: 'rd' },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode, label: 'opcode' },
       ];
       break;
     case 'J-TYPE':
        parts = [
-        { value: bits.substring(0, 20), class: segmentClasses.imm },
-        { value: bits.substring(20, 25), class: segmentClasses.rd },
-        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+        { value: bits.substring(0, 20), class: segmentClasses.imm, label: 'imm[20|10:1|11|19:12]' },
+        { value: bits.substring(20, 25), class: segmentClasses.rd, label: 'rd' },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode, label: 'opcode' },
       ];
       break;
     default:
@@ -188,11 +186,9 @@ const colorizeInstruction = (binary32bit: string, type: string): string => {
   }
 
   let finalHtml = '';
-
   for (const part of parts) {
-    finalHtml += `<span class="riscv-segment ${part.class}">`;
+    finalHtml += `<span data-tooltip="${part.label}" class="riscv-segment ${part.class}">`;
     for (const char of part.value) {
-     
       finalHtml += char;
     }
     finalHtml += `</span>`;
@@ -269,6 +265,46 @@ export const uploadProgramMemory = (
 
   onComplete?.();
 };
+
+
+export const setupInstructionTooltips = (table: Tabulator) => {
+  let tooltipElement: HTMLDivElement | null = null;
+
+  const tableContainer = table.element;
+
+  tableContainer.addEventListener('mouseover', (event: MouseEvent) => {
+    const segment = (event.target as HTMLElement).closest('.riscv-segment');
+    if (!segment) {
+      return;
+    }
+
+    const tooltipText = (segment as HTMLElement).dataset.tooltip;
+    if (!tooltipText) {
+      return;
+    }
+
+    tooltipElement = document.createElement('div');
+    tooltipElement.className = 'riscv-custom-tooltip';
+    tooltipElement.textContent = tooltipText;
+    document.body.appendChild(tooltipElement);
+
+    const segmentRect = segment.getBoundingClientRect();
+    const tooltipRect = tooltipElement.getBoundingClientRect();
+    
+    tooltipElement.style.left = `${segmentRect.left + segmentRect.width / 2 - tooltipRect.width / 2}px`;
+    tooltipElement.style.top = `${window.scrollY + segmentRect.top - tooltipRect.height - 5}px`;
+  });
+
+  tableContainer.addEventListener('mouseout', () => {
+    if (tooltipElement) {
+      tooltipElement.remove();
+      tooltipElement = null;
+    }
+  });
+};
+
+
+
 /**
  * This function updates the program counter in the memory table.
  * It adds an icon to the row corresponding to the new program counter.

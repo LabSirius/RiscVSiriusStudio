@@ -6,6 +6,7 @@ import {
   setupEventListeners,
   animateArrowBetweenCells,
   createPCIcon,
+  setupInstructionTooltips,
 } from '@/utils/tables/handlersMemory';
 import { hexToInt, binaryToIntTwoComplement } from '@/utils/handlerConversions';
 import { sendMessage } from '@/components/Message/sendMessage';
@@ -101,6 +102,8 @@ export const useMemoryTabulator = ({
           }
         );
       }
+
+        setupInstructionTooltips(tableInstanceRef.current!);
 
       tableInstanceRef.current?.on('cellClick', (_, cell) => {
         if (cell.getField() === 'address') {
