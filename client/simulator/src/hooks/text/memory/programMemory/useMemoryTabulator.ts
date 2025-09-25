@@ -1,6 +1,6 @@
 import { useEffect, RefObject, MutableRefObject, Dispatch, SetStateAction } from 'react';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
-import { getColumnMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
+import { getColumnProgramMemoryDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 import {
   uploadProgramMemory,
   setupEventListeners,
@@ -61,7 +61,7 @@ export const useMemoryTabulator = ({
       layout: 'fitColumns',
       index: 'address',
       data: [],
-      columns: getColumnMemoryDefinitions(isFirstStepRef),
+      columns: getColumnProgramMemoryDefinitions(isFirstStepRef),
       rowFormatter: function (row) {
         const data = row.getData();
         if (!dataMemoryTable) return;

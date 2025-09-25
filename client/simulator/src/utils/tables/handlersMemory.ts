@@ -119,15 +119,14 @@ export const uploadProgramMemory = (
   const mainRows = chunk(newMemory, 4).map((word, index) => {
     const byteAddress = index * 4;
     const address = intToHex(byteAddress).toUpperCase();
-
     const segment = "program";
+
+    const fullBinary = `${word[3] || '00000000'}${word[2] || '00000000'}${word[1] || '00000000'}${word[0] || '00000000'}`;
+    const formattedBinary = fullBinary.match(/.{1,4}/g)?.join(' ') || '';
 
     return {
       address,
-      value0: word[0] || "00000000",
-      value1: word[1] || "00000000",
-      value2: word[2] || "00000000",
-      value3: word[3] || "00000000",
+      instructionencoding: formattedBinary,
       hex: word
         .slice()
         .reverse()
@@ -157,10 +156,7 @@ export const uploadProgramMemory = (
     } else {
       table.addRow({
         address: symbolAddress,
-        value0: "00000000",
-        value1: "00000000",
-        value2: "00000000",
-        value3: "00000000",
+        instructionencoding: "0000 0000 0000 0000 0000 0000 0000 0000",
         info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`,
         hex: "00-00-00-00",
         segment: "",
@@ -178,7 +174,6 @@ export const uploadProgramMemory = (
 
   onComplete?.();
 };
-
 /**
  * This function updates the program counter in the memory table.
  * It adds an icon to the row corresponding to the new program counter.
