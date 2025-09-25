@@ -550,3 +550,10 @@ h2 {
 .riscv-funct3 { color: #43aa8b !important; }  
 .riscv-funct7 { color: #577590 !important; }  
 .riscv-imm    { color: #9d4edd !important; } 
+
+
+
+.riscv-segment + .riscv-segment {
+
+  margin-left: 1ch;
+}
