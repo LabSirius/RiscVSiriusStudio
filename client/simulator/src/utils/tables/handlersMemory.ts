@@ -122,19 +122,13 @@ const segmentClasses = {
 };
 
 const colorizeInstruction = (binary32bit: string, type: string): string => {
-
-  console.log("ENTRAAA")
   const bits = binary32bit;
+  if (bits.length !== 32) return binary32bit;
 
   let parts: { value: string; class: string }[] = [];
 
-  console.log("pasa 1")
-
-
   switch (type.toUpperCase()) {
     case 'R-TYPE':
-  console.log("pasa r")
-
       parts = [
         { value: bits.substring(0, 7), class: segmentClasses.funct7 },
         { value: bits.substring(7, 12), class: segmentClasses.rs2 },
@@ -197,16 +191,12 @@ const colorizeInstruction = (binary32bit: string, type: string): string => {
   }
 
   let finalHtml = '';
-  let bitCounter = 0;
 
   for (const part of parts) {
-    finalHtml += `<span class="${part.class}">`;
+    finalHtml += `<span class="riscv-segment ${part.class}">`;
     for (const char of part.value) {
-      if (bitCounter > 0 && bitCounter % 4 === 0) {
-        finalHtml += ' '; 
-      }
+     
       finalHtml += char;
-      bitCounter++;
     }
     finalHtml += `</span>`;
   }
