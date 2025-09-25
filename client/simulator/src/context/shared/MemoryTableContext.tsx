@@ -42,6 +42,9 @@ export interface MemoryTableContextProps {
   dataMemoryTable: MemoryData | undefined;
   setDataMemoryTable: React.Dispatch<React.SetStateAction<MemoryData | undefined>>;
 
+  typesInstruction: { type: string }[];
+  setTypesInstruction: React.Dispatch<React.SetStateAction<{ type: string }[]>>;
+
   sizeMemory: number;
   setSizeMemory: React.Dispatch<React.SetStateAction<number>>;
 
@@ -75,6 +78,7 @@ const MemoryTableContext = createContext<MemoryTableContextProps | undefined>(un
 export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isCreatedMemoryTable, setIsCreatedMemoryTable] = useState<boolean>(false);
   const [dataMemoryTable, setDataMemoryTable] = useState<MemoryData | undefined>(undefined);
+  const [typesInstruction, setTypesInstruction] = useState<{ type: string }[]>([]);
   const [sizeMemory, setSizeMemory] = useState<number>(0);
   const [sp, setSp] = useState<string>("");
   const [importMemory, setImportMemory] = useState<MemoryRow[]>([]);
@@ -100,6 +104,8 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
         setIsCreatedMemoryTable,
         dataMemoryTable,
         setDataMemoryTable,
+        typesInstruction,
+        setTypesInstruction,
         sizeMemory,
         setSizeMemory,
         sp,

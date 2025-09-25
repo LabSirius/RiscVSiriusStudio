@@ -109,25 +109,119 @@ export const uploadAvailableMemory = (
   onComplete?.();
 };
 
+
+
+const segmentClasses = {
+  opcode: 'riscv-opcode',
+  rd: 'riscv-rd',
+  funct3: 'riscv-funct3',
+  rs1: 'riscv-rs1',
+  rs2: 'riscv-rs2',
+  funct7: 'riscv-funct7',
+  imm: 'riscv-imm',
+};
+
+const colorizeInstruction = (binary32bit: string, type: string): string => {
+  const bits = binary32bit;
+  if (bits.length !== 32) return binary32bit;
+
+  let parts: { value: string; class: string }[] = [];
+
+  switch (type.toUpperCase()) {
+    case 'R-TYPE':
+      parts = [
+        { value: bits.substring(0, 7), class: segmentClasses.funct7 },
+        { value: bits.substring(7, 12), class: segmentClasses.rs2 },
+        { value: bits.substring(12, 17), class: segmentClasses.rs1 },
+        { value: bits.substring(17, 20), class: segmentClasses.funct3 },
+        { value: bits.substring(20, 25), class: segmentClasses.rd },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+      ];
+      break;
+    case 'I-TYPE':
+      parts = [
+        { value: bits.substring(0, 12), class: segmentClasses.imm },
+        { value: bits.substring(12, 17), class: segmentClasses.rs1 },
+        { value: bits.substring(17, 20), class: segmentClasses.funct3 },
+        { value: bits.substring(20, 25), class: segmentClasses.rd },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+      ];
+      break;
+    case 'S-TYPE':
+       parts = [
+        { value: bits.substring(0, 7), class: segmentClasses.imm },
+        { value: bits.substring(7, 12), class: segmentClasses.rs2 },
+        { value: bits.substring(12, 17), class: segmentClasses.rs1 },
+        { value: bits.substring(17, 20), class: segmentClasses.funct3 },
+        { value: bits.substring(20, 25), class: segmentClasses.imm },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+      ];
+      break;
+    case 'B-TYPE':
+       parts = [
+
+        { value: bits.substring(0, 7), class: segmentClasses.imm },
+        { value: bits.substring(7, 12), class: segmentClasses.rs2 },
+        { value: bits.substring(12, 17), class: segmentClasses.rs1 },
+        { value: bits.substring(17, 20), class: segmentClasses.funct3 },
+    
+        { value: bits.substring(20, 25), class: segmentClasses.imm },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+      ];
+      break;
+    case 'U-TYPE':
+       parts = [
+        { value: bits.substring(0, 20), class: segmentClasses.imm },
+        { value: bits.substring(20, 25), class: segmentClasses.rd },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+      ];
+      break;
+    case 'J-TYPE':
+       parts = [
+        { value: bits.substring(0, 20), class: segmentClasses.imm },
+        { value: bits.substring(20, 25), class: segmentClasses.rd },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+      ];
+      break;
+    default:
+      return bits.match(/.{1,4}/g)?.join(' ') || bits;
+  }
+
+  let finalHtml = '';
+
+  for (const part of parts) {
+    finalHtml += `<span class="riscv-segment ${part.class}">`;
+    for (const char of part.value) {
+     
+      finalHtml += char;
+    }
+    finalHtml += `</span>`;
+  }
+  return finalHtml;
+};
+
 export const uploadProgramMemory = (
   table: Tabulator,
   newMemory: string[],
   newSymbols: Record<string, SymbolData>,
+  typesInstruction: { type: string }[],
   onComplete?: () => void
 ): void => {
   // Generate main data
   const mainRows = chunk(newMemory, 4).map((word, index) => {
     const byteAddress = index * 4;
     const address = intToHex(byteAddress).toUpperCase();
-
     const segment = "program";
+
+    const fullBinary = `${word[3] || '00000000'}${word[2] || '00000000'}${word[1] || '00000000'}${word[0] || '00000000'}`;
+
+     const instructionType = typesInstruction[index]?.type.toUpperCase() + "-TYPE" || 'UNKNOWN';
+
+    const coloredHtml = colorizeInstruction(fullBinary, instructionType)
 
     return {
       address,
-      value0: word[0] || "00000000",
-      value1: word[1] || "00000000",
-      value2: word[2] || "00000000",
-      value3: word[3] || "00000000",
+      instructionencoding: coloredHtml,
       hex: word
         .slice()
         .reverse()
@@ -157,10 +251,7 @@ export const uploadProgramMemory = (
     } else {
       table.addRow({
         address: symbolAddress,
-        value0: "00000000",
-        value1: "00000000",
-        value2: "00000000",
-        value3: "00000000",
+        instructionencoding: "0000 0000 0000 0000 0000 0000 0000 0000",
         info: `<span class="text-white text-[0.7rem] bg-[#3A6973] p-[.4rem] rounded-md text-center">${symbol.name}</span>`,
         hex: "00-00-00-00",
         segment: "",
@@ -178,7 +269,6 @@ export const uploadProgramMemory = (
 
   onComplete?.();
 };
-
 /**
  * This function updates the program counter in the memory table.
  * It adds an icon to the row corresponding to the new program counter.

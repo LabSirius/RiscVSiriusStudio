@@ -27,7 +27,7 @@ const ProgramMemoryTable = () => {
     isCreatedMemoryTable,
     setIsCreatedMemoryTable,
     dataMemoryTable,
-
+    typesInstruction,
     setSp,
     searchInMemory,
     locatePc,
@@ -43,13 +43,13 @@ const ProgramMemoryTable = () => {
   const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable } = useLines();
   const isFirstStepRef = useRef(isFirstStep);
 
-
   useMemoryTabulator({
     tableContainerRef,
     tableInstanceRef,
     isCreatedMemoryTable,
     setIsCreatedMemoryTable,
     dataMemoryTable,
+    typesInstruction,
     newPcRef,
     isFirstStepRef,
     setSp,
