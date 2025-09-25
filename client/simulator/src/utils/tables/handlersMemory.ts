@@ -109,6 +109,110 @@ export const uploadAvailableMemory = (
   onComplete?.();
 };
 
+
+
+const segmentClasses = {
+  opcode: 'riscv-opcode',
+  rd: 'riscv-rd',
+  funct3: 'riscv-funct3',
+  rs1: 'riscv-rs1',
+  rs2: 'riscv-rs2',
+  funct7: 'riscv-funct7',
+  imm: 'riscv-imm',
+};
+
+const colorizeInstruction = (binary32bit: string, type: string): string => {
+
+  console.log("ENTRAAA")
+  const bits = binary32bit;
+
+  let parts: { value: string; class: string }[] = [];
+
+  console.log("pasa 1")
+
+
+  switch (type.toUpperCase()) {
+    case 'R-TYPE':
+  console.log("pasa r")
+
+      parts = [
+        { value: bits.substring(0, 7), class: segmentClasses.funct7 },
+        { value: bits.substring(7, 12), class: segmentClasses.rs2 },
+        { value: bits.substring(12, 17), class: segmentClasses.rs1 },
+        { value: bits.substring(17, 20), class: segmentClasses.funct3 },
+        { value: bits.substring(20, 25), class: segmentClasses.rd },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+      ];
+      break;
+    case 'I-TYPE':
+      parts = [
+        { value: bits.substring(0, 12), class: segmentClasses.imm },
+        { value: bits.substring(12, 17), class: segmentClasses.rs1 },
+        { value: bits.substring(17, 20), class: segmentClasses.funct3 },
+        { value: bits.substring(20, 25), class: segmentClasses.rd },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+      ];
+      break;
+    case 'S-TYPE':
+       parts = [
+        { value: bits.substring(0, 7), class: segmentClasses.imm },
+        { value: bits.substring(7, 12), class: segmentClasses.rs2 },
+        { value: bits.substring(12, 17), class: segmentClasses.rs1 },
+        { value: bits.substring(17, 20), class: segmentClasses.funct3 },
+        { value: bits.substring(20, 25), class: segmentClasses.imm },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+      ];
+      break;
+    case 'B-TYPE':
+       parts = [
+        { value: bits.substring(0, 1), class: segmentClasses.imm },
+        { value: bits.substring(1, 7), class: segmentClasses.imm },
+        { value: bits.substring(7, 12), class: segmentClasses.rs2 },
+        { value: bits.substring(12, 17), class: segmentClasses.rs1 },
+        { value: bits.substring(17, 20), class: segmentClasses.funct3 },
+        { value: bits.substring(20, 24), class: segmentClasses.imm },
+        { value: bits.substring(24, 25), class: segmentClasses.imm },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+      ];
+      break;
+    case 'U-TYPE':
+       parts = [
+        { value: bits.substring(0, 20), class: segmentClasses.imm },
+        { value: bits.substring(20, 25), class: segmentClasses.rd },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+      ];
+      break;
+    case 'J-TYPE':
+       parts = [
+        { value: bits.substring(0, 1), class: segmentClasses.imm },
+        { value: bits.substring(1, 11), class: segmentClasses.imm },
+        { value: bits.substring(11, 12), class: segmentClasses.imm },
+        { value: bits.substring(12, 20), class: segmentClasses.imm },
+        { value: bits.substring(20, 25), class: segmentClasses.rd },
+        { value: bits.substring(25, 32), class: segmentClasses.opcode },
+      ];
+      break;
+    default:
+      return bits.match(/.{1,4}/g)?.join(' ') || bits;
+  }
+
+  let finalHtml = '';
+  let bitCounter = 0;
+
+  for (const part of parts) {
+    finalHtml += `<span class="${part.class}">`;
+    for (const char of part.value) {
+      if (bitCounter > 0 && bitCounter % 4 === 0) {
+        finalHtml += ' '; 
+      }
+      finalHtml += char;
+      bitCounter++;
+    }
+    finalHtml += `</span>`;
+  }
+  return finalHtml;
+};
+
 export const uploadProgramMemory = (
   table: Tabulator,
   newMemory: string[],
@@ -123,11 +227,14 @@ export const uploadProgramMemory = (
     const segment = "program";
 
     const fullBinary = `${word[3] || '00000000'}${word[2] || '00000000'}${word[1] || '00000000'}${word[0] || '00000000'}`;
-    const formattedBinary = fullBinary.match(/.{1,4}/g)?.join(' ') || '';
+
+     const instructionType = typesInstruction[index]?.type.toUpperCase() + "-TYPE" || 'UNKNOWN';
+
+    const coloredHtml = colorizeInstruction(fullBinary, instructionType)
 
     return {
       address,
-      instructionencoding: formattedBinary,
+      instructionencoding: coloredHtml,
       hex: word
         .slice()
         .reverse()
