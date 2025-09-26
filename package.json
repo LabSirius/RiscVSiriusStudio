@@ -86,6 +86,12 @@
     "configuration": {
       "title": "RISCV Simulator",
       "properties": {
+        "rv-simulator.gemini.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Your Google Gemini API Key for the AI assistant.",
+          "markdownDescription": "Enter your Google Gemini API Key. You can get one for free at [Google AI Studio](https://aistudio.google.com/app/apikey)."
+        },
         "rv-simulator.editor.encoderUpdatePolicy": {
           "type": "string",
           "default": "On save",
@@ -177,7 +183,6 @@
           "command": "rv-simulator.simulateStep",
           "group": "navigation@1",
           "when": "editorLangId == riscvasm && ext.isSimulating"
-          
         },
         {
           "command": "rv-simulator.simulateStop",

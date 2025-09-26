@@ -156,7 +156,6 @@ export class TextSimulator extends Simulator {
 
     const typesInstruction = this.cpu.getProgram().map((instr) => ({ type: instr.type }));
 
-    console.log(typesInstruction, this.cpu.getDataMemory().getProgramMemory());
 
     const payload = {
       memory: this.cpu.getDataMemory().getAvailableMemory(),

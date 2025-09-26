@@ -67,6 +67,20 @@ export class RVContext {
     this.registerCommands();
     this.setupEditorListeners();
 
+    this.disposables.push(
+      this.configurationManager.onConfigurationChanged(e => {
+        if (e.affectsConfiguration('rv-simulator.gemini.apiKey')) {
+          console.log('Gemini API Key configuration changed. Resending to active webviews.');
+          if (this._textWebview) {
+            this.sendApiKeyToWebview(this._textWebview);
+          }
+          if (this._graphicWebviewPanel) {
+            this.sendApiKeyToWebview(this._graphicWebviewPanel.webview);
+          }
+        }
+      })
+    );
+
     commands.executeCommand("setContext", "ext.isSimulating", false);
   }
 
@@ -133,6 +147,7 @@ export class RVContext {
               this.extensionContext.extensionUri
             );
             this._textWebview = webviewView.webview;
+            this.sendApiKeyToWebview(this._textWebview); 
             activateMessageListenerForRegistersView(webviewView.webview, this);
             webviewView.onDidDispose(() => {
               this._textWebview = undefined;
@@ -196,6 +211,7 @@ export class RVContext {
       }
     );
     this._graphicWebviewPanel = panel;
+     this.sendApiKeyToWebview(panel.webview);
     panel.onDidDispose(() => {
       this._graphicWebviewPanel = undefined;
       if (this._isSimulating) this._simulator?.makeEditorWritable();
@@ -383,6 +399,14 @@ export class RVContext {
       this._encoderDecorator.clearDecorations(window.activeTextEditor);
     }
     this._encoderDecorator = undefined;
+  }
+
+
+    private sendApiKeyToWebview(webview: Webview) {
+    if (!webview) return;
+    const config = this.configurationManager.getConfiguration();
+    const apiKey = config.get<string>('gemini.apiKey');
+    webview.postMessage({ from: "extension", operation: "setApiKey", key: apiKey || "" });
   }
 
   private animateLine(line: number) { this._simulator?.animateLine(line); }

@@ -27,6 +27,7 @@ export const useMessageListener = () => {
     setSection,
     setNewPc,
     setIsEbreak,
+    setApiKey
   } = useSimulator();
   const { setWriteInRegister } = useRegistersTable();
   const { setCurrentMonocycleInst, setCurrentMonocycleResult, setPipelineValuesStages } =
@@ -52,6 +53,10 @@ export const useMessageListener = () => {
           case "textProgram":
             setTextProgram(message.textProgram);
             break;
+
+          case "setApiKey":
+              setApiKey(message.key)
+            break
           case "uploadMemory":
         
             setDialog({
