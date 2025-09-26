@@ -560,14 +560,14 @@ h2 {
 
 
 .riscv-custom-tooltip {
-  position: absolute; /* O fixed, dependiendo de tu scroll */
+  position: absolute; 
   background-color: #2D3748;
   color: #E2E8F0;
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 0.75rem;
   white-space: nowrap;
-  z-index: 9999; /* Muy alto para que aparezca por encima de todo */
-  pointer-events: none; /* Para que el tooltip no interfiera con el mouse */
+  z-index: 9999; 
+  pointer-events: none; 
   transition: opacity 0.2s;
 }

@@ -57,6 +57,7 @@ const CopyToClipboardButton = forwardRef<
                 height: `${imageHeight}px`, 
                 transform: `scale(${scale}) translate(${-nodesBounds.x + padding / 2}px, ${-nodesBounds.y + padding / 2}px)`,
             },
+            skipFonts: true, 
         });
 
         if (!blob) throw new Error('Could not generate image blob');
@@ -65,12 +66,10 @@ const CopyToClipboardButton = forwardRef<
             new ClipboardItem({ 'image/png': blob })
         ]);
         
-        // ✨ NUEVO: Mostramos la notificación de éxito
         toast.success('Image copied to clipboard!');
 
       } catch (error) {
         console.error('Error copying image:', error);
-        // ✨ NUEVO: Mostramos una notificación de error
         toast.error('Failed to copy image.');
       } finally {
         setEdges(originalEdges);
