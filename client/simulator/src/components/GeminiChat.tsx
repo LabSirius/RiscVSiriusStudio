@@ -142,6 +142,11 @@ const GeminiChatWidget = () => {
     }
   }, [history, loading]);
 
+   useEffect(() => {
+
+
+  }, [apiKey]);
+
   const callGeminiAPI = async (currentQuestion: string) => {
     if (!currentQuestion || "") return;
 
