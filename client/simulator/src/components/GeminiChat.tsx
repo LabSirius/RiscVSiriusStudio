@@ -160,7 +160,7 @@ const GeminiChatWidget = () => {
     setHistory(updatedHistory);
     setLoading(true);
 
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey!.trim()}`;
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey!.trim()}`;
     
 
     const requestBody = {
