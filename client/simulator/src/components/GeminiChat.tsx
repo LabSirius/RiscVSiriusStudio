@@ -30,11 +30,11 @@ type HistoryItem = {
 const ApiKeyInstructions = () => (
   <div className="flex flex-col items-center justify-center h-full p-4 text-center">
     <KeyRound size={40} className="mb-4 text-yellow-500" />
-    <h3 className="font-semibold mb-2 text-base">Enable the AI Assistant</h3>
-    <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-4">
+    <h3 className="mb-2 text-base font-semibold">Enable the AI Assistant</h3>
+    <p className="mb-4 text-xs text-neutral-500 dark:text-neutral-400">
       To use this feature, please set up your Google Gemini API Key in the settings.
     </p>
-    <ol className="text-left text-xs space-y-3">
+    <ol className="space-y-3 text-xs text-left">
       <li className="flex items-start gap-3">
         <div className="p-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-md">
           <Settings size={14} />
@@ -150,7 +150,6 @@ const GeminiChatWidget = () => {
   const callGeminiAPI = async (currentQuestion: string) => {
     if (!currentQuestion || "") return;
 
-    console.log("LA APIKEY ES", apiKey)
 
     const userMessage: HistoryItem = {
       role: "user" as const,
@@ -234,26 +233,24 @@ const GeminiChatWidget = () => {
           
           <div
             onMouseDown={(e) => handleMouseDown(e, "left")}
-            className="absolute top-0 left-0 h-full w-2 cursor-ew-resize z-10"
+            className="absolute top-0 left-0 z-10 w-2 h-full cursor-ew-resize"
           />
           <div
             onMouseDown={(e) => handleMouseDown(e, "top")}
-            className="absolute top-0 left-0 w-full h-2 cursor-ns-resize z-10"
+            className="absolute top-0 left-0 z-10 w-full h-2 cursor-ns-resize"
           />
           <div
             onMouseDown={(e) => handleMouseDown(e, "top-left")}
-            className="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize z-10"
+            className="absolute top-0 left-0 z-10 w-3 h-3 cursor-nwse-resize"
           />
 
-          <div className="space-y-2 flex-shrink-0">
+          <div className="flex-shrink-0 space-y-2">
             <h4 className="font-medium leading-none">Ask the AI</h4>
           </div>
 
           <div
             ref={chatContainerRef}
-            className="flex-1 rounded-md border overflow-y-auto p-3 text-sm
-                       border-neutral-300 bg-neutral-50
-                       dark:border-neutral-700 dark:bg-neutral-800/50"
+            className="flex-1 p-3 overflow-y-auto text-sm border rounded-md border-neutral-300 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800/50"
           >
             {!apiKey ? (
               <ApiKeyInstructions />
@@ -267,7 +264,7 @@ const GeminiChatWidget = () => {
                   <div key={index} className="mb-4">
                     {item.role === 'user' ? (
                       <div className="text-right">
-                        <p className="inline-block bg-blue-500 text-white rounded-lg px-3 py-2">
+                        <p className="inline-block px-3 py-2 text-white bg-blue-500 rounded-lg">
                           {item.parts[0].text}
                         </p>
                       </div>
@@ -283,7 +280,7 @@ const GeminiChatWidget = () => {
                 
                 {loading && (
                   <div className="flex items-center gap-2">
-                    <LoaderCircle className="h-4 w-4 animate-spin" />
+                    <LoaderCircle className="w-4 h-4 animate-spin" />
                     <span>Thinking...</span>
                   </div>
                 )}
@@ -291,19 +288,17 @@ const GeminiChatWidget = () => {
             )}
           </div>
 
-          <form onSubmit={handleSubmit} className="flex items-center gap-2 flex-shrink-0">
+          <form onSubmit={handleSubmit} className="flex items-center flex-shrink-0 gap-2">
             <Input
               id="question"
               placeholder={!apiKey ? "Set your API Key to begin..." : "How can I help you?"}
-              className="flex-1 
-                           bg-neutral-50 border-neutral-300 outline-none
-                           dark:bg-neutral-800 dark:border-neutral-700 "
+              className="flex-1 outline-none bg-neutral-50 border-neutral-300 dark:bg-neutral-800 dark:border-neutral-700 "
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               disabled={loading || !apiKey}
             />
             <Button type="submit" size="icon" disabled={loading || !question || !apiKey}>
-              <SendHorizonal className="h-4 w-4" />
+              <SendHorizonal className="w-4 h-4" />
             </Button>
           </form>
         </PopoverContent>
