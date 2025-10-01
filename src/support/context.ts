@@ -147,7 +147,6 @@ export class RVContext {
               this.extensionContext.extensionUri
             );
             this._textWebview = webviewView.webview;
-            this.sendApiKeyToWebview(this._textWebview); 
             activateMessageListenerForRegistersView(webviewView.webview, this);
             webviewView.onDidDispose(() => {
               this._textWebview = undefined;
@@ -211,7 +210,6 @@ export class RVContext {
       }
     );
     this._graphicWebviewPanel = panel;
-     this.sendApiKeyToWebview(panel.webview);
     panel.onDidDispose(() => {
       this._graphicWebviewPanel = undefined;
       if (this._isSimulating) this._simulator?.makeEditorWritable();
@@ -307,8 +305,15 @@ export class RVContext {
     if (message.event === 'webviewReady') {
       this._simulator?.sendInitialData({ isHardReset: true });
       this._hasWebviewInitialized = true;
+      if (this._textWebview) {
+        this.sendApiKeyToWebview(this._textWebview);
+      }
+      if (this._graphicWebviewPanel) {
+        this.sendApiKeyToWebview(this._graphicWebviewPanel.webview);
+      }
       return;
     }
+     
     if (message.event === "clickOpenRISCVCard") {
       RiscCardPanel.riscCard(this.extensionContext.extensionUri);
       return;
@@ -406,6 +411,8 @@ export class RVContext {
     if (!webview) return;
     const config = this.configurationManager.getConfiguration();
     const apiKey = config.get<string>('gemini.apiKey');
+
+    console.log("DESDE ATAS ENCONTRO APIKEY?", apiKey)
     webview.postMessage({ from: "extension", operation: "setApiKey", key: apiKey || "" });
   }
 
