@@ -18,7 +18,7 @@ jobs:
 
     # 2. Setup Node.js, which is required for running npm/vsce
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: '24' # Use a specific LTS version of Node.js
 
