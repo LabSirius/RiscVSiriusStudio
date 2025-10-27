@@ -36,7 +36,7 @@ jobs:
 
     # 6. Upload the generated VSIX file as a build artifact
     - name: Upload VSIX Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: extension-vsix # The name of the artifact
         path: "*.vsix" # A wildcard path to find the generated .vsix file
