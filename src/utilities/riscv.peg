@@ -222,7 +222,24 @@
         return unsigned - (1 << bits);
     }
     return unsigned;
-}
+  }
+
+  function binToTwosComplement(bin: string): number {
+    let unsigned = parseInt(bin, 2);
+    let bits = bin.length;
+
+    let signBit = 1 << (bits - 1);
+
+    if (unsigned & signBit) {
+        return unsigned - (1 << bits);
+    }
+    return unsigned;
+  }
+
+  function binToInteger(bin: string) {
+    return parseInt(bin, 2);
+    
+  }
 
   function regEnc(r) {
     return { regname: 'x'+r, regeq: 'x'+r, regenc: r}; 
@@ -1763,6 +1780,8 @@
   Integer "Integer"
   = _ "0x" digits:[0-9a-fA-F]+ { return hexToTwosComplement(digits.join("")); }
   / _ "0X" digits:[0-9a-fA-F]+ { return hexToTwosComplement(digits.join("")); }
+  / _ "0b" digits:[01]+ { return binToInteger(digits.join("")); }
+  / _ "0B" digits:[01]+ { return binToTwosComplement(digits.join("")); }
   / _ [\+-]?[0-9]+ { return parseInt(text(), 10); }
 
   ReservedWord 
