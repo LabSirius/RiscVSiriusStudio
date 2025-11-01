@@ -1,5 +1,5 @@
 import { Controls } from '@xyflow/react';
-import { RedoDot, Ban, RotateCcw, ZoomIn, ZoomOut, Fullscreen, Copy } from 'lucide-react';
+import { RedoDot, Ban, RotateCcw, ZoomIn, ZoomOut, Fullscreen } from 'lucide-react';
 import DownloadSVGButton from '../DownloadSVGButton';
 import { sendMessage } from '@/components/Message/sendMessage';
 import { useDialog } from '@/context/panel/DialogContext';
@@ -11,6 +11,7 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
 import DownloadPNGButton from '../DownloadPNGButton';
+import CopyToClipboardButton from '../Canva/CopyToClipboardButton';
 
 interface CustomControlsProps {
   onToggleMinimap: () => void;
@@ -73,7 +74,7 @@ export default function CustomControls({
           </button>
         </HoverCardTrigger>
         
-        <HoverCardContent side="right" align="center" className="w-auto p-0 ml-2 border-none bg-transparent">
+        <HoverCardContent side="right" align="center" className="w-auto p-0 ml-2 bg-transparent border-none">
           <div className="flex bg-white rounded-lg shadow-md react-flow__controls">
             <button
               className="react-flow__controls-button-custom"
@@ -95,16 +96,10 @@ export default function CustomControls({
       
       <HoverCard openDelay={200} closeDelay={100}>
         <HoverCardTrigger asChild>
-          <button
-            className="react-flow__controls-button-custom"
-            onClick={() => console.log('copy')}
-            title="Copy"
-          >
-            <Copy size={16} />
-          </button>
+          <CopyToClipboardButton />
         </HoverCardTrigger>
         
-        <HoverCardContent side="right" align="center" className="w-auto p-0 ml-2 border-none bg-transparent">
+        <HoverCardContent side="right" align="center" className="w-auto p-0 ml-2 bg-transparent border-none">
           <div className="flex bg-white rounded-lg shadow-md react-flow__controls">
             <DownloadSVGButton />
             <DownloadPNGButton />

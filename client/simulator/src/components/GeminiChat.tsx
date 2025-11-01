@@ -1,5 +1,13 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { MessageSquareWarning, SendHorizonal, LoaderCircle } from "lucide-react";
+import { 
+  MessageSquareWarning, 
+  SendHorizonal, 
+  LoaderCircle,
+  KeyRound,
+  Settings,
+  Search,
+  ClipboardPaste
+} from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,12 +26,50 @@ type HistoryItem = {
   parts: { text: string }[];
 };
 
+
+const ApiKeyInstructions = () => (
+  <div className="flex flex-col items-center justify-center h-full p-4 text-center">
+    <KeyRound size={40} className="mb-4 text-yellow-500" />
+    <h3 className="mb-2 text-base font-semibold">Enable the AI Assistant</h3>
+    <p className="mb-4 text-xs text-neutral-500 dark:text-neutral-400">
+      To use this feature, please set up your Google Gemini API Key in the settings.
+    </p>
+    <ol className="space-y-3 text-xs text-left">
+      <li className="flex items-start gap-3">
+        <div className="p-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-md">
+          <Settings size={14} />
+        </div>
+        <div>
+          Open VS Code Settings with <code className="bg-neutral-200 dark:bg-neutral-700 px-1 py-0.5 rounded">Cmd/Ctrl + ,</code>
+        </div>
+      </li>
+      <li className="flex items-start gap-3">
+        <div className="p-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-md">
+          <Search size={14} />
+        </div>
+        <div>
+          In the search bar, type <code className="bg-neutral-200 dark:bg-neutral-700 px-1 py-0.5 rounded">RISCV Simulator</code>
+        </div>
+      </li>
+      <li className="flex items-start gap-3">
+        <div className="p-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-md">
+          <ClipboardPaste size={14} />
+        </div>
+        <div>
+          Find the <strong className="font-semibold">Gemini: Api Key</strong> input and paste your key.
+        </div>
+      </li>
+    </ol>
+  </div>
+);
+
 const GeminiChatWidget = () => {
-  const [question, setQuestion] = useState("");
+  const [question, setQuestion] =  useState("");
   const [loading, setLoading] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
-  const { textProgram } = useSimulator();
+  
+  const { textProgram, apiKey } = useSimulator();
   const { currentMonocycleResult } = useCurrentInst();
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -96,8 +142,14 @@ const GeminiChatWidget = () => {
     }
   }, [history, loading]);
 
+   useEffect(() => {
+
+
+  }, [apiKey]);
+
   const callGeminiAPI = async (currentQuestion: string) => {
-    if (!currentQuestion) return;
+    if (!currentQuestion || "") return;
+
 
     const userMessage: HistoryItem = {
       role: "user" as const,
@@ -107,8 +159,8 @@ const GeminiChatWidget = () => {
     setHistory(updatedHistory);
     setLoading(true);
 
-    const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey!.trim()}`;
+    
 
     const requestBody = {
       contents: updatedHistory,
@@ -131,13 +183,13 @@ const GeminiChatWidget = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Error en la petición: ${response.status}`);
+        throw new Error(`Request error: ${response.status}`);
       }
 
       const data = await response.json();
 
       if (!data.candidates || data.candidates.length === 0) {
-        throw new Error("Respuesta no válida o bloqueada por seguridad.");
+        throw new Error("Invalid response or blocked by security settings.");
       }
 
       const textResponse = data.candidates[0].content.parts[0].text;
@@ -149,10 +201,10 @@ const GeminiChatWidget = () => {
       setHistory([...updatedHistory, modelMessage]);
 
     } catch (error) {
-      console.error("Hubo un error al llamar a Gemini:", error);
+      console.error("Error calling Gemini:", error);
       const errorMessage: HistoryItem = {
         role: "model" as const,
-        parts: [{ text: "Lo siento, algo salió mal. Inténtalo de nuevo." }],
+        parts: [{ text: "Sorry, something went wrong. Please try again." }],
       };
       setHistory([...updatedHistory, errorMessage]);
     } finally {
@@ -181,70 +233,72 @@ const GeminiChatWidget = () => {
           
           <div
             onMouseDown={(e) => handleMouseDown(e, "left")}
-            className="absolute top-0 left-0 h-full w-2 cursor-ew-resize z-10"
+            className="absolute top-0 left-0 z-10 w-2 h-full cursor-ew-resize"
           />
           <div
             onMouseDown={(e) => handleMouseDown(e, "top")}
-            className="absolute top-0 left-0 w-full h-2 cursor-ns-resize z-10"
+            className="absolute top-0 left-0 z-10 w-full h-2 cursor-ns-resize"
           />
           <div
             onMouseDown={(e) => handleMouseDown(e, "top-left")}
-            className="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize z-10"
+            className="absolute top-0 left-0 z-10 w-3 h-3 cursor-nwse-resize"
           />
 
-          <div className="space-y-2 flex-shrink-0">
+          <div className="flex-shrink-0 space-y-2">
             <h4 className="font-medium leading-none">Ask the AI</h4>
           </div>
 
           <div
             ref={chatContainerRef}
-            className="flex-1 rounded-md border overflow-y-auto p-3 text-sm
-                       border-neutral-300 bg-neutral-50
-                       dark:border-neutral-700 dark:bg-neutral-800/50"
+            className="flex-1 p-3 overflow-y-auto text-sm border rounded-md border-neutral-300 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800/50"
           >
-            {history.length === 0 && !loading ? (
-              <p>Waiting for your question...</p>
+            {!apiKey ? (
+              <ApiKeyInstructions />
             ) : (
-              history.map((item, index) => (
-                <div key={index} className="mb-4">
-                  {item.role === 'user' ? (
-                    <div className="text-right">
-                      <p className="inline-block bg-blue-500 text-white rounded-lg px-3 py-2">
-                        {item.parts[0].text}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="prose-sm prose dark:prose-invert max-w-none">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {item.parts[0].text}
-                      </ReactMarkdown>
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
-            
-            {loading && (
-              <div className="flex items-center gap-2">
-                <LoaderCircle className="h-4 w-4 animate-spin" />
-                <span>Thinking...</span>
-              </div>
+              <>
+                {history.length === 0 && !loading && (
+                  <p className="text-neutral-500 dark:text-neutral-400">Waiting for your question...</p>
+                )}
+
+                {history.map((item, index) => (
+                  <div key={index} className="mb-4">
+                    {item.role === 'user' ? (
+                      <div className="text-right">
+                        <p className="inline-block px-3 py-2 text-white bg-blue-500 rounded-lg">
+                          {item.parts[0].text}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="prose-sm prose dark:prose-invert max-w-none">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {item.parts[0].text}
+                        </ReactMarkdown>
+                      </div>
+                    )}
+                  </div>
+                ))}
+                
+                {loading && (
+                  <div className="flex items-center gap-2">
+                    <LoaderCircle className="w-4 h-4 animate-spin" />
+                    <span>Thinking...</span>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
-          <form onSubmit={handleSubmit} className="flex items-center gap-2 flex-shrink-0">
+          <form onSubmit={handleSubmit} className="flex items-center flex-shrink-0 gap-2">
             <Input
               id="question"
-              placeholder="How can I help you?"
-              className="flex-1 
-                           bg-neutral-50 border-neutral-300 outline-none
-                           dark:bg-neutral-800 dark:border-neutral-700 "
+              placeholder={!apiKey ? "Set your API Key to begin..." : "How can I help you?"}
+              className="flex-1 outline-none bg-neutral-50 border-neutral-300 dark:bg-neutral-800 dark:border-neutral-700 "
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              disabled={loading}
+              disabled={loading || !apiKey}
             />
-            <Button type="submit" size="icon" disabled={loading || !question}>
-              <SendHorizonal className="h-4 w-4" />
+            <Button type="submit" size="icon" disabled={loading || !question || !apiKey}>
+              <SendHorizonal className="w-4 h-4" />
             </Button>
           </form>
         </PopoverContent>

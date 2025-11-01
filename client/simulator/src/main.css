@@ -539,3 +539,35 @@ h2 {
   color: #6a9955 !important;
   font-style: italic;
 }
+
+
+
+
+.riscv-opcode { color: #f94144 !important; } 
+.riscv-rd     { color: #f8961e !important; }  
+.riscv-rs1    { color: #f9c74f !important; }  
+.riscv-rs2    { color: #90be6d !important; }  
+.riscv-funct3 { color: #43aa8b !important; }  
+.riscv-funct7 { color: #577590 !important; }  
+.riscv-imm    { color: #9d4edd !important; } 
+
+
+
+.riscv-segment + .riscv-segment {
+
+  margin-left: 1ch;
+}
+
+
+.riscv-custom-tooltip {
+  position: absolute; 
+  background-color: #2D3748;
+  color: #E2E8F0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 9999; 
+  pointer-events: none; 
+  transition: opacity 0.2s;
+}

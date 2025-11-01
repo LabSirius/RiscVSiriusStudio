@@ -27,6 +27,9 @@ export interface SimulatorContextProps {
 
   showTuto: boolean;
   setShowTuto: React.Dispatch<React.SetStateAction<boolean>>;
+
+  apiKey: string | null;
+  setApiKey: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const SimulatorContext = createContext<SimulatorContextProps | undefined>(undefined);
@@ -42,6 +45,7 @@ export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [simulateAuto, setSimulateAuto] = useState<boolean>(false);
   const [isEbreak, setIsEbreak] = useState<boolean>(false);
   const [showTuto, setShowTuto] = useState<boolean>(false);
+  const [apiKey, setApiKey] = useState<string | null>(null)
 
   return (
     <SimulatorContext.Provider
@@ -66,6 +70,8 @@ export const SimulatorProvider: React.FC<{ children: ReactNode }> = ({ children 
         setIsEbreak,
         showTuto,
         setShowTuto,
+        apiKey,
+        setApiKey
       }}>
       {children}
     </SimulatorContext.Provider>

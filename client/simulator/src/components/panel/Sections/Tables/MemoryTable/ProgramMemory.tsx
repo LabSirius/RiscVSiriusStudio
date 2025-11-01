@@ -27,7 +27,7 @@ const ProgramMemoryTable = () => {
     isCreatedMemoryTable,
     setIsCreatedMemoryTable,
     dataMemoryTable,
-
+    typesInstruction,
     setSp,
     searchInMemory,
     locatePc,
@@ -43,13 +43,13 @@ const ProgramMemoryTable = () => {
   const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable } = useLines();
   const isFirstStepRef = useRef(isFirstStep);
 
-
   useMemoryTabulator({
     tableContainerRef,
     tableInstanceRef,
     isCreatedMemoryTable,
     setIsCreatedMemoryTable,
     dataMemoryTable,
+    typesInstruction,
     newPcRef,
     isFirstStepRef,
     setSp,
@@ -95,7 +95,7 @@ const ProgramMemoryTable = () => {
   return (
     <>
       <div
-        className={`shadow-lg !min-h-min min-w-[37.36rem]  mx-4  relative ${
+        className={`shadow-lg !min-h-min min-w-[37.96rem]  mx-4  relative ${
           !showProgramTable && "hidden"
         }`}>
         <div

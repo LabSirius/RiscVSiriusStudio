@@ -13,6 +13,7 @@ export const useMessageListener = () => {
     setSizeMemory,
     setReadInMemory,
     setIsCreatedMemoryTable,
+    setTypesInstruction
   } = useMemoryTable();
 
   const {
@@ -26,6 +27,7 @@ export const useMessageListener = () => {
     setSection,
     setNewPc,
     setIsEbreak,
+    setApiKey
   } = useSimulator();
   const { setWriteInRegister } = useRegistersTable();
   const { setCurrentMonocycleInst, setCurrentMonocycleResult, setPipelineValuesStages } =
@@ -51,8 +53,12 @@ export const useMessageListener = () => {
           case "textProgram":
             setTextProgram(message.textProgram);
             break;
-          case "uploadMemory":
 
+          case "setApiKey":
+              setApiKey(message.key)
+            break
+          case "uploadMemory":
+        
             setDialog({
               title: "Configuration Info",
               description:
@@ -64,6 +70,7 @@ export const useMessageListener = () => {
             setSection("settings");
             setIsCreatedMemoryTable(false);
             setDataMemoryTable(message.payload);
+            setTypesInstruction(message.typesInstruction)
             setSizeMemory(message.payload.memory.length);
             setIsFirstStep(false);
             setOperation("uploadMemory");
@@ -140,5 +147,6 @@ export const useMessageListener = () => {
     setIsFirstStep,
     setDialog,
     setIsCreatedMemoryTable,
+  
   ]);
 };

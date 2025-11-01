@@ -160,6 +160,10 @@ export class PipelineCPU implements ICPU {
   private ex_mem_register: EXMEM_Register;
   private mem_wb_register: MEMWB_Register;
 
+  public getProgram(): any[] {
+    return this.program;
+  }
+
   constructor(
     program: any[],
     programMemory: any[],

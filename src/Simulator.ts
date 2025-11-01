@@ -43,9 +43,21 @@ export abstract class Simulator {
     }
 
     if (simulatorType === "pipeline") {
-      this.cpu = new PipelineCPU(rvDoc.ir.instructions,  rvDoc.ir.programMemory, rvDoc.ir.writableMemory, rvDoc.ir.readOnlyMemory, params.memorySize);
+      this.cpu = new PipelineCPU(
+        rvDoc.ir.instructions,
+        rvDoc.ir.programMemory,
+        rvDoc.ir.writableMemory,
+        rvDoc.ir.readOnlyMemory,
+        params.memorySize
+      );
     } else {
-      this.cpu = new SCCPU(rvDoc.ir.instructions, rvDoc.ir.programMemory, rvDoc.ir.writableMemory, rvDoc.ir.readOnlyMemory  ,params.memorySize);
+      this.cpu = new SCCPU(
+        rvDoc.ir.instructions,
+        rvDoc.ir.programMemory,
+        rvDoc.ir.writableMemory,
+        rvDoc.ir.readOnlyMemory,
+        params.memorySize
+      );
     }
   }
 
@@ -77,7 +89,6 @@ export abstract class Simulator {
   }
 
   public resizeMemory(newSize: number): void {
-    
     if (this.configured) throw new Error("Cannot resize memory after configuration");
     this.cpu.getDataMemory().resize(newSize);
     this.cpu.getRegisterFile().writeRegister("x2", intToBinary(newSize - 4));
@@ -121,7 +132,6 @@ export class TextSimulator extends Simulator {
   }
 
   public override async start(options?: { isRestart?: boolean }): Promise<void> {
-
     if (!options?.isRestart) {
       await this.makeEditorReadOnly();
     }
@@ -143,13 +153,16 @@ export class TextSimulator extends Simulator {
         jump: branchesOrJumps(instr.type, instr.opcode) ? instr.encoding.imm13 : null,
       })) || [];
     const asmList = this.rvDoc.ir?.instructions.map((instr) => instr.asm);
+
+    const typesInstruction = this.cpu.getProgram().map((instr) => ({ type: instr.type }));
+
+
     const payload = {
       memory: this.cpu.getDataMemory().getAvailableMemory(),
       program: this.cpu.getDataMemory().getProgramMemory(),
       directivesWritableSize: this.cpu.getDataMemory().writableDirectives_size,
       directivesReadOnlySize: this.cpu.getDataMemory().readOnlyDirectives_size,
 
-   
       addressLine,
       symbols: this.rvDoc.ir?.symbols,
       asmList,
@@ -162,6 +175,7 @@ export class TextSimulator extends Simulator {
         typeSimulator: this.simulatorType,
         initialLine: inst.location?.start?.line ?? -1,
         isReset: options?.isHardReset ?? false,
+        typesInstruction
       });
     } catch (error) {
       console.error(
@@ -219,9 +233,6 @@ export class TextSimulator extends Simulator {
           this.stop({ sendStopMessage: true });
         }
       } else {
-
-      
-        
         const pipelineResult = stepResult.result as PipelineCycleResult;
         const wbInstruction = pipelineResult.WB;
         if (wbInstruction.RUWr && wbInstruction.RD !== "X" && wbInstruction.RD !== "0") {
@@ -229,31 +240,27 @@ export class TextSimulator extends Simulator {
         }
         const memInstructionData = pipelineResult.EX;
         if (memInstructionData.instruction && memInstructionData.instruction.pc !== -1) {
+          const isMemoryOperation =
+            memInstructionData.DMWr || memInstructionData.RUDataWrSrc === "01";
 
-           const isMemoryOperation = memInstructionData.DMWr || memInstructionData.RUDataWrSrc === "01";
-
-           if(isMemoryOperation){
-
+          if (isMemoryOperation) {
             const address = parseInt(memInstructionData.ALURes, 2);
-          const bytesToAccess = this.bytesToReadOrWrite(memInstructionData.instruction);
-          if (memInstructionData.DMWr) {
-            this.notifyMemoryWrite(address, memInstructionData.RUrs2, bytesToAccess);
-          } else if (memInstructionData.RUDataWrSrc === "01") {
-            this.notifyMemoryRead(address, bytesToAccess);
+            const bytesToAccess = this.bytesToReadOrWrite(memInstructionData.instruction);
+            if (memInstructionData.DMWr) {
+              this.notifyMemoryWrite(address, memInstructionData.RUrs2, bytesToAccess);
+            } else if (memInstructionData.RUDataWrSrc === "01") {
+              this.notifyMemoryRead(address, bytesToAccess);
+            }
           }
-
-           }
-          
         }
         this.webview.postMessage({ from: "extension", operation: "step", result: pipelineResult });
-         if (this.cpu.finished()) {
+        if (this.cpu.finished()) {
           this.stop({ sendStopMessage: true, isReset: false });
           return stepResult;
         }
       }
-       
+
       return stepResult;
-      
     } catch (error) {
       console.error("Error during simulation step:", error);
       this.stop({ sendStopMessage: true });

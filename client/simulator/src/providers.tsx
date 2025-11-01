@@ -13,12 +13,16 @@ import { OverlayProvider } from "@/context/graphic/OverlayContext";
 import MessageListener from "@/components/Message/MessageListener";
 import Dialog from "@/components/panel/Dialog";
 import { CustomOptionSimulateProvider } from "./context/shared/CustomOptionSimulate";
+import { ActiveEdgesProvider } from "./context/graphic/ActiveEdgesContext";
+import { Toaster } from "@/components/ui/sonner"
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Toaster />
       <ReactFlowProvider>
         <CurrentInstProvider>
+          <ActiveEdgesProvider >
           <CustomOptionSimulateProvider>
             <MemoryTableProvider>
               <RegistersTableProvider>
@@ -37,6 +41,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
               </RegistersTableProvider>
             </MemoryTableProvider>
           </CustomOptionSimulateProvider>
+           </ActiveEdgesProvider>
         </CurrentInstProvider>
       </ReactFlowProvider>
     </ThemeProvider>
