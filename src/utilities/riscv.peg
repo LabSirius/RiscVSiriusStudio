@@ -589,6 +589,88 @@
     }
   }
 
+  function getRoundingMode(rm: string) : string {
+    switch (rm) {
+      case 'rne': return '000';
+      case 'rtz': return '001';
+      case 'rdn': return '010';
+      case 'rup': return '011';
+      case 'rmm': return '100';
+      case 'dyn': return '111';
+      default: return '000';
+    }
+    
+  }
+
+  function getFRecEspecial(inst: string): string {
+    switch (inst) {
+      case 'fsqrt.s': return '0';
+      case 'fcvt.w.s' :  return '0';
+      case 'fcvt.wu.s':  return '1';
+      case 'fcvt.s.w' :  return '0';
+      case 'fcvt.s.wu':  return '1';
+      case 'fmv.s.x':  return '0';
+      case 'fmv.x.s':  return '0';
+      case 'fclass.s' : return '0';
+      default: return '0';
+    }
+    
+  }
+
+  function handleFPRInstruction(name, rs1, rs2, rd, rm, location, pseudo=false) {
+    let funct7  = 0;
+    let opcode = '1010011';
+
+    switch (name) {
+      case 'fadd.s'   :  funct7 = 0; break;
+      case 'fsub.s'   :  funct7 = 4; break;
+      case 'fmul.s'   :  funct7 = 8; break;
+      case 'fdiv.s'   :  funct7 = 12; break;
+      // case 'fsqrt.s'  :  funct7 = 44; break;
+      case 'fsgnj.s'  :  funct7 = 16; break;
+      case 'fsgnjn.s' :  funct7 = 16; break;
+      case 'fsgnjx.s' :  funct7 = 16; break;
+      case 'fmin.s'   :  funct7 = 20; break;
+      case 'fmax.s'   :  funct7 = 20; break;
+      // case 'fcvt.w.s' :  funct7 = 96; break;
+      // case 'fcvt.wu.s':  funct7 = 96; break;
+      // case 'fcvt.s.w' :  funct7 = 104; break;
+      // case 'fcvt.s.wu':  funct7 = 104; break;
+      case 'fmv.x.s'  :  funct7 = 112; break;
+      case 'fmv.s.x'  :  funct7 = 120; break;
+      case 'fle.s'  :  funct7 = 80; break;
+      case 'flt.s'  :  funct7 = 80; break;
+      case 'feq.s'  :  funct7 = 80; break;
+      // case 'fclass.s'  :  funct7 = 120; break;
+    }
+    
+    const rdVal = getInt(rd["regenc"]);
+    const rdBin = toBinaryString(rdVal, 5);
+
+    const roundingMode = getRoundingMode(rm);
+    const rs1Val = getInt(rs1["regenc"]);
+    const rs1Bin = toBinaryString(rs1Val, 5);
+    
+    const rs2Val = getInt(rs2["regenc"]);
+    const rs2Bin = toBinaryString(rs2Val, 5);
+    const funct7Bin = toBinaryString(funct7, 7);
+    
+    const binEncoding =
+      `${funct7Bin}${rs2Bin}${rs1Bin}${roundingMode}${rdBin}${opcode}`;
+
+    const encoding = {
+      "binEncoding": binEncoding, "roundingMode": roundingMode, "rs1": rs1Bin, 
+      "rs2": rs2Bin, "rd": rdBin, "funct7": funct7Bin
+    };
+    
+    return {
+      "inst":getInstMemPosition(), "type":"R", "instruction": name, "rd":rd, 
+      "rs1":rs1, "rs2": rs2, "roundingMode": roundingMode, "funct7": funct7, 
+      "opcode": opcode, "encoding": encoding, "location":location, 
+      "pseudo":pseudo
+    };
+  }
+
 }}
 
 {
@@ -846,6 +928,15 @@
       }
       setPAsmList(inst, text());
       setAsmIntsList(inst);
+      return inst;
+    }
+    / inst:FloatingPointRTypeInst
+    {
+      if (isFirstPass) { 
+        getInstMemPosition();
+        return undefined; 
+      }
+      inst["asm"] = text();
       return inst;
     }
       
@@ -1126,6 +1217,66 @@
     const mainInstruction = handleSInstruction(name, rd, lower12, rt, location(), true);
     return [complementInstruction, mainInstruction];
   }
+
+  FloatingPointRTypeInst "Floating point arithmetic instruction"
+    = name:FloatRType _ rd:FloatRegisterName ___ rs1:FloatRegisterName ___ rs2:FloatRegisterName rm:(___ RoundingMode)?
+    { 
+      if (isFirstPass) { return undefined; }
+      const rmCode = (rm != null) ? rm[1].trim() : 'rne';
+      return handleFPRInstruction(name, rd, rs1, rs2, rmCode, location());
+    }
+
+    / name:FloatingPointConversionFtoI _ rd:RegisterName ___ rs1:FloatRegisterName rm:(___ RoundingMode)?
+    { 
+      if (isFirstPass) { return undefined; }
+      const rmCode = (rm != null) ? rm[1].trim() : 'rne';
+      const rs2 = regEnc(getFRecEspecial(name));
+      return handleFPRInstruction(name, rd, rs1, rs2, rmCode, location());
+    }
+
+    / name:FloatingPointConversionItoF _ rd:FloatRegisterName ___ rs1:RegisterName rm:(___ RoundingMode)?
+    { 
+      if (isFirstPass) { return undefined; }
+      const rmCode = (rm != null) ? rm[1].trim() : 'rne';
+      const rs2 = regEnc(getFRecEspecial(name));
+      return handleFPRInstruction(name, rd, rs1, rs2, rmCode, location());
+    }
+
+    / name:fmvSXToken _ rd:FloatRegisterName ___ rs1:RegisterName
+    { 
+      if (isFirstPass) { return undefined; }
+      const rs2 = regEnc(getFRecEspecial(name));
+      return handleFPRInstruction(name, rd, rs1, rs2, 'rne', location());
+    }
+
+    / name:fmvxSToken _ rd:RegisterName ___ rs1:FloatRegisterName
+    { 
+      if (isFirstPass) { return undefined; }
+      const rs2 = regEnc(getFRecEspecial(name));
+      return handleFPRInstruction(name, rd, rs1, rs2, 'rne', location());
+    }
+
+    / name:fclassSToken _ rd:RegisterName ___ rs1:FloatRegisterName
+    { 
+      if (isFirstPass) { return undefined; }
+      const rs2 = regEnc(getFRecEspecial(name));
+      return handleFPRInstruction(name, rd, rs1, rs2, 'rtz', location());
+    }
+
+    / name:fsqrtSToken _ rd:FloatRegisterName ___ rs1:FloatRegisterName rm:(___ RoundingMode)?
+    { 
+      if (isFirstPass) { return undefined; }
+      const rmCode = (rm != null) ? rm[1].trim() : 'rne';
+      const rs2 = regEnc(getFRecEspecial(name));
+      return handleFPRInstruction(name, rd, rs1, rs2, rmCode, location());
+    }
+
+    / name:FloatingPointCompareInstName _ rd:RegisterName ___ rs1:FloatRegisterName ___ rs2:FloatRegisterName rm:(___ RoundingMode)?
+    { 
+      if (isFirstPass) { return undefined; }
+      const rmCode = (rm != null) ? rm[1].trim() : 'rne';
+      return handleFPRInstruction(name, rd, rs1, rs2, rmCode, location());
+    }
   
 
   Imm12 "12 bits immediate"
@@ -1507,6 +1658,13 @@
     return {"regname": reg, "regeq": reg, "regenc":v};
   }
 
+  FloatRegisterName "floating point register name"
+  = reg:FRegister
+  {
+    const v = reg.slice(1);
+    return {"regname": reg, "regeq": reg,  "regenc":v};
+  }
+
   Register "register"
   = x10Token
   / x11Token
@@ -1540,6 +1698,40 @@
   / x7Token
   / x8Token
   / x9Token
+
+  FRegister "floating point register"
+  = f10Token
+  / f11Token
+  / f12Token
+  / f13Token
+  / f14Token
+  / f15Token
+  / f16Token
+  / f17Token
+  / f18Token
+  / f19Token
+  / f20Token
+  / f21Token
+  / f22Token
+  / f23Token
+  / f24Token
+  / f25Token
+  / f26Token
+  / f27Token
+  / f28Token
+  / f29Token
+  / f30Token
+  / f31Token
+  / f0Token
+  / f1Token
+  / f2Token
+  / f3Token
+  / f4Token
+  / f5Token
+  / f6Token
+  / f7Token
+  / f8Token
+  / f9Token
 
   ABIRegister "ABI name for register"
   = reg:ZEROToken {return {"regname": reg, "regeq": "x0"}; }
@@ -1664,7 +1856,126 @@
   sgtToken = "sgt"
 
   laToken = "la"
-  
+
+  FloatingPointInstName "floating point instruction name"
+    = flwToken
+    / fswToken
+    / fmaddSToken
+    / fmsubSToken
+    / fnmsubSToken
+    / fnmaddSToken
+    / faddSToken
+    / fsubSToken
+    / fmulSToken
+    / fdivSToken
+    / fsqrtSToken
+    / fsgnjSToken
+    / fsgnjnSToken
+    / fsgnjxSToken
+    / fminSToken
+    / fmaxSToken
+    / fcvtWSToken 
+    / fcvtWUSToken
+    / fmvxSToken
+    / feqSToken
+    / fltSToken
+    / fleSToken
+    / fclassSToken
+    / fcvtSWToken
+    / fcvtSWuToken
+    / fmvSXToken
+
+   FloatIType "floating point immediate instruction name"
+    = flwToken
+
+  FloatSType "floating point store instruction name"
+    = fswToken
+
+
+  // TODO: Analize R-type instructions without rs2 value (e.g., fsqrt.s, fclass.s, etc)
+
+  FloatRType "floating point register-to-register instruction name"
+  = FloatingPointArithmeticInstName
+    / FloatingPointControlInstName
+
+  FloatingPointArithmeticInstName "floating point arithmetic instruction name"
+    = faddSToken
+    / fsubSToken
+    / fmulSToken
+    / fdivSToken
+
+  FloatRTypeEspecial "floating point special R-type instruction name"
+    = fsqrtSToken
+    / fclassSToken
+
+
+  FloatR4Type "floating point 4-operand instruction name"
+    = fmaddSToken
+    / fsqrtSToken
+    / fmsubSToken
+    / fnmsubSToken
+    / fnmaddSToken
+
+  FloatingPointControlInstName "floating point control and miscellaneous instruction name"
+    = fsgnjSToken
+    / fsgnjnSToken
+    / fsgnjxSToken
+    / fminSToken
+    / fmaxSToken
+
+  FloatingPointCompareInstName "floating point compare instruction name"
+    = feqSToken
+    / fltSToken
+    / fleSToken
+
+  FloatingPointConversionFtoI "floating point conversion from float to integer instruction name"
+    = fcvtWSToken    // FCVT.W.S
+    / fcvtWUSToken   // FCVT.WU.S
+
+  FloatingPointConversionItoF "floating point conversion from integer to float instruction name"
+    = fcvtSWToken    // FCVT.S.W
+    / fcvtSWuToken   // FCVT.S.WU
+
+  RoundingMode "floating point rounding mode"
+    = rneToken
+    / rtzToken
+    / rdnToken
+    / rupToken
+    / rmmToken
+
+  flwToken     = "flw"
+  fswToken     = "fsw"
+  fmaddSToken  = "fmadd.s"
+  fmsubSToken  = "fmsub.s"
+  fnmsubSToken = "fnmsub.s"
+  fnmaddSToken = "fnmadd.s"
+  faddSToken   = "fadd.s"
+  fsubSToken   = "fsub.s"
+  fmulSToken   = "fmul.s"
+  fdivSToken   = "fdiv.s"
+  fsqrtSToken  = "fsqrt.s"
+  fsgnjSToken  = "fsgnj.s"
+  fsgnjnSToken = "fsgnjn.s"
+  fsgnjxSToken = "fsgnjx.s"
+  fminSToken   = "fmin.s"
+  fmaxSToken   = "fmax.s"
+  fcvtWSToken  = "fcvt.w.s"
+  fcvtWUSToken = "fcvt.wu.s"
+  fmvxSToken   = "fmv.x.s"
+  feqSToken    = "feq.s"
+  fltSToken    = "flt.s"
+  fleSToken    = "fle.s"
+  fclassSToken = "fclass.s"
+  fcvtSWToken  = "fcvt.s.w"
+  fcvtSWuToken = "fcvt.s.wu"
+  fmvSXToken   = "fmv.s.x"
+
+  rneToken = "rne"
+  rtzToken = "rtz"
+  rdnToken = "rdn"
+  rupToken = "rup"
+  rmmToken = "rmm"
+    
   x0Token    = "x0"
   x1Token    = "x1"
   x2Token    = "x2"
@@ -1697,6 +2008,39 @@
   x29Token   = "x29"
   x30Token   = "x30"
   x31Token   = "x31"
+
+  f0Token    = "f0"
+  f1Token    = "f1"
+  f2Token    = "f2"
+  f3Token    = "f3"
+  f4Token    = "f4"
+  f5Token    = "f5"
+  f6Token    = "f6"
+  f7Token    = "f7"
+  f8Token    = "f8"
+  f9Token    = "f9"
+  f10Token   = "f10"
+  f11Token   = "f11"
+  f12Token   = "f12"
+  f13Token   = "f13"
+  f14Token   = "f14"
+  f15Token   = "f15"
+  f16Token   = "f16"
+  f17Token   = "f17"
+  f18Token   = "f18"
+  f19Token   = "f19"
+  f20Token   = "f20"
+  f21Token   = "f21"
+  f22Token   = "f22"
+  f23Token   = "f23"
+  f24Token   = "f24"
+  f25Token   = "f25"
+  f26Token   = "f26"
+  f27Token   = "f27"
+  f28Token   = "f28"
+  f29Token   = "f29"
+  f30Token   = "f30"
+  f31Token   = "f31"
   
   ZEROToken = "zero"
   RAToken   = "ra"
