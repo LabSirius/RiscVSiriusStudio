@@ -710,6 +710,41 @@
     };
   }
 
+  function handleFIInstruction(name, rd, rs1, imm, location, pseudo=false) {
+    
+    let funct3  = 2;
+    let opcode = '0000111';
+
+    // TODO: implement this if needed in the future
+    // switch (name) {
+    //   case 'flw'  : funct3 = 2; break;
+    // }
+
+    const rdVal = getInt(rd["regenc"]);
+    const rdBin = toBinaryString(rdVal,5);
+
+    const funct3Bin = toBinaryString(funct3,3);
+
+    const rs1Val = getInt(rs1["regenc"]);
+    const rs1Bin = toBinaryString(rs1Val,5);
+
+    let immVal = getInt(imm);
+    const immValBin = toBinaryString(immVal,12);
+
+    const binEncoding = `${immValBin}${rs1Bin}${funct3Bin}${rdBin}${opcode}`;
+
+    const encoding = {
+      "rd": rdBin, "funct3": funct3Bin, "rs1": rs1Bin, "imm12":immValBin, 
+      "binEncoding": binEncoding
+    };
+
+    return {
+      "inst":getInstMemPosition(), "type":"I", "instruction": name, "rd":rd,
+      "rs1":rs1, "imm12": imm, "funct3": funct3,  "opcode": opcode,
+      "encoding":encoding, "location":location, "pseudo":pseudo
+    };
+  }
+
 }}
 
 {
@@ -979,6 +1014,15 @@
       return inst;
     }
     / inst:FloatSTypeInst
+    {
+      if (isFirstPass) { 
+        getInstMemPosition();
+        return undefined; 
+      }
+      inst["asm"] = text();
+      return inst;
+    }
+    / inst:FloatITypeInst
     {
       if (isFirstPass) { 
         getInstMemPosition();
@@ -1331,6 +1375,13 @@
     { 
       if (isFirstPass) { return undefined; }
       return handleFSInstruction(name, rs2, offset, rs1, location()); 
+    }
+
+  FloatITypeInst "Floating point load instruction"
+    = name:FloatIType _ rd:FloatRegisterName ___ offset:LIOperandKind12 _"("_ rs1:RegisterName _")"
+    { 
+      if (isFirstPass) { return undefined; }
+      return handleFIInstruction(name, rd, rs1, offset, location()); 
     }
   
 
