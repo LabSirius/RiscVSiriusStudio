@@ -745,6 +745,46 @@
     };
   }
 
+  function handleFPR4Instruction(name, rd, rs1, rs2, rs3, rm, location, pseudo=false) {
+
+    let opcode = '';
+
+    switch (name) {
+      case 'fmadd.s'   :  opcode = '1000011'; break;
+      case 'fnmadd.s'  :  opcode = '1001111'; break;
+      case 'fmsub.s'   :  opcode = '1000111'; break;
+      case 'fnmsub.s'  :  opcode = '1001011'; break;
+    }
+    
+    const rdVal = getInt(rd["regenc"]);
+    const rdBin = toBinaryString(rdVal, 5);
+
+    const roundingMode = getRoundingMode(rm);
+    const rs1Val = getInt(rs1["regenc"]);
+    const rs1Bin = toBinaryString(rs1Val, 5);
+    
+    const rs2Val = getInt(rs2["regenc"]);
+    const rs2Bin = toBinaryString(rs2Val, 5);
+    
+    const rs3Val = getInt(rs3["regenc"]);
+    const rs3Bin = toBinaryString(rs3Val, 5);
+
+    const binEncoding =
+      `${rs3Bin}00${rs2Bin}${rs1Bin}${roundingMode}${rdBin}${opcode}`;
+
+    const encoding = {
+      "binEncoding": binEncoding, "roundingMode": roundingMode, "rs1": rs1Bin, 
+      "rs2": rs2Bin, "rs3": rs3Bin, "rd": rdBin
+    };
+    
+    return {
+      "inst":getInstMemPosition(), "type":"R4", "instruction": name, "rd":rd, 
+      "rs1":rs1, "rs2": rs2, "rs3": rs3Bin, "roundingMode": roundingMode, 
+      "opcode": opcode, "encoding": encoding, "location":location, 
+      "pseudo":pseudo
+    };
+  }
+
 }}
 
 {
@@ -1023,6 +1063,15 @@
       return inst;
     }
     / inst:FloatITypeInst
+    {
+      if (isFirstPass) { 
+        getInstMemPosition();
+        return undefined; 
+      }
+      inst["asm"] = text();
+      return inst;
+    }
+    / inst:FloatR4TypeInst
     {
       if (isFirstPass) { 
         getInstMemPosition();
@@ -1384,6 +1433,13 @@
       return handleFIInstruction(name, rd, rs1, offset, location()); 
     }
   
+  FloatR4TypeInst "Floating point R4-type instruction"
+    = name:FloatR4Type _ rd:FloatRegisterName ___ rs1:FloatRegisterName ___ rs2:FloatRegisterName ___ rs3:FloatRegisterName rm:(___ RoundingMode)?
+    { 
+      if (isFirstPass) { return undefined; }
+      const rmCode = (rm != null) ? rm[1].trim() : 'rne';
+      return handleFPR4Instruction(name, rd, rs1, rs2, rs3, rmCode, location());
+    }
 
   Imm12 "12 bits immediate"
   = val:Integer
@@ -2017,7 +2073,6 @@
 
   FloatR4Type "floating point 4-operand instruction name"
     = fmaddSToken
-    / fsqrtSToken
     / fmsubSToken
     / fnmsubSToken
     / fnmaddSToken
