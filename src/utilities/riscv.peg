@@ -671,6 +671,45 @@
     };
   }
 
+  function handleFSInstruction(name, rs2, offset, rs1, location, pseudo=false) {
+    let funct3;
+    const opcode = "0100111";
+
+    // TODO: implement this if needed in the future
+    // switch (name) {
+    //   case 'fsw'  : funct3 = 0; break;
+    // }
+
+    funct3 = 2; // only fsw for now
+
+    const rs1Val = getInt(rs1["regenc"]);
+    const rs1Bin = toBinaryString(rs1Val,5);
+    
+    const rs2Val = getInt(rs2["regenc"]);
+    const rs2Bin = toBinaryString(rs2Val,5);
+
+    const funct3Bin = toBinaryString(funct3,3);
+      
+    const immVal = getInt(offset);
+    const immValBin = toBinaryString(immVal,12);
+      
+    const imm11_5 = immValBin.substring(0,7);
+    const imm4_0 = immValBin.substring(7);
+
+    const binEncoding = `${imm11_5}${rs2Bin}${rs1Bin}${funct3Bin}${imm4_0}${opcode}`;
+
+    const encoding = {
+      "funct3": funct3Bin, "rs1": rs1Bin, "rs2": rs2Bin, "imm12":immValBin,
+      "binEncoding": binEncoding,
+    };
+
+    return {
+      "inst":getInstMemPosition(), "type":"S", "instruction": name, "rs1":rs1, 
+      "rs2":rs2, "imm12": offset, "funct3": funct3,  "opcode": "0100011", 
+      "encoding":encoding, "location":location, "pseudoInst": pseudo
+    };
+  }
+
 }}
 
 {
@@ -931,6 +970,15 @@
       return inst;
     }
     / inst:FloatingPointRTypeInst
+    {
+      if (isFirstPass) { 
+        getInstMemPosition();
+        return undefined; 
+      }
+      inst["asm"] = text();
+      return inst;
+    }
+    / inst:FloatSTypeInst
     {
       if (isFirstPass) { 
         getInstMemPosition();
@@ -1276,6 +1324,13 @@
       if (isFirstPass) { return undefined; }
       const rmCode = (rm != null) ? rm[1].trim() : 'rne';
       return handleFPRInstruction(name, rd, rs1, rs2, rmCode, location());
+    }
+
+  FloatSTypeInst "Floating point store instruction"
+    = name:FloatSType _ rs2:FloatRegisterName ___ offset:SOperandKind12 _"("_ rs1:RegisterName _")"
+    { 
+      if (isFirstPass) { return undefined; }
+      return handleFSInstruction(name, rs2, offset, rs1, location()); 
     }
   
 
