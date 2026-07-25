@@ -4,7 +4,7 @@ import { ICPU } from "../interface";
 import { RegistersFile, DataMemory, ProcessorALU, BranchUnit } from "../components/components";
 import { ControlUnit, ImmediateUnit } from "../components/decoder";
 import { ForwardingUnit, ForwardingSignals, ForwardingSource } from "./forwarding";
-import { getFunct3 } from "../../utilities/instructions";
+import { DecodedInstruction } from "../instruction";
 import { intToBinary } from "../../utilities/conversions";
 import { HazardDetectionUnit } from "./hazard";
 
@@ -377,7 +377,7 @@ export class PipelineCPU implements ICPU {
       RUDataWrSrc: controls.ru_data_wr_src,
       ALUOp: controls.alu_op,
       BrOp: controls.br_op,
-      DMCtrl: instruction.pc === -1 ? "XXX" : getFunct3(instruction),
+      DMCtrl: instruction.pc === -1 ? "XXX" : DecodedInstruction.from(instruction).funct3(),
       RUrs1,
       RUrs2,
       ImmExt,
@@ -524,49 +524,24 @@ export class PipelineCPU implements ICPU {
       return { ...emptyOrNopData, DMWr: false, RUWr: false, HazardMessage };
     }
     console.log(`[MEM Stage] Processing: "${instruction.asm}" (PC=${PC})`);
+    const decoded = DecodedInstruction.from(instruction);
     const address = parseInt(ALURes, 2);
     let memReadData = "X".padStart(32, "X");
     if (DMWr) {
       const chunks = RUrs2.match(/.{1,8}/g) || [];
       if (chunks[2] && chunks[3]) {
-        let bytesToWrite: string[] = [];
-        switch (DMCtrl) {
-          case "000": // sb
-            bytesToWrite = [chunks[3]];
-            break;
-          case "001": // sh
-            bytesToWrite = [chunks[2], chunks[3]];
-            break;
-          case "010": // sw
-            bytesToWrite = chunks;
-            break;
-        }
-        if (bytesToWrite.length > 0) {
-          this.dataMemory.write(bytesToWrite.reverse(), address);
-        }
+        // memoryAccess().bytes is the store width; the low `bytes` chunks of
+        // the 32-bit RUrs2 are written (byte-reversed), matching sb/sh/sw.
+        const access = decoded.memoryAccess()!;
+        const bytesToWrite = chunks.slice(4 - access.bytes);
+        this.dataMemory.write(bytesToWrite.reverse(), address);
       }
     } else if (this.ex_mem_register.RUDataWrSrc === "01") {
-      switch (DMCtrl) {
-        case "000": { // lb
-          const val = this.dataMemory.read(address, 1).join("");
-          memReadData = val.padStart(32, val.charAt(0));
-          break;
-        }
-        case "001": { // lh
-          const val = this.dataMemory.read(address, 2).join("");
-          memReadData = val.padStart(32, val.charAt(0));
-          break;
-        }
-        case "010": // lw
-          memReadData = this.dataMemory.read(address, 4).join("");
-          break;
-        case "100": // lbu
-          memReadData = this.dataMemory.read(address, 1).join("").padStart(32, "0");
-          break;
-        case "101": // lhu
-          memReadData = this.dataMemory.read(address, 2).join("").padStart(32, "0");
-          break;
-      }
+      // Width and sign/zero extension come from the load's memoryAccess() fact
+      // and extend() helper; the stage still performs the actual read.
+      const access = decoded.memoryAccess()!;
+      const bits = this.dataMemory.read(address, access.bytes).join("");
+      memReadData = decoded.extend(bits);
     }
 
     const newState: MEMWB_Register = {
