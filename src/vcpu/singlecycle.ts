@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { getRs1, getRs2, getRd, getFunct3, isIJump, isAUIPC } from "../utilities/instructions";
+import { DecodedInstruction } from "./instruction";
 import { intToBinary } from "../utilities/conversions";
 import { ICPU } from "./interface";
 import { RegistersFile, DataMemory, ProcessorALU } from "./components/components";
@@ -120,9 +120,6 @@ export class SCCPU implements ICPU {
   private currentType(): string {
     return this.currentInstruction().type;
   }
-  private currentOpcode(): string {
-    return this.currentInstruction().opcode;
-  }
   public finished(): boolean {
     return this.pc >= this._program.length;
   }
@@ -155,12 +152,13 @@ export class SCCPU implements ICPU {
   private executeRInstruction() {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
+    const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
-    const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
-    const rs2Val = this.registers.readRegisterFromName(getRs2(instruction));
+    const rs1Val = this.registers.readRegisterFromName(decoded.rs1());
+    const rs2Val = this.registers.readRegisterFromName(decoded.rs2());
     const aluRes = this.alu.execute(rs1Val, rs2Val, controls.alu_op);
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
-    this.registers.writeRegister(getRd(instruction), aluRes);
+    this.registers.writeRegister(decoded.rd(), aluRes);
     result.add4.result = add4Res.toString(2);
     result.ru = { rs1: rs1Val, rs2: rs2Val, dataWrite: aluRes, writeSignal: "1" };
     result.alua = { result: rs1Val, signal: "0" };
@@ -175,8 +173,9 @@ export class SCCPU implements ICPU {
   private executeIInstruction(): SCCPUResult {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
+    const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
-    const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
+    const rs1Val = this.registers.readRegisterFromName(decoded.rs1());
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
     const imm32Val = this.immediateUnit.generate(instruction);
     const aluRes = this.alu.execute(rs1Val, imm32Val, controls.alu_op);
@@ -187,13 +186,13 @@ export class SCCPU implements ICPU {
       wbData = aluRes;
     } else if (controls.ru_data_wr_src === "01") {
       // Result from Memory
-      let value = this.readFromMemory(parseInt(aluRes, 2), parseInt(getFunct3(instruction), 2));
+      let value = this.readFromMemory(parseInt(aluRes, 2), decoded);
       wbData = value;
       result.dm = {
         ...defaultDMResult,
         address: aluRes,
         writeSignal: "0",
-        controlSignal: getFunct3(instruction),
+        controlSignal: decoded.funct3(),
         dataRd: value,
       };
     } else {
@@ -202,7 +201,7 @@ export class SCCPU implements ICPU {
     }
 
     if (controls.ru_wr) {
-      this.registers.writeRegister(getRd(instruction), wbData);
+      this.registers.writeRegister(decoded.rd(), wbData);
     }
 
     result.add4.result = add4Res.toString(2);
@@ -218,7 +217,7 @@ export class SCCPU implements ICPU {
     result.alub = { result: imm32Val, signal: "1" };
     result.wb = { signal: controls.ru_data_wr_src, result: wbData };
 
-    if (isIJump(this.currentType(), this.currentOpcode())) {
+    if (decoded.isIJump()) {
       result.bu = { ...defaultBUResult, result: "1", operation: "1XXXX" };
       result.buMux = { signal: "1", result: aluRes };
     } else {
@@ -229,44 +228,24 @@ export class SCCPU implements ICPU {
     return result;
   }
 
-  private readFromMemory(address: number, control: number): string {
-    let value = "";
-    switch (control) {
-      case 0: {
-        const val = this.dataMemory.read(address, 1).join("");
-        value = val.padStart(32, val.at(0));
-        break;
-      }
-      case 1: {
-        const val = this.dataMemory.read(address, 2).join("");
-        value = val.padStart(32, val.at(0));
-        break;
-      }
-      case 2: {
-        const val = this.dataMemory.read(address, 4);
-        value = val.join("");
-        break;
-      }
-      case 4: {
-        const val = this.dataMemory.read(address, 1).join("");
-        value = val.padStart(32, "0");
-        break;
-      }
-      case 5: {
-        const val = this.dataMemory.read(address, 2).join("");
-        value = val.padStart(32, "0");
-        break;
-      }
-    }
-    return value;
+  /**
+   * Reads a load's value from data memory. Width and sign/zero extension come
+   * from the instruction's `memoryAccess()` fact and `extend()` helper; this
+   * CPU still performs the actual `DataMemory.read`.
+   */
+  private readFromMemory(address: number, decoded: DecodedInstruction): string {
+    const access = decoded.memoryAccess()!;
+    const bits = this.dataMemory.read(address, access.bytes).join("");
+    return decoded.extend(bits);
   }
 
   private executeSInstruction(): SCCPUResult {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
+    const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
-    const baseAddressVal = this.registers.readRegisterFromName(getRs1(instruction));
-    const dataToStore = this.registers.readRegisterFromName(getRs2(instruction));
+    const baseAddressVal = this.registers.readRegisterFromName(decoded.rs1());
+    const dataToStore = this.registers.readRegisterFromName(decoded.rs2());
     const offset32Val = this.immediateUnit.generate(instruction);
     const add4Res = parseInt(this.currentInstruction().inst) + 4;
     const aluRes = this.alu.execute(baseAddressVal, offset32Val, controls.alu_op);
@@ -280,7 +259,7 @@ export class SCCPU implements ICPU {
     result.dm = {
       ...defaultDMResult,
       address: aluRes,
-      controlSignal: getFunct3(instruction),
+      controlSignal: decoded.funct3(),
       dataWr: dataToStore,
       writeSignal: "1",
     };
@@ -291,12 +270,13 @@ export class SCCPU implements ICPU {
   private executeBInstruction() {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
+    const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
     const add4Res = parseInt(instruction.inst) + 4;
     result.add4.result = add4Res.toString(2);
-    const funct3 = getFunct3(instruction);
-    const rs1Val = this.registers.readRegisterFromName(getRs1(instruction));
-    const rs2Val = this.registers.readRegisterFromName(getRs2(instruction));
+    const funct3 = decoded.funct3();
+    const rs1Val = this.registers.readRegisterFromName(decoded.rs1());
+    const rs2Val = this.registers.readRegisterFromName(decoded.rs2());
     const rs1Int = BigInt.asIntN(32, BigInt("0b" + rs1Val));
     const rs2Int = BigInt.asIntN(32, BigInt("0b" + rs2Val));
     const imm32Val = this.immediateUnit.generate(instruction);
@@ -341,6 +321,7 @@ export class SCCPU implements ICPU {
   private executeUInstruction() {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
+    const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
     const add4Res = (parseInt(instruction.inst) + 4).toString(2);
     result.add4.result = add4Res;
@@ -348,14 +329,14 @@ export class SCCPU implements ICPU {
     let aluInputA = "0".padStart(32, "0");
     let aluRes = imm32Val;
 
-    if (isAUIPC(instruction.type, instruction.opcode)) {
+    if (decoded.isAUIPC()) {
       const PC = instruction.inst as number;
       aluInputA = PC.toString(2).padStart(32, "0");
       aluRes = this.alu.execute(aluInputA, imm32Val, controls.alu_op);
     }
 
     if (controls.ru_wr) {
-      this.registers.writeRegister(getRd(instruction), aluRes);
+      this.registers.writeRegister(decoded.rd(), aluRes);
     }
 
     result.ru = { ...defaultRUResult, writeSignal: "1", dataWrite: aluRes };
@@ -372,6 +353,7 @@ export class SCCPU implements ICPU {
   private executeJInstruction() {
     const result: SCCPUResult = { ...defaultSCCPUResult };
     const instruction = this.currentInstruction();
+    const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
     const pc = parseInt(instruction.inst);
     const pcVal = pc.toString(2).padStart(32, "0");
@@ -381,7 +363,7 @@ export class SCCPU implements ICPU {
     const aluRes = this.alu.execute(pcVal, imm32Val, controls.alu_op);
 
     if (controls.ru_wr) {
-      this.registers.writeRegister(getRd(instruction), add4Res);
+      this.registers.writeRegister(decoded.rd(), add4Res);
     }
 
     result.alua = { result: pcVal, signal: "1" };
