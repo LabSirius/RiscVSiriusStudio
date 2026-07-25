@@ -253,6 +253,16 @@ export class DecodedInstruction {
     return this.node.encoding!.funct7!;
   }
 
+  /**
+   * The funct7 slice of this instruction's 12-bit immediate. Used by I-type
+   * logical shift-immediates (slli/srli/srai) to recover the shift-kind bit
+   * that lives in the immediate's upper bits. Surfaces the raw imm12 read so
+   * consumers do not reach into the node's encoding themselves.
+   */
+  immFunct7(): string {
+    return DecodedInstruction.immFunct7(this.node.encoding!.imm12!);
+  }
+
   // --- specific-form predicates ---------------------------------------------
 
   /** I-type arithmetic (addi, slli, …). */
