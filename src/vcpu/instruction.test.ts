@@ -41,9 +41,9 @@ interface FactRow {
   writesMemory: boolean;
   writesRegister: boolean;
   branchesOrJumps: boolean;
-  storesNextPC: boolean;
-  storesALU: boolean;
-  storesMemRead: boolean;
+  writesReturnAddress: boolean;
+  writesComputedResult: boolean;
+  writesLoadedValue: boolean;
   isIArithmetic: boolean;
   isILoad: boolean;
   isIJump: boolean;
@@ -68,9 +68,9 @@ function factsOf(d: DecodedInstruction): FactRow {
     writesMemory: d.writesMemory(),
     writesRegister: d.writesRegister(),
     branchesOrJumps: d.branchesOrJumps(),
-    storesNextPC: d.storesNextPC(),
-    storesALU: d.storesALU(),
-    storesMemRead: d.storesMemRead(),
+    writesReturnAddress: d.writesReturnAddress(),
+    writesComputedResult: d.writesComputedResult(),
+    writesLoadedValue: d.writesLoadedValue(),
     isIArithmetic: d.isIArithmetic(),
     isILoad: d.isILoad(),
     isIJump: d.isIJump(),
@@ -96,9 +96,9 @@ function row(overrides: Partial<FactRow> & { type: string }): FactRow {
     writesMemory: false,
     writesRegister: false,
     branchesOrJumps: false,
-    storesNextPC: false,
-    storesALU: false,
-    storesMemRead: false,
+    writesReturnAddress: false,
+    writesComputedResult: false,
+    writesLoadedValue: false,
     isIArithmetic: false,
     isILoad: false,
     isIJump: false,
@@ -125,7 +125,7 @@ const cases: Case[] = [
       usesRs1: true, usesRs2: true, usesRd: true,
       usesFunct3: true, usesFunct7: true,
       usesALU: true,
-      writesRegister: true, storesALU: true,
+      writesRegister: true, writesComputedResult: true,
     }),
   },
   {
@@ -135,7 +135,7 @@ const cases: Case[] = [
       type: "I",
       usesRs1: true, usesRd: true, usesFunct3: true,
       usesALU: true, usesImmediate: true,
-      writesRegister: true, storesALU: true,
+      writesRegister: true, writesComputedResult: true,
       isIArithmetic: true,
     }),
   },
@@ -146,7 +146,7 @@ const cases: Case[] = [
       type: "I",
       usesRs1: true, usesRd: true, usesFunct3: true,
       usesALU: true, usesImmediate: true, usesDM: true,
-      readsMemory: true, writesRegister: true, storesMemRead: true,
+      readsMemory: true, writesRegister: true, writesLoadedValue: true,
       isILoad: true,
       memoryAccess: { bytes: 4, signed: true },
     }),
@@ -158,7 +158,7 @@ const cases: Case[] = [
       type: "I",
       usesRs1: true, usesRd: true, usesFunct3: true,
       usesALU: true, usesImmediate: true, usesDM: true,
-      readsMemory: true, writesRegister: true, storesMemRead: true,
+      readsMemory: true, writesRegister: true, writesLoadedValue: true,
       isILoad: true,
       memoryAccess: { bytes: 1, signed: true },
     }),
@@ -170,7 +170,7 @@ const cases: Case[] = [
       type: "I",
       usesRs1: true, usesRd: true, usesFunct3: true,
       usesALU: true, usesImmediate: true, usesDM: true,
-      readsMemory: true, writesRegister: true, storesMemRead: true,
+      readsMemory: true, writesRegister: true, writesLoadedValue: true,
       isILoad: true,
       memoryAccess: { bytes: 1, signed: false },
     }),
@@ -214,7 +214,7 @@ const cases: Case[] = [
       type: "J",
       usesRd: true,
       usesImmediate: true,
-      writesRegister: true, branchesOrJumps: true, storesNextPC: true,
+      writesRegister: true, branchesOrJumps: true, writesReturnAddress: true,
     }),
   },
   {
@@ -224,7 +224,7 @@ const cases: Case[] = [
       type: "I",
       usesRs1: true, usesRd: true, usesFunct3: true,
       usesALU: true, usesImmediate: true,
-      writesRegister: true, branchesOrJumps: true, storesNextPC: true,
+      writesRegister: true, branchesOrJumps: true, writesReturnAddress: true,
       isIJump: true,
     }),
   },
@@ -235,7 +235,7 @@ const cases: Case[] = [
       type: "U",
       usesRd: true,
       usesImmediate: true,
-      writesRegister: true, storesALU: true,
+      writesRegister: true, writesComputedResult: true,
       isLUI: true,
     }),
   },
@@ -246,7 +246,7 @@ const cases: Case[] = [
       type: "U",
       usesRd: true,
       usesImmediate: true,
-      writesRegister: true, storesALU: true,
+      writesRegister: true, writesComputedResult: true,
       isAUIPC: true,
     }),
   },
