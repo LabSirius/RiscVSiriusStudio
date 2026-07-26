@@ -6,10 +6,11 @@
  * node: the assembler, the peggy-generated parser, and the
  * `InternalRepresentation` contract stay untouched.
  *
- * This module replaces the stringly-typed free functions in
- * `src/utilities/instructions.ts`: every fact those functions computed has an
- * equivalent method here, staying close to the existing vocabulary. In
- * addition it owns the memory-access classification (`memoryAccess()`) and the
+ * This module replaced the stringly-typed free functions that once lived in
+ * `src/utilities/instructions.ts` (now deleted): every fact those functions
+ * computed has an equivalent method here, staying close to the existing
+ * vocabulary. In addition it owns the memory-access classification
+ * (`memoryAccess()`) and the
  * pure sign/zero `extend()` helper that were previously decoded three separate
  * times across the two CPUs and the Simulator layer.
  */
