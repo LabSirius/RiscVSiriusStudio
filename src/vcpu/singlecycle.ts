@@ -81,6 +81,7 @@ export class SCCPU implements ICPU {
   private alu: ProcessorALU;
   private controlUnit: ControlUnit;
   private pc: number;
+  private halted: boolean = false;
 
 
   get program() {
@@ -121,7 +122,7 @@ export class SCCPU implements ICPU {
     return this.currentInstruction().type;
   }
   public finished(): boolean {
-    return this.pc >= this._program.length;
+    return this.halted || this.pc >= this._program.length;
   }
   public nextInstruction() {
     this.pc++;
@@ -130,23 +131,55 @@ export class SCCPU implements ICPU {
     this.pc = parseInt(address, 2) / 4;
   }
 
+  /**
+   * Advances one clock: executes the current instruction (register writes,
+   * loads and stores commit internally), detects halt (`ebreak`), then advances
+   * the program counter. `buMux.result` holds the next-PC byte address for every
+   * instruction type — sequential fall-through or branch/jump target — so a
+   * single assignment drives all control flow. The returned `SCCPUResult` is a
+   * datapath-wire observation, not the computation the caller must replay.
+   */
   public cycle(): SCCPUResult {
+    const instruction = this.currentInstruction();
+    let result: SCCPUResult;
     switch (this.currentType()) {
       case "R":
-        return this.executeRInstruction();
+        result = this.executeRInstruction();
+        break;
       case "I":
-        return this.executeIInstruction();
+        result = this.executeIInstruction();
+        break;
       case "S":
-        return this.executeSInstruction();
+        result = this.executeSInstruction();
+        break;
       case "B":
-        return this.executeBInstruction();
+        result = this.executeBInstruction();
+        break;
       case "U":
-        return this.executeUInstruction();
+        result = this.executeUInstruction();
+        break;
       case "J":
-        return this.executeJInstruction();
+        result = this.executeJInstruction();
+        break;
       default:
-        throw new Error("Unknown instruction " + JSON.stringify(this.currentInstruction()));
+        throw new Error("Unknown instruction " + JSON.stringify(instruction));
     }
+    if (this.isHalt(instruction)) {
+      this.halted = true;
+    }
+    // buMux.result is the next-PC byte address for every instruction type, so
+    // jumpToInstruction drives sequential fall-through and taken branches alike.
+    this.jumpToInstruction(result.buMux.result);
+    return result;
+  }
+
+  /** `ebreak` (SYSTEM opcode, funct3 000, imm12 = 1) halts the CPU. */
+  private isHalt(instruction: any): boolean {
+    return (
+      instruction.opcode === "1110011" &&
+      DecodedInstruction.from(instruction).funct3() === "000" &&
+      instruction.encoding.imm12 === "000000000001"
+    );
   }
 
   private executeRInstruction() {
@@ -264,7 +297,24 @@ export class SCCPU implements ICPU {
       writeSignal: "1",
     };
     result.imm = { signal: "001", output: offset32Val };
+    this.commitStore(aluRes, dataToStore);
     return result;
+  }
+
+  /**
+   * Commits a store to data memory. The full 32-bit word is written
+   * little-endian for every store width — the CPU's long-standing behaviour,
+   * formerly re-implemented by the Simulator and the golden driver off the
+   * `dm` render wires.
+   */
+  private commitStore(address: string, data: string): void {
+    const dataWr = data.length < 32 ? data.padStart(32, "0") : data;
+    const addr = parseInt(address, 2);
+    const bytes = (dataWr.match(/.{1,8}/g) as string[]).reverse();
+    if (!this.dataMemory.canWrite(bytes.length, addr)) {
+      throw new Error(`Cannot write to address ${addr.toString(16)}.`);
+    }
+    this.dataMemory.write(bytes, addr);
   }
 
   private executeBInstruction() {
