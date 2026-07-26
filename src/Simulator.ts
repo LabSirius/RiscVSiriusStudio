@@ -3,7 +3,7 @@
 import { RVDocument } from "./rvDocument";
 import { RVContext } from "./support/context";
 import { defaultSCCPUResult, SCCPU, SCCPUResult } from "./vcpu/singlecycle";
-import { branchesOrJumps, getFunct3, readsDM, writesDM, writesRU } from "./utilities/instructions";
+import { DecodedInstruction } from "./vcpu/instruction";
 import { intToBinary } from "./utilities/conversions";
 import { window, commands, TextEditorDecorationType, Webview, Disposable } from "vscode";
 import { PipelineCPU, PipelineCycleResult } from "./vcpu/pipeline/pipeline";
@@ -150,7 +150,7 @@ export class TextSimulator extends Simulator {
     const addressLine =
       this.rvDoc.ir?.instructions.map((instr) => ({
         line: instr.location.start.line,
-        jump: branchesOrJumps(instr.type, instr.opcode) ? instr.encoding.imm13 : null,
+        jump: DecodedInstruction.from(instr).branchesOrJumps() ? instr.encoding.imm13 : null,
       })) || [];
     const asmList = this.rvDoc.ir?.instructions.map((instr) => instr.asm);
 
@@ -206,20 +206,21 @@ export class TextSimulator extends Simulator {
           return { instruction: {}, result: defaultSCCPUResult };
         }
         instruction.currentPc = this.cpu.getPC();
-        if (writesRU(instruction.type, instruction.opcode)) {
+        const decoded = DecodedInstruction.from(instruction);
+        if (decoded.writesRegister()) {
           this.cpu.getRegisterFile().writeRegister(instruction.rd.regeq, result.wb.result);
           this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
         }
-        if (readsDM(instruction.type, instruction.opcode)) {
+        if (decoded.readsMemory()) {
           this.notifyMemoryRead(
             parseInt(result.dm.address, 2),
-            this.bytesToReadOrWrite(instruction)
+            decoded.memoryAccess()!.bytes
           );
         }
-        if (writesDM(instruction.type, instruction.opcode)) {
-          this.writeResult(instruction, result);
+        if (decoded.writesMemory()) {
+          this.writeResult(decoded, result);
         }
-        if (branchesOrJumps(instruction.type, instruction.opcode)) {
+        if (decoded.branchesOrJumps()) {
           this.cpu.jumpToInstruction(result.buMux.result);
         } else {
           this.cpu.nextInstruction();
@@ -227,7 +228,7 @@ export class TextSimulator extends Simulator {
         this.updateTextUI(this.cpu.currentInstruction(), stepResult);
         const isEbreak =
           instruction.opcode === "1110011" &&
-          getFunct3(instruction) === "000" &&
+          decoded.funct3() === "000" &&
           instruction.encoding.imm12 === "000000000001";
         if (isEbreak) {
           this.stop({ sendStopMessage: true });
@@ -245,7 +246,10 @@ export class TextSimulator extends Simulator {
 
           if (isMemoryOperation) {
             const address = parseInt(memInstructionData.ALURes, 2);
-            const bytesToAccess = this.bytesToReadOrWrite(memInstructionData.instruction);
+            // isMemoryOperation is asserted off the ControlUnit's DMWr/RUDataWrSrc
+            // signals, which the decoder raises only for loads/stores; that
+            // guarantees memoryAccess() is non-null here.
+            const bytesToAccess = DecodedInstruction.from(memInstructionData.instruction).memoryAccess()!.bytes;
             if (memInstructionData.DMWr) {
               this.notifyMemoryWrite(address, memInstructionData.RUrs2, bytesToAccess);
             } else if (memInstructionData.RUDataWrSrc === "01") {
@@ -305,28 +309,8 @@ export class TextSimulator extends Simulator {
     });
   }
 
-  private bytesToReadOrWrite(instruction: any): number {
-    const funct3 = getFunct3(instruction);
-    switch (funct3) {
-      case "000":
-        return 1;
-      case "001":
-        return 2;
-      case "010":
-        return 4;
-      case "100":
-        return 1;
-      case "101":
-        return 2;
-      case "XXX":
-        return 0;
-      default:
-        throw new Error("Cannot deduce bytes to write from funct3");
-    }
-  }
-
-  private writeResult(instruction: any, result: SCCPUResult): void {
-    const bytesToWrite = this.bytesToReadOrWrite(instruction);
+  private writeResult(decoded: DecodedInstruction, result: SCCPUResult): void {
+    const bytesToWrite = decoded.memoryAccess()!.bytes;
     const addressNum = parseInt(result.dm.address, 2);
     if (result.dm.dataWr.length < 32) result.dm.dataWr = result.dm.dataWr.padStart(32, "0");
     if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) {
