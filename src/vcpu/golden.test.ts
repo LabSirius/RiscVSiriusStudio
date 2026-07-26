@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { describe, it, expect } from "vitest";
 import { compile } from "../utilities/riscvc";
-import { SCCPU, type SCCPUResult } from "./singlecycle";
+import { SCCPU } from "./singlecycle";
 import { PipelineCPU } from "./pipeline/pipeline";
 import type { ICPU } from "./interface";
 import { DecodedInstruction } from "./instruction";
@@ -341,13 +341,10 @@ function snapshot(cpu: ICPU): StateSnapshot {
 }
 
 /**
- * Headless monocycle driver. Replicates the essential control flow of
- * `TextSimulator.step()` without the VS Code host: `cycle()` already performs
- * register writes and memory loads internally, so the driver only has to
- * commit stores to memory and advance the PC. `buMux.result` carries the
- * next-PC byte address for every instruction type (sequential fall-through or
- * branch/jump target), so a single `jumpToInstruction` drives all control
- * flow without importing instruction predicates.
+ * Headless monocycle driver. `SCCPU.cycle()` is self-committing — it advances
+ * the register file, data memory (stores included) and program counter, and
+ * detects halt — so the driver just clocks it to completion, identical to the
+ * pipeline driver below and no longer needing to know which CPU it holds.
  */
 function runMonocycle(cpu: SCCPU): void {
   let steps = 0;
@@ -355,28 +352,8 @@ function runMonocycle(cpu: SCCPU): void {
     if (++steps > MAX_STEPS) {
       throw new Error("Monocycle program did not terminate");
     }
-    const result = cpu.cycle();
-    const instruction = cpu.currentInstruction();
-    if (DecodedInstruction.from(instruction).writesMemory()) {
-      commitStore(cpu, result);
-    }
-    cpu.jumpToInstruction(result.buMux.result);
+    cpu.cycle();
   }
-}
-
-/**
- * Faithful copy of `TextSimulator.writeResult`'s memory commit: the full
- * 32-bit word is written little-endian for every store width. Preserved
- * verbatim so the golden captures current behaviour, quirks included.
- */
-function commitStore(cpu: SCCPU, result: SCCPUResult): void {
-  let dataWr = result.dm.dataWr;
-  if (dataWr.length < 32) {
-    dataWr = dataWr.padStart(32, "0");
-  }
-  const address = parseInt(result.dm.address, 2);
-  const chunks = dataWr.match(/.{1,8}/g) as string[];
-  cpu.getDataMemory().write(chunks.reverse(), address);
 }
 
 /** Headless pipeline driver: the pipeline commits stores/loads and register

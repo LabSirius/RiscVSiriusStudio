@@ -75,8 +75,10 @@ export abstract class Simulator {
     if (!this.configured) {
       this._configured = true;
     }
-    const result = this.cpu.cycle();
+    // Capture the executing instruction before cycle(): cycle() self-commits and
+    // advances the PC, so afterwards currentInstruction() is the *next* one.
     const instruction = this.cpu.currentInstruction();
+    const result = this.cpu.cycle();
     return { instruction, result };
   }
 
@@ -197,6 +199,8 @@ export class TextSimulator extends Simulator {
 
   public override step(): StepResult {
     try {
+      // The executing instruction's own PC, captured before cycle() advances it.
+      const executedPc = this.cpu.getPC();
       const stepResult = super.step();
       if (this.simulatorType === "monocycle") {
         const instruction = stepResult.instruction;
@@ -205,10 +209,11 @@ export class TextSimulator extends Simulator {
           this.stop({ sendStopMessage: true });
           return { instruction: {}, result: defaultSCCPUResult };
         }
-        instruction.currentPc = this.cpu.getPC();
+        instruction.currentPc = executedPc;
+        // cycle() has already committed the register write, load, store and PC
+        // advance; this branch only reads the result to notify the UI.
         const decoded = DecodedInstruction.from(instruction);
         if (decoded.writesRegister()) {
-          this.cpu.getRegisterFile().writeRegister(instruction.rd.regeq, result.wb.result);
           this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
         }
         if (decoded.readsMemory()) {
@@ -218,19 +223,10 @@ export class TextSimulator extends Simulator {
           );
         }
         if (decoded.writesMemory()) {
-          this.writeResult(decoded, result);
-        }
-        if (decoded.branchesOrJumps()) {
-          this.cpu.jumpToInstruction(result.buMux.result);
-        } else {
-          this.cpu.nextInstruction();
+          this.notifyStore(decoded, result);
         }
         this.updateTextUI(this.cpu.currentInstruction(), stepResult);
-        const isEbreak =
-          instruction.opcode === "1110011" &&
-          decoded.funct3() === "000" &&
-          instruction.encoding.imm12 === "000000000001";
-        if (isEbreak) {
+        if (this.cpu.finished()) {
           this.stop({ sendStopMessage: true });
         }
       } else {
@@ -309,16 +305,13 @@ export class TextSimulator extends Simulator {
     });
   }
 
-  private writeResult(decoded: DecodedInstruction, result: SCCPUResult): void {
+  // The store itself is committed inside SCCPU.cycle(); this only notifies the
+  // UI of the write, reading the address and (word-padded) data off the result.
+  private notifyStore(decoded: DecodedInstruction, result: SCCPUResult): void {
     const bytesToWrite = decoded.memoryAccess()!.bytes;
     const addressNum = parseInt(result.dm.address, 2);
     if (result.dm.dataWr.length < 32) result.dm.dataWr = result.dm.dataWr.padStart(32, "0");
-    if (!this.cpu.getDataMemory().canWrite(bytesToWrite, addressNum)) {
-      throw new Error(`Cannot write to address ${addressNum.toString(16)}.`);
-    }
     this.notifyMemoryWrite(addressNum, result.dm.dataWr, bytesToWrite);
-    const chunks = result.dm.dataWr.match(/.{1,8}/g) as string[];
-    this.cpu.getDataMemory().write(chunks.reverse(), addressNum);
   }
 
   public override animateLine(line: number): void {
