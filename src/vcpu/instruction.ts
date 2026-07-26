@@ -364,8 +364,8 @@ export class DecodedInstruction {
     return false;
   }
 
-  /** True if the instruction stores the next PC into rd (J, jalr). */
-  storesNextPC(): boolean {
+  /** True if the value written to rd is the return address, next-PC (J, jalr). */
+  writesReturnAddress(): boolean {
     switch (true) {
       case this.node.type === "J":
       case this.isIJump():
@@ -374,8 +374,13 @@ export class DecodedInstruction {
     return false;
   }
 
-  /** True if the write-back value comes from the ALU (R, I-arith, U). */
-  storesALU(): boolean {
+  /**
+   * True if the value written to rd is the computed (arithmetic/logic) result
+   * (R, I-arith, U). ISA-level fact about the write-back value's origin — it
+   * names the *result*, not a datapath component, so it holds on any CPU
+   * regardless of how many ALUs route it.
+   */
+  writesComputedResult(): boolean {
     switch (true) {
       case this.node.type === "R":
       case this.isIArithmetic():
@@ -385,8 +390,8 @@ export class DecodedInstruction {
     return false;
   }
 
-  /** True if the write-back value comes from a memory read (loads). */
-  storesMemRead(): boolean {
+  /** True if the value written to rd is the value loaded from memory (loads). */
+  writesLoadedValue(): boolean {
     return this.isILoad();
   }
 
