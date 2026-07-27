@@ -21,12 +21,6 @@ export interface ICPU {
   cycle(): CycleEffect;
   getPC(): number;
   finished(): boolean;
-  /**
-   * The instruction whose source line the editor highlights this clock:
-   * single-cycle → the executing instruction; pipeline → the just-fetched
-   * (IF/ID) instruction.
-   */
-  highlightedInstruction(): DecodedInstruction;
   getRegisterFile(): RegistersFile;
   getDataMemory(): DataMemory;
   getProgram(): readonly DecodedInstruction[];

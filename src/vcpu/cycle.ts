@@ -17,6 +17,13 @@ import { DecodedInstruction } from "./instruction";
  * reference, off the shared contract (ADR-0003).
  */
 export interface CycleEffect {
+  /**
+   * The instruction that retired (committed) this clock — the single-cycle
+   * instruction, or the pipeline's WB-stage instruction. Absent during a
+   * pipeline fill or bubble (nothing retired). The view layer highlights its
+   * source line; the effect only reports the fact (ADR-0004).
+   */
+  retiredInstruction?: DecodedInstruction;
   /** The register file write this clock committed, if any. */
   registerWrite?: RegisterWrite;
   /** The data-memory access this clock committed, if any. */

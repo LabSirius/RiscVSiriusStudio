@@ -126,9 +126,6 @@ export class SCCPU implements ICPU {
   private currentRawInstruction() {
     return this._program[this.pc];
   }
-  public highlightedInstruction(): DecodedInstruction {
-    return DecodedInstruction.from(this.currentRawInstruction());
-  }
   private currentType(): string {
     return this.currentRawInstruction().type;
   }
@@ -195,6 +192,9 @@ export class SCCPU implements ICPU {
   private effectFrom(instruction: any, wires: MonocycleWires): CycleEffect {
     const decoded = DecodedInstruction.from(instruction);
     const effect: CycleEffect = {
+      // Single-cycle runs one whole instruction per clock, so it retires that
+      // instruction every clock (ADR-0004).
+      retiredInstruction: decoded,
       controlTransfer: {
         nextPc: parseInt(wires.buMux.result, 2),
         taken: wires.buMux.signal === "1",

@@ -352,6 +352,11 @@ export class PipelineCPU implements ICPU {
         instruction: taken ? DecodedInstruction.from(exInstruction) : undefined,
       },
     };
+    // A real instruction retires in WB (pc !== -1 sentinel distinguishes it from
+    // a fill/bubble); its source line is what the editor highlights (ADR-0004).
+    if (wb.instruction && wb.instruction.pc !== -1) {
+      effect.retiredInstruction = DecodedInstruction.from(wb.instruction);
+    }
     // WB commits the register write for a real, non-x0 destination.
     if (wb.RUWr && wb.RD !== "0" && wb.RD !== "X") {
       effect.registerWrite = {
@@ -710,9 +715,6 @@ export class PipelineCPU implements ICPU {
   }
   public getPC(): number {
     return this.pc;
-  }
-  public highlightedInstruction(): DecodedInstruction {
-    return DecodedInstruction.from(this.if_id_register.instruction || {});
   }
   public finished(): boolean {
     return this.executionFinished;
