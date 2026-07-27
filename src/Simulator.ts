@@ -8,11 +8,12 @@ import { intToBinary } from "./utilities/conversions";
 import { window, commands, TextEditorDecorationType, Webview, Disposable } from "vscode";
 import { PipelineCPU, PipelineStages } from "./vcpu/pipeline/pipeline";
 import { ICPU } from "./vcpu/interface";
+import { CycleEffect } from "./vcpu/cycle";
 
 export type SimulationParameters = { memorySize: number };
 export interface StepResult {
   instruction: any;
-  result: MonocycleWires | PipelineStages;
+  effect: CycleEffect;
 }
 
 /** Builds a single-cycle CPU from an assembled document. */
@@ -101,8 +102,8 @@ export abstract class Simulator {
     // Capture the executing instruction before cycle(): cycle() self-commits and
     // advances the PC, so afterwards currentInstruction() is the *next* one.
     const instruction = this.cpu.currentInstruction();
-    const result = this.cpu.cycle();
-    return { instruction, result };
+    const effect = this.cpu.cycle();
+    return { instruction, effect };
   }
 
   public stop(options?: { sendStopMessage: boolean; isReset?: boolean }): void {
@@ -157,13 +158,15 @@ export class TextSimulator extends Simulator {
   }
 
   /**
-   * The datapath render payload posted to the webview each step. The text
-   * simulator sources it from `cycle()`'s return (the old path, still returned
-   * this ticket); the graphic simulator overrides this to source it from the
-   * concrete CPU's `datapathView()` instead — byte-identical data (ADR-0003).
+   * The datapath render payload posted to the webview each step. `cycle()` no
+   * longer carries render data (it returns a Cycle effect — ADR-0002), and the
+   * datapath view is off ICPU (ADR-0003), so the plain text simulator has no
+   * datapath to source and posts an empty bundle. The graphic simulator
+   * subclasses override this to source the real view from their concrete CPU's
+   * `datapathView()`.
    */
-  protected datapathPayload(stepResult: StepResult): MonocycleWires | PipelineStages {
-    return stepResult.result;
+  protected datapathPayload(_stepResult: StepResult): MonocycleWires | PipelineStages {
+    return defaultMonocycleWires;
   }
 
   public override async start(options?: { isRestart?: boolean }): Promise<void> {
@@ -235,74 +238,71 @@ export class TextSimulator extends Simulator {
       // The executing instruction's own PC, captured before cycle() advances it.
       const executedPc = this.cpu.getPC();
       const stepResult = super.step();
-      if (this.simulatorType === "monocycle") {
-        const instruction = stepResult.instruction;
-        const result = stepResult.result as MonocycleWires;
-        if (!instruction || Object.keys(instruction).length === 0) {
-          this.stop({ sendStopMessage: true });
-          return { instruction: {}, result: defaultMonocycleWires };
-        }
-        instruction.currentPc = executedPc;
-        // cycle() has already committed the register write, load, store and PC
-        // advance; this branch only reads the result to notify the UI.
-        const decoded = DecodedInstruction.from(instruction);
-        if (decoded.writesRegister()) {
-          this.notifyRegisterWrite(instruction.rd.regeq, result.wb.result);
-        }
-        if (decoded.readsMemory()) {
-          this.notifyMemoryRead(
-            parseInt(result.dm.address, 2),
-            decoded.memoryAccess()!.bytes
-          );
-        }
-        if (decoded.writesMemory()) {
-          this.notifyStore(decoded, result);
-        }
-        this.updateTextUI(this.cpu.currentInstruction(), stepResult);
-        if (this.cpu.finished()) {
-          this.stop({ sendStopMessage: true });
-        }
-      } else {
-        const pipelineResult = stepResult.result as PipelineStages;
-        const wbInstruction = pipelineResult.WB;
-        if (wbInstruction.RUWr && wbInstruction.RD !== "X" && wbInstruction.RD !== "0") {
-          this.notifyRegisterWrite(`x${wbInstruction.RD}`, wbInstruction.dataToWrite);
-        }
-        const memInstructionData = pipelineResult.EX;
-        if (memInstructionData.instruction && memInstructionData.instruction.pc !== -1) {
-          const isMemoryOperation =
-            memInstructionData.DMWr || memInstructionData.RUDataWrSrc === "01";
-
-          if (isMemoryOperation) {
-            const address = parseInt(memInstructionData.ALURes, 2);
-            // isMemoryOperation is asserted off the ControlUnit's DMWr/RUDataWrSrc
-            // signals, which the decoder raises only for loads/stores; that
-            // guarantees memoryAccess() is non-null here.
-            const bytesToAccess = DecodedInstruction.from(memInstructionData.instruction).memoryAccess()!.bytes;
-            if (memInstructionData.DMWr) {
-              this.notifyMemoryWrite(address, memInstructionData.RUrs2, bytesToAccess);
-            } else if (memInstructionData.RUDataWrSrc === "01") {
-              this.notifyMemoryRead(address, bytesToAccess);
-            }
-          }
-        }
-        this.webview.postMessage({
-          from: "extension",
-          operation: "step",
-          result: this.datapathPayload(stepResult),
-        });
-        if (this.cpu.finished()) {
-          this.stop({ sendStopMessage: true, isReset: false });
-          return stepResult;
-        }
+      const instruction = stepResult.instruction;
+      if (!instruction || Object.keys(instruction).length === 0) {
+        this.stop({ sendStopMessage: true });
+        return { instruction: {}, effect: {} };
       }
-
+      instruction.currentPc = executedPc;
+      // cycle() has already committed the register write, load, store and PC
+      // advance; step() only reads the Cycle effect to notify the UI — the same
+      // uniform path for both CPU kinds, with no downcast and no simulatorType
+      // branch (ADR-0002).
+      this.applyEffect(stepResult.effect);
+      this.postStepUpdate(stepResult);
+      if (this.cpu.finished()) {
+        this.stop({ sendStopMessage: true });
+      }
       return stepResult;
     } catch (error) {
       console.error("Error during simulation step:", error);
       this.stop({ sendStopMessage: true });
-      return { instruction: {}, result: defaultMonocycleWires };
+      return { instruction: {}, effect: {} };
     }
+  }
+
+  /**
+   * Translates the Cycle effect into UI notifications: at most one register
+   * write, at most one memory read or write. CPU-independent — the effect
+   * already names what the clock committed (ADR-0002).
+   */
+  private applyEffect(effect: CycleEffect): void {
+    const rw = effect.registerWrite;
+    if (rw) {
+      this.notifyRegisterWrite(rw.register, rw.value);
+    }
+    const ma = effect.memoryAccess;
+    if (ma) {
+      if (ma.kind === "read") {
+        this.notifyMemoryRead(ma.address, ma.bytes);
+      } else {
+        this.notifyMemoryWrite(ma.address, ma.value, ma.bytes);
+      }
+    }
+  }
+
+  /**
+   * Posts the per-step "step" message to the webview and moves the editor
+   * highlight. This base version serves the (monocycle-shaped) text webview; the
+   * pipeline graphic simulator overrides it to post the stage latches instead.
+   */
+  protected postStepUpdate(stepResult: StepResult): void {
+    let line: number | undefined;
+    try {
+      line = this.rvDoc.getLineForIR(this.cpu.currentInstruction());
+    } catch {
+      line = undefined;
+      this.stop({ sendStopMessage: true });
+    }
+    if (line !== undefined) this.highlightLine(line);
+    this.webview.postMessage({
+      from: "extension",
+      operation: "step",
+      newPc: this.cpu.getPC(),
+      currentMonocycletInst: stepResult.instruction,
+      result: this.datapathPayload(stepResult),
+      lineDecorationNumber: line !== undefined ? line + 1 : -1,
+    });
   }
 
   public override stop(options?: { sendStopMessage: boolean; isReset?: boolean }): void {
@@ -321,34 +321,6 @@ export class TextSimulator extends Simulator {
     if (options?.sendStopMessage ?? true) {
       this.sendToWebview({ operation: "stop" });
     }
-  }
-
-  private updateTextUI(currentMonocycletInst: any, result: StepResult) {
-    let line: number | undefined;
-    try {
-      line = this.rvDoc.getLineForIR(currentMonocycletInst);
-    } catch {
-      line = undefined;
-      this.stop({ sendStopMessage: true });
-    }
-    if (line !== undefined) this.highlightLine(line);
-    this.webview.postMessage({
-      from: "extension",
-      operation: "step",
-      newPc: this.cpu.getPC(),
-      currentMonocycletInst: result.instruction,
-      result: this.datapathPayload(result),
-      lineDecorationNumber: line !== undefined ? line + 1 : -1,
-    });
-  }
-
-  // The store itself is committed inside SCCPU.cycle(); this only notifies the
-  // UI of the write, reading the address and (word-padded) data off the result.
-  private notifyStore(decoded: DecodedInstruction, result: MonocycleWires): void {
-    const bytesToWrite = decoded.memoryAccess()!.bytes;
-    const addressNum = parseInt(result.dm.address, 2);
-    if (result.dm.dataWr.length < 32) result.dm.dataWr = result.dm.dataWr.padStart(32, "0");
-    this.notifyMemoryWrite(addressNum, result.dm.dataWr, bytesToWrite);
   }
 
   public override animateLine(line: number): void {
@@ -458,10 +430,9 @@ export abstract class GraphicSimulator extends TextSimulator {
   protected abstract datapathView(): MonocycleWires | PipelineStages;
 
   /**
-   * Overrides the text path: the datapath posted to the graphic webview comes
-   * from `datapathView()` (the new path) rather than `cycle()`'s return. Both
-   * carry the same object this ticket, so the webview receives byte-identical
-   * data (ADR-0003).
+   * Overrides the empty text payload: the datapath posted to the graphic webview
+   * comes from the concrete CPU's `datapathView()` — the render snapshot captured
+   * during the last `cycle()` (ADR-0003).
    */
   protected override datapathPayload(_stepResult: StepResult): MonocycleWires | PipelineStages {
     return this.datapathView();
@@ -528,5 +499,18 @@ export class PipelineGraphicSimulator extends GraphicSimulator {
 
   protected override datapathView(): PipelineStages {
     return this.pipelineCpu.datapathView();
+  }
+
+  /**
+   * The pipeline webview consumes the five stage latches, not the monocycle
+   * `newPc`/`currentMonocycletInst` shape, and drives no editor-line highlight.
+   * Post just the datapath view, matching the pre-refactor pipeline path.
+   */
+  protected override postStepUpdate(stepResult: StepResult): void {
+    this.webview.postMessage({
+      from: "extension",
+      operation: "step",
+      result: this.datapathPayload(stepResult),
+    });
   }
 }
