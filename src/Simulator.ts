@@ -2,17 +2,61 @@
 
 import { RVDocument } from "./rvDocument";
 import { RVContext } from "./support/context";
-import { defaultSCCPUResult, SCCPU, SCCPUResult } from "./vcpu/singlecycle";
+import { defaultMonocycleWires, SCCPU, MonocycleWires } from "./vcpu/singlecycle";
 import { DecodedInstruction } from "./vcpu/instruction";
 import { intToBinary } from "./utilities/conversions";
 import { window, commands, TextEditorDecorationType, Webview, Disposable } from "vscode";
-import { PipelineCPU, PipelineCycleResult } from "./vcpu/pipeline/pipeline";
+import { PipelineCPU, PipelineStages } from "./vcpu/pipeline/pipeline";
 import { ICPU } from "./vcpu/interface";
 
 export type SimulationParameters = { memorySize: number };
 export interface StepResult {
   instruction: any;
-  result: SCCPUResult | PipelineCycleResult;
+  result: MonocycleWires | PipelineStages;
+}
+
+/** Builds a single-cycle CPU from an assembled document. */
+function buildMonocycleCpu(rvDoc: RVDocument, params: SimulationParameters): SCCPU {
+  if (!rvDoc.ir) {
+    throw new Error("RVDocument has no IR");
+  }
+  return new SCCPU(
+    rvDoc.ir.instructions,
+    rvDoc.ir.programMemory,
+    rvDoc.ir.writableMemory,
+    rvDoc.ir.readOnlyMemory,
+    params.memorySize
+  );
+}
+
+/** Builds a pipeline CPU from an assembled document. */
+function buildPipelineCpu(rvDoc: RVDocument, params: SimulationParameters): PipelineCPU {
+  if (!rvDoc.ir) {
+    throw new Error("RVDocument has no IR");
+  }
+  return new PipelineCPU(
+    rvDoc.ir.instructions,
+    rvDoc.ir.programMemory,
+    rvDoc.ir.writableMemory,
+    rvDoc.ir.readOnlyMemory,
+    params.memorySize
+  );
+}
+
+/**
+ * Composition-root CPU factory: the one place that maps a simulator kind to its
+ * concrete CPU. Callers that don't need the Datapath view (the text simulator)
+ * hold the result as `ICPU`; the graphic simulator subclasses build the concrete
+ * CPU directly so they keep a statically-typed reference (ADR-0003).
+ */
+export function createCpu(
+  simulatorType: "monocycle" | "pipeline",
+  params: SimulationParameters,
+  rvDoc: RVDocument
+): ICPU {
+  return simulatorType === "pipeline"
+    ? buildPipelineCpu(rvDoc, params)
+    : buildMonocycleCpu(rvDoc, params);
 }
 
 /**
@@ -27,8 +71,8 @@ export abstract class Simulator {
   protected readonly simulatorType: "monocycle" | "pipeline";
 
   constructor(
+    cpu: ICPU,
     simulatorType: "monocycle" | "pipeline",
-    params: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext,
     webview: Webview
@@ -37,28 +81,7 @@ export abstract class Simulator {
     this.rvDoc = rvDoc;
     this.webview = webview;
     this.simulatorType = simulatorType;
-
-    if (!rvDoc.ir) {
-      throw new Error("RVDocument has no IR");
-    }
-
-    if (simulatorType === "pipeline") {
-      this.cpu = new PipelineCPU(
-        rvDoc.ir.instructions,
-        rvDoc.ir.programMemory,
-        rvDoc.ir.writableMemory,
-        rvDoc.ir.readOnlyMemory,
-        params.memorySize
-      );
-    } else {
-      this.cpu = new SCCPU(
-        rvDoc.ir.instructions,
-        rvDoc.ir.programMemory,
-        rvDoc.ir.writableMemory,
-        rvDoc.ir.readOnlyMemory,
-        params.memorySize
-      );
-    }
+    this.cpu = cpu;
   }
 
   public get configured(): boolean {
@@ -124,13 +147,23 @@ export class TextSimulator extends Simulator {
   private selectionListenerDisposable: Disposable | undefined;
 
   constructor(
+    cpu: ICPU,
     simulatorType: "monocycle" | "pipeline",
-    settings: SimulationParameters,
     rvDoc: RVDocument,
     context: RVContext,
     webview: Webview
   ) {
-    super(simulatorType, settings, rvDoc, context, webview);
+    super(cpu, simulatorType, rvDoc, context, webview);
+  }
+
+  /**
+   * The datapath render payload posted to the webview each step. The text
+   * simulator sources it from `cycle()`'s return (the old path, still returned
+   * this ticket); the graphic simulator overrides this to source it from the
+   * concrete CPU's `datapathView()` instead — byte-identical data (ADR-0003).
+   */
+  protected datapathPayload(stepResult: StepResult): MonocycleWires | PipelineStages {
+    return stepResult.result;
   }
 
   public override async start(options?: { isRestart?: boolean }): Promise<void> {
@@ -204,10 +237,10 @@ export class TextSimulator extends Simulator {
       const stepResult = super.step();
       if (this.simulatorType === "monocycle") {
         const instruction = stepResult.instruction;
-        const result = stepResult.result as SCCPUResult;
+        const result = stepResult.result as MonocycleWires;
         if (!instruction || Object.keys(instruction).length === 0) {
           this.stop({ sendStopMessage: true });
-          return { instruction: {}, result: defaultSCCPUResult };
+          return { instruction: {}, result: defaultMonocycleWires };
         }
         instruction.currentPc = executedPc;
         // cycle() has already committed the register write, load, store and PC
@@ -230,7 +263,7 @@ export class TextSimulator extends Simulator {
           this.stop({ sendStopMessage: true });
         }
       } else {
-        const pipelineResult = stepResult.result as PipelineCycleResult;
+        const pipelineResult = stepResult.result as PipelineStages;
         const wbInstruction = pipelineResult.WB;
         if (wbInstruction.RUWr && wbInstruction.RD !== "X" && wbInstruction.RD !== "0") {
           this.notifyRegisterWrite(`x${wbInstruction.RD}`, wbInstruction.dataToWrite);
@@ -253,7 +286,11 @@ export class TextSimulator extends Simulator {
             }
           }
         }
-        this.webview.postMessage({ from: "extension", operation: "step", result: pipelineResult });
+        this.webview.postMessage({
+          from: "extension",
+          operation: "step",
+          result: this.datapathPayload(stepResult),
+        });
         if (this.cpu.finished()) {
           this.stop({ sendStopMessage: true, isReset: false });
           return stepResult;
@@ -264,7 +301,7 @@ export class TextSimulator extends Simulator {
     } catch (error) {
       console.error("Error during simulation step:", error);
       this.stop({ sendStopMessage: true });
-      return { instruction: {}, result: defaultSCCPUResult };
+      return { instruction: {}, result: defaultMonocycleWires };
     }
   }
 
@@ -300,14 +337,14 @@ export class TextSimulator extends Simulator {
       operation: "step",
       newPc: this.cpu.getPC(),
       currentMonocycletInst: result.instruction,
-      result: result.result,
+      result: this.datapathPayload(result),
       lineDecorationNumber: line !== undefined ? line + 1 : -1,
     });
   }
 
   // The store itself is committed inside SCCPU.cycle(); this only notifies the
   // UI of the write, reading the address and (word-padded) data off the result.
-  private notifyStore(decoded: DecodedInstruction, result: SCCPUResult): void {
+  private notifyStore(decoded: DecodedInstruction, result: MonocycleWires): void {
     const bytesToWrite = decoded.memoryAccess()!.bytes;
     const addressNum = parseInt(result.dm.address, 2);
     if (result.dm.dataWr.length < 32) result.dm.dataWr = result.dm.dataWr.padStart(32, "0");
@@ -406,17 +443,28 @@ export class TextSimulator extends Simulator {
 }
 
 /**
- * Graphic simulator: extends the text simulator.
+ * Graphic simulator: extends the text simulator and additionally drives the
+ * animated datapath diagram. The datapath render payload is sourced from the
+ * concrete CPU's `datapathView()` — reached through a statically-typed reference
+ * held by each per-CPU subclass, with no `as` and no branch on CPU kind
+ * (ADR-0003). It is abstract because the view shape is irreducibly per-CPU.
  */
-export class GraphicSimulator extends TextSimulator {
-  constructor(
-    simulatorType: "monocycle" | "pipeline",
-    settings: SimulationParameters,
-    rvDoc: RVDocument,
-    context: RVContext,
-    webview: Webview
-  ) {
-    super(simulatorType, settings, rvDoc, context, webview);
+export abstract class GraphicSimulator extends TextSimulator {
+  /**
+   * The concrete CPU's Datapath view for the last clock. Each subclass reads it
+   * off a statically-typed CPU reference; the union here is just the declared
+   * return, never a downcast.
+   */
+  protected abstract datapathView(): MonocycleWires | PipelineStages;
+
+  /**
+   * Overrides the text path: the datapath posted to the graphic webview comes
+   * from `datapathView()` (the new path) rather than `cycle()`'s return. Both
+   * carry the same object this ticket, so the webview receives byte-identical
+   * data (ADR-0003).
+   */
+  protected override datapathPayload(_stepResult: StepResult): MonocycleWires | PipelineStages {
+    return this.datapathView();
   }
 
   public override async start(options?: { isRestart?: boolean }): Promise<void> {
@@ -434,5 +482,51 @@ export class GraphicSimulator extends TextSimulator {
   }
   public override sendTextProgramToView(textProgram: string): void {
     this.sendToWebview({ operation: "textProgram", textProgram });
+  }
+}
+
+/**
+ * Single-cycle graphic simulator. Holds a statically-typed `SCCPU` so
+ * `datapathView()` returns `MonocycleWires` with no downcast (ADR-0003).
+ */
+export class MonocycleGraphicSimulator extends GraphicSimulator {
+  private readonly monocycleCpu: SCCPU;
+
+  constructor(
+    settings: SimulationParameters,
+    rvDoc: RVDocument,
+    context: RVContext,
+    webview: Webview
+  ) {
+    const cpu = buildMonocycleCpu(rvDoc, settings);
+    super(cpu, "monocycle", rvDoc, context, webview);
+    this.monocycleCpu = cpu;
+  }
+
+  protected override datapathView(): MonocycleWires {
+    return this.monocycleCpu.datapathView();
+  }
+}
+
+/**
+ * Pipeline graphic simulator. Holds a statically-typed `PipelineCPU` so
+ * `datapathView()` returns `PipelineStages` with no downcast (ADR-0003).
+ */
+export class PipelineGraphicSimulator extends GraphicSimulator {
+  private readonly pipelineCpu: PipelineCPU;
+
+  constructor(
+    settings: SimulationParameters,
+    rvDoc: RVDocument,
+    context: RVContext,
+    webview: Webview
+  ) {
+    const cpu = buildPipelineCpu(rvDoc, settings);
+    super(cpu, "pipeline", rvDoc, context, webview);
+    this.pipelineCpu = cpu;
+  }
+
+  protected override datapathView(): PipelineStages {
+    return this.pipelineCpu.datapathView();
   }
 }

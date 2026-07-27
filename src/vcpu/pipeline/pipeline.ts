@@ -132,7 +132,13 @@ interface WB_Register {
   HazardMessage?: string;
 }
 
-export type PipelineCycleResult = {
+/**
+ * Datapath view of the pipeline CPU: the five stage latches (`IF`/`ID`/`EX`/
+ * `MEM`/`WB`) for one clock. Render-only, consumed by the graphic simulator; off
+ * ICPU (ADR-0003). Formerly `PipelineCycleResult`; survives only as the render
+ * view now that `cycle()` self-commits (ADR-0002).
+ */
+export type PipelineStages = {
   IF: { instruction: any; PC: number; PCP4: number; HazardMessage?: string };
   ID: IDEX_Register;
   EX: EXMEM_Register;
@@ -159,6 +165,7 @@ export class PipelineCPU implements ICPU {
   private id_ex_register: IDEX_Register;
   private ex_mem_register: EXMEM_Register;
   private mem_wb_register: MEMWB_Register;
+  private _datapathView: PipelineStages;
 
   public getProgram(): any[] {
     return this.program;
@@ -186,12 +193,19 @@ export class PipelineCPU implements ICPU {
     this.id_ex_register = { ...EMPTY_DATA };
     this.ex_mem_register = { ...EMPTY_DATA };
     this.mem_wb_register = { ...EMPTY_DATA };
+    this._datapathView = {
+      IF: this.if_id_register,
+      ID: this.id_ex_register,
+      EX: this.ex_mem_register,
+      MEM: this.mem_wb_register,
+      WB: { ...EMPTY_DATA, dataToWrite: "X".padStart(32, "X") },
+    };
 
     const spAbsoluteAddress = this.dataMemory.availableSpInitialAddress;
     this.registers.writeRegister("x2", intToBinary(spAbsoluteAddress));
   }
 
-  public cycle(): PipelineCycleResult {
+  public cycle(): PipelineStages {
     this.clockCycles++;
     console.log(`\n--- [Pipeline CPU] Clock Cycle: ${this.clockCycles} ---`);
 
@@ -301,13 +315,25 @@ export class PipelineCPU implements ICPU {
 
     writeAction();
 
-    return {
+    // Stash the stage latches for the graphic simulator to pull via
+    // datapathView() (ADR-0003); cycle() still returns them in this ticket.
+    this._datapathView = {
       IF: this.if_id_register,
       ID: this.id_ex_register,
       EX: this.ex_mem_register,
       MEM: this.mem_wb_register,
       WB: wbState,
     };
+    return this._datapathView;
+  }
+
+  /**
+   * The Datapath view: the last-captured five stage latches from `cycle()`.
+   * Render-only and off ICPU — read solely by the graphic simulator through a
+   * statically-typed `PipelineCPU` reference (ADR-0003).
+   */
+  public datapathView(): PipelineStages {
+    return this._datapathView;
   }
 
   private executeIF(): { newState_IF_ID: any; nextPC: number } {
