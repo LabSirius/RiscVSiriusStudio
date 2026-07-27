@@ -173,7 +173,7 @@ export class SCCPU implements ICPU {
       default:
         throw new Error("Unknown instruction " + JSON.stringify(instruction));
     }
-    if (this.isHalt(instruction)) {
+    if (DecodedInstruction.from(instruction).isEbreak()) {
       this.halted = true;
     }
     // buMux.result is the next-PC byte address for every instruction type, so
@@ -239,15 +239,6 @@ export class SCCPU implements ICPU {
    */
   public datapathView(): MonocycleWires {
     return this._datapathView;
-  }
-
-  /** `ebreak` (SYSTEM opcode, funct3 000, imm12 = 1) halts the CPU. */
-  private isHalt(instruction: any): boolean {
-    return (
-      instruction.opcode === "1110011" &&
-      DecodedInstruction.from(instruction).funct3() === "000" &&
-      instruction.encoding.imm12 === "000000000001"
-    );
   }
 
   private executeRInstruction() {
