@@ -3,6 +3,7 @@
 import { DecodedInstruction } from "./instruction";
 import { intToBinary } from "../utilities/conversions";
 import { ICPU } from "./interface";
+import { CycleEffect } from "./cycle";
 import { RegistersFile, DataMemory, ProcessorALU } from "./components/components";
 import { ImmediateUnit, ControlUnit } from "./components/decoder";
 
@@ -143,10 +144,11 @@ export class SCCPU implements ICPU {
    * loads and stores commit internally), detects halt (`ebreak`), then advances
    * the program counter. `buMux.result` holds the next-PC byte address for every
    * instruction type — sequential fall-through or branch/jump target — so a
-   * single assignment drives all control flow. The returned `MonocycleWires` is a
-   * datapath-wire observation, not the computation the caller must replay.
+   * single assignment drives all control flow. Returns the CPU-independent Cycle
+   * effect (ADR-0002); the combinational wires are stashed off to the side for
+   * the graphic simulator to pull via `datapathView()` (ADR-0003).
    */
-  public cycle(): MonocycleWires {
+  public cycle(): CycleEffect {
     const instruction = this.currentInstruction();
     let result: MonocycleWires;
     switch (this.currentType()) {
@@ -180,7 +182,54 @@ export class SCCPU implements ICPU {
     // The combinational wires are valid only at cycle time; stash the snapshot
     // for the graphic simulator to pull via datapathView() (ADR-0003).
     this._datapathView = result;
-    return result;
+    return this.effectFrom(instruction, result);
+  }
+
+  /**
+   * Reads the Cycle effect off the just-computed wire snapshot. The single-cycle
+   * CPU executes one whole instruction per clock, so every effect field comes
+   * from that one instruction: the write-back mux carries the register value, the
+   * DM wires carry the memory access, and the branch-unit mux carries the next
+   * PC. This is observation of what `cycle()` already committed, not a recompute.
+   */
+  private effectFrom(instruction: any, wires: MonocycleWires): CycleEffect {
+    const decoded = DecodedInstruction.from(instruction);
+    const effect: CycleEffect = {
+      controlTransfer: {
+        nextPc: parseInt(wires.buMux.result, 2),
+        taken: wires.buMux.signal === "1",
+        instruction: decoded,
+      },
+    };
+    if (decoded.writesRegister()) {
+      effect.registerWrite = {
+        register: decoded.rd(),
+        value: wires.wb.result,
+        instruction: decoded,
+      };
+    }
+    if (decoded.readsMemory()) {
+      effect.memoryAccess = {
+        kind: "read",
+        address: parseInt(wires.dm.address, 2),
+        bytes: decoded.memoryAccess()!.bytes,
+        value: wires.dm.dataRd,
+        instruction: decoded,
+      };
+    } else if (decoded.writesMemory()) {
+      // Stores commit the full 32-bit word (commitStore); word-pad the DM wire so
+      // the effect carries the same value the store wrote.
+      const value =
+        wires.dm.dataWr.length < 32 ? wires.dm.dataWr.padStart(32, "0") : wires.dm.dataWr;
+      effect.memoryAccess = {
+        kind: "write",
+        address: parseInt(wires.dm.address, 2),
+        bytes: decoded.memoryAccess()!.bytes,
+        value,
+        instruction: decoded,
+      };
+    }
+    return effect;
   }
 
   /**

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { ICPU } from "../interface";
+import { CycleEffect } from "../cycle";
 import { RegistersFile, DataMemory, ProcessorALU, BranchUnit } from "../components/components";
 import { ControlUnit, ImmediateUnit } from "../components/decoder";
 import { ForwardingUnit, ForwardingSignals, ForwardingSource } from "./forwarding";
@@ -205,7 +206,7 @@ export class PipelineCPU implements ICPU {
     this.registers.writeRegister("x2", intToBinary(spAbsoluteAddress));
   }
 
-  public cycle(): PipelineStages {
+  public cycle(): CycleEffect {
     this.clockCycles++;
     console.log(`\n--- [Pipeline CPU] Clock Cycle: ${this.clockCycles} ---`);
 
@@ -264,6 +265,9 @@ export class PipelineCPU implements ICPU {
     const { writeAction, wbState } = this.executeWB();
     const newState_MEM_WB = this.executeMEM();
     const { newState: newState_EX_MEM, branchDecision } = this.executeEX(forwardingSignals);
+    // The instruction resolving the branch lives in EX this clock; capture it
+    // before the latch reassignment below overwrites id_ex_register.
+    const exInstruction = this.id_ex_register.instruction;
     const newState_ID_EX = this.executeID();
     const { newState_IF_ID, nextPC } = this.executeIF();
 
@@ -316,7 +320,7 @@ export class PipelineCPU implements ICPU {
     writeAction();
 
     // Stash the stage latches for the graphic simulator to pull via
-    // datapathView() (ADR-0003); cycle() still returns them in this ticket.
+    // datapathView() (ADR-0003).
     this._datapathView = {
       IF: this.if_id_register,
       ID: this.id_ex_register,
@@ -324,7 +328,60 @@ export class PipelineCPU implements ICPU {
       MEM: this.mem_wb_register,
       WB: wbState,
     };
-    return this._datapathView;
+    return this.effectFrom(wbState, newState_MEM_WB, exInstruction, branchDecision.taken, finalNextPC);
+  }
+
+  /**
+   * Reads the Cycle effect off the stage latches this clock committed (ADR-0002).
+   * Unlike the single-cycle CPU, the effect's fields come from *different*
+   * instructions in flight: the register write from the instruction retiring in
+   * WB, the memory access from the one committing in MEM, and the control
+   * transfer from the branch/jump resolving in EX.
+   */
+  private effectFrom(
+    wb: WB_Register,
+    mem: MEMWB_Register,
+    exInstruction: any,
+    taken: boolean,
+    nextPc: number
+  ): CycleEffect {
+    const effect: CycleEffect = {
+      controlTransfer: {
+        nextPc,
+        taken,
+        instruction: taken ? DecodedInstruction.from(exInstruction) : undefined,
+      },
+    };
+    // WB commits the register write for a real, non-x0 destination.
+    if (wb.RUWr && wb.RD !== "0" && wb.RD !== "X") {
+      effect.registerWrite = {
+        register: `x${wb.RD}`,
+        value: wb.dataToWrite,
+        instruction: DecodedInstruction.from(wb.instruction),
+      };
+    }
+    // MEM commits the data-memory access for a real load/store.
+    if (mem.instruction && mem.instruction.pc !== -1) {
+      const decodedMem = DecodedInstruction.from(mem.instruction);
+      if (mem.DMWr) {
+        effect.memoryAccess = {
+          kind: "write",
+          address: parseInt(mem.Address, 2),
+          bytes: decodedMem.memoryAccess()!.bytes,
+          value: mem.MemWriteData,
+          instruction: decodedMem,
+        };
+      } else if (mem.RUDataWrSrc === "01") {
+        effect.memoryAccess = {
+          kind: "read",
+          address: parseInt(mem.Address, 2),
+          bytes: decodedMem.memoryAccess()!.bytes,
+          value: mem.MemReadData,
+          instruction: decodedMem,
+        };
+      }
+    }
+    return effect;
   }
 
   /**
