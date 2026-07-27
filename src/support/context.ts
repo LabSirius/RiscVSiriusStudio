@@ -28,6 +28,7 @@ import {
   PipelineGraphicSimulator,
   createCpu,
 } from "../Simulator";
+import { MemoryRow } from "../vcpu/interface";
 
 /**
  * Manages the state and logic for the entire RISC-V Simulator extension.
@@ -434,7 +435,7 @@ export class RVContext {
   private animateLine(line: number) { this._simulator?.animateLine(line); }
   private memorySizeChanged(newSize: number) { this._simulator?.resizeMemory(newSize); }
   private registersChanged(newRegisters: string[]) { this._simulator?.replaceRegisters(newRegisters); }
-  private memoryChanged(newMemory: []) { this._simulator?.replaceMemory(newMemory); }
+  private memoryChanged(newMemory: MemoryRow[]) { this._simulator?.replaceMemory(newMemory); }
   public resetEncoderDecorator(editor: TextEditor): void {
     this._encoderDecorator?.clearDecorations(editor);
     this._encoderDecorator = undefined;

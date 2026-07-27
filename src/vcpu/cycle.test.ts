@@ -125,6 +125,23 @@ function cpuFrom(kind: "monocycle" | "pipeline"): ICPU {
   );
 }
 
+describe("highlightedInstruction()", () => {
+  it("single-cycle names the executing instruction as a DecodedInstruction", () => {
+    const cpu = cpuFrom("monocycle");
+    expect(cpu.highlightedInstruction().mnemonic()).toBe("addi"); // pc = 0
+    cpu.cycle();
+    expect(cpu.highlightedInstruction().mnemonic()).toBe("sw"); //   pc = 4
+    cpu.cycle();
+    expect(cpu.highlightedInstruction().mnemonic()).toBe("lw"); //   pc = 8
+  });
+
+  it("pipeline names the just-fetched (IF/ID) instruction as a DecodedInstruction", () => {
+    const cpu = cpuFrom("pipeline");
+    cpu.cycle(); // after the first clock the first instruction sits in IF/ID
+    expect(cpu.highlightedInstruction().mnemonic()).toBe("addi");
+  });
+});
+
 describe("single-cycle Cycle-effect stream", () => {
   it("commits one instruction's full effect per clock", () => {
     const stream = effectStream(cpuFrom("monocycle")).map(factsOf);

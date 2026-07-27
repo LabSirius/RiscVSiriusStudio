@@ -47,6 +47,8 @@ export interface RawInstructionNode {
   rs2?: RawRegister;
   rd?: RawRegister;
   encoding?: RawEncoding;
+  /** Source location as emitted by the parser; read to place the editor highlight. */
+  location?: { start?: { line?: number } };
   [key: string]: unknown;
 }
 
@@ -76,6 +78,16 @@ export class DecodedInstruction {
   /** Construct from a Raw IR node, wrapping it without copying or replacing it. */
   static from(node: RawInstructionNode): DecodedInstruction {
     return new DecodedInstruction(node);
+  }
+
+  /**
+   * The wrapped Raw IR node. The Simulator forwards it to the webview, which
+   * renders raw instruction fields (`opcode`, `encoding`, …) directly, and maps
+   * it back to its source line. `DecodedInstruction` wraps — does not replace —
+   * the node (ADR-0001), so this is the node it was constructed from.
+   */
+  raw(): RawInstructionNode {
+    return this.node;
   }
 
   /**

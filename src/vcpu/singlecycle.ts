@@ -2,7 +2,7 @@
 
 import { DecodedInstruction } from "./instruction";
 import { intToBinary } from "../utilities/conversions";
-import { ICPU } from "./interface";
+import { ICPU, MemoryRow } from "./interface";
 import { CycleEffect } from "./cycle";
 import { RegistersFile, DataMemory, ProcessorALU } from "./components/components";
 import { ImmediateUnit, ControlUnit } from "./components/decoder";
@@ -99,8 +99,8 @@ export class SCCPU implements ICPU {
     return this.pc;
   }
 
-   public getProgram(): any[] {
-    return this.program;
+  public getProgram(): readonly DecodedInstruction[] {
+    return this._program.map((n) => DecodedInstruction.from(n));
   }
 
 
@@ -123,19 +123,19 @@ export class SCCPU implements ICPU {
   }
 
 
-  public currentInstruction() {
+  private currentRawInstruction() {
     return this._program[this.pc];
   }
+  public highlightedInstruction(): DecodedInstruction {
+    return DecodedInstruction.from(this.currentRawInstruction());
+  }
   private currentType(): string {
-    return this.currentInstruction().type;
+    return this.currentRawInstruction().type;
   }
   public finished(): boolean {
     return this.halted || this.pc >= this._program.length;
   }
-  public nextInstruction() {
-    this.pc++;
-  }
-  public jumpToInstruction(address: string) {
+  private jumpToInstruction(address: string) {
     this.pc = parseInt(address, 2) / 4;
   }
 
@@ -149,7 +149,7 @@ export class SCCPU implements ICPU {
    * the graphic simulator to pull via `datapathView()` (ADR-0003).
    */
   public cycle(): CycleEffect {
-    const instruction = this.currentInstruction();
+    const instruction = this.currentRawInstruction();
     let result: MonocycleWires;
     switch (this.currentType()) {
       case "R":
@@ -252,13 +252,13 @@ export class SCCPU implements ICPU {
 
   private executeRInstruction() {
     const result: MonocycleWires = { ...defaultMonocycleWires };
-    const instruction = this.currentInstruction();
+    const instruction = this.currentRawInstruction();
     const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
     const rs1Val = this.registers.readRegisterFromName(decoded.rs1());
     const rs2Val = this.registers.readRegisterFromName(decoded.rs2());
     const aluRes = this.alu.execute(rs1Val, rs2Val, controls.alu_op);
-    const add4Res = parseInt(this.currentInstruction().inst) + 4;
+    const add4Res = parseInt(this.currentRawInstruction().inst) + 4;
     this.registers.writeRegister(decoded.rd(), aluRes);
     result.add4.result = add4Res.toString(2);
     result.ru = { rs1: rs1Val, rs2: rs2Val, dataWrite: aluRes, writeSignal: "1" };
@@ -273,11 +273,11 @@ export class SCCPU implements ICPU {
 
   private executeIInstruction(): MonocycleWires {
     const result: MonocycleWires = { ...defaultMonocycleWires };
-    const instruction = this.currentInstruction();
+    const instruction = this.currentRawInstruction();
     const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
     const rs1Val = this.registers.readRegisterFromName(decoded.rs1());
-    const add4Res = parseInt(this.currentInstruction().inst) + 4;
+    const add4Res = parseInt(this.currentRawInstruction().inst) + 4;
     const imm32Val = this.immediateUnit.generate(instruction);
     const aluRes = this.alu.execute(rs1Val, imm32Val, controls.alu_op);
     let wbData = "";
@@ -342,13 +342,13 @@ export class SCCPU implements ICPU {
 
   private executeSInstruction(): MonocycleWires {
     const result: MonocycleWires = { ...defaultMonocycleWires };
-    const instruction = this.currentInstruction();
+    const instruction = this.currentRawInstruction();
     const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
     const baseAddressVal = this.registers.readRegisterFromName(decoded.rs1());
     const dataToStore = this.registers.readRegisterFromName(decoded.rs2());
     const offset32Val = this.immediateUnit.generate(instruction);
-    const add4Res = parseInt(this.currentInstruction().inst) + 4;
+    const add4Res = parseInt(this.currentRawInstruction().inst) + 4;
     const aluRes = this.alu.execute(baseAddressVal, offset32Val, controls.alu_op);
     result.add4.result = add4Res.toString(2);
     result.ru = { ...defaultRUResult, rs1: baseAddressVal, rs2: dataToStore, writeSignal: "0" };
@@ -387,7 +387,7 @@ export class SCCPU implements ICPU {
 
   private executeBInstruction() {
     const result: MonocycleWires = { ...defaultMonocycleWires };
-    const instruction = this.currentInstruction();
+    const instruction = this.currentRawInstruction();
     const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
     const add4Res = parseInt(instruction.inst) + 4;
@@ -438,7 +438,7 @@ export class SCCPU implements ICPU {
 
   private executeUInstruction() {
     const result: MonocycleWires = { ...defaultMonocycleWires };
-    const instruction = this.currentInstruction();
+    const instruction = this.currentRawInstruction();
     const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
     const add4Res = (parseInt(instruction.inst) + 4).toString(2);
@@ -470,7 +470,7 @@ export class SCCPU implements ICPU {
 
   private executeJInstruction() {
     const result: MonocycleWires = { ...defaultMonocycleWires };
-    const instruction = this.currentInstruction();
+    const instruction = this.currentRawInstruction();
     const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
     const pc = parseInt(instruction.inst);
@@ -501,7 +501,7 @@ export class SCCPU implements ICPU {
   public getDataMemory(): DataMemory {
     return this.dataMemory;
   }
-  public replaceDataMemory(newMemory: any[]): void {
+  public replaceDataMemory(newMemory: MemoryRow[]): void {
     if (!newMemory) {
       return;
     }
@@ -512,7 +512,7 @@ export class SCCPU implements ICPU {
     this.dataMemory.overwriteAvailableMemory(flatMemory);
   }
   public replaceRegisters(newRegisters: string[]): void {
-    (this.registers as any).registers = newRegisters;
+    this.registers.setRegisterData(newRegisters);
   }
   public printInfo() {
     this.registers.printRegisters();

@@ -7,7 +7,7 @@ import { DecodedInstruction } from "./vcpu/instruction";
 import { intToBinary } from "./utilities/conversions";
 import { window, commands, TextEditorDecorationType, Webview, Disposable } from "vscode";
 import { PipelineCPU, PipelineStages } from "./vcpu/pipeline/pipeline";
-import { ICPU } from "./vcpu/interface";
+import { ICPU, MemoryRow } from "./vcpu/interface";
 import { CycleEffect } from "./vcpu/cycle";
 
 export type SimulationParameters = { memorySize: number };
@@ -100,8 +100,9 @@ export abstract class Simulator {
       this._configured = true;
     }
     // Capture the executing instruction before cycle(): cycle() self-commits and
-    // advances the PC, so afterwards currentInstruction() is the *next* one.
-    const instruction = this.cpu.currentInstruction();
+    // advances the PC, so afterwards highlightedInstruction() is the *next* one.
+    // The webview renders raw instruction fields, so forward the wrapped node.
+    const instruction = this.cpu.highlightedInstruction().raw();
     const effect = this.cpu.cycle();
     return { instruction, effect };
   }
@@ -120,7 +121,7 @@ export abstract class Simulator {
     this.cpu.getRegisterFile().writeRegister("x2", intToBinary(newSize - 4));
   }
 
-  public replaceMemory(newMemory: string[]): void {
+  public replaceMemory(newMemory: MemoryRow[]): void {
     this.cpu.replaceDataMemory(newMemory);
   }
   public replaceRegisters(newRegisters: string[]): void {
@@ -179,7 +180,7 @@ export class TextSimulator extends Simulator {
   }
 
   public override sendInitialData(options?: { isHardReset: boolean }): void {
-    const inst = this.cpu.currentInstruction();
+    const inst = this.cpu.highlightedInstruction().raw();
     let line = this.rvDoc.getLineForIR(inst);
     if (line === undefined) {
       line = 0;
@@ -192,7 +193,7 @@ export class TextSimulator extends Simulator {
       })) || [];
     const asmList = this.rvDoc.ir?.instructions.map((instr) => instr.asm);
 
-    const typesInstruction = this.cpu.getProgram().map((instr) => ({ type: instr.type }));
+    const typesInstruction = this.cpu.getProgram().map((instr) => ({ type: instr.type() }));
 
 
     const payload = {
@@ -289,7 +290,7 @@ export class TextSimulator extends Simulator {
   protected postStepUpdate(stepResult: StepResult): void {
     let line: number | undefined;
     try {
-      line = this.rvDoc.getLineForIR(this.cpu.currentInstruction());
+      line = this.rvDoc.getLineForIR(this.cpu.highlightedInstruction().raw());
     } catch {
       line = undefined;
       this.stop({ sendStopMessage: true });
