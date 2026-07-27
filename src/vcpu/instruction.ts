@@ -298,6 +298,20 @@ export class DecodedInstruction {
     return this.node.type === "I" && this.node.opcode === OPCODE_I_EXT;
   }
 
+  /**
+   * `ebreak` — the SYSTEM breakpoint (SYSTEM opcode, funct3 000, imm12 = 1),
+   * distinguished from `ecall` (imm12 = 0) by its immediate. An ISA fact,
+   * independent of any CPU: an `ebreak` is an `ebreak` regardless of how a
+   * given CPU acts on it. Halt-aware CPUs call this to decide when to stop.
+   */
+  isEbreak(): boolean {
+    return (
+      this.isIExt() &&
+      this.funct3() === "000" &&
+      this.node.encoding?.imm12 === "000000000001"
+    );
+  }
+
   /** lui. */
   isLUI(): boolean {
     return this.node.type === "U" && this.node.opcode === OPCODE_LUI;

@@ -48,6 +48,7 @@ interface FactRow {
   isILoad: boolean;
   isIJump: boolean;
   isIExt: boolean;
+  isEbreak: boolean;
   isLUI: boolean;
   isAUIPC: boolean;
   memoryAccess: MemoryAccess | null;
@@ -75,6 +76,7 @@ function factsOf(d: DecodedInstruction): FactRow {
     isILoad: d.isILoad(),
     isIJump: d.isIJump(),
     isIExt: d.isIExt(),
+    isEbreak: d.isEbreak(),
     isLUI: d.isLUI(),
     isAUIPC: d.isAUIPC(),
     memoryAccess: d.memoryAccess(),
@@ -103,6 +105,7 @@ function row(overrides: Partial<FactRow> & { type: string }): FactRow {
     isILoad: false,
     isIJump: false,
     isIExt: false,
+    isEbreak: false,
     isLUI: false,
     isAUIPC: false,
     memoryAccess: null,
@@ -240,6 +243,16 @@ const cases: Case[] = [
     }),
   },
   {
+    name: "ebreak",
+    node: node({ type: "I", opcode: "1110011", instruction: "ebreak", encoding: { funct3: "000", imm12: "000000000001" } }),
+    expected: row({
+      type: "I",
+      usesRs1: true, usesRd: true, usesFunct3: true,
+      usesALU: true, usesImmediate: true,
+      isIExt: true, isEbreak: true,
+    }),
+  },
+  {
     name: "auipc",
     node: node({ type: "U", opcode: "0010111", instruction: "auipc", encoding: {} }),
     expected: row({
@@ -321,6 +334,28 @@ describe("DecodedInstruction.extend", () => {
 
   it("zero-extends a half-word (lhu)", () => {
     expect(lhu().extend("1000000000000000")).toBe("0".repeat(16) + "1000000000000000");
+  });
+});
+
+describe("DecodedInstruction.isEbreak", () => {
+  const sys = (imm12: string, instruction: string) =>
+    DecodedInstruction.from(
+      node({ type: "I", opcode: "1110011", instruction, encoding: { funct3: "000", imm12 } })
+    );
+
+  it("is true for ebreak (SYSTEM, funct3 000, imm12 = 1)", () => {
+    expect(sys("000000000001", "ebreak").isEbreak()).toBe(true);
+  });
+
+  it("is false for ecall (same form, imm12 = 0)", () => {
+    expect(sys("000000000000", "ecall").isEbreak()).toBe(false);
+  });
+
+  it("is false for a non-SYSTEM instruction", () => {
+    const addi = DecodedInstruction.from(
+      node({ type: "I", opcode: "0010011", instruction: "addi", encoding: { funct3: "000" } })
+    );
+    expect(addi.isEbreak()).toBe(false);
   });
 });
 
