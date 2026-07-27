@@ -48,7 +48,13 @@ const defaultRUResult = {
   writeSignal: "X",
 };
 
-export type SCCPUResult = {
+/**
+ * Datapath view of the single-cycle CPU: the combinational wire bundle for one
+ * clock, valid only mid-cycle. Render-only, consumed by the graphic simulator;
+ * off ICPU (ADR-0003). Formerly `MonocycleWires` in its committed-output role,
+ * which is gone (ADR-0002); this survives only as the render-view type.
+ */
+export type MonocycleWires = {
   add4: ADD4Result;
   ru: RUResult;
   imm: IMMResult;
@@ -60,7 +66,7 @@ export type SCCPUResult = {
   buMux: MuxResult;
   wb: MuxResult;
 };
-export const defaultSCCPUResult = {
+export const defaultMonocycleWires = {
   add4: defaultADD4Result,
   ru: defaultRUResult,
   imm: defaultIMMResult,
@@ -82,6 +88,7 @@ export class SCCPU implements ICPU {
   private controlUnit: ControlUnit;
   private pc: number;
   private halted: boolean = false;
+  private _datapathView: MonocycleWires = defaultMonocycleWires;
 
 
   get program() {
@@ -136,12 +143,12 @@ export class SCCPU implements ICPU {
    * loads and stores commit internally), detects halt (`ebreak`), then advances
    * the program counter. `buMux.result` holds the next-PC byte address for every
    * instruction type — sequential fall-through or branch/jump target — so a
-   * single assignment drives all control flow. The returned `SCCPUResult` is a
+   * single assignment drives all control flow. The returned `MonocycleWires` is a
    * datapath-wire observation, not the computation the caller must replay.
    */
-  public cycle(): SCCPUResult {
+  public cycle(): MonocycleWires {
     const instruction = this.currentInstruction();
-    let result: SCCPUResult;
+    let result: MonocycleWires;
     switch (this.currentType()) {
       case "R":
         result = this.executeRInstruction();
@@ -170,7 +177,19 @@ export class SCCPU implements ICPU {
     // buMux.result is the next-PC byte address for every instruction type, so
     // jumpToInstruction drives sequential fall-through and taken branches alike.
     this.jumpToInstruction(result.buMux.result);
+    // The combinational wires are valid only at cycle time; stash the snapshot
+    // for the graphic simulator to pull via datapathView() (ADR-0003).
+    this._datapathView = result;
     return result;
+  }
+
+  /**
+   * The Datapath view: the last-captured combinational wire snapshot from
+   * `cycle()`. Render-only and off ICPU — read solely by the graphic simulator
+   * through a statically-typed `SCCPU` reference (ADR-0003).
+   */
+  public datapathView(): MonocycleWires {
+    return this._datapathView;
   }
 
   /** `ebreak` (SYSTEM opcode, funct3 000, imm12 = 1) halts the CPU. */
@@ -183,7 +202,7 @@ export class SCCPU implements ICPU {
   }
 
   private executeRInstruction() {
-    const result: SCCPUResult = { ...defaultSCCPUResult };
+    const result: MonocycleWires = { ...defaultMonocycleWires };
     const instruction = this.currentInstruction();
     const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
@@ -203,8 +222,8 @@ export class SCCPU implements ICPU {
     return result;
   }
 
-  private executeIInstruction(): SCCPUResult {
-    const result: SCCPUResult = { ...defaultSCCPUResult };
+  private executeIInstruction(): MonocycleWires {
+    const result: MonocycleWires = { ...defaultMonocycleWires };
     const instruction = this.currentInstruction();
     const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
@@ -272,8 +291,8 @@ export class SCCPU implements ICPU {
     return decoded.extend(bits);
   }
 
-  private executeSInstruction(): SCCPUResult {
-    const result: SCCPUResult = { ...defaultSCCPUResult };
+  private executeSInstruction(): MonocycleWires {
+    const result: MonocycleWires = { ...defaultMonocycleWires };
     const instruction = this.currentInstruction();
     const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
@@ -318,7 +337,7 @@ export class SCCPU implements ICPU {
   }
 
   private executeBInstruction() {
-    const result: SCCPUResult = { ...defaultSCCPUResult };
+    const result: MonocycleWires = { ...defaultMonocycleWires };
     const instruction = this.currentInstruction();
     const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
@@ -369,7 +388,7 @@ export class SCCPU implements ICPU {
   }
 
   private executeUInstruction() {
-    const result: SCCPUResult = { ...defaultSCCPUResult };
+    const result: MonocycleWires = { ...defaultMonocycleWires };
     const instruction = this.currentInstruction();
     const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);
@@ -401,7 +420,7 @@ export class SCCPU implements ICPU {
   }
 
   private executeJInstruction() {
-    const result: SCCPUResult = { ...defaultSCCPUResult };
+    const result: MonocycleWires = { ...defaultMonocycleWires };
     const instruction = this.currentInstruction();
     const decoded = DecodedInstruction.from(instruction);
     const controls = this.controlUnit.generate(instruction);

@@ -19,7 +19,15 @@ import { activateMessageListenerForRegistersView } from "../utilities/activateMe
 import { RVDocument } from "../rvDocument";
 import { EncoderDecorator } from "../encoderDecorator";
 import { ConfigurationManager } from "./configurationManager";
-import { SimulationParameters, Simulator, TextSimulator, GraphicSimulator } from "../Simulator";
+import {
+  SimulationParameters,
+  Simulator,
+  TextSimulator,
+  GraphicSimulator,
+  MonocycleGraphicSimulator,
+  PipelineGraphicSimulator,
+  createCpu,
+} from "../Simulator";
 
 /**
  * Manages the state and logic for the entire RISC-V Simulator extension.
@@ -230,7 +238,13 @@ export class RVContext {
         }
     }
     const settings: SimulationParameters = { memorySize: 40 };
-    this._simulator = new GraphicSimulator(this._simulatorType, settings, this._currentDocument, this, panel.webview);
+    // Composition root: pick the per-CPU graphic simulator by kind. Each holds a
+    // statically-typed concrete CPU so it reads datapathView() without a downcast
+    // (ADR-0003).
+    this._simulator =
+      this._simulatorType === "pipeline"
+        ? new PipelineGraphicSimulator(settings, this._currentDocument, this, panel.webview)
+        : new MonocycleGraphicSimulator(settings, this._currentDocument, this, panel.webview);
     this._isSimulating = true;
     commands.executeCommand("setContext", "ext.isSimulating", true);
     await this._simulator.start({ isRestart: options?.isRestart ?? false });
@@ -263,7 +277,8 @@ export class RVContext {
   private initializeAndStartTextSimulator(options?: { isHardReset?: boolean; isRestart?: boolean  }) {
     if (!this._currentDocument?.ir || !this._textWebview) return;
     const settings: SimulationParameters = { memorySize: 40 };
-    this._simulator = new TextSimulator(this._simulatorType, settings, this._currentDocument, this, this._textWebview);
+    const cpu = createCpu(this._simulatorType, settings, this._currentDocument);
+    this._simulator = new TextSimulator(cpu, this._simulatorType, this._currentDocument, this, this._textWebview);
     this._isSimulating = true;
     commands.executeCommand("setContext", "ext.isSimulating", true);
     this._simulator.start({ isRestart: options?.isRestart ?? false });
