@@ -4,11 +4,11 @@
 
 **Blocked by:** 02 (single-cycle self-commit).
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `SCCPU` exposes `datapathView(): MonocycleWires`; `PipelineCPU` exposes `datapathView(): PipelineStages` (types renamed from `SCCPUResult` / `PipelineCycleResult`)
-- [ ] The datapath view is captured **during** `cycle()` (the combinational single-cycle wires are valid only at cycle time) and returned from `datapathView()` as the last-captured snapshot
-- [ ] `GraphicSimulator` obtains the view through a statically-typed concrete CPU reference (construction-time typing or a per-CPU specialization) — no `as`, no branch on CPU kind — and posts byte-identical data to the graphic webview
-- [ ] `ICPU` does not declare `datapathView()`; the text simulator never references it
-- [ ] `cycle()` still also returns the view in this ticket (old and new paths coexist so nothing breaks)
-- [ ] Golden net green; graphic simulator renders identically for both CPUs; project compiles
+- [x] `SCCPU` exposes `datapathView(): MonocycleWires`; `PipelineCPU` exposes `datapathView(): PipelineStages` (types renamed from `SCCPUResult` / `PipelineCycleResult`)
+- [x] The datapath view is captured **during** `cycle()` (the combinational single-cycle wires are valid only at cycle time) and returned from `datapathView()` as the last-captured snapshot
+- [x] `GraphicSimulator` obtains the view through a statically-typed concrete CPU reference (construction-time typing or a per-CPU specialization) — no `as`, no branch on CPU kind — and posts byte-identical data to the graphic webview
+- [x] `ICPU` does not declare `datapathView()`; the text simulator never references it
+- [x] `cycle()` still also returns the view in this ticket (old and new paths coexist so nothing breaks)
+- [x] Golden net green; graphic simulator renders identically for both CPUs; project compiles

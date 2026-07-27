@@ -24,4 +24,4 @@ literal — a behaviour-preserving move — so introducing a new `DecodedInstruc
 fact + test here would be scope creep into the ISA-fact domain. Small, safe,
 independent follow-up.
 
-**Status:** ready-for-agent
+**Status:** done — commit 45651451
