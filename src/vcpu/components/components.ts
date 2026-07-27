@@ -46,6 +46,10 @@ export class RegistersFile {
   public getRegisterData() {
     return this.registers;
   }
+
+  public setRegisterData(newRegisters: string[]) {
+    this.registers = newRegisters;
+  }
 }
 
 //DATA MEMORY

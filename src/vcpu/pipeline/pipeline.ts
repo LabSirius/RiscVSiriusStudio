@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { ICPU } from "../interface";
+import { ICPU, MemoryRow } from "../interface";
 import { CycleEffect } from "../cycle";
 import { RegistersFile, DataMemory, ProcessorALU, BranchUnit } from "../components/components";
 import { ControlUnit, ImmediateUnit } from "../components/decoder";
@@ -168,8 +168,8 @@ export class PipelineCPU implements ICPU {
   private mem_wb_register: MEMWB_Register;
   private _datapathView: PipelineStages;
 
-  public getProgram(): any[] {
-    return this.program;
+  public getProgram(): readonly DecodedInstruction[] {
+    return this.program.map((n) => DecodedInstruction.from(n));
   }
 
   constructor(
@@ -711,18 +711,14 @@ export class PipelineCPU implements ICPU {
   public getPC(): number {
     return this.pc;
   }
-  public currentInstruction(): any {
-    return this.if_id_register.instruction || {};
+  public highlightedInstruction(): DecodedInstruction {
+    return DecodedInstruction.from(this.if_id_register.instruction || {});
   }
   public finished(): boolean {
     return this.executionFinished;
   }
 
-  public jumpToInstruction(address: string): void {
-    console.warn(`jumpToInstruction(${address}) not yet implemented for pipeline.`);
-  }
-  public nextInstruction(): void {}
-  public replaceDataMemory(newMemory: any[]): void {
+  public replaceDataMemory(newMemory: MemoryRow[]): void {
     if (!newMemory) {
       return;
     }
@@ -730,9 +726,9 @@ export class PipelineCPU implements ICPU {
     newMemory.forEach((group) => {
       flatMemory.push(group.value0, group.value1, group.value2, group.value3);
     });
-    (this.dataMemory as any).memory_available = flatMemory;
+    this.dataMemory.overwriteAvailableMemory(flatMemory);
   }
   public replaceRegisters(newRegisters: string[]): void {
-    (this.registers as any).registers = newRegisters;
+    this.registers.setRegisterData(newRegisters);
   }
 }

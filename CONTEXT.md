@@ -19,3 +19,20 @@ A RISC-V assembly simulator packaged as a VS Code extension, for teaching comput
   _Avoid_: "instruction fact", using an `alu_op`/mux string as though it were ISA.
 
 - **ControlUnit** — the per-microarchitecture translator from `DecodedInstruction` (ISA facts) to a `ControlSignals` set (datapath control). One per datapath: the single-cycle and pipeline CPUs share one because they share a functional datapath.
+
+## CPU stepping seam (ICPU)
+
+> **Status: implemented.** This is the model the ICPU deepening (architecture-review candidate #3) delivered: `cycle()` self-commits and returns a **Cycle effect**, the **Datapath view** lives off ICPU, and `highlightedInstruction()` returns a `DecodedInstruction`. The two governing ADRs: `docs/adr/0002-cycle-is-self-committing.md`, `docs/adr/0003-datapath-view-is-off-icpu.md`; migration tickets in `.scratch/icpu/`.
+
+- **ICPU** — the shared engine contract every CPU model (single-cycle, pipeline) implements (`src/vcpu/interface.ts`). It exposes *stepping and architectural state* — `cycle()`, `getPC()`, `finished()`, `highlightedInstruction()`, and the register-file / data-memory / program accessors — and nothing datapath-shaped (no render wires; see **Datapath view**). One `cycle()` call advances exactly one clock.
+
+- **Self-commit** — `cycle()` owns advancing its CPU's own architectural state: register file, data memory, program counter. Its return value is an *observation* of what the clock committed, never a computation the caller must replay to make state advance. PC advance (jump vs. next) and halt (`ebreak`) detection are internal; `finished()` reflects halt.
+  _Avoid_: committing register/memory/PC in the Simulator by reading a CPU's result — the leak this seam removes (pre-migration single-cycle did exactly that).
+
+- **Cycle effect** — the CPU-independent, per-clock observation returned by `cycle()`: at most one register write, at most one memory access (read or write), and the control transfer (next PC / taken) — each tagged with the `DecodedInstruction` that produced it. Per *clock*, not per *instruction*: in the single-cycle CPU every field shares one instruction; in the pipeline CPU the register write comes from the instruction in **WB** and the memory access from the (different) instruction in **MEM**. Drives the Simulator's register/memory notifications for both the text and graphic simulators.
+  _Avoid_: "step result" — the Simulator's `step()` wraps `cycle()`, so "step" names the outer layer; treating a Cycle effect as one instruction's total effect.
+
+- **Datapath view** — the per-CPU, render-only snapshot of a datapath diagram's values for one clock: `MonocycleWires` for the single-cycle datapath (the combinational wire bundle — `add4`, `ru`, `alu`, `buMux`, `wb`, …) and `PipelineStages` for the 5-stage pipeline (the `IF`/`ID`/`EX`/`MEM`/`WB` latches). Captured **during** `cycle()` (combinational wires are valid only at cycle time) and consumed **only** by the graphic simulator client (`client/simulator/src/context/graphic/`). It is **CPU-specific and lives off ICPU** — reached through a statically-typed concrete CPU reference, never a downcast on CPU kind. The text simulator never sees it. Takes over the render role of today's `SCCPUResult` / `PipelineCycleResult`. (Seam recorded in `docs/adr/0003-datapath-view-is-off-icpu.md`.)
+  _Avoid_: putting it on ICPU as a `kind`-discriminated union or an opaque payload; calling it a "result" (it observes wires; it is not the CPU's output).
+
+- **highlightedInstruction()** — the ICPU accessor naming the source line the editor highlights this clock. Per-CPU meaning: single-cycle → the executing instruction; pipeline → the just-fetched (IF/ID) instruction. Renamed from `currentInstruction()`; returns a `DecodedInstruction`. Its removal from ICPU — deriving the highlight from **Cycle effect** instead, a UI behaviour change — is a deferred question (`.scratch/icpu/deferred/highlightedinstruction-removal.md`).
