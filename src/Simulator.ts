@@ -12,7 +12,6 @@ import { CycleEffect } from "./vcpu/cycle";
 
 export type SimulationParameters = { memorySize: number };
 export interface StepResult {
-  instruction: any;
   effect: CycleEffect;
 }
 
@@ -99,12 +98,11 @@ export abstract class Simulator {
     if (!this.configured) {
       this._configured = true;
     }
-    // Capture the executing instruction before cycle(): cycle() self-commits and
-    // advances the PC, so afterwards highlightedInstruction() is the *next* one.
-    // The webview renders raw instruction fields, so forward the wrapped node.
-    const instruction = this.cpu.highlightedInstruction().raw();
+    // cycle() self-commits and returns the Cycle effect (ADR-0002); the effect's
+    // retiredInstruction names the instruction that committed this clock, which
+    // the view uses for the editor highlight and the monocycle payload (ADR-0004).
     const effect = this.cpu.cycle();
-    return { instruction, effect };
+    return { effect };
   }
 
   public stop(options?: { sendStopMessage: boolean; isReset?: boolean }): void {
@@ -180,12 +178,22 @@ export class TextSimulator extends Simulator {
   }
 
   public override sendInitialData(options?: { isHardReset: boolean }): void {
-    const inst = this.cpu.highlightedInstruction().raw();
-    let line = this.rvDoc.getLineForIR(inst);
-    if (line === undefined) {
-      line = 0;
+    // Before the first cycle there is no Cycle effect, so the initial highlight
+    // can't derive from retiredInstruction. Monocycle shows the instruction about
+    // to execute (its start-cursor); pipeline shows nothing until one retires
+    // (ADR-0004). This per-kind branch is on the initial-render path only, not the
+    // engine seam or the per-step path the ADRs keep kind-free.
+    const inst =
+      this.simulatorType === "monocycle"
+        ? this.cpu.getProgram()[this.cpu.getPC()]?.raw()
+        : undefined;
+    if (inst) {
+      let line = this.rvDoc.getLineForIR(inst);
+      if (line === undefined) {
+        line = 0;
+      }
+      this.highlightLine(line);
     }
-    this.highlightLine(line);
     const addressLine =
       this.rvDoc.ir?.instructions.map((instr) => ({
         line: instr.location.start.line,
@@ -212,7 +220,7 @@ export class TextSimulator extends Simulator {
         operation: "uploadMemory",
         payload,
         typeSimulator: this.simulatorType,
-        initialLine: inst.location?.start?.line ?? -1,
+        initialLine: inst?.location?.start?.line ?? -1,
         isReset: options?.isHardReset ?? false,
         typesInstruction
       });
@@ -236,21 +244,16 @@ export class TextSimulator extends Simulator {
 
   public override step(): StepResult {
     try {
-      // The executing instruction's own PC, captured before cycle() advances it.
+      // The retiring instruction's own PC, captured before cycle() advances it.
       const executedPc = this.cpu.getPC();
       const stepResult = super.step();
-      const instruction = stepResult.instruction;
-      if (!instruction || Object.keys(instruction).length === 0) {
-        this.stop({ sendStopMessage: true });
-        return { instruction: {}, effect: {} };
-      }
-      instruction.currentPc = executedPc;
       // cycle() has already committed the register write, load, store and PC
       // advance; step() only reads the Cycle effect to notify the UI — the same
       // uniform path for both CPU kinds, with no downcast and no simulatorType
-      // branch (ADR-0002).
+      // branch (ADR-0002). End-of-run is finished(), not an empty instruction:
+      // a pipeline bubble also retires nothing, and that is not the end (ADR-0004).
       this.applyEffect(stepResult.effect);
-      this.postStepUpdate(stepResult);
+      this.postStepUpdate(stepResult, executedPc);
       if (this.cpu.finished()) {
         this.stop({ sendStopMessage: true });
       }
@@ -258,7 +261,7 @@ export class TextSimulator extends Simulator {
     } catch (error) {
       console.error("Error during simulation step:", error);
       this.stop({ sendStopMessage: true });
-      return { instruction: {}, effect: {} };
+      return { effect: {} };
     }
   }
 
@@ -287,20 +290,30 @@ export class TextSimulator extends Simulator {
    * highlight. This base version serves the (monocycle-shaped) text webview; the
    * pipeline graphic simulator overrides it to post the stage latches instead.
    */
-  protected postStepUpdate(stepResult: StepResult): void {
+  protected postStepUpdate(stepResult: StepResult, executedPc: number): void {
+    // The instruction that retired this clock drives both the editor highlight
+    // and the monocycle payload. Absent during a pipeline fill/bubble — then
+    // nothing is highlighted, which is honest: nothing retired (ADR-0004).
+    const retired = stepResult.effect.retiredInstruction;
+    const rawInst = retired?.raw();
+    if (rawInst) {
+      rawInst["currentPc"] = executedPc;
+    }
     let line: number | undefined;
-    try {
-      line = this.rvDoc.getLineForIR(this.cpu.highlightedInstruction().raw());
-    } catch {
-      line = undefined;
-      this.stop({ sendStopMessage: true });
+    if (rawInst) {
+      try {
+        line = this.rvDoc.getLineForIR(rawInst);
+      } catch {
+        line = undefined;
+        this.stop({ sendStopMessage: true });
+      }
     }
     if (line !== undefined) this.highlightLine(line);
     this.webview.postMessage({
       from: "extension",
       operation: "step",
       newPc: this.cpu.getPC(),
-      currentMonocycletInst: stepResult.instruction,
+      currentMonocycletInst: rawInst ?? {},
       result: this.datapathPayload(stepResult),
       lineDecorationNumber: line !== undefined ? line + 1 : -1,
     });
@@ -507,7 +520,7 @@ export class PipelineGraphicSimulator extends GraphicSimulator {
    * `newPc`/`currentMonocycletInst` shape, and drives no editor-line highlight.
    * Post just the datapath view, matching the pre-refactor pipeline path.
    */
-  protected override postStepUpdate(stepResult: StepResult): void {
+  protected override postStepUpdate(stepResult: StepResult, _executedPc: number): void {
     this.webview.postMessage({
       from: "extension",
       operation: "step",

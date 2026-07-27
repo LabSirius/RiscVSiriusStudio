@@ -125,20 +125,25 @@ function cpuFrom(kind: "monocycle" | "pipeline"): ICPU {
   );
 }
 
-describe("highlightedInstruction()", () => {
-  it("single-cycle names the executing instruction as a DecodedInstruction", () => {
-    const cpu = cpuFrom("monocycle");
-    expect(cpu.highlightedInstruction().mnemonic()).toBe("addi"); // pc = 0
-    cpu.cycle();
-    expect(cpu.highlightedInstruction().mnemonic()).toBe("sw"); //   pc = 4
-    cpu.cycle();
-    expect(cpu.highlightedInstruction().mnemonic()).toBe("lw"); //   pc = 8
+describe("retiredInstruction (drives the editor highlight — ADR-0004)", () => {
+  /** Mnemonic retiring each clock, or null when nothing retires. */
+  function retiredStream(cpu: ICPU): (string | null)[] {
+    return effectStream(cpu).map((e) => e.retiredInstruction?.mnemonic() ?? null);
+  }
+
+  it("single-cycle retires the executing instruction every clock", () => {
+    // The single-cycle CPU runs one whole instruction per clock, so the retiring
+    // instruction is that instruction — x7 is skipped by the taken branch.
+    expect(retiredStream(cpuFrom("monocycle"))).toEqual(["addi", "sw", "lw", "beq", "addi"]);
   });
 
-  it("pipeline names the just-fetched (IF/ID) instruction as a DecodedInstruction", () => {
-    const cpu = cpuFrom("pipeline");
-    cpu.cycle(); // after the first clock the first instruction sits in IF/ID
-    expect(cpu.highlightedInstruction().mnemonic()).toBe("addi");
+  it("pipeline retires the WB-stage instruction in program order, absent during fill", () => {
+    const stream = retiredStream(cpuFrom("pipeline"));
+    // Nothing has reached WB on the first clock (pipeline fill).
+    expect(stream[0]).toBeNull();
+    // Every real instruction retires once, in program order; x7 (branch-skipped)
+    // never reaches WB, so it never retires.
+    expect(stream.filter((m) => m !== null)).toEqual(["addi", "sw", "lw", "beq", "addi"]);
   });
 });
 
