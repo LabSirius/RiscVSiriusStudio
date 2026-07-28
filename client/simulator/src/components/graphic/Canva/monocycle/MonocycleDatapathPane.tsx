@@ -12,13 +12,19 @@ import { baseEdges } from "./edges/baseEdges";
 import { animateLineClick, animateLineHover, useEdgeGroups } from "../shared/conexions-controller/datapath-primitives";
 import CustomControls from "../../custom/CustomControls";
 
-import ActiveConexionsController from "../shared/conexions-controller/ActiveConexionsController";
+import MonocycleConexionsController from "./MonocycleConexionsController";
 
 import { useCustomOptionSimulate } from "@/context/shared/CustomOptionSimulate";
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
-export default function MonocycleCanva() {
+/**
+ * The single-cycle datapath pane (ADR-0005). Selected once at mount when the
+ * host declares a monocycle CPU; reads the monocycle wires through its own
+ * connection controller and draws the single-cycle diagram. It shares no state
+ * with the pipeline pane, so a change here cannot alter the pipeline diagram.
+ */
+export default function MonocycleDatapathPane() {
   const {
     nodes,
     edges,
@@ -55,7 +61,6 @@ export default function MonocycleCanva() {
   };
 
   const handleEdgeMouseEnter = (_event: MouseEvent<Element>, edge: Edge): void => {
-    console.log("Hovered edge only:", edge.id);
     if ((edge as AppEdge).disabled) return;
     animateLineHover(updateEdge, edge, edges, edgeGroups, true);
   };
@@ -88,7 +93,7 @@ export default function MonocycleCanva() {
       <Background color="#000000" gap={20} size={2} />
       {minimapVisible && <MiniMap />}
       <CustomControls {...controlHandlers} />
-      <ActiveConexionsController setEdges={setEdges} />
+      <MonocycleConexionsController setEdges={setEdges} />
     </ReactFlow>
   );
 }

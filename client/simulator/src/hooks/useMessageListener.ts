@@ -18,6 +18,7 @@ export const useMessageListener = () => {
   } = useMemoryTable();
 
   const {
+    typeSimulator,
     setTypeSimulator,
     modeSimulator,
     setModeSimulator,
@@ -42,6 +43,14 @@ export const useMessageListener = () => {
   useEffect(() => {
     modeSimulatorRef.current = modeSimulator;
   }, [modeSimulator]);
+
+  // Host-declared CPU mode, mirrored into a ref so the message handler (bound
+  // once) routes the per-CPU datapath payload by the CPU the host announced at
+  // `uploadMemory` — not by sniffing the payload's shape (ADR-0005).
+  const typeSimulatorRef = useRef(typeSimulator);
+  useEffect(() => {
+    typeSimulatorRef.current = typeSimulator;
+  }, [typeSimulator]);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -92,11 +101,11 @@ export const useMessageListener = () => {
               message.lineDecorationNumber !== undefined ? message.lineDecorationNumber : -1
             );
 
-            // Datapath render payload — per-CPU, routed to the pane's slot. The
-            // shape probe here is the last remnant of the pre-split routing; the
-            // DatapathPane seam removes it once each pane is statically typed to
-            // its CPU (ticket 05).
-            if (message.result.IF) {
+            // Datapath render payload — per-CPU, routed to the pane the host's
+            // declared CPU mode selected at mount. No `.IF` shape probe: the
+            // running CPU is known from `typeSimulator`, so each pane's payload
+            // reaches only its own context (ADR-0005).
+            if (typeSimulatorRef.current === "pipeline") {
               setPipelineValuesStages(message.result);
             } else {
               setCurrentMonocycleInst(message.currentMonocycletInst);
