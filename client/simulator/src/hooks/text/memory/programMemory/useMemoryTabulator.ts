@@ -9,7 +9,7 @@ import {
   setupInstructionTooltips,
 } from '@/utils/tables/handlersMemory';
 import { hexToInt, binaryToIntTwoComplement } from '@/utils/handlerConversions';
-import { sendMessage } from '@/components/Message/sendMessage';
+import { sendMessage, sendWebviewMessage } from '@/components/Message/sendMessage';
 
 /**
  * Props for the useMemoryTabulator hook with specific types where possible.
@@ -135,7 +135,7 @@ export const useMemoryTabulator = ({
 
     tableInstanceRef.current.on('cellEdited', (cell) => {
       if (cell.getField().startsWith('value')) {
-        sendMessage({ event: 'memoryChanged', memory: tableInstanceRef.current?.getData() });
+        sendWebviewMessage({ event: 'memoryChanged', memory: tableInstanceRef.current?.getData() });
       }
     });
 

@@ -1,6 +1,6 @@
 import { useEffect, MutableRefObject, Dispatch, SetStateAction } from 'react';
 import { TabulatorFull as Tabulator } from 'tabulator-tables';
-import { sendMessage } from '@/components/Message/sendMessage';
+import { sendWebviewMessage } from '@/components/Message/sendMessage';
 
 /**
  * Props for the useMemoryImportEffect hook.
@@ -37,7 +37,7 @@ export const useMemoryImportEffect = ({
 
     tableInstanceRef.current?.updateData(importMemoryUppercase);
     setImportMemory([]);
-    sendMessage({ event: 'memoryChanged', memory: tableInstanceRef.current?.getData() });
+    sendWebviewMessage({ event: 'memoryChanged', memory: tableInstanceRef.current?.getData() });
     
     
   }, [importMemory, setImportMemory, isCreatedMemoryTable]);

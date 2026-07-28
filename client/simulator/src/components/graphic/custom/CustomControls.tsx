@@ -1,7 +1,7 @@
 import { Controls } from '@xyflow/react';
 import { RedoDot, Ban, RotateCcw, ZoomIn, ZoomOut, Fullscreen } from 'lucide-react';
 import DownloadSVGButton from '../DownloadSVGButton';
-import { sendMessage } from '@/components/Message/sendMessage';
+import { sendMessage, sendWebviewMessage } from '@/components/Message/sendMessage';
 import { useDialog } from '@/context/panel/DialogContext';
 import { useEffect, useState } from 'react';
 
@@ -55,7 +55,7 @@ export default function CustomControls({
           </button>
           <button
             className="react-flow__controls-button-custom_green"
-            onClick={() => sendMessage({ event: 'reset' })}
+            onClick={() => sendWebviewMessage({ event: 'reset' })}
             title="Reset"
           >
             <RotateCcw size={16} />

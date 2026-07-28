@@ -4,7 +4,7 @@ import { useDialog } from "@/context/panel/DialogContext";
 import { registersNames } from "@/components/panel/Sections/constants/data";
 import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
-import { sendMessage } from "../../../Message/sendMessage";
+import { sendWebviewMessage } from "../../../Message/sendMessage";
 
 const ImportRegister = () => {
   const { setImportRegister } = useRegistersTable();
@@ -74,7 +74,7 @@ const ImportRegister = () => {
       }));
 
       setImportRegister(newData);
-      sendMessage({event:"registersChanged", registers: lines });
+      sendWebviewMessage({ event: "registersChanged", registers: lines });
      
       };
 

@@ -497,7 +497,6 @@ export class PipelineCPU implements ICPU {
       RUrs1,
       RUrs2,
       ImmExt,
-      RD,
       rs1,
       rs2,
       HazardMessage,

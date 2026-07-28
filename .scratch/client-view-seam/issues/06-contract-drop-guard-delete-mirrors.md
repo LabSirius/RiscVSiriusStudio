@@ -28,11 +28,11 @@ real `cd client/simulator && npx tsc -b` — not just Vitest — or the client b
 goes red. (`messages.ts` itself stays engine-free, so ticket 02's parser import
 does not trip this.)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] `ResultState` and `PipelineCycleResult` are deleted; the client imports the datapath-view types from the protocol module.
-- [ ] The `from` source guard is removed; incoming messages are trusted only via boundary parsing; the relay no longer rewrites `from`.
-- [ ] A `WebviewMessage` union types the webview→extension direction (register edit, memory edit, reset).
-- [ ] No hand-mirrored or re-declared wire types remain anywhere in the client.
-- [ ] Register-value and data-memory edits from the tables still apply to the running CPU in both single-cycle and pipeline models.
-- [ ] A dropped/renamed field on either direction surfaces as a compile error.
+- [x] `ResultState` and `PipelineCycleResult` are deleted; the client imports the datapath-view types from the protocol module.
+- [x] The `from` source guard is removed; incoming messages are trusted only via boundary parsing; the relay no longer rewrites `from`.
+- [x] A `WebviewMessage` union types the webview→extension direction (register edit, memory edit, reset).
+- [x] No hand-mirrored or re-declared wire types remain anywhere in the client.
+- [x] Register-value and data-memory edits from the tables still apply to the running CPU in both single-cycle and pipeline models.
+- [x] A dropped/renamed field on either direction surfaces as a compile error.

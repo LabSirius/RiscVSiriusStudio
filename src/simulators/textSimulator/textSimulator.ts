@@ -72,5 +72,11 @@ function sendMessageToExtension(messageObject: any) {
 }
 
 function sendMessageToReact(data: any) {
-  window.postMessage({ from: "UIManager", ...data }, "*");
+  // Forward the (already `from`-stripped) extension message unchanged. The React
+  // client no longer keys off a `from` source tag — it validates every inbound
+  // message at the boundary (`parseExtensionMessage`) — so this relay stops
+  // rewriting `from` to "UIManager" (ticket 06). Omitting `from` also stops the
+  // re-posted message from re-entering this dispatcher's `extension`/`react`
+  // cases.
+  window.postMessage(data, "*");
 }

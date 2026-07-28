@@ -164,6 +164,12 @@ function extractBinGroups(str: string) {
 }
 
 /**
+ * How a register/memory cell value is being viewed when the user edits it:
+ * radix `2`/`16`, or a `'signed'`/`'unsigned'`/`'ascii'` interpretation.
+ */
+type RegisterView = 2 | 16 | 'unsigned' | 'signed' | 'ascii';
+
+/**
  * Translates user input depending on the specific type into a string of bits.
  * @param value as the user typed in the input box
  * @param vtype type selected when the user edited the cell

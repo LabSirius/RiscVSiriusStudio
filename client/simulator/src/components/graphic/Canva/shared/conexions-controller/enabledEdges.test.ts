@@ -3,11 +3,8 @@ import * as mono from "./dataMonocycleConexions";
 import * as pipe from "./dataPipelineConexions";
 import { monocycleEnabledEdges, monocycleCurrentType } from "./monocycleEnabledEdges";
 import { pipelineEnabledEdges } from "./pipelineEnabledEdges";
-import type {
-  ParsedInstruction,
-  PipelineCycleResult,
-  ResultState,
-} from "@/context/graphic/CurrentInstContext";
+import type { ParsedInstruction } from "@/context/graphic/CurrentInstContext";
+import type { MonocycleWires, PipelineStages } from "@protocol/datapath-view";
 
 // Seam 2: the pure opcode/signal -> lit-wires kernels. These lock the exact
 // per-datapath edge set for each instruction type, opcode, and signal branch,
@@ -24,13 +21,13 @@ const inst = (type: string, opcode = ""): ParsedInstruction =>
   ({ type, opcode } as ParsedInstruction);
 
 // Only `buMux.signal` is read by the monocycle kernel.
-const result = (signal: string): ResultState =>
-  ({ buMux: { signal } } as unknown as ResultState);
+const result = (signal: string): MonocycleWires =>
+  ({ buMux: { signal } } as unknown as MonocycleWires);
 
 const monoCases: ReadonlyArray<{
   name: string;
   instruction: ParsedInstruction | null;
-  result: ResultState;
+  result: MonocycleWires;
   expected: Set<string>;
 }> = [
   {
@@ -201,20 +198,20 @@ const makeStages = (o: {
   MEM?: StageTuple;
   WB?: StageTuple;
   branch?: string;
-}): PipelineCycleResult =>
+}): PipelineStages =>
   ({
     IF: stage(o.IF),
     ID: stage(o.ID),
     EX: { ...stage(o.EX), BranchResult: o.branch ?? "0" },
     MEM: stage(o.MEM),
     WB: stage(o.WB),
-  } as unknown as PipelineCycleResult);
+  } as unknown as PipelineStages);
 
 // When any stage is active the kernel always lights bu_muxD plus the muxD feed
 // chosen by BranchResult. These are the per-clock constants each case builds on.
 const pipeBase = (taken = false) => (taken ? [pipe.bu_muxD, pipe.alu_muxD] : [pipe.bu_muxD, pipe.adder4_muxD]);
 
-const pipeCases: ReadonlyArray<{ name: string; stages: PipelineCycleResult; expected: Set<string> }> = [
+const pipeCases: ReadonlyArray<{ name: string; stages: PipelineStages; expected: Set<string> }> = [
   {
     name: "all NOP -> empty",
     stages: makeStages({}),

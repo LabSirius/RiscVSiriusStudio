@@ -151,6 +151,44 @@ export type ExtensionMessage =
   | ClickInLineMessage
   | SetApiKeyMessage;
 
+// --- Reverse direction: webview → extension ---------------------------------
+//
+// The messages the webview posts back to the extension, discriminated on the
+// existing `event` field (mirroring `ExtensionMessage`'s `operation`). Ticket 06
+// types the reverse direction so a dropped or renamed field on an outbound edit
+// is a compile error, not a silent runtime miss. Scope (spec story 19): the
+// state-mutating messages — register edits, data-memory edits, and reset. Their
+// payloads cross in the untyped table (`Tabulator`) shape they carry today, so
+// they are held opaque here just as `payload`/`result` are on the inbound side;
+// the contract this union pins is the *envelope* (event tag + required fields).
+
+/** A register-table edit sent back to be applied to the running CPU. */
+export interface RegisterEditMessage {
+  event: "registersChanged";
+  registers: unknown;
+}
+
+/** A data-memory-table edit sent back to be applied to the running CPU. */
+export interface MemoryEditMessage {
+  event: "memoryChanged";
+  memory: unknown;
+}
+
+/** The user asked to reset the simulation. */
+export interface ResetMessage {
+  event: "reset";
+}
+
+/**
+ * Every state-mutating message the webview posts back to the extension,
+ * discriminated on `event`. Routed through the typed {@link sendWebviewMessage}
+ * sender so a dropped/renamed field surfaces at compile time.
+ */
+export type WebviewMessage =
+  | RegisterEditMessage
+  | MemoryEditMessage
+  | ResetMessage;
+
 // --- Boundary parser ---------------------------------------------------------
 //
 // `parseExtensionMessage` is the single place an `unknown` from the postMessage

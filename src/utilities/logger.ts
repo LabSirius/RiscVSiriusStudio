@@ -1,13 +1,10 @@
-import { window, LogOutputChannel } from "vscode";
+import { window } from "vscode";
 import {
   createLogger,
   format,
-  transports,
-  LogEntry,
   Logger as WLogger
 } from "winston";
 import { LogOutputChannelTransport } from "winston-transport-vscode";
-import winston from "winston/lib/winston/config";
 
 class Logger {
   private static instance: Logger | undefined;

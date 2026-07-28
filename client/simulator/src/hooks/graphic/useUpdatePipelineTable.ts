@@ -2,11 +2,11 @@
 
 import { useEffect, MutableRefObject } from "react";
 import { TabulatorFull as Tabulator } from "tabulator-tables";
-import { PipelineCycleResult } from "@/context/graphic/CurrentInstContext";
+import type { PipelineStages } from "@protocol/datapath-view";
 
 interface UseUpdatePipelineTableProps {
   tabulatorInstance: MutableRefObject<Tabulator | null>;
-  pipelineValuesStages: PipelineCycleResult | null;
+  pipelineValuesStages: PipelineStages | null;
   rowCounterRef: MutableRefObject<number>;
 }
 
@@ -24,7 +24,7 @@ export const useUpdatePipelineTable = ({
       return;
     }
 
-    const getStageDataObject = (stage: keyof PipelineCycleResult) => {
+    const getStageDataObject = (stage: keyof PipelineStages) => {
       const stageData = pipelineValuesStages[stage];
 
       if (!stageData || !stageData.instruction) {
