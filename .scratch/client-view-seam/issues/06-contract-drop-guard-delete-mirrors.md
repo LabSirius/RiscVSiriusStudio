@@ -16,6 +16,18 @@ edits, reset) and route the reverse direction through it.
 
 **Blocked by:** 05, 02.
 
+**Heads-up (build landmine from ticket 02):** the datapath-view types are
+re-exported from `src/protocol/datapath-view.ts`, which pulls `../vcpu/...`. The
+moment a client file imports it, client `tsc -b` (`client/simulator`, strict +
+`noUnusedLocals`) type-checks the whole engine graph and surfaces ~6 pre-existing
+repo-src errors the extension tolerates (esbuild doesn't type-check):
+`src/utilities/conversions.ts` TS2304 `RegisterView`, unused-var TS6133 in
+`src/utilities/logger.ts` and `src/vcpu/pipeline/pipeline.ts`, etc. Clean those
+(or narrow what the client compiles) as part of this ticket, and verify with a
+real `cd client/simulator && npx tsc -b` — not just Vitest — or the client build
+goes red. (`messages.ts` itself stays engine-free, so ticket 02's parser import
+does not trip this.)
+
 **Status:** ready-for-agent
 
 - [ ] `ResultState` and `PipelineCycleResult` are deleted; the client imports the datapath-view types from the protocol module.

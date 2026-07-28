@@ -194,6 +194,16 @@ ticket.
 - This spec extends ADR-0003 across the postMessage boundary; it does not
   re-litigate ADR-0001…0004. The Shell is the client peer of the text simulator;
   the DatapathPane is the client peer of a concrete CPU's `datapathView()`.
+- Build landmine (found implementing ticket 02): the datapath-view re-export
+  `src/protocol/datapath-view.ts` pulls `../vcpu/...`, so the first client file to
+  import it makes client `tsc -b` (`client/simulator`, strict + `noUnusedLocals`)
+  type-check the whole engine graph and fail on ~6 pre-existing repo-src errors the
+  extension tolerates (esbuild doesn't type-check): `conversions.ts` TS2304
+  `RegisterView`, unused-var TS6133 in `logger.ts`/`pipeline.ts`, etc. `messages.ts`
+  is kept engine-free so ticket 02's parser import is safe; tickets 05/06 that
+  import the concrete view types must clean those errors (or narrow the client
+  compile) and verify with a real `cd client/simulator && npx tsc -b`, not just
+  Vitest.
 - History that led here (grilling trail): protocol module type-only (Q1-A),
   datapath types extracted into it (Q2-A), both directions typed ext-first (Q3-B),
   drop `from` + validate at boundary (Q4-B), `.IF` sniff dissolved by the view

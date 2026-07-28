@@ -18,6 +18,11 @@ swapped pane (default) vs two webviews; and the pane contract (props-driven
 
 **Blocked by:** 04, 03.
 
+**Heads-up:** if a pane imports `MonocycleWires`/`PipelineStages` from
+`src/protocol/datapath-view.ts` (rather than the existing client mirror, which
+ticket 06 deletes), it trips the client `tsc -b` engine-graph landmine — see the
+Heads-up in ticket 06. Verify with a real `cd client/simulator && npx tsc -b`.
+
 **Status:** ready-for-agent
 
 - [ ] A DatapathPane slot is rendered by the Shell without the Shell knowing which CPU fills it.
