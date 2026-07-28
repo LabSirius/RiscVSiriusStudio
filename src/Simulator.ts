@@ -287,8 +287,13 @@ export class TextSimulator extends Simulator {
 
   /**
    * Posts the per-step "step" message to the webview and moves the editor
-   * highlight. This base version serves the (monocycle-shaped) text webview; the
-   * pipeline graphic simulator overrides it to post the stage latches instead.
+   * highlight. Everything here derives from the Cycle effect
+   * (`retiredInstruction` → highlight line + retired-instruction payload; the
+   * committed PC → `newPc`), so it is CPU-independent and serves both CPUs: the
+   * client Shell consumes these fields uniformly (ADR-0005). Only the datapath
+   * `result` differs per CPU, sourced through `datapathPayload()`, which the
+   * graphic subclasses override with their concrete `datapathView()` — no
+   * per-CPU `postStepUpdate` override and no `.IF`-shaped fork.
    */
   protected postStepUpdate(stepResult: StepResult, executedPc: number): void {
     // The instruction that retired this clock drives both the editor highlight
@@ -513,18 +518,5 @@ export class PipelineGraphicSimulator extends GraphicSimulator {
 
   protected override datapathView(): PipelineStages {
     return this.pipelineCpu.datapathView();
-  }
-
-  /**
-   * The pipeline webview consumes the five stage latches, not the monocycle
-   * `newPc`/`currentMonocycletInst` shape, and drives no editor-line highlight.
-   * Post just the datapath view, matching the pre-refactor pipeline path.
-   */
-  protected override postStepUpdate(stepResult: StepResult, _executedPc: number): void {
-    this.webview.postMessage({
-      from: "extension",
-      operation: "step",
-      result: this.datapathPayload(stepResult),
-    });
   }
 }

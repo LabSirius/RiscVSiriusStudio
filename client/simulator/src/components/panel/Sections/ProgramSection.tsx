@@ -1,5 +1,6 @@
 import { useSimulator } from '@/context/shared/SimulatorContext';
 import { useLines } from '@/context/panel/LinesContext';
+import { useShell } from '@/context/shell/ShellContext';
 import Editor, { Monaco } from '@monaco-editor/react';
 import { useTheme } from '@/components/ui/theme/theme-provider'; 
 import { useEffect, useRef, useState } from 'react';
@@ -10,12 +11,12 @@ import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 const ProgramSection = () => {
   const { textProgram } = useSimulator();
   const { theme } = useTheme();
-  const { 
-    lineDecorationNumber,  
-    setClickInEditorLine, 
-    clickAddressInMemoryTable, 
-    setClickAddressInMemoryTable 
+  const {
+    setClickInEditorLine,
+    clickAddressInMemoryTable,
+    setClickAddressInMemoryTable
   } = useLines();
+  const { highlightedLine: lineDecorationNumber } = useShell();
 
   const {switchAutoFocusOnNewLine} = useCustomOptionSimulate()
   

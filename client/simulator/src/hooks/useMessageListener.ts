@@ -4,6 +4,7 @@ import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useDialog } from "@/context/panel/DialogContext";
 import { useLines } from "@/context/panel/LinesContext";
+import { useShell } from "@/context/shell/ShellContext";
 import { useCurrentInst } from "@/context/graphic/CurrentInstContext";
 
 export const useMessageListener = () => {
@@ -32,8 +33,9 @@ export const useMessageListener = () => {
   const { setWriteInRegister } = useRegistersTable();
   const { setCurrentMonocycleInst, setCurrentMonocycleResult, setPipelineValuesStages } =
     useCurrentInst();
+  const { setHighlightedLine } = useShell();
 
-  const { setLineDecorationNumber, setClickInEditorLine } = useLines();
+  const { setClickInEditorLine } = useLines();
   const { setDialog } = useDialog();
 
   const modeSimulatorRef = useRef(modeSimulator);
@@ -74,25 +76,34 @@ export const useMessageListener = () => {
             setSizeMemory(message.payload.memory.length);
             setIsFirstStep(false);
             setOperation("uploadMemory");
-            setLineDecorationNumber(message.initialLine);
+            setHighlightedLine(message.initialLine);
 
             break;
           case "step":
+            // Shell / Cycle effect — CPU-independent, driven every clock off the
+            // effect fields the extension now posts uniformly for both CPUs
+            // (ADR-0005). No `.IF` probe gates these: the editor highlight
+            // follows the retiring instruction and the committed PC advances the
+            // memory tables for monocycle and pipeline alike.
+            if (message.newPc !== undefined) {
+              setNewPc(message.newPc);
+            }
+            setHighlightedLine(
+              message.lineDecorationNumber !== undefined ? message.lineDecorationNumber : -1
+            );
+
+            // Datapath render payload — per-CPU, routed to the pane's slot. The
+            // shape probe here is the last remnant of the pre-split routing; the
+            // DatapathPane seam removes it once each pane is statically typed to
+            // its CPU (ticket 05).
             if (message.result.IF) {
               setPipelineValuesStages(message.result);
             } else {
-              setNewPc(message.newPc);
               setCurrentMonocycleInst(message.currentMonocycletInst);
               if (message.currentMonocycletInst?.asm?.toLowerCase() === "ebreak") {
                 setIsEbreak(true);
               }
-
               setCurrentMonocycleResult(message.result);
-              if (message.lineDecorationNumber !== undefined) {
-                setLineDecorationNumber(message.lineDecorationNumber);
-              } else {
-                setLineDecorationNumber(-1);
-              }
             }
 
             if (!isFirstStep) {

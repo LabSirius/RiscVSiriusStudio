@@ -8,6 +8,7 @@ import { RegistersTableProvider } from "./context/panel/RegisterTableContext";
 import { RegisterDataProvider } from "./context/shared/RegisterData";
 import { DialogProvider } from "./context/panel/DialogContext";
 import { LinesProvider } from "./context/panel/LinesContext";
+import { ShellProvider } from "./context/shell/ShellContext";
 import { OverlayProvider } from "@/context/graphic/OverlayContext";
 
 import MessageListener from "@/components/Message/MessageListener";
@@ -29,12 +30,14 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
                 <RegisterDataProvider>
                   <DialogProvider>
                     <LinesProvider>
-                      <OverlayProvider>
-                        <MessageListener />
-                        <Dialog />
+                      <ShellProvider>
+                        <OverlayProvider>
+                          <MessageListener />
+                          <Dialog />
 
-                        {children}
-                      </OverlayProvider>
+                          {children}
+                        </OverlayProvider>
+                      </ShellProvider>
                     </LinesProvider>
                   </DialogProvider>
                 </RegisterDataProvider>

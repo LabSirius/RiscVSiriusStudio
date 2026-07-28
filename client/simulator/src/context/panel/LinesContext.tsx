@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface LinesContextProps {
-  lineDecorationNumber: number;
-  setLineDecorationNumber: React.Dispatch<React.SetStateAction<number>>;
-
+  // Note: the editor highlight (the retiring-instruction line) is a Cycle-effect
+  // signal and now lives in the Shell context (`useShell().highlightedLine`),
+  // not here. This context keeps only the user-click signals.
   clickInEditorLine: number;
   setClickInEditorLine: (lineNumber: number) => void;
 
@@ -14,13 +14,12 @@ interface LinesContextProps {
 const LinesContext = createContext<LinesContextProps | undefined>(undefined);
 
 export const LinesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [lineDecorationNumber, setLineDecorationNumber] = useState<number>(-1);
     const [clickInEditorLine, setClickInEditorLine] = useState<number>(-1);
     const [clickAddressInMemoryTable, setClickAddressInMemoryTable] = useState<number>(-1);
-  
+
 
   return (
-    <LinesContext.Provider value={{ lineDecorationNumber, setLineDecorationNumber, clickInEditorLine, setClickInEditorLine, clickAddressInMemoryTable, setClickAddressInMemoryTable }}>
+    <LinesContext.Provider value={{ clickInEditorLine, setClickInEditorLine, clickAddressInMemoryTable, setClickAddressInMemoryTable }}>
       {children}
     </LinesContext.Provider>
   );
