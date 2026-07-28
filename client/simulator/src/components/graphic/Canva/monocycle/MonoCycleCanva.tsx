@@ -9,7 +9,7 @@ import { useProcessorFlow } from "../hooks/useProcessorFlow";
 import { nodeTypes, edgeTypes } from "../shared/constants";
 import { baseEdges } from "./edges/baseEdges";
 
-import { animateLineClick, animateLineHover, useEdgeGroups } from "../shared/conexions-controller/animateLine";
+import { animateLineClick, animateLineHover, useEdgeGroups } from "../shared/conexions-controller/datapath-primitives";
 import CustomControls from "../../custom/CustomControls";
 
 import ActiveConexionsController from "../shared/conexions-controller/ActiveConexionsController";
