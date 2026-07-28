@@ -15,6 +15,7 @@ import MessageListener from "@/components/Message/MessageListener";
 import Dialog from "@/components/panel/Dialog";
 import { CustomOptionSimulateProvider } from "./context/shared/CustomOptionSimulate";
 import { ActiveEdgesProvider } from "./context/graphic/ActiveEdgesContext";
+import { PipelineStagesSlotProvider } from "./context/graphic/PipelineStagesSlotContext";
 import { Toaster } from "@/components/ui/sonner"
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
@@ -32,10 +33,12 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
                     <LinesProvider>
                       <ShellProvider>
                         <OverlayProvider>
-                          <MessageListener />
-                          <Dialog />
+                          <PipelineStagesSlotProvider>
+                            <MessageListener />
+                            <Dialog />
 
-                          {children}
+                            {children}
+                          </PipelineStagesSlotProvider>
                         </OverlayProvider>
                       </ShellProvider>
                     </LinesProvider>

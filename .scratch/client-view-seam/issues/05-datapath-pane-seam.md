@@ -23,11 +23,36 @@ swapped pane (default) vs two webviews; and the pane contract (props-driven
 ticket 06 deletes), it trips the client `tsc -b` engine-graph landmine — see the
 Heads-up in ticket 06. Verify with a real `cd client/simulator && npx tsc -b`.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] A DatapathPane slot is rendered by the Shell without the Shell knowing which CPU fills it.
-- [ ] `MonocycleDatapathPane` and `PipelineDatapathPane` are the two adapters; the pipeline-stages table lives inside the pipeline pane.
-- [ ] The pane is selected once, at mount, from the host-declared CPU mode — no per-message discrimination, no `message.result.IF` sniff.
-- [ ] Each pane consumes its `enabledEdges` kernel from ticket 03.
-- [ ] Single-cycle and pipeline each render their correct diagram; switching CPU model shows the right pane.
-- [ ] No cross-pane coupling: a change isolated to one pane cannot alter the other's diagram.
+- [x] A DatapathPane slot is rendered by the Shell without the Shell knowing which CPU fills it.
+- [x] `MonocycleDatapathPane` and `PipelineDatapathPane` are the two adapters; the pipeline-stages table lives inside the pipeline pane.
+- [x] The pane is selected once, at mount, from the host-declared CPU mode — no per-message discrimination, no `message.result.IF` sniff.
+- [x] Each pane consumes its `enabledEdges` kernel from ticket 03.
+- [x] Single-cycle and pipeline each render their correct diagram; switching CPU model shows the right pane.
+- [x] No cross-pane coupling: a change isolated to one pane cannot alter the other's diagram.
+
+## Implementation notes
+
+- **Two panes** (`Canva/monocycle/MonocycleDatapathPane.tsx`,
+  `Canva/pipeline/PipelineDatapathPane.tsx`) replace `MonoCycleCanva` /
+  `PipelineCanva`. `AppComponent` (already, from ticket 04) selects one at mount
+  from the host-declared `typeSimulator` and hands it to the Shell's slot.
+- **Per-pane connection controllers.** The old `ActiveConexionsController` ran
+  *both* `useDataMonocycleConexions` and `useDataPipelineConexions` and picked by
+  `typeSimulator` — cross-pane coupling. Split into a CPU-blind
+  `ConexionsController` (props-driven: `enabledEdges`/`disabledEdges` +
+  `setEdges`) plus thin `Monocycle`/`PipelineConexionsController` wrappers that
+  each mount only their own kernel. Each pane renders only its own.
+- **`.IF` sniff removed** (`useMessageListener`): the step datapath payload now
+  routes on `typeSimulatorRef.current` (host-declared CPU, mirrored to a ref to
+  keep the once-bound handler current) instead of `message.result.IF`. The full
+  static-typing end-state (typed protocol, split `CurrentInstContext`) is
+  ticket 06.
+- **Pipeline pane owns the stages table.** `Tables.tsx` no longer gates
+  `StagesPipeline` on `typeSimulator === "pipeline"`; it renders a CPU-blind
+  `display: contents` slot (`PipelineStagesSlotContext`). `PipelineDatapathPane`
+  portals `StagesPipeline` into that slot, so the monocycle pane never renders
+  it and placement in the tables row is unchanged.
+- Verified: client `tsc -b` (engine-graph landmine stays disarmed), 68 client +
+  39 root Vitest, `vite build`, and extension esbuild all green.

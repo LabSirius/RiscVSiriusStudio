@@ -1,14 +1,15 @@
 import RegisterTable from "./RegisterTable";
 import AvailableMemoryTable from "./MemoryTable/AvailableMemoryTable/AvailableMemoryTable";
-import StagesPipeline from "./StagesPipeline";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import ProgramMemoryTable from "./MemoryTable/ProgramMemory";
 import ProgramSection from "../ProgramSection";
 import AvailableHexMemoryTable from "./MemoryTable/AvailableMemoryTable/AvailableHexMemoryTable";
+import { usePipelineStagesSlot } from "@/context/graphic/PipelineStagesSlotContext";
 import { useState } from "react";
 
 const Tables = () => {
-  const { modeSimulator, typeSimulator } = useSimulator();
+  const { modeSimulator } = useSimulator();
+  const { setSlotNode } = usePipelineStagesSlot();
 
   const [withBin, setWithBin] = useState(true);
 
@@ -24,7 +25,10 @@ const Tables = () => {
         <ProgramMemoryTable />
       </div>
 
-      {typeSimulator === "pipeline" && <StagesPipeline />}
+      {/* CPU-blind mount point: the pipeline pane portals its stages table here;
+          the monocycle pane leaves it empty (ADR-0005). `display: contents` keeps
+          the portaled table a direct flex child, so placement is unchanged. */}
+      <div ref={setSlotNode} style={{ display: "contents" }} />
 
       {modeSimulator !== "text" && <ProgramSection />}
     </div>
