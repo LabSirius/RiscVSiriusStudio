@@ -12,6 +12,11 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
+      // The one typed protocol module lives in the extension's `src/` and is
+      // imported by both bundles (ADR-0005). It is runtime-light (its engine
+      // imports are `import type`, erased at build), so pulling it into a client
+      // test drags in no CPU code.
+      "@protocol": resolve(__dirname, "../../src/protocol"),
     },
   },
   test: {

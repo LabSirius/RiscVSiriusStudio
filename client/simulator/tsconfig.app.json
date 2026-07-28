@@ -11,6 +11,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@protocol/*": [
+        "../../src/protocol/*"
       ]
     },
 

@@ -15,11 +15,11 @@ imported by both the extension bundle and the webview bundle. It defines the
 
 **Blocked by:** 01.
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] A type-only protocol module exists in `src/`, importable by both bundles.
-- [ ] `ExtensionMessage` is a discriminated union keyed on `operation`, covering every message the host sends today.
-- [ ] The datapath-view types live in (or are re-exported from) the module, ready for the client to import instead of re-declaring.
-- [ ] `parseExtensionMessage(raw: unknown)` returns a typed message for valid input and rejects malformed / foreign / dropped-field input without throwing past the boundary.
-- [ ] **Seam 1 tested** (Vitest): table-driven — each valid shape parses to the expected typed value; malformed, foreign, and dropped/renamed-field inputs are each rejected.
-- [ ] Added beside the existing messaging; the app still builds and runs unchanged.
+- [x] A type-only protocol module exists in `src/`, importable by both bundles.
+- [x] `ExtensionMessage` is a discriminated union keyed on `operation`, covering every message the host sends today.
+- [x] The datapath-view types live in (or are re-exported from) the module, ready for the client to import instead of re-declaring.
+- [x] `parseExtensionMessage(raw: unknown)` returns a typed message for valid input and rejects malformed / foreign / dropped-field input without throwing past the boundary.
+- [x] **Seam 1 tested** (Vitest): table-driven — each valid shape parses to the expected typed value; malformed, foreign, and dropped/renamed-field inputs are each rejected.
+- [x] Added beside the existing messaging; the app still builds and runs unchanged.
