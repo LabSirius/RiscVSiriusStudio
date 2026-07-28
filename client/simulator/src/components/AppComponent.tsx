@@ -1,36 +1,19 @@
-import { useSimulator } from "@/context/shared/SimulatorContext"; 
+import { useSimulator } from "@/context/shared/SimulatorContext";
 
-import MainSectionContainer from "@/components/panel/Sections/MainSection/MainSectionContainer";
-import MainSection from "@/components/panel/Sections/MainSection/MainSection";
+import Shell from "@/components/shell/Shell";
 
 import MonocycleCanva from "@/components/graphic/Canva/monocycle/MonoCycleCanva";
-import PipelineCanva from "./graphic/Canva/pipeline/PipelineCanva"; 
-
-
-import { useTutorial } from "@/hooks/useTutorial"; 
+import PipelineCanva from "./graphic/Canva/pipeline/PipelineCanva";
 
 const AppComponent = () => {
-  const { modeSimulator, typeSimulator } = useSimulator();
+  const { typeSimulator } = useSimulator();
 
-  useTutorial()
+  // The datapath pane is selected once here, from the host-declared CPU mode,
+  // and handed to the Shell as its slot (ADR-0005). The Shell renders it blind
+  // to which CPU it is; this is the only per-CPU choice the client makes.
+  const datapath = typeSimulator === "monocycle" ? <MonocycleCanva /> : <PipelineCanva />;
 
-
-  return (
-      <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh ">
-        {modeSimulator === "graphic" ? (
-          <div className="relative flex flex-col overflow-hidden min-w-dvh h-dvh">
-            {typeSimulator === "monocycle" ? <MonocycleCanva /> : <PipelineCanva />}
-            <div className="relative">
-              <MainSectionContainer />
-            </div>
-          </div>
-        ) : (
-          <div className="relative flex w-full h-screen overflow-hidden ">
-            <MainSection />
-          </div>
-        )}
-      </div>
-  );
+  return <Shell datapath={datapath} />;
 };
 
 export default AppComponent;
