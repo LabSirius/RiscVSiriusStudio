@@ -1,12 +1,12 @@
 import * as conexion from "./dataPipelineConexions";
 import { edgeCollector, type EdgeId } from "./datapath-primitives";
-import type { PipelineCycleResult } from "@/context/graphic/CurrentInstContext";
+import type { PipelineStages } from "@protocol/datapath-view";
 
 // Seam 2 (pipeline): the pure per-stage opcode/signal -> lit-wires mapping,
 // lifted out of the `useDataPipelineConexions` memo. No React, no state — given
 // the five-stage view it returns the EdgeIds lit this clock.
 
-export const pipelineEnabledEdges = (stages: PipelineCycleResult): Set<EdgeId> => {
+export const pipelineEnabledEdges = (stages: PipelineStages): Set<EdgeId> => {
   const { edges, add } = edgeCollector();
 
   const IFType = stages.IF.instruction?.type;

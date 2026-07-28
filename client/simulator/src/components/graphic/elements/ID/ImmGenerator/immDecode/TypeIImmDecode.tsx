@@ -6,7 +6,7 @@ const TypeIImmDecode = () => {
   const instruction = currentMonocycletInst || pipelineValuesStages?.ID?.instruction;
   if (!instruction) return null;
 
-  const encoding = instruction.encoding?.binEncoding;
+  const encoding: string | undefined = instruction.encoding?.binEncoding;
   if (!encoding) return null;
 
   const topBlocks = [

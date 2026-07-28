@@ -3,7 +3,7 @@ import { TabulatorFull as Tabulator, CellComponent } from 'tabulator-tables';
 import { RegisterView } from '@/utils/tables/types';
 import { getColumnsRegisterDefinitions } from '@/utils/tables/definitions/definitionsColumns';
 import { registersNames } from '@/components/panel/Sections/constants/data';
-import { sendMessage } from '@/components/Message/sendMessage';
+import { sendWebviewMessage } from '@/components/Message/sendMessage';
 
 /**
  * Props for the useTabulator hook.
@@ -114,7 +114,7 @@ export const useTabulator = ({
         setRegisterData((prevData) => {
           const newData = [...prevData];
           newData[id] = value;
-          sendMessage({ event: 'registersChanged', registers: newData });
+          sendWebviewMessage({ event: 'registersChanged', registers: newData });
           return newData;
         });
       }

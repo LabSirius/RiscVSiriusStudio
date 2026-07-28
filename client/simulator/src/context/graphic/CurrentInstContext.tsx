@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from "react";
+import type { MonocycleWires, PipelineStages } from "@protocol/datapath-view";
 
 interface NOPInstruction {
   asm: "NOP";
@@ -39,25 +40,11 @@ export interface ParsedInstruction {
   inst: number;
 }
 
-type Instruction = ParsedInstruction | NOPInstruction;
-
-export interface ResultState {
-  alu: { a: string; b: string; operation: string; result: string };
-  alua: { signal: string };
-  alub: { signal: string };
-  ru: { rs1: string; rs2: string; dataWrite: string; writeSignal: string };
-  imm: { output: string; signal: string };
-  bu: { a: string; b: string; operation: string; result: string };
-  dm: {
-    address: string;
-    dataRd: string;
-    dataWr: string;
-    controlSignal: string;
-    writeSignal: string;
-  };
-  buMux: { result: string; signal: string };
-  wb: { signal: string };
-}
+// The datapath-view types (`MonocycleWires` / `PipelineStages`) are imported
+// from the protocol module (`@protocol/datapath-view`) — the single source of
+// truth for the wire shape. The hand-mirrored `ResultState` /
+// `PipelineCycleResult` and the per-stage register interfaces they re-declared
+// are gone (ticket 06, ADR-0005).
 
 const NOP_INSTRUCTION_OBJECT: NOPInstruction = { asm: "NOP", pc: -1 };
 
@@ -99,110 +86,25 @@ const NOP_DATA = {
 
 };
 
-interface IDEX_Register {
-  instruction: Instruction;
-  PC: number;
-  PCP4: number;
-  RUWr: boolean;
-  ALUASrc: boolean;
-  ALUBSrc: boolean;
-  DMWr: boolean;
-  RUDataWrSrc: string;
-  DMCtrl: string;
-  ALUOp: string;
-  BrOp: string;
-  RUrs1: string;
-  RUrs2: string;
-  ImmExt: string;
-  ImmSRC: string;
-  RD: string;
-  rs1: string;
-  rs2: string;
-
-  Opcode: string;
-  Funct3: string;
-  Funct7: string;
-  HazardMessage?: undefined
-
-
-
-}
-
-interface EXMEM_Register {
-  instruction: Instruction;
-  PC: number;
-  PCP4: number;
-  RUWr: boolean;
-  DMWr: boolean;
-  RUDataWrSrc: string;
-  DMCtrl: string;
-  ALURes: string;
-  RUrs2: string;
-  RD: string;
-  ALUInputA: string;
-  ALUInputB: string;
-  ALUASrc: boolean;
-  ALUBSrc: boolean;
-  ALUOp: string;
-  BrOp: string;
-  BranchInputRS1: string;
-  BranchInputRS2: string;
-  BranchResult: string;
-  HazardMessage?: undefined
-}
-
-interface MEMWB_Register {
-  instruction: Instruction;
-  PC: number;
-  PCP4: number;
-  RUWr: boolean;
-  RUDataWrSrc: string;
-  ALURes: string;
-  RD: string;
-
-  MemReadData: string;
-  Address: string;
-  MemWriteData: string;
-  DMWr: boolean;
-  DMCtrl: string;
-  HazardMessage?: undefined
-
-}
-
-interface WB_Register {
-  PC: number,
-  instruction: Instruction;
-  RD: string;
-  dataToWrite: string;
-  RUWr: boolean;
-  RUDataWrSrc: string;
-  HazardMessage?: undefined
-
-}
-
-export type PipelineCycleResult = {
-  IF: { instruction: Instruction; PC: number; PCP4: number,   HazardMessage?: undefined  };
-  ID: IDEX_Register;
-  EX: EXMEM_Register;
-  MEM: MEMWB_Register;
-  WB: WB_Register;
-};
-
 const initialMonocycleInst: ParsedInstruction | null = null;
 
-const initialResultState: ResultState = {
-  alu: { a: "", b: "", operation: "", result: "" },
-  alua: { signal: "" },
-  alub: { signal: "" },
+// Default datapath view for the single-cycle CPU, conforming to the protocol's
+// `MonocycleWires`. All wires blank until the first `step`; the mux/wb bundles
+// carry the `result` field the drifted client mirror used to omit.
+const initialMonocycleWires: MonocycleWires = {
+  add4: { result: "" },
   ru: { rs1: "", rs2: "", dataWrite: "", writeSignal: "" },
   imm: { output: "", signal: "" },
+  alua: { signal: "", result: "" },
+  alub: { signal: "", result: "" },
+  alu: { a: "", b: "", operation: "", result: "" },
   bu: { a: "", b: "", operation: "", result: "" },
   dm: { address: "", dataRd: "", dataWr: "", controlSignal: "", writeSignal: "" },
   buMux: { result: "", signal: "" },
-  wb: { signal: "" },
+  wb: { signal: "", result: "" },
 };
 
-const initialPipelineValues: PipelineCycleResult = {
+const initialPipelineValues: PipelineStages = {
   IF: { instruction: NOP_INSTRUCTION_OBJECT, PC: -1, PCP4: 0 },
   ID: { ...NOP_DATA },
   EX: { ...NOP_DATA },
@@ -215,10 +117,10 @@ interface CurrentInstContextType {
   setCurrentMonocycleInst: React.Dispatch<React.SetStateAction<ParsedInstruction | null>>;
   currentType: string;
   setCurrentType: React.Dispatch<React.SetStateAction<string>>;
-  currentMonocycleResult: ResultState;
-  setCurrentMonocycleResult: React.Dispatch<React.SetStateAction<ResultState>>;
-  pipelineValuesStages: PipelineCycleResult;
-  setPipelineValuesStages: React.Dispatch<React.SetStateAction<PipelineCycleResult>>;
+  currentMonocycleResult: MonocycleWires;
+  setCurrentMonocycleResult: React.Dispatch<React.SetStateAction<MonocycleWires>>;
+  pipelineValuesStages: PipelineStages;
+  setPipelineValuesStages: React.Dispatch<React.SetStateAction<PipelineStages>>;
 }
 
 const CurrentInstContext = createContext<CurrentInstContextType>({
@@ -226,7 +128,7 @@ const CurrentInstContext = createContext<CurrentInstContextType>({
   setCurrentMonocycleInst: () => {},
   currentType: "",
   setCurrentType: () => {},
-  currentMonocycleResult: initialResultState,
+  currentMonocycleResult: initialMonocycleWires,
   setCurrentMonocycleResult: () => {},
   pipelineValuesStages: initialPipelineValues,
   setPipelineValuesStages: () => {},
@@ -240,9 +142,9 @@ export const CurrentInstProvider = ({ children }: { children: ReactNode }) => {
   );
   const [currentType, setCurrentType] = useState<string>("");
   const [currentMonocycleResult, setCurrentMonocycleResult] =
-    useState<ResultState>(initialResultState);
+    useState<MonocycleWires>(initialMonocycleWires);
   const [pipelineValuesStages, setPipelineValuesStages] =
-    useState<PipelineCycleResult>(initialPipelineValues);
+    useState<PipelineStages>(initialPipelineValues);
 
   return (
     <CurrentInstContext.Provider

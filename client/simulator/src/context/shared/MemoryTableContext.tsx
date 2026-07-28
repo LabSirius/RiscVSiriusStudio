@@ -5,7 +5,7 @@ interface AddressLine {
   jump: number;
 }
 
-interface MemoryData {
+export interface MemoryData {
   memory: string[];
   program: string[];
   directivesWritableSize: number;

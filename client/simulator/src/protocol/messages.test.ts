@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseExtensionMessage, type ExtensionMessage } from "@protocol/messages";
+import { parseExtensionMessage, type ExtensionMessage, type WebviewMessage } from "@protocol/messages";
 
 // Seam 1: the extension→webview protocol boundary. These tests assert external
 // behaviour at the seam — a raw `unknown` in, a typed `ExtensionMessage` (or a
@@ -186,5 +186,32 @@ describe("parseExtensionMessage", () => {
         expect(parseExtensionMessage(raw)).toBeNull();
       });
     }
+  });
+});
+
+// Reverse direction (webview→extension). This union has no runtime parser — the
+// webview is the trusted authoring side — so the contract is enforced purely at
+// compile time. `tsc -b` type-checks this test file, so the `@ts-expect-error`
+// lines below fail the build if a member's required field is ever dropped or
+// renamed, discharging the "dropped/renamed field is a compile error" guarantee
+// for the outbound direction (ticket 06).
+describe("WebviewMessage compile-time contract", () => {
+  it("accepts the well-formed edit/reset messages", () => {
+    const messages: WebviewMessage[] = [
+      { event: "registersChanged", registers: ["0".repeat(32)] },
+      { event: "memoryChanged", memory: [{ address: "0", value: "0" }] },
+      { event: "reset" },
+    ];
+    expect(messages).toHaveLength(3);
+  });
+
+  it("rejects a dropped or renamed field at compile time", () => {
+    // @ts-expect-error — a register edit without its `registers` payload.
+    const missingRegisters: WebviewMessage = { event: "registersChanged" };
+    // @ts-expect-error — `memory` renamed to `mem` breaks the memory edit.
+    const renamedMemory: WebviewMessage = { event: "memoryChanged", mem: [] };
+    // @ts-expect-error — an unknown reverse event is not part of the contract.
+    const foreignEvent: WebviewMessage = { event: "notAThing" };
+    expect([missingRegisters, renamedMemory, foreignEvent]).toHaveLength(3);
   });
 });

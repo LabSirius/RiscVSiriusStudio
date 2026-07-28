@@ -1,6 +1,7 @@
 import * as conexion from "./dataMonocycleConexions";
 import { edgeCollector, type EdgeId } from "./datapath-primitives";
-import type { ParsedInstruction, ResultState } from "@/context/graphic/CurrentInstContext";
+import type { ParsedInstruction } from "@/context/graphic/CurrentInstContext";
+import type { MonocycleWires } from "@protocol/datapath-view";
 
 // Seam 2 (monocycle): the pure opcode/signal -> lit-wires mapping, lifted out of
 // the `useDataMonocycleConexions` memo. No React, no state mutation — given the
@@ -9,7 +10,7 @@ import type { ParsedInstruction, ResultState } from "@/context/graphic/CurrentIn
 
 export const monocycleEnabledEdges = (
   instruction: ParsedInstruction | null,
-  result: ResultState
+  result: MonocycleWires
 ): Set<EdgeId> => {
   const { edges, add } = edgeCollector();
   if (!instruction) return edges;
