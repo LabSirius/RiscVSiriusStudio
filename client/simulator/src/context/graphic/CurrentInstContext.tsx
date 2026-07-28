@@ -41,7 +41,7 @@ export interface ParsedInstruction {
 
 type Instruction = ParsedInstruction | NOPInstruction;
 
-interface ResultState {
+export interface ResultState {
   alu: { a: string; b: string; operation: string; result: string };
   alua: { signal: string };
   alub: { signal: string };
