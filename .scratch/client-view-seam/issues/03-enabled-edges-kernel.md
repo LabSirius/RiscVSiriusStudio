@@ -14,7 +14,7 @@ stay per datapath but stop being forks. This prepares ticket 05.
 
 **Blocked by:** 01.
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] `enabledEdges` is a pure function per datapath (no React, no state mutation), taking the datapath view + instruction and returning the enabled `EdgeId` set.
 - [ ] The connection-controller hooks shrink to: call the kernel, diff against all edges, set React state — with no side effect inside `useMemo`.
