@@ -1,6 +1,23 @@
 # 01 — Assembler rejects `lbu` / `lhu`
 
-**Status:** needs-triage
+**Status:** resolved — could-not-reproduce (parser already in sync)
+
+## Resolution (2026-07-29)
+
+Bug does **not** reproduce against the committed tree. The generated
+`src/utilities/riscv.ts` already wires `LoadUInstName` (`peg$parseLoadUInstName`)
+into the `LInstruction` rule, so `lbu`/`lhu` assemble. Evidence:
+
+- `lbu x13, 0(x0)` -> `success: true`, funct3 `100`, opcode `0000011`.
+- `lhu x15, 8(x0)` -> `success: true`, funct3 `101`, opcode `0000011`.
+- `npm run parser` (regenerate from `riscv.peg`) produces a **zero diff** on
+  `riscv.ts` — generated parser and grammar are already in sync.
+
+The parser must have been regenerated in a commit after this issue was filed
+(the `LoadUInstName` wiring is present as of `6812a8fa`). No production change
+needed. Added regression guard `src/utilities/lbu-lhu.test.ts` covering all base
+loads plus the funct3/opcode of `lbu`/`lhu`. The `synthesizeUnsignedLoads`
+workaround in the golden net can now be replaced with real assembled nodes.
 
 **Type:** bug
 
