@@ -3,6 +3,7 @@ import { Handle, Position } from '@xyflow/react';
 import ContainerSVG from '../../ContainerSVG';
 import LabelValueContainer from './LabelValueContainer';
 import { useSimulator } from '@/context/shared/SimulatorContext';
+import ClockTriangle from '@/components/graphic/ClockTriangle';
 
 interface HandlerConfig {
   id?: string;
@@ -32,12 +33,15 @@ export default function DataMemory() {
   return (
     <div className='w-full'>
 
-      <div className='relative w-full h-full'>
+      <div className='relative w-full h-full group'>
         <h2 className={`!z-0  titleInElement top-[15%] left-[50%] -translate-x-[50%] -translate-y-[15%] ${!(isActive|| !isFirstStep) && '!text-[#D3D3D3]'  }`}>
           Data Memory
         </h2>
         <ContainerSVG height={19.9} active={isActive} />
         {(operation !== "uploadMemory") && !isEbreak &&isActive && <LabelValueContainer /> }
+        <div className="group-hover:translate-y-[-.8rem] transition-all duration-200 ease-in">
+          <ClockTriangle />
+        </div>
       </div>
 
       {inputHandlers.map((handler, index) => (
