@@ -27,6 +27,7 @@ import SkeletonRegisterTable from "@/components/panel/Skeleton/SkeletonRegisterT
 import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 
 import { SimulatorTable, SimulatorTableHandle } from "./SimulatorTable";
+import TableSearchToolbar from "./TableSearchToolbar";
 
 // The radix keys map to the persistent viewType (candidate B keeps the transient
 // hover-peek in attachConvertionToggle; this only sets the stored view). Folded
@@ -54,13 +55,8 @@ const RegistersTable = () => {
   const { theme } = useTheme();
   const { isCreatedMemoryTable } = useMemoryTable();
   const { registerData, setRegisterData } = useRegisterData();
-  const {
-    writeInRegister,
-    setWriteInRegister,
-    importRegister,
-    setImportRegister,
-    searchInRegisters,
-  } = useRegistersTable();
+  const { writeInRegister, setWriteInRegister, importRegister, setImportRegister } =
+    useRegistersTable();
   const { checkFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters } =
     useCustomOptionSimulate();
   const { isFirstStep } = useSimulator();
@@ -68,6 +64,9 @@ const RegistersTable = () => {
   const [showTable, setShowTable] = useState(true);
   const [ready, setReady] = useState(false);
   const [rows, setRows] = useState<RegisterRow[]>(() => buildRegisterRows(registerData));
+  // Per-table search string (was RegisterTableContext.searchInRegisters). Local
+  // so it filters only this table; the register-specific paint stays underneath.
+  const [search, setSearch] = useState("");
 
   const handleRef = useRef<SimulatorTableHandle | null>(null);
   const themeRef = useRef(theme);
@@ -223,13 +222,13 @@ const RegistersTable = () => {
   // --- Search: filter + colour matching cells (replaces useTableFilter). ---
   useEffect(() => {
     if (!ready) return;
-    if (searchInRegisters.trim() === "") {
+    if (search.trim() === "") {
       handleRef.current?.clearRegisterFilter();
     } else {
-      handleRef.current?.filterRegisters(searchInRegisters, themeRef.current);
+      handleRef.current?.filterRegisters(search, themeRef.current);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchInRegisters, ready]);
+  }, [search, ready]);
 
   const onEdit = (row: RegisterRow, cell: CellComponent) => {
     const field = cell.getField();
@@ -269,6 +268,13 @@ const RegistersTable = () => {
               options={options}
               onEdit={onEdit}
               onReady={onReady}
+            />
+            {/* Register search is always live (no step gate). */}
+            <TableSearchToolbar
+              value={search}
+              onChange={setSearch}
+              placeholder="e.g x17 or 12 or 1100 or 0xC"
+              className="absolute right-[1.7rem] top-[.4rem]"
             />
             <ArrowBigLeftDash
               id="closeRT"

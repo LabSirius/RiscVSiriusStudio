@@ -11,7 +11,10 @@ import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable
 import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 
 import { SimulatorTable, SimulatorTableHandle } from "../SimulatorTable";
+import TableSearchToolbar from "../TableSearchToolbar";
+import LocatePc from "@/components/panel/Search/LocatePc";
 import { buildMemoryColumns } from "@/utils/tables/definitions/memoryColumns";
+import { matchesMemoryQuery } from "@/utils/tables/memorySearch";
 import { buildProgramRows, ProgramRow } from "@/utils/tables/programRows";
 import { hexToInt, binaryToIntTwoComplement } from "@/utils/handlerConversions";
 import { createPCIcon } from "@/utils/tables/handlersMemory";
@@ -31,7 +34,6 @@ const ProgramMemoryTable = () => {
     setIsCreatedMemoryTable,
     dataMemoryTable,
     typesInstruction,
-    searchInMemory,
     locatePc,
     setLocatePc,
     showProgramTable,
@@ -42,6 +44,9 @@ const ProgramMemoryTable = () => {
   const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable } = useLines();
 
   const [ready, setReady] = useState(false);
+  // Per-table search string (was the shared MemoryTableContext.searchInMemory
+  // that also drove the available-memory table). Local so it scopes here only.
+  const [search, setSearch] = useState("");
 
   const handleRef = useRef<SimulatorTableHandle | null>(null);
   // Live refs so the mount-once column `cellClick` and the effects read fresh
@@ -149,24 +154,19 @@ const ProgramMemoryTable = () => {
   }, [clickInEditorLine, ready]);
 
   // --- Search: filter rows and reposition the PC icon. Gated until the program
-  // has stepped once (newPc > 0), mirroring the original. NOTE (deferred polish):
-  // `searchInMemory` is shared, so this still filters the available-memory table
-  // at the same time — program search scope is logged for a later split. ---
+  // has stepped once (newPc > 0), mirroring the original. Scoped to this table
+  // only now (local `search`), so it no longer filters available-memory too. ---
   useEffect(() => {
     if (!ready || newPcRef.current === 0) return;
-    const q = searchInMemory.trim().toLowerCase();
-    if (q === "") {
+    if (search.trim() === "") {
       handleRef.current?.clearFilter();
     } else {
-      const fields = ["address", "value3", "value2", "value1", "value0", "hex"];
-      handleRef.current?.setFilter((data) =>
-        fields.some((f) => String(data[f] ?? "").toLowerCase().includes(q))
-      );
+      handleRef.current?.setFilter((data) => matchesMemoryQuery(data, search));
     }
     // The PC icon repositions itself: setFilter/clearFilter trigger a redraw,
     // which re-runs the rowFormatter that owns the icon.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchInMemory, ready]);
+  }, [search, ready]);
 
   const onReady = (handle: SimulatorTableHandle) => {
     handleRef.current = handle;
@@ -198,6 +198,17 @@ const ProgramMemoryTable = () => {
             options={options}
             onReady={onReady}
           />
+          {/* PC navigation — its own control, not part of the search box. */}
+          <LocatePc className="absolute right-[3.4rem] top-[.4rem] z-100" />
+          {/* Memory search is gated until the program has stepped (newPc > 0). */}
+          {newPc > 0 && (
+            <TableSearchToolbar
+              value={search}
+              onChange={setSearch}
+              placeholder="e.g 1234"
+              className="absolute right-[1.7rem] top-[.4rem]"
+            />
+          )}
           <ArrowBigLeftDash
             onClick={() => {
               setShowProgramTable(false);
