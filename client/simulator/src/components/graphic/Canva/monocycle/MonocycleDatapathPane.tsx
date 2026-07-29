@@ -15,6 +15,7 @@ import CustomControls from "../../custom/CustomControls";
 import MonocycleConexionsController from "./MonocycleConexionsController";
 
 import { useCustomOptionSimulate } from "@/context/shared/CustomOptionSimulate";
+import { useNodeScreenshot } from "../../screenshot/useNodeScreenshot";
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
@@ -54,6 +55,7 @@ export default function MonocycleDatapathPane() {
   }, [fitViewTrigger, fitView]);
 
   const [selectedGroup, setSelectedGroup] = useState<string[][]>([]);
+  const { onNodeMouseEnter, onNodeMouseLeave, screenshotToolbar } = useNodeScreenshot();
 
   const handleEdgeClick = (_event: MouseEvent<Element>, edge: Edge): void => {
     const updatedGroups = animateLineClick(updateEdge, edge, edges, selectedGroup, edgeGroups);
@@ -84,6 +86,8 @@ export default function MonocycleDatapathPane() {
       onEdgeClick={handleEdgeClick}
       onEdgeMouseEnter={handleEdgeMouseEnter}
       onEdgeMouseLeave={handleEdgeMouseLeave}
+      onNodeMouseEnter={onNodeMouseEnter}
+      onNodeMouseLeave={onNodeMouseLeave}
       style={{ backgroundColor: "#F7F9FB" }}
       minZoom={0.1}
       maxZoom={2}
@@ -93,6 +97,7 @@ export default function MonocycleDatapathPane() {
       <Background color="#000000" gap={20} size={2} />
       {minimapVisible && <MiniMap />}
       <CustomControls {...controlHandlers} />
+      {screenshotToolbar}
       <MonocycleConexionsController setEdges={setEdges} />
     </ReactFlow>
   );

@@ -18,6 +18,7 @@ import StagesPipeline from "@/components/panel/Sections/Tables/StagesPipeline";
 import { usePipelineStagesSlot } from "@/context/graphic/PipelineStagesSlotContext";
 
 import { useCustomOptionSimulate } from "@/context/shared/CustomOptionSimulate";
+import { useNodeScreenshot } from "../../screenshot/useNodeScreenshot";
 
 const defaultViewport = { x: 0, y: 0, zoom: 1.5 };
 
@@ -49,6 +50,7 @@ export default function PipelineDatapathPane() {
 
   const [selectedGroup, setSelectedGroup] = useState<string[][]>([]);
   const edgeGroups = useEdgeGroups();
+  const { onNodeMouseEnter, onNodeMouseLeave, screenshotToolbar } = useNodeScreenshot();
 
   useEffect(() => {
     if (fitViewTrigger > 0) {
@@ -91,6 +93,8 @@ export default function PipelineDatapathPane() {
         onEdgeClick={handleEdgeClick}
         onEdgeMouseEnter={handleEdgeMouseEnter}
         onEdgeMouseLeave={handleEdgeMouseLeave}
+        onNodeMouseEnter={onNodeMouseEnter}
+        onNodeMouseLeave={onNodeMouseLeave}
         style={{ backgroundColor: "#F7F9FB" }}
         minZoom={0.1}
         maxZoom={2}
@@ -100,6 +104,7 @@ export default function PipelineDatapathPane() {
         <Background color="#000000" gap={20} size={2} />
         {minimapVisible && <MiniMap />}
         <CustomControls {...controlHandlers} />
+        {screenshotToolbar}
         <PipelineConexionsController setEdges={setEdges} />
       </ReactFlow>
       {slotNode && createPortal(<StagesPipeline />, slotNode)}
