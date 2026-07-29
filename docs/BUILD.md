@@ -163,7 +163,7 @@ Two supported paths, both use `@vscode/vsce`:
 
 ```bash
 # From root package.json scripts:
-npm run package2        # = "vsce package"
+npm run vsix        # = "vsce package"
 ```
 
 or the way CI does it (`.github/workflows/build-vsix.yml`, runs on push to
