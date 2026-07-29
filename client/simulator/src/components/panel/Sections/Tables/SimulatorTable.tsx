@@ -12,6 +12,8 @@ import {
   animateArrowBetweenCells,
   setupInstructionTooltips,
 } from "@/utils/tables/handlersMemory";
+import { filterTableData } from "@/utils/tables/handlersRegisters";
+import { resetCellColors } from "@/utils/tables/handlersShared";
 
 /**
  * The imperative escape hatch (ADR-0006). SimulatorTable is declarative for
@@ -44,6 +46,15 @@ export interface SimulatorTableHandle {
    * SimulatorTable itself stays free of any program-specific concept.
    */
   setupTooltips(): void;
+  /**
+   * Register search: filter rows and colour the matching name/value cells. A
+   * transient view op reached through the handle (ADR-0006), keeping the fiddly
+   * `filterTableData` matching untouched. Declarative reimplementation is a
+   * future ticket (.scratch/register-search-declarative).
+   */
+  filterRegisters(search: string, theme: string): void;
+  /** Clear the register filter and reset the search cell colours. */
+  clearRegisterFilter(): void;
   /** Force a full re-render (re-runs the rowFormatter), e.g. after a theme change. */
   redraw(): void;
 }
@@ -206,6 +217,13 @@ function makeHandle(instance: Tabulator): SimulatorTableHandle {
     },
     setupTooltips() {
       setupInstructionTooltips(instance);
+    },
+    filterRegisters(search, theme) {
+      filterTableData(search, instance, theme);
+    },
+    clearRegisterFilter() {
+      instance.clearFilter(true);
+      resetCellColors(instance);
     },
     redraw() {
       instance.redraw(true);
