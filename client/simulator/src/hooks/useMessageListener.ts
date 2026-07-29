@@ -132,8 +132,9 @@ export const useMessageListener = () => {
           }
 
           if (!isFirstStep) {
-            setSection("search");
-
+            // Search moved onto each table (per-table toolbars), so the first
+            // step no longer force-opens the old search side panel; the section
+            // stays wherever the user left it.
             setOperation("step");
             setIsFirstStep(true);
           }

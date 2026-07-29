@@ -12,7 +12,9 @@ import { ArrowBigLeftDash, ArrowBigRightDash, Binary, Menu } from "lucide-react"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 import { SimulatorTable, SimulatorTableHandle } from "../../SimulatorTable";
+import TableSearchToolbar from "../../TableSearchToolbar";
 import { buildMemoryColumns } from "@/utils/tables/definitions/memoryColumns";
+import { matchesMemoryQuery } from "@/utils/tables/memorySearch";
 import {
   buildAvailableRows,
   withLabels,
@@ -54,7 +56,6 @@ const AvailableMemory = ({ withBin, setWithBin }: AvailableMemoryProps) => {
     setWriteInMemory,
     readInMemory,
     setReadInMemory,
-    searchInMemory,
   } = useMemoryTable();
 
   const { newPc, isFirstStep } = useSimulator();
@@ -63,6 +64,9 @@ const AvailableMemory = ({ withBin, setWithBin }: AvailableMemoryProps) => {
   const [showTable, setShowTable] = useState(true);
   const [ready, setReady] = useState(false);
   const [baseRows, setBaseRows] = useState<AvailableRow[]>([]);
+  // Per-table search string (was the shared MemoryTableContext.searchInMemory
+  // that filtered both memory tables at once). Local so it scopes to this table.
+  const [search, setSearch] = useState("");
 
   const handleRef = useRef<SimulatorTableHandle | null>(null);
   const isFirstStepRef = useRef(isFirstStep);
@@ -227,18 +231,14 @@ const AvailableMemory = ({ withBin, setWithBin }: AvailableMemoryProps) => {
   // --- Search: filter rows and reposition the PC icon. ---
   useEffect(() => {
     if (!ready || newPc === 0) return;
-    const q = searchInMemory.trim().toLowerCase();
-    if (q === "") {
+    if (search.trim() === "") {
       handleRef.current?.clearFilter();
     } else {
-      const fields = ["address", "value3", "value2", "value1", "value0", "hex"];
-      handleRef.current?.setFilter((data) =>
-        fields.some((f) => String(data[f] ?? "").toLowerCase().includes(q))
-      );
+      handleRef.current?.setFilter((data) => matchesMemoryQuery(data, search));
     }
     handleRef.current?.markPc((newPc * 4).toString(16).toUpperCase());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchInMemory, ready]);
+  }, [search, ready]);
 
   // --- Reflow the written-cell colours when the theme changes. ---
   useEffect(() => {
@@ -280,6 +280,15 @@ const AvailableMemory = ({ withBin, setWithBin }: AvailableMemoryProps) => {
             }}
             onReady={onReady}
           />
+          {/* Memory search is gated until the program has stepped (newPc > 0). */}
+          {newPc > 0 && (
+            <TableSearchToolbar
+              value={search}
+              onChange={setSearch}
+              placeholder="e.g 1234"
+              className="absolute right-[1.7rem] top-[.4rem]"
+            />
+          )}
           <HoverCard openDelay={200} closeDelay={100}>
             <HoverCardTrigger asChild>
               <Menu
