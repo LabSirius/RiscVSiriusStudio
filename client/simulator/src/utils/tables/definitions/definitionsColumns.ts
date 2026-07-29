@@ -2,7 +2,7 @@ import { registerNamesFormatter, valueFormatter, valueRegisterEditor, attachConv
 import { possibleViews } from '@/components/panel/Sections/constants/data';
 
 import { ColumnDefinition, CellComponent } from 'tabulator-tables';
-import { binaryMemEditor, createTooltip, attachMemoryConversionToggle } from '@/utils/tables/definitions/handlerDefinitions';
+import { buildMemoryColumns } from '@/utils/tables/definitions/memoryColumns';
 import { MutableRefObject } from 'react';
 
 
@@ -78,204 +78,20 @@ export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellCom
   };
 
 
-/**
- * This function returns the definitions of the columns for the memory table.
- */
-export const getColumnMemoryDefinitions = (isFirstStepRef: MutableRefObject<boolean> ): ColumnDefinition[]=>{
-    const defaultAttrs: ColumnDefinition = {
-      title: '',
-      visible: true,
-      headerSort: false,
-      headerHozAlign: 'center',
-      formatter: 'html',
-      cssClass: 'monospace',
-    };
-    const frozenAttrs: ColumnDefinition = { ...defaultAttrs, frozen: true };
-    const editableAttrs: ColumnDefinition = {
-      ...frozenAttrs,
-      editor: binaryMemEditor,
-      editable: function (cell) {
-        const rowData = cell.getRow().getData();
-        const isEditableStep = !isFirstStepRef.current;
-        const isCodeSegment = rowData.segment === 'program' || rowData.segment === 'directivesReadOnlySize';
-        return isEditableStep && !isCodeSegment;
-      },
-      
-      cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
-    };
-  
-    const columns: ColumnDefinition[] = [
-      { ...defaultAttrs, visible: false, field: 'index' },
-      {
-        ...frozenAttrs,
-        title: 'Info',
-        field: 'info',
-        width: 60,
-        formatter: (cell) =>
-          `<span class="block whitespace-nowrap overflow-hidden truncate text-white ">${cell.getValue()}</span>`,
-        tooltip: (e: MouseEvent, cell: CellComponent, onRendered: (cb: () => void) => void) =>
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          createTooltip(e, cell, onRendered) as any,
-      },
-      {
-        ...frozenAttrs,
-        title: 'Addr.',
-        field: 'address',
-        sorter: (a: string, b: string) => parseInt(a, 16) - parseInt(b, 16),
-        headerSort: true,
-        width: 75,
-        formatter: (cell) =>
-          `<span class="address-value">${(cell.getValue() as string).toUpperCase()}</span>`,
-        cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
-      },
-      { ...editableAttrs, title: '0x3', field: 'value3', width: 83 },
-      { ...editableAttrs, title: '0x2', field: 'value2', width: 83 },
-      { ...editableAttrs, title: '0x1', field: 'value1', width: 83 },
-      { ...editableAttrs, title: '0x0', field: 'value0', width: 83 },
-      {
-         ...frozenAttrs,
-        title: 'HEX',
-         field: 'hex',
-         width: 110,
-         formatter: (cell) =>
-        `<span class="hex-value">${(cell.getValue() as string).toUpperCase()}</span>`,
-       }
-    ];
-  
-  
-    return columns;
-  };
-  
+// The three memory-table column builders now delegate to one parameterized
+// builder (`buildMemoryColumns`); they differ only by mode. See memoryColumns.ts.
 
-  
+/** Available-memory, binary bytes visible. */
+export const getColumnMemoryDefinitions = (isFirstStepRef: MutableRefObject<boolean>): ColumnDefinition[] =>
+  buildMemoryColumns("bin", isFirstStepRef);
 
-  export const getColumnHexMemoryDefinitions = (isFirstStepRef: MutableRefObject<boolean> ): ColumnDefinition[]=>{
-    const defaultAttrs: ColumnDefinition = {
-      title: '',
-      visible: true,
-      headerSort: false,
-      headerHozAlign: 'center',
-      formatter: 'html',
-      cssClass: 'monospace',
-    };
-    const frozenAttrs: ColumnDefinition = { ...defaultAttrs, frozen: true };
-    const editableAttrs: ColumnDefinition = {
-      ...frozenAttrs,
-      editor: binaryMemEditor,
-      editable: function (cell) {
-        const rowData = cell.getRow().getData();
-        const isEditableStep = !isFirstStepRef.current;
-        const isCodeSegment = rowData.segment === 'program' || rowData.segment === 'directivesReadOnlySize';
-        return isEditableStep && !isCodeSegment;
-      },
-      
-      cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
-    };
-  
-    const columns: ColumnDefinition[] = [
-      { ...defaultAttrs, visible: false, field: 'index' },
-      {
-        ...frozenAttrs,
-        title: 'Info',
-        field: 'info',
-        width: 60,
-        formatter: (cell) =>
-          `<span class="block whitespace-nowrap overflow-hidden truncate text-white ">${cell.getValue()}</span>`,
-        tooltip: (e: MouseEvent, cell: CellComponent, onRendered: (cb: () => void) => void) =>
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          createTooltip(e, cell, onRendered) as any,
-      },
-      {
-        ...frozenAttrs,
-        title: 'Addr.',
-        field: 'address',
-        sorter: (a: string, b: string) => parseInt(a, 16) - parseInt(b, 16),
-        headerSort: true,
-        width: 75,
-        formatter: (cell) =>
-          `<span class="address-value">${(cell.getValue() as string).toUpperCase()}</span>`,
-        cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
-      },
-      { ...editableAttrs, title: '0x3', field: 'value3', width: 83, visible: false },
-      { ...editableAttrs, title: '0x2', field: 'value2', width: 83, visible: false},
-      { ...editableAttrs, title: '0x1', field: 'value1', width: 83, visible: false },
-      { ...editableAttrs, title: '0x0', field: 'value0', width: 83, visible: false },
-      {
-         ...frozenAttrs,
-        title: 'HEX',
-         field: 'hex',
-         width: 110,
-         formatter: (cell) =>
-        `<span class="hex-value">${(cell.getValue() as string).toUpperCase()}</span>`,
-       }
-    ];
-  
-  
-    return columns;
-  };
+/** Available-memory, HEX-only (byte columns hidden). */
+export const getColumnHexMemoryDefinitions = (isFirstStepRef: MutableRefObject<boolean>): ColumnDefinition[] =>
+  buildMemoryColumns("hex", isFirstStepRef);
 
-
-  export const getColumnProgramMemoryDefinitions = (isFirstStepRef: MutableRefObject<boolean> ): ColumnDefinition[]=>{
-    const defaultAttrs: ColumnDefinition = {
-      title: '',
-      visible: true,
-      headerSort: false,
-      headerHozAlign: 'center',
-      formatter: 'html',
-      cssClass: 'monospace',
-    };
-    const frozenAttrs: ColumnDefinition = { ...defaultAttrs, frozen: true };
-    const editableAttrs: ColumnDefinition = {
-      ...frozenAttrs,
-      editor: binaryMemEditor,
-      editable: function (cell) {
-        const rowData = cell.getRow().getData();
-        const isEditableStep = !isFirstStepRef.current;
-        const isCodeSegment = rowData.segment === 'program' || rowData.segment === 'directivesReadOnlySize';
-        return isEditableStep && !isCodeSegment;
-      },
-      
-      cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
-    };
-  
-    const columns: ColumnDefinition[] = [
-      { ...defaultAttrs, visible: false, field: 'index' },
-      {
-        ...frozenAttrs,
-        title: 'Info',
-        field: 'info',
-        width: 60,
-        formatter: (cell) =>
-          `<span class="block whitespace-nowrap overflow-hidden truncate text-white ">${cell.getValue()}</span>`,
-        tooltip: (e: MouseEvent, cell: CellComponent, onRendered: (cb: () => void) => void) =>
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          createTooltip(e, cell, onRendered) as any,
-      },
-      {
-        ...frozenAttrs,
-        title: 'Addr.',
-        field: 'address',
-        sorter: (a: string, b: string) => parseInt(a, 16) - parseInt(b, 16),
-        headerSort: true,
-        width: 75,
-        formatter: (cell) =>
-          `<span class="address-value">${(cell.getValue() as string).toUpperCase()}</span>`,
-        cellMouseEnter: (_e, cell) => attachMemoryConversionToggle(cell),
-      },
-      { ...editableAttrs, title: 'Instruction encoding', field: 'instructionencoding', width: 340, hozAlign: 'right' },
-      {
-         ...frozenAttrs,
-        title: 'HEX',
-         field: 'hex',
-         width: 110,
-         formatter: (cell) =>
-        `<span class="hex-value">${(cell.getValue() as string).toUpperCase()}</span>`,
-       }
-    ];
-  
-  
-    return columns;
-  };
+/** Program (instruction) memory. */
+export const getColumnProgramMemoryDefinitions = (isFirstStepRef: MutableRefObject<boolean>): ColumnDefinition[] =>
+  buildMemoryColumns("program", isFirstStepRef);
   
 
 const pipelineCellFormatter = (cell: CellComponent): string => {
