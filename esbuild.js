@@ -1,6 +1,31 @@
 const { build } = require("esbuild");
 const { copy } = require("esbuild-plugin-copy");
 const { clean } = require("esbuild-plugin-clean");
+const { execSync, spawn } = require("child_process");
+const path = require("path");
+
+// The React webview lives in client/simulator and is built by Vite into
+// src/templates/simulator (the bundle the extension's providers serve). It is
+// NOT an esbuild target, so without this it only rebuilt on a manual
+// `npm run build` there — leaving the running webview stale after a main build.
+// Build it as part of the main build so the served webview never drifts.
+const CLIENT_DIR = path.join(__dirname, "client", "simulator");
+function buildClientWebview({ watch }) {
+  if (watch) {
+    // Long-running: tsc -b then `vite build --watch`. Spawn detached from the
+    // esbuild watchers so it keeps the webview fresh on every source change.
+    console.log("[webview] starting Vite watch (client/simulator)");
+    const child = spawn("npm", ["run", "build", "--", "--watch"], {
+      cwd: CLIENT_DIR,
+      stdio: "inherit",
+      shell: true,
+    });
+    child.on("error", (err) => console.error(`[webview] watch failed: ${err.message}`));
+    return;
+  }
+  console.log("[webview] building client/simulator -> src/templates/simulator");
+  execSync("npm run build", { cwd: CLIENT_DIR, stdio: "inherit" });
+}
 
 //@ts-check
 /** @typedef {import('esbuild').BuildOptions} BuildOptions **/
@@ -106,6 +131,8 @@ const watchConfig = {
   const args = process.argv.slice(2);
   try {
     if (args.includes("--watch")) {
+      // Keep the React webview bundle fresh alongside the esbuild watchers.
+      buildClientWebview({ watch: true });
       // Build and watch extension and webview code
       await build({
         ...extensionConfig,
@@ -125,7 +152,8 @@ const watchConfig = {
       });
       ("[watch] build finished");
     } else {
-      // Build extension and webview code
+      // Build the React webview first, then the extension + simulator bundles.
+      buildClientWebview({ watch: false });
       await build(extensionConfig);
       await build(graphicSimulatorConfig);
       await build(textSimulatorSimulator);
