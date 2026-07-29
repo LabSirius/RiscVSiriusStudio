@@ -21,12 +21,18 @@ const MainSection = () => {
   const [showScrollIcon, setShowScrollIcon] = useState(false);
   const BASE_WIDTH = 1296;
 
+  // VS Code signals theme changes by live-mutating the webview <body> class
+  // (vscode-light / vscode-dark), not by any message or re-render. Reading it
+  // once on mount freezes the theme at load time (the table-theme-toggle bug),
+  // so observe the body class and re-derive on every change.
   useEffect(() => {
-    if (document.body.classList.contains("vscode-light")) {
-      setTheme("light");
-    } else {
-      setTheme("dark");
-    }
+    const applyVscodeTheme = () => {
+      setTheme(document.body.classList.contains("vscode-light") ? "light" : "dark");
+    };
+    applyVscodeTheme();
+    const observer = new MutationObserver(applyVscodeTheme);
+    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
   }, [setTheme]);
 
   useEffect(() => {
