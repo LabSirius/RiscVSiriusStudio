@@ -48,6 +48,11 @@ export const getColumnsRegisterDefinitions = ( viewTypeFormatter: (cell: CellCom
       },
       {
         ...editableAttrs,
+        // Register values are read-only during a simulation (user decision). We
+        // keep the editor wired but disable it, so the radix hover-peek
+        // (cellMouseEnter → attachConvertionToggle) still works. Re-enable by
+        // restoring editableAttrs.editable if inline value editing is wanted back.
+        editable: () => false,
         title: 'Value',
         field: 'value',
         width: 160,
