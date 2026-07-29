@@ -1,0 +1,37 @@
+# Program-memory search should match instruction text
+
+Status: needs-triage
+Type: grilling
+
+Future ticket. Deferred from `01-per-table-search-toolbar` (spec Q2). Ships after 01.
+
+## The gap
+
+The per-table search (issue 01) matches the frozen field list
+`["address","value3","value2","value1","value0","hex"]` on BOTH memory tables. That list is
+all numeric/address data. But **program memory also shows disassembled instruction text**
+(mnemonic, operands, asm source) — none of which the current search matches. A user staring
+at a search box on the program-memory table will expect to type `addi`, `x17`, or a label
+and find the row; today they get nothing.
+
+## The idea (Q2 option B)
+
+Give program-memory its own field list that additionally matches its instruction/asm
+columns, so instruction-text search works. Data-memory keeps the numeric 6-field list.
+(Per-table local state from issue 01 already makes divergent field lists trivial — nothing
+locks them together.)
+
+## Open decisions to grill
+
+- Match the **rendered** disassembly string, the **raw** asm source, or both?
+- Case sensitivity and tokenization — does `x17` match an operand mid-string? does `add`
+  match `addi`?
+- Does instruction-text matching coexist cleanly with numeric matching in one box (one
+  substring `.includes` over a bigger field set), or do the two intents fight (e.g. a hex
+  value that also reads as text)?
+- Any highlight of the matched instruction, or row-filter only?
+
+## Affected code
+
+- `components/panel/Sections/Tables/MemoryTable/ProgramMemory.tsx` — the search effect's
+  `fields` list.
