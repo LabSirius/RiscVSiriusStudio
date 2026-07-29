@@ -158,7 +158,20 @@ export function SimulatorTable<T extends Record<string, unknown>>({
     instance.setColumns(columns);
   }, [columns]);
 
-  return <div ref={containerRef} className={className} id={id} />;
+  // Theme wrapper (ADR-0006 / table-theme-toggle bug): the caller's `className`
+  // — which carries the `theme-light`/`theme-dark` class — must sit on a stable,
+  // React-owned element that is a true *ancestor* of the Tabulator container.
+  // Tabulator does `element.classList.add("tabulator")` on the div it builds
+  // into, so if the theme class shared that div it would both (a) never satisfy
+  // the `.theme-dark .tabulator` descendant selector and (b) fight React and
+  // Tabulator over the same element's className on every toggle. Keeping the
+  // container (the eventual `.tabulator` element) className static and putting
+  // the live theme class on the wrapper makes toggles restyle the built table.
+  return (
+    <div className={className}>
+      <div ref={containerRef} id={id} className="h-full w-full" />
+    </div>
+  );
 }
 
 function makeHandle(instance: Tabulator): SimulatorTableHandle {

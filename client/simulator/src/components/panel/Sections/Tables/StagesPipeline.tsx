@@ -39,13 +39,16 @@ const StagesPipeline = () => {
           !showTable && "hidden"
         }`}>
         <div className={`h-full  w-full transition-opacity ease-in 9000`}>
-          <div
-            id="pipelineTable"
-            ref={tableContainerRef}
-            className={`w-full h-full overflow-x-hidden ${
-              theme === "light" ? "theme-light" : "theme-dark"
-            }`}
-          />
+          {/* Theme wrapper: the theme class must sit on a stable ancestor of the
+              Tabulator container, not on the container itself (Tabulator claims
+              that element with `.tabulator`). Same fix as SimulatorTable. */}
+          <div className={`h-full w-full ${theme === "light" ? "theme-light" : "theme-dark"}`}>
+            <div
+              id="pipelineTable"
+              ref={tableContainerRef}
+              className="w-full h-full overflow-x-hidden"
+            />
+          </div>
           <ArrowBigLeftDash
             onClick={() => {
               setShowTable(false);
