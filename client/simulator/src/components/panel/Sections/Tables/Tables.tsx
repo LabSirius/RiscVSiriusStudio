@@ -1,9 +1,8 @@
 import RegisterTable from "./RegisterTable";
-import AvailableMemoryTable from "./MemoryTable/AvailableMemoryTable/AvailableMemoryTable";
+import AvailableMemory from "./MemoryTable/AvailableMemoryTable/AvailableMemory";
 import { useSimulator } from "@/context/shared/SimulatorContext";
 import ProgramMemoryTable from "./MemoryTable/ProgramMemory";
 import ProgramSection from "../ProgramSection";
-import AvailableHexMemoryTable from "./MemoryTable/AvailableMemoryTable/AvailableHexMemoryTable";
 import { usePipelineStagesSlot } from "@/context/graphic/PipelineStagesSlotContext";
 import { useState } from "react";
 
@@ -18,9 +17,7 @@ const Tables = () => {
       <RegisterTable />
 
       <div className="flex gap-0 overflow-hidden min-w-min" id="memoryTables">
-        <AvailableMemoryTable withBin={withBin} setWithBin={setWithBin} />
-
-        <AvailableHexMemoryTable withBin={withBin} setWithBin={setWithBin} />
+        <AvailableMemory withBin={withBin} setWithBin={setWithBin} />
 
         <ProgramMemoryTable />
       </div>

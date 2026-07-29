@@ -73,8 +73,18 @@ export const buildMemoryColumns = (
     title: "HEX",
     field: "hex",
     width: 110,
-    formatter: (cell) =>
-      `<span class="hex-value">${(cell.getValue() as string).toUpperCase()}</span>`,
+    // Each "XX-XX-XX-XX" byte pair is tagged with the value field it came from
+    // (high byte first: value3..value0), so the available-memory rowFormatter can
+    // colour the written bytes here to match the value cells.
+    formatter: (cell) => {
+      const fields = ["value3", "value2", "value1", "value0"];
+      const bytes = (cell.getValue() as string)
+        .toUpperCase()
+        .split("-")
+        .map((pair, i) => `<span class="hex-byte" data-hexfield="${fields[i] ?? ""}">${pair}</span>`)
+        .join("-");
+      return `<span class="hex-value">${bytes}</span>`;
+    },
   };
 
   // The middle columns are the only thing that varies across the three tables.
