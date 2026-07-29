@@ -16,6 +16,8 @@ export interface ProgramRow {
   address: string;
   /** Coloured, tooltip-tagged instruction encoding HTML (see colorizeInstruction). */
   instructionencoding: string;
+  /** The assembled instruction as text (e.g. "addi x1, x0, 5"); "" when unknown. */
+  asmText: string;
   hex: string;
   info: string;
   /** "program" for instruction rows; "" for appended symbol-only rows. */
@@ -132,7 +134,8 @@ export const colorizeInstruction = (binary32bit: string, type: string): string =
 export const buildProgramRows = (
   program: string[],
   symbols: Record<string, SymbolData>,
-  typesInstruction: { type: string }[]
+  typesInstruction: { type: string }[],
+  asmList: string[] = []
 ): ProgramRow[] => {
   const rows: ProgramRow[] = chunk(program, 4).map((word, index) => {
     const byteAddress = index * 4;
@@ -144,6 +147,7 @@ export const buildProgramRows = (
     return {
       address,
       instructionencoding: colorizeInstruction(fullBinary, instructionType),
+      asmText: asmList[index] ?? "",
       hex: word
         .slice()
         .reverse()
@@ -164,6 +168,7 @@ export const buildProgramRows = (
       const row: ProgramRow = {
         address: symbolAddress,
         instructionencoding: BLANK_ENCODING,
+        asmText: "",
         info: labelSpan(symbol.name),
         hex: "00-00-00-00",
         segment: "",

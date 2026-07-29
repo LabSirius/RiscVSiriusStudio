@@ -90,6 +90,8 @@ export const buildMemoryColumns = (
   // The middle columns are the only thing that varies across the three tables.
   let middleColumns: ColumnDefinition[];
   if (mode === "program") {
+    const escapeHtml = (s: string) =>
+      s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     middleColumns = [
       {
         ...editableAttrs,
@@ -97,6 +99,20 @@ export const buildMemoryColumns = (
         field: "instructionencoding",
         width: 340,
         hozAlign: "right",
+      },
+      {
+        // The assembled instruction as text. Read-only (not editable like the
+        // encoding); asm text is escaped since the column formatter is "html".
+        // widthGrow lets it absorb the free space when the encoding column is
+        // hidden (fitColumns otherwise leaves an empty gap), and yield when shown.
+        ...frozenAttrs,
+        title: "Instruction",
+        field: "asmText",
+        minWidth: 200,
+        widthGrow: 1,
+        hozAlign: "left",
+        formatter: (cell) =>
+          `<span class="whitespace-nowrap">${escapeHtml(String(cell.getValue() ?? ""))}</span>`,
       },
     ];
   } else {

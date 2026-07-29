@@ -12,7 +12,7 @@ import { ArrowBigLeftDash, ArrowBigRightDash, Binary, Menu } from "lucide-react"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 import { SimulatorTable, SimulatorTableHandle } from "../../SimulatorTable";
-import TableSearchToolbar from "../../TableSearchToolbar";
+import TableSearchBand from "../../TableSearchBand";
 import { buildMemoryColumns } from "@/utils/tables/definitions/memoryColumns";
 import { matchesMemoryQuery } from "@/utils/tables/memorySearch";
 import {
@@ -229,14 +229,17 @@ const AvailableMemory = ({ withBin, setWithBin }: AvailableMemoryProps) => {
   }, [importMemory]);
 
   // --- Search: filter rows and reposition the PC icon. ---
+  // The toolbar is a permanent part of the table chrome, so search works before
+  // the first step too (the old newPc gate only hid the search box). The PC-icon
+  // reposition still waits for a real PC (newPc > 0).
   useEffect(() => {
-    if (!ready || newPc === 0) return;
+    if (!ready) return;
     if (search.trim() === "") {
       handleRef.current?.clearFilter();
     } else {
       handleRef.current?.setFilter((data) => matchesMemoryQuery(data, search));
     }
-    handleRef.current?.markPc((newPc * 4).toString(16).toUpperCase());
+    if (newPc > 0) handleRef.current?.markPc((newPc * 4).toString(16).toUpperCase());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, ready]);
 
@@ -260,16 +263,19 @@ const AvailableMemory = ({ withBin, setWithBin }: AvailableMemoryProps) => {
   return (
     <>
       <div
-        className={`shadow-lg !min-h-min mx-4 relative ${withBin ? "min-w-[37.36rem]" : "min-w-[16.7rem]"} ${
+        className={`shadow-lg !min-h-min max-h-[calc(100dvh-2.3rem)] mx-4 relative ${withBin ? "min-w-[37.36rem]" : "min-w-[16.7rem]"} ${
           !showTable && "hidden"
         }`}>
         <div
-          className={`h-full w-full transition-opacity ease-in 9000 ${
+          className={`flex h-full w-full flex-col transition-opacity ease-in 9000 ${
             ready ? "opacity-100" : "opacity-0"
           }`}>
+          {/* Search toolbar on top of the data-memory table. reserveRightRem
+              leaves room for the floating hover-menu icon at top-right. */}
+          <TableSearchBand value={search} onChange={setSearch} placeholder="e.g 1234" reserveRightRem={2.5} />
           <SimulatorTable<AvailableRow>
             id="availableMemoryTable"
-            className={`w-full h-full overflow-x-hidden ${
+            className={`w-full min-h-0 flex-1 overflow-x-hidden ${
               theme === "light" ? "theme-light" : "theme-dark"
             }`}
             columns={columns}
@@ -280,15 +286,6 @@ const AvailableMemory = ({ withBin, setWithBin }: AvailableMemoryProps) => {
             }}
             onReady={onReady}
           />
-          {/* Memory search is gated until the program has stepped (newPc > 0). */}
-          {newPc > 0 && (
-            <TableSearchToolbar
-              value={search}
-              onChange={setSearch}
-              placeholder="e.g 1234"
-              className="absolute right-[1.7rem] top-[.4rem]"
-            />
-          )}
           <HoverCard openDelay={200} closeDelay={100}>
             <HoverCardTrigger asChild>
               <Menu

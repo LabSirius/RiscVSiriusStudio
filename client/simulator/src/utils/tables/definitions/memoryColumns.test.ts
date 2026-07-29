@@ -42,16 +42,18 @@ describe("buildMemoryColumns", () => {
     }
   });
 
-  it("program mode replaces the bytes with one instruction-encoding column", () => {
+  it("program mode replaces the bytes with the encoding + instruction-text columns", () => {
     const cols = buildMemoryColumns("program", stepRef(false));
     expect(fields(cols)).toEqual([
       "index",
       "info",
       "address",
       "instructionencoding",
+      "asmText",
       "hex",
     ]);
     expect(byField(cols, "instructionencoding")?.hozAlign).toBe("right");
+    expect(byField(cols, "asmText")?.hozAlign).toBe("left");
   });
 
   it("shares the frame — index hidden, address sortable, fixed widths", () => {

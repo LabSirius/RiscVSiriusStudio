@@ -1,5 +1,14 @@
 # Per-table search toolbar
 
+> **Update (2026-07-29):** shipped, then evolved via a `/prototype`. The
+> magnifier-expand UI (Q6/Q6a) was replaced by an always-on **toolbar band** on
+> top of each table (`TableSearchBand`), with table controls moved into the band.
+> The memory `newPc > 0` gate (Q8) was **dropped** — search now works pre-step.
+> Program memory also gained an auto-follow-PC toggle, a show-instruction-encoding
+> toggle, and an instruction-text column. See ADR-0007 "Update (2026-07-29)".
+> Decisions Q6, Q6a, Q8 below are superseded; the rest still hold.
+
+
 Replace the global `SearchSection` side panel with a per-table search toolbar: each
 simulator table (registers, data-memory, program-memory) owns a magnifier-expand search
 box in its own top-right chrome, scoped to that one table. Fixes the shared

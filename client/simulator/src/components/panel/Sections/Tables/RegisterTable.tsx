@@ -27,7 +27,7 @@ import SkeletonRegisterTable from "@/components/panel/Skeleton/SkeletonRegisterT
 import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 
 import { SimulatorTable, SimulatorTableHandle } from "./SimulatorTable";
-import TableSearchToolbar from "./TableSearchToolbar";
+import TableSearchBand from "./TableSearchBand";
 
 // The radix keys map to the persistent viewType (candidate B keeps the transient
 // hover-peek in attachConvertionToggle; this only sets the stored view). Folded
@@ -255,32 +255,33 @@ const RegistersTable = () => {
     <>
       <div
         id="registerTable"
-        className={`shadow-lg min-h-min max-h-[calc(100dvh-2.3rem)] mx-4 ${
+        className={`shadow-lg flex flex-col min-h-min max-h-[calc(100dvh-2.3rem)] mx-4 ${
           !showTable && "hidden"
         } min-w-[22.7rem] relative `}>
         {!ready && <SkeletonRegisterTable />}
         {isCreatedMemoryTable && (
           <>
+            {/* Search toolbar on top; the collapse arrow lives inside it. */}
+            <TableSearchBand
+              value={search}
+              onChange={setSearch}
+              placeholder="e.g x17 or 12 or 1100 or 0xC"
+              controls={
+                <ArrowBigLeftDash
+                  id="closeRT"
+                  onClick={() => setShowTable(false)}
+                  strokeWidth={1.5}
+                  className="min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] cursor-pointer text-black dark:text-white"
+                />
+              }
+            />
             <SimulatorTable<RegisterRow>
-              className={`w-full  h-full ${theme === "light" ? "theme-light" : "theme-dark"}`}
+              className={`w-full min-h-0 flex-1 ${theme === "light" ? "theme-light" : "theme-dark"}`}
               columns={columns}
               data={rows}
               options={options}
               onEdit={onEdit}
               onReady={onReady}
-            />
-            {/* Register search is always live (no step gate). */}
-            <TableSearchToolbar
-              value={search}
-              onChange={setSearch}
-              placeholder="e.g x17 or 12 or 1100 or 0xC"
-              className="absolute right-[1.7rem] top-[.4rem]"
-            />
-            <ArrowBigLeftDash
-              id="closeRT"
-              onClick={() => setShowTable(false)}
-              strokeWidth={1.5}
-              className="absolute right-[.13rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] text-black cursor-pointer"
             />
           </>
         )}
