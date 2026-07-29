@@ -69,21 +69,20 @@ without a global install; the CI and devcontainer install it globally.
 
 ## 3. Install
 
-Root extension deps:
+Root plus both webview clients in one step:
 
 ```bash
 npm install          # or: npm ci  (CI uses npm ci — ci.yml)
 ```
 
-The `client/simulator` webview is built by `esbuild.js`, which runs
-`npm run build` in that directory but does **not** install its deps. Install
-them once (CI does this as a separate step):
+The root `postinstall` script (`package.json`) runs `npm ci --prefix
+client/simulator && npm ci --prefix client/instructionSet` automatically after
+the root install, so both webview clients get their deps. No separate
+`--prefix` install is needed.
 
-```bash
-npm ci --prefix client/simulator          # ci.yml / build-vsix.yml
-# and, only if you touch the instruction-set app:
-npm ci --prefix client/instructionSet
-```
+(CI predates the `postinstall` and still installs the clients as explicit
+`npm ci --prefix …` steps in `ci.yml` / `build-vsix.yml`; running them twice is
+harmless.)
 
 (`.devcontainer/post_create.sh` runs `npm install` at the root and installs
 `vsce` globally, plus Ruby/Jekyll for the docs site — the site is unrelated to
@@ -234,9 +233,10 @@ Client-only dev servers also exist (not needed for the extension host):
 
 1. **`npm run watch` throws** — references undefined esbuild configs
    (§9). Use `npm run compile`.
-2. **`client/simulator` deps are not auto-installed.** `esbuild.js` runs
-   `npm run build` there but never `npm install`; a clean checkout must run
-   `npm ci --prefix client/simulator` first or the compile step fails (§3).
+2. **Client deps come from the root `postinstall`.** `esbuild.js` runs
+   `npm run build` in `client/simulator` but never `npm install`; the root
+   `postinstall` script now installs both clients after `npm install`, so a
+   clean checkout compiles without a manual `--prefix` step (§3).
 3. **`client/instructionSet` is never built by the extension build** — its
    bundle is only what is committed under `src/templates/instructionSet/`.
    Rebuild manually after changes (§7).

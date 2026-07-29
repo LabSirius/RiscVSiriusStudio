@@ -252,6 +252,7 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
+    "postinstall": "npm ci --prefix client/simulator && npm ci --prefix client/instructionSet",
     "test": "vitest run",
     "test:watch": "vitest",
     "compile": "node ./esbuild.js",
