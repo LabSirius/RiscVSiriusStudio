@@ -13,6 +13,11 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // Mirror tsconfig.app.json's `@protocol/*` path so Rollup resolves the
+      // shared protocol module (e.g. the value import of `parseExtensionMessage`
+      // from `@protocol/messages`) in production builds — tsc resolves it via
+      // `paths`, but Vite needs its own alias.
+      "@protocol": path.resolve(__dirname, "../../src/protocol"),
     },
   },
   base: './',
