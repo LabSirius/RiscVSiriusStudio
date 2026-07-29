@@ -32,6 +32,29 @@ now carries two different filter paths.
   behavior-drift risk into a UI-relocation change was rejected. The asymmetry is temporary;
   `register-search-declarative` collapses it to one path.
 
+## Update (2026-07-29) — magnifier replaced by an always-on toolbar band
+
+After a `/prototype` (variants A magnifier-expand / B always-on field / C toolbar
+band / D band-with-collapse), **variant D won** and the magnifier-expand box
+(`TableSearchToolbar`) was folded into a full-width **toolbar band on top of each
+table** (`TableSearchBand`). What changed from the decisions above:
+
+- **UI shape.** Each table now carries an always-visible search band, not a
+  magnifier that expands. Because the query is never hidden, the collapse-badge
+  from the old design (Q6a) no longer exists. Table controls move **into** the
+  band: registers' collapse arrow; program-memory's collapse + Locate-PC + two
+  new toggles (auto-follow-PC, show-instruction-encoding).
+- **Memory `newPc > 0` gate dropped.** The gate only hid the old search box; with
+  a permanent toolbar it made no sense, so memory search now works before the
+  first step too (registers always did). PC-icon repositioning still waits for a
+  real PC (`newPc > 0`). This is the behaviour change the original spec (Q8) and
+  the out-of-scope list deliberately deferred — the prototype decision supersedes
+  it.
+
+**Unchanged:** the two filter paths — memory on generic `setFilter(predicate)`,
+registers on `filterRegisters`/`clearRegisterFilter` — which is what this ADR is
+about. `register-search-declarative` still collapses them later.
+
 ## Consequences
 
 - The `searchInMemory` two-table span is fixed structurally: with per-table local state,

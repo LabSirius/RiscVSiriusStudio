@@ -8,10 +8,11 @@ import { useLines } from "@/context/panel/LinesContext";
 import { useTheme } from "@/components/ui/theme/theme-provider";
 
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";
-import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
+import { ArrowBigLeftDash, ArrowBigRightDash, Binary, LocateFixed } from "lucide-react";
 
 import { SimulatorTable, SimulatorTableHandle } from "../SimulatorTable";
-import TableSearchToolbar from "../TableSearchToolbar";
+import TableSearchBand from "../TableSearchBand";
+import ToolbarToggle from "../ToolbarToggle";
 import LocatePc from "@/components/panel/Search/LocatePc";
 import { buildMemoryColumns } from "@/utils/tables/definitions/memoryColumns";
 import { matchesMemoryQuery } from "@/utils/tables/memorySearch";
@@ -47,6 +48,15 @@ const ProgramMemoryTable = () => {
   // Per-table search string (was the shared MemoryTableContext.searchInMemory
   // that also drove the available-memory table). Local so it scopes here only.
   const [search, setSearch] = useState("");
+  // Auto-follow the PC: when on (default), each new step scrolls the PC row into
+  // view. A ref mirrors it so the newPc effect reads the latest without re-running
+  // on toggle (the button scrolls immediately when switched on).
+  const [followPc, setFollowPc] = useState(true);
+  const followPcRef = useRef(followPc);
+  followPcRef.current = followPc;
+  // The raw instruction-encoding column is hidden by default (the text column is
+  // the primary view); a toolbar button toggles it on.
+  const [showEncoding, setShowEncoding] = useState(false);
 
   const handleRef = useRef<SimulatorTableHandle | null>(null);
   // Live refs so the mount-once column `cellClick` and the effects read fresh
@@ -61,7 +71,12 @@ const ProgramMemoryTable = () => {
   const displayRows = useMemo<ProgramRow[]>(
     () =>
       dataMemoryTable
-        ? buildProgramRows(dataMemoryTable.program, dataMemoryTable.symbols, typesInstruction)
+        ? buildProgramRows(
+            dataMemoryTable.program,
+            dataMemoryTable.symbols,
+            typesInstruction,
+            dataMemoryTable.asmList
+          )
         : [],
     [dataMemoryTable, typesInstruction]
   );
@@ -71,29 +86,30 @@ const ProgramMemoryTable = () => {
   // jump arrow through the handle. Reads live refs, so the closure never staffs.
   const columns = useMemo<ColumnDefinition[]>(() => {
     const cols = buildMemoryColumns("program", isFirstStepRef);
-    return cols.map((col) =>
-      col.field === "address"
-        ? {
-            ...col,
-            cellClick: (_e: UIEvent, cell: CellComponent) => {
-              const data = dataMemoryTableRef.current;
-              if (!data) return;
-              const address = cell.getValue() as string;
-              const intAddress = Number(hexToInt(address)) / 4;
-              const instruction = data.addressLine[intAddress];
-              if (!instruction) return;
-              setClickAddressInMemoryTable(instruction.line);
-              sendMessage({ event: "clickInInstruction", line: instruction.line });
-              if (instruction.jump) {
-                const intJump = Number(binaryToIntTwoComplement(String(instruction.jump)));
-                handleRef.current?.animateArrow(intAddress * 4, intJump + intAddress * 4);
-              }
-            },
-          }
-        : col
-    );
+    return cols.map((col) => {
+      if (col.field === "instructionencoding") return { ...col, visible: showEncoding };
+      if (col.field === "address")
+        return {
+          ...col,
+          cellClick: (_e: UIEvent, cell: CellComponent) => {
+            const data = dataMemoryTableRef.current;
+            if (!data) return;
+            const address = cell.getValue() as string;
+            const intAddress = Number(hexToInt(address)) / 4;
+            const instruction = data.addressLine[intAddress];
+            if (!instruction) return;
+            setClickAddressInMemoryTable(instruction.line);
+            sendMessage({ event: "clickInInstruction", line: instruction.line });
+            if (instruction.jump) {
+              const intJump = Number(binaryToIntTwoComplement(String(instruction.jump)));
+              handleRef.current?.animateArrow(intAddress * 4, intJump + intAddress * 4);
+            }
+          },
+        };
+      return col;
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [showEncoding]);
 
   // The PC icon is *persistent* DOM (it must survive a `setData` and a
   // virtual-scroll row recycle), so it lives in the rowFormatter, which re-runs
@@ -124,8 +140,11 @@ const ProgramMemoryTable = () => {
   // icon; `flashCells` adds only the transient 300ms pulse. ---
   useEffect(() => {
     if (!ready) return;
+    const pcAddr = (newPc * 4).toString(16).toUpperCase();
     handleRef.current?.redraw();
-    handleRef.current?.flashCells((newPc * 4).toString(16).toUpperCase(), ["address"], ["animate-pc"], 300);
+    handleRef.current?.flashCells(pcAddr, ["address"], ["animate-pc"], 300);
+    // Auto-follow keeps the PC row in view on every step (toggle in the toolbar).
+    if (followPcRef.current) handleRef.current?.scrollToRow(pcAddr, "center");
   }, [newPc, ready]);
 
   // --- Locate: scroll the current PC row to the top (replaces useLocatePcEffect). ---
@@ -153,11 +172,10 @@ const ProgramMemoryTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clickInEditorLine, ready]);
 
-  // --- Search: filter rows and reposition the PC icon. Gated until the program
-  // has stepped once (newPc > 0), mirroring the original. Scoped to this table
-  // only now (local `search`), so it no longer filters available-memory too. ---
+  // --- Search: filter rows. Scoped to this table only (local `search`). The
+  // toolbar is permanent chrome, so search works before the first step too. ---
   useEffect(() => {
-    if (!ready || newPcRef.current === 0) return;
+    if (!ready) return;
     if (search.trim() === "") {
       handleRef.current?.clearFilter();
     } else {
@@ -181,40 +199,60 @@ const ProgramMemoryTable = () => {
   return (
     <>
       <div
-        className={`shadow-lg !min-h-min min-w-[37.96rem]  mx-4  relative ${
+        className={`shadow-lg !min-h-min max-h-[calc(100dvh-2.3rem)] min-w-[37.96rem]  mx-4  relative ${
           !showProgramTable && "hidden"
         }`}>
         <div
-          className={`h-full  w-full transition-opacity ease-in 9000  ${
+          className={`flex h-full w-full flex-col transition-opacity ease-in 9000  ${
             ready ? "opacity-100" : "opacity-0"
           }`}>
+          {/* Search toolbar on top; locate-PC and collapse live inside it. */}
+          <TableSearchBand
+            value={search}
+            onChange={setSearch}
+            placeholder="e.g 1234"
+            controls={
+              <>
+                <ToolbarToggle
+                  active={showEncoding}
+                  title={showEncoding ? "Hide instruction encoding" : "Show instruction encoding"}
+                  onClick={() => setShowEncoding((v) => !v)}
+                  icon={Binary}
+                />
+                <ToolbarToggle
+                  active={followPc}
+                  title={followPc ? "Auto-follow PC: on" : "Auto-follow PC: off"}
+                  onClick={() =>
+                    setFollowPc((v) => {
+                      const next = !v;
+                      if (next)
+                        handleRef.current?.scrollToRow(
+                          (newPcRef.current * 4).toString(16).toUpperCase(),
+                          "center"
+                        );
+                      return next;
+                    })
+                  }
+                  icon={LocateFixed}
+                />
+                <LocatePc />
+                <ArrowBigLeftDash
+                  onClick={() => setShowProgramTable(false)}
+                  strokeWidth={1.5}
+                  className="min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] cursor-pointer text-black dark:text-white"
+                />
+              </>
+            }
+          />
           <SimulatorTable<ProgramRow>
             id="programTable"
-            className={`w-full h-full overflow-x-hidden ${
+            className={`w-full min-h-0 flex-1 overflow-x-hidden ${
               theme === "light" ? "theme-light" : "theme-dark"
             }`}
             columns={columns}
             data={displayRows}
             options={options}
             onReady={onReady}
-          />
-          {/* PC navigation — its own control, not part of the search box. */}
-          <LocatePc className="absolute right-[3.4rem] top-[.4rem] z-100" />
-          {/* Memory search is gated until the program has stepped (newPc > 0). */}
-          {newPc > 0 && (
-            <TableSearchToolbar
-              value={search}
-              onChange={setSearch}
-              placeholder="e.g 1234"
-              className="absolute right-[1.7rem] top-[.4rem]"
-            />
-          )}
-          <ArrowBigLeftDash
-            onClick={() => {
-              setShowProgramTable(false);
-            }}
-            strokeWidth={1.5}
-            className="absolute cursor-pointer right-[0rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] z-100 text-black"
           />
         </div>
         {!ready && (
