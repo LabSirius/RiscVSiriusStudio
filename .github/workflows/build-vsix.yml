@@ -26,6 +26,15 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
+    # 3b. Build the React client webview into src/templates/simulator so the
+    #     VSIX ships a fresh bundle. vsce/esbuild never build the client, so
+    #     without this step the package would carry whatever assets happened to
+    #     be committed (a stale bundle = blank webview).
+    - name: Build client webview
+      run: |
+        npm ci --prefix client/simulator
+        npm run build --prefix client/simulator
+
     # 4. Install vsce globally in the runner environment
     - name: Install vsce
       run: npm install -g @vscode/vsce
