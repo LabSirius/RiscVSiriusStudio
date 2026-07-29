@@ -6,6 +6,7 @@ import {
   CellComponent,
 } from "tabulator-tables";
 import { mergeOptions } from "@/utils/tables/mergeOptions";
+import { createPCIcon } from "@/utils/tables/handlersMemory";
 
 /**
  * The imperative escape hatch (ADR-0006). SimulatorTable is declarative for
@@ -22,6 +23,14 @@ export interface SimulatorTableHandle {
   flashCells(index: string, fields: string[], classNames: string[], ms?: number): void;
   /** Scroll the row at `index` into view. */
   scrollToRow(index: string, position?: "top" | "center" | "bottom"): void;
+  /** Filter to rows matching the predicate. A transient view op — data is unchanged. */
+  setFilter(predicate: (row: Record<string, unknown>) => boolean): void;
+  /** Clear any active filter. */
+  clearFilter(): void;
+  /** Move the PC locate icon onto the row whose address (hex) is `pcHex`. */
+  markPc(pcHex: string): void;
+  /** Force a full re-render (re-runs the rowFormatter), e.g. after a theme change. */
+  redraw(): void;
 }
 
 export interface SimulatorTableProps<T extends Record<string, unknown>> {
@@ -116,6 +125,13 @@ export function SimulatorTable<T extends Record<string, unknown>>({
     instance.setData(data as Record<string, unknown>[]);
   }, [data]);
 
+  // Live column changes (e.g. the memory table's bin↔hex visibility toggle).
+  useEffect(() => {
+    const instance = instanceRef.current;
+    if (!instance || !builtRef.current) return;
+    instance.setColumns(columns);
+  }, [columns]);
+
   return <div ref={containerRef} className={className} id={id} />;
 }
 
@@ -135,6 +151,40 @@ function makeHandle(instance: Tabulator): SimulatorTableHandle {
       instance.scrollToRow(index, position, true).catch(() => {
         /* row not present (filtered/removed) — nothing to scroll to */
       });
+    },
+    setFilter(predicate) {
+      instance.setFilter(predicate as never);
+    },
+    clearFilter() {
+      instance.clearFilter(true);
+    },
+    markPc(pcHex) {
+      // Reset every address cell (drops any stale PC icon), then place the icon
+      // on the matching row — ported from the old imperative `updatePC`.
+      instance.getRows().forEach((row) => {
+        const cell = row.getCell("address");
+        if (!cell) return;
+        const el = cell.getElement();
+        const value = cell.getValue();
+        while (el.firstChild) el.removeChild(el.firstChild);
+        const span = document.createElement("span");
+        span.className = "address-value";
+        span.innerText = value;
+        el.appendChild(span);
+      });
+
+      const found = instance.searchRows("address", "=", pcHex);
+      const cell = found[0]?.getCell("address");
+      if (!cell) return;
+      const el = cell.getElement();
+      el.style.position = "relative";
+      el.appendChild(createPCIcon());
+      el.classList.add("animate-pc");
+      void el.offsetWidth;
+      setTimeout(() => el.classList.remove("animate-pc"), 300);
+    },
+    redraw() {
+      instance.redraw(true);
     },
   };
 }
