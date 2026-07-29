@@ -85,9 +85,11 @@ ticket), which is why the golden test worked around it instead.
 
 ## Follow-up
 
-Once the assembler emits real `lbu`/`lhu` nodes, the golden net's
+~~Once the assembler emits real `lbu`/`lhu` nodes, the golden net's
 `synthesizeUnsignedLoads` workaround (`src/vcpu/golden.test.ts`) can be
-replaced with assembled instructions.
+replaced with assembled instructions.~~ **Done** — verified 2026-07-29:
+`golden.test.ts` already assembles `lbu`/`lhu` directly (no synthesize shim
+remains) and all 6 golden tests pass. No follow-up work remains for this issue.
 
 ## Out of scope
 

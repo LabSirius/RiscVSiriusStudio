@@ -32,6 +32,20 @@ Reimplementing risks subtle behaviour drift on these branches. Belongs with the 
 register-search cleanup, ideally alongside candidate B (`Word` radix) since both touch
 the value representation.
 
+## Overlap with per-table-search-toolbar (settled 2026-07-29)
+
+The `.scratch/per-table-search-toolbar/` work (spec + ADR-0007) moves register search into
+a per-table toolbar with **local state**, but deliberately KEEPS this escape
+(`filterRegisters`/`clearRegisterFilter` + `filterTableData` paint) untouched — option B in
+that spec. So after it ships:
+- The register search *input* is local, no longer `RegisterTableContext.searchInRegisters`
+  (that field is deleted). This ticket's search-effect target is now local state, not context.
+- This ticket is what removes the escape and unifies registers onto generic
+  `setFilter(predicate)` + a `rowFormatter` highlight — collapsing the deliberate two-path
+  seam recorded in ADR-0007.
+- The scope question below is resolved: register search is per-table (its own toolbar);
+  memory search is likewise per-table. No cross-table scope to unify anymore.
+
 ## Open decisions to grill
 
 - Keep the exact hex/decimal/binary candidate-matching semantics, or simplify/spec them?
