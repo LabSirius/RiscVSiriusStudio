@@ -1,65 +1,9 @@
 
-import { Tabulator, CellComponent,RowComponent } from 'tabulator-tables';
+import { Tabulator, CellComponent, RowComponent } from 'tabulator-tables';
 
-import { RegisterView, RowData } from '@/utils/tables/types';
-
-import { RefObject } from 'react';
-
+import { RowData } from '@/utils/tables/types';
 
 import { resetCellColors } from '@/utils/tables/handlersShared';
-
-
-/**
- *  This function updates the value of a register in the table.
- * @param tabulatorRef 
- * @param registerWrite 
- * @param valueWrite 
- * @returns 
- */
-export function updateRegisterValue(
-    tabulatorRef: React.MutableRefObject<Tabulator | null>,
-    registerWrite: string,
-    valueWrite: string
-  ) {
-   
-    if (!registerWrite || !tabulatorRef.current) return;
-  
-    const regNum = parseInt(registerWrite.replace('x', ''), 10);
-    if (isNaN(regNum)) return;
-  
-    tabulatorRef.current.updateData([
-      { rawName: registerWrite, value: valueWrite }
-    ]);
-
-    animateRegister(tabulatorRef, registerWrite);
-  }
-
-/**
- * * This function animates a register cell by adding a CSS class to it.
- * @param tabulatorRef   tabulatorInstance.current
- * @param registerName  Name of the register to animate
- */
-export function animateRegister(
-  tabulatorRef: React.MutableRefObject<Tabulator | null>,
-  registerName: string
-) {
-  if (!tabulatorRef.current) return;
-  
-  const row = tabulatorRef.current.getRow(registerName);
-  if (row) {
-    const element = row.getElement();
-    element.classList.add('animate-cell');
-    setTimeout(() => {
-      element.classList.remove('animate-cell');
-    }, 500);
-  }
-
-  const index = parseInt(registerName.replace('x', ''), 10);
-  const position = (index >= 0 && index <= 12) ? "center" : "top";
-
-  tabulatorRef.current.scrollToRow(registerName, position, true);
-}
-
 
 export const createViewTypeFormatter = (
   setCurrentHovered: (cell: CellComponent | null) => void
@@ -108,28 +52,6 @@ export const createViewTypeFormatter = (
     return container;
   };
 };
-
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const handleGlobalKeyPress = (currentHoveredViewTypeCell: RefObject<any>) => {
-  return (e: KeyboardEvent) => {
-    const key = e.key.toLowerCase();
-    const keyMap: Record<string, RegisterView> = {
-      b: 2,
-      s: "signed",
-      u: "unsigned",
-      h: 16,
-      a: "ascii",
-    };
-
-    if (currentHoveredViewTypeCell.current && keyMap[key]) {
-      const row = currentHoveredViewTypeCell.current.getRow();
-      row?.update({ viewType: keyMap[key] });
-      row?.reformat();
-    }
-  };
-};
-
 
 
 /**
