@@ -6,7 +6,12 @@ import {
   CellComponent,
 } from "tabulator-tables";
 import { mergeOptions } from "@/utils/tables/mergeOptions";
-import { createPCIcon } from "@/utils/tables/handlersMemory";
+import {
+  createPCIcon,
+  animateRow,
+  animateArrowBetweenCells,
+  setupInstructionTooltips,
+} from "@/utils/tables/handlersMemory";
 
 /**
  * The imperative escape hatch (ADR-0006). SimulatorTable is declarative for
@@ -29,6 +34,16 @@ export interface SimulatorTableHandle {
   clearFilter(): void;
   /** Move the PC locate icon onto the row whose address (hex) is `pcHex`. */
   markPc(pcHex: string): void;
+  /** Pulse-highlight the row at byte `address` — the program editor-click locate. */
+  animateRow(address: number): void;
+  /** Draw the transient jump arrow between the address cells at two byte addresses. */
+  animateArrow(fromAddress: number, toAddress: number): void;
+  /**
+   * Attach the riscv-segment hover tooltips to this table's DOM. A program-memory
+   * behaviour reached through the handle, symmetrical with the animations above;
+   * SimulatorTable itself stays free of any program-specific concept.
+   */
+  setupTooltips(): void;
   /** Force a full re-render (re-runs the rowFormatter), e.g. after a theme change. */
   redraw(): void;
 }
@@ -182,6 +197,15 @@ function makeHandle(instance: Tabulator): SimulatorTableHandle {
       el.classList.add("animate-pc");
       void el.offsetWidth;
       setTimeout(() => el.classList.remove("animate-pc"), 300);
+    },
+    animateRow(address) {
+      animateRow(instance, address);
+    },
+    animateArrow(fromAddress, toAddress) {
+      animateArrowBetweenCells(instance, fromAddress, toAddress);
+    },
+    setupTooltips() {
+      setupInstructionTooltips(instance);
     },
     redraw() {
       instance.redraw(true);
