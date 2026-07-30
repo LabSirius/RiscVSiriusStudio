@@ -118,6 +118,11 @@ const ProgramMemoryTable = () => {
   const options = useMemo(
     () => ({
       index: "address",
+      // "fitData" over SimulatorTable's default "fitColumns": every column sizes
+      // to its own content, so the Instruction column always fits its text
+      // exactly (long instructions scroll rather than clip) instead of being
+      // stretched to fill the table width.
+      layout: "fitData" as const,
       initialSort: [{ column: "address", dir: "desc" as const }],
       rowFormatter: (row: RowComponent) => {
         const cell = row.getCell("address");

@@ -103,13 +103,12 @@ export const buildMemoryColumns = (
       {
         // The assembled instruction as text. Read-only (not editable like the
         // encoding); asm text is escaped since the column formatter is "html".
-        // widthGrow lets it absorb the free space when the encoding column is
-        // hidden (fitColumns otherwise leaves an empty gap), and yield when shown.
+        // No width/widthGrow: the program table uses layout "fitData", so this
+        // column always sizes to its own content (long instructions never clip;
+        // the table scrolls instead).
         ...frozenAttrs,
         title: "Instruction",
         field: "asmText",
-        minWidth: 200,
-        widthGrow: 1,
         hozAlign: "left",
         formatter: (cell) =>
           `<span class="whitespace-nowrap">${escapeHtml(String(cell.getValue() ?? ""))}</span>`,
