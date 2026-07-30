@@ -44,13 +44,16 @@ describe("buildMemoryColumns", () => {
 
   it("program mode replaces the bytes with the encoding + instruction-text columns", () => {
     const cols = buildMemoryColumns("program", stepRef(false));
+    // Order: Info, Addr, HEX, then encoding (hidden by default) and the
+    // instruction text last. HEX precedes the encoding here (unlike the
+    // byte-mode tables, where HEX trails the byte columns).
     expect(fields(cols)).toEqual([
       "index",
       "info",
       "address",
+      "hex",
       "instructionencoding",
       "asmText",
-      "hex",
     ]);
     expect(byField(cols, "instructionencoding")?.hozAlign).toBe("right");
     expect(byField(cols, "asmText")?.hozAlign).toBe("left");
