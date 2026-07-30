@@ -1,25 +1,21 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface LinesContextProps {
-  // Note: the editor highlight (the retiring-instruction line) is a Cycle-effect
-  // signal and now lives in the Shell context (`useShell().highlightedLine`),
-  // not here. This context keeps only the user-click signals.
+  // The user-click signal for the program-memory table: a host `clickInLine`
+  // message sets the line, the table animates that row/jump, then clears it.
+  // (The retiring-instruction editor highlight and the memory-table click
+  // signal were removed with the Monaco source panel; see ADR-0005.)
   clickInEditorLine: number;
   setClickInEditorLine: (lineNumber: number) => void;
-
-  clickAddressInMemoryTable: number;
-  setClickAddressInMemoryTable: (address: number) => void;
 }
 
 const LinesContext = createContext<LinesContextProps | undefined>(undefined);
 
 export const LinesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [clickInEditorLine, setClickInEditorLine] = useState<number>(-1);
-    const [clickAddressInMemoryTable, setClickAddressInMemoryTable] = useState<number>(-1);
-
 
   return (
-    <LinesContext.Provider value={{ clickInEditorLine, setClickInEditorLine, clickAddressInMemoryTable, setClickAddressInMemoryTable }}>
+    <LinesContext.Provider value={{ clickInEditorLine, setClickInEditorLine }}>
       {children}
     </LinesContext.Provider>
   );
