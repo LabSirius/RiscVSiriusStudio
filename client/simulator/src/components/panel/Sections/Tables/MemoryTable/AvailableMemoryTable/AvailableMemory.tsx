@@ -8,11 +8,11 @@ import { useSimulator } from "@/context/shared/SimulatorContext";
 import { useTheme } from "@/components/ui/theme/theme-provider";
 
 import SkeletonMemoryTable from "@/components/panel/Skeleton/SkeletonMemoryTable";
-import { ArrowBigLeftDash, ArrowBigRightDash, Binary, Menu } from "lucide-react";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { ArrowBigLeftDash, ArrowBigRightDash, Binary } from "lucide-react";
 
 import { SimulatorTable, SimulatorTableHandle } from "../../SimulatorTable";
 import TableSearchBand from "../../TableSearchBand";
+import ToolbarToggle from "../../ToolbarToggle";
 import { buildMemoryColumns } from "@/utils/tables/definitions/memoryColumns";
 import { matchesMemoryQuery } from "@/utils/tables/memorySearch";
 import {
@@ -270,9 +270,30 @@ const AvailableMemory = ({ withBin, setWithBin }: AvailableMemoryProps) => {
           className={`flex h-full w-full flex-col transition-opacity ease-in 9000 ${
             ready ? "opacity-100" : "opacity-0"
           }`}>
-          {/* Search toolbar on top of the data-memory table. reserveRightRem
-              leaves room for the floating hover-menu icon at top-right. */}
-          <TableSearchBand value={search} onChange={setSearch} placeholder="e.g 1234" reserveRightRem={2.5} />
+          {/* Search toolbar on top; the binary toggle and collapse live inside
+              it (parity with the program-memory band). The id wraps both so the
+              tutorial step ("hide binary section, or hide entire table") still
+              has an anchor after the floating hover-menu was removed. */}
+          <TableSearchBand
+            value={search}
+            onChange={setSearch}
+            placeholder="e.g 1234"
+            controls={
+              <span id="optionsAvailableMemoryTable" className="flex items-center gap-1">
+                <ToolbarToggle
+                  active={withBin}
+                  title="Toggle Binary"
+                  onClick={() => setWithBin((prev) => !prev)}
+                  icon={Binary}
+                />
+                <ArrowBigLeftDash
+                  onClick={() => setShowTable(false)}
+                  strokeWidth={1.5}
+                  className="min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] cursor-pointer text-black dark:text-white"
+                />
+              </span>
+            }
+          />
           <SimulatorTable<AvailableRow>
             id="availableMemoryTable"
             className={`w-full min-h-0 flex-1 overflow-x-hidden ${
@@ -286,34 +307,6 @@ const AvailableMemory = ({ withBin, setWithBin }: AvailableMemoryProps) => {
             }}
             onReady={onReady}
           />
-          <HoverCard openDelay={200} closeDelay={100}>
-            <HoverCardTrigger asChild>
-              <Menu
-                id="optionsAvailableMemoryTable"
-                strokeWidth={1.5}
-                className="absolute cursor-pointer right-[0rem] top-[.4rem] min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] z-100 text-black hover:scale-110 transition-transform"
-              />
-            </HoverCardTrigger>
-            <HoverCardContent
-              side="right"
-              align="center"
-              className="w-auto p-1 ml-2 border rounded-md shadow-lg bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm">
-              <div className="flex items-center space-x-1">
-                <button
-                  onClick={() => setWithBin((prev) => !prev)}
-                  title="Toggle Binary"
-                  className="p-1 transition-colors rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700">
-                  <Binary strokeWidth={1.5} className="w-5 h-5 text-black dark:text-white" />
-                </button>
-                <button
-                  onClick={() => setShowTable(false)}
-                  title="Hide Table"
-                  className="p-1 transition-colors rounded-md hover:bg-gray-200 dark:hover:bg-zinc-700">
-                  <ArrowBigLeftDash strokeWidth={1.5} className="w-5 h-5 text-black dark:text-white" />
-                </button>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
         </div>
         {!ready && (
           <div className="absolute inset-0">
