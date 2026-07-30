@@ -78,3 +78,18 @@ is nothing to discriminate at step time.
   postMessage boundary. The Shell is the client peer of the text simulator (both
   consume only the Cycle effect and architectural state); the DatapathPane is the
   client peer of the concrete CPU's `datapathView()`.
+
+## Note (2026-07-30): `ShellContext` removed with the Monaco source panel
+
+The Shell's editor highlight (ADR-0004, the `retiredInstruction` line) was owned
+by `ShellContext` (`highlightedLine` / `setHighlightedLine`), its sole field.
+Removing the Monaco source panel (remove-source-panel ticket 01) left that signal
+inert — written each `uploadMemory`/`step` by `useMessageListener`, read by no
+one. Ticket 02 deletes `ShellContext` / `ShellProvider` / `useShell` and the
+`setHighlightedLine` writes; the host may still post `lineDecorationNumber`, the
+webview no longer consumes it. The program-memory `clickAddressInMemoryTable`
+signal (also source-panel-only) is dropped from `LinesContext` alongside it; the
+`clickInInstruction` host message and the jump-arrow animation are untouched. The
+Shell (registers/data-memory/instruction-memory tables, driven by the Cycle
+effect) stands as this ADR describes — it simply no longer carries an editor
+highlight.

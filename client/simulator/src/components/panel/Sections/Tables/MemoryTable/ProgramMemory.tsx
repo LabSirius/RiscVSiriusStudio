@@ -42,7 +42,7 @@ const ProgramMemoryTable = () => {
   } = useMemoryTable();
 
   const { newPc, setNewPc, isFirstStep } = useSimulator();
-  const { clickInEditorLine, setClickInEditorLine, setClickAddressInMemoryTable } = useLines();
+  const { clickInEditorLine, setClickInEditorLine } = useLines();
 
   const [ready, setReady] = useState(false);
   // Per-table search string (was the shared MemoryTableContext.searchInMemory
@@ -81,9 +81,9 @@ const ProgramMemoryTable = () => {
     [dataMemoryTable, typesInstruction]
   );
 
-  // Columns built once. The address column gains a `cellClick`: select the line
-  // in the editor, notify the host, and — if the instruction jumps — draw the
-  // jump arrow through the handle. Reads live refs, so the closure never staffs.
+  // Columns built once. The address column gains a `cellClick`: notify the host,
+  // and — if the instruction jumps — draw the jump arrow through the handle.
+  // Reads live refs, so the closure never goes stale.
   const columns = useMemo<ColumnDefinition[]>(() => {
     const cols = buildMemoryColumns("program", isFirstStepRef);
     return cols.map((col) => {
@@ -98,7 +98,6 @@ const ProgramMemoryTable = () => {
             const intAddress = Number(hexToInt(address)) / 4;
             const instruction = data.addressLine[intAddress];
             if (!instruction) return;
-            setClickAddressInMemoryTable(instruction.line);
             sendMessage({ event: "clickInInstruction", line: instruction.line });
             if (instruction.jump) {
               const intJump = Number(binaryToIntTwoComplement(String(instruction.jump)));

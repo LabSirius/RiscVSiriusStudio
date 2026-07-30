@@ -4,7 +4,6 @@ import { useMemoryTable, type MemoryData } from "@/context/shared/MemoryTableCon
 import { useRegistersTable } from "@/context/panel/RegisterTableContext";
 import { useDialog } from "@/context/panel/DialogContext";
 import { useLines } from "@/context/panel/LinesContext";
-import { useShell } from "@/context/shell/ShellContext";
 import { useCurrentInst, type ParsedInstruction } from "@/context/graphic/CurrentInstContext";
 import { parseExtensionMessage } from "@protocol/messages";
 import type { MonocycleWires, PipelineStages } from "@protocol/datapath-view";
@@ -36,7 +35,6 @@ export const useMessageListener = () => {
   const { setWriteInRegister } = useRegistersTable();
   const { setCurrentMonocycleInst, setCurrentMonocycleResult, setPipelineValuesStages } =
     useCurrentInst();
-  const { setHighlightedLine } = useShell();
 
   const { setClickInEditorLine } = useLines();
   const { setDialog } = useDialog();
@@ -96,21 +94,18 @@ export const useMessageListener = () => {
           setSizeMemory(uploadPayload.memory.length);
           setIsFirstStep(false);
           setOperation("uploadMemory");
-          setHighlightedLine(message.initialLine);
 
           break;
         case "step":
           // Shell / Cycle effect — CPU-independent, driven every clock off the
           // effect fields the extension now posts uniformly for both CPUs
-          // (ADR-0005). No `.IF` probe gates these: the editor highlight
-          // follows the retiring instruction and the committed PC advances the
-          // memory tables for monocycle and pipeline alike.
+          // (ADR-0005). No `.IF` probe gates these: the committed PC advances the
+          // memory tables for monocycle and pipeline alike. The host may still
+          // send `lineDecorationNumber`; the webview no longer consumes it (the
+          // Monaco source panel and its highlight are gone).
           if (message.newPc !== undefined) {
             setNewPc(message.newPc);
           }
-          setHighlightedLine(
-            message.lineDecorationNumber !== undefined ? message.lineDecorationNumber : -1
-          );
 
           // Datapath render payload — per-CPU, routed to the pane the host's
           // declared CPU mode selected at mount. No `.IF` shape probe: the
