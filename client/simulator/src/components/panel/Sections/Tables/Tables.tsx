@@ -7,7 +7,7 @@ import { useState } from "react";
 const Tables = () => {
   const { setSlotNode } = usePipelineStagesSlot();
 
-  const [withBin, setWithBin] = useState(true);
+  const [withBin, setWithBin] = useState(false);
 
   return (
     <div className="flex gap-0 overflow-hidden min-w-min">
