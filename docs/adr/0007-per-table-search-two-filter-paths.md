@@ -69,3 +69,9 @@ about. `register-search-declarative` still collapses them later.
   matching + paint. Two follow-ups are logged, not built — program-memory instruction-text
   search (`.scratch/per-table-search-toolbar/issues/02-*`) and the register declarative
   rewrite.
+- **Update (2026-07-30):** the program-memory instruction-text follow-up shipped. The
+  data-memory field list stays frozen; program-memory now passes its own
+  `PROGRAM_SEARCH_FIELDS = ["address","hex","asmText"]` to the same `matchesMemoryQuery`
+  (an optional `fields` param), so typing a mnemonic or register operand filters the row.
+  Same generic `setFilter` path, filter-only — the two-path seam this ADR records is
+  unchanged.

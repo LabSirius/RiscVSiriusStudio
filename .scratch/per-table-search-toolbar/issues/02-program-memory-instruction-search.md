@@ -1,6 +1,6 @@
 # Program-memory search should match instruction text
 
-Status: needs-triage
+Status: done
 Type: grilling
 
 Future ticket. Deferred from `01-per-table-search-toolbar` (spec Q2). Ships after 01.
@@ -35,3 +35,24 @@ locks them together.)
 
 - `components/panel/Sections/Tables/MemoryTable/ProgramMemory.tsx` — the search effect's
   `fields` list.
+
+## Resolution (2026-07-30, grill-with-docs)
+
+Open decisions settled:
+
+- **Fields:** match `asmText` (plain disassembly, e.g. `"addi x1, x0, 5"`) only, on top of
+  the existing `address` + `hex`. The colored-bit `instructionencoding` and the symbol
+  `info` label are HTML, so excluded (searching markup is noise). No label search.
+- **Seam:** `matchesMemoryQuery` gained an optional `fields` param (defaults to the frozen
+  data-memory list); new exported `PROGRAM_SEARCH_FIELDS = ["address","hex","asmText"]`.
+  Data-memory call site + its frozen-list test untouched.
+- **Semantics:** plain trimmed-lowercase substring — identical rule to data memory. `add`
+  hits `addi`; `x17` hits mid-operand. No tokenization / multi-term.
+- **Highlight:** filter-only, no cell paint (stays on the generic `setFilter` path; ADR-0007).
+
+Docs: ADR-0007 gained a one-line "follow-up shipped" update. No new ADR (ADR-0007 already
+predicted this), no CONTEXT.md change (`asmText` is implementation vocab, not domain).
+
+Tests: `memorySearch.test.ts` — frozen data list stays green; added program-list cases
+(mnemonic/operand/substring hits; HTML + value-byte queries miss). Full suite 126 green,
+tsc + eslint clean.

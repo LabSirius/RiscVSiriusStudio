@@ -15,7 +15,7 @@ import TableSearchBand from "../TableSearchBand";
 import ToolbarToggle from "../ToolbarToggle";
 import LocatePc from "@/components/panel/Search/LocatePc";
 import { buildMemoryColumns } from "@/utils/tables/definitions/memoryColumns";
-import { matchesMemoryQuery } from "@/utils/tables/memorySearch";
+import { matchesMemoryQuery, PROGRAM_SEARCH_FIELDS } from "@/utils/tables/memorySearch";
 import { buildProgramRows, ProgramRow } from "@/utils/tables/programRows";
 import { hexToInt, binaryToIntTwoComplement } from "@/utils/handlerConversions";
 import { createPCIcon } from "@/utils/tables/handlersMemory";
@@ -179,11 +179,10 @@ const ProgramMemoryTable = () => {
     if (search.trim() === "") {
       handleRef.current?.clearFilter();
     } else {
-      handleRef.current?.setFilter((data) => matchesMemoryQuery(data, search));
+      handleRef.current?.setFilter((data) => matchesMemoryQuery(data, search, PROGRAM_SEARCH_FIELDS));
     }
     // The PC icon repositions itself: setFilter/clearFilter trigger a redraw,
     // which re-runs the rowFormatter that owns the icon.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, ready]);
 
   const onReady = (handle: SimulatorTableHandle) => {
