@@ -8,7 +8,10 @@ import {
 import { Save } from "lucide-react";
 import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 import { useState } from "react";
-import { binaryToHex } from "@/utils/handlerConversions";
+import {
+  exportProgramMemoryHex,
+  exportProgramMemoryMif,
+} from "@/utils/tables/programMemoryExport";
 
 const ExportMemory = () => {
   const { dataMemoryTable } = useMemoryTable();
@@ -26,66 +29,10 @@ const ExportMemory = () => {
     let fileType = "text/plain;charset=utf-8";
 
     if (format === "hex") {
-      const hexBytes: string[] = [];
-      
-      for (let i = 0; i < dataMemoryTable.program.length; i += 4) {
-        for (let j = 3; j >= 0; j--) {
-          const index = i + j;
-          const binaryString = dataMemoryTable.program[index] || "00000000";
-          const hex = binaryToHex(binaryString).padStart(2, "0").toUpperCase();
-          hexBytes.push(hex);
-        }
-      }
-
-      fileContent = hexBytes.join("\n");
+      fileContent = exportProgramMemoryHex(dataMemoryTable.program);
       fileName = "program_memory.hex";
     } else if (format === "mif") {
-      const instructionCount = (dataMemoryTable.program.length );
-      const totalWords = dataMemoryTable.program.length / 4;
-
-      const calculateDepth = (words: number): number => {
-        const minDepth = 256;
-        return words <= minDepth ? minDepth : 2 ** Math.ceil(Math.log2(words));
-      };
-
-      const memoryDepth = calculateDepth(totalWords);
-
-      const mifHeader = `-- RISC-V dataMemoryTable.program memory (word addressed)
-WIDTH=32;
-DEPTH=${memoryDepth};
-ADDRESS_RADIX=UNS;
-DATA_RADIX=HEX;
-CONTENT BEGIN
-`;
-
-      const mifBodyLines: string[] = [];
-      
-      for (let i = 0; i < dataMemoryTable.program.length; i += 4) {
-        const wordIndex = i / 4;
-
-        if (wordIndex === instructionCount) {
-          mifBodyLines.push(`\n  -- CONSTANTS`);
-        }
-        
-        let word = "";
-        for (let j = 3; j >= 0; j--) {
-          const byteIndex = i + j;
-          const byteBinary = dataMemoryTable.program[byteIndex] || "00000000";
-          const byteHex = binaryToHex(byteBinary).padStart(2, "0").toUpperCase();
-          word += byteHex;
-        }
-
-        const pcHex = i.toString(16).toUpperCase().padStart(8, "0");
-        if (wordIndex < asmList.length && asmList[wordIndex]) {
-          mifBodyLines.push(`\t${wordIndex} : ${word}; -- (PC 0x${pcHex}) ${asmList[wordIndex]}`);
-        } else {
-          mifBodyLines.push(`\t${wordIndex} : ${word};`);
-        }
-      }
-
-      const mifFooter = `\nEND;`;
-
-      fileContent = mifHeader + mifBodyLines.join("\n") + mifFooter;
+      fileContent = exportProgramMemoryMif(dataMemoryTable.program, asmList);
       fileName = "memory.mif";
       fileType = "application/octet-stream";
     }

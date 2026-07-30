@@ -14,6 +14,7 @@ import { SimulatorTable, SimulatorTableHandle } from "../SimulatorTable";
 import TableSearchBand from "../TableSearchBand";
 import ToolbarToggle from "../ToolbarToggle";
 import LocatePc from "@/components/panel/Search/LocatePc";
+import ExportProgramMemory from "@/components/panel/Search/ExportProgramMemory";
 import { buildMemoryColumns } from "@/utils/tables/definitions/memoryColumns";
 import { matchesMemoryQuery, PROGRAM_SEARCH_FIELDS } from "@/utils/tables/memorySearch";
 import { buildProgramRows, ProgramRow } from "@/utils/tables/programRows";
@@ -239,6 +240,7 @@ const ProgramMemoryTable = () => {
                   icon={LocateFixed}
                 />
                 <LocatePc />
+                <ExportProgramMemory />
                 <ArrowBigLeftDash
                   onClick={() => setShowProgramTable(false)}
                   strokeWidth={1.5}
