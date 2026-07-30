@@ -1,13 +1,10 @@
 import RegisterTable from "./RegisterTable";
 import AvailableMemory from "./MemoryTable/AvailableMemoryTable/AvailableMemory";
-import { useSimulator } from "@/context/shared/SimulatorContext";
 import ProgramMemoryTable from "./MemoryTable/ProgramMemory";
-import ProgramSection from "../ProgramSection";
 import { usePipelineStagesSlot } from "@/context/graphic/PipelineStagesSlotContext";
 import { useState } from "react";
 
 const Tables = () => {
-  const { modeSimulator } = useSimulator();
   const { setSlotNode } = usePipelineStagesSlot();
 
   const [withBin, setWithBin] = useState(true);
@@ -26,8 +23,6 @@ const Tables = () => {
           the monocycle pane leaves it empty (ADR-0005). `display: contents` keeps
           the portaled table a direct flex child, so placement is unchanged. */}
       <div ref={setSlotNode} style={{ display: "contents" }} />
-
-      {modeSimulator !== "text" && <ProgramSection />}
     </div>
   );
 };
