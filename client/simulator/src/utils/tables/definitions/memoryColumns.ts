@@ -126,11 +126,12 @@ export const buildMemoryColumns = (
     ];
   }
 
-  return [
-    { ...defaultAttrs, visible: false, field: "index" },
-    infoColumn,
-    addressColumn,
-    ...middleColumns,
-    hexColumn,
-  ];
+  const indexColumn: ColumnDefinition = { ...defaultAttrs, visible: false, field: "index" };
+
+  // Program memory shows HEX before the (default-hidden) encoding and the
+  // instruction text; the byte-mode tables trail HEX after the value columns.
+  if (mode === "program") {
+    return [indexColumn, infoColumn, addressColumn, hexColumn, ...middleColumns];
+  }
+  return [indexColumn, infoColumn, addressColumn, ...middleColumns, hexColumn];
 };
