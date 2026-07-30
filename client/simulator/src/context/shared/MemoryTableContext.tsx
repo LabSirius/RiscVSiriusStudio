@@ -91,7 +91,7 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
     _length: 0,
   });
   const [locatePc, setLocatePc] = useState<boolean>(false);
-  const [showProgramTable, setShowProgramTable] = useState(false);
+  const [showProgramTable, setShowProgramTable] = useState(true);
 
   return (
     <MemoryTableContext.Provider
