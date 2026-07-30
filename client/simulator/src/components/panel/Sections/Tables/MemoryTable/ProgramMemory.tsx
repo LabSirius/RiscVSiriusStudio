@@ -202,7 +202,7 @@ const ProgramMemoryTable = () => {
   return (
     <>
       <div
-        className={`shadow-lg !min-h-min max-h-[calc(100dvh-2.3rem)] min-w-[37.96rem]  mx-4  relative ${
+        className={`shadow-lg !min-h-min max-h-[calc(100dvh-2.3rem)] w-fit min-w-[16.7rem]  mx-4  relative ${
           !showProgramTable && "hidden"
         }`}>
         <div
