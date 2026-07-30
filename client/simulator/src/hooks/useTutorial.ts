@@ -22,7 +22,7 @@ const addSidebarHidingLogic = (step: DriveStep): DriveStep => {
 };
 
 export const useTutorial = () => {
-  const { showTuto, setShowTuto, modeSimulator, operation, section, setSection } = useSimulator();
+  const { showTuto, setShowTuto, operation, section, setSection } = useSimulator();
 
   const { setShowProgramTable } = useMemoryTable();
 
@@ -221,24 +221,6 @@ export const useTutorial = () => {
     },
   ];
 
-  const programInMonaco = [
-    {
-      element: "#monaco-editor",
-      popover: {
-        title: "Program ",
-        description: "Here you can see the program you are running.",
-      },
-    },
-    {
-      element: ".driver-first-valid-line",
-      popover: {
-        title: "Instruction",
-        description:
-          'The instruction that was executed will be highlighted, and if you click on an instruction, it will be reflected in the program memory table.  <span style="color: #009688;">program memory table. </span>"',
-      },
-    },
-  ];
-
   const settingsSection = [
     {
       element: "#settings-section",
@@ -317,13 +299,11 @@ export const useTutorial = () => {
     }
 
     const tourTimer = setTimeout(() => {
-      const programInMonacowsidebar = programInMonaco.map(addSidebarHidingLogic);
       const settingsSectionwsidebar = settingsSection.map(addSidebarHidingLogic);
 
       const allSteps = [
         ...registerTableSteps,
         ...memoryTablesSteps,
-        ...(modeSimulator === "graphic" ? programInMonacowsidebar : []),
         ...settingsSectionwsidebar,
         ...optionsSimulate,
       ];
@@ -361,5 +341,5 @@ export const useTutorial = () => {
          // 
       }
     };
-  }, [showTuto, setShowTuto, operation, section, modeSimulator, setShowProgramTable]);
+  }, [showTuto, setShowTuto, operation, section, setShowProgramTable]);
 };
