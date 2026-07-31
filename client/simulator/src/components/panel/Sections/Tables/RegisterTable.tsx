@@ -255,44 +255,51 @@ const RegistersTable = () => {
           !showTable && "hidden"
         } min-w-[22.7rem] relative `}>
         {!ready && <SkeletonRegisterTable />}
-        {isCreatedMemoryTable && (
-          <>
-            {/* Search toolbar on top; the collapse arrow lives inside it. */}
-            <TableSearchBand
-              value={search}
-              onChange={setSearch}
-              placeholder="e.g x17 or 12 or 1100 or 0xC"
-              controls={
-                <>
-                  <ToolbarToggle
-                    active={checkFixedRegisters}
-                    title={
-                      checkFixedRegisters
-                        ? "Auto-add changing registers to the watch list: on"
-                        : "Auto-add changing registers to the watch list: off"
-                    }
-                    onClick={() => setCheckFixedRegisters((v) => !v)}
-                    icon={Eye}
-                  />
-                  <ArrowBigLeftDash
-                    id="closeRT"
-                    onClick={() => setShowTable(false)}
-                    strokeWidth={1.5}
-                    className="min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] cursor-pointer text-black dark:text-white"
-                  />
-                </>
-              }
-            />
-            <SimulatorTable<RegisterRow>
-              className={`w-full min-h-0 flex-1 ${theme === "light" ? "theme-light" : "theme-dark"}`}
-              columns={columns}
-              data={rows}
-              options={options}
-              onEdit={onEdit}
-              onReady={onReady}
-            />
-          </>
-        )}
+        {/* The register table stands alone: it mounts at launch, independent of
+            the memory tables. (It formerly gated on `isCreatedMemoryTable`, a
+            one-shot memory-built signal that `uploadMemory` resets — the flip
+            unmounted this table while `ready` stayed true, stranding a blank.)
+            The block fades in on its own `ready`, so the absolute skeleton
+            covers it cleanly until Tabulator builds. */}
+        <div
+          className={`flex h-full w-full flex-col transition-opacity ease-in ${
+            ready ? "opacity-100" : "opacity-0"
+          }`}>
+          {/* Search toolbar on top; the collapse arrow lives inside it. */}
+          <TableSearchBand
+            value={search}
+            onChange={setSearch}
+            placeholder="e.g x17 or 12 or 1100 or 0xC"
+            controls={
+              <>
+                <ToolbarToggle
+                  active={checkFixedRegisters}
+                  title={
+                    checkFixedRegisters
+                      ? "Auto-add changing registers to the watch list: on"
+                      : "Auto-add changing registers to the watch list: off"
+                  }
+                  onClick={() => setCheckFixedRegisters((v) => !v)}
+                  icon={Eye}
+                />
+                <ArrowBigLeftDash
+                  id="closeRT"
+                  onClick={() => setShowTable(false)}
+                  strokeWidth={1.5}
+                  className="min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] cursor-pointer text-black dark:text-white"
+                />
+              </>
+            }
+          />
+          <SimulatorTable<RegisterRow>
+            className={`w-full min-h-0 flex-1 ${theme === "light" ? "theme-light" : "theme-dark"}`}
+            columns={columns}
+            data={rows}
+            options={options}
+            onEdit={onEdit}
+            onReady={onReady}
+          />
+        </div>
       </div>
       {!showTable && (
         <div
