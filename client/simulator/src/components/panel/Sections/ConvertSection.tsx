@@ -171,7 +171,7 @@ const ConvertSection: React.FC<ConvertSectionProps> = ({
       {collapsible && collapsed && (
         <div
           onClick={() => onToggle?.(false)}
-          className={`h-full w-[1.6rem] cursor-pointer rounded-[.2rem] border flex flex-col items-center uppercase hover:opacity-[0.9] transition-all ease-in-out duration-200
+          className={`-ml-5 h-full w-[1.6rem] cursor-pointer rounded-[.2rem] border flex flex-col items-center uppercase hover:opacity-[0.9] transition-all ease-in-out duration-200
     bg-[#B2DFDB] border-gray-700 text-black`}>
           <ArrowBigRightDash
             strokeWidth={1.5}
