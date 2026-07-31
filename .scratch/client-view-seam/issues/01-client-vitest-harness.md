@@ -7,7 +7,7 @@ to put its tests. No runtime behavior of the simulator changes.
 
 **Blocked by:** None — can start immediately.
 
-**Status:** ready-for-agent
+**Status:** done
 
 - [ ] The client has its own Vitest configuration, mirroring the root `vitest.config.ts` conventions.
 - [ ] A test command exists for the client and runs green in CI/local.
