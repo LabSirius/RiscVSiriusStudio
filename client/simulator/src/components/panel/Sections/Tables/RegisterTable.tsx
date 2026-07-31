@@ -24,10 +24,11 @@ import { RegisterView } from "@/utils/tables/types";
 import { sendWebviewMessage } from "@/components/Message/sendMessage";
 
 import SkeletonRegisterTable from "@/components/panel/Skeleton/SkeletonRegisterTable";
-import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
+import { ArrowBigLeftDash, ArrowBigRightDash, Eye } from "lucide-react";
 
 import { SimulatorTable, SimulatorTableHandle } from "./SimulatorTable";
 import TableSearchBand from "./TableSearchBand";
+import ToolbarToggle from "./ToolbarToggle";
 
 // The radix keys map to the persistent viewType (candidate B keeps the transient
 // hover-peek in attachConvertionToggle; this only sets the stored view). Folded
@@ -57,8 +58,12 @@ const RegistersTable = () => {
   const { registerData, setRegisterData } = useRegisterData();
   const { writeInRegister, setWriteInRegister, importRegister, setImportRegister } =
     useRegistersTable();
-  const { checkFixedRegisters, fixedchangedRegisters, setFixedchangedRegisters } =
-    useCustomOptionSimulate();
+  const {
+    checkFixedRegisters,
+    setCheckFixedRegisters,
+    fixedchangedRegisters,
+    setFixedchangedRegisters,
+  } = useCustomOptionSimulate();
   const { isFirstStep } = useSimulator();
 
   const [showTable, setShowTable] = useState(true);
@@ -267,12 +272,24 @@ const RegistersTable = () => {
               onChange={setSearch}
               placeholder="e.g x17 or 12 or 1100 or 0xC"
               controls={
-                <ArrowBigLeftDash
-                  id="closeRT"
-                  onClick={() => setShowTable(false)}
-                  strokeWidth={1.5}
-                  className="min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] cursor-pointer text-black dark:text-white"
-                />
+                <>
+                  <ToolbarToggle
+                    active={checkFixedRegisters}
+                    title={
+                      checkFixedRegisters
+                        ? "Auto-add changing registers to the watch list: on"
+                        : "Auto-add changing registers to the watch list: off"
+                    }
+                    onClick={() => setCheckFixedRegisters((v) => !v)}
+                    icon={Eye}
+                  />
+                  <ArrowBigLeftDash
+                    id="closeRT"
+                    onClick={() => setShowTable(false)}
+                    strokeWidth={1.5}
+                    className="min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] cursor-pointer text-black dark:text-white"
+                  />
+                </>
               }
             />
             <SimulatorTable<RegisterRow>
