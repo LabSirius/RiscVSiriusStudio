@@ -17,6 +17,9 @@ const MainSection = () => {
   const { modeSimulator, operation, section } = useSimulator();
   const { setTheme } = useTheme();
   const [showScrollIcon, setShowScrollIcon] = useState(false);
+  // Convert panel collapse lives here (not in ConvertSection) so it survives the
+  // convert↔help remount. Defaults collapsed, like the program-memory table.
+  const [convertCollapsed, setConvertCollapsed] = useState(true);
   const BASE_WIDTH = 1296;
 
   // VS Code signals theme changes by live-mutating the webview <body> class
@@ -62,7 +65,15 @@ const MainSection = () => {
             !(modeSimulator === "graphic") && "h-screen"
           } `}>
           <Tables />
-          {section === "convert" ? <ConvertSection /> : <HelpSection />}
+          {section === "convert" ? (
+            <ConvertSection
+              collapsible
+              collapsed={convertCollapsed}
+              onToggle={setConvertCollapsed}
+            />
+          ) : (
+            <HelpSection />
+          )}
         </div>
       ) : section === "convert" ? (
         <ConvertSection />
