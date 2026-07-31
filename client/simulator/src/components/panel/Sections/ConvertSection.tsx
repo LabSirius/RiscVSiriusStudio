@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ArrowBigLeftDash, ArrowBigRightDash } from "lucide-react";
 import Dropdown, { Option } from "@/components/panel/Convert/Dropdown";
 import ValueInput from "@/components/panel/Convert/ValueInput";
 import ResultOutput from "@/components/panel/Convert/ResultOutput";
@@ -13,7 +14,20 @@ const formatOptions: Option[] = [
   { label: "ASCII", value: 'ascii' },
 ];
 
-const ConvertSection: React.FC = () => {
+interface ConvertSectionProps {
+  /** When true, the collapse control (header arrow) and collapsed tab are wired.
+      Only the beside-tables view sets this; the standalone view stays expanded. */
+  collapsible?: boolean;
+  /** Collapse state, owned by the parent so it survives convert↔help toggles. */
+  collapsed?: boolean;
+  onToggle?: (collapsed: boolean) => void;
+}
+
+const ConvertSection: React.FC<ConvertSectionProps> = ({
+  collapsible = false,
+  collapsed = false,
+  onToggle,
+}) => {
   const [fromFormat, setFromFormat] = useState<Option>(formatOptions[0]);
   const [toFormat, setToFormat] = useState<Option>(formatOptions[1]);
   const [inputValue, setInputValue] = useState<string>('');
@@ -75,7 +89,25 @@ const ConvertSection: React.FC = () => {
   };
 
   return (
-    <div className="section-container ml-[.2rem] ">
+    <>
+      <div
+        className="section-container ml-[.2rem]"
+        style={{ display: collapsible && collapsed ? "none" : undefined }}>
+        {/* Header band hosts the collapse arrow; styled like TableSearchBand so
+            the calculator reads as a sibling of the collapsible tables. */}
+        <div className="flex shrink-0 items-center rounded-t-md border-b border-gray-300 bg-gray-100 px-2 py-1 dark:border-zinc-700 dark:bg-zinc-800">
+          <span className="text-sm font-semibold text-black dark:text-white">
+            Base Convert
+          </span>
+          {collapsible && (
+            <ArrowBigLeftDash
+              id="closeConvert"
+              onClick={() => onToggle?.(true)}
+              strokeWidth={1.5}
+              className="ml-auto min-w-[1.3rem] min-h-[1.3rem] w-[1.3rem] h-[1.3rem] cursor-pointer text-black dark:text-white"
+            />
+          )}
+        </div>
       <div className="flex gap-2">
         <Dropdown
           label="From"
@@ -135,7 +167,28 @@ const ConvertSection: React.FC = () => {
         <ResultOutput id="resultConvertInput" value={result} />
         <CopyButton result={result} toFormat={toFormat.value} />
       </div>
-    </div>
+      </div>
+      {collapsible && collapsed && (
+        <div
+          onClick={() => onToggle?.(false)}
+          className={`h-full w-[1.6rem] cursor-pointer rounded-[.2rem] border flex flex-col items-center uppercase hover:opacity-[0.9] transition-all ease-in-out duration-200
+    bg-[#B2DFDB] border-gray-700 text-black`}>
+          <ArrowBigRightDash
+            strokeWidth={1.5}
+            className={`mt-[0.35rem] mb-1  min-w-[.9rem] min-h-[.9rem] w-[.9rem] h-[.9rem]
+      `}
+          />
+          {"base convert".split("").map((char, index) => (
+            <span
+              key={index}
+              className={`text-[.45rem] font-bold leading-[.91rem]  ease-in-out
+        `}>
+              {char === " " ? " " : char}
+            </span>
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 
