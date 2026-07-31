@@ -50,8 +50,6 @@ const AvailableMemory = ({ withBin, setWithBin }: AvailableMemoryProps) => {
     sizeMemory,
     sp,
     setSp,
-    importMemory,
-    setImportMemory,
     writeInMemory,
     setWriteInMemory,
     readInMemory,
@@ -207,26 +205,6 @@ const AvailableMemory = ({ withBin, setWithBin }: AvailableMemoryProps) => {
     setReadInMemory({ address: 0, _length: 0, value: "-1" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [readInMemory]);
-
-  // --- Import: merge imported rows (by address) into the base rows. ---
-  useEffect(() => {
-    if (!ready || importMemory.length === 0) return;
-    const byAddress = new Map(
-      importMemory.map((r) => [r.address.toUpperCase(), r] as [string, Partial<AvailableRow>])
-    );
-    setBaseRows((rows) =>
-      rows.map((r) => {
-        const imp = byAddress.get(r.address);
-        if (!imp) return r;
-        const merged = { ...r, ...imp, address: r.address };
-        merged.hex = rowHex(merged.value0, merged.value1, merged.value2, merged.value3);
-        return merged;
-      })
-    );
-    setImportMemory([]);
-    sendWebviewMessage({ event: "memoryChanged", memory: importMemory });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [importMemory]);
 
   // --- Search: filter rows and reposition the PC icon. ---
   // The toolbar is a permanent part of the table chrome, so search works before

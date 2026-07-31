@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sideBar";
 import CircleActive from "./CircleActive";
 import { Sidebar, SidebarContent, SidebarMenuItem } from "@/components/ui/sideBar";
-import { Calculator, Info, Settings } from "lucide-react";
+import { Calculator, Info } from "lucide-react";
 
 type SectionType = string;
 
@@ -33,7 +33,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ sectionName, currentSection, setSec
 );
 
 export function SideBar() {
-  const { operation, section, setSection } = useSimulator();
+  const { section, setSection } = useSimulator();
   const { setOpen, setHoveringSidebar } = useSidebar();
 
 
@@ -43,12 +43,7 @@ export function SideBar() {
     {
       name: "convert",
       icon: <Calculator />,
-      show: true, 
-    },
-    {
-      name: "settings",
-      icon: <Settings />,
-      show: (operation === "uploadMemory" || operation === "step"),
+      show: true,
     },
   ];
 

@@ -5,32 +5,18 @@ interface WriteInRegister {
   value: string;
 }
 
-
-interface Register {
-  name: string;
-  rawName: string;
-  value: string;
-  viewType: number;
-  watched: boolean;
-  modified: number;
-  id: number;
-}
-
 interface RegistersTableContextProps {
   writeInRegister: WriteInRegister;
   setWriteInRegister: React.Dispatch<React.SetStateAction<WriteInRegister>>;
-  importRegister: Register[];
-  setImportRegister: React.Dispatch<React.SetStateAction<Register[]>>;
 }
 
 const RegistersTableContext = createContext<RegistersTableContextProps | undefined>(undefined);
 
 export const RegistersTableProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [writeInRegister, setWriteInRegister] = useState<WriteInRegister>({ registerName: '', value: '' });
-  const [importRegister, setImportRegister] = useState<Register[]>([]);
 
   return (
-    <RegistersTableContext.Provider value={{ writeInRegister, setWriteInRegister, importRegister, setImportRegister }}>
+    <RegistersTableContext.Provider value={{ writeInRegister, setWriteInRegister }}>
       {children}
     </RegistersTableContext.Provider>
   );

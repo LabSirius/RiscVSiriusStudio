@@ -56,8 +56,7 @@ const RegistersTable = () => {
   const { theme } = useTheme();
   const { isCreatedMemoryTable } = useMemoryTable();
   const { registerData, setRegisterData } = useRegisterData();
-  const { writeInRegister, setWriteInRegister, importRegister, setImportRegister } =
-    useRegistersTable();
+  const { writeInRegister, setWriteInRegister } = useRegistersTable();
   const {
     checkFixedRegisters,
     setCheckFixedRegisters,
@@ -201,14 +200,6 @@ const RegistersTable = () => {
       return changed ? next : rs;
     });
   }, [checkFixedRegisters, ready, fixedchangedRegisters]);
-
-  // --- Import: replace the whole row set (replaces useImportRegisterData). ---
-  useEffect(() => {
-    if (!ready || importRegister.length === 0) return;
-    setRows(importRegister as RegisterRow[]);
-    setImportRegister([]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [importRegister, ready]);
 
   // --- Radix keypress → persistent viewType (folded useGlobalKeyboardShortcuts). ---
   useEffect(() => {

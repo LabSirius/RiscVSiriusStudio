@@ -10,20 +10,11 @@ export interface MemoryData {
   program: string[];
   directivesWritableSize: number;
   directivesReadOnlySize: number;
-  // eslint-disable-next-line @typeFscript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   symbols: Record<string, any>;
   addressLine: AddressLine[];
   asmList: string[];
 }
-interface MemoryRow {
-  address: string;
-  hex: string;
-  value0: string;
-  value1: string;
-  value2: string;
-  value3: string;
-}
-
 interface WriteInMemory {
   address: number;
   value: string;
@@ -51,9 +42,6 @@ export interface MemoryTableContextProps {
   sp: string;
   setSp: React.Dispatch<React.SetStateAction<string>>;
 
-  importMemory: MemoryRow[];
-  setImportMemory: React.Dispatch<React.SetStateAction<MemoryRow[]>>;
-
   showHex: boolean;
   setShowHex: React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -78,7 +66,6 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [typesInstruction, setTypesInstruction] = useState<{ type: string }[]>([]);
   const [sizeMemory, setSizeMemory] = useState<number>(0);
   const [sp, setSp] = useState<string>("");
-  const [importMemory, setImportMemory] = useState<MemoryRow[]>([]);
   const [showHex, setShowHex] = useState<boolean>(true);
   const [writeInMemory, setWriteInMemory] = useState<WriteInMemory>({
     address: 0,
@@ -106,8 +93,6 @@ export const MemoryTableProvider: React.FC<{ children: ReactNode }> = ({ childre
         setSizeMemory,
         sp,
         setSp,
-        importMemory,
-        setImportMemory,
         showHex,
         setShowHex,
         writeInMemory,
