@@ -1,7 +1,7 @@
 import MouseScrollIcon from "@/components/panel/MouseScrollIcon";
 import { useState, useEffect } from "react";
 
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sideBar";
+import { SidebarProvider } from "@/components/ui/sideBar";
 import Sidebar from "@/components/panel/Sidebar/SideBar";
 
 import { useSimulator } from "@/context/shared/SimulatorContext";
@@ -11,7 +11,6 @@ import Tables from "../Tables/Tables";
 import HelpSection from "../HelpSection";
 import { useTheme } from "@/components/ui/theme/theme-provider";
 
-import OptionsSimulate from "./OptionsSimulate";
 
 const MainSection = () => {
   const { modeSimulator, operation, section } = useSimulator();
@@ -88,11 +87,6 @@ const MainSection = () => {
           </div>
         </div>
       )}
-       <div className="absolute right-2 flex flex-col items-center  ">
-          <SidebarTrigger />
-
-          <OptionsSimulate />
-        </div>
     </SidebarProvider>
   );
 };
