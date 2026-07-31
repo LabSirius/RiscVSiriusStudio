@@ -27,7 +27,6 @@ export const useMessageListener = () => {
     setOperation,
     isFirstStep,
     setIsFirstStep,
-    setSection,
     setNewPc,
     setIsEbreak,
     setApiKey
@@ -74,17 +73,8 @@ export const useMessageListener = () => {
         case "setApiKey":
             setApiKey(message.key)
           break
-        case "uploadMemory":
-      
-          setDialog({
-            title: "Configuration Info",
-            description:
-              "Before executing the first instruction, you can change the simulation settings.",
-            stop: false,
-            isReset: message.isReset,
-          });
+        case "uploadMemory": {
           setTypeSimulator(message.typeSimulator);
-          setSection("settings");
           setIsCreatedMemoryTable(false);
           // The upload payload crosses opaquely; the memory-table consumer
           // narrows it to its own `MemoryData` shape here (ADR-0005).
@@ -96,6 +86,7 @@ export const useMessageListener = () => {
           setOperation("uploadMemory");
 
           break;
+        }
         case "step":
           // Shell / Cycle effect — CPU-independent, driven every clock off the
           // effect fields the extension now posts uniformly for both CPUs
@@ -173,11 +164,9 @@ export const useMessageListener = () => {
     setWriteInMemory,
     setReadInMemory,
     setWriteInRegister,
-    setSection,
     isFirstStep,
     setIsFirstStep,
     setDialog,
     setIsCreatedMemoryTable,
-  
   ]);
 };

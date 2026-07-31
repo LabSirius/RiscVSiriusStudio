@@ -1,28 +1,11 @@
 import { useEffect } from "react";
-import { driver, DriveStep } from "driver.js";
+import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import { useSimulator } from "../context/shared/SimulatorContext";
 import { useMemoryTable } from "@/context/shared/MemoryTableContext";
 
-const addSidebarHidingLogic = (step: DriveStep): DriveStep => {
-  const originalOnHighlightStarted = step.onHighlightStarted;
-  const originalOnDeselected = step.onDeselected;
-
-  return {
-    ...step,
-    onHighlightStarted: (...args) => {
-      document.querySelector("#sidebar")?.classList.add("hidden");
-      originalOnHighlightStarted?.(...args);
-    },
-    onDeselected: (...args) => {
-      document.querySelector("#sidebar")?.classList.remove("hidden");
-      originalOnDeselected?.(...args);
-    },
-  };
-};
-
 export const useTutorial = () => {
-  const { showTuto, setShowTuto, operation, section, setSection } = useSimulator();
+  const { showTuto, setShowTuto } = useSimulator();
 
   const { setShowProgramTable } = useMemoryTable();
 
@@ -38,7 +21,7 @@ export const useTutorial = () => {
       element: "#registerTable .tabulator-row:nth-child(1)",
       popover: {
         title: "Watched Section",
-        description: `Every time a register changes it will automatically go up to the watched section. <span style="color: #009688; font-style: italic;">(You can change this in settings.)</span>`,
+        description: `Every time a register changes it will automatically go up to the watched section. <span style="color: #009688; font-style: italic;">(You can toggle this with the eye button in the registers toolbar.)</span>`,
       },
     },
 
@@ -221,47 +204,6 @@ export const useTutorial = () => {
     },
   ];
 
-  const settingsSection = [
-    {
-      element: "#settings-section",
-      popover: {
-        title: "Settings ",
-        description: "In this section you can modify simulator settings.",
-      },
-    },
-
-    {
-      element: "#import-data",
-      popover: {
-        title: "Import data in tables",
-        description: "Import data into log tables and available memory",
-      },
-    },
-
-    {
-      element: "#change-memory-size",
-      popover: {
-        title: "Change memory size",
-        description: "You can change the size of the available memory table",
-      },
-    },
-
-    {
-      element: "#export-data",
-      popover: {
-        title: "Export data",
-        description: "You can export data from tables",
-      },
-    },
-    {
-      element: "#custom-options",
-      popover: {
-        title: "Custom options",
-        description: "During execution you can modify these options",
-      },
-    },
-  ];
-
   const optionsSimulate = [
     {
       element: "#button-sidebar",
@@ -294,17 +236,10 @@ export const useTutorial = () => {
  useEffect(() => {
     if (!showTuto) return;
 
-    if (showTuto && operation === "uploadMemory" && section === "help") {
-      setSection("settings");
-    }
-
     const tourTimer = setTimeout(() => {
-      const settingsSectionwsidebar = settingsSection.map(addSidebarHidingLogic);
-
       const allSteps = [
         ...registerTableSteps,
         ...memoryTablesSteps,
-        ...settingsSectionwsidebar,
         ...optionsSimulate,
       ];
 
@@ -341,5 +276,5 @@ export const useTutorial = () => {
          // 
       }
     };
-  }, [showTuto, setShowTuto, operation, section, setShowProgramTable]);
+  }, [showTuto, setShowTuto, setShowProgramTable]);
 };
