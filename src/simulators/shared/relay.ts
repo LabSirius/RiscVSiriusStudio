@@ -115,6 +115,7 @@ export function startRelay(vscode: VSCodeApi): void {
         const eventValueMap: Record<string, keyof typeof data> = {
           clickInInstruction: "line",
           memorySizeChanged: "sizeMemory",
+          configureMemory: "memorySize",
           registersChanged: "registers",
           memoryChanged: "memory",
         };
