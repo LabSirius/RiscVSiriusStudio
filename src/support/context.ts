@@ -72,23 +72,8 @@ export class RVContext {
     this.disposables = [];
     this._configurationManager = new ConfigurationManager();
 
-    this.registerWebviewProvider();
     this.registerCommands();
     this.setupEditorListeners();
-
-    this.disposables.push(
-      this.configurationManager.onConfigurationChanged(e => {
-        if (e.affectsConfiguration('rv-simulator.gemini.apiKey')) {
-          console.log('Gemini API Key configuration changed. Resending to active webviews.');
-          if (this._textWebview) {
-            this.sendApiKeyToWebview(this._textWebview);
-          }
-          if (this._graphicWebviewPanel) {
-            this.sendApiKeyToWebview(this._graphicWebviewPanel.webview);
-          }
-        }
-      })
-    );
 
     commands.executeCommand("setContext", "ext.isSimulating", false);
   }
@@ -124,11 +109,6 @@ export class RVContext {
         const panel = await this.createAndConfigureGraphicPanel();
         await this.initializeAndStartGraphicSimulator(panel, { isRestart: false });
       }),
-      commands.registerCommand("rv-simulator.textSimulate", () => {
-        const environmentReady = this.prepareForTextSimulation();
-        if (!environmentReady) return;
-        this.initializeAndStartTextSimulator({ isHardReset: true, isRestart: false });
-      }),
       commands.registerCommand("rv-simulator.simulateStep", () => this.step()),
       commands.registerCommand("rv-simulator.simulateReset", () => this.resetSimulator({ isHardReset: true })),
       commands.registerCommand("rv-simulator.simulateStop", () => {
@@ -136,37 +116,6 @@ export class RVContext {
         this._graphicWebviewPanel?.dispose();
       }),
       commands.registerCommand("rv-simulator.build", () => this.buildCurrentDocument())
-    );
-  }
-
-  private registerWebviewProvider() {
-    commands.executeCommand("rv-simulator.riscv.focus");
-    this.disposables.push(
-      window.registerWebviewViewProvider(
-        "rv-simulator.riscv",
-        {
-          resolveWebviewView: async (webviewView: WebviewView) => {
-            webviewView.webview.options = {
-              enableScripts: true,
-              localResourceRoots: [this.extensionContext.extensionUri],
-            };
-            webviewView.title = "Registers and memory view";
-            webviewView.webview.html = await getHtmlForTextSimulator(
-              webviewView.webview,
-              this.extensionContext.extensionUri
-            );
-            this._textWebview = webviewView.webview;
-            activateMessageListenerForRegistersView(webviewView.webview, this);
-            webviewView.onDidDispose(() => {
-              this._textWebview = undefined;
-              if (this._simulator instanceof TextSimulator && !(this._simulator instanceof GraphicSimulator)) {
-                this.cleanupSimulator({ sendStopMessage: true });
-              }
-            });
-          },
-        },
-        { webviewOptions: { retainContextWhenHidden: true } }
-      )
     );
   }
 
@@ -321,12 +270,6 @@ export class RVContext {
     if (message.event === 'webviewReady') {
       this._simulator?.sendInitialData({ isHardReset: true });
       this._hasWebviewInitialized = true;
-      if (this._textWebview) {
-        this.sendApiKeyToWebview(this._textWebview);
-      }
-      if (this._graphicWebviewPanel) {
-        this.sendApiKeyToWebview(this._graphicWebviewPanel.webview);
-      }
       return;
     }
      
@@ -337,10 +280,7 @@ export class RVContext {
 
     switch (message.event) {
       case "pipeline":
-        if (this._simulatorType === "monocycle") {
-          this._simulatorType = "pipeline";
-          await this.resetSimulator({ isHardReset: false });
-        }
+        // Pipeline CPU disabled: ignore the request and stay on monocycle.
         break;
       case "reset":
         await this.resetSimulator({ isHardReset: true });
@@ -422,15 +362,6 @@ export class RVContext {
     this._encoderDecorator = undefined;
   }
 
-
-    private sendApiKeyToWebview(webview: Webview) {
-    if (!webview) return;
-    const config = this.configurationManager.getConfiguration();
-    const apiKey = config.get<string>('gemini.apiKey');
-
-    console.log("DESDE ATAS ENCONTRO APIKEY?", apiKey)
-    webview.postMessage({ from: "extension", operation: "setApiKey", key: apiKey || "" });
-  }
 
   private animateLine(line: number) { this._simulator?.animateLine(line); }
   private memorySizeChanged(newSize: number) { this._simulator?.resizeMemory(newSize); }

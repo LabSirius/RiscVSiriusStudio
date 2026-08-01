@@ -20,12 +20,6 @@
         "when": "!ext.isSimulating"
       },
       {
-        "command": "rv-simulator.textSimulate",
-        "title": "RISCV simulator: text-simulate program execution",
-        "icon": "$(github-project)",
-        "when": "!ext.isSimulating"
-      },
-      {
         "command": "rv-simulator.simulateStep",
         "title": "RISCV simulator: step simulation",
         "icon": "$(debug-step-over)",
@@ -65,33 +59,9 @@
         "title": "RISCV simuator: synchronize code with program memory"
       }
     ],
-    "viewsContainers": {
-      "panel": [
-        {
-          "id": "riscv",
-          "title": "RISCV",
-          "icon": "media/cpu-chip-svgrepo-com.svg"
-        }
-      ]
-    },
-    "views": {
-      "riscv": [
-        {
-          "type": "webview",
-          "id": "rv-simulator.riscv",
-          "name": "RiscV simulator"
-        }
-      ]
-    },
     "configuration": {
       "title": "RISCV Simulator",
       "properties": {
-        "rv-simulator.gemini.apiKey": {
-          "type": "string",
-          "default": "",
-          "description": "Your Google Gemini API Key for the AI assistant.",
-          "markdownDescription": "Enter your Google Gemini API Key. You can get one for free at [Google AI Studio](https://aistudio.google.com/app/apikey)."
-        },
         "rv-simulator.editor.encoderUpdatePolicy": {
           "type": "string",
           "default": "On save",
@@ -172,11 +142,6 @@
         {
           "command": "rv-simulator.simulate",
           "group": "navigation@3",
-          "when": "editorLangId == riscvasm && !ext.isSimulating"
-        },
-        {
-          "command": "rv-simulator.textSimulate",
-          "group": "navigation@2",
           "when": "editorLangId == riscvasm && !ext.isSimulating"
         },
         {
