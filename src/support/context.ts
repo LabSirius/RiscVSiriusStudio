@@ -19,6 +19,7 @@ import { activateMessageListenerForRegistersView } from "../utilities/activateMe
 import { RVDocument } from "../rvDocument";
 import { EncoderDecorator } from "../encoderDecorator";
 import { ConfigurationManager } from "./configurationManager";
+import { isValidMemorySize } from "../protocol/memory";
 import {
   SimulationParameters,
   Simulator,
@@ -50,6 +51,9 @@ export class RVContext {
 
   // --- Simulation State ---
   private _simulatorType: "monocycle" | "pipeline" = "monocycle";
+  // Data memory size (bytes) for the current session. Seeded from the
+  // dataMemoryView.memorySize setting and overridable per-run via the start dialog.
+  private _memorySize = 128;
   private _currentDocument: RVDocument | undefined;
   private _isSimulating = false;
   private _simulator: Simulator | undefined;
@@ -71,6 +75,8 @@ export class RVContext {
     this.extensionContext = context;
     this.disposables = [];
     this._configurationManager = new ConfigurationManager();
+    const seed = this._configurationManager.getMemorySize();
+    if (isValidMemorySize(seed)) this._memorySize = seed;
 
     this.registerCommands();
     this.setupEditorListeners();
@@ -187,7 +193,7 @@ export class RVContext {
             return;
         }
     }
-    const settings: SimulationParameters = { memorySize: 40 };
+    const settings: SimulationParameters = { memorySize: this._memorySize };
     // Composition root: pick the per-CPU graphic simulator by kind. Each holds a
     // statically-typed concrete CPU so it reads datapathView() without a downcast
     // (ADR-0003).
@@ -281,6 +287,12 @@ export class RVContext {
     switch (message.event) {
       case "pipeline":
         // Pipeline CPU disabled: ignore the request and stay on monocycle.
+        break;
+      case "configureMemory":
+        if (isValidMemorySize(message.memorySize)) {
+          this._memorySize = message.memorySize;
+          await this.resetSimulator({ isHardReset: true });
+        }
         break;
       case "reset":
         await this.resetSimulator({ isHardReset: true });

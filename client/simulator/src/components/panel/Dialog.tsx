@@ -11,42 +11,49 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { Info, Settings } from "lucide-react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useSimulator } from "@/context/shared/SimulatorContext";
+import { useMemoryTable } from "@/context/shared/MemoryTableContext";
+import {
+  isValidMemorySize,
+  bytesToWords,
+  MIN_MEMORY_BYTES,
+  MAX_MEMORY_BYTES,
+} from "@protocol/memory";
 import { sendMessage } from "../Message/sendMessage";
 
 const Dialog = () => {
   const { dialog, setDialog } = useDialog();
+  const { setShowTuto } = useSimulator();
+  const { sizeMemory } = useMemoryTable();
   const [open, setOpen] = useState(false);
-  const { typeSimulator, setTypeSimulator, setShowTuto } = useSimulator();
+  const [memBytes, setMemBytes] = useState<string>("");
 
-
-  const handleSelection = (newType: string) => {
-    if (newType) {
-      setTypeSimulator(newType as "monocycle" | "pipeline");
-    }
-  };
+  const isConfig = !!dialog?.isReset && !dialog?.stop;
+  const parsedBytes = Number(memBytes);
+  const validSize = isValidMemorySize(parsedBytes);
 
   useEffect(() => {
     if (dialog) {
       setOpen(true);
+      if (dialog.isReset && !dialog.stop) {
+        setMemBytes(String(sizeMemory));
+      }
     }
-  }, [dialog]);
+  }, [dialog, sizeMemory]);
 
   const handleAccept = () => {
+    if (isConfig) {
+      if (!validSize) return;
+      sendMessage({ event: "configureMemory", memorySize: parsedBytes });
+    }
     setOpen(false);
     setDialog(undefined);
-
-    sendMessage({ event: typeSimulator });
   };
-
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogContent>
-        {" "}
-        {/* Removed custom z-index, shadcn handles this */}
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2 text-[#3A6973]">
             {dialog?.stop ? (
@@ -59,22 +66,28 @@ const Dialog = () => {
           <AlertDialogDescription className="text-base text-start text-foreground">
             <div className="text-xs mt-1">{dialog?.description}</div>
 
-            {dialog?.isReset  && !dialog?.stop && (
+            {isConfig && (
               <div className="py-4">
-                {/* 1. Title for the simulator type selection. */}
-                <p className="mb-3 font-medium text-[.8rem]">Choose Type Simulator</p>
-
-                <RadioGroup
-                  value={typeSimulator}
-                  onValueChange={handleSelection}
-                  className="space-y-2">
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="monocycle" id="r_monocycle" />
-                    <Label htmlFor="r_monocycle" className="cursor-pointer">
-                      Monocycle
-                    </Label>
-                  </div>
-                </RadioGroup>
+                <Label
+                  htmlFor="dataMemorySize"
+                  className="mb-2 block font-medium text-[.8rem]">
+                  Data memory size (bytes)
+                </Label>
+                <input
+                  id="dataMemorySize"
+                  type="number"
+                  min={MIN_MEMORY_BYTES}
+                  max={MAX_MEMORY_BYTES}
+                  step={4}
+                  value={memBytes}
+                  onChange={(e) => setMemBytes(e.target.value)}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                />
+                <p className="mt-1 text-[.7rem] text-muted-foreground">
+                  {validSize
+                    ? `${parsedBytes} bytes = ${bytesToWords(parsedBytes)} words`
+                    : `Enter a multiple of 4 between ${MIN_MEMORY_BYTES} and ${MAX_MEMORY_BYTES}.`}
+                </p>
               </div>
             )}
           </AlertDialogDescription>
@@ -88,7 +101,11 @@ const Dialog = () => {
             </AlertDialogAction>
           )}
 
-          <AlertDialogAction onClick={handleAccept}>Accept</AlertDialogAction>
+          <AlertDialogAction
+            onClick={handleAccept}
+            disabled={isConfig && !validSize}>
+            Accept
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

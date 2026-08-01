@@ -18,19 +18,7 @@ export class ConfigurationManager {
     return workspace.onDidChangeConfiguration(listener);
   }
 
-  // private getMemorySettings() {
-  //   return workspace.getConfiguration('rv-simulator.dataMemoryView');
-  // }
-
-  // private getRegisterSettings() {
-  //   return workspace.getConfiguration('rv-simulator.registersView');
-  // }
-
-  // public getMemorySize(): number {
-  //   return this.getMemorySettings().get('memorySize');
-  // }
-
-  // public getStackPointerAddress(): number {
-  //   return this.getMemorySettings().get('stackPointerInitialAddress');
-  // }
+  public getMemorySize(): number {
+    return workspace.getConfiguration('rv-simulator.dataMemoryView').get<number>('memorySize', 128);
+  }
 }

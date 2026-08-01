@@ -38,6 +38,10 @@ export const useMessageListener = () => {
   const { setClickInEditorLine } = useLines();
   const { setDialog } = useDialog();
 
+  // The start-of-session config dialog is shown once per webview mount, on the
+  // first memory upload.
+  const hasPromptedConfigRef = useRef(false);
+
   const modeSimulatorRef = useRef(modeSimulator);
   useEffect(() => {
     modeSimulatorRef.current = modeSimulator;
@@ -84,6 +88,15 @@ export const useMessageListener = () => {
           setSizeMemory(uploadPayload.memory.length);
           setIsFirstStep(false);
           setOperation("uploadMemory");
+
+          if (!hasPromptedConfigRef.current) {
+            hasPromptedConfigRef.current = true;
+            setDialog({
+              title: "Simulation setup",
+              description: "Configure the data memory for this session.",
+              isReset: true,
+            });
+          }
 
           break;
         }
