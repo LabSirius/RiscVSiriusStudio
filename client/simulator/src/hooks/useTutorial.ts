@@ -221,14 +221,6 @@ export const useTutorial = () => {
           'By clicking you can activate/deactivate the automatic simulation, and you can regulate the speed if you hold the hover."',
       },
     },
-    {
-      element: "#gemini-chat",
-      popover: {
-        title: "AI Chat",
-        description:
-          'You can ask the AI ​​questions about RISCV instructions and the simulator in general."',
-      },
-    },
   ];
 
 

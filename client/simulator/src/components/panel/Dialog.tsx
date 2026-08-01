@@ -74,16 +74,6 @@ const Dialog = () => {
                       Monocycle
                     </Label>
                   </div>
-
-                  {/* 4. Structure for "Pipeline" radio item. */}
-                 
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="pipeline" id="r_pipeline" />
-                      <Label htmlFor="r_pipeline" className="cursor-pointer">
-                        Pipeline{" "}
-                        <span className="text-[.6rem] bg-blue-400 p-1 rounded-[0.4rem] ">Beta</span>
-                      </Label>
-                    </div>
                 </RadioGroup>
               </div>
             )}
