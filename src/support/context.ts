@@ -289,8 +289,8 @@ export class RVContext {
         // Pipeline CPU disabled: ignore the request and stay on monocycle.
         break;
       case "configureMemory":
-        if (isValidMemorySize(message.memorySize)) {
-          this._memorySize = message.memorySize;
+        if (isValidMemorySize(message.value)) {
+          this._memorySize = message.value;
           await this.resetSimulator({ isHardReset: true });
         }
         break;
