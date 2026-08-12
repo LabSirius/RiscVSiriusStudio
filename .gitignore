@@ -1,5 +1,6 @@
 out
 node_modules
 *.vsix
+rv-simulator-src-*.zip
 .DS_STORE
 site/_site

@@ -223,6 +223,7 @@
     "compile": "node ./esbuild.js",
     "vsix": "vsce package",
     "test:vsix": "npm run vsix && node ./scripts/test-vsix.mjs",
+    "source:zip": "node ./scripts/source-zip.mjs",
     "package": "cross-env NODE_ENV=production node ./esbuild.js",
     "watch": "node ./esbuild.js --watch",
     "lint": "eslint src --ext ts",
