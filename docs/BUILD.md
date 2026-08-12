@@ -195,17 +195,10 @@ vsce package --no-yarn
 npm run watch      # = node ./esbuild.js --watch
 ```
 
-- Watch branch of `esbuild.js` (lines 133-153): starts a detached
+- Watch branch of `esbuild.js`: starts a detached
   `npm run build -- --watch` (`vite build --watch`) in `client/simulator`,
-  then puts the esbuild extension bundle in watch mode.
-
-> **GOTCHA — `npm run watch` is currently broken.** The watch branch
-> (`esbuild.js` lines 141-152) spreads three configs that are **never defined**
-> in the file: `simulatorviewConfig`, `registersviewConfig`,
-> `registersviewConfigTextSimulator`. Only `extensionConfig`,
-> `graphicSimulatorConfig` and `textSimulatorSimulator` exist. So watch mode
-> throws a `ReferenceError` after the first `build()`. Use `npm run compile`
-> for now, or fix the config names before relying on watch.
+  then puts the esbuild extension bundle (`extensionConfig`,
+  `graphicSimulatorConfig`, `textSimulatorSimulator`) in watch mode.
 
 Client-only dev servers also exist (not needed for the extension host):
 `npm run dev` in `client/simulator` or `client/instructionSet` (= `vite`).
@@ -218,6 +211,7 @@ Client-only dev servers also exist (not needed for the extension host):
 |--------|---------|---------|
 | `test` | `vitest run` | run extension unit tests (`vitest.config.ts`) |
 | `test:watch` | `vitest` | watch-mode tests |
+| `test:vsix` | `npm run vsix && node ./scripts/test-vsix.mjs` | build + smoke-test the packaged `.vsix` in a throwaway VS Code profile (`--no-launch` = install/verify only) |
 | `lint` | `eslint src --ext ts` | lint extension source |
 | `parser` | `npx peggy ... --format commonjs ... riscv.peg` | regenerate `src/utilities/riscv.ts` parser (CommonJS) |
 | `parservs` | `npx peggy ... --format es ...` | same, ESM output |
@@ -231,25 +225,24 @@ Client-only dev servers also exist (not needed for the extension host):
 
 ## 11. Gotchas summary
 
-1. **`npm run watch` throws** — references undefined esbuild configs
-   (§9). Use `npm run compile`.
-2. **Client deps come from the root `postinstall`.** `esbuild.js` runs
+1. **Client deps come from the root `postinstall`.** `esbuild.js` runs
    `npm run build` in `client/simulator` but never `npm install`; the root
    `postinstall` script now installs both clients after `npm install`, so a
    clean checkout compiles without a manual `--prefix` step (§3).
-3. **`client/instructionSet` is never built by the extension build** — its
+2. **`client/instructionSet` is never built by the extension build** — its
    bundle is only what is committed under `src/templates/instructionSet/`.
    Rebuild manually after changes (§7).
-4. **Vite `@protocol` alias must mirror the tsconfig `paths`.**
+3. **Vite `@protocol` alias must mirror the tsconfig `paths`.**
    `client/simulator/vite.config.ts` sets `@protocol` →
    `../../src/protocol` to match `tsconfig.app.json`'s `@protocol/*`. Without
    it, `tsc -b` passes but the production `vite build` (Rollup) fails to
    resolve the shared protocol module, shipping a blank webview. This gap is
    exactly why `ci.yml`'s `extension` job runs the real `vite build`.
    (`instructionSet` has no `@protocol` alias because it does not import it.)
-5. **Build ordering matters.** The webview (`vite build` → `src/templates/...`)
+4. **Build ordering matters.** The webview (`vite build` → `src/templates/...`)
    must be built before packaging, because the `.vsix` ships the committed/
    generated `src/templates/` bundle, not a vsce-built one. `esbuild.js` and
    CI both build the simulator webview first.
-6. **Node version mismatch is fine.** CI uses Node 24, the devcontainer image
-   is Node 20; either works. `@types/node` pinned at `16.x` is type-only.
+5. **Node version mismatch is fine for building.** CI uses Node 24, the
+   devcontainer image is Node 20; either works. `@types/node` pinned at `16.x`
+   is type-only. Note: `npm run vsix` (vsce) crashes on Node 25 — use Node 22.
