@@ -1,5 +1,5 @@
 title: RiscV Sirius Studio
-description: YOUR DESCRIPTION
+description: An interactive RISC-V assembly simulator with memory views, stepped execution, and code visualization for Visual Studio Code, primarily designed for educational purposes.
 theme: just-the-docs
 
 nav_enabled: true

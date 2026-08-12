@@ -8,7 +8,7 @@ nav_order: 2
 ## Latest release
 
 The latest release of this extension is available
-[here](https://github.com/LabSirius/RiscVSiriusStudio/releases/download/v0.0.7/rv-simulator-0.0.7.vsix).
+[here](https://github.com/LabSirius/RiscVSiriusStudio/releases/download/v1.0/rv-simulator-1.0.0.vsix).
 
 {: .warning }
 > Warning

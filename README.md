@@ -1,40 +1,43 @@
 # RISC-V Simulator for VS Code
 
-[![Download extension](https://img.shields.io/badge/Download-.vsix-blue?style=for-the-badge&logo=visualstudiocode)](https://github.com/LabSirius/RiscVSiriusStudio/releases/download/v0.0.7/rv-simulator-0.0.7.vsix)
-[![Version](https://img.shields.io/badge/version-0.0.7-green?style=for-the-badge)](https://github.com/LabSirius/RiscVSiriusStudio/releases)
+[![Download extension](https://img.shields.io/badge/Download-.vsix-blue?style=for-the-badge&logo=visualstudiocode)](https://github.com/LabSirius/RiscVSiriusStudio/releases/download/v1.0/rv-simulator-1.0.0.vsix)
+[![Version](https://img.shields.io/badge/version-1.0.0-green?style=for-the-badge)](https://github.com/LabSirius/RiscVSiriusStudio/releases)
 [![License](https://img.shields.io/badge/license-MIT-orange?style=for-the-badge)](LICENSE.md)
 
-An interactive RISC-V assembly simulator with memory views, step execution, and code visualization for Visual Studio Code, primarily designed for educational purposes.
+An interactive RISC-V assembly simulator with memory views, stepped execution, and code visualization for Visual Studio Code, primarily designed for educational purposes.
 
 ## Educational Purpose
 
 This simulator is specifically targeted for teaching and learning the RISC-V architecture:
 
-- **For Students**: Provides an interactive environment to explore and understand the RISC-V instruction set, memory operations, and program execution flow
-- **For Educators**: Offers a powerful tool to demonstrate important computer organization concepts, and architectural principles
-- **For Classrooms**: Enables hands-on learning experiences with immediate visual feedback on program execution
+- **For Students**: Provides an interactive environment to explore and
+  understand the RISC-V instruction set, memory operations, and program
+  execution flow.
+- **For Educators**: Offers a powerful tool to demonstrate important computer
+  organization concepts, and architectural principles.
+- **For Classrooms**: Enables hands-on learning experiences with immediate
+  visual feedback on program execution.
 
-The visual representation and step-by-step execution make abstract computer architecture concepts tangible and easier to comprehend.
+The visual representation and step-by-step execution make abstract computer
+architecture concepts tangible and easier to comprehend.
 
 ## Features
 
-- **Syntax Highlighting**: Full syntax highlighting for RISC-V assembly (.asm) files
-- **Interactive Simulation**: Run and step through RISC-V programs directly in VS Code
-- **Memory Views**: Inspect program memory and data memory during simulation
-- **Register Monitoring**: Track register values and changes during execution
-- **Code Synchronization**: Keep source code synchronized with program memory
-- **Export Options**: Export instruction memory and intermediate representation as JSON
+- **Syntax Highlighting**: Full syntax highlighting for RISC-V assembly (.asm)
+  files.
+- **Interactive Simulation**: Run and step through RISC-V programs directly in
+  VS Code.
+- **Memory Views**: Inspect program memory and data memory during simulation.
+- **Register Monitoring**: Track register values and changes during execution.
 
 ## Installation
 
 ### From VS Code Marketplace
-1. Open VS Code
-2. Go to Extensions (Ctrl+Shift+X)
-3. Search for "RISC-V Simulator"
-4. Click Install
+
+The extension is still not available in the marketplace. 
 
 ### Manual Installation
-1. Download the .vsix file from the [Releases page](https://github.com/LabSirius/RiscVSiriusStudio/releases)
+1. Download the latest .vsix file from [here](https://github.com/LabSirius/RiscVSiriusStudio/releases/download/v1.0/rv-simulator-1.0.0.vsix).
 2. In VS Code, go to Extensions (Ctrl+Shift+X)
 3. Click the "..." menu and select "Install from VSIX..."
 4. Select the downloaded .vsix file
@@ -44,30 +47,7 @@ The visual representation and step-by-step execution make abstract computer arch
 1. Open or create a RISC-V assembly file (.asm)
 2. Use the toolbar buttons or commands to:
    - Build your program 
-   - Start text simulation
-   - Start graphic simulation
-   - Step through execution
-   - Stop simulation
-
-### Available Commands
-
-- `RISCV simulator: build program` - Compile your RISC-V assembly code
-- `RISCV simulator: text-simulate program execution` - Start the text simulation
-- `RISCV simulator: simulate program execution` - Start the graphic simulation
-- `RISCV simulator: step simulation` - Execute the next instruction
-- `RISCV simulator: stop simulation` - Stop the current simulation
-## Configuration
-
-The extension provides several configuration options:
-
-- **Encoder Update Policy**: Control when the encoder output is updated (On save, On change, Manual)
-- **Register View Sorting**: Sort registers by name or last modified time
-- **Program Memory View Format**: Display instructions in binary, hexadecimal, decimal, ASCII
-- **Data Memory Size**: Configure the size of data memory (128, 256, 512, ... 1024 bytes)
-- **Import Registers and Memory Data**: Load a previously saved state of registers and memory
-- **Stack Pointer Initial Address**: Set the initial address for the stack pointer
-
-Access these settings through VS Code's settings interface under "RISCV Simulator".
+   - Simulate program execution (this will launch the graphic simulator)
 
 ## Requirements
 
