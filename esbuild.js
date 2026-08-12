@@ -139,15 +139,11 @@ const watchConfig = {
         ...watchConfig,
       });
       await build({
-        ...simulatorviewConfig,
+        ...graphicSimulatorConfig,
         ...watchConfig,
       });
       await build({
-        ...registersviewConfig,
-        ...watchConfig,
-      });
-      await build({
-        ...registersviewConfigTextSimulator,
+        ...textSimulatorSimulator,
         ...watchConfig,
       });
       ("[watch] build finished");
